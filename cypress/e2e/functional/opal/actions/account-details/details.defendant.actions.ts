@@ -52,7 +52,18 @@ export class AccountDetailsDefendantActions {
       cy.get(selector, this.common.getTimeoutOptions())
         .should('be.visible')
         .invoke('text')
-        .then((text) => expect(this.normalize(text)).to.contain(this.normalize(value)));
+        .then((text) => {
+          const actual = this.normalize(text);
+          const expectedValue = this.normalize(value);
+
+          if (normalizedLabel === 'national insurance number') {
+            expect(actual.replace(/\s/g, '').toLowerCase()).to.contain(expectedValue.replace(/\s/g, '').toLowerCase());
+          } else if (['address', 'name', 'company name'].includes(normalizedLabel)) {
+            expect(actual.toLowerCase()).to.contain(expectedValue.toLowerCase());
+          } else {
+            expect(actual).to.contain(expectedValue);
+          }
+        });
     });
   }
 

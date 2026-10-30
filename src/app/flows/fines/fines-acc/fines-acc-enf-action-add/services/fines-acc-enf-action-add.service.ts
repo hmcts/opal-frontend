@@ -45,6 +45,10 @@ export class FinesAccEnfActionAddService {
 
   /**
    * Maps one API result parameter to the internal dynamic form field model.
+   *
+   * @param param - Parameter configuration supplied by the results API.
+   * @param hasWelshLanguagePreference - Whether the account needs Welsh companion fields.
+   * @returns The dynamic field with its configured data source and validation metadata.
    */
   private mapParamToField(
     param: IFinesAccEnfActionAddResultParam,
@@ -68,7 +72,7 @@ export class FinesAccEnfActionAddService {
       max: param.max,
       hint: param.hint,
       options,
-      apiData: param.apiData,
+      apiData: param.apidata,
       ...(type === FIELD_TYPES.menuCheckbox
         ? {
             checkboxControls: options.map((option) => ({
@@ -339,6 +343,17 @@ export class FinesAccEnfActionAddService {
       const remainingErrors = errors;
       control.setErrors(Object.keys(remainingErrors).length ? remainingErrors : null);
     }
+  }
+
+  /**
+   * Uses the form's reference-data prompts as labels for enforcement response details.
+   */
+  public getResultParameterLabels(resultParameters: string | undefined): ReadonlyMap<string, string> {
+    return new Map(
+      this.parseResultParams(resultParameters)
+        .filter((param) => typeof param?.name === 'string' && typeof param?.prompt === 'string' && param.prompt.trim())
+        .map((param) => [param.name, param.prompt.trim()]),
+    );
   }
 
   /**

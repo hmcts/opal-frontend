@@ -34,6 +34,9 @@ import { IFinesAccEnfColloChangeFormState } from '../fines-acc-enf-collo-change/
 import { FINES_ACC_COLLECTION_ORDER_PAYLOAD_DEFAULTS } from './constants/fines-acc-collection-order-payload-defaults.constant';
 import { IOpalFinesUpdateMinorCreditorAccountPayload } from '../../services/opal-fines-service/interfaces/opal-fines-update-minor-creditor-account-payload.interface';
 import { IOpalFinesAccountMinorCreditorAtAGlance } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
+import { normalizeSortCode } from '../../validators/sort-code.validator';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../utils/fines-section-permissions.utils';
 import { FINES_ACC_PARTY_TYPES } from '../constants/fines-acc-party-types.constant';
 import { IOpalFinesAccountMajorCreditorDetailsHeader } from '../fines-acc-major-creditor-details/interfaces/fines-acc-major-creditor-details-header.interface';
 import { IFinesAccEnfActionAddFormState } from '../fines-acc-enf-action-add/interfaces/fines-acc-enf-action-add-form-state.interface';
@@ -70,6 +73,10 @@ export class FinesAccPayloadService {
   private readonly finesAccStore = inject(FinesAccountStore);
   private readonly historyDetailsTransformationService = inject(HistoryTransformationService);
   private readonly dateService = inject(DateService);
+
+  private get newSortCodeFunctionalityEnabled(): boolean {
+    return getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true;
+  }
 
   /**
    * Returns the current local datetime without a timezone suffix.
@@ -458,6 +465,13 @@ export class FinesAccPayloadService {
   ): IOpalFinesUpdateMinorCreditorAccountPayload {
     const isCompany = formState.facc_minor_creditor_creditor_type === 'company';
     const hasBacsDetails = formState.facc_minor_creditor_pay_by_bacs === true;
+    let sortCode: string | null = null;
+
+    if (hasBacsDetails) {
+      sortCode = this.newSortCodeFunctionalityEnabled
+        ? normalizeSortCode(formState.facc_minor_creditor_bank_sort_code)
+        : formState.facc_minor_creditor_bank_sort_code;
+    }
 
     return {
       creditor_account_id: currentData.creditor_account_id,
@@ -496,7 +510,7 @@ export class FinesAccPayloadService {
         pay_by_bacs: hasBacsDetails,
         hold_payment: currentData.payment.hold_payment,
         account_name: hasBacsDetails ? formState.facc_minor_creditor_bank_account_name : null,
-        sort_code: hasBacsDetails ? formState.facc_minor_creditor_bank_sort_code : null,
+        sort_code: sortCode,
         account_number: hasBacsDetails ? formState.facc_minor_creditor_bank_account_number : null,
         account_reference: hasBacsDetails ? formState.facc_minor_creditor_bank_account_reference : null,
       },
@@ -530,7 +544,15 @@ export class FinesAccPayloadService {
     fields: IFinesAccEnfActionAddFormField[],
     formState: IFinesAccEnfActionAddFormState,
   ): IOpalFinesAddEnforcementActionPayload {
-    return buildEnforcementActionAddPayload(result, fields, formState, this.getCurrentLocalDateTime());
+    const preserveParameterNames =
+      (this.globalStore.featureFlags() as Record<string, unknown>)['release-1b-1-1'] === true;
+    return buildEnforcementActionAddPayload(
+      result,
+      fields,
+      formState,
+      this.getCurrentLocalDateTime(),
+      preserveParameterNames,
+    );
   }
 
   /**

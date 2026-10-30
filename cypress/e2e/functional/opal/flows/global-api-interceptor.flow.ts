@@ -225,7 +225,7 @@ export class GlobalApiInterceptorFlow {
   }
 
   /**
-   * Refreshes the current page and confirms the global banner is cleared.
+   * Refreshes the current page and confirms the global API banner is cleared.
    * @param expectedHeader - Expected header text after refresh.
    * @remarks Uses header assertions to guard the refresh destination.
    * @example
@@ -235,7 +235,7 @@ export class GlobalApiInterceptorFlow {
     log('flow', 'Refreshing page and confirming banner cleared', { expectedHeader });
     cy.reload();
     this.common.assertHeaderContains(expectedHeader);
-    this.actions.assertGlobalBannerNotVisible();
+    this.actions.assertGlobalApiBannerCleared();
   }
 
   /**

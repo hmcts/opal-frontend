@@ -7,15 +7,15 @@ export const LENGTH_CHECK = {
   addressLine3MaxLength: `Address line 3 must be 16 characters or fewer`,
   postCodeMaxLength: `Postcode must be 8 characters or fewer`,
   bankAccountNameMaxLength: 'Name on the account must be 18 characters or fewer',
-  bankSortCodeMaxLength: 'Sort code must be 6 characters or fewer',
-  bankAccountNumberMaxLength: 'Account number must be 8 characters or fewer',
+  bankSortCodeMaxLength: 'Sort code must be 6 numbers',
+  bankAccountNumberMaxLength: 'Account number must be between 6 and 8 numbers',
   bankAccountRefMaxLength: 'Payment reference must be 18 characters or fewer',
 };
 
 export const FORMAT_CHECK = {
   bankAccountRefAlphaNumericTextPattern: 'Payment reference must only contain letters and numbers',
-  bankAccountNumberNumericalTextPattern: 'Account number must only contain numbers',
-  bankSortCodeNumericalTextPattern: 'Sort code must only contain numbers',
+  bankAccountNumberNumericalTextPattern: 'Account number must be between 6 and 8 numbers',
+  bankSortCodeNumericalTextPattern: 'Sort code must be 6 numbers',
   surnameRequired: `Enter last name`,
   bankAccountNameAlphabeticalTextPattern:
     'Name on account must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
@@ -26,8 +26,8 @@ export const FORMAT_CHECK = {
   addressLine3SpecialCharactersPattern:
     'Address line 3 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
   companyNameAlphabeticalTextPattern: `Company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
-  surnameAlphabeticalTextPattern: `Last name must only contain letters`,
-  forenamesAlphabeticalTextPattern: `First name(s) must only contain letters`,
+  surnameAlphabeticalTextPattern: `Last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
+  forenamesAlphabeticalTextPattern: `First name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
 };
 
 export const REQUIRED_FIELDS = {

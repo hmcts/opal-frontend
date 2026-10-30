@@ -5,5 +5,11 @@ export interface IFinesMciRoutingPaths extends IChildRoutingPaths {
     createAllocate: string;
     paymentCategoryCriminalMatches: string;
     paymentCategoryCriminalSearch: string;
+    create: string;
+    till: string;
+    selectBusinessUnit: string;
+    details: string;
+    paymentCategory: string;
+    cancel: string;
   };
 }

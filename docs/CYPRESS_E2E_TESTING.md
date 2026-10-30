@@ -17,7 +17,7 @@ Use this guide when writing or updating Cypress E2E tests and Cucumber feature f
 ### Release Folder Rules
 
 - Keep release-specific feature files under the matching release folder.
-- `features/release1a/**` should contain only `@R1A`, `@R1AOff`, `@R1A1_1`, or `@R1A1_1Off` scenarios and examples.
+- `features/release1a/**` should contain only `@R1A`, `@R1AOff`, `@R1A1_1`, `@R1A1_1Off`, `@R1A1_2`, or `@R1A1_2Off` scenarios and examples.
 - `features/release1b/**` should contain only `@R1BDrop1`, `@R1BDrop2`, `@R1BDrop1UatTechJCDE`, `@R1BDrop1UatTechPreprod`, `@R1BDrop2UatTechJCDE`, `@R1BDrop2UatTechPreprod`, or `@R1BOff` scenarios and examples.
 - `features/release1c/**` should contain only `@R1C...` scenarios and examples.
 - When a feature file mixes release tags, split the scenarios into separate release-specific files rather than keeping cross-release examples in one file.
@@ -81,3 +81,7 @@ yarn cypress run --browser chrome --spec 'cypress/e2e/functional/opal/features/m
 
 - When a feature fails because of a real product bug, do not patch application behavior just to green the test.
 - Skip or xfail the test if unavoidable and report the underlying issue in the task update.
+
+## Extended Tests
+
+Use `@extendedTest` for tests excluded from PR/master runs by default and included in manual and nightly runs. Add the GitHub label `extendedTests` to a PR to include them in that PR pipeline. Direct Cypress runs include extended tests even when the pipeline exclusion flag is set. See [Extended test runs](EXTENDED_TEST_RUNS.md) for tagging, pipeline behaviour and execution commands.

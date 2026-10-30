@@ -117,7 +117,11 @@
           }
         </td>
         <td opal-lib-moj-sortable-table-row-data id="dob">
-          {{ row['Date of birth'] | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
+          @if (row['Date of birth']?.trim(); as dateOfBirth) {
+            {{ dateOfBirth | dateFormat: DATE_INPUT_FORMAT : DATE_OUTPUT_FORMAT }}
+          } @else {
+            <app-fines-not-provided></app-fines-not-provided>
+          }
         </td>
         @if (activeTab === finesDraftTabFragment.deleted || activeTab === finesDraftTabFragment.failed) {
           <td opal-lib-moj-sortable-table-row-data id="changedDate">{{ row['Changed'] | daysAgo }}</td>

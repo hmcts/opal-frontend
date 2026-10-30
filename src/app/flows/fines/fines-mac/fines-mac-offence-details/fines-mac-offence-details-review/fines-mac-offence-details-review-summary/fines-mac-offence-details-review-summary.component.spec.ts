@@ -22,6 +22,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 import { By } from '@angular/platform-browser';
+import { FinesMacOffenceDetailsReviewOffenceComponent } from '../../fines-mac-offence-details-review-offence/fines-mac-offence-details-review-offence.component';
 
 describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   let component: FinesMacOffenceDetailsReviewSummaryComponent;
@@ -84,6 +85,21 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it.each([
+    { isReadOnly: false, expectedHeadingLevel: 2 },
+    { isReadOnly: true, expectedHeadingLevel: 3 },
+  ])(
+    'should pass heading level $expectedHeadingLevel when read-only is $isReadOnly',
+    ({ isReadOnly, expectedHeadingLevel }) => {
+      fixture.componentRef.setInput('isReadOnly', isReadOnly);
+      fixture.detectChanges();
+
+      const offence = fixture.debugElement.query(By.directive(FinesMacOffenceDetailsReviewOffenceComponent));
+
+      expect(offence.componentInstance.headingLevel).toBe(expectedHeadingLevel);
+    },
+  );
 
   it('should return the maximum offence ID', () => {
     const result = component['getMaxOffenceId']();
