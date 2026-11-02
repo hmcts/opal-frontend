@@ -10,7 +10,7 @@ import { provideClientHydration, withNoHttpTransferCache } from '@angular/platfo
 import { provideRouter, withInMemoryScrolling, withRouterConfig } from '@angular/router';
 import { routes } from './app.routes';
 import { provideOpalAppInitializer } from '@hmcts/opal-frontend-common/services/app-initializer-service';
-import { finesHttpErrorInterceptor } from './interceptors/fines-http-error.interceptor';
+import { finesAccAprHttpErrorInterceptor } from './interceptors/fines-acc-apr-http-error.interceptor';
 import { contentDigestInterceptor } from '@hmcts/opal-frontend-common/interceptors/content-digest';
 import { httpRetryInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-retry';
 
@@ -30,7 +30,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withFetch(),
       // Response errors unwind in reverse order, so retry handles transient failures before the error UI.
-      withInterceptors([finesHttpErrorInterceptor, contentDigestInterceptor, httpRetryInterceptor]),
+      withInterceptors([finesAccAprHttpErrorInterceptor, contentDigestInterceptor, httpRetryInterceptor]),
       withInterceptorsFromDi(),
       withXsrfConfiguration({
         headerName: 'X-XSRF-TOKEN',

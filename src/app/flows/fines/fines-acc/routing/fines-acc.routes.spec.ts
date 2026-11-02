@@ -36,9 +36,9 @@ import { FinesAccBusinessUnitResolver } from './resolvers/fines-acc-business-uni
 import { FINES_ACCOUNT_ROUTE_TYPES } from './constants/fines-acc-route-types.constant';
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 import { fetchAccCourtsResolver } from './resolvers/fetch-acc-courts-resolver/fetch-acc-courts.resolver';
-import { FINES_ACC_ALTERNATE_PAYMENT_REFERENCE_ROUTING_PATHS } from './constants/fines-acc-alternate-payment-reference-routing-paths.constant';
-import { bankingInterfacesFeatureFlagGuard } from './guards/fines-acc-alternate-payment-reference-feature-flag.guard';
-import { FinesAccDefendantAlternatePaymentReferenceAccessDeniedComponent } from '../fines-acc-defendant-alternate-payment-reference-access-denied/fines-acc-defendant-alternate-payment-reference-access-denied.component';
+import { FINES_ACC_APR_ROUTING_PATHS } from './constants/fines-acc-apr-routing-paths.constant';
+import { finesAccAprFeatureFlagGuard } from './guards/fines-acc-apr-feature-flag.guard';
+import { FinesAccAprAccessDeniedComponent } from '../fines-acc-apr-access-denied/fines-acc-apr-access-denied.component';
 
 describe('fines acc routes', () => {
   const defendantRoute = routing.find((route) => route.path === `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`);
@@ -115,23 +115,17 @@ describe('fines acc routes', () => {
   });
 
   it('should guard all APR routes with the banking interfaces flag', () => {
-    const aprRoute = defendantJourneyGroup?.children?.find(
-      (route) => route.path === FINES_ACC_ALTERNATE_PAYMENT_REFERENCE_ROUTING_PATHS.root,
-    );
+    const aprRoute = defendantJourneyGroup?.children?.find((route) => route.path === FINES_ACC_APR_ROUTING_PATHS.root);
 
-    expect(aprRoute?.canActivate).toEqual([bankingInterfacesFeatureFlagGuard]);
-    expect(aprRoute?.canActivateChild).toEqual([bankingInterfacesFeatureFlagGuard]);
+    expect(aprRoute?.canActivate).toEqual([finesAccAprFeatureFlagGuard]);
+    expect(aprRoute?.canActivateChild).toEqual([finesAccAprFeatureFlagGuard]);
   });
 
   it('should load an account-scoped APR permission denied page without requiring the denied permission', async () => {
-    const aprRoute = defendantJourneyGroup?.children?.find(
-      (route) => route.path === FINES_ACC_ALTERNATE_PAYMENT_REFERENCE_ROUTING_PATHS.root,
-    );
-    const deniedRoute = aprRoute?.children?.find(
-      (route) => route.path === FINES_ACC_ALTERNATE_PAYMENT_REFERENCE_ROUTING_PATHS.children.denied,
-    );
+    const aprRoute = defendantJourneyGroup?.children?.find((route) => route.path === FINES_ACC_APR_ROUTING_PATHS.root);
+    const deniedRoute = aprRoute?.children?.find((route) => route.path === FINES_ACC_APR_ROUTING_PATHS.children.denied);
 
-    expect(await deniedRoute?.loadComponent?.()).toBe(FinesAccDefendantAlternatePaymentReferenceAccessDeniedComponent);
+    expect(await deniedRoute?.loadComponent?.()).toBe(FinesAccAprAccessDeniedComponent);
     expect(deniedRoute?.data?.['title']).toBe('Access Denied');
     expect(deniedRoute?.resolve?.['title']).toBe(TitleResolver);
     expect(deniedRoute?.data?.['routePermissionId']).toBeUndefined();

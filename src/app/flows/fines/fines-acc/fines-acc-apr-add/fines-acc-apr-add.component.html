@@ -1,0 +1,10 @@
+<app-fines-acc-apr-form
+  [contextKey]="formContext()"
+  [initialValue]="initialValue()"
+  [savedValue]="''"
+  [accountCaption]="accountCaption()"
+  [pending]="pending()"
+  (formSubmit)="handleSave($event.formData.apr_text)"
+  (unsavedChanges)="stateUnsavedChanges = $event"
+  (cancelRequested)="navigateToList()"
+/>

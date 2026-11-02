@@ -74,7 +74,7 @@ describe('FinesAccDefendantDetailsPaymentTermsTabComponent', () => {
     { enabled: true, permitted: false },
   ])('should hide the APR action when enabled=$enabled and permitted=$permitted', ({ enabled, permitted }) => {
     component.bankingInterfacesEnabled = enabled;
-    component.hasManageAlternatePaymentReferencesPermission = permitted;
+    component.hasManageAprPermission = permitted;
 
     fixture.detectChanges();
 
@@ -89,8 +89,8 @@ describe('FinesAccDefendantDetailsPaymentTermsTabComponent', () => {
     'should display the APR action to a user with permission in any BU and link to $destination',
     ({ currentBusinessUnitPermission, destination }) => {
       component.bankingInterfacesEnabled = true;
-      component.hasManageAlternatePaymentReferencesPermission = true;
-      component.canManageAlternatePaymentReferences = currentBusinessUnitPermission;
+      component.hasManageAprPermission = true;
+      component.canManageApr = currentBusinessUnitPermission;
 
       fixture.detectChanges();
 
