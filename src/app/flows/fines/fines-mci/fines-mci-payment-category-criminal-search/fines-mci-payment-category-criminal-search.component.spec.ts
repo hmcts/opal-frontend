@@ -66,7 +66,9 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
     expect(text).toContain('Individuals');
     expect(text).toContain('Companies');
     expect(text).toContain('Cancel');
-    expect(fixture.nativeElement.querySelector('a.govuk-link')?.getAttribute('href')).toBe('/fines/dashboard/finance');
+    expect(fixture.nativeElement.querySelector('a.govuk-link')?.getAttribute('href')).toBe(
+      '/fines/manual-cash-input/create/till/details',
+    );
   });
 
   it('should use the current selected business unit for the caption and account number search', () => {

@@ -15,7 +15,6 @@ import {
   LETTERS_WITH_SPACES_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { FINES_MCI_ROUTING_PATHS } from '../routing/constants/fines-mci-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FinesMciStore } from '../stores/fines-mci.store';
@@ -64,11 +63,13 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
 
   protected readonly finesMciStore = inject(FinesMciStore);
   protected readonly activeTab = signal<FinesMciCriminalSearchTab>('individuals');
-  protected readonly financeDashboardRoute = [
+  protected readonly tillDetailsRoute = [
     '/',
     FINES_ROUTING_PATHS.root,
-    FINES_DASHBOARD_ROUTING_PATHS.root,
-    FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+    FINES_MCI_ROUTING_PATHS.root,
+    FINES_MCI_ROUTING_PATHS.children.create,
+    FINES_MCI_ROUTING_PATHS.children.till,
+    FINES_MCI_ROUTING_PATHS.children.details,
   ];
 
   override fieldErrors = FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_SEARCH_FIELD_ERRORS;

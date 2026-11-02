@@ -18,8 +18,8 @@ interface FinesMciCriminalMatchesContent {
 const FINES_MCI_CRIMINAL_MATCHES_CONTENT: Record<FinesMciCriminalSearchResults, FinesMciCriminalMatchesContent> = {
   [FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches]: {
     heading: 'Matching criminal accounts',
-    ticket: 'PO-3480',
-    body: 'The design and functionality for matching criminal account results will be implemented under ticket PO-3480.',
+    ticket: 'PO-3490',
+    body: 'The design and functionality for matching criminal account results will be implemented under ticket PO-3490.',
   },
   [FINES_MCI_CRIMINAL_SEARCH_RESULTS.noMatches]: {
     heading: 'No matching criminal accounts',
