@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { IOpalFinesAlternatePaymentReferencesResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-alternate-payment-reference.interface';
 import { FinesAccountStore } from '../stores/fines-acc.store';
@@ -11,7 +13,8 @@ import { canAddAlternatePaymentReference } from '../fines-acc-defendant-alternat
 @Component({
   selector: 'app-fines-acc-defendant-alternate-payment-reference-list',
   imports: [
-    RouterLink,
+    GovukBackLinkComponent,
+    GovukButtonComponent,
     GovukHeadingWithCaptionComponent,
     FinesAccBannerMessagesComponent,
     FinesAccAlternatePaymentReferenceTableComponent,
@@ -20,6 +23,7 @@ import { canAddAlternatePaymentReference } from '../fines-acc-defendant-alternat
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccDefendantAlternatePaymentReferenceListComponent {
+  private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly routeData = toSignal(this.route.data, { initialValue: this.route.snapshot.data });
   private readonly data = computed(
@@ -44,5 +48,12 @@ export class FinesAccDefendantAlternatePaymentReferenceListComponent {
       this.successMessage.set(this.accountStore.successMessage());
       this.accountStore.clearSuccessMessage();
     });
+  }
+  public navigateBack(): void {
+    void this.router.navigate([this.accountDetails()], { fragment: 'payment-terms' });
+  }
+
+  public navigateToAdd(): void {
+    void this.router.navigate(['../add'], { relativeTo: this.route });
   }
 }

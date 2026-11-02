@@ -1,22 +1,30 @@
-<table class="govuk-table" [id]="tableId">
-  <thead class="govuk-table__head">
-    <tr class="govuk-table__row">
-      <th scope="col" class="govuk-table__header">Reference</th>
-      <th scope="col" class="govuk-table__header">Date created</th>
-      <th scope="col" class="govuk-table__header">Date updated</th>
-      @if (showActions) {
-        <th scope="col" class="govuk-table__header">Actions</th>
-      }
-    </tr>
-  </thead>
-  <tbody class="govuk-table__body">
+<opal-lib-govuk-table [id]="tableId">
+  <ng-container head>
+    <th opal-lib-govuk-table-heading>Reference</th>
+    <th opal-lib-govuk-table-heading>Date created</th>
+    <th opal-lib-govuk-table-heading>Date updated</th>
+    @if (showActions) {
+      <th opal-lib-govuk-table-heading>Actions</th>
+    }
+  </ng-container>
+  <ng-container body>
     @for (reference of references; track reference.alternate_payment_reference_id) {
-      <tr class="govuk-table__row" [attr.data-reference-id]="reference.alternate_payment_reference_id">
-        <th scope="row" class="govuk-table__header">{{ reference.apr_text }}</th>
-        <td class="govuk-table__cell">{{ formatDate(reference.created_at) }}</td>
-        <td class="govuk-table__cell">{{ formatDate(reference.updated_at) }}</td>
+      <tr opal-lib-govuk-table-body-row [attr.data-reference-id]="reference.alternate_payment_reference_id">
+        <th
+          scope="row"
+          opal-lib-govuk-table-body-row-data
+          [id]="'apr-reference-' + reference.alternate_payment_reference_id"
+        >
+          {{ reference.apr_text }}
+        </th>
+        <td opal-lib-govuk-table-body-row-data [id]="'apr-created-' + reference.alternate_payment_reference_id">
+          {{ formatDate(reference.created_at) }}
+        </td>
+        <td opal-lib-govuk-table-body-row-data [id]="'apr-updated-' + reference.alternate_payment_reference_id">
+          {{ formatDate(reference.updated_at) }}
+        </td>
         @if (showActions) {
-          <td class="govuk-table__cell">
+          <td opal-lib-govuk-table-body-row-data [id]="'apr-actions-' + reference.alternate_payment_reference_id">
             @if (canChange(reference)) {
               <a
                 class="govuk-link govuk-!-margin-right-3"
@@ -39,5 +47,5 @@
         }
       </tr>
     }
-  </tbody>
-</table>
+  </ng-container>
+</opal-lib-govuk-table>

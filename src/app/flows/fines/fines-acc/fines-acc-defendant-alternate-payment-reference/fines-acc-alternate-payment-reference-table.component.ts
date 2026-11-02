@@ -1,5 +1,11 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import {
+  GovukTableComponent,
+  GovukTableHeadingComponent,
+  GovukTableBodyRowComponent,
+  GovukTableBodyRowDataComponent,
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-table';
 import { IOpalFinesAlternatePaymentReference } from '@services/fines/opal-fines-service/interfaces/opal-fines-alternate-payment-reference.interface';
 import {
   canChangeAlternatePaymentReference,
@@ -9,7 +15,13 @@ import {
 
 @Component({
   selector: 'app-fines-acc-alternate-payment-reference-table',
-  imports: [RouterLink],
+  imports: [
+    RouterLink,
+    GovukTableComponent,
+    GovukTableHeadingComponent,
+    GovukTableBodyRowComponent,
+    GovukTableBodyRowDataComponent,
+  ],
   templateUrl: './fines-acc-alternate-payment-reference-table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

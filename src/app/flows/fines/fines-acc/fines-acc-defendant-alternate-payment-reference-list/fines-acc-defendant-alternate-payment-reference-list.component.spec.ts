@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { describe, expect, it, vi } from 'vitest';
@@ -52,6 +52,16 @@ const renderList = async (references: IOpalFinesAlternatePaymentReference[], ini
   return { element: harness.routeNativeElement!, component, accountStore, harness };
 };
 
+const navigationDestination = (element: Element, selector: string): string => {
+  const router = TestBed.inject(Router);
+  const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+  (element.querySelector(selector) as HTMLElement).click();
+  const [commands, extras] = navigate.mock.calls.at(-1)!;
+  const destination = router.serializeUrl(router.createUrlTree(commands, extras));
+  navigate.mockRestore();
+  return destination;
+};
+
 describe('FinesAccDefendantAlternatePaymentReferenceListComponent', () => {
   it('renders the account caption, both empty states and links to add or return to the same account Payment terms', async () => {
     const { element } = await renderList([]);
@@ -64,12 +74,10 @@ describe('FinesAccDefendantAlternatePaymentReferenceListComponent', () => {
     expect(element.querySelector('#apr-consolidated-empty')?.textContent).toContain(
       'There are no alternative payment reference from consolidated accounts',
     );
-    expect(element.querySelector('#apr-add')?.getAttribute('href')).toBe(
+    expect(navigationDestination(element, '#apr-add')).toBe(
       '/fines/account/defendant/141/alternate/payment/reference/add',
     );
-    expect(element.querySelector('#apr-back')?.getAttribute('href')).toBe(
-      '/fines/account/defendant/141/details#payment-terms',
-    );
+    expect(navigationDestination(element, '#apr-back a')).toBe('/fines/account/defendant/141/details#payment-terms');
   });
 
   it('separates direct and inherited APRs, excludes account-number references and preserves response order', async () => {
@@ -220,10 +228,8 @@ describe('FinesAccDefendantAlternatePaymentReferenceListComponent', () => {
     expect(element.textContent).not.toContain('First account feedback');
     expect(element.querySelector('#apr-current-empty')).not.toBeNull();
     expect(element.querySelector('#apr-consolidated-table [data-reference-id="22"]')).not.toBeNull();
-    expect(element.querySelector('#apr-back')?.getAttribute('href')).toBe(
-      '/fines/account/defendant/142/details#payment-terms',
-    );
-    expect(element.querySelector('#apr-add')?.getAttribute('href')).toBe(
+    expect(navigationDestination(element, '#apr-back a')).toBe('/fines/account/defendant/142/details#payment-terms');
+    expect(navigationDestination(element, '#apr-add')).toBe(
       '/fines/account/defendant/142/alternate/payment/reference/add',
     );
     expect(element.querySelector('#apr-remove-22')?.getAttribute('href')).toBe(
