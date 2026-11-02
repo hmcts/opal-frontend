@@ -36,7 +36,7 @@ import { FinesAccBusinessUnitResolver } from './resolvers/fines-acc-business-uni
 import { FINES_ACCOUNT_ROUTE_TYPES } from './constants/fines-acc-route-types.constant';
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 import { fetchAccCourtsResolver } from './resolvers/fetch-acc-courts-resolver/fetch-acc-courts.resolver';
-import { FINES_ACC_APR_ROUTING_PATHS } from './constants/fines-acc-apr-routing-paths.constant';
+import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-list/constants/fines-acc-apr-routing-paths.constant';
 import { finesAccAprFeatureFlagGuard } from './guards/fines-acc-apr-feature-flag.guard';
 import { FinesAccAprAccessDeniedComponent } from '../fines-acc-apr-access-denied/fines-acc-apr-access-denied.component';
 

@@ -63,6 +63,15 @@ import {
 } from '@hmcts/opal-frontend-common/services/history-transformation-service';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from './constants/fines-acc-history-and-notes-details-transformation-config.constant';
 import { OPAL_FINES_NOTE_RECORD_TYPES } from '@services/fines/opal-fines-service/constants/opal-fines-note-record-types.constant';
+import { IOpalFinesAprPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr-payload.interface';
+import {
+  IOpalFinesApr,
+  IOpalFinesAprsResponse,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
+import { IFinesAccAprAddFormState } from '../fines-acc-apr-add/interfaces/fines-acc-apr-add-form-state.interface';
+import { IFinesAccAprListData } from '../fines-acc-apr-list/interfaces/fines-acc-apr-list-data.interface';
+import { buildAprPayload } from './utils/fines-acc-payload-build-apr.utils';
+import { transformAprToForm, transformAprsPayload } from './utils/fines-acc-payload-transform-apr-data.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -98,6 +107,18 @@ export class FinesAccPayloadService {
         .business_unit_users.find((businessUnitUser) => businessUnitUser.business_unit_id === businessUnitId)
         ?.business_unit_user_id ?? null
     );
+  }
+
+  public buildAprPayload(formState: IFinesAccAprAddFormState): IOpalFinesAprPayload {
+    return buildAprPayload(formState);
+  }
+
+  public transformAprToForm(reference: IOpalFinesApr | null): IFinesAccAprAddFormState {
+    return transformAprToForm(reference);
+  }
+
+  public transformAprsPayload(response: IOpalFinesAprsResponse): IFinesAccAprListData {
+    return transformAprsPayload(response);
   }
 
   /**

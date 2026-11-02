@@ -48,7 +48,7 @@ import { FINES_ACC_MAJOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS } from '../fines-acc-m
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS } from '../fines-acc-minor-creditor-details/constants/fines-acc-minor-creditor-details-route-data-keys.constant';
 import { FinesAccBusinessUnitResolver } from './resolvers/fines-acc-business-unit.resolver';
 import { FINES_ACCOUNT_ROUTE_TYPES } from './constants/fines-acc-route-types.constant';
-import { FINES_ACC_APR_ROUTING_PATHS } from './constants/fines-acc-apr-routing-paths.constant';
+import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-list/constants/fines-acc-apr-routing-paths.constant';
 import { routing as aprRouting } from './fines-acc-apr.routes';
 import { finesAccAprFeatureFlagGuard } from './guards/fines-acc-apr-feature-flag.guard';
 

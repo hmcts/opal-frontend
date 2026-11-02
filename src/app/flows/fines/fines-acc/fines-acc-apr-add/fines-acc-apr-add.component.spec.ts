@@ -140,7 +140,7 @@ describe('FinesAccAprAddComponent', () => {
     enter('Pending');
     save();
     harness.detectChanges();
-    component.handleSave('Pending');
+    component.handleSubmit({ formData: { apr_text: 'Pending' }, nestedFlow: false });
 
     expect(component.pending()).toBe(true);
     expect(api.createApr).toHaveBeenCalledOnce();
@@ -219,7 +219,7 @@ describe('FinesAccAprAddComponent', () => {
     initialVersion = null;
     const { component, harness } = await render();
 
-    component.handleSave('Valid');
+    component.handleSubmit({ formData: { apr_text: 'Valid' }, nestedFlow: false });
     await harness.fixture.whenStable();
 
     expect(api.createApr).not.toHaveBeenCalled();
@@ -229,7 +229,7 @@ describe('FinesAccAprAddComponent', () => {
     const { component, harness } = await render();
     accountStore.setAccountState({ ...accountStore.getAccountState(), base_version: '"99"' });
 
-    component.handleSave('Original-Snapshot');
+    component.handleSubmit({ formData: { apr_text: 'Original-Snapshot' }, nestedFlow: false });
     await harness.fixture.whenStable();
 
     expect(api.createApr).toHaveBeenCalledExactlyOnceWith(141, { apr_text: 'Original-Snapshot' }, '"7"');

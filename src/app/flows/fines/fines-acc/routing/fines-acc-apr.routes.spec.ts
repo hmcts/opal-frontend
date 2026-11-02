@@ -2,7 +2,7 @@ import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deact
 import { businessUnitRoutePermissionsGuard } from '@hmcts/opal-frontend-common/guards/business-unit-route-permissions';
 import { describe, expect, it } from 'vitest';
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
-import { finesAccAprResolver } from '../fines-acc-apr/fines-acc-apr.resolver';
+import { finesAccAprResolver } from './resolvers/fines-acc-apr/fines-acc-apr.resolver';
 import { FinesAccAprAddComponent } from '../fines-acc-apr-add/fines-acc-apr-add.component';
 import { routing } from './fines-acc-apr.routes';
 

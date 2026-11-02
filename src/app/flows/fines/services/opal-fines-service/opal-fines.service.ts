@@ -1,3 +1,4 @@
+import { IOpalFinesAprPayload } from './interfaces/opal-fines-apr-payload.interface';
 import { IOpalFinesSourceMapping } from './interfaces/opal-fines-source-mapping.interface';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
@@ -1257,7 +1258,7 @@ export class OpalFines {
 
   public createApr(
     accountId: number,
-    payload: { apr_text: string },
+    payload: IOpalFinesAprPayload,
     version: string,
   ): Observable<IOpalFinesAprResponse> {
     return this.http

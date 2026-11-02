@@ -6,11 +6,10 @@ import {
   GovukTableBodyRowComponent,
   GovukTableBodyRowDataComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-table';
-import { IOpalFinesApr } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
-import { canChangeApr, canRemoveApr, formatAprDate } from './fines-acc-apr.utils';
+import { IFinesAccAprListRow } from '../interfaces/fines-acc-apr-list-row.interface';
 
 @Component({
-  selector: 'app-fines-acc-apr-table',
+  selector: 'app-fines-acc-apr-list-table',
   imports: [
     RouterLink,
     GovukTableComponent,
@@ -18,14 +17,11 @@ import { canChangeApr, canRemoveApr, formatAprDate } from './fines-acc-apr.utils
     GovukTableBodyRowComponent,
     GovukTableBodyRowDataComponent,
   ],
-  templateUrl: './fines-acc-apr-table.component.html',
+  templateUrl: './fines-acc-apr-list-table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccAprTableComponent {
-  @Input({ required: true }) public references!: IOpalFinesApr[];
+export class FinesAccAprListTableComponent {
+  @Input({ required: true }) public references!: IFinesAccAprListRow[];
   @Input({ required: true }) public tableId!: string;
   @Input() public showActions = true;
-  public readonly canChange = canChangeApr;
-  public readonly canRemove = canRemoveApr;
-  public readonly formatDate = formatAprDate;
 }
