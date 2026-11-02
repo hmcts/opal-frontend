@@ -1,7 +1,7 @@
 export const FINES_ACC_APR_ROUTING_PATHS = {
   root: 'alternate/payment/reference',
   children: {
-    list: 'list',
+    manage: 'manage',
     add: 'add',
     error: 'error',
     edit: 'edit',

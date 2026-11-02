@@ -6,10 +6,10 @@ import {
   GovukTableBodyRowComponent,
   GovukTableBodyRowDataComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-table';
-import { IFinesAccAprListRow } from '../interfaces/fines-acc-apr-list-row.interface';
+import { IFinesAccAprManageRow } from '../interfaces/fines-acc-apr-manage-row.interface';
 
 @Component({
-  selector: 'app-fines-acc-apr-list-table',
+  selector: 'app-fines-acc-apr-manage-table',
   imports: [
     RouterLink,
     GovukTableComponent,
@@ -17,11 +17,11 @@ import { IFinesAccAprListRow } from '../interfaces/fines-acc-apr-list-row.interf
     GovukTableBodyRowComponent,
     GovukTableBodyRowDataComponent,
   ],
-  templateUrl: './fines-acc-apr-list-table.component.html',
+  templateUrl: './fines-acc-apr-manage-table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccAprListTableComponent {
-  @Input({ required: true }) public references!: IFinesAccAprListRow[];
+export class FinesAccAprManageTableComponent {
+  @Input({ required: true }) public references!: IFinesAccAprManageRow[];
   @Input({ required: true }) public tableId!: string;
   @Input() public showActions = true;
 }

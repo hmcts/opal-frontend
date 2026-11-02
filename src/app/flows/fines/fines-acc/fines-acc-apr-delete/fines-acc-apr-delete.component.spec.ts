@@ -36,7 +36,7 @@ const reference: IOpalFinesApr = {
   created_at: '2026-06-01T12:00:00Z',
   updated_at: '2026-06-03T12:00:00Z',
 };
-const listUrl = '/fines/account/defendant/141/alternate/payment/reference/list';
+const manageUrl = '/fines/account/defendant/141/alternate/payment/reference/manage';
 const deleteUrl = '/fines/account/defendant/141/alternate/payment/reference/delete?alternatePaymentReferenceId=11';
 
 describe('FinesAccAprDeleteComponent', () => {
@@ -86,7 +86,7 @@ describe('FinesAccAprDeleteComponent', () => {
                 runGuardsAndResolvers: 'always',
                 resolve: { aprs: finesAccAprResolver },
               },
-              { path: 'list', component: DeleteTestDestinationComponent },
+              { path: 'manage', component: DeleteTestDestinationComponent },
             ],
           },
           { path: 'error/internal-server', component: DeleteTestDestinationComponent },
@@ -140,7 +140,7 @@ describe('FinesAccAprDeleteComponent', () => {
       expect(accountStore.base_version()).toBe('"28"');
       expect(api.clearAccountDetailsCache).toHaveBeenCalledOnce();
       expect(accountStore.successMessage()).toBe('Alternate payment reference removed');
-      expect(TestBed.inject(Router).url).toBe(listUrl);
+      expect(TestBed.inject(Router).url).toBe(manageUrl);
     },
   );
 
@@ -150,7 +150,7 @@ describe('FinesAccAprDeleteComponent', () => {
     (harness.routeNativeElement!.querySelector('#apr-remove-cancel a') as HTMLAnchorElement).click();
     await harness.fixture.whenStable();
 
-    expect(TestBed.inject(Router).url).toBe(listUrl);
+    expect(TestBed.inject(Router).url).toBe(manageUrl);
     expect(api.deleteApr).not.toHaveBeenCalled();
     expect(api.clearAccountDetailsCache).not.toHaveBeenCalled();
     expect(accountStore.base_version()).toBe('"7"');
@@ -175,7 +175,7 @@ describe('FinesAccAprDeleteComponent', () => {
     result.next({ reference, version: '"8"' });
     result.complete();
     await harness.fixture.whenStable();
-    expect(TestBed.inject(Router).url).toBe(listUrl);
+    expect(TestBed.inject(Router).url).toBe(manageUrl);
   });
 
   it.each([409, 500, 504])(
@@ -257,7 +257,7 @@ describe('FinesAccAprDeleteComponent', () => {
       await harness.fixture.whenStable();
       expect(api.deleteApr).toHaveBeenLastCalledWith(accountId, 12, '"9"');
       expect(accountStore.base_version()).toBe('"10"');
-      expect(TestBed.inject(Router).url).toBe(listUrl.replace('/141/', `/${accountId}/`));
+      expect(TestBed.inject(Router).url).toBe(manageUrl.replace('/141/', `/${accountId}/`));
     },
   );
 
@@ -268,7 +268,7 @@ describe('FinesAccAprDeleteComponent', () => {
     confirm();
     expect(result.observed).toBe(true);
 
-    await harness.navigateByUrl(listUrl);
+    await harness.navigateByUrl(manageUrl);
     result.next({ reference, version: '"8"' });
     result.complete();
 
@@ -277,7 +277,7 @@ describe('FinesAccAprDeleteComponent', () => {
     expect(accountStore.base_version()).toBe('"7"');
     expect(accountStore.successMessage()).toBeNull();
     expect(api.clearAccountDetailsCache).not.toHaveBeenCalled();
-    expect(TestBed.inject(Router).url).toBe(listUrl);
+    expect(TestBed.inject(Router).url).toBe(manageUrl);
   });
 
   it.each(['999', 'invalid', ''])(
@@ -287,7 +287,7 @@ describe('FinesAccAprDeleteComponent', () => {
         deleteUrl.replace('alternatePaymentReferenceId=11', `alternatePaymentReferenceId=${id}`),
       );
 
-      expect(TestBed.inject(Router).url).toBe(listUrl);
+      expect(TestBed.inject(Router).url).toBe(manageUrl);
       expect(api.deleteApr).not.toHaveBeenCalled();
     },
   );
@@ -297,7 +297,7 @@ describe('FinesAccAprDeleteComponent', () => {
 
     await harness.navigateByUrl(deleteUrl);
 
-    expect(TestBed.inject(Router).url).toBe(listUrl);
+    expect(TestBed.inject(Router).url).toBe(manageUrl);
     expect(api.deleteApr).not.toHaveBeenCalled();
   });
 

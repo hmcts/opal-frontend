@@ -11,7 +11,7 @@ import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { transformAprsPayload } from '../services/utils/fines-acc-payload-transform-apr-data.utils';
 import { FinesAccountStore } from '../stores/fines-acc.store';
-import { FinesAccAprListComponent } from './fines-acc-apr-list.component';
+import { FinesAccAprManageComponent } from './fines-acc-apr-manage.component';
 
 const currentReference: IOpalFinesApr = {
   alternate_payment_reference_id: 11,
@@ -23,9 +23,9 @@ const currentReference: IOpalFinesApr = {
   created_at: '2026-06-01T12:00:00Z',
   updated_at: null,
 };
-const listUrl = '/fines/account/defendant/141/alternate/payment/reference/list';
+const manageUrl = '/fines/account/defendant/141/alternate/payment/reference/manage';
 
-const renderList = async (references: IOpalFinesApr[], initialMessage: string | null = null) => {
+const renderManage = async (references: IOpalFinesApr[], initialMessage: string | null = null) => {
   let successMessage = initialMessage;
   const accountStore = {
     getAccountNumber: () => '177A',
@@ -42,15 +42,15 @@ const renderList = async (references: IOpalFinesApr[], initialMessage: string | 
       { provide: FinesAccPayloadService, useValue: { transformAprsPayload } },
       provideRouter([
         {
-          path: 'fines/account/defendant/:accountId/alternate/payment/reference/list',
-          component: FinesAccAprListComponent,
+          path: 'fines/account/defendant/:accountId/alternate/payment/reference/manage',
+          component: FinesAccAprManageComponent,
           data: { aprs: { references, version: '"7"' } },
         },
       ]),
     ],
   }).compileComponents();
   const harness = await RouterTestingHarness.create();
-  const component = await harness.navigateByUrl(listUrl, FinesAccAprListComponent);
+  const component = await harness.navigateByUrl(manageUrl, FinesAccAprManageComponent);
   return { element: harness.routeNativeElement!, component, accountStore, harness };
 };
 
@@ -64,9 +64,9 @@ const navigationDestination = (element: Element, selector: string): string => {
   return destination;
 };
 
-describe('FinesAccAprListComponent', () => {
+describe('FinesAccAprManageComponent', () => {
   it('renders the account caption, both empty states and links to add or return to the same account Payment terms', async () => {
-    const { element } = await renderList([]);
+    const { element } = await renderManage([]);
 
     expect(element.querySelector('h1')?.textContent).toContain('Manage Alternate Payment References');
     expect(element.textContent).toContain('177A - APR TEST');
@@ -83,7 +83,7 @@ describe('FinesAccAprListComponent', () => {
   });
 
   it('separates direct and inherited APRs, excludes account-number references and preserves response order', async () => {
-    const { element } = await renderList([
+    const { element } = await renderManage([
       { ...currentReference, alternate_payment_reference_id: 15, relationship: 'AMALGAMATED', apr_text: 'Z-INHERITED' },
       { ...currentReference, alternate_payment_reference_id: 13, category: 'ACC', apr_text: 'HIDDEN-ACCOUNT' },
       {
@@ -118,7 +118,7 @@ describe('FinesAccAprListComponent', () => {
   });
 
   it('retains the selected reference ID and current account in each direct APR management link', async () => {
-    const { element } = await renderList([currentReference]);
+    const { element } = await renderManage([currentReference]);
 
     expect(element.querySelector('#apr-change-11')?.getAttribute('href')).toBe(
       '/fines/account/defendant/141/alternate/payment/reference/edit?alternatePaymentReferenceId=11',
@@ -130,7 +130,7 @@ describe('FinesAccAprListComponent', () => {
   });
 
   it('allows another reference to be added alongside removable inherited APRs', async () => {
-    const { element } = await renderList([{ ...currentReference, relationship: 'CONSOLIDATED' }]);
+    const { element } = await renderManage([{ ...currentReference, relationship: 'CONSOLIDATED' }]);
 
     expect(element.querySelector('#apr-current-empty')).not.toBeNull();
     expect(element.querySelector('#apr-add')).not.toBeNull();
@@ -139,7 +139,7 @@ describe('FinesAccAprListComponent', () => {
   });
 
   it('displays empty APR sections when only inherited account-number references exist', async () => {
-    const { element } = await renderList([{ ...currentReference, category: 'ACC', relationship: 'AMALGAMATED' }]);
+    const { element } = await renderManage([{ ...currentReference, category: 'ACC', relationship: 'AMALGAMATED' }]);
 
     expect(element.querySelector('#apr-current-empty')).not.toBeNull();
     expect(element.querySelector('#apr-consolidated-empty')).not.toBeNull();
@@ -148,7 +148,7 @@ describe('FinesAccAprListComponent', () => {
   });
 
   it('shows returned success feedback while consuming the stored message once', async () => {
-    const { element, component, accountStore } = await renderList([], 'Reference saved');
+    const { element, component, accountStore } = await renderManage([], 'Reference saved');
 
     expect(element.querySelector('#apr-banners')?.textContent).toContain('Reference saved');
     expect(component.successMessage()).toBe('Reference saved');
@@ -157,7 +157,7 @@ describe('FinesAccAprListComponent', () => {
   });
 
   it('clears displayed success feedback when its Dismiss button is selected', async () => {
-    const { element, component, harness } = await renderList([], 'Reference saved');
+    const { element, component, harness } = await renderManage([], 'Reference saved');
 
     (element.querySelector('#apr-banners button') as HTMLButtonElement).click();
     await harness.fixture.whenStable();
@@ -167,7 +167,7 @@ describe('FinesAccAprListComponent', () => {
     expect(element.querySelector('#apr-banners')?.textContent).not.toContain('Reference saved');
   });
 
-  it('updates references, caption and account action links when Angular reuses the list for another account', async () => {
+  it('updates references, caption and account action links when Angular reuses the Manage page for another account', async () => {
     const inheritedReference: IOpalFinesApr = {
       ...currentReference,
       alternate_payment_reference_id: 22,
@@ -179,8 +179,8 @@ describe('FinesAccAprListComponent', () => {
       providers: [
         provideRouter([
           {
-            path: 'fines/account/defendant/:accountId/alternate/payment/reference/list',
-            component: FinesAccAprListComponent,
+            path: 'fines/account/defendant/:accountId/alternate/payment/reference/manage',
+            component: FinesAccAprManageComponent,
             runGuardsAndResolvers: 'always',
             resolve: { aprs: finesAccAprResolver },
           },
@@ -211,12 +211,15 @@ describe('FinesAccAprListComponent', () => {
     const harness = await RouterTestingHarness.create();
     const accountStore = TestBed.inject(FinesAccountStore);
     accountStore.setSuccessMessage('First account feedback');
-    const firstComponent = await harness.navigateByUrl(listUrl, FinesAccAprListComponent);
+    const firstComponent = await harness.navigateByUrl(manageUrl, FinesAccAprManageComponent);
     expect(harness.routeNativeElement?.textContent).toContain('177A - FIRST TEST');
     expect(harness.routeNativeElement?.textContent).toContain('First account feedback');
     expect(harness.routeNativeElement?.querySelector('#apr-current-table [data-reference-id="11"]')).not.toBeNull();
 
-    const reusedComponent = await harness.navigateByUrl(listUrl.replace('/141/', '/142/'), FinesAccAprListComponent);
+    const reusedComponent = await harness.navigateByUrl(
+      manageUrl.replace('/141/', '/142/'),
+      FinesAccAprManageComponent,
+    );
     const element = harness.routeNativeElement!;
 
     expect(reusedComponent).toBe(firstComponent);

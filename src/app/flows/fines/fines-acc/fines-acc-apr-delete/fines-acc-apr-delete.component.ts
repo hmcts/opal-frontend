@@ -7,8 +7,8 @@ import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
-import { FinesAccAprListTableComponent } from '../fines-acc-apr-list/fines-acc-apr-list-table/fines-acc-apr-list-table.component';
-import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-list/constants/fines-acc-apr-routing-paths.constant';
+import { FinesAccAprManageTableComponent } from '../fines-acc-apr-manage/fines-acc-apr-manage-table/fines-acc-apr-manage-table.component';
+import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FINES_ACC_APR_DELETE_SUCCESS_MESSAGE } from './constants/fines-acc-apr-delete-success-message.constant';
@@ -19,7 +19,7 @@ import { FINES_ACC_APR_DELETE_SUCCESS_MESSAGE } from './constants/fines-acc-apr-
     GovukButtonComponent,
     GovukCancelLinkComponent,
     GovukHeadingWithCaptionComponent,
-    FinesAccAprListTableComponent,
+    FinesAccAprManageTableComponent,
   ],
   templateUrl: './fines-acc-apr-delete.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -90,7 +90,7 @@ export class FinesAccAprDeleteComponent {
 
   /** Returns to this account's manage page without submitting a removal. */
   public handleCancel(): void {
-    void this.router.navigate(['../', FINES_ACC_APR_ROUTING_PATHS.children.list], {
+    void this.router.navigate(['../', FINES_ACC_APR_ROUTING_PATHS.children.manage], {
       relativeTo: this.route,
     });
   }
