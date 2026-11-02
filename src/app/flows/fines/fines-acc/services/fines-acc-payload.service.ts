@@ -68,7 +68,7 @@ import {
   IOpalFinesApr,
   IOpalFinesAprsResponse,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
-import { IFinesAccAprAddFormState } from '../fines-acc-apr-add/interfaces/fines-acc-apr-add-form-state.interface';
+import { IFinesAccAprAddChangeFormState } from '../fines-acc-apr-add-change/interfaces/fines-acc-apr-add-change-form-state.interface';
 import { IFinesAccAprManageData } from '../fines-acc-apr-manage/interfaces/fines-acc-apr-manage-data.interface';
 import { buildAprPayload } from './utils/fines-acc-payload-build-apr.utils';
 import { transformAprToForm, transformAprsPayload } from './utils/fines-acc-payload-transform-apr-data.utils';
@@ -109,11 +109,11 @@ export class FinesAccPayloadService {
     );
   }
 
-  public buildAprPayload(formState: IFinesAccAprAddFormState): IOpalFinesAprPayload {
+  public buildAprPayload(formState: IFinesAccAprAddChangeFormState): IOpalFinesAprPayload {
     return buildAprPayload(formState);
   }
 
-  public transformAprToForm(reference: IOpalFinesApr | null): IFinesAccAprAddFormState {
+  public transformAprToForm(reference: IOpalFinesApr | null): IFinesAccAprAddChangeFormState {
     return transformAprToForm(reference);
   }
 

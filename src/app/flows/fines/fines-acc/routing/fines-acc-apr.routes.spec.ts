@@ -2,26 +2,38 @@ import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deact
 import { businessUnitRoutePermissionsGuard } from '@hmcts/opal-frontend-common/guards/business-unit-route-permissions';
 import { describe, expect, it } from 'vitest';
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
+import { FinesAccAprAddChangeComponent } from '../fines-acc-apr-add-change/fines-acc-apr-add-change.component';
+import { finesAccAprAddChangeModeGuard } from './guards/fines-acc-apr-add-change-mode.guard';
+import { finesAccAprAddChangeTitleResolver } from './resolvers/fines-acc-apr/fines-acc-apr-add-change-title.resolver';
 import { finesAccAprResolver } from './resolvers/fines-acc-apr/fines-acc-apr.resolver';
-import { FinesAccAprAddComponent } from '../fines-acc-apr-add/fines-acc-apr-add.component';
 import { routing } from './fines-acc-apr.routes';
 
-describe('APR Add route', () => {
-  const route = routing.find((route) => route.path === 'add');
+describe('APR Add/Change route', () => {
+  const route = routing.find((route) => route.path === ':mode');
 
-  it('uses fresh account APR data, current-business-unit permission and unsaved-change protection', () => {
-    expect(route?.canActivate).toEqual([businessUnitRoutePermissionsGuard]);
+  it('uses one mode parameter after every static APR page', () => {
+    expect(routing.filter((entry) => entry.path === ':mode')).toHaveLength(1);
+    expect(routing.at(-1)).toBe(route);
+    expect(routing.some((entry) => ['add', 'change'].includes(entry.path ?? ''))).toBe(false);
+    expect(routing.slice(0, -1).map((entry) => entry.path)).toEqual(expect.arrayContaining(['manage', 'denied']));
+  });
+
+  it('validates the mode and current-business-unit permission before resolving fresh account APR data', () => {
+    expect(route?.canActivate).toEqual([finesAccAprAddChangeModeGuard, businessUnitRoutePermissionsGuard]);
     expect(route?.canDeactivate).toEqual([canDeactivateGuard]);
     expect(route?.runGuardsAndResolvers).toBe('always');
     expect(route?.data).toEqual({
-      title: 'Add Alternate Payment Reference',
       routePermissionId: [FINES_PERMISSIONS['manage-alternate-payment-references']],
       accessDeniedPath: 'denied',
     });
-    expect(route?.resolve?.['aprs']).toBe(finesAccAprResolver);
+    expect(route?.resolve).toEqual({ aprs: finesAccAprResolver });
   });
 
-  it('lazy loads the Add page', async () => {
-    expect(await route?.loadComponent?.()).toBe(FinesAccAprAddComponent);
+  it('uses the mode-specific Angular page-title resolver', () => {
+    expect(route?.title).toBe(finesAccAprAddChangeTitleResolver);
+  });
+
+  it('lazy loads the shared Add/Change page', async () => {
+    expect(await route?.loadComponent?.()).toBe(FinesAccAprAddChangeComponent);
   });
 });

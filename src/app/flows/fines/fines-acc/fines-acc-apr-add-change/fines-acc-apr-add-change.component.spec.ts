@@ -6,11 +6,14 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { Subject, of, throwError } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { IOpalFinesAprResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
+import {
+  IOpalFinesAprResponse,
+  IOpalFinesAprsResponse,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { routing } from '../routing/fines-acc-apr.routes';
-import { FinesAccAprAddComponent } from './fines-acc-apr-add.component';
+import { FinesAccAprAddChangeComponent } from './fines-acc-apr-add-change.component';
 
 @Component({ template: '<p>APR manage</p>' })
 class ManagePageComponent {}
@@ -31,7 +34,7 @@ const response: IOpalFinesAprResponse = {
 const addUrl = '/fines/account/defendant/141/alternate/payment/reference/add';
 const manageUrl = '/fines/account/defendant/141/alternate/payment/reference/manage';
 
-describe('FinesAccAprAddComponent', () => {
+describe('FinesAccAprAddChangeComponent add mode', () => {
   let accountStore: InstanceType<typeof FinesAccountStore>;
   let api: {
     createApr: ReturnType<typeof vi.fn>;
@@ -42,7 +45,7 @@ describe('FinesAccAprAddComponent', () => {
 
   const render = async () => {
     const harness = await RouterTestingHarness.create();
-    const component = await harness.navigateByUrl(addUrl, FinesAccAprAddComponent);
+    const component = await harness.navigateByUrl(addUrl, FinesAccAprAddChangeComponent);
     const enter = (value: string) => {
       const input = harness.routeNativeElement!.querySelector('#apr_text') as HTMLInputElement;
       input.value = value;
@@ -59,9 +62,10 @@ describe('FinesAccAprAddComponent', () => {
 
   beforeEach(async () => {
     initialVersion = '"7"';
+    const sharedResolvedData: IOpalFinesAprsResponse = { references: [], version: initialVersion };
     api = { createApr: vi.fn().mockReturnValue(of(response)), clearAccountDetailsCache: vi.fn() };
     utils = { scrollToTop: vi.fn() };
-    const addRoute = routing.find((route) => route.path === 'add')!;
+    const formRoute = routing.find((route) => route.path === ':mode')!;
     await TestBed.configureTestingModule({
       providers: [
         { provide: OpalFines, useValue: api },
@@ -70,8 +74,9 @@ describe('FinesAccAprAddComponent', () => {
           {
             path: 'fines/account/defendant/:accountId/alternate/payment/reference',
             children: [
+              { path: 'manage', component: ManagePageComponent },
               {
-                ...addRoute,
+                ...formRoute,
                 canActivate: [],
                 resolve: {
                   aprs: (route: ActivatedRouteSnapshot) => {
@@ -83,11 +88,11 @@ describe('FinesAccAprAddComponent', () => {
                       party_name: `APR TEST ${accountId}`,
                       base_version: accountId === 141 ? initialVersion : '"9"',
                     });
-                    return { references: [], version: accountStore.base_version() };
+                    sharedResolvedData.version = accountStore.base_version();
+                    return sharedResolvedData;
                   },
                 },
               },
-              { path: 'manage', component: ManagePageComponent },
             ],
           },
         ]),
@@ -177,16 +182,24 @@ describe('FinesAccAprAddComponent', () => {
     expect(api.createApr).not.toHaveBeenCalled();
   });
 
-  it('resets a reused Add page from fresh route context and saves against the new account and version', async () => {
+  it('resets Add validation and an unchanged empty baseline when the same resolver response object is reused for another account', async () => {
     const { harness, component, enter, save } = await render();
+    const resolvedData = component.formContext()['aprs'];
     vi.spyOn(window, 'confirm').mockReturnValue(true);
-    enter('Old-Account');
+    enter('1234567890123456789');
+    save();
+    expect(harness.routeNativeElement!.querySelector('.govuk-error-summary')).not.toBeNull();
+    expect(api.createApr).not.toHaveBeenCalled();
 
-    const reused = await harness.navigateByUrl(addUrl.replace('/141/', '/142/'), FinesAccAprAddComponent);
+    const reused = await harness.navigateByUrl(addUrl.replace('/141/', '/142/'), FinesAccAprAddChangeComponent);
 
     expect(reused).toBe(component);
+    expect(component.formContext()['aprs']).toBe(resolvedData);
     expect(component.stateUnsavedChanges).toBe(false);
+    expect(component.initialValue()).toBe('');
+    expect(component.savedValue()).toBe('');
     expect((harness.routeNativeElement!.querySelector('#apr_text') as HTMLInputElement).value).toBe('');
+    expect(harness.routeNativeElement!.querySelector('.govuk-error-summary')).toBeNull();
     expect(harness.routeNativeElement!.textContent).toContain('142A - APR TEST 142');
     enter('New-Account');
     save();
@@ -203,7 +216,7 @@ describe('FinesAccAprAddComponent', () => {
     enter('Old-Account');
     save();
 
-    await harness.navigateByUrl(addUrl.replace('/141/', '/142/'), FinesAccAprAddComponent);
+    await harness.navigateByUrl(addUrl.replace('/141/', '/142/'), FinesAccAprAddChangeComponent);
     result.next(response);
 
     expect(component.pending()).toBe(false);
