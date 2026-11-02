@@ -121,7 +121,7 @@ describe('FinesAccAprManageComponent', () => {
     const { element } = await renderManage([currentReference]);
 
     expect(element.querySelector('#apr-change-11')?.getAttribute('href')).toBe(
-      '/fines/account/defendant/141/alternate/payment/reference/edit?alternatePaymentReferenceId=11',
+      '/fines/account/defendant/141/alternate/payment/reference/change?alternatePaymentReferenceId=11',
     );
     expect(element.querySelector('#apr-remove-11')?.getAttribute('href')).toBe(
       '/fines/account/defendant/141/alternate/payment/reference/delete?alternatePaymentReferenceId=11',

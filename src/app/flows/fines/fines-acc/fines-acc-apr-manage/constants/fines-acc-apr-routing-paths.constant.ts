@@ -4,7 +4,7 @@ export const FINES_ACC_APR_ROUTING_PATHS = {
     manage: 'manage',
     add: 'add',
     error: 'error',
-    edit: 'edit',
+    change: 'change',
     delete: 'delete',
     denied: 'denied',
   },

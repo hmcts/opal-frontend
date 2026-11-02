@@ -67,7 +67,7 @@ describe('FinesAccAprManageTableComponent', () => {
 
     const change = fixture.nativeElement.querySelector('#apr-change-11') as HTMLAnchorElement;
     const remove = fixture.nativeElement.querySelector('#apr-remove-11') as HTMLAnchorElement;
-    expect(change.getAttribute('href')).toBe('/edit?alternatePaymentReferenceId=11');
+    expect(change.getAttribute('href')).toBe('/change?alternatePaymentReferenceId=11');
     expect(remove.getAttribute('href')).toBe('/delete?alternatePaymentReferenceId=11');
     expect(change.querySelector('.govuk-visually-hidden')?.textContent?.trim()).toBe('CURRENT-REFERENCE');
     expect(remove.querySelector('.govuk-visually-hidden')?.textContent?.trim()).toBe('CURRENT-REFERENCE');
