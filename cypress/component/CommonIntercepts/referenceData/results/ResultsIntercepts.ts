@@ -93,7 +93,7 @@ export function interceptNextPermittedEnforcementActions(resultIds: string[]) {
   );
 
   return cy
-    .intercept('GET', `/opal-fines-service/results?${queryParam}`, {
+    .intercept('GET', `/opal-fines-service/results?${queryParam}&active=true`, {
       statusCode: 200,
       body: {
         count: filteredResults.length,

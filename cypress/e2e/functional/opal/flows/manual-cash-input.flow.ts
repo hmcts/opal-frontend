@@ -95,6 +95,38 @@ export class ManualCashInputFlow {
     this.actions.addPayment();
   }
 
+  /** Selects a payment category and continues.
+   * @param category - Payment category value to select.
+   */
+  public continueWithPaymentCategory(category: 'criminal' | 'courtFee' | 'suspense'): void {
+    this.actions.continueWithPaymentCategory(category);
+  }
+
+  /** Verifies the Search for an Account destination. */
+  public assertSearchForAccountIsDisplayed(): void {
+    this.actions.assertSearchForAccountIsDisplayed();
+  }
+
+  /** Verifies the Payment Category page remains displayed. */
+  public assertPaymentCategoryIsDisplayed(): void {
+    this.actions.assertPaymentCategoryIsDisplayed();
+  }
+
+  /** Attempts to continue without selecting a payment category. */
+  public continueWithoutPaymentCategory(): void {
+    this.actions.continueWithoutPaymentCategory();
+  }
+
+  /** Verifies the Payment Category validation summary, field message, and summary link focus. */
+  public assertPaymentCategoryValidation(): void {
+    this.actions.assertPaymentCategoryValidation();
+  }
+
+  /** Cancels Payment Category and returns to Till Details. */
+  public cancelPaymentCategory(): void {
+    this.actions.cancelPaymentCategory();
+  }
+
   /** Opens Delete Till from Till Details. */
   public deleteTill(): void {
     this.actions.deleteTill();
