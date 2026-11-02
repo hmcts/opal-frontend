@@ -29,12 +29,13 @@ export const finesAccAprResolver: ResolveFn<IOpalFinesAprsResponse> = (route) =>
       });
       const { children } = FINES_ACC_APR_ROUTING_PATHS;
       const path = route.routeConfig?.path;
+      const mode = route.paramMap.get('mode');
       const selectedId = Number(route.queryParamMap.get('alternatePaymentReferenceId'));
       const selected = data.references.find((reference) => reference.alternate_payment_reference_id === selectedId);
       const invalidSelection =
-        (path === children.edit && (!selected || !canChangeApr(selected))) ||
+        (mode === children.change && (!selected || !canChangeApr(selected))) ||
         (path === children.delete && (!selected || !canRemoveApr(selected)));
-      if (invalidSelection || (path === children.add && !canAddApr(data.references))) {
+      if (invalidSelection || (mode === children.add && !canAddApr(data.references))) {
         return new RedirectCommand(createUrlTreeFromSnapshot(route, ['../', children.manage]));
       }
       return data;

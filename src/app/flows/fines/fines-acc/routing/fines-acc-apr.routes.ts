@@ -20,15 +20,6 @@ export const routing: Routes = [
     resolve: { title: TitleResolver, aprs: finesAccAprResolver },
   },
   {
-    path: FINES_ACC_APR_ROUTING_PATHS.children.denied,
-    loadComponent: () =>
-      import('../fines-acc-apr-access-denied/fines-acc-apr-access-denied.component').then(
-        (c) => c.FinesAccAprAccessDeniedComponent,
-      ),
-    data: { title: 'Access Denied' },
-    resolve: { title: TitleResolver },
-  },
-  {
     path: FINES_ACC_APR_ROUTING_PATHS.children.delete,
     loadComponent: () =>
       import('../fines-acc-apr-delete/fines-acc-apr-delete.component').then((c) => c.FinesAccAprDeleteComponent),
@@ -40,5 +31,14 @@ export const routing: Routes = [
       accessDeniedPath: FINES_ACC_APR_ROUTING_PATHS.children.denied,
     },
     resolve: { title: TitleResolver, aprs: finesAccAprResolver },
+  },
+  {
+    path: FINES_ACC_APR_ROUTING_PATHS.children.denied,
+    loadComponent: () =>
+      import('../fines-acc-apr-access-denied/fines-acc-apr-access-denied.component').then(
+        (c) => c.FinesAccAprAccessDeniedComponent,
+      ),
+    data: { title: 'Access Denied' },
+    resolve: { title: TitleResolver },
   },
 ];
