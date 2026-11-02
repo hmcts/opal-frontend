@@ -25,6 +25,9 @@ import { FinesAccDefendantAlternatePaymentReferenceAddComponent } from './fines-
 @Component({ template: 'APR list destination' })
 class AprErrorListDestinationComponent {}
 
+@Component({ selector: 'app-standard-error-test-destination', template: 'Standard error destination' })
+class StandardErrorDestinationComponent {}
+
 const root = '/fines/account/defendant/141/alternate/payment/reference';
 const postUrl = '/opal-fines-service/defendant-accounts/141/alternate-payment-references';
 const duplicateProblem = {
@@ -69,6 +72,7 @@ describe('Alternate payment reference Add and Error integration', () => {
         { provide: AppInsightsService, useValue: insights },
         { provide: UtilsService, useValue: { scrollToTop: vi.fn() } },
         provideRouter([
+          { path: 'error/:type', component: StandardErrorDestinationComponent },
           {
             path: 'fines/account',
             component: FinesAccComponent,
@@ -215,4 +219,32 @@ describe('Alternate payment reference Add and Error integration', () => {
     expect(errorService.context()).toBeNull();
     http.expectNone(postUrl);
   });
+
+  it.each([
+    [409, '/error/concurrency-failure'],
+    [403, '/error/permission-denied'],
+    [500, '/error/internal-server'],
+  ] as const)(
+    'allows the shared non-retriable %s redirect without prompting to discard the failed submission',
+    async (status, destination) => {
+      const { harness, activeAdd, enter, save } = await renderAdd();
+      const add = activeAdd();
+      const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+      enter('Unsaved-Reference');
+      expect(add.stateUnsavedChanges).toBe(true);
+      save();
+
+      http
+        .expectOne(postUrl)
+        .flush({ title: 'Test non-retriable failure', retriable: false }, { status, statusText: 'Test failure' });
+      await harness.fixture.whenStable();
+
+      expect(TestBed.inject(Router).url).toBe(destination);
+      expect(add.stateUnsavedChanges).toBe(false);
+      expect(confirm).not.toHaveBeenCalled();
+      expect(globalStore.setBannerError).not.toHaveBeenCalled();
+      expect(insights.logException).toHaveBeenCalledOnce();
+      http.expectNone(postUrl);
+    },
+  );
 });

@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize, Subject, takeUntil } from 'rxjs';
@@ -99,7 +100,7 @@ export class FinesAccDefendantAlternatePaymentReferenceAddComponent extends Abst
       void this.pageRouter.navigate(['../error'], { relativeTo: this.pageRoute });
       return;
     }
-    this.stateUnsavedChanges = true;
+    this.stateUnsavedChanges = !(error instanceof HttpErrorResponse && error.error?.retriable === false);
     this.utils.scrollToTop();
   }
 }
