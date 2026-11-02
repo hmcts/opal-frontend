@@ -1,4 +1,5 @@
 import { IDashboardPageConfigurationLink } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
+import { FINES_PERMISSIONS } from './fines-permissions.constant';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 
 export const FINANCE_SUSPENSE_LINKS: IDashboardPageConfigurationLink[] = [
@@ -12,7 +13,7 @@ export const FINANCE_SUSPENSE_LINKS: IDashboardPageConfigurationLink[] = [
       FINES_ROUTING_PATHS.children.suspenseItem.children.search,
     ],
     fragment: null,
-    permissionIds: [],
+    permissionIds: [FINES_PERMISSIONS['view-suspense-items'], FINES_PERMISSIONS['manage-suspense-items']],
     newTab: false,
     style: null,
   },

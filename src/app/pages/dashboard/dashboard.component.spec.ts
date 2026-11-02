@@ -77,6 +77,7 @@ describe('DashboardComponent', () => {
     { name: 'disabled', flags: { [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: false }, visible: false },
     { name: 'missing', flags: {}, visible: false },
   ])('should render the Suspense heading and link only when the flag is enabled ($name)', ({ flags, visible }) => {
+    permissionsServiceMock.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['view-suspense-items']]);
     globalStoreMock.featureFlags.mockReturnValue({
       [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
       [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true,
@@ -97,6 +98,23 @@ describe('DashboardComponent', () => {
     );
   });
 
+  it.each([
+    { name: 'View only', permissions: [24], visible: true },
+    { name: 'Manage only', permissions: [25], visible: true },
+    { name: 'both', permissions: [24, 25], visible: true },
+    { name: 'Cash only', permissions: [16], visible: false },
+  ])('filters the Suspense heading and link for $name', ({ permissions, visible }) => {
+    permissionsServiceMock.getUniquePermissions.mockReturnValue(permissions);
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
+    setupComponent();
+
+    const element: HTMLElement = fixture.nativeElement;
+    expect(element.querySelectorAll('a[href="/fines/suspense-item/search"]').length).toBe(visible ? 1 : 0);
+    expect(
+      Array.from(element.querySelectorAll('h2')).some((heading) => heading.textContent?.trim() === 'Suspense'),
+    ).toBe(visible);
+  });
+
   it('should create', () => {
     setupComponent();
 
@@ -104,7 +122,10 @@ describe('DashboardComponent', () => {
   });
 
   it('renders Manage Suspense Items under Suspense before the Cash section', () => {
-    permissionsServiceMock.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['process-and-allocate-payments']]);
+    permissionsServiceMock.getUniquePermissions.mockReturnValue([
+      FINES_PERMISSIONS['process-and-allocate-payments'],
+      FINES_PERMISSIONS['view-suspense-items'],
+    ]);
     dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
     setupComponent();
 

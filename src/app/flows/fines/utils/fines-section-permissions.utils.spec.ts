@@ -60,6 +60,24 @@ const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpal
 };
 
 describe('fines-section-permissions.utils', () => {
+  it.each([
+    { permissions: [24], enabled: true, expected: true },
+    { permissions: [25], enabled: true, expected: true },
+    { permissions: [24, 25], enabled: true, expected: true },
+    { permissions: [16], enabled: true, expected: false },
+    { permissions: [24], enabled: false, expected: false },
+    { permissions: [25], enabled: false, expected: false },
+    { permissions: [24, 25], enabled: false, expected: false },
+  ])(
+    'checks Suspense-only Finance access for $permissions with flag $enabled',
+    ({ permissions, enabled, expected }) => {
+      const flags = getFeatureFlagReleaseState({ [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: enabled });
+      expect(
+        canAccessFinesPrimaryNavigationSection('finance', createUserStateWithPermissions(permissions), flags),
+      ).toBe(expected);
+    },
+  );
+
   const navigationItems: readonly INavigationBarConfiguration[] = [
     { key: 'search', value: 'Search' },
     { key: 'accounts', value: 'Accounts' },

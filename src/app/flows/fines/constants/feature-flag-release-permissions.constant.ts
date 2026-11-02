@@ -2,6 +2,7 @@ import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { type FeatureFlagReleasePermissions } from '../types/feature-flag-release-permissions.type';
 import {
   RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1C_SUSPENSE_FEATURE_FLAG,
   RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
   RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
   RELEASE_1B_FEATURE_FLAG,
@@ -11,6 +12,10 @@ import {
 import { REPORTS_PERMISSIONS } from './reports-permissions.constant';
 
 export const FEATURE_FLAG_RELEASE_PERMISSIONS: FeatureFlagReleasePermissions = {
+  [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: [
+    FINES_PERMISSIONS['view-suspense-items'],
+    FINES_PERMISSIONS['manage-suspense-items'],
+  ],
   [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: [FINES_PERMISSIONS['process-and-allocate-payments']],
   [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: [
     FINES_PERMISSIONS['view-interface-files'],
