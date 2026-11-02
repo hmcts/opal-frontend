@@ -7,10 +7,10 @@ import { httpRetryInterceptor } from '@hmcts/opal-frontend-common/interceptors/h
 import { AppInsightsService } from '@hmcts/opal-frontend-common/services/app-insights-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { IOpalFinesAlternatePaymentReference } from './interfaces/opal-fines-alternate-payment-reference.interface';
+import { IOpalFinesApr } from './interfaces/opal-fines-apr.interface';
 import { OpalFines } from './opal-fines.service';
 
-const reference: IOpalFinesAlternatePaymentReference = {
+const reference: IOpalFinesApr = {
   alternate_payment_reference_id: 11,
   defendant_account_id: 141,
   business_unit_id: 77,
@@ -39,7 +39,7 @@ describe('OpalFines alternate payment reference removal', () => {
   it('deletes the selected reference with the exact account If-Match and maps the HTTP 200 item and new ETag', () => {
     const result = vi.fn();
 
-    service.deleteAlternatePaymentReference(141, 11, '"7"').subscribe(result);
+    service.deleteApr(141, 11, '"7"').subscribe(result);
 
     const request = http.expectOne(url);
     expect(request.request.method).toBe('DELETE');
@@ -56,7 +56,7 @@ describe('OpalFines alternate payment reference removal', () => {
       const result = vi.fn();
       const deleted = { ...reference, relationship };
 
-      service.deleteAlternatePaymentReference(141, 11, '"7"').subscribe(result);
+      service.deleteApr(141, 11, '"7"').subscribe(result);
       http.expectOne(url).flush(deleted, { headers: { ETag: '"8"' } });
 
       expect(result).toHaveBeenCalledWith({ reference: deleted, version: '"8"' });
@@ -66,7 +66,7 @@ describe('OpalFines alternate payment reference removal', () => {
   it('represents a missing response ETag explicitly', () => {
     const result = vi.fn();
 
-    service.deleteAlternatePaymentReference(141, 11, '"7"').subscribe(result);
+    service.deleteApr(141, 11, '"7"').subscribe(result);
     http.expectOne(url).flush(reference);
 
     expect(result).toHaveBeenCalledWith({ reference, version: null });
@@ -75,7 +75,7 @@ describe('OpalFines alternate payment reference removal', () => {
   it.each([409, 503, 504])('does not replay a DELETE after HTTP %s and propagates the error', (status) => {
     const next = vi.fn();
     const error = vi.fn();
-    service.deleteAlternatePaymentReference(141, 11, '"7"').subscribe({ next, error });
+    service.deleteApr(141, 11, '"7"').subscribe({ next, error });
     const failure = { status, title: 'Test request failure', retriable: status !== 409 };
 
     http.expectOne(url).flush(failure, { status, statusText: 'Test request failure' });
@@ -114,7 +114,7 @@ describe('APR removal with standard global HTTP error handling', () => {
   it('retains the standard concurrency error redirect for a stale account version', () => {
     const next = vi.fn();
     const error = vi.fn();
-    service.deleteAlternatePaymentReference(141, 11, '"7"').subscribe({ next, error });
+    service.deleteApr(141, 11, '"7"').subscribe({ next, error });
 
     http
       .expectOne(url)
@@ -129,7 +129,7 @@ describe('APR removal with standard global HTTP error handling', () => {
 
   it('retains the global banner for a transient processing failure without replaying the deletion', () => {
     const error = vi.fn();
-    service.deleteAlternatePaymentReference(141, 11, '"7"').subscribe({ error });
+    service.deleteApr(141, 11, '"7"').subscribe({ error });
 
     http
       .expectOne(url)
@@ -148,7 +148,7 @@ describe('APR removal with standard global HTTP error handling', () => {
 
   it('retains the technical error redirect for an unexpected non-retriable failure', () => {
     const error = vi.fn();
-    service.deleteAlternatePaymentReference(141, 11, '"7"').subscribe({ error });
+    service.deleteApr(141, 11, '"7"').subscribe({ error });
 
     http
       .expectOne(url)

@@ -9,23 +9,23 @@ import { businessUnitRoutePermissionsGuard } from '@hmcts/opal-frontend-common/g
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import {
-  IOpalFinesAlternatePaymentReference,
-  IOpalFinesAlternatePaymentReferenceResponse,
-  IOpalFinesAlternatePaymentReferencesResponse,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-alternate-payment-reference.interface';
+  IOpalFinesApr,
+  IOpalFinesAprResponse,
+  IOpalFinesAprsResponse,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
-import { alternatePaymentReferencesResolver } from '../fines-acc-defendant-alternate-payment-reference/fines-acc-alternate-payment-references.resolver';
+import { finesAccAprResolver } from '../fines-acc-apr/fines-acc-apr.resolver';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
-import { routing } from '../routing/fines-acc-alternate-payment-reference.routes';
+import { routing } from '../routing/fines-acc-apr.routes';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { FinesAccountStore } from '../stores/fines-acc.store';
-import { FinesAccDefendantAlternatePaymentReferenceDeleteComponent } from './fines-acc-defendant-alternate-payment-reference-delete.component';
+import { FinesAccAprDeleteComponent } from './fines-acc-apr-delete.component';
 
 @Component({ template: '' })
 class DeleteTestDestinationComponent {}
 
-const reference: IOpalFinesAlternatePaymentReference = {
+const reference: IOpalFinesApr = {
   alternate_payment_reference_id: 11,
   defendant_account_id: 141,
   business_unit_id: 77,
@@ -38,26 +38,26 @@ const reference: IOpalFinesAlternatePaymentReference = {
 const listUrl = '/fines/account/defendant/141/alternate/payment/reference/list';
 const deleteUrl = '/fines/account/defendant/141/alternate/payment/reference/delete?alternatePaymentReferenceId=11';
 
-describe('FinesAccDefendantAlternatePaymentReferenceDeleteComponent', () => {
+describe('FinesAccAprDeleteComponent', () => {
   let harness: RouterTestingHarness;
   let accountStore: InstanceType<typeof FinesAccountStore>;
-  let data: IOpalFinesAlternatePaymentReferencesResponse;
+  let data: IOpalFinesAprsResponse;
   let api: {
     getDefendantAccountHeadingData: ReturnType<typeof vi.fn>;
-    getAlternatePaymentReferences: ReturnType<typeof vi.fn>;
-    deleteAlternatePaymentReference: ReturnType<typeof vi.fn>;
+    getAprs: ReturnType<typeof vi.fn>;
+    deleteApr: ReturnType<typeof vi.fn>;
     clearAccountDetailsCache: ReturnType<typeof vi.fn>;
   };
 
-  const render = () => harness.navigateByUrl(deleteUrl, FinesAccDefendantAlternatePaymentReferenceDeleteComponent);
+  const render = () => harness.navigateByUrl(deleteUrl, FinesAccAprDeleteComponent);
   const confirm = () => (harness.routeNativeElement!.querySelector('#apr-remove-confirm') as HTMLButtonElement).click();
 
   beforeEach(async () => {
     data = { references: [reference], version: '"7"' };
     api = {
       getDefendantAccountHeadingData: vi.fn().mockReturnValue(of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK)),
-      getAlternatePaymentReferences: vi.fn().mockImplementation(() => of(data)),
-      deleteAlternatePaymentReference: vi.fn().mockReturnValue(of({ reference, version: '"8"' })),
+      getAprs: vi.fn().mockImplementation(() => of(data)),
+      deleteApr: vi.fn().mockReturnValue(of({ reference, version: '"8"' })),
       clearAccountDetailsCache: vi.fn(),
     };
     await TestBed.configureTestingModule({
@@ -80,9 +80,9 @@ describe('FinesAccDefendantAlternatePaymentReferenceDeleteComponent', () => {
             children: [
               {
                 path: 'delete',
-                component: FinesAccDefendantAlternatePaymentReferenceDeleteComponent,
+                component: FinesAccAprDeleteComponent,
                 runGuardsAndResolvers: 'always',
-                resolve: { alternatePaymentReferences: alternatePaymentReferencesResolver },
+                resolve: { aprs: finesAccAprResolver },
               },
               { path: 'list', component: DeleteTestDestinationComponent },
             ],
@@ -119,7 +119,7 @@ describe('FinesAccDefendantAlternatePaymentReferenceDeleteComponent', () => {
       'Yes - remove reference',
     );
     expect(element.querySelector('opal-lib-govuk-cancel-link a')?.textContent?.trim()).toBe('No - cancel');
-    expect(api.deleteAlternatePaymentReference).not.toHaveBeenCalled();
+    expect(api.deleteApr).not.toHaveBeenCalled();
   });
 
   it.each(['APR', 'CONSOLIDATED', 'AMALGAMATED'] as const)(
@@ -128,13 +128,13 @@ describe('FinesAccDefendantAlternatePaymentReferenceDeleteComponent', () => {
       const selected = { ...reference, relationship };
       data = { references: [selected], version: '"27"' };
       accountStore.setAccountState({ ...MOCK_FINES_ACCOUNT_STATE, base_version: '"stale"' });
-      api.deleteAlternatePaymentReference.mockReturnValue(of({ reference: selected, version: '"28"' }));
+      api.deleteApr.mockReturnValue(of({ reference: selected, version: '"28"' }));
       await render();
 
       confirm();
       await harness.fixture.whenStable();
 
-      expect(api.deleteAlternatePaymentReference).toHaveBeenCalledExactlyOnceWith(141, 11, '"27"');
+      expect(api.deleteApr).toHaveBeenCalledExactlyOnceWith(141, 11, '"27"');
       expect(accountStore.base_version()).toBe('"28"');
       expect(api.clearAccountDetailsCache).toHaveBeenCalledOnce();
       expect(accountStore.successMessage()).toBe('Alternate payment reference removed');
@@ -149,15 +149,15 @@ describe('FinesAccDefendantAlternatePaymentReferenceDeleteComponent', () => {
     await harness.fixture.whenStable();
 
     expect(TestBed.inject(Router).url).toBe(listUrl);
-    expect(api.deleteAlternatePaymentReference).not.toHaveBeenCalled();
+    expect(api.deleteApr).not.toHaveBeenCalled();
     expect(api.clearAccountDetailsCache).not.toHaveBeenCalled();
     expect(accountStore.base_version()).toBe('"7"');
     expect(accountStore.successMessage()).toBeNull();
   });
 
   it('ignores repeated confirmations while the removal request is pending', async () => {
-    const result = new Subject<IOpalFinesAlternatePaymentReferenceResponse>();
-    api.deleteAlternatePaymentReference.mockReturnValue(result);
+    const result = new Subject<IOpalFinesAprResponse>();
+    api.deleteApr.mockReturnValue(result);
     const component = await render();
 
     confirm();
@@ -166,7 +166,7 @@ describe('FinesAccDefendantAlternatePaymentReferenceDeleteComponent', () => {
 
     expect(component.isRemoving()).toBe(true);
     expect(harness.routeNativeElement!.querySelector('fieldset')?.disabled).toBe(true);
-    expect(api.deleteAlternatePaymentReference).toHaveBeenCalledExactlyOnceWith(141, 11, '"7"');
+    expect(api.deleteApr).toHaveBeenCalledExactlyOnceWith(141, 11, '"7"');
     expect(api.clearAccountDetailsCache).not.toHaveBeenCalled();
     expect(accountStore.successMessage()).toBeNull();
 
@@ -179,7 +179,7 @@ describe('FinesAccDefendantAlternatePaymentReferenceDeleteComponent', () => {
   it.each([409, 500, 504])(
     'leaves success state untouched after HTTP %s so the shared interceptor retains error handling',
     async (status) => {
-      api.deleteAlternatePaymentReference.mockReturnValue(
+      api.deleteApr.mockReturnValue(
         throwError(() => new HttpErrorResponse({ status, error: { status, retriable: status !== 409 } })),
       );
       const component = await render();
@@ -199,26 +199,26 @@ describe('FinesAccDefendantAlternatePaymentReferenceDeleteComponent', () => {
     const component = await render();
     const nextReference = { ...reference, alternate_payment_reference_id: 12, apr_text: 'NEXT-REFERENCE' };
     data = { references: [reference, nextReference], version: '"9"' };
-    api.deleteAlternatePaymentReference.mockReturnValue(of({ reference: nextReference, version: '"10"' }));
+    api.deleteApr.mockReturnValue(of({ reference: nextReference, version: '"10"' }));
 
     const reused = await harness.navigateByUrl(
       deleteUrl.replace('alternatePaymentReferenceId=11', 'alternatePaymentReferenceId=12'),
-      FinesAccDefendantAlternatePaymentReferenceDeleteComponent,
+      FinesAccAprDeleteComponent,
     );
 
     expect(reused).toBe(component);
     expect(harness.routeNativeElement!.querySelector('#apr-remove-table')?.textContent).toContain('NEXT-REFERENCE');
     confirm();
     await harness.fixture.whenStable();
-    expect(api.deleteAlternatePaymentReference).toHaveBeenCalledExactlyOnceWith(141, 12, '"9"');
+    expect(api.deleteApr).toHaveBeenCalledExactlyOnceWith(141, 12, '"9"');
     expect(accountStore.base_version()).toBe('"10"');
   });
 
   it.each(['query', 'account'] as const)(
     'cancels pending removal on a %s change so its late response cannot alter the new context',
     async (change) => {
-      const result = new Subject<IOpalFinesAlternatePaymentReferenceResponse>();
-      api.deleteAlternatePaymentReference.mockReturnValue(result);
+      const result = new Subject<IOpalFinesAprResponse>();
+      api.deleteApr.mockReturnValue(result);
       const component = await render();
       confirm();
       expect(result.observed).toBe(true);
@@ -235,7 +235,7 @@ describe('FinesAccDefendantAlternatePaymentReferenceDeleteComponent', () => {
         .replace('/141/', `/${accountId}/`)
         .replace('alternatePaymentReferenceId=11', 'alternatePaymentReferenceId=12');
 
-      const reused = await harness.navigateByUrl(nextUrl, FinesAccDefendantAlternatePaymentReferenceDeleteComponent);
+      const reused = await harness.navigateByUrl(nextUrl, FinesAccAprDeleteComponent);
       expect(result.observed).toBe(false);
       result.next({ reference, version: '"8"' });
       result.complete();
@@ -250,10 +250,10 @@ describe('FinesAccDefendantAlternatePaymentReferenceDeleteComponent', () => {
       expect(api.clearAccountDetailsCache).not.toHaveBeenCalled();
       expect(harness.routeNativeElement!.querySelector('#apr-remove-table')?.textContent).toContain('NEXT-REFERENCE');
 
-      api.deleteAlternatePaymentReference.mockReturnValue(of({ reference: nextReference, version: '"10"' }));
+      api.deleteApr.mockReturnValue(of({ reference: nextReference, version: '"10"' }));
       confirm();
       await harness.fixture.whenStable();
-      expect(api.deleteAlternatePaymentReference).toHaveBeenLastCalledWith(accountId, 12, '"9"');
+      expect(api.deleteApr).toHaveBeenLastCalledWith(accountId, 12, '"9"');
       expect(accountStore.base_version()).toBe('"10"');
       expect(TestBed.inject(Router).url).toBe(listUrl.replace('/141/', `/${accountId}/`));
     },
@@ -267,7 +267,7 @@ describe('FinesAccDefendantAlternatePaymentReferenceDeleteComponent', () => {
       );
 
       expect(TestBed.inject(Router).url).toBe(listUrl);
-      expect(api.deleteAlternatePaymentReference).not.toHaveBeenCalled();
+      expect(api.deleteApr).not.toHaveBeenCalled();
     },
   );
 
@@ -277,7 +277,7 @@ describe('FinesAccDefendantAlternatePaymentReferenceDeleteComponent', () => {
     await harness.navigateByUrl(deleteUrl);
 
     expect(TestBed.inject(Router).url).toBe(listUrl);
-    expect(api.deleteAlternatePaymentReference).not.toHaveBeenCalled();
+    expect(api.deleteApr).not.toHaveBeenCalled();
   });
 
   it('rejects a missing account ETag before showing the confirmation page', async () => {
@@ -286,13 +286,13 @@ describe('FinesAccDefendantAlternatePaymentReferenceDeleteComponent', () => {
     await harness.navigateByUrl(deleteUrl);
 
     expect(TestBed.inject(Router).url).toBe('/error/internal-server');
-    expect(api.deleteAlternatePaymentReference).not.toHaveBeenCalled();
+    expect(api.deleteApr).not.toHaveBeenCalled();
   });
 
   it('registers a descriptive lazy delete route with business-unit permission and fresh APR resolution', async () => {
     const deleteRoute = routing.find((route) => route.path === 'delete');
 
-    expect(await deleteRoute?.loadComponent?.()).toBe(FinesAccDefendantAlternatePaymentReferenceDeleteComponent);
+    expect(await deleteRoute?.loadComponent?.()).toBe(FinesAccAprDeleteComponent);
     expect(deleteRoute?.data?.['title']).toBe('Remove Alternate Payment Reference');
     expect(deleteRoute?.data?.['routePermissionId']).toEqual([
       FINES_PERMISSIONS['manage-alternate-payment-references'],
@@ -300,7 +300,7 @@ describe('FinesAccDefendantAlternatePaymentReferenceDeleteComponent', () => {
     expect(deleteRoute?.canActivate).toEqual([businessUnitRoutePermissionsGuard]);
     expect(deleteRoute?.resolve).toEqual({
       title: TitleResolver,
-      alternatePaymentReferences: alternatePaymentReferencesResolver,
+      aprs: finesAccAprResolver,
     });
     expect(deleteRoute?.runGuardsAndResolvers).toBe('always');
   });

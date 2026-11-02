@@ -1,14 +1,9 @@
 import { Settings } from 'luxon';
 import { afterEach, describe, expect, it } from 'vitest';
-import { IOpalFinesAlternatePaymentReference } from '@services/fines/opal-fines-service/interfaces/opal-fines-alternate-payment-reference.interface';
-import {
-  canAddAlternatePaymentReference,
-  canChangeAlternatePaymentReference,
-  canRemoveAlternatePaymentReference,
-  formatAlternatePaymentReferenceDate,
-} from './fines-acc-alternate-payment-reference.utils';
+import { IOpalFinesApr } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
+import { canAddApr, canChangeApr, canRemoveApr, formatAprDate } from './fines-acc-apr.utils';
 
-const reference: IOpalFinesAlternatePaymentReference = {
+const reference: IOpalFinesApr = {
   alternate_payment_reference_id: 11,
   defendant_account_id: 141,
   business_unit_id: 77,
@@ -32,27 +27,25 @@ describe('alternate payment reference actions', () => {
     (relationship, category, canChange, canRemove) => {
       const record = { ...reference, relationship, category };
 
-      expect(canChangeAlternatePaymentReference(record)).toBe(canChange);
-      expect(canRemoveAlternatePaymentReference(record)).toBe(canRemove);
+      expect(canChangeApr(record)).toBe(canChange);
+      expect(canRemoveApr(record)).toBe(canRemove);
     },
   );
 
   it('allows an addition when there are no references or only inherited references', () => {
-    expect(canAddAlternatePaymentReference([])).toBe(true);
-    expect(canAddAlternatePaymentReference([{ ...reference, relationship: 'CONSOLIDATED' }])).toBe(true);
-    expect(canAddAlternatePaymentReference([{ ...reference, relationship: 'AMALGAMATED', category: 'ACC' }])).toBe(
-      true,
-    );
+    expect(canAddApr([])).toBe(true);
+    expect(canAddApr([{ ...reference, relationship: 'CONSOLIDATED' }])).toBe(true);
+    expect(canAddApr([{ ...reference, relationship: 'AMALGAMATED', category: 'ACC' }])).toBe(true);
   });
 
   it('prevents an addition whenever a direct APR relationship is already present', () => {
-    expect(canAddAlternatePaymentReference([reference])).toBe(false);
-    expect(canAddAlternatePaymentReference([{ ...reference, category: 'ACC' }])).toBe(false);
-    expect(canAddAlternatePaymentReference([{ ...reference, relationship: 'CONSOLIDATED' }, reference])).toBe(false);
+    expect(canAddApr([reference])).toBe(false);
+    expect(canAddApr([{ ...reference, category: 'ACC' }])).toBe(false);
+    expect(canAddApr([{ ...reference, relationship: 'CONSOLIDATED' }, reference])).toBe(false);
   });
 });
 
-describe('formatAlternatePaymentReferenceDate', () => {
+describe('formatAprDate', () => {
   const originalZone = Settings.defaultZone;
 
   afterEach(() => {
@@ -62,22 +55,22 @@ describe('formatAlternatePaymentReferenceDate', () => {
   it('converts a UTC timestamp to the user local date during daylight saving time', () => {
     Settings.defaultZone = 'Europe/London';
 
-    expect(formatAlternatePaymentReferenceDate('2026-06-01T23:30:00Z')).toBe('02 June 2026');
+    expect(formatAprDate('2026-06-01T23:30:00Z')).toBe('02 June 2026');
   });
 
   it('interprets timestamps without an offset as UTC before converting to local time', () => {
     Settings.defaultZone = 'Europe/London';
 
-    expect(formatAlternatePaymentReferenceDate('2026-06-01T23:30:00')).toBe('02 June 2026');
+    expect(formatAprDate('2026-06-01T23:30:00')).toBe('02 June 2026');
   });
 
   it('uses the local calendar date in a timezone behind UTC', () => {
     Settings.defaultZone = 'America/New_York';
 
-    expect(formatAlternatePaymentReferenceDate('2026-01-02T01:30:00Z')).toBe('01 January 2026');
+    expect(formatAprDate('2026-01-02T01:30:00Z')).toBe('01 January 2026');
   });
 
   it.each([null, '', 'invalid-date'])('uses an em dash for an unavailable date: %s', (value) => {
-    expect(formatAlternatePaymentReferenceDate(value)).toBe('—');
+    expect(formatAprDate(value)).toBe('—');
   });
 });

@@ -22,7 +22,7 @@ describe('OpalFines alternate payment reference reads', () => {
 
   it('maps a bare array and preserves the quoted account ETag', () => {
     const result = vi.fn();
-    service.getAlternatePaymentReferences(77).subscribe(result);
+    service.getAprs(77).subscribe(result);
     const request = http.expectOne(url);
     expect(request.request.method).toBe('GET');
     request.flush([], { headers: { ETag: '"7"' } });
@@ -30,17 +30,17 @@ describe('OpalFines alternate payment reference reads', () => {
   });
 
   it('does not cache across entries or accounts', () => {
-    service.getAlternatePaymentReferences(77).subscribe();
+    service.getAprs(77).subscribe();
     http.expectOne(url).flush([]);
-    service.getAlternatePaymentReferences(77).subscribe();
+    service.getAprs(77).subscribe();
     http.expectOne(url).flush([]);
-    service.getAlternatePaymentReferences(78).subscribe();
+    service.getAprs(78).subscribe();
     http.expectOne(url.replace('/77/', '/78/')).flush([]);
   });
 
   it('represents a missing ETag explicitly', () => {
     const result = vi.fn();
-    service.getAlternatePaymentReferences(77).subscribe(result);
+    service.getAprs(77).subscribe(result);
     http.expectOne(url).flush([]);
     expect(result).toHaveBeenCalledWith({ references: [], version: null });
   });

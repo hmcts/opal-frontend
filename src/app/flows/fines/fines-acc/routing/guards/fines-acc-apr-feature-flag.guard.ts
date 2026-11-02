@@ -7,7 +7,7 @@ import { FINES_ACC_ROUTING_PATHS } from '../constants/fines-acc-routing-paths.co
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS } from '../../fines-acc-defendant-details/constants/fines-acc-defendant-details-tabs-keys.constant';
 
-export const bankingInterfacesFeatureFlagGuard: CanActivateFn = async (route, state) => {
+export const finesAccAprFeatureFlagGuard: CanActivateFn = async (route, state) => {
   const router = inject(Router);
 
   if (await resolveFeatureFlagGuard(RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG, route, state)) {

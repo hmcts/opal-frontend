@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { IOpalFinesAlternatePaymentReference } from '@services/fines/opal-fines-service/interfaces/opal-fines-alternate-payment-reference.interface';
-import { FinesAccAlternatePaymentReferenceTableComponent } from './fines-acc-alternate-payment-reference-table.component';
+import { IOpalFinesApr } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
+import { FinesAccAprTableComponent } from './fines-acc-apr-table.component';
 
-const currentReference: IOpalFinesAlternatePaymentReference = {
+const currentReference: IOpalFinesApr = {
   alternate_payment_reference_id: 11,
   defendant_account_id: 141,
   business_unit_id: 77,
@@ -15,16 +15,16 @@ const currentReference: IOpalFinesAlternatePaymentReference = {
   updated_at: null,
 };
 
-describe('FinesAccAlternatePaymentReferenceTableComponent', () => {
-  let fixture: ComponentFixture<FinesAccAlternatePaymentReferenceTableComponent>;
+describe('FinesAccAprTableComponent', () => {
+  let fixture: ComponentFixture<FinesAccAprTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FinesAccAlternatePaymentReferenceTableComponent],
+      imports: [FinesAccAprTableComponent],
       providers: [provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FinesAccAlternatePaymentReferenceTableComponent);
+    fixture = TestBed.createComponent(FinesAccAprTableComponent);
     fixture.componentRef.setInput('tableId', 'references');
     fixture.componentRef.setInput('references', [currentReference]);
   });
