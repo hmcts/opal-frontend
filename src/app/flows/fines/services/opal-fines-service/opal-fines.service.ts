@@ -1259,25 +1259,6 @@ export class OpalFines {
       );
   }
 
-  /** Removes an APR using the current defendant-account version for optimistic locking. */
-  public deleteAlternatePaymentReference(
-    accountId: number,
-    alternatePaymentReferenceId: number,
-    version: string,
-  ): Observable<IOpalFinesAlternatePaymentReferenceResponse> {
-    return this.http
-      .delete<IOpalFinesAlternatePaymentReference>(
-        `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/alternate-payment-references/${alternatePaymentReferenceId}`,
-        { ...this.buildIfMatchHeader(version), observe: 'response' },
-      )
-      .pipe(
-        map((response) => ({
-          reference: response.body!,
-          version: this.extractEtagVersion(response.headers),
-        })),
-      );
-  }
-
   /**
    * Adds a note to be associated with a record (Entity).
    * In this instance, the associated record (Entity) will be the Defendant Account.
@@ -1445,6 +1426,25 @@ export class OpalFines {
     }
 
     return this.http.delete<void>(url, { headers, body: payload });
+  }
+
+  /** Removes an APR using the current defendant-account version for optimistic locking. */
+  public deleteAlternatePaymentReference(
+    accountId: number,
+    alternatePaymentReferenceId: number,
+    version: string,
+  ): Observable<IOpalFinesAlternatePaymentReferenceResponse> {
+    return this.http
+      .delete<IOpalFinesAlternatePaymentReference>(
+        `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/alternate-payment-references/${alternatePaymentReferenceId}`,
+        { ...this.buildIfMatchHeader(version), observe: 'response' },
+      )
+      .pipe(
+        map((response) => ({
+          reference: response.body!,
+          version: this.extractEtagVersion(response.headers),
+        })),
+      );
   }
 
   /**
