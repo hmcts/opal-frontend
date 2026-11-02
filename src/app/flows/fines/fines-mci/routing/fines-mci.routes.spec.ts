@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
+import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
 import { fetchBusinessUnitsResolver } from '@app/flows/fines/routing/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
@@ -73,9 +74,18 @@ describe('finesMci routes', () => {
     expect(createTillRoute?.data).toEqual(PRIMARY_NAV_HIDDEN_ROUTE_DATA);
   });
 
+  it('should guard navigation away from payment category when a radio option has been selected', () => {
+    const paymentCategoryRoute = createTillRoute?.children?.find(
+      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.paymentCategory,
+    );
+
+    expect(paymentCategoryRoute?.canDeactivate).toEqual([canDeactivateGuard]);
+  });
+
   it.each([
     [FINES_MCI_ROUTING_PATHS.children.details, FINES_MCI_ROUTING_TITLES.children.createTillDetails],
     [FINES_MCI_ROUTING_PATHS.children.paymentCategory, FINES_MCI_ROUTING_TITLES.children.createTillPaymentCategory],
+    [FINES_MCI_ROUTING_PATHS.children.searchAccount, FINES_MCI_ROUTING_TITLES.children.createTillSearchAccount],
     [FINES_MCI_ROUTING_PATHS.children.cancel, FINES_MCI_ROUTING_TITLES.children.createTillCancel],
   ])('should expose the guarded create till %s route', (path, title) => {
     const childRoute = createTillRoute?.children?.find((route) => route.path === path);

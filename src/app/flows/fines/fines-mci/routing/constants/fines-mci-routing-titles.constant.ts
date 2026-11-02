@@ -5,6 +5,7 @@ export const FINES_MCI_ROUTING_TITLES = {
     createTillSelectBusinessUnit: 'Select business unit',
     createTillDetails: 'Till details',
     createTillPaymentCategory: 'Payment category',
+    createTillSearchAccount: 'Search for an account',
     createTillCancel: 'Cancel till creation',
   },
 };

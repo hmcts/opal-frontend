@@ -31,3 +31,15 @@ Feature: Manual Cash Input - Create Till Accessibility
     And I select "Camden and Islington"
     And I continue
     Then I check the page for accessibility
+
+  # PO-3486 AC8: axe-core coverage for Payment Category.
+  @JIRA-STORY:PO-3486
+  Scenario: AC8 - Payment Category screen accessibility
+    When I select the Fines primary navigation item "Finance"
+    And I am taken to the "Finance" Fines landing page
+    And I open Manual Cash Input
+    And I create a till
+    And I select "Camden and Islington"
+    And I continue
+    And I add a payment to the till
+    Then I check the page for accessibility
