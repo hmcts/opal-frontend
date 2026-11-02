@@ -2,11 +2,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { FinesAccAprFormComponent } from './fines-acc-apr-form.component';
+import { FinesAccAprAddFormComponent } from './fines-acc-apr-add-form.component';
 
-describe('FinesAccAprFormComponent', () => {
-  let fixture: ComponentFixture<FinesAccAprFormComponent>;
-  let component: FinesAccAprFormComponent;
+describe('FinesAccAprAddFormComponent', () => {
+  let fixture: ComponentFixture<FinesAccAprAddFormComponent>;
+  let component: FinesAccAprAddFormComponent;
 
   const enter = (value: string) => {
     const input = fixture.nativeElement.querySelector('#apr_text') as HTMLInputElement;
@@ -20,10 +20,10 @@ describe('FinesAccAprFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FinesAccAprFormComponent],
+      imports: [FinesAccAprAddFormComponent],
       providers: [provideRouter([]), { provide: UtilsService, useValue: { scrollToTop: vi.fn() } }],
     }).compileComponents();
-    fixture = TestBed.createComponent(FinesAccAprFormComponent);
+    fixture = TestBed.createComponent(FinesAccAprAddFormComponent);
     component = fixture.componentInstance;
   });
 

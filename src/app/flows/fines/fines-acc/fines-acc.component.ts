@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, HostListener, inject, OnDestroy, ViewChild } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs';
 import { FinesAccountStore } from './stores/fines-acc.store';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -17,6 +19,15 @@ export class FinesAccComponent implements OnDestroy {
   private readonly globalStore = inject(GlobalStore);
   private readonly finesAccStore = inject(FinesAccountStore);
   private readonly opalFines = inject(OpalFines);
+
+  constructor() {
+    inject(Router)
+      .events.pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe((event) => this.finesAccStore.clearAprErrorContextForNavigation(event.urlAfterRedirects));
+  }
 
   /** Browser unloads bypass the router guard, so check the active form's unsaved state directly. */
   @HostListener('window:beforeunload')

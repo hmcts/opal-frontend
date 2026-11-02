@@ -2,7 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { IOpalFinesApr } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
-import { FinesAccAprTableComponent } from './fines-acc-apr-table.component';
+import { transformAprsPayload } from '../../services/utils/fines-acc-payload-transform-apr-data.utils';
+import { FinesAccAprListTableComponent } from './fines-acc-apr-list-table.component';
 
 const currentReference: IOpalFinesApr = {
   alternate_payment_reference_id: 11,
@@ -15,25 +16,33 @@ const currentReference: IOpalFinesApr = {
   updated_at: null,
 };
 
-describe('FinesAccAprTableComponent', () => {
-  let fixture: ComponentFixture<FinesAccAprTableComponent>;
+const transformReferences = (references: IOpalFinesApr[]) => {
+  const data = transformAprsPayload({ references, version: '"7"' });
+  return [...data.currentReferences, ...data.consolidatedReferences];
+};
+
+describe('FinesAccAprListTableComponent', () => {
+  let fixture: ComponentFixture<FinesAccAprListTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FinesAccAprTableComponent],
+      imports: [FinesAccAprListTableComponent],
       providers: [provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FinesAccAprTableComponent);
+    fixture = TestBed.createComponent(FinesAccAprListTableComponent);
     fixture.componentRef.setInput('tableId', 'references');
-    fixture.componentRef.setInput('references', [currentReference]);
+    fixture.componentRef.setInput('references', transformReferences([currentReference]));
   });
 
   it('renders references in the supplied order with scoped table headings and missing updated dates', () => {
-    fixture.componentRef.setInput('references', [
-      { ...currentReference, alternate_payment_reference_id: 12, apr_text: 'Z-REFERENCE' },
-      { ...currentReference, alternate_payment_reference_id: 11, apr_text: 'A-REFERENCE' },
-    ]);
+    fixture.componentRef.setInput(
+      'references',
+      transformReferences([
+        { ...currentReference, alternate_payment_reference_id: 12, apr_text: 'Z-REFERENCE' },
+        { ...currentReference, alternate_payment_reference_id: 11, apr_text: 'A-REFERENCE' },
+      ]),
+    );
     fixture.detectChanges();
 
     const table = fixture.nativeElement.querySelector('#references') as HTMLTableElement;
@@ -67,7 +76,7 @@ describe('FinesAccAprTableComponent', () => {
   it.each(['CONSOLIDATED', 'AMALGAMATED'] as const)(
     'offers removal without change for a user-entered %s reference',
     (relationship) => {
-      fixture.componentRef.setInput('references', [{ ...currentReference, relationship }]);
+      fixture.componentRef.setInput('references', transformReferences([{ ...currentReference, relationship }]));
       fixture.detectChanges();
 
       expect(fixture.nativeElement.querySelector('#apr-change-11')).toBeNull();

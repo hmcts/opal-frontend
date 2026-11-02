@@ -12,11 +12,8 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { finesAccAprHttpErrorInterceptor } from '@app/interceptors/fines-acc-apr-http-error.interceptor';
 import { FinesAccComponent } from '../fines-acc.component';
-import {
-  FINES_ACC_APR_DUPLICATE_MESSAGE,
-  FinesAccAprErrorService,
-  IFinesAccAprErrorContext,
-} from '../fines-acc-apr/fines-acc-apr-error.service';
+import { FINES_ACC_APR_DUPLICATE_MESSAGE } from '../fines-acc-apr-error/constants/fines-acc-apr-error-message.constant';
+import { IFinesAccAprErrorContext } from '../fines-acc-apr-error/interfaces/fines-acc-apr-error-context.interface';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { routing } from '../routing/fines-acc-apr.routes';
 import { FinesAccountStore } from '../stores/fines-acc.store';
@@ -37,7 +34,7 @@ const duplicateProblem = {
 
 describe('Alternate payment reference Add and Error integration', () => {
   let http: HttpTestingController;
-  let errorService: FinesAccAprErrorService;
+  let accountStore: InstanceType<typeof FinesAccountStore>;
   let globalStore: { setBannerError: ReturnType<typeof vi.fn>; resetBannerError: ReturnType<typeof vi.fn> };
   let insights: { logException: ReturnType<typeof vi.fn> };
 
@@ -104,7 +101,7 @@ describe('Alternate payment reference Add and Error integration', () => {
       ],
     }).compileComponents();
     http = TestBed.inject(HttpTestingController);
-    errorService = TestBed.inject(FinesAccAprErrorService);
+    accountStore = TestBed.inject(FinesAccountStore);
   });
 
   afterEach(() => {
@@ -158,7 +155,7 @@ describe('Alternate payment reference Add and Error integration', () => {
     expect(TestBed.inject(Router).url).toBe(`${root}/add`);
     expect((harness.routeNativeElement!.querySelector('#apr_text') as HTMLInputElement).value).toBe(' AbC-123 ');
     expect(activeAdd().stateUnsavedChanges).toBe(true);
-    expect(errorService.context()).toBeNull();
+    expect(accountStore.aprErrorContext()).toBeNull();
     expect(confirm).not.toHaveBeenCalled();
     const unload = new Event('beforeunload', { cancelable: true });
     window.dispatchEvent(unload);
@@ -185,7 +182,7 @@ describe('Alternate payment reference Add and Error integration', () => {
     { accountId: 141, action: 'edit', referenceId: 11 },
     { accountId: 141, action: 'add', referenceId: 11 },
   ] as const)('does not restore a draft scoped to another account, action or reference: %j', async (scope) => {
-    errorService.remember({
+    accountStore.setAprErrorContext({
       ...scope,
       text: 'OTHER-DRAFT',
       message: FINES_ACC_APR_DUPLICATE_MESSAGE,
@@ -195,7 +192,7 @@ describe('Alternate payment reference Add and Error integration', () => {
 
     expect((harness.routeNativeElement!.querySelector('#apr_text') as HTMLInputElement).value).toBe('');
     expect(activeAdd().stateUnsavedChanges).toBe(false);
-    expect(errorService.context()).toBeNull();
+    expect(accountStore.aprErrorContext()).toBeNull();
   });
 
   it('keeps entered text and ordinary shared technical-error feedback after a non-duplicate failure', async () => {
@@ -216,7 +213,7 @@ describe('Alternate payment reference Add and Error integration', () => {
     expect(activeAdd().stateUnsavedChanges).toBe(true);
     expect(globalStore.setBannerError).toHaveBeenCalledOnce();
     expect(insights.logException).toHaveBeenCalledOnce();
-    expect(errorService.context()).toBeNull();
+    expect(accountStore.aprErrorContext()).toBeNull();
     http.expectNone(postUrl);
   });
 

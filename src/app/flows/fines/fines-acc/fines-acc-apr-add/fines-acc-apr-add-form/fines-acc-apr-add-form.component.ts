@@ -15,11 +15,11 @@ import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
-import { IFinesAccAprFormState } from './fines-acc-apr-form.interface';
-import { FINES_ACC_APR_FIELD_ERRORS } from './fines-acc-apr-field-errors.constant';
+import { IFinesAccAprAddFormState } from '../interfaces/fines-acc-apr-add-form-state.interface';
+import { FINES_ACC_APR_ADD_FIELD_ERRORS } from '../constants/fines-acc-apr-add-field-errors.constant';
 
 @Component({
-  selector: 'app-fines-acc-apr-form',
+  selector: 'app-fines-acc-apr-add-form',
   imports: [
     ReactiveFormsModule,
     GovukHeadingWithCaptionComponent,
@@ -28,11 +28,11 @@ import { FINES_ACC_APR_FIELD_ERRORS } from './fines-acc-apr-field-errors.constan
     GovukButtonComponent,
     GovukCancelLinkComponent,
   ],
-  templateUrl: './fines-acc-apr-form.component.html',
+  templateUrl: './fines-acc-apr-add-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccAprFormComponent extends AbstractFormBaseComponent implements OnChanges {
-  protected override fieldErrors = FINES_ACC_APR_FIELD_ERRORS;
+export class FinesAccAprAddFormComponent extends AbstractFormBaseComponent implements OnChanges {
+  protected override fieldErrors = FINES_ACC_APR_ADD_FIELD_ERRORS;
 
   @Input() public initialValue = '';
   @Input() public savedValue: string | null = null;
@@ -41,7 +41,7 @@ export class FinesAccAprFormComponent extends AbstractFormBaseComponent implemen
   @Input() public headingText = 'Add Alternate Payment Reference';
   @Input() public labelText = 'Enter payment reference';
   @Input() public pending = false;
-  @Output() public override formSubmit = new EventEmitter<IAbstractFormBaseForm<IFinesAccAprFormState>>();
+  @Output() public override formSubmit = new EventEmitter<IAbstractFormBaseForm<IFinesAccAprAddFormState>>();
   @Output() public readonly cancelRequested = new EventEmitter<void>();
 
   public override readonly form = new FormGroup({

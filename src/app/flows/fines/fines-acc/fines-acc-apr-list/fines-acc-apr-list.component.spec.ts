@@ -5,10 +5,11 @@ import { of } from 'rxjs';
 import { describe, expect, it, vi } from 'vitest';
 import { IOpalFinesApr } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { finesAccAprResolver } from '../fines-acc-apr/fines-acc-apr.resolver';
+import { finesAccAprResolver } from '../routing/resolvers/fines-acc-apr/fines-acc-apr.resolver';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
+import { transformAprsPayload } from '../services/utils/fines-acc-payload-transform-apr-data.utils';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FinesAccAprListComponent } from './fines-acc-apr-list.component';
 
@@ -38,6 +39,7 @@ const renderList = async (references: IOpalFinesApr[], initialMessage: string | 
   await TestBed.configureTestingModule({
     providers: [
       { provide: FinesAccountStore, useValue: accountStore },
+      { provide: FinesAccPayloadService, useValue: { transformAprsPayload } },
       provideRouter([
         {
           path: 'fines/account/defendant/:accountId/alternate/payment/reference/list',
@@ -195,6 +197,7 @@ describe('FinesAccAprListComponent', () => {
         {
           provide: FinesAccPayloadService,
           useValue: {
+            transformAprsPayload,
             transformDefendantAccountHeaderForStore: (accountId: number) => ({
               ...MOCK_FINES_ACCOUNT_STATE,
               account_id: accountId,

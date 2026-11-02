@@ -2,6 +2,7 @@ import { patchState, signalStore, withHooks, withState, withMethods, withCompute
 import { computed } from '@angular/core';
 import { FINES_ACCOUNT_STATE } from '../constants/fines-acc-state.constant';
 import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
+import { IFinesAccAprErrorContext } from '../fines-acc-apr-error/interfaces/fines-acc-apr-error-context.interface';
 
 export const FinesAccountStore = signalStore(
   { providedIn: 'root' },
@@ -20,11 +21,12 @@ export const FinesAccountStore = signalStore(
     hasVersionMismatch: false,
     hasPaymentHold: false,
     successMessage: null as string | null,
+    aprErrorContext: null as IFinesAccAprErrorContext | null,
   })),
   withHooks((store) => {
     return {
       onDestroy() {
-        patchState(store, FINES_ACCOUNT_STATE);
+        patchState(store, { ...FINES_ACCOUNT_STATE, aprErrorContext: null });
       },
     };
   }),
@@ -39,7 +41,37 @@ export const FinesAccountStore = signalStore(
   withMethods((store) => {
     return {
       setAccountState: (accountState: IFinesAccountState) => {
-        patchState(store, accountState);
+        const aprErrorContext = store.aprErrorContext();
+        patchState(store, {
+          ...accountState,
+          aprErrorContext: aprErrorContext?.accountId === accountState.account_id ? aprErrorContext : null,
+        });
+      },
+      setAprErrorContext: (context: IFinesAccAprErrorContext) => {
+        patchState(store, { aprErrorContext: { ...context } });
+      },
+      consumeAprDraft: (
+        accountId: number,
+        action: IFinesAccAprErrorContext['action'],
+        referenceId?: number,
+      ): string | null => {
+        const context = store.aprErrorContext();
+        patchState(store, { aprErrorContext: null });
+        return context?.accountId === accountId && context.action === action && context.referenceId === referenceId
+          ? context.text
+          : null;
+      },
+      clearAprErrorContext: () => {
+        patchState(store, { aprErrorContext: null });
+      },
+      clearAprErrorContextForNavigation: (url: string) => {
+        const context = store.aprErrorContext();
+        if (!context) return;
+        const root = `/fines/account/defendant/${context.accountId}/alternate/payment/reference/`;
+        const destination = url.split(/[?#]/)[0];
+        if (![`${root}error`, `${root}${context.action}`].includes(destination)) {
+          patchState(store, { aprErrorContext: null });
+        }
       },
       setHasVersionMismatch: (value: boolean) => {
         patchState(store, { hasVersionMismatch: value });
@@ -71,6 +103,7 @@ export const FinesAccountStore = signalStore(
           hasVersionMismatch: false,
           hasPaymentHold: false,
           successMessage: null,
+          aprErrorContext: null,
         });
       },
       clearSuccessMessage: () => {
@@ -87,6 +120,7 @@ export const FinesAccountStore = signalStore(
           hasVersionMismatch: false,
           hasPaymentHold: false,
           successMessage: null,
+          aprErrorContext: null,
         });
       },
     };

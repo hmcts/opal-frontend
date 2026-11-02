@@ -3,18 +3,16 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
-import {
-  FINES_ACC_APR_DUPLICATE_MESSAGE,
-  FinesAccAprErrorService,
-  IFinesAccAprErrorContext,
-} from '../fines-acc-apr/fines-acc-apr-error.service';
+import { FINES_ACC_APR_DUPLICATE_MESSAGE } from './constants/fines-acc-apr-error-message.constant';
+import { IFinesAccAprErrorContext } from './interfaces/fines-acc-apr-error-context.interface';
+import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FinesAccAprErrorComponent } from './fines-acc-apr-error.component';
 
 @Component({ template: 'APR destination' })
 class AprErrorTestDestinationComponent {}
 
 describe('FinesAccAprErrorComponent', () => {
-  let errorService: FinesAccAprErrorService;
+  let accountStore: InstanceType<typeof FinesAccountStore>;
   const root = '/fines/account/defendant/141/alternate/payment/reference';
   const context: IFinesAccAprErrorContext = {
     accountId: 141,
@@ -37,11 +35,11 @@ describe('FinesAccAprErrorComponent', () => {
         ]),
       ],
     }).compileComponents();
-    errorService = TestBed.inject(FinesAccAprErrorService);
+    accountStore = TestBed.inject(FinesAccountStore);
   });
 
   it('uses the shared heading and displays the duplicate message with a same-account Add return link', async () => {
-    errorService.remember(context);
+    accountStore.setAprErrorContext(context);
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl(`${root}/error`, FinesAccAprErrorComponent);
     const element = harness.routeNativeElement!;
@@ -58,7 +56,7 @@ describe('FinesAccAprErrorComponent', () => {
   });
 
   it('returns to Add without submitting or consuming the rejected value on the error page', async () => {
-    errorService.remember(context);
+    accountStore.setAprErrorContext(context);
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl(`${root}/error`, FinesAccAprErrorComponent);
 
@@ -66,11 +64,11 @@ describe('FinesAccAprErrorComponent', () => {
     await harness.fixture.whenStable();
 
     expect(TestBed.inject(Router).url).toBe(`${root}/add`);
-    expect(errorService.consumeDraft(141, 'add')).toBe('REJECTED-REFERENCE');
+    expect(accountStore.consumeAprDraft(141, 'add')).toBe('REJECTED-REFERENCE');
   });
 
   it('returns an edit failure to its selected reference and retains the edit draft for that form', async () => {
-    errorService.remember({ ...context, action: 'edit', referenceId: 11 });
+    accountStore.setAprErrorContext({ ...context, action: 'edit', referenceId: 11 });
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl(`${root}/error`, FinesAccAprErrorComponent);
     const link = harness.routeNativeElement!.querySelector('#apr-error-back') as HTMLAnchorElement;
@@ -80,11 +78,11 @@ describe('FinesAccAprErrorComponent', () => {
     await harness.fixture.whenStable();
 
     expect(TestBed.inject(Router).url).toBe(`${root}/edit?alternatePaymentReferenceId=11`);
-    expect(errorService.consumeDraft(141, 'edit', 11)).toBe('REJECTED-REFERENCE');
+    expect(accountStore.consumeAprDraft(141, 'edit', 11)).toBe('REJECTED-REFERENCE');
   });
 
   it('renders a supplied supported error message without generating alternative business copy', async () => {
-    errorService.remember({ ...context, message: 'A supported APR processing problem' });
+    accountStore.setAprErrorContext({ ...context, message: 'A supported APR processing problem' });
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl(`${root}/error`, FinesAccAprErrorComponent);
 
@@ -99,21 +97,21 @@ describe('FinesAccAprErrorComponent', () => {
     await harness.fixture.whenStable();
 
     expect(TestBed.inject(Router).url).toBe(`${root}/list`);
-    expect(errorService.context()).toBeNull();
+    expect(accountStore.aprErrorContext()).toBeNull();
   });
 
   it('clears mismatched account context and returns to the requested account list', async () => {
-    errorService.remember({ ...context, accountId: 142 });
+    accountStore.setAprErrorContext({ ...context, accountId: 142 });
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl(`${root}/error`);
     await harness.fixture.whenStable();
 
     expect(TestBed.inject(Router).url).toBe(`${root}/list`);
-    expect(errorService.context()).toBeNull();
+    expect(accountStore.aprErrorContext()).toBeNull();
   });
 
   it('does not expose a previous account error when Angular reuses the route for another account', async () => {
-    errorService.remember(context);
+    accountStore.setAprErrorContext(context);
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl(`${root}/error`, FinesAccAprErrorComponent);
 
@@ -121,7 +119,7 @@ describe('FinesAccAprErrorComponent', () => {
     await harness.fixture.whenStable();
 
     expect(TestBed.inject(Router).url).toBe(`${root.replace('/141/', '/142/')}/list`);
-    expect(errorService.context()).toBeNull();
+    expect(accountStore.aprErrorContext()).toBeNull();
     expect(harness.routeNativeElement?.textContent).not.toContain('The payment reference already exists');
   });
 });

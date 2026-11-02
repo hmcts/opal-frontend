@@ -1,3 +1,4 @@
+import { IOpalFinesAprPayload } from './interfaces/opal-fines-apr-payload.interface';
 import { IOpalFinesSourceMapping } from './interfaces/opal-fines-source-mapping.interface';
 import { HttpClient, HttpContext, HttpParams, HttpResponse } from '@angular/common/http';
 import { HANDLE_APR_DUPLICATE_LOCALLY } from '@app/interceptors/fines-acc-apr-http-error.interceptor';
@@ -1258,7 +1259,7 @@ export class OpalFines {
 
   public createApr(
     accountId: number,
-    payload: { apr_text: string },
+    payload: IOpalFinesAprPayload,
     version: string,
   ): Observable<IOpalFinesAprResponse> {
     return this.http

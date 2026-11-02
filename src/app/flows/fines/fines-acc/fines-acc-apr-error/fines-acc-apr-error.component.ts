@@ -2,7 +2,8 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
-import { FinesAccAprErrorService, IFinesAccAprErrorContext } from '../fines-acc-apr/fines-acc-apr-error.service';
+import { FinesAccountStore } from '../stores/fines-acc.store';
+import { IFinesAccAprErrorContext } from './interfaces/fines-acc-apr-error-context.interface';
 
 @Component({
   selector: 'app-fines-acc-apr-error',
@@ -13,7 +14,7 @@ import { FinesAccAprErrorService, IFinesAccAprErrorContext } from '../fines-acc-
 export class FinesAccAprErrorComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly errorService = inject(FinesAccAprErrorService);
+  private readonly accountStore = inject(FinesAccountStore);
   public readonly context = signal<IFinesAccAprErrorContext | null>(null);
   public readonly returnLink = computed(() => ['../', this.context()?.action ?? 'list']);
   public readonly returnQueryParams = computed(() =>
@@ -22,9 +23,9 @@ export class FinesAccAprErrorComponent {
 
   constructor() {
     this.route.paramMap.pipe(takeUntilDestroyed()).subscribe((params) => {
-      const context = this.errorService.context();
+      const context = this.accountStore.aprErrorContext();
       if (!context || context.accountId !== Number(params.get('accountId'))) {
-        this.errorService.clear();
+        this.accountStore.clearAprErrorContext();
         void this.router.navigate(['../list'], { relativeTo: this.route, replaceUrl: true });
         return;
       }
