@@ -1,14 +1,15 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
+import { map } from 'rxjs';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FinesAccBannerMessagesComponent } from '../fines-acc-banner-messages/fines-acc-banner-messages.component';
-import { FinesAccAprTableComponent } from '../fines-acc-apr/fines-acc-apr-table.component';
-import { canAddApr } from '../fines-acc-apr/fines-acc-apr.utils';
+import { FinesAccAprListTableComponent } from './fines-acc-apr-list-table/fines-acc-apr-list-table.component';
+import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 
 @Component({
   selector: 'app-fines-acc-apr-list',
@@ -17,7 +18,7 @@ import { canAddApr } from '../fines-acc-apr/fines-acc-apr.utils';
     GovukButtonComponent,
     GovukHeadingWithCaptionComponent,
     FinesAccBannerMessagesComponent,
-    FinesAccAprTableComponent,
+    FinesAccAprListTableComponent,
   ],
   templateUrl: './fines-acc-apr-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,16 +26,17 @@ import { canAddApr } from '../fines-acc-apr/fines-acc-apr.utils';
 export class FinesAccAprListComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  private readonly routeData = toSignal(this.route.data, { initialValue: this.route.snapshot.data });
-  private readonly data = computed(() => this.routeData()['aprs'] as IOpalFinesAprsResponse);
+  private readonly payloadService = inject(FinesAccPayloadService);
+  private readonly data = toSignal(
+    this.route.data.pipe(
+      map((data) => this.payloadService.transformAprsPayload(data['aprs'] as IOpalFinesAprsResponse)),
+    ),
+    { requireSync: true },
+  );
   public readonly accountStore = inject(FinesAccountStore);
-  public readonly currentReferences = computed(() =>
-    this.data().references.filter((reference) => reference.category === 'APR' && reference.relationship === 'APR'),
-  );
-  public readonly consolidatedReferences = computed(() =>
-    this.data().references.filter((reference) => reference.category === 'APR' && reference.relationship !== 'APR'),
-  );
-  public readonly canAdd = computed(() => canAddApr(this.data().references));
+  public readonly currentReferences = computed(() => this.data().currentReferences);
+  public readonly consolidatedReferences = computed(() => this.data().consolidatedReferences);
+  public readonly canAdd = computed(() => this.data().canAdd);
   public readonly successMessage = signal<string | null>(null);
   public readonly accountCaption = computed(
     () => `${this.accountStore.getAccountNumber()} - ${this.accountStore.party_name()}`,

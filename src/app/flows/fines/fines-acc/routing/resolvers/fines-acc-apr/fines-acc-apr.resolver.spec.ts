@@ -8,10 +8,10 @@ import {
   IOpalFinesApr,
   IOpalFinesAprsResponse,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
-import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
-import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
-import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
-import { FinesAccountStore } from '../stores/fines-acc.store';
+import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
+import { MOCK_FINES_ACCOUNT_STATE } from '../../../mocks/fines-acc-state.mock';
+import { FinesAccPayloadService } from '../../../services/fines-acc-payload.service';
+import { FinesAccountStore } from '../../../stores/fines-acc.store';
 import { finesAccAprResolver } from './fines-acc-apr.resolver';
 
 @Component({ template: '' })
