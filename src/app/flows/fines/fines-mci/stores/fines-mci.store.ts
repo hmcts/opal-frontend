@@ -27,6 +27,9 @@ export const FinesMciStore = signalStore(
       setCriminalSearch(criminalSearch: IFinesMciCriminalSearch): void {
         patchState(store, { criminalSearch });
       },
+      resetCriminalSearch(): void {
+        patchState(store, { criminalSearch: null });
+      },
       /** Sets the selected business unit and clears tills when switching to a different unit. */
       setBusinessUnit(businessUnit: IOpalFinesBusinessUnit): void {
         const currentBusinessUnit = store.businessUnit();

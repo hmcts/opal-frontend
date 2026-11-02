@@ -1,10 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, provideRouter, Router } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
+import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { FinesMciStore } from '../stores/fines-mci.store';
-import { BehaviorSubject } from 'rxjs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { BehaviorSubject, of } from 'rxjs';
+import { afterEach, beforeEach, describe, expect, it, MockInstance, vi } from 'vitest';
 import { FinesMciPaymentCategoryCriminalSearchComponent } from './fines-mci-payment-category-criminal-search.component';
+import { FinesMciPaymentCategoryCriminalMatchesComponent } from '../fines-mci-payment-category-criminal-matches/fines-mci-payment-category-criminal-matches.component';
+import { finesMciCriminalAccountsResolver } from '../routing/resolvers/fines-mci-criminal-accounts/fines-mci-criminal-accounts.resolver';
 
 const CRIMINAL_MATCHES_ROUTE = [
   '/',
@@ -387,6 +393,16 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
     expect(routerNavigateSpy).toHaveBeenCalledExactlyOnceWith(CRIMINAL_MATCHES_ROUTE);
   });
 
+  it('should require confirmation again after a search navigation is cancelled', async () => {
+    component['form'].patchValue({ fsa_search_account_number: '12345678' });
+    routerNavigateSpy.mockResolvedValueOnce(false);
+
+    component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+    await fixture.whenStable();
+
+    expect(component.canDeactivate()).toBe(false);
+  });
+
   it.each([null, '1234567890'])(
     'should not navigate or store criteria for an empty or invalid account number: %s',
     (accountNumber) => {
@@ -399,4 +415,129 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
       expect(routerNavigateSpy).not.toHaveBeenCalled();
     },
   );
+});
+
+@Component({ template: '<h1>Till details</h1>' })
+class TillDetailsDestinationComponent {}
+
+describe('Criminal search Cancel navigation', () => {
+  const routeRoot = '/fines/manual-cash-input/create/till';
+  const searchUrl = `${routeRoot}/payment/category/criminal/search`;
+  const detailsUrl = `${routeRoot}/details`;
+  const matchesUrl = `${routeRoot}/payment/category/criminal/matches`;
+  const service = { getDefendantAccounts: vi.fn() };
+  let harness: RouterTestingHarness;
+  let component: FinesMciPaymentCategoryCriminalSearchComponent;
+  let store: InstanceType<typeof FinesMciStore>;
+  let confirmSpy: MockInstance<typeof window.confirm>;
+
+  beforeEach(async () => {
+    service.getDefendantAccounts.mockReset().mockReturnValue(of({ count: 1, defendant_accounts: [] }));
+    await TestBed.configureTestingModule({
+      providers: [
+        provideRouter([
+          {
+            path: searchUrl.slice(1),
+            component: FinesMciPaymentCategoryCriminalSearchComponent,
+            canDeactivate: [canDeactivateGuard],
+          },
+          { path: detailsUrl.slice(1), component: TillDetailsDestinationComponent },
+          {
+            path: matchesUrl.slice(1),
+            component: FinesMciPaymentCategoryCriminalMatchesComponent,
+            resolve: { criminalAccounts: finesMciCriminalAccountsResolver },
+          },
+        ]),
+        { provide: OpalFines, useValue: service },
+      ],
+    }).compileComponents();
+    confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    confirmSpy.mockClear();
+    store = TestBed.inject(FinesMciStore);
+    store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    store.ensureTill();
+    harness = await RouterTestingHarness.create();
+    component = await harness.navigateByUrl(`${searchUrl}#companies`, FinesMciPaymentCategoryCriminalSearchComponent);
+  });
+
+  const enterCompanyCriteria = () => {
+    component['form'].patchValue({
+      fsa_search_account_companies_search_criteria: {
+        fsa_search_account_companies_company_name: 'Acme Ltd',
+        fsa_search_account_companies_include_aliases: true,
+      },
+    });
+    store.setCriminalSearch({
+      activeTab: 'companies',
+      searchCriteriaCannotBeCombined: false,
+      formData: component['form'].getRawValue(),
+    });
+    harness.detectChanges();
+  };
+
+  afterEach(() => confirmSpy.mockRestore());
+
+  const clickCancel = async () => {
+    (harness.routeNativeElement!.querySelector('a.govuk-link') as HTMLAnchorElement).click();
+    await harness.fixture.whenStable();
+  };
+
+  it('returns directly to till details without a warning when no inputs are populated', async () => {
+    await clickCancel();
+
+    expect(TestBed.inject(Router).url).toBe(detailsUrl);
+    expect(confirmSpy).not.toHaveBeenCalled();
+  });
+
+  it('retains the form, selected tab and stored criteria when leaving is declined', async () => {
+    enterCompanyCriteria();
+    const criteria = store.criminalSearch();
+    const values = component['form'].getRawValue();
+
+    await clickCancel();
+
+    expect(confirmSpy).toHaveBeenCalledExactlyOnceWith(
+      'WARNING: Are you sure you want to leave this page? Any information you entered will be lost.',
+    );
+    expect(TestBed.inject(Router).url).toBe(`${searchUrl}#companies`);
+    expect(component['activeTab']()).toBe('companies');
+    expect(component['form'].getRawValue()).toEqual(values);
+    expect(store.criminalSearch()).toEqual(criteria);
+    expect(service.getDefendantAccounts).not.toHaveBeenCalled();
+  });
+
+  it('clears form and stored search data after confirmed departure while preserving the business unit and till', async () => {
+    enterCompanyCriteria();
+    confirmSpy.mockReturnValue(true);
+    const businessUnit = store.businessUnit();
+    const tills = store.tills();
+
+    await clickCancel();
+
+    expect(confirmSpy).toHaveBeenCalledOnce();
+    expect(TestBed.inject(Router).url).toBe(detailsUrl);
+    expect(store.criminalSearch()).toBeNull();
+    expect(
+      component['form'].get('fsa_search_account_companies_search_criteria.fsa_search_account_companies_company_name')
+        ?.value,
+    ).toBeNull();
+    expect(store.businessUnit()).toEqual(businessUnit);
+    expect(store.tills()).toEqual(tills);
+    expect(service.getDefendantAccounts).not.toHaveBeenCalled();
+  });
+
+  it('allows a search to reach matches without a warning or clearing the submitted criteria', async () => {
+    enterCompanyCriteria();
+
+    component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+    await harness.fixture.whenStable();
+
+    expect(TestBed.inject(Router).url).toBe(matchesUrl);
+    expect(confirmSpy).not.toHaveBeenCalled();
+    expect(service.getDefendantAccounts).toHaveBeenCalledOnce();
+    expect(
+      store.criminalSearch()?.formData.fsa_search_account_companies_search_criteria
+        .fsa_search_account_companies_company_name,
+    ).toBe('Acme Ltd');
+  });
 });

@@ -8,6 +8,8 @@ import {
   GovukCheckboxesItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
+import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
+import { hasNestedValue } from '@app/flows/fines/validators/utils/has-nested-value.util';
 import {
   ACCOUNT_NUMBER_PATTERN,
   ALPHANUMERIC_WITH_SPACES_PATTERN,
@@ -47,6 +49,7 @@ const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractFormBaseComponent {
+  private isContinuing = false;
   private readonly currentRoute = inject(ActivatedRoute);
   private readonly angularRouter = inject(Router);
   private readonly criminalMatchesRoute = [
@@ -135,7 +138,10 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
       activeTab: this.activeTab(),
       searchCriteriaCannotBeCombined: !!this.form.errors?.['searchCriteriaCannotBeCombined'],
     });
-    this.angularRouter.navigate(this.criminalMatchesRoute);
+    this.isContinuing = true;
+    void this.angularRouter.navigate(this.criminalMatchesRoute).finally(() => {
+      this.isContinuing = false;
+    });
   }
 
   private setActiveTabFromFragment(tab: FinesMciCriminalSearchTab): void {
@@ -182,5 +188,17 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
     this.setupFragmentListener();
     this.setInitialErrorMessages();
     super.ngOnInit();
+  }
+
+  public canDeactivate(): CanDeactivateTypes {
+    return this.isContinuing || !hasNestedValue(this.form);
+  }
+
+  public override ngOnDestroy(): void {
+    if (!this.isContinuing) {
+      this.form.reset(undefined, { emitEvent: false });
+      this.finesMciStore.resetCriminalSearch();
+    }
+    super.ngOnDestroy();
   }
 }
