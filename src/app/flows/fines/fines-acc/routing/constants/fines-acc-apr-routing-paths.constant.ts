@@ -1,4 +1,4 @@
-export const FINES_ACC_ALTERNATE_PAYMENT_REFERENCE_ROUTING_PATHS = {
+export const FINES_ACC_APR_ROUTING_PATHS = {
   root: 'alternate/payment/reference',
   children: {
     list: 'list',

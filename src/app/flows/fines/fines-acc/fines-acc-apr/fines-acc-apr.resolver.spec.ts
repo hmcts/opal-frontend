@@ -5,21 +5,21 @@ import { firstValueFrom, Observable, of, Subject, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import {
-  IOpalFinesAlternatePaymentReference,
-  IOpalFinesAlternatePaymentReferencesResponse,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-alternate-payment-reference.interface';
+  IOpalFinesApr,
+  IOpalFinesAprsResponse,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { FinesAccountStore } from '../stores/fines-acc.store';
-import { alternatePaymentReferencesResolver } from './fines-acc-alternate-payment-references.resolver';
+import { finesAccAprResolver } from './fines-acc-apr.resolver';
 
 @Component({ template: '' })
 class ResolverTestRouteComponent {}
 
-describe('alternatePaymentReferencesResolver', () => {
+describe('finesAccAprResolver', () => {
   const accountId = 141;
-  const reference: IOpalFinesAlternatePaymentReference = {
+  const reference: IOpalFinesApr = {
     alternate_payment_reference_id: 11,
     defendant_account_id: accountId,
     business_unit_id: 77,
@@ -29,10 +29,10 @@ describe('alternatePaymentReferencesResolver', () => {
     created_at: '2026-06-01T12:00:00Z',
     updated_at: null,
   };
-  const data: IOpalFinesAlternatePaymentReferencesResponse = { references: [], version: '"7"' };
+  const data: IOpalFinesAprsResponse = { references: [], version: '"7"' };
   let api: {
     getDefendantAccountHeadingData: ReturnType<typeof vi.fn>;
-    getAlternatePaymentReferences: ReturnType<typeof vi.fn>;
+    getAprs: ReturnType<typeof vi.fn>;
   };
   let accountStore: { setAccountState: ReturnType<typeof vi.fn> };
   let payloadService: { transformDefendantAccountHeaderForStore: ReturnType<typeof vi.fn> };
@@ -48,18 +48,14 @@ describe('alternatePaymentReferencesResolver', () => {
     const state = TestBed.inject(Router).routerState.snapshot;
     const route = state.root.firstChild!.firstChild!;
     return TestBed.runInInjectionContext(() =>
-      firstValueFrom(
-        alternatePaymentReferencesResolver(route, state) as Observable<
-          IOpalFinesAlternatePaymentReferencesResponse | RedirectCommand
-        >,
-      ),
+      firstValueFrom(finesAccAprResolver(route, state) as Observable<IOpalFinesAprsResponse | RedirectCommand>),
     );
   };
 
   beforeEach(async () => {
     api = {
       getDefendantAccountHeadingData: vi.fn().mockReturnValue(of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK)),
-      getAlternatePaymentReferences: vi.fn().mockReturnValue(of(data)),
+      getAprs: vi.fn().mockReturnValue(of(data)),
     };
     accountStore = { setAccountState: vi.fn() };
     payloadService = {
@@ -88,7 +84,7 @@ describe('alternatePaymentReferencesResolver', () => {
     const result = await resolve();
 
     expect(api.getDefendantAccountHeadingData).toHaveBeenCalledWith(accountId);
-    expect(api.getAlternatePaymentReferences).toHaveBeenCalledWith(accountId);
+    expect(api.getAprs).toHaveBeenCalledWith(accountId);
     expect(payloadService.transformDefendantAccountHeaderForStore).toHaveBeenCalledWith(
       accountId,
       FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK,
@@ -100,7 +96,7 @@ describe('alternatePaymentReferencesResolver', () => {
   it.each([null, '', '   '])(
     'redirects to the technical error page without changing account state for version %s',
     async (version) => {
-      api.getAlternatePaymentReferences.mockReturnValue(of({ ...data, version }));
+      api.getAprs.mockReturnValue(of({ ...data, version }));
 
       const result = await resolve();
 
@@ -113,7 +109,7 @@ describe('alternatePaymentReferencesResolver', () => {
     },
   );
 
-  it.each(['getDefendantAccountHeadingData', 'getAlternatePaymentReferences'] as const)(
+  it.each(['getDefendantAccountHeadingData', 'getAprs'] as const)(
     'propagates a failed %s request without publishing partial account context',
     async (method) => {
       const error = new Error('Test API failure');
@@ -126,9 +122,9 @@ describe('alternatePaymentReferencesResolver', () => {
 
   it('waits for both responses before replacing the account context', async () => {
     const heading = new Subject<typeof FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK>();
-    const references = new Subject<IOpalFinesAlternatePaymentReferencesResponse>();
+    const references = new Subject<IOpalFinesAprsResponse>();
     api.getDefendantAccountHeadingData.mockReturnValue(heading);
-    api.getAlternatePaymentReferences.mockReturnValue(references);
+    api.getAprs.mockReturnValue(references);
     const result = resolve();
 
     references.next(data);
@@ -142,7 +138,7 @@ describe('alternatePaymentReferencesResolver', () => {
   });
 
   it('redirects an add entry to the same account list when a direct APR already exists', async () => {
-    api.getAlternatePaymentReferences.mockReturnValue(of({ ...data, references: [reference] }));
+    api.getAprs.mockReturnValue(of({ ...data, references: [reference] }));
     await navigateToPage('add');
 
     const result = await resolve();
@@ -155,14 +151,14 @@ describe('alternatePaymentReferencesResolver', () => {
 
   it('permits add when only inherited references exist', async () => {
     const response = { ...data, references: [{ ...reference, relationship: 'CONSOLIDATED' as const }] };
-    api.getAlternatePaymentReferences.mockReturnValue(of(response));
+    api.getAprs.mockReturnValue(of(response));
     await navigateToPage('add');
 
     await expect(resolve()).resolves.toBe(response);
   });
 
   it.each(['edit', 'delete'])('returns an invalid or missing %s selection to the same account list', async (path) => {
-    api.getAlternatePaymentReferences.mockReturnValue(of({ ...data, references: [reference] }));
+    api.getAprs.mockReturnValue(of({ ...data, references: [reference] }));
     for (const selectedId of [undefined, '999', 'invalid', '-1']) {
       await navigateToPage(path, selectedId);
 
@@ -187,7 +183,7 @@ describe('alternatePaymentReferencesResolver', () => {
     'allows %s for relationship %s/category %s only when eligible',
     async (path, relationship, category, eligible) => {
       const response = { ...data, references: [{ ...reference, relationship, category }] };
-      api.getAlternatePaymentReferences.mockReturnValue(of(response));
+      api.getAprs.mockReturnValue(of(response));
       await navigateToPage(path, '11');
 
       const result = await resolve();
