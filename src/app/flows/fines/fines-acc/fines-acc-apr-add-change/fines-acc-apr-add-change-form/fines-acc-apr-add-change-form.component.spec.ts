@@ -2,11 +2,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { FinesAccAprAddFormComponent } from './fines-acc-apr-add-form.component';
+import { FinesAccAprAddChangeFormComponent } from './fines-acc-apr-add-change-form.component';
 
-describe('FinesAccAprAddFormComponent', () => {
-  let fixture: ComponentFixture<FinesAccAprAddFormComponent>;
-  let component: FinesAccAprAddFormComponent;
+describe('FinesAccAprAddChangeFormComponent', () => {
+  let fixture: ComponentFixture<FinesAccAprAddChangeFormComponent>;
+  let component: FinesAccAprAddChangeFormComponent;
 
   const enter = (value: string) => {
     const input = fixture.nativeElement.querySelector('#apr_text') as HTMLInputElement;
@@ -20,10 +20,10 @@ describe('FinesAccAprAddFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FinesAccAprAddFormComponent],
+      imports: [FinesAccAprAddChangeFormComponent],
       providers: [provideRouter([]), { provide: UtilsService, useValue: { scrollToTop: vi.fn() } }],
     }).compileComponents();
-    fixture = TestBed.createComponent(FinesAccAprAddFormComponent);
+    fixture = TestBed.createComponent(FinesAccAprAddChangeFormComponent);
     component = fixture.componentInstance;
   });
 
@@ -125,7 +125,7 @@ describe('FinesAccAprAddFormComponent', () => {
     expect(unsaved).toHaveBeenLastCalledWith(true);
   });
 
-  it('compares a restored edit draft with the saved reference rather than the rejected value', () => {
+  it('compares a restored change draft with the saved reference rather than the rejected value', () => {
     fixture.componentRef.setInput('initialValue', 'Rejected-Value');
     fixture.componentRef.setInput('savedValue', 'Original');
     const unsaved = vi.spyOn(component['unsavedChanges'], 'emit');

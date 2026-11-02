@@ -29,7 +29,8 @@ describe('FinesAccAprErrorComponent', () => {
             path: 'fines/account/defendant/:accountId/alternate/payment/reference',
             children: [
               { path: 'error', component: FinesAccAprErrorComponent },
-              ...['add', 'edit', 'manage'].map((path) => ({ path, component: AprErrorTestDestinationComponent })),
+              { path: 'manage', component: AprErrorTestDestinationComponent },
+              { path: ':mode', component: AprErrorTestDestinationComponent },
             ],
           },
         ]),
@@ -67,18 +68,18 @@ describe('FinesAccAprErrorComponent', () => {
     expect(accountStore.consumeAprDraft(141, 'add')).toBe('REJECTED-REFERENCE');
   });
 
-  it('returns an edit failure to its selected reference and retains the edit draft for that form', async () => {
-    accountStore.setAprErrorContext({ ...context, action: 'edit', referenceId: 11 });
+  it('returns a change failure to its selected reference and retains the change draft for that form', async () => {
+    accountStore.setAprErrorContext({ ...context, action: 'change', referenceId: 11 });
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl(`${root}/error`, FinesAccAprErrorComponent);
     const link = harness.routeNativeElement!.querySelector('#apr-error-back') as HTMLAnchorElement;
-    expect(link.getAttribute('href')).toBe(`${root}/edit?alternatePaymentReferenceId=11`);
+    expect(link.getAttribute('href')).toBe(`${root}/change?alternatePaymentReferenceId=11`);
 
     link.click();
     await harness.fixture.whenStable();
 
-    expect(TestBed.inject(Router).url).toBe(`${root}/edit?alternatePaymentReferenceId=11`);
-    expect(accountStore.consumeAprDraft(141, 'edit', 11)).toBe('REJECTED-REFERENCE');
+    expect(TestBed.inject(Router).url).toBe(`${root}/change?alternatePaymentReferenceId=11`);
+    expect(accountStore.consumeAprDraft(141, 'change', 11)).toBe('REJECTED-REFERENCE');
   });
 
   it('renders a supplied supported error message without generating alternative business copy', async () => {

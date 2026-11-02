@@ -18,7 +18,7 @@ export class FinesAccAprErrorComponent {
   public readonly context = signal<IFinesAccAprErrorContext | null>(null);
   public readonly returnLink = computed(() => ['../', this.context()?.action ?? 'manage']);
   public readonly returnQueryParams = computed(() =>
-    this.context()?.action === 'edit' ? { alternatePaymentReferenceId: this.context()?.referenceId } : {},
+    this.context()?.action === 'change' ? { alternatePaymentReferenceId: this.context()?.referenceId } : {},
   );
 
   constructor() {

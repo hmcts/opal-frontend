@@ -82,7 +82,7 @@ describe('FinesAccComponent APR retry navigation', () => {
   const aprRoot = '/fines/account/defendant/141/alternate/payment/reference';
   const context: IFinesAccAprErrorContext = {
     accountId: 141,
-    action: 'edit',
+    action: 'change',
     referenceId: 11,
     text: 'REJECTED-REFERENCE',
     message: FINES_ACC_APR_DUPLICATE_MESSAGE,
@@ -99,7 +99,11 @@ describe('FinesAccComponent APR retry navigation', () => {
             children: [
               {
                 path: 'defendant/:accountId/alternate/payment/reference',
-                children: ['error', 'edit', 'add', 'manage'].map((path) => ({ path, component: TestFormPage })),
+                children: [
+                  { path: 'error', component: TestFormPage },
+                  { path: 'manage', component: TestFormPage },
+                  { path: ':mode', component: TestFormPage },
+                ],
               },
               { path: 'defendant/:accountId/details', component: TestFormPage },
               { path: 'blocked', component: TestFormPage, canActivate: [() => false] },
@@ -113,12 +117,12 @@ describe('FinesAccComponent APR retry navigation', () => {
     accountStore = TestBed.inject(FinesAccountStore);
   });
 
-  it('retains an edit retry when the real router moves between its error page and selected form', async () => {
+  it('retains a change retry when the real router moves between its error page and selected form', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl(`${aprRoot}/error`);
     accountStore.setAprErrorContext(context);
 
-    await harness.navigateByUrl(`${aprRoot}/edit?alternatePaymentReferenceId=11`);
+    await harness.navigateByUrl(`${aprRoot}/change?alternatePaymentReferenceId=11`);
     expect(accountStore.aprErrorContext()).toEqual(context);
     await harness.navigateByUrl(`${aprRoot}/error`);
     expect(accountStore.aprErrorContext()).toEqual(context);

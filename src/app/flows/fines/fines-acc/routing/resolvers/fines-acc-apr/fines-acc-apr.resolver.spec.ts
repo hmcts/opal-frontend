@@ -66,7 +66,7 @@ describe('finesAccAprResolver', () => {
         provideRouter([
           {
             path: 'fines/account/defendant/:accountId/alternate/payment/reference',
-            children: ['manage', 'add', 'edit', 'delete'].map((path) => ({
+            children: ['manage', 'delete', ':mode'].map((path) => ({
               path,
               component: ResolverTestRouteComponent,
             })),
@@ -157,7 +157,7 @@ describe('finesAccAprResolver', () => {
     await expect(resolve()).resolves.toBe(response);
   });
 
-  it.each(['edit', 'delete'])(
+  it.each(['change', 'delete'])(
     'returns an invalid or missing %s selection to the same account Manage page',
     async (path) => {
       api.getAprs.mockReturnValue(of({ ...data, references: [reference] }));
@@ -175,9 +175,9 @@ describe('finesAccAprResolver', () => {
   );
 
   it.each([
-    ['edit', 'APR', 'APR', true],
-    ['edit', 'CONSOLIDATED', 'APR', false],
-    ['edit', 'APR', 'ACC', false],
+    ['change', 'APR', 'APR', true],
+    ['change', 'CONSOLIDATED', 'APR', false],
+    ['change', 'APR', 'ACC', false],
     ['delete', 'APR', 'APR', true],
     ['delete', 'CONSOLIDATED', 'APR', true],
     ['delete', 'AMALGAMATED', 'APR', true],

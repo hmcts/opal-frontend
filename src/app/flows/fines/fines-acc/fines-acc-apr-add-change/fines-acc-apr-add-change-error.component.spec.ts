@@ -17,7 +17,7 @@ import { IFinesAccAprErrorContext } from '../fines-acc-apr-error/interfaces/fine
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { routing } from '../routing/fines-acc-apr.routes';
 import { FinesAccountStore } from '../stores/fines-acc.store';
-import { FinesAccAprAddComponent } from './fines-acc-apr-add.component';
+import { FinesAccAprAddChangeComponent } from './fines-acc-apr-add-change.component';
 
 @Component({ template: 'APR manage destination' })
 class AprErrorManageDestinationComponent {}
@@ -43,7 +43,7 @@ describe('Alternate payment reference Add and Error integration', () => {
     const wrapper = await harness.navigateByUrl(`${root}/add`, FinesAccComponent);
     const activeAdd = () =>
       harness.routeDebugElement!.query(By.directive(RouterOutlet)).injector.get(RouterOutlet)
-        .component as FinesAccAprAddComponent;
+        .component as FinesAccAprAddChangeComponent;
     const enter = (value: string) => {
       const input = harness.routeNativeElement!.querySelector('#apr_text') as HTMLInputElement;
       input.value = value;
@@ -59,7 +59,7 @@ describe('Alternate payment reference Add and Error integration', () => {
   beforeEach(async () => {
     globalStore = { setBannerError: vi.fn(), resetBannerError: vi.fn() };
     insights = { logException: vi.fn() };
-    const addRoute = routing.find((route) => route.path === 'add')!;
+    const formRoute = routing.find((route) => route.path === ':mode')!;
     const errorRoute = routing.find((route) => route.path === 'error')!;
     await TestBed.configureTestingModule({
       providers: [
@@ -77,8 +77,10 @@ describe('Alternate payment reference Add and Error integration', () => {
               {
                 path: 'defendant/:accountId/alternate/payment/reference',
                 children: [
+                  { ...errorRoute, canActivate: [] },
+                  { path: 'manage', component: AprErrorManageDestinationComponent },
                   {
-                    ...addRoute,
+                    ...formRoute,
                     canActivate: [],
                     resolve: {
                       aprs: (route: ActivatedRouteSnapshot) => {
@@ -91,8 +93,6 @@ describe('Alternate payment reference Add and Error integration', () => {
                       },
                     },
                   },
-                  { ...errorRoute, canActivate: [] },
-                  { path: 'manage', component: AprErrorManageDestinationComponent },
                 ],
               },
             ],
@@ -179,7 +179,7 @@ describe('Alternate payment reference Add and Error integration', () => {
 
   it.each([
     { accountId: 142, action: 'add' },
-    { accountId: 141, action: 'edit', referenceId: 11 },
+    { accountId: 141, action: 'change', referenceId: 11 },
     { accountId: 141, action: 'add', referenceId: 11 },
   ] as const)('does not restore a draft scoped to another account, action or reference: %j', async (scope) => {
     accountStore.setAprErrorContext({

@@ -1,7 +1,9 @@
-<app-fines-acc-apr-add-form
+<app-fines-acc-apr-add-change-form
   [contextKey]="formContext()"
+  [headingText]="text().headingText"
+  [labelText]="text().labelText"
   [initialValue]="initialValue()"
-  [savedValue]="''"
+  [savedValue]="savedValue()"
   [accountCaption]="accountCaption()"
   [pending]="pending()"
   (formSubmit)="handleSubmit($event)"
