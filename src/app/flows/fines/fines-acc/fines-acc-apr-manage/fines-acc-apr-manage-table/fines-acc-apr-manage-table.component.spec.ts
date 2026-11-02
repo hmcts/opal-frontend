@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { IOpalFinesApr } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
 import { transformAprsPayload } from '../../services/utils/fines-acc-payload-transform-apr-data.utils';
-import { FinesAccAprListTableComponent } from './fines-acc-apr-list-table.component';
+import { FinesAccAprManageTableComponent } from './fines-acc-apr-manage-table.component';
 
 const currentReference: IOpalFinesApr = {
   alternate_payment_reference_id: 11,
@@ -21,16 +21,16 @@ const transformReferences = (references: IOpalFinesApr[]) => {
   return [...data.currentReferences, ...data.consolidatedReferences];
 };
 
-describe('FinesAccAprListTableComponent', () => {
-  let fixture: ComponentFixture<FinesAccAprListTableComponent>;
+describe('FinesAccAprManageTableComponent', () => {
+  let fixture: ComponentFixture<FinesAccAprManageTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FinesAccAprListTableComponent],
+      imports: [FinesAccAprManageTableComponent],
       providers: [provideRouter([])],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FinesAccAprListTableComponent);
+    fixture = TestBed.createComponent(FinesAccAprManageTableComponent);
     fixture.componentRef.setInput('tableId', 'references');
     fixture.componentRef.setInput('references', transformReferences([currentReference]));
   });

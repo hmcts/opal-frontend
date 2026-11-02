@@ -29,7 +29,7 @@ describe('FinesAccAprErrorComponent', () => {
             path: 'fines/account/defendant/:accountId/alternate/payment/reference',
             children: [
               { path: 'error', component: FinesAccAprErrorComponent },
-              ...['add', 'edit', 'list'].map((path) => ({ path, component: AprErrorTestDestinationComponent })),
+              ...['add', 'edit', 'manage'].map((path) => ({ path, component: AprErrorTestDestinationComponent })),
             ],
           },
         ]),
@@ -91,22 +91,22 @@ describe('FinesAccAprErrorComponent', () => {
     );
   });
 
-  it('redirects a cold error-page entry to the same account list', async () => {
+  it('redirects a cold error-page entry to the same account Manage page', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl(`${root}/error`);
     await harness.fixture.whenStable();
 
-    expect(TestBed.inject(Router).url).toBe(`${root}/list`);
+    expect(TestBed.inject(Router).url).toBe(`${root}/manage`);
     expect(accountStore.aprErrorContext()).toBeNull();
   });
 
-  it('clears mismatched account context and returns to the requested account list', async () => {
+  it('clears mismatched account context and returns to the requested account Manage page', async () => {
     accountStore.setAprErrorContext({ ...context, accountId: 142 });
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl(`${root}/error`);
     await harness.fixture.whenStable();
 
-    expect(TestBed.inject(Router).url).toBe(`${root}/list`);
+    expect(TestBed.inject(Router).url).toBe(`${root}/manage`);
     expect(accountStore.aprErrorContext()).toBeNull();
   });
 
@@ -118,7 +118,7 @@ describe('FinesAccAprErrorComponent', () => {
     await harness.navigateByUrl(`${root.replace('/141/', '/142/')}/error`);
     await harness.fixture.whenStable();
 
-    expect(TestBed.inject(Router).url).toBe(`${root.replace('/141/', '/142/')}/list`);
+    expect(TestBed.inject(Router).url).toBe(`${root.replace('/141/', '/142/')}/manage`);
     expect(accountStore.aprErrorContext()).toBeNull();
     expect(harness.routeNativeElement?.textContent).not.toContain('The payment reference already exists');
   });

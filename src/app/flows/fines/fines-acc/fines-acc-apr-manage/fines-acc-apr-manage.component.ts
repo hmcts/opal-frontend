@@ -8,22 +8,22 @@ import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/co
 import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FinesAccBannerMessagesComponent } from '../fines-acc-banner-messages/fines-acc-banner-messages.component';
-import { FinesAccAprListTableComponent } from './fines-acc-apr-list-table/fines-acc-apr-list-table.component';
+import { FinesAccAprManageTableComponent } from './fines-acc-apr-manage-table/fines-acc-apr-manage-table.component';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 
 @Component({
-  selector: 'app-fines-acc-apr-list',
+  selector: 'app-fines-acc-apr-manage',
   imports: [
     GovukBackLinkComponent,
     GovukButtonComponent,
     GovukHeadingWithCaptionComponent,
     FinesAccBannerMessagesComponent,
-    FinesAccAprListTableComponent,
+    FinesAccAprManageTableComponent,
   ],
-  templateUrl: './fines-acc-apr-list.component.html',
+  templateUrl: './fines-acc-apr-manage.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccAprListComponent {
+export class FinesAccAprManageComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly payloadService = inject(FinesAccPayloadService);

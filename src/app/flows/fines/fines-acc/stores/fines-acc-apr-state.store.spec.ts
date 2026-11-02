@@ -91,7 +91,7 @@ describe('FinesAccountStore APR retry state', () => {
 
   it.each([
     '/fines/account/defendant/142/alternate/payment/reference/error',
-    '/fines/account/defendant/141/alternate/payment/reference/list',
+    '/fines/account/defendant/141/alternate/payment/reference/manage',
     '/fines/account/defendant/141/alternate/payment/reference/add',
     '/fines/account/defendant/141/details#payment-terms',
     '/fines/dashboard',

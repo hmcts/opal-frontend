@@ -19,8 +19,8 @@ import { routing } from '../routing/fines-acc-apr.routes';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FinesAccAprAddComponent } from './fines-acc-apr-add.component';
 
-@Component({ template: 'APR list destination' })
-class AprErrorListDestinationComponent {}
+@Component({ template: 'APR manage destination' })
+class AprErrorManageDestinationComponent {}
 
 @Component({ selector: 'app-standard-error-test-destination', template: 'Standard error destination' })
 class StandardErrorDestinationComponent {}
@@ -92,7 +92,7 @@ describe('Alternate payment reference Add and Error integration', () => {
                     },
                   },
                   { ...errorRoute, canActivate: [] },
-                  { path: 'list', component: AprErrorListDestinationComponent },
+                  { path: 'manage', component: AprErrorManageDestinationComponent },
                 ],
               },
             ],
@@ -170,7 +170,7 @@ describe('Alternate payment reference Add and Error integration', () => {
     confirm.mockReturnValue(true);
     (harness.routeNativeElement!.querySelector('opal-lib-govuk-cancel-link a') as HTMLAnchorElement).click();
     await harness.fixture.whenStable();
-    expect(TestBed.inject(Router).url).toBe(`${root}/list`);
+    expect(TestBed.inject(Router).url).toBe(`${root}/manage`);
     await harness.navigateByUrl(`${root}/add`);
     expect((harness.routeNativeElement!.querySelector('#apr_text') as HTMLInputElement).value).toBe('');
     expect(activeAdd().stateUnsavedChanges).toBe(false);

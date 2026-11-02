@@ -37,7 +37,7 @@ describe('finesAccAprResolver', () => {
   let accountStore: { setAccountState: ReturnType<typeof vi.fn> };
   let payloadService: { transformDefendantAccountHeaderForStore: ReturnType<typeof vi.fn> };
 
-  const navigateToPage = (path = 'list', selectedId?: string) =>
+  const navigateToPage = (path = 'manage', selectedId?: string) =>
     TestBed.inject(Router).navigateByUrl(
       `/fines/account/defendant/${accountId}/alternate/payment/reference/${path}${
         selectedId === undefined ? '' : `?alternatePaymentReferenceId=${selectedId}`
@@ -66,7 +66,7 @@ describe('finesAccAprResolver', () => {
         provideRouter([
           {
             path: 'fines/account/defendant/:accountId/alternate/payment/reference',
-            children: ['list', 'add', 'edit', 'delete'].map((path) => ({
+            children: ['manage', 'add', 'edit', 'delete'].map((path) => ({
               path,
               component: ResolverTestRouteComponent,
             })),
@@ -137,7 +137,7 @@ describe('finesAccAprResolver', () => {
     expect(accountStore.setAccountState).toHaveBeenCalledOnce();
   });
 
-  it('redirects an add entry to the same account list when a direct APR already exists', async () => {
+  it('redirects an add entry to the same account Manage page when a direct APR already exists', async () => {
     api.getAprs.mockReturnValue(of({ ...data, references: [reference] }));
     await navigateToPage('add');
 
@@ -145,7 +145,7 @@ describe('finesAccAprResolver', () => {
 
     expect(result).toBeInstanceOf(RedirectCommand);
     expect(TestBed.inject(Router).serializeUrl((result as RedirectCommand).redirectTo)).toBe(
-      '/fines/account/defendant/141/alternate/payment/reference/list',
+      '/fines/account/defendant/141/alternate/payment/reference/manage',
     );
   });
 
@@ -157,19 +157,22 @@ describe('finesAccAprResolver', () => {
     await expect(resolve()).resolves.toBe(response);
   });
 
-  it.each(['edit', 'delete'])('returns an invalid or missing %s selection to the same account list', async (path) => {
-    api.getAprs.mockReturnValue(of({ ...data, references: [reference] }));
-    for (const selectedId of [undefined, '999', 'invalid', '-1']) {
-      await navigateToPage(path, selectedId);
+  it.each(['edit', 'delete'])(
+    'returns an invalid or missing %s selection to the same account Manage page',
+    async (path) => {
+      api.getAprs.mockReturnValue(of({ ...data, references: [reference] }));
+      for (const selectedId of [undefined, '999', 'invalid', '-1']) {
+        await navigateToPage(path, selectedId);
 
-      const result = await resolve();
+        const result = await resolve();
 
-      expect(result).toBeInstanceOf(RedirectCommand);
-      expect(TestBed.inject(Router).serializeUrl((result as RedirectCommand).redirectTo)).toBe(
-        '/fines/account/defendant/141/alternate/payment/reference/list',
-      );
-    }
-  });
+        expect(result).toBeInstanceOf(RedirectCommand);
+        expect(TestBed.inject(Router).serializeUrl((result as RedirectCommand).redirectTo)).toBe(
+          '/fines/account/defendant/141/alternate/payment/reference/manage',
+        );
+      }
+    },
+  );
 
   it.each([
     ['edit', 'APR', 'APR', true],

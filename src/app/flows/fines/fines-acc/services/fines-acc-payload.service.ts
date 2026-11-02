@@ -69,7 +69,7 @@ import {
   IOpalFinesAprsResponse,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
 import { IFinesAccAprAddFormState } from '../fines-acc-apr-add/interfaces/fines-acc-apr-add-form-state.interface';
-import { IFinesAccAprListData } from '../fines-acc-apr-list/interfaces/fines-acc-apr-list-data.interface';
+import { IFinesAccAprManageData } from '../fines-acc-apr-manage/interfaces/fines-acc-apr-manage-data.interface';
 import { buildAprPayload } from './utils/fines-acc-payload-build-apr.utils';
 import { transformAprToForm, transformAprsPayload } from './utils/fines-acc-payload-transform-apr-data.utils';
 
@@ -117,7 +117,7 @@ export class FinesAccPayloadService {
     return transformAprToForm(reference);
   }
 
-  public transformAprsPayload(response: IOpalFinesAprsResponse): IFinesAccAprListData {
+  public transformAprsPayload(response: IOpalFinesAprsResponse): IFinesAccAprManageData {
     return transformAprsPayload(response);
   }
 

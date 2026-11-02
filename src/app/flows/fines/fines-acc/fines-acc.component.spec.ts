@@ -99,7 +99,7 @@ describe('FinesAccComponent APR retry navigation', () => {
             children: [
               {
                 path: 'defendant/:accountId/alternate/payment/reference',
-                children: ['error', 'edit', 'add', 'list'].map((path) => ({ path, component: TestFormPage })),
+                children: ['error', 'edit', 'add', 'manage'].map((path) => ({ path, component: TestFormPage })),
               },
               { path: 'defendant/:accountId/details', component: TestFormPage },
               { path: 'blocked', component: TestFormPage, canActivate: [() => false] },
@@ -125,7 +125,7 @@ describe('FinesAccComponent APR retry navigation', () => {
   });
 
   it.each([
-    `${aprRoot}/list`,
+    `${aprRoot}/manage`,
     `${aprRoot}/add`,
     '/fines/account/defendant/141/details#payment-terms',
     '/fines/account/defendant/142/alternate/payment/reference/error',

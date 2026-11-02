@@ -16,7 +16,7 @@ export class FinesAccAprErrorComponent {
   private readonly router = inject(Router);
   private readonly accountStore = inject(FinesAccountStore);
   public readonly context = signal<IFinesAccAprErrorContext | null>(null);
-  public readonly returnLink = computed(() => ['../', this.context()?.action ?? 'list']);
+  public readonly returnLink = computed(() => ['../', this.context()?.action ?? 'manage']);
   public readonly returnQueryParams = computed(() =>
     this.context()?.action === 'edit' ? { alternatePaymentReferenceId: this.context()?.referenceId } : {},
   );
@@ -26,7 +26,7 @@ export class FinesAccAprErrorComponent {
       const context = this.accountStore.aprErrorContext();
       if (!context || context.accountId !== Number(params.get('accountId'))) {
         this.accountStore.clearAprErrorContext();
-        void this.router.navigate(['../list'], { relativeTo: this.route, replaceUrl: true });
+        void this.router.navigate(['../manage'], { relativeTo: this.route, replaceUrl: true });
         return;
       }
       this.context.set(context);

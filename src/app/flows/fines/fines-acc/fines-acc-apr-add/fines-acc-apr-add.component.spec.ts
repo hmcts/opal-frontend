@@ -12,8 +12,8 @@ import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { routing } from '../routing/fines-acc-apr.routes';
 import { FinesAccAprAddComponent } from './fines-acc-apr-add.component';
 
-@Component({ template: '<p>APR list</p>' })
-class ListPageComponent {}
+@Component({ template: '<p>APR manage</p>' })
+class ManagePageComponent {}
 
 const response: IOpalFinesAprResponse = {
   reference: {
@@ -29,7 +29,7 @@ const response: IOpalFinesAprResponse = {
   version: '"8"',
 };
 const addUrl = '/fines/account/defendant/141/alternate/payment/reference/add';
-const listUrl = '/fines/account/defendant/141/alternate/payment/reference/list';
+const manageUrl = '/fines/account/defendant/141/alternate/payment/reference/manage';
 
 describe('FinesAccAprAddComponent', () => {
   let accountStore: InstanceType<typeof FinesAccountStore>;
@@ -87,7 +87,7 @@ describe('FinesAccAprAddComponent', () => {
                   },
                 },
               },
-              { path: 'list', component: ListPageComponent },
+              { path: 'manage', component: ManagePageComponent },
             ],
           },
         ]),
@@ -98,7 +98,7 @@ describe('FinesAccAprAddComponent', () => {
 
   afterEach(() => vi.restoreAllMocks());
 
-  it('sends the exact entered reference and quoted current account version, then returns fresh list feedback', async () => {
+  it('sends the exact entered reference and quoted current account version, then returns fresh Manage page feedback', async () => {
     const { harness, component, enter, save } = await render();
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
     const confirm = vi.spyOn(window, 'confirm');
@@ -112,7 +112,7 @@ describe('FinesAccAprAddComponent', () => {
     expect(accountStore.base_version()).toBe('"8"');
     expect(accountStore.successMessage()).toBe('Alternate payment reference added');
     expect(component.stateUnsavedChanges).toBe(false);
-    expect(TestBed.inject(Router).url).toBe(listUrl);
+    expect(TestBed.inject(Router).url).toBe(manageUrl);
     expect(confirm).not.toHaveBeenCalled();
   });
 
@@ -155,7 +155,7 @@ describe('FinesAccAprAddComponent', () => {
     cancel();
     await harness.fixture.whenStable();
 
-    expect(TestBed.inject(Router).url).toBe(listUrl);
+    expect(TestBed.inject(Router).url).toBe(manageUrl);
     expect(api.createApr).not.toHaveBeenCalled();
     expect(confirm).not.toHaveBeenCalled();
   });
@@ -173,7 +173,7 @@ describe('FinesAccAprAddComponent', () => {
     confirm.mockReturnValue(true);
     cancel();
     await harness.fixture.whenStable();
-    expect(TestBed.inject(Router).url).toBe(listUrl);
+    expect(TestBed.inject(Router).url).toBe(manageUrl);
     expect(api.createApr).not.toHaveBeenCalled();
   });
 
@@ -192,7 +192,7 @@ describe('FinesAccAprAddComponent', () => {
     save();
     await harness.fixture.whenStable();
     expect(api.createApr).toHaveBeenCalledExactlyOnceWith(142, { apr_text: 'New-Account' }, '"9"');
-    expect(TestBed.inject(Router).url).toBe(listUrl.replace('/141/', '/142/'));
+    expect(TestBed.inject(Router).url).toBe(manageUrl.replace('/141/', '/142/'));
   });
 
   it('cancels the old pending subscription when route context changes so its response cannot alter the new account', async () => {

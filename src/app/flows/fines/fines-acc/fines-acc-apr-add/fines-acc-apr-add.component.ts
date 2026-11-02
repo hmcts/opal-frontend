@@ -13,7 +13,7 @@ import { IFinesAccAprAddFormState } from './interfaces/fines-acc-apr-add-form-st
 import { FINES_ACC_APR_ADD_SUCCESS_MESSAGE } from './constants/fines-acc-apr-add-success-message.constant';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FinesAccAprAddFormComponent } from './fines-acc-apr-add-form/fines-acc-apr-add-form.component';
-import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-list/constants/fines-acc-apr-routing-paths.constant';
+import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';
 import { FINES_ACC_APR_DUPLICATE_MESSAGE } from '../fines-acc-apr-error/constants/fines-acc-apr-error-message.constant';
 import { isAprDuplicate } from '@app/interceptors/fines-acc-apr-http-error.interceptor';
 
@@ -70,14 +70,14 @@ export class FinesAccAprAddComponent extends AbstractFormParentBaseComponent {
     this.utils.scrollToTop();
   }
 
-  public navigateToList(): void {
-    void this.pageRouter.navigate(['../', FINES_ACC_APR_ROUTING_PATHS.children.list], {
+  public navigateToManage(): void {
+    void this.pageRouter.navigate(['../', FINES_ACC_APR_ROUTING_PATHS.children.manage], {
       relativeTo: this.pageRoute,
     });
   }
 
   public handleCancel(): void {
-    this.navigateToList();
+    this.navigateToManage();
   }
 
   public handleUnsavedChanges(unsavedChanges: boolean): void {
@@ -90,7 +90,7 @@ export class FinesAccAprAddComponent extends AbstractFormParentBaseComponent {
     const accountId = Number(this.pageRoute.snapshot.paramMap.get('accountId'));
     const { version } = this.formContext()['aprs'] as IOpalFinesAprsResponse;
     if (!accountId || !version?.trim()) {
-      this.navigateToList();
+      this.navigateToManage();
       return;
     }
 
@@ -112,7 +112,7 @@ export class FinesAccAprAddComponent extends AbstractFormParentBaseComponent {
         this.api.clearAccountDetailsCache();
         this.accountStore.setSuccessMessage(FINES_ACC_APR_ADD_SUCCESS_MESSAGE);
         this.stateUnsavedChanges = false;
-        this.navigateToList();
+        this.navigateToManage();
       });
   }
 }
