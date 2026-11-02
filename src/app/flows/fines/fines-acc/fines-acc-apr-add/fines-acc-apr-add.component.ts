@@ -5,18 +5,18 @@ import { finalize, Subject, takeUntil } from 'rxjs';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { IOpalFinesAlternatePaymentReferencesResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-alternate-payment-reference.interface';
+import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
 import { FinesAccountStore } from '../stores/fines-acc.store';
-import { FinesAccAlternatePaymentReferenceFormComponent } from '../fines-acc-defendant-alternate-payment-reference/fines-acc-alternate-payment-reference-form.component';
-import { FINES_ACC_ALTERNATE_PAYMENT_REFERENCE_ROUTING_PATHS } from '../routing/constants/fines-acc-alternate-payment-reference-routing-paths.constant';
+import { FinesAccAprFormComponent } from '../fines-acc-apr/fines-acc-apr-form.component';
+import { FINES_ACC_APR_ROUTING_PATHS } from '../routing/constants/fines-acc-apr-routing-paths.constant';
 
 @Component({
-  selector: 'app-fines-acc-defendant-alternate-payment-reference-add',
-  imports: [FinesAccAlternatePaymentReferenceFormComponent],
-  templateUrl: './fines-acc-defendant-alternate-payment-reference-add.component.html',
+  selector: 'app-fines-acc-apr-add',
+  imports: [FinesAccAprFormComponent],
+  templateUrl: './fines-acc-apr-add.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccDefendantAlternatePaymentReferenceAddComponent extends AbstractFormParentBaseComponent {
+export class FinesAccAprAddComponent extends AbstractFormParentBaseComponent {
   private readonly pageRoute = inject(ActivatedRoute);
   private readonly pageRouter = inject(Router);
   private readonly accountStore = inject(FinesAccountStore);
@@ -44,7 +44,7 @@ export class FinesAccDefendantAlternatePaymentReferenceAddComponent extends Abst
   }
 
   public navigateToList(): void {
-    void this.pageRouter.navigate(['../', FINES_ACC_ALTERNATE_PAYMENT_REFERENCE_ROUTING_PATHS.children.list], {
+    void this.pageRouter.navigate(['../', FINES_ACC_APR_ROUTING_PATHS.children.list], {
       relativeTo: this.pageRoute,
     });
   }
@@ -52,9 +52,7 @@ export class FinesAccDefendantAlternatePaymentReferenceAddComponent extends Abst
   public handleSave(aprText: string): void {
     if (this.pending()) return;
     const accountId = Number(this.pageRoute.snapshot.paramMap.get('accountId'));
-    const { version } = this.formContext()[
-      'alternatePaymentReferences'
-    ] as IOpalFinesAlternatePaymentReferencesResponse;
+    const { version } = this.formContext()['aprs'] as IOpalFinesAprsResponse;
     if (!accountId || !version?.trim()) {
       this.navigateToList();
       return;
@@ -62,7 +60,7 @@ export class FinesAccDefendantAlternatePaymentReferenceAddComponent extends Abst
 
     this.pending.set(true);
     this.api
-      .createAlternatePaymentReference(accountId, { apr_text: aprText }, version)
+      .createApr(accountId, { apr_text: aprText }, version)
       .pipe(
         takeUntil(this.contextChanged),
         takeUntilDestroyed(this.destroyRef),

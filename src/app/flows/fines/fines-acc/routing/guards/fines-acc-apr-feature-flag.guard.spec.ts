@@ -10,9 +10,9 @@ import {
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch-darkly-service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { bankingInterfacesFeatureFlagGuard } from './fines-acc-alternate-payment-reference-feature-flag.guard';
+import { finesAccAprFeatureFlagGuard } from './fines-acc-apr-feature-flag.guard';
 
-describe('bankingInterfacesFeatureFlagGuard', () => {
+describe('finesAccAprFeatureFlagGuard', () => {
   let featureFlags: Record<string, boolean>;
 
   beforeEach(() => {
@@ -36,7 +36,7 @@ describe('bankingInterfacesFeatureFlagGuard', () => {
       const route = { paramMap: convertToParamMap({ accountId: '123' }) } as ActivatedRouteSnapshot;
 
       const result = await TestBed.runInInjectionContext(() =>
-        bankingInterfacesFeatureFlagGuard(route, {} as RouterStateSnapshot),
+        finesAccAprFeatureFlagGuard(route, {} as RouterStateSnapshot),
       );
 
       expect(TestBed.inject(Router).serializeUrl(result as UrlTree)).toBe(
@@ -50,7 +50,7 @@ describe('bankingInterfacesFeatureFlagGuard', () => {
     const route = { paramMap: convertToParamMap({ accountId: '123' }) } as ActivatedRouteSnapshot;
 
     const result = await TestBed.runInInjectionContext(() =>
-      bankingInterfacesFeatureFlagGuard(route, {} as RouterStateSnapshot),
+      finesAccAprFeatureFlagGuard(route, {} as RouterStateSnapshot),
     );
 
     expect(result).toBe(true);

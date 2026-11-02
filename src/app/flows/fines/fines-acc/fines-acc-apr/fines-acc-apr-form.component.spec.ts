@@ -2,11 +2,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { FinesAccAlternatePaymentReferenceFormComponent } from './fines-acc-alternate-payment-reference-form.component';
+import { FinesAccAprFormComponent } from './fines-acc-apr-form.component';
 
-describe('FinesAccAlternatePaymentReferenceFormComponent', () => {
-  let fixture: ComponentFixture<FinesAccAlternatePaymentReferenceFormComponent>;
-  let component: FinesAccAlternatePaymentReferenceFormComponent;
+describe('FinesAccAprFormComponent', () => {
+  let fixture: ComponentFixture<FinesAccAprFormComponent>;
+  let component: FinesAccAprFormComponent;
 
   const enter = (value: string) => {
     const input = fixture.nativeElement.querySelector('#apr_text') as HTMLInputElement;
@@ -20,10 +20,10 @@ describe('FinesAccAlternatePaymentReferenceFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FinesAccAlternatePaymentReferenceFormComponent],
+      imports: [FinesAccAprFormComponent],
       providers: [provideRouter([]), { provide: UtilsService, useValue: { scrollToTop: vi.fn() } }],
     }).compileComponents();
-    fixture = TestBed.createComponent(FinesAccAlternatePaymentReferenceFormComponent);
+    fixture = TestBed.createComponent(FinesAccAprFormComponent);
     component = fixture.componentInstance;
   });
 

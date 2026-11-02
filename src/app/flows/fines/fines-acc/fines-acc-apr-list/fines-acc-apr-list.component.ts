@@ -4,31 +4,29 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
-import { IOpalFinesAlternatePaymentReferencesResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-alternate-payment-reference.interface';
+import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FinesAccBannerMessagesComponent } from '../fines-acc-banner-messages/fines-acc-banner-messages.component';
-import { FinesAccAlternatePaymentReferenceTableComponent } from '../fines-acc-defendant-alternate-payment-reference/fines-acc-alternate-payment-reference-table.component';
-import { canAddAlternatePaymentReference } from '../fines-acc-defendant-alternate-payment-reference/fines-acc-alternate-payment-reference.utils';
+import { FinesAccAprTableComponent } from '../fines-acc-apr/fines-acc-apr-table.component';
+import { canAddApr } from '../fines-acc-apr/fines-acc-apr.utils';
 
 @Component({
-  selector: 'app-fines-acc-defendant-alternate-payment-reference-list',
+  selector: 'app-fines-acc-apr-list',
   imports: [
     GovukBackLinkComponent,
     GovukButtonComponent,
     GovukHeadingWithCaptionComponent,
     FinesAccBannerMessagesComponent,
-    FinesAccAlternatePaymentReferenceTableComponent,
+    FinesAccAprTableComponent,
   ],
-  templateUrl: './fines-acc-defendant-alternate-payment-reference-list.component.html',
+  templateUrl: './fines-acc-apr-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccDefendantAlternatePaymentReferenceListComponent {
+export class FinesAccAprListComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly routeData = toSignal(this.route.data, { initialValue: this.route.snapshot.data });
-  private readonly data = computed(
-    () => this.routeData()['alternatePaymentReferences'] as IOpalFinesAlternatePaymentReferencesResponse,
-  );
+  private readonly data = computed(() => this.routeData()['aprs'] as IOpalFinesAprsResponse);
   public readonly accountStore = inject(FinesAccountStore);
   public readonly currentReferences = computed(() =>
     this.data().references.filter((reference) => reference.category === 'APR' && reference.relationship === 'APR'),
@@ -36,7 +34,7 @@ export class FinesAccDefendantAlternatePaymentReferenceListComponent {
   public readonly consolidatedReferences = computed(() =>
     this.data().references.filter((reference) => reference.category === 'APR' && reference.relationship !== 'APR'),
   );
-  public readonly canAdd = computed(() => canAddAlternatePaymentReference(this.data().references));
+  public readonly canAdd = computed(() => canAddApr(this.data().references));
   public readonly successMessage = signal<string | null>(null);
   public readonly accountCaption = computed(
     () => `${this.accountStore.getAccountNumber()} - ${this.accountStore.party_name()}`,

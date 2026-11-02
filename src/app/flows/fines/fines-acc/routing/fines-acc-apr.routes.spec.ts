@@ -2,9 +2,9 @@ import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deact
 import { businessUnitRoutePermissionsGuard } from '@hmcts/opal-frontend-common/guards/business-unit-route-permissions';
 import { describe, expect, it } from 'vitest';
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
-import { alternatePaymentReferencesResolver } from '../fines-acc-defendant-alternate-payment-reference/fines-acc-alternate-payment-references.resolver';
-import { FinesAccDefendantAlternatePaymentReferenceAddComponent } from '../fines-acc-defendant-alternate-payment-reference-add/fines-acc-defendant-alternate-payment-reference-add.component';
-import { routing } from './fines-acc-alternate-payment-reference.routes';
+import { finesAccAprResolver } from '../fines-acc-apr/fines-acc-apr.resolver';
+import { FinesAccAprAddComponent } from '../fines-acc-apr-add/fines-acc-apr-add.component';
+import { routing } from './fines-acc-apr.routes';
 
 describe('APR Add route', () => {
   const route = routing.find((route) => route.path === 'add');
@@ -18,10 +18,10 @@ describe('APR Add route', () => {
       routePermissionId: [FINES_PERMISSIONS['manage-alternate-payment-references']],
       accessDeniedPath: 'denied',
     });
-    expect(route?.resolve?.['alternatePaymentReferences']).toBe(alternatePaymentReferencesResolver);
+    expect(route?.resolve?.['aprs']).toBe(finesAccAprResolver);
   });
 
   it('lazy loads the Add page', async () => {
-    expect(await route?.loadComponent?.()).toBe(FinesAccDefendantAlternatePaymentReferenceAddComponent);
+    expect(await route?.loadComponent?.()).toBe(FinesAccAprAddComponent);
   });
 });

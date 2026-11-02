@@ -22,7 +22,7 @@ describe('OpalFines alternate payment references', () => {
 
   it('maps a bare array and preserves the quoted account ETag', () => {
     const result = vi.fn();
-    service.getAlternatePaymentReferences(77).subscribe(result);
+    service.getAprs(77).subscribe(result);
     const request = http.expectOne(url);
     expect(request.request.method).toBe('GET');
     request.flush([], { headers: { ETag: '"7"' } });
@@ -30,17 +30,17 @@ describe('OpalFines alternate payment references', () => {
   });
 
   it('does not cache across entries or accounts', () => {
-    service.getAlternatePaymentReferences(77).subscribe();
+    service.getAprs(77).subscribe();
     http.expectOne(url).flush([]);
-    service.getAlternatePaymentReferences(77).subscribe();
+    service.getAprs(77).subscribe();
     http.expectOne(url).flush([]);
-    service.getAlternatePaymentReferences(78).subscribe();
+    service.getAprs(78).subscribe();
     http.expectOne(url.replace('/77/', '/78/')).flush([]);
   });
 
   it('represents a missing ETag explicitly', () => {
     const result = vi.fn();
-    service.getAlternatePaymentReferences(77).subscribe(result);
+    service.getAprs(77).subscribe(result);
     http.expectOne(url).flush([]);
     expect(result).toHaveBeenCalledWith({ references: [], version: null });
   });
@@ -48,7 +48,7 @@ describe('OpalFines alternate payment references', () => {
   it('creates the reference with its original text and account ETag, with no business unit header', () => {
     const result = vi.fn();
     const reference = { alternate_payment_reference_id: 11, apr_text: ' MiXeD-123 ' };
-    service.createAlternatePaymentReference(77, { apr_text: ' MiXeD-123 ' }, '"7"').subscribe(result);
+    service.createApr(77, { apr_text: ' MiXeD-123 ' }, '"7"').subscribe(result);
     const request = http.expectOne(url);
 
     expect(request.request.method).toBe('POST');
@@ -61,7 +61,7 @@ describe('OpalFines alternate payment references', () => {
 
   it.each([409, 412, 500, 503])('does not retry a failed create request with status %s', (status) => {
     const error = vi.fn();
-    service.createAlternatePaymentReference(77, { apr_text: 'Reference' }, '"7"').subscribe({ error });
+    service.createApr(77, { apr_text: 'Reference' }, '"7"').subscribe({ error });
     http.expectOne(url).flush({ status }, { status, statusText: 'Failure' });
 
     expect(error).toHaveBeenCalledOnce();

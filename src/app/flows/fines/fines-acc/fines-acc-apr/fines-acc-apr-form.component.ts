@@ -15,11 +15,11 @@ import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
-import { IFinesAccAlternatePaymentReferenceFormState } from './fines-acc-alternate-payment-reference-form.interface';
-import { FINES_ACC_ALTERNATE_PAYMENT_REFERENCE_FIELD_ERRORS } from './fines-acc-alternate-payment-reference-field-errors.constant';
+import { IFinesAccAprFormState } from './fines-acc-apr-form.interface';
+import { FINES_ACC_APR_FIELD_ERRORS } from './fines-acc-apr-field-errors.constant';
 
 @Component({
-  selector: 'app-fines-acc-alternate-payment-reference-form',
+  selector: 'app-fines-acc-apr-form',
   imports: [
     ReactiveFormsModule,
     GovukHeadingWithCaptionComponent,
@@ -28,11 +28,11 @@ import { FINES_ACC_ALTERNATE_PAYMENT_REFERENCE_FIELD_ERRORS } from './fines-acc-
     GovukButtonComponent,
     GovukCancelLinkComponent,
   ],
-  templateUrl: './fines-acc-alternate-payment-reference-form.component.html',
+  templateUrl: './fines-acc-apr-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccAlternatePaymentReferenceFormComponent extends AbstractFormBaseComponent implements OnChanges {
-  protected override fieldErrors = FINES_ACC_ALTERNATE_PAYMENT_REFERENCE_FIELD_ERRORS;
+export class FinesAccAprFormComponent extends AbstractFormBaseComponent implements OnChanges {
+  protected override fieldErrors = FINES_ACC_APR_FIELD_ERRORS;
 
   @Input() public initialValue = '';
   @Input() public contextKey: unknown;
@@ -40,9 +40,7 @@ export class FinesAccAlternatePaymentReferenceFormComponent extends AbstractForm
   @Input() public headingText = 'Add Alternate Payment Reference';
   @Input() public labelText = 'Enter payment reference';
   @Input() public pending = false;
-  @Output() public override formSubmit = new EventEmitter<
-    IAbstractFormBaseForm<IFinesAccAlternatePaymentReferenceFormState>
-  >();
+  @Output() public override formSubmit = new EventEmitter<IAbstractFormBaseForm<IFinesAccAprFormState>>();
   @Output() public readonly cancelRequested = new EventEmitter<void>();
 
   public override readonly form = new FormGroup({

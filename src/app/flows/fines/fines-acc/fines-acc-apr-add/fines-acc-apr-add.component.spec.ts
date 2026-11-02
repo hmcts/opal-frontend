@@ -6,16 +6,16 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { Subject, of, throwError } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { IOpalFinesAlternatePaymentReferenceResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-alternate-payment-reference.interface';
+import { IOpalFinesAprResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
-import { routing } from '../routing/fines-acc-alternate-payment-reference.routes';
-import { FinesAccDefendantAlternatePaymentReferenceAddComponent } from './fines-acc-defendant-alternate-payment-reference-add.component';
+import { routing } from '../routing/fines-acc-apr.routes';
+import { FinesAccAprAddComponent } from './fines-acc-apr-add.component';
 
 @Component({ template: '<p>APR list</p>' })
 class ListPageComponent {}
 
-const response: IOpalFinesAlternatePaymentReferenceResponse = {
+const response: IOpalFinesAprResponse = {
   reference: {
     alternate_payment_reference_id: 11,
     defendant_account_id: 141,
@@ -31,10 +31,10 @@ const response: IOpalFinesAlternatePaymentReferenceResponse = {
 const addUrl = '/fines/account/defendant/141/alternate/payment/reference/add';
 const listUrl = '/fines/account/defendant/141/alternate/payment/reference/list';
 
-describe('FinesAccDefendantAlternatePaymentReferenceAddComponent', () => {
+describe('FinesAccAprAddComponent', () => {
   let accountStore: InstanceType<typeof FinesAccountStore>;
   let api: {
-    createAlternatePaymentReference: ReturnType<typeof vi.fn>;
+    createApr: ReturnType<typeof vi.fn>;
     clearAccountDetailsCache: ReturnType<typeof vi.fn>;
   };
   let utils: { scrollToTop: ReturnType<typeof vi.fn> };
@@ -42,7 +42,7 @@ describe('FinesAccDefendantAlternatePaymentReferenceAddComponent', () => {
 
   const render = async () => {
     const harness = await RouterTestingHarness.create();
-    const component = await harness.navigateByUrl(addUrl, FinesAccDefendantAlternatePaymentReferenceAddComponent);
+    const component = await harness.navigateByUrl(addUrl, FinesAccAprAddComponent);
     const enter = (value: string) => {
       const input = harness.routeNativeElement!.querySelector('#apr_text') as HTMLInputElement;
       input.value = value;
@@ -59,7 +59,7 @@ describe('FinesAccDefendantAlternatePaymentReferenceAddComponent', () => {
 
   beforeEach(async () => {
     initialVersion = '"7"';
-    api = { createAlternatePaymentReference: vi.fn().mockReturnValue(of(response)), clearAccountDetailsCache: vi.fn() };
+    api = { createApr: vi.fn().mockReturnValue(of(response)), clearAccountDetailsCache: vi.fn() };
     utils = { scrollToTop: vi.fn() };
     const addRoute = routing.find((route) => route.path === 'add')!;
     await TestBed.configureTestingModule({
@@ -74,7 +74,7 @@ describe('FinesAccDefendantAlternatePaymentReferenceAddComponent', () => {
                 ...addRoute,
                 canActivate: [],
                 resolve: {
-                  alternatePaymentReferences: (route: ActivatedRouteSnapshot) => {
+                  aprs: (route: ActivatedRouteSnapshot) => {
                     const accountId = Number(route.paramMap.get('accountId'));
                     accountStore.setAccountState({
                       ...MOCK_FINES_ACCOUNT_STATE,
@@ -107,7 +107,7 @@ describe('FinesAccDefendantAlternatePaymentReferenceAddComponent', () => {
     save();
     await navigate.mock.results[0].value;
 
-    expect(api.createAlternatePaymentReference).toHaveBeenCalledExactlyOnceWith(141, { apr_text: ' AbC-123 ' }, '"7"');
+    expect(api.createApr).toHaveBeenCalledExactlyOnceWith(141, { apr_text: ' AbC-123 ' }, '"7"');
     expect(api.clearAccountDetailsCache).toHaveBeenCalledOnce();
     expect(accountStore.base_version()).toBe('"8"');
     expect(accountStore.successMessage()).toBe('Alternate payment reference added');
@@ -118,7 +118,7 @@ describe('FinesAccDefendantAlternatePaymentReferenceAddComponent', () => {
 
   it('keeps entered text and the unsaved warning after an API failure, without success feedback', async () => {
     const failure = { status: 500 };
-    api.createAlternatePaymentReference.mockReturnValue(throwError(() => failure));
+    api.createApr.mockReturnValue(throwError(() => failure));
     const { harness, component, enter, save } = await render();
     enter('Retry-Reference');
     save();
@@ -134,8 +134,8 @@ describe('FinesAccDefendantAlternatePaymentReferenceAddComponent', () => {
   });
 
   it('permits only one pending request and disables Save', async () => {
-    const result = new Subject<IOpalFinesAlternatePaymentReferenceResponse>();
-    api.createAlternatePaymentReference.mockReturnValue(result);
+    const result = new Subject<IOpalFinesAprResponse>();
+    api.createApr.mockReturnValue(result);
     const { harness, component, enter, save } = await render();
     enter('Pending');
     save();
@@ -143,7 +143,7 @@ describe('FinesAccDefendantAlternatePaymentReferenceAddComponent', () => {
     component.handleSave('Pending');
 
     expect(component.pending()).toBe(true);
-    expect(api.createAlternatePaymentReference).toHaveBeenCalledOnce();
+    expect(api.createApr).toHaveBeenCalledOnce();
     expect((harness.routeNativeElement!.querySelector('#apr-save') as HTMLButtonElement).matches(':disabled')).toBe(
       true,
     );
@@ -156,7 +156,7 @@ describe('FinesAccDefendantAlternatePaymentReferenceAddComponent', () => {
     await harness.fixture.whenStable();
 
     expect(TestBed.inject(Router).url).toBe(listUrl);
-    expect(api.createAlternatePaymentReference).not.toHaveBeenCalled();
+    expect(api.createApr).not.toHaveBeenCalled();
     expect(confirm).not.toHaveBeenCalled();
   });
 
@@ -174,7 +174,7 @@ describe('FinesAccDefendantAlternatePaymentReferenceAddComponent', () => {
     cancel();
     await harness.fixture.whenStable();
     expect(TestBed.inject(Router).url).toBe(listUrl);
-    expect(api.createAlternatePaymentReference).not.toHaveBeenCalled();
+    expect(api.createApr).not.toHaveBeenCalled();
   });
 
   it('resets a reused Add page from fresh route context and saves against the new account and version', async () => {
@@ -182,10 +182,7 @@ describe('FinesAccDefendantAlternatePaymentReferenceAddComponent', () => {
     vi.spyOn(window, 'confirm').mockReturnValue(true);
     enter('Old-Account');
 
-    const reused = await harness.navigateByUrl(
-      addUrl.replace('/141/', '/142/'),
-      FinesAccDefendantAlternatePaymentReferenceAddComponent,
-    );
+    const reused = await harness.navigateByUrl(addUrl.replace('/141/', '/142/'), FinesAccAprAddComponent);
 
     expect(reused).toBe(component);
     expect(component.stateUnsavedChanges).toBe(false);
@@ -194,26 +191,19 @@ describe('FinesAccDefendantAlternatePaymentReferenceAddComponent', () => {
     enter('New-Account');
     save();
     await harness.fixture.whenStable();
-    expect(api.createAlternatePaymentReference).toHaveBeenCalledExactlyOnceWith(
-      142,
-      { apr_text: 'New-Account' },
-      '"9"',
-    );
+    expect(api.createApr).toHaveBeenCalledExactlyOnceWith(142, { apr_text: 'New-Account' }, '"9"');
     expect(TestBed.inject(Router).url).toBe(listUrl.replace('/141/', '/142/'));
   });
 
   it('cancels the old pending subscription when route context changes so its response cannot alter the new account', async () => {
-    const result = new Subject<IOpalFinesAlternatePaymentReferenceResponse>();
-    api.createAlternatePaymentReference.mockReturnValue(result);
+    const result = new Subject<IOpalFinesAprResponse>();
+    api.createApr.mockReturnValue(result);
     const { harness, component, enter, save } = await render();
     vi.spyOn(window, 'confirm').mockReturnValue(true);
     enter('Old-Account');
     save();
 
-    await harness.navigateByUrl(
-      addUrl.replace('/141/', '/142/'),
-      FinesAccDefendantAlternatePaymentReferenceAddComponent,
-    );
+    await harness.navigateByUrl(addUrl.replace('/141/', '/142/'), FinesAccAprAddComponent);
     result.next(response);
 
     expect(component.pending()).toBe(false);
@@ -232,7 +222,7 @@ describe('FinesAccDefendantAlternatePaymentReferenceAddComponent', () => {
     component.handleSave('Valid');
     await harness.fixture.whenStable();
 
-    expect(api.createAlternatePaymentReference).not.toHaveBeenCalled();
+    expect(api.createApr).not.toHaveBeenCalled();
   });
 
   it('keeps the resolved page version paired with the entered reference when other requests change account state', async () => {
@@ -242,10 +232,6 @@ describe('FinesAccDefendantAlternatePaymentReferenceAddComponent', () => {
     component.handleSave('Original-Snapshot');
     await harness.fixture.whenStable();
 
-    expect(api.createAlternatePaymentReference).toHaveBeenCalledExactlyOnceWith(
-      141,
-      { apr_text: 'Original-Snapshot' },
-      '"7"',
-    );
+    expect(api.createApr).toHaveBeenCalledExactlyOnceWith(141, { apr_text: 'Original-Snapshot' }, '"7"');
   });
 });

@@ -81,11 +81,7 @@ import { IOpalFinesTillsResponse } from './interfaces/opal-fines-tills-response.
 import { IOpalFinesInterfaceJobsSummaryParams } from './interfaces/opal-fines-interface-jobs-summary-params.interface';
 import { IOpalFinesInterfaceJobsSummaryResponse } from './interfaces/opal-fines-interface-jobs-summary-response.interface';
 import { IOpalFinesProcessInterfaceJobsPayload } from './interfaces/opal-fines-process-interface-jobs-payload.interface';
-import {
-  IOpalFinesAlternatePaymentReference,
-  IOpalFinesAlternatePaymentReferenceResponse,
-  IOpalFinesAlternatePaymentReferencesResponse,
-} from './interfaces/opal-fines-alternate-payment-reference.interface';
+import { IOpalFinesApr, IOpalFinesAprResponse, IOpalFinesAprsResponse } from './interfaces/opal-fines-apr.interface';
 
 const SAFE_READ_RETRY_POLICY = {
   retryCount: 1,
@@ -1246,10 +1242,10 @@ export class OpalFines {
   }
 
   /** Reads APRs together with the defendant-account version used for subsequent writes. */
-  public getAlternatePaymentReferences(accountId: number): Observable<IOpalFinesAlternatePaymentReferencesResponse> {
+  public getAprs(accountId: number): Observable<IOpalFinesAprsResponse> {
     return this.http
       .get<
-        IOpalFinesAlternatePaymentReference[]
+        IOpalFinesApr[]
       >(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/alternate-payment-references`, this.withRetrySafeReadOptions({ observe: 'response' as const }))
       .pipe(
         map((response) => ({
@@ -1259,17 +1255,16 @@ export class OpalFines {
       );
   }
 
-  public createAlternatePaymentReference(
+  public createApr(
     accountId: number,
     payload: { apr_text: string },
     version: string,
-  ): Observable<IOpalFinesAlternatePaymentReferenceResponse> {
+  ): Observable<IOpalFinesAprResponse> {
     return this.http
-      .post<IOpalFinesAlternatePaymentReference>(
-        `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/alternate-payment-references`,
-        payload,
-        { observe: 'response', headers: { 'If-Match': version } },
-      )
+      .post<IOpalFinesApr>(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/alternate-payment-references`, payload, {
+        observe: 'response',
+        headers: { 'If-Match': version },
+      })
       .pipe(
         map((response) => ({
           reference: response.body!,

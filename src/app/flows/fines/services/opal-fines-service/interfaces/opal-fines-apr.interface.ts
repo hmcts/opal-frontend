@@ -1,4 +1,4 @@
-export interface IOpalFinesAlternatePaymentReference {
+export interface IOpalFinesApr {
   alternate_payment_reference_id: number;
   defendant_account_id: number;
   relationship: 'APR' | 'CONSOLIDATED' | 'AMALGAMATED';
@@ -9,12 +9,12 @@ export interface IOpalFinesAlternatePaymentReference {
   updated_at: string | null;
 }
 
-export interface IOpalFinesAlternatePaymentReferencesResponse {
-  references: IOpalFinesAlternatePaymentReference[];
+export interface IOpalFinesAprsResponse {
+  references: IOpalFinesApr[];
   version: string | null;
 }
 
-export interface IOpalFinesAlternatePaymentReferenceResponse {
-  reference: IOpalFinesAlternatePaymentReference;
+export interface IOpalFinesAprResponse {
+  reference: IOpalFinesApr;
   version: string | null;
 }

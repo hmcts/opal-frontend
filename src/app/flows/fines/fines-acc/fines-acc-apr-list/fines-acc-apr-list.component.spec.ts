@@ -3,16 +3,16 @@ import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { describe, expect, it, vi } from 'vitest';
-import { IOpalFinesAlternatePaymentReference } from '@services/fines/opal-fines-service/interfaces/opal-fines-alternate-payment-reference.interface';
+import { IOpalFinesApr } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { alternatePaymentReferencesResolver } from '../fines-acc-defendant-alternate-payment-reference/fines-acc-alternate-payment-references.resolver';
+import { finesAccAprResolver } from '../fines-acc-apr/fines-acc-apr.resolver';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { FinesAccountStore } from '../stores/fines-acc.store';
-import { FinesAccDefendantAlternatePaymentReferenceListComponent } from './fines-acc-defendant-alternate-payment-reference-list.component';
+import { FinesAccAprListComponent } from './fines-acc-apr-list.component';
 
-const currentReference: IOpalFinesAlternatePaymentReference = {
+const currentReference: IOpalFinesApr = {
   alternate_payment_reference_id: 11,
   defendant_account_id: 141,
   business_unit_id: 77,
@@ -24,7 +24,7 @@ const currentReference: IOpalFinesAlternatePaymentReference = {
 };
 const listUrl = '/fines/account/defendant/141/alternate/payment/reference/list';
 
-const renderList = async (references: IOpalFinesAlternatePaymentReference[], initialMessage: string | null = null) => {
+const renderList = async (references: IOpalFinesApr[], initialMessage: string | null = null) => {
   let successMessage = initialMessage;
   const accountStore = {
     getAccountNumber: () => '177A',
@@ -41,14 +41,14 @@ const renderList = async (references: IOpalFinesAlternatePaymentReference[], ini
       provideRouter([
         {
           path: 'fines/account/defendant/:accountId/alternate/payment/reference/list',
-          component: FinesAccDefendantAlternatePaymentReferenceListComponent,
-          data: { alternatePaymentReferences: { references, version: '"7"' } },
+          component: FinesAccAprListComponent,
+          data: { aprs: { references, version: '"7"' } },
         },
       ]),
     ],
   }).compileComponents();
   const harness = await RouterTestingHarness.create();
-  const component = await harness.navigateByUrl(listUrl, FinesAccDefendantAlternatePaymentReferenceListComponent);
+  const component = await harness.navigateByUrl(listUrl, FinesAccAprListComponent);
   return { element: harness.routeNativeElement!, component, accountStore, harness };
 };
 
@@ -62,7 +62,7 @@ const navigationDestination = (element: Element, selector: string): string => {
   return destination;
 };
 
-describe('FinesAccDefendantAlternatePaymentReferenceListComponent', () => {
+describe('FinesAccAprListComponent', () => {
   it('renders the account caption, both empty states and links to add or return to the same account Payment terms', async () => {
     const { element } = await renderList([]);
 
@@ -166,7 +166,7 @@ describe('FinesAccDefendantAlternatePaymentReferenceListComponent', () => {
   });
 
   it('updates references, caption and account action links when Angular reuses the list for another account', async () => {
-    const inheritedReference: IOpalFinesAlternatePaymentReference = {
+    const inheritedReference: IOpalFinesApr = {
       ...currentReference,
       alternate_payment_reference_id: 22,
       defendant_account_id: 142,
@@ -178,9 +178,9 @@ describe('FinesAccDefendantAlternatePaymentReferenceListComponent', () => {
         provideRouter([
           {
             path: 'fines/account/defendant/:accountId/alternate/payment/reference/list',
-            component: FinesAccDefendantAlternatePaymentReferenceListComponent,
+            component: FinesAccAprListComponent,
             runGuardsAndResolvers: 'always',
-            resolve: { alternatePaymentReferences: alternatePaymentReferencesResolver },
+            resolve: { aprs: finesAccAprResolver },
           },
         ]),
         {
@@ -188,7 +188,7 @@ describe('FinesAccDefendantAlternatePaymentReferenceListComponent', () => {
           useValue: {
             getDefendantAccountHeadingData: (accountId: number) =>
               of({ ...FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK, defendant_account_id: String(accountId) }),
-            getAlternatePaymentReferences: (accountId: number) =>
+            getAprs: (accountId: number) =>
               of({ references: [accountId === 141 ? currentReference : inheritedReference], version: '"7"' }),
           },
         },
@@ -208,18 +208,12 @@ describe('FinesAccDefendantAlternatePaymentReferenceListComponent', () => {
     const harness = await RouterTestingHarness.create();
     const accountStore = TestBed.inject(FinesAccountStore);
     accountStore.setSuccessMessage('First account feedback');
-    const firstComponent = await harness.navigateByUrl(
-      listUrl,
-      FinesAccDefendantAlternatePaymentReferenceListComponent,
-    );
+    const firstComponent = await harness.navigateByUrl(listUrl, FinesAccAprListComponent);
     expect(harness.routeNativeElement?.textContent).toContain('177A - FIRST TEST');
     expect(harness.routeNativeElement?.textContent).toContain('First account feedback');
     expect(harness.routeNativeElement?.querySelector('#apr-current-table [data-reference-id="11"]')).not.toBeNull();
 
-    const reusedComponent = await harness.navigateByUrl(
-      listUrl.replace('/141/', '/142/'),
-      FinesAccDefendantAlternatePaymentReferenceListComponent,
-    );
+    const reusedComponent = await harness.navigateByUrl(listUrl.replace('/141/', '/142/'), FinesAccAprListComponent);
     const element = harness.routeNativeElement!;
 
     expect(reusedComponent).toBe(firstComponent);
