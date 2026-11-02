@@ -1,0 +1,43 @@
+<table class="govuk-table" [id]="tableId">
+  <thead class="govuk-table__head">
+    <tr class="govuk-table__row">
+      <th scope="col" class="govuk-table__header">Reference</th>
+      <th scope="col" class="govuk-table__header">Date created</th>
+      <th scope="col" class="govuk-table__header">Date updated</th>
+      @if (showActions) {
+        <th scope="col" class="govuk-table__header">Actions</th>
+      }
+    </tr>
+  </thead>
+  <tbody class="govuk-table__body">
+    @for (reference of references; track reference.alternate_payment_reference_id) {
+      <tr class="govuk-table__row" [attr.data-reference-id]="reference.alternate_payment_reference_id">
+        <th scope="row" class="govuk-table__header">{{ reference.apr_text }}</th>
+        <td class="govuk-table__cell">{{ formatDate(reference.created_at) }}</td>
+        <td class="govuk-table__cell">{{ formatDate(reference.updated_at) }}</td>
+        @if (showActions) {
+          <td class="govuk-table__cell">
+            @if (canChange(reference)) {
+              <a
+                class="govuk-link govuk-!-margin-right-3"
+                [id]="'apr-change-' + reference.alternate_payment_reference_id"
+                [routerLink]="['../edit']"
+                [queryParams]="{ alternatePaymentReferenceId: reference.alternate_payment_reference_id }"
+                >change<span class="govuk-visually-hidden"> {{ reference.apr_text }}</span></a
+              >
+            }
+            @if (canRemove(reference)) {
+              <a
+                class="govuk-link"
+                [id]="'apr-remove-' + reference.alternate_payment_reference_id"
+                [routerLink]="['../delete']"
+                [queryParams]="{ alternatePaymentReferenceId: reference.alternate_payment_reference_id }"
+                >remove<span class="govuk-visually-hidden"> {{ reference.apr_text }}</span></a
+              >
+            }
+          </td>
+        }
+      </tr>
+    }
+  </tbody>
+</table>
