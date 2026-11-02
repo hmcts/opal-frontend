@@ -188,3 +188,17 @@
     }
   </ng-container>
 </div>
+@if (bankingInterfacesEnabled && hasManageAlternatePaymentReferencesPermission) {
+  <div class="govuk-grid-column-one-third">
+    <hr [class]="style.hr" />
+    <h2 [class]="style.heading">Actions</h2>
+    <p>
+      <a
+        id="manage-alternate-payment-references"
+        class="govuk-link govuk-link--no-visited-state"
+        [routerLink]="manageAlternatePaymentReferencesLink()"
+        >Manage alternate payment references</a
+      >
+    </p>
+  </div>
+}

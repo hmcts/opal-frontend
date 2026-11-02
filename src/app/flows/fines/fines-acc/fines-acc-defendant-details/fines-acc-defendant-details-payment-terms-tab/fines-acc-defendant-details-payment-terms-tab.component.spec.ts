@@ -7,7 +7,7 @@ import { FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS } from '../../fines-acc-payment
 import { provideRouter, Router } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-describe('FinesAccPaymentTermsAmendComponent', () => {
+describe('FinesAccDefendantDetailsPaymentTermsTabComponent', () => {
   let component: FinesAccDefendantDetailsPaymentTermsTabComponent;
   let fixture: ComponentFixture<FinesAccDefendantDetailsPaymentTermsTabComponent>;
 
@@ -67,6 +67,41 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     expect(getLinkByText('Change')).toBeUndefined();
     expect(getLinkByText('Request payment card')).toBeUndefined();
   });
+
+  it.each([
+    { enabled: false, permitted: false },
+    { enabled: false, permitted: true },
+    { enabled: true, permitted: false },
+  ])('should hide the APR action when enabled=$enabled and permitted=$permitted', ({ enabled, permitted }) => {
+    component.bankingInterfacesEnabled = enabled;
+    component.hasManageAlternatePaymentReferencesPermission = permitted;
+
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('#manage-alternate-payment-references')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.govuk-grid-column-one-third')).toBeNull();
+  });
+
+  it.each([
+    { currentBusinessUnitPermission: true, destination: 'list' },
+    { currentBusinessUnitPermission: false, destination: 'denied' },
+  ])(
+    'should display the APR action to a user with permission in any BU and link to $destination',
+    ({ currentBusinessUnitPermission, destination }) => {
+      component.bankingInterfacesEnabled = true;
+      component.hasManageAlternatePaymentReferencesPermission = true;
+      component.canManageAlternatePaymentReferences = currentBusinessUnitPermission;
+
+      fixture.detectChanges();
+
+      const link = fixture.nativeElement.querySelector('#manage-alternate-payment-references') as HTMLAnchorElement;
+      expect(link.textContent?.trim()).toBe('Manage alternate payment references');
+      expect(link.getAttribute('href')).toBe(`/alternate/payment/reference/${destination}`);
+      expect(link.closest('.govuk-grid-column-one-third')).toBeTruthy();
+      expect(getLinkByText('Change')).toBeUndefined();
+      expect(getLinkByText('Request payment card')).toBeUndefined();
+    },
+  );
 
   it('should display Change when enforcement prevents amending so the user can follow the existing denied route', () => {
     component.hasAmendPaymentTermsPermission = true;

@@ -48,6 +48,9 @@ import { FINES_ACC_MAJOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS } from '../fines-acc-m
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS } from '../fines-acc-minor-creditor-details/constants/fines-acc-minor-creditor-details-route-data-keys.constant';
 import { FinesAccBusinessUnitResolver } from './resolvers/fines-acc-business-unit.resolver';
 import { FINES_ACCOUNT_ROUTE_TYPES } from './constants/fines-acc-route-types.constant';
+import { FINES_ACC_ALTERNATE_PAYMENT_REFERENCE_ROUTING_PATHS } from './constants/fines-acc-alternate-payment-reference-routing-paths.constant';
+import { routing as alternatePaymentReferenceRouting } from './fines-acc-alternate-payment-reference.routes';
+import { bankingInterfacesFeatureFlagGuard } from './guards/fines-acc-alternate-payment-reference-feature-flag.guard';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 const finesAccountBusinessUnitResolverProvider = {
@@ -95,6 +98,12 @@ export const routing: Routes = [
           ...PRIMARY_NAV_HIDDEN_ROUTE_DATA,
         },
         children: [
+          {
+            path: FINES_ACC_ALTERNATE_PAYMENT_REFERENCE_ROUTING_PATHS.root,
+            canActivate: [bankingInterfacesFeatureFlagGuard],
+            canActivateChild: [bankingInterfacesFeatureFlagGuard],
+            children: alternatePaymentReferenceRouting,
+          },
           {
             path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.convert}/:partyType`,
 
