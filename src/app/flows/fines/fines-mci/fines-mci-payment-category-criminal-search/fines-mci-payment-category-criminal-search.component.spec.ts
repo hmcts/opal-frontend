@@ -113,6 +113,79 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Company name');
   });
 
+  it.each(['individuals', 'companies'] as const)(
+    'should clear tab inputs and errors when leaving %s, preserving the account number',
+    (tab) => {
+      fragmentSubject.next(tab);
+      const nextTab = tab === 'individuals' ? 'companies' : 'individuals';
+      component['form'].patchValue({
+        fsa_search_account_number: '12345678',
+        fsa_search_account_individuals_search_criteria: {
+          fsa_search_account_individuals_last_name: 'Smith',
+          fsa_search_account_individuals_first_names: 'John',
+          fsa_search_account_individuals_last_name_exact_match: true,
+          fsa_search_account_individuals_first_names_exact_match: true,
+          fsa_search_account_individuals_include_aliases: true,
+        },
+        fsa_search_account_companies_search_criteria: {
+          fsa_search_account_companies_company_name: 'Acme Ltd',
+          fsa_search_account_companies_company_name_exact_match: true,
+          fsa_search_account_companies_include_aliases: true,
+        },
+      });
+      component.formControlErrorMessages = { fsa_search_account_number: 'Old error' };
+      component.formErrorSummaryMessage = [{ fieldId: 'fsa_search_account_number', message: 'Old error' }];
+
+      fragmentSubject.next(nextTab);
+
+      const formValue = component['form'].getRawValue();
+      expect(formValue.fsa_search_account_number).toBe('12345678');
+      expect(Object.values(formValue.fsa_search_account_individuals_search_criteria)).toEqual(Array(5).fill(null));
+      expect(Object.values(formValue.fsa_search_account_companies_search_criteria)).toEqual(Array(3).fill(null));
+      expect(component.formErrorSummaryMessage).toEqual([]);
+      expect(Object.values(component.formControlErrorMessages).every((message) => !message)).toBe(true);
+
+      fragmentSubject.next(tab);
+      expect(component['form'].getRawValue()).toEqual(formValue);
+      routerNavigateSpy.mockClear();
+      component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+      expect(TestBed.inject(FinesMciStore).criminalSearch()?.searchCriteriaCannotBeCombined).toBe(false);
+      expect(routerNavigateSpy).toHaveBeenCalledExactlyOnceWith(CRIMINAL_MATCHES_ROUTE);
+    },
+  );
+
+  it('should preserve inputs when the selected tab does not change', () => {
+    component['form'].patchValue({
+      fsa_search_account_individuals_search_criteria: { fsa_search_account_individuals_last_name: 'Smith' },
+    });
+
+    fragmentSubject.next('individuals');
+
+    expect(
+      component['form'].get('fsa_search_account_individuals_search_criteria.fsa_search_account_individuals_last_name')
+        ?.value,
+    ).toBe('Smith');
+  });
+
+  it.each(['individuals', 'companies'] as const)(
+    'should reject account number combined with a checkbox on %s',
+    (tab) => {
+      fragmentSubject.next(tab);
+      component['form'].patchValue({
+        fsa_search_account_number: '12345678',
+        ...(tab === 'individuals'
+          ? { fsa_search_account_individuals_search_criteria: { fsa_search_account_individuals_include_aliases: true } }
+          : { fsa_search_account_companies_search_criteria: { fsa_search_account_companies_include_aliases: true } }),
+      });
+      routerNavigateSpy.mockClear();
+
+      component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+
+      expect(TestBed.inject(FinesMciStore).criminalSearch()?.searchCriteriaCannotBeCombined).toBe(true);
+      expect(routerNavigateSpy).toHaveBeenCalledExactlyOnceWith(CRIMINAL_MATCHES_ROUTE);
+    },
+  );
+
   it('should only create form controls for the stripped down search inputs', () => {
     expect(component['form'].get('fsa_search_account_reference_case_number')).toBeNull();
     expect(component['form'].get('fsa_search_account_minor_creditors_search_criteria')).toBeNull();
@@ -145,8 +218,11 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
       fragmentSubject.next(tab);
       routerNavigateSpy.mockClear();
       component['form'].patchValue({
-        fsa_search_account_individuals_search_criteria: { fsa_search_account_individuals_last_name: 'Smith' },
-        fsa_search_account_companies_search_criteria: { fsa_search_account_companies_company_name: 'Acme Ltd' },
+        ...(tab === 'individuals'
+          ? { fsa_search_account_individuals_search_criteria: { fsa_search_account_individuals_last_name: 'Smith' } }
+          : {
+              fsa_search_account_companies_search_criteria: { fsa_search_account_companies_company_name: 'Acme Ltd' },
+            }),
       });
 
       component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);

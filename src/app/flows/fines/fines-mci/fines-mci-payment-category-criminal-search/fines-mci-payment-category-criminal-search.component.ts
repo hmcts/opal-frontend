@@ -129,15 +129,6 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
     });
   }
 
-  private clearInactiveTabCriteria(): void {
-    const inactiveGroup =
-      this.activeTab() === 'individuals'
-        ? this.form.get('fsa_search_account_companies_search_criteria')
-        : this.form.get('fsa_search_account_individuals_search_criteria');
-
-    inactiveGroup?.reset();
-  }
-
   private navigateToMatches(): void {
     this.finesMciStore.setCriminalSearch({
       formData: this.form.getRawValue(),
@@ -148,6 +139,10 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
   }
 
   private setActiveTabFromFragment(tab: FinesMciCriminalSearchTab): void {
+    if (this.activeTab() !== tab) {
+      this.form.get('fsa_search_account_individuals_search_criteria')?.reset(undefined, { emitEvent: false });
+      this.form.get('fsa_search_account_companies_search_criteria')?.reset(undefined, { emitEvent: false });
+    }
     this.activeTab.set(tab);
     this.clearAllErrorMessages();
     this.setInitialErrorMessages();
@@ -162,7 +157,6 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
   }
 
   public override handleFormSubmit(event: SubmitEvent): void {
-    this.clearInactiveTabCriteria();
     this.form.updateValueAndValidity({ emitEvent: false });
 
     if (this.form.errors?.['searchCriteriaCannotBeCombined']) {
@@ -182,6 +176,7 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
     this.setupSearchForm();
     const search = this.finesMciStore.criminalSearch();
     if (search) {
+      this.activeTab.set(search.activeTab);
       this.form.patchValue(search.formData);
     }
     this.setupFragmentListener();
