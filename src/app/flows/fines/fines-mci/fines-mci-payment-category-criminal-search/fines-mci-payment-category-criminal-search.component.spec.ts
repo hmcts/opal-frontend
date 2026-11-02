@@ -183,6 +183,121 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
     ).toBe('Acme Ltd');
   });
 
+  it.each(['Anne-Marie', "O'Neill", 'Name 123, Jr.'])('should accept printable ASCII names as in MAC: %s', (name) => {
+    routerNavigateSpy.mockClear();
+    component['form'].patchValue({
+      fsa_search_account_individuals_search_criteria: {
+        fsa_search_account_individuals_last_name: name,
+        fsa_search_account_individuals_first_names: name,
+      },
+    });
+
+    component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+
+    expect(component['form'].valid).toBe(true);
+    expect(routerNavigateSpy).toHaveBeenCalledExactlyOnceWith(CRIMINAL_MATCHES_ROUTE);
+  });
+
+  it.each([
+    ['first_names', 'First Names', 'Jos\u00e9'],
+    ['last_name', 'Last Name', 'Smith\u2019'],
+    ['first_names', 'First Names', 'Name\n'],
+    ['last_name', 'Last Name', 'Name\t'],
+  ])('should reject non-printable or non-ASCII %s with the AC message', (field, label, value) => {
+    routerNavigateSpy.mockClear();
+    component['form'].patchValue({
+      fsa_search_account_individuals_search_criteria: {
+        fsa_search_account_individuals_last_name: 'Smith',
+        fsa_search_account_individuals_first_names: 'John',
+        [`fsa_search_account_individuals_${field}`]: value,
+      },
+    });
+
+    component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+    fixture.detectChanges();
+
+    expect(component.formControlErrorMessages[`fsa_search_account_individuals_${field}`]).toBe(
+      `${label} must only include letters a to z, hyphens, spaces and apostrophes`,
+    );
+    expect(fixture.nativeElement.textContent).toContain(
+      `${label} must only include letters a to z, hyphens, spaces and apostrophes`,
+    );
+    expect(routerNavigateSpy).not.toHaveBeenCalled();
+    expect(TestBed.inject(FinesMciStore).criminalSearch()).toBeNull();
+  });
+
+  it.each([
+    ['first_names', 20, 'First names'],
+    ['last_name', 30, 'Last name'],
+  ] as const)('should retain the maximum length for %s', (field, limit, label) => {
+    component['form'].patchValue({
+      fsa_search_account_individuals_search_criteria: {
+        fsa_search_account_individuals_last_name: 'Smith',
+        [`fsa_search_account_individuals_${field}`]: 'A'.repeat(limit + 1),
+      },
+    });
+    routerNavigateSpy.mockClear();
+
+    component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+
+    expect(component.formControlErrorMessages[`fsa_search_account_individuals_${field}`]).toBe(
+      `${label} must be ${limit} characters or fewer`,
+    );
+    expect(routerNavigateSpy).not.toHaveBeenCalled();
+  });
+
+  it.each(['Acme 123', "O'Neill-Sons Ltd.", 'Acme & Co', 'A'.repeat(50)])(
+    'should accept printable ASCII company names up to 50 characters: %s',
+    (name) => {
+      fragmentSubject.next('companies');
+      routerNavigateSpy.mockClear();
+      component['form'].patchValue({
+        fsa_search_account_companies_search_criteria: { fsa_search_account_companies_company_name: name },
+      });
+
+      component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+
+      expect(component['form'].valid).toBe(true);
+      expect(routerNavigateSpy).toHaveBeenCalledExactlyOnceWith(CRIMINAL_MATCHES_ROUTE);
+    },
+  );
+
+  it.each([
+    ['Acme\u00e9', 'Company Name must only include letters a to z, numbers, hyphens, spaces and apostrophes'],
+    ['Acme\tLtd', 'Company Name must only include letters a to z, numbers, hyphens, spaces and apostrophes'],
+    ['A'.repeat(51), 'Company name must be 50 characters or fewer'],
+  ])('should prevent company searches with invalid names: %s', (name, message) => {
+    fragmentSubject.next('companies');
+    routerNavigateSpy.mockClear();
+    component['form'].patchValue({
+      fsa_search_account_companies_search_criteria: { fsa_search_account_companies_company_name: name },
+    });
+
+    component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+    fixture.detectChanges();
+
+    expect(component.formControlErrorMessages['fsa_search_account_companies_company_name']).toBe(message);
+    expect(fixture.nativeElement.textContent).toContain(message);
+    expect(routerNavigateSpy).not.toHaveBeenCalled();
+    expect(TestBed.inject(FinesMciStore).criminalSearch()).toBeNull();
+  });
+
+  it.each(['fsa_search_account_companies_include_aliases', 'fsa_search_account_companies_company_name_exact_match'])(
+    'should still require company name when %s is selected',
+    (field) => {
+      fragmentSubject.next('companies');
+      routerNavigateSpy.mockClear();
+      component['form'].patchValue({ fsa_search_account_companies_search_criteria: { [field]: true } });
+
+      component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+
+      expect(component.formControlErrorMessages['fsa_search_account_companies_company_name']).toBe(
+        'Enter company name',
+      );
+      expect(routerNavigateSpy).not.toHaveBeenCalled();
+    },
+  );
+
   it('should store combined criteria for the matches resolver to handle', () => {
     routerNavigateSpy.mockClear();
     component['form'].patchValue({

@@ -11,8 +11,7 @@ import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/component
 import {
   ACCOUNT_NUMBER_PATTERN,
   ALPHANUMERIC_WITH_SPACES_PATTERN,
-  LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
-  LETTERS_WITH_SPACES_PATTERN,
+  SINGLE_ASCII_CHARACTERS,
 } from '@hmcts/opal-frontend-common/constants';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { FINES_MCI_ROUTING_PATHS } from '../routing/constants/fines-mci-routing-paths.constant';
@@ -31,11 +30,7 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
 );
-const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
-const LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
-  LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
-  'lettersSpacesHyphensApostrophesDotPattern',
-);
+const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_CHARACTERS, 'singleAsciiCharacters');
 
 @Component({
   selector: 'app-fines-mci-payment-category-criminal-search',
@@ -85,12 +80,12 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
         fsa_search_account_individuals_search_criteria: new FormGroup(
           {
             fsa_search_account_individuals_last_name: new FormControl<string | null>(null, [
-              LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
+              SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
               Validators.maxLength(30),
             ]),
             fsa_search_account_individuals_last_name_exact_match: new FormControl<boolean | null>(null),
             fsa_search_account_individuals_first_names: new FormControl<string | null>(null, [
-              LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
+              SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
               Validators.maxLength(20),
             ]),
             fsa_search_account_individuals_first_names_exact_match: new FormControl<boolean | null>(null),
@@ -101,7 +96,7 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
         fsa_search_account_companies_search_criteria: new FormGroup(
           {
             fsa_search_account_companies_company_name: new FormControl<string | null>(null, [
-              LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+              SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
               Validators.maxLength(50),
             ]),
             fsa_search_account_companies_company_name_exact_match: new FormControl<boolean | null>(null),
