@@ -19,8 +19,6 @@ export const routing: Routes = [
     },
     resolve: { title: TitleResolver, aprs: finesAccAprResolver },
   },
-    resolve: { title: TitleResolver, aprs: finesAccAprResolver },
-  },
   {
     path: FINES_ACC_APR_ROUTING_PATHS.children.denied,
     loadComponent: () =>
@@ -41,4 +39,6 @@ export const routing: Routes = [
       routePermissionId: [FINES_PERMISSIONS['manage-alternate-payment-references']],
       accessDeniedPath: FINES_ACC_APR_ROUTING_PATHS.children.denied,
     },
+    resolve: { title: TitleResolver, aprs: finesAccAprResolver },
+  },
 ];
