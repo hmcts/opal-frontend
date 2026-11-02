@@ -111,6 +111,33 @@ describe('FinesAccAlternatePaymentReferenceFormComponent', () => {
     expect(unsaved).toHaveBeenLastCalledWith(false);
   });
 
+  it('keeps a restored Add draft unsaved until the value matches the empty saved baseline', () => {
+    fixture.componentRef.setInput('initialValue', 'Retry-Reference');
+    fixture.componentRef.setInput('savedValue', '');
+    const unsaved = vi.spyOn(component['unsavedChanges'], 'emit');
+    fixture.detectChanges();
+
+    expect((fixture.nativeElement.querySelector('#apr_text') as HTMLInputElement).value).toBe('Retry-Reference');
+    expect(unsaved).toHaveBeenLastCalledWith(true);
+    enter('');
+    expect(unsaved).toHaveBeenLastCalledWith(false);
+    enter('Retry-Reference');
+    expect(unsaved).toHaveBeenLastCalledWith(true);
+  });
+
+  it('compares a restored edit draft with the saved reference rather than the rejected value', () => {
+    fixture.componentRef.setInput('initialValue', 'Rejected-Value');
+    fixture.componentRef.setInput('savedValue', 'Original');
+    const unsaved = vi.spyOn(component['unsavedChanges'], 'emit');
+    fixture.detectChanges();
+
+    expect(unsaved).toHaveBeenLastCalledWith(true);
+    enter('Original');
+    expect(unsaved).toHaveBeenLastCalledWith(false);
+    enter('Rejected-Value');
+    expect(unsaved).toHaveBeenLastCalledWith(true);
+  });
+
   it('clears entered values and validation errors when the resolved account context changes', () => {
     fixture.componentRef.setInput('contextKey', {});
     fixture.detectChanges();

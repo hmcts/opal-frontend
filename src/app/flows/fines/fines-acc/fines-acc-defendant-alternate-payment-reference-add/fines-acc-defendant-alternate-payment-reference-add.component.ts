@@ -9,6 +9,11 @@ import { IOpalFinesAlternatePaymentReferencesResponse } from '@services/fines/op
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FinesAccAlternatePaymentReferenceFormComponent } from '../fines-acc-defendant-alternate-payment-reference/fines-acc-alternate-payment-reference-form.component';
 import { FINES_ACC_ALTERNATE_PAYMENT_REFERENCE_ROUTING_PATHS } from '../routing/constants/fines-acc-alternate-payment-reference-routing-paths.constant';
+import {
+  ALTERNATE_PAYMENT_REFERENCE_DUPLICATE_MESSAGE,
+  FinesAccAlternatePaymentReferenceErrorService,
+} from '../fines-acc-defendant-alternate-payment-reference/fines-acc-alternate-payment-reference-error.service';
+import { isAlternatePaymentReferenceDuplicate } from '@app/interceptors/fines-http-error.interceptor';
 
 @Component({
   selector: 'app-fines-acc-defendant-alternate-payment-reference-add',
@@ -22,6 +27,7 @@ export class FinesAccDefendantAlternatePaymentReferenceAddComponent extends Abst
   private readonly accountStore = inject(FinesAccountStore);
   private readonly api = inject(OpalFines);
   private readonly utils = inject(UtilsService);
+  private readonly errorService = inject(FinesAccAlternatePaymentReferenceErrorService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly contextChanged = new Subject<void>();
 
@@ -37,9 +43,10 @@ export class FinesAccDefendantAlternatePaymentReferenceAddComponent extends Abst
     super();
     this.pageRoute.data.pipe(takeUntilDestroyed()).subscribe(() => {
       this.contextChanged.next();
-      this.initialValue.set('');
+      const accountId = Number(this.pageRoute.snapshot.paramMap.get('accountId'));
+      this.initialValue.set(this.errorService.consumeDraft(accountId, 'add') ?? '');
       this.pending.set(false);
-      this.stateUnsavedChanges = false;
+      this.stateUnsavedChanges = this.initialValue() !== '';
     });
   }
 
@@ -76,11 +83,22 @@ export class FinesAccDefendantAlternatePaymentReferenceAddComponent extends Abst
           this.stateUnsavedChanges = false;
           this.navigateToList();
         },
-        error: () => this.handleSaveError(),
+        error: (error: unknown) => this.handleSaveError(error, aprText),
       });
   }
 
-  public handleSaveError(): void {
+  public handleSaveError(error: unknown, aprText: string): void {
+    if (isAlternatePaymentReferenceDuplicate(error)) {
+      this.errorService.remember({
+        accountId: Number(this.pageRoute.snapshot.paramMap.get('accountId')),
+        action: 'add',
+        text: aprText,
+        message: ALTERNATE_PAYMENT_REFERENCE_DUPLICATE_MESSAGE,
+      });
+      this.stateUnsavedChanges = false;
+      void this.pageRouter.navigate(['../error'], { relativeTo: this.pageRoute });
+      return;
+    }
     this.stateUnsavedChanges = true;
     this.utils.scrollToTop();
   }

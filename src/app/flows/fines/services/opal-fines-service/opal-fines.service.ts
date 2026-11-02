@@ -1,5 +1,6 @@
 import { IOpalFinesSourceMapping } from './interfaces/opal-fines-source-mapping.interface';
-import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpParams, HttpResponse } from '@angular/common/http';
+import { HANDLE_APR_DUPLICATE_LOCALLY } from '@app/interceptors/fines-http-error.interceptor';
 import { inject, Injectable } from '@angular/core';
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
 import { withHttpRetry } from '@hmcts/opal-frontend-common/interceptors/http-retry';
@@ -1268,7 +1269,11 @@ export class OpalFines {
       .post<IOpalFinesAlternatePaymentReference>(
         `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/alternate-payment-references`,
         payload,
-        { observe: 'response', headers: { 'If-Match': version } },
+        {
+          observe: 'response',
+          headers: { 'If-Match': version },
+          context: new HttpContext().set(HANDLE_APR_DUPLICATE_LOCALLY, true),
+        },
       )
       .pipe(
         map((response) => ({

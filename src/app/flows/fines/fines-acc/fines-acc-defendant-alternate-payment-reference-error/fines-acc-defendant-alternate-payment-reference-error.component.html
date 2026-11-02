@@ -1,0 +1,9 @@
+<div class="govuk-grid-column-two-thirds">
+  <opal-lib-govuk-heading-with-caption
+    captionText=""
+    headingText="There is a problem"
+    headingClasses="govuk-heading-l"
+  />
+  <p id="apr-error-message" class="govuk-body">{{ context()?.message }}</p>
+  <a id="apr-error-back" class="govuk-link" [routerLink]="returnLink()" [queryParams]="returnQueryParams()">Go back</a>
+</div>

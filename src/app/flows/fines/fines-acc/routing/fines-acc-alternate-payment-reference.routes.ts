@@ -33,4 +33,15 @@ export const routing: Routes = [
     data: { title: 'Access Denied' },
     resolve: { title: TitleResolver },
   },
+  {
+    ...alternatePaymentReferencePageRoute(
+      FINES_ACC_ALTERNATE_PAYMENT_REFERENCE_ROUTING_PATHS.children.error,
+      'Alternate Payment Reference error',
+      () =>
+        import('../fines-acc-defendant-alternate-payment-reference-error/fines-acc-defendant-alternate-payment-reference-error.component').then(
+          (c) => c.FinesAccDefendantAlternatePaymentReferenceErrorComponent,
+        ),
+    ),
+    resolve: { title: TitleResolver },
+  },
 ];

@@ -35,6 +35,7 @@ export class FinesAccAlternatePaymentReferenceFormComponent extends AbstractForm
   protected override fieldErrors = FINES_ACC_ALTERNATE_PAYMENT_REFERENCE_FIELD_ERRORS;
 
   @Input() public initialValue = '';
+  @Input() public savedValue: string | null = null;
   @Input() public contextKey: unknown;
   @Input() public accountCaption = '';
   @Input() public headingText = 'Add Alternate Payment Reference';
@@ -56,15 +57,15 @@ export class FinesAccAlternatePaymentReferenceFormComponent extends AbstractForm
   });
 
   protected override hasUnsavedChanges(): boolean {
-    return this.form.controls.apr_text.value !== this.initialValue;
+    return this.form.controls.apr_text.value !== (this.savedValue ?? this.initialValue);
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if (changes['initialValue'] || changes['contextKey']) {
+    if (changes['initialValue'] || changes['contextKey'] || changes['savedValue']) {
       this.form.reset({ apr_text: this.initialValue }, { emitEvent: false });
       this.formSubmitted = false;
       this.setInitialErrorMessages();
-      this.unsavedChanges.emit(false);
+      this.unsavedChanges.emit(this.hasUnsavedChanges());
     }
   }
 
