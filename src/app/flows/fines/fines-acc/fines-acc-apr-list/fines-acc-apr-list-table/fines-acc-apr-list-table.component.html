@@ -18,14 +18,14 @@
           {{ reference.apr_text }}
         </th>
         <td opal-lib-govuk-table-body-row-data [id]="'apr-created-' + reference.alternate_payment_reference_id">
-          {{ formatDate(reference.created_at) }}
+          {{ reference.createdDate }}
         </td>
         <td opal-lib-govuk-table-body-row-data [id]="'apr-updated-' + reference.alternate_payment_reference_id">
-          {{ formatDate(reference.updated_at) }}
+          {{ reference.updatedDate }}
         </td>
         @if (showActions) {
           <td opal-lib-govuk-table-body-row-data [id]="'apr-actions-' + reference.alternate_payment_reference_id">
-            @if (canChange(reference)) {
+            @if (reference.canChange) {
               <a
                 class="govuk-link govuk-!-margin-right-3"
                 [id]="'apr-change-' + reference.alternate_payment_reference_id"
@@ -34,7 +34,7 @@
                 >change<span class="govuk-visually-hidden"> {{ reference.apr_text }}</span></a
               >
             }
-            @if (canRemove(reference)) {
+            @if (reference.canRemove) {
               <a
                 class="govuk-link"
                 [id]="'apr-remove-' + reference.alternate_payment_reference_id"

@@ -7,10 +7,11 @@ import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
-import { FinesAccAprTableComponent } from '../fines-acc-apr/fines-acc-apr-table.component';
-import { canRemoveApr } from '../fines-acc-apr/fines-acc-apr.utils';
-import { FINES_ACC_APR_ROUTING_PATHS } from '../routing/constants/fines-acc-apr-routing-paths.constant';
+import { FinesAccAprListTableComponent } from '../fines-acc-apr-list/fines-acc-apr-list-table/fines-acc-apr-list-table.component';
+import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-list/constants/fines-acc-apr-routing-paths.constant';
+import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { FinesAccountStore } from '../stores/fines-acc.store';
+import { FINES_ACC_APR_DELETE_SUCCESS_MESSAGE } from './constants/fines-acc-apr-delete-success-message.constant';
 
 @Component({
   selector: 'app-fines-acc-apr-delete',
@@ -18,7 +19,7 @@ import { FinesAccountStore } from '../stores/fines-acc.store';
     GovukButtonComponent,
     GovukCancelLinkComponent,
     GovukHeadingWithCaptionComponent,
-    FinesAccAprTableComponent,
+    FinesAccAprListTableComponent,
   ],
   templateUrl: './fines-acc-apr-delete.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,13 +29,17 @@ export class FinesAccAprDeleteComponent {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly api = inject(OpalFines);
+  private readonly payloadService = inject(FinesAccPayloadService);
   private readonly accountStore = inject(FinesAccountStore);
   private readonly contextChanged = new Subject<void>();
   private readonly routeData = toSignal(this.route.data, { initialValue: this.route.snapshot.data });
   private readonly data = computed(() => this.routeData()['aprs'] as IOpalFinesAprsResponse);
   private readonly selectedReference = computed(() => {
     const selectedId = Number(this.route.snapshot.queryParamMap.get('alternatePaymentReferenceId'));
-    return this.data().references.find((reference) => reference.alternate_payment_reference_id === selectedId);
+    const { currentReferences, consolidatedReferences } = this.payloadService.transformAprsPayload(this.data());
+    return [...currentReferences, ...consolidatedReferences].find(
+      (reference) => reference.alternate_payment_reference_id === selectedId,
+    );
   });
 
   public readonly references = computed(() => {
@@ -58,7 +63,7 @@ export class FinesAccAprDeleteComponent {
     const reference = this.selectedReference();
     const version = this.data().version;
 
-    if (this.isRemoving() || !reference || !version?.trim() || !canRemoveApr(reference)) {
+    if (this.isRemoving() || !reference?.canRemove || !version?.trim()) {
       return;
     }
 
@@ -78,7 +83,7 @@ export class FinesAccAprDeleteComponent {
       .subscribe((response) => {
         this.accountStore.setAccountState({ ...this.accountStore.getAccountState(), base_version: response.version });
         this.api.clearAccountDetailsCache();
-        this.accountStore.setSuccessMessage('Alternate payment reference removed');
+        this.accountStore.setSuccessMessage(FINES_ACC_APR_DELETE_SUCCESS_MESSAGE);
         this.handleCancel();
       });
   }

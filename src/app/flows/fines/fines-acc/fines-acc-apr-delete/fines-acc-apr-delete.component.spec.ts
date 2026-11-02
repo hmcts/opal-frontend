@@ -14,11 +14,12 @@ import {
   IOpalFinesAprsResponse,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
-import { finesAccAprResolver } from '../fines-acc-apr/fines-acc-apr.resolver';
+import { finesAccAprResolver } from '../routing/resolvers/fines-acc-apr/fines-acc-apr.resolver';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { routing } from '../routing/fines-acc-apr.routes';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
+import { transformAprsPayload } from '../services/utils/fines-acc-payload-transform-apr-data.utils';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FinesAccAprDeleteComponent } from './fines-acc-apr-delete.component';
 
@@ -66,6 +67,7 @@ describe('FinesAccAprDeleteComponent', () => {
         {
           provide: FinesAccPayloadService,
           useValue: {
+            transformAprsPayload,
             transformDefendantAccountHeaderForStore: vi.fn().mockImplementation((accountId: number) => ({
               ...MOCK_FINES_ACCOUNT_STATE,
               account_id: accountId,
@@ -258,6 +260,25 @@ describe('FinesAccAprDeleteComponent', () => {
       expect(TestBed.inject(Router).url).toBe(listUrl.replace('/141/', `/${accountId}/`));
     },
   );
+
+  it('cancels pending removal when the confirmation page is destroyed and ignores its late response', async () => {
+    const result = new Subject<IOpalFinesAprResponse>();
+    api.deleteApr.mockReturnValue(result);
+    const component = await render();
+    confirm();
+    expect(result.observed).toBe(true);
+
+    await harness.navigateByUrl(listUrl);
+    result.next({ reference, version: '"8"' });
+    result.complete();
+
+    expect(result.observed).toBe(false);
+    expect(component.isRemoving()).toBe(false);
+    expect(accountStore.base_version()).toBe('"7"');
+    expect(accountStore.successMessage()).toBeNull();
+    expect(api.clearAccountDetailsCache).not.toHaveBeenCalled();
+    expect(TestBed.inject(Router).url).toBe(listUrl);
+  });
 
   it.each(['999', 'invalid', ''])(
     'returns missing selection %s to manage without exposing a delete action',

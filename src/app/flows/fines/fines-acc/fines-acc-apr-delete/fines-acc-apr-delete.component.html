@@ -4,7 +4,7 @@
     headingText="Are you sure you want to remove this alternate payment reference"
     headingClasses="govuk-heading-l"
   />
-  <app-fines-acc-apr-table [references]="references()" tableId="apr-remove-table" [showActions]="false" />
+  <app-fines-acc-apr-list-table [references]="references()" tableId="apr-remove-table" [showActions]="false" />
   <fieldset class="govuk-fieldset" [disabled]="isRemoving()" [attr.aria-busy]="isRemoving()">
     <legend class="govuk-visually-hidden">Confirm reference removal</legend>
     <div class="govuk-button-group">
