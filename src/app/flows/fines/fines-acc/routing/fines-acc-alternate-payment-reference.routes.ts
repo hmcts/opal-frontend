@@ -12,6 +12,14 @@ export const routing: Routes = [
         (c) => c.FinesAccDefendantAlternatePaymentReferenceListComponent,
       ),
   ),
+  alternatePaymentReferencePageRoute(
+    FINES_ACC_ALTERNATE_PAYMENT_REFERENCE_ROUTING_PATHS.children.delete,
+    'Remove Alternate Payment Reference',
+    () =>
+      import('../fines-acc-defendant-alternate-payment-reference-delete/fines-acc-defendant-alternate-payment-reference-delete.component').then(
+        (c) => c.FinesAccDefendantAlternatePaymentReferenceDeleteComponent,
+      ),
+  ),
   {
     path: FINES_ACC_ALTERNATE_PAYMENT_REFERENCE_ROUTING_PATHS.children.denied,
     loadComponent: () =>

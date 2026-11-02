@@ -83,6 +83,7 @@ import { IOpalFinesInterfaceJobsSummaryResponse } from './interfaces/opal-fines-
 import { IOpalFinesProcessInterfaceJobsPayload } from './interfaces/opal-fines-process-interface-jobs-payload.interface';
 import {
   IOpalFinesAlternatePaymentReference,
+  IOpalFinesAlternatePaymentReferenceResponse,
   IOpalFinesAlternatePaymentReferencesResponse,
 } from './interfaces/opal-fines-alternate-payment-reference.interface';
 
@@ -1253,6 +1254,25 @@ export class OpalFines {
       .pipe(
         map((response) => ({
           references: response.body ?? [],
+          version: this.extractEtagVersion(response.headers),
+        })),
+      );
+  }
+
+  /** Removes an APR using the current defendant-account version for optimistic locking. */
+  public deleteAlternatePaymentReference(
+    accountId: number,
+    alternatePaymentReferenceId: number,
+    version: string,
+  ): Observable<IOpalFinesAlternatePaymentReferenceResponse> {
+    return this.http
+      .delete<IOpalFinesAlternatePaymentReference>(
+        `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/alternate-payment-references/${alternatePaymentReferenceId}`,
+        { ...this.buildIfMatchHeader(version), observe: 'response' },
+      )
+      .pipe(
+        map((response) => ({
+          reference: response.body!,
           version: this.extractEtagVersion(response.headers),
         })),
       );
