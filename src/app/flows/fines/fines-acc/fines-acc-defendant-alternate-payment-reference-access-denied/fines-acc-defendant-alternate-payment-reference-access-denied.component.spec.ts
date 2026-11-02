@@ -21,7 +21,7 @@ describe('FinesAccDefendantAlternatePaymentReferenceAccessDeniedComponent', () =
   it('should display the generic access denied message and a link back to payment terms for the same account', () => {
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('h1').textContent).toBe('Access Denied');
+    expect(fixture.nativeElement.querySelector('h1').textContent.trim()).toBe('Access Denied');
     expect(fixture.nativeElement.textContent).toContain(
       'You do not have the appropriate permissions to access this page.',
     );
