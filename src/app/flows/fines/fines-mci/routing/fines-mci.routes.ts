@@ -38,7 +38,7 @@ export const routing: Routes = [
       import('../fines-mci-payment-category-criminal-search/fines-mci-payment-category-criminal-search.component').then(
         (c) => c.FinesMciPaymentCategoryCriminalSearchComponent,
       ),
-    canActivate: [authGuard, routePermissionsGuard],
+    canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
     data: {
       routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
       title: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalSearch,

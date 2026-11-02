@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, NavigationExtras, provideRouter, Router } from '@angular/router';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
+import { FinesMciStore } from '../stores/fines-mci.store';
 import { BehaviorSubject, of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesMciPaymentCategoryCriminalSearchComponent } from './fines-mci-payment-category-criminal-search.component';
@@ -47,6 +49,7 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
     }).compileComponents();
 
     vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation(routerNavigateSpy);
+    TestBed.inject(FinesMciStore).setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
 
     fixture = TestBed.createComponent(FinesMciPaymentCategoryCriminalSearchComponent);
     component = fixture.componentInstance;
@@ -60,7 +63,9 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
   it('should render the stripped down criminal account search page', () => {
     const text = fixture.nativeElement.textContent;
 
-    expect(text).toContain('Avon and Somerset');
+    expect(fixture.nativeElement.querySelector('.govuk-caption-m')?.textContent).toContain(
+      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name,
+    );
     expect(text).toContain('Search for an account');
     expect(text).toContain('Quick search');
     expect(text).toContain('Advanced search');
@@ -68,6 +73,25 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
     expect(text).toContain('Companies');
     expect(text).toContain('Cancel');
     expect(fixture.nativeElement.querySelector('a.govuk-link')?.getAttribute('href')).toBe('/fines/dashboard/finance');
+  });
+
+  it('should use the current selected business unit for the caption and account number search', () => {
+    const businessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1];
+    TestBed.inject(FinesMciStore).setBusinessUnit(businessUnit);
+    fixture.detectChanges();
+    component['form'].patchValue({ fsa_search_account_number: '12345678' });
+
+    component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+
+    expect(fixture.nativeElement.querySelector('.govuk-caption-m')?.textContent).toContain(
+      businessUnit.business_unit_name,
+    );
+    expect(mockOpalFines.getDefendantAccounts).toHaveBeenCalledWith(
+      expect.objectContaining({
+        business_unit_ids: [businessUnit.business_unit_id],
+        reference_number: expect.objectContaining({ account_number: '12345678' }),
+      }),
+    );
   });
 
   it('should default the tab fragment to individuals', () => {
@@ -138,7 +162,7 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
 
     expect(mockOpalFines.getDefendantAccounts).toHaveBeenCalledWith(
       expect.objectContaining({
-        business_unit_ids: [65, 66, 73, 77, 80, 78],
+        business_unit_ids: [OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_id],
         reference_number: null,
         defendant: expect.objectContaining({
           surname: 'Smith',
@@ -170,7 +194,7 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
 
     expect(mockOpalFines.getDefendantAccounts).toHaveBeenCalledWith(
       expect.objectContaining({
-        business_unit_ids: [65, 66, 73, 77, 80, 78],
+        business_unit_ids: [OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_id],
         reference_number: null,
         defendant: expect.objectContaining({
           organisation_name: 'Acme Ltd',

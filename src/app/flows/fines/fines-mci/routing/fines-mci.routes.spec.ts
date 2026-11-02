@@ -115,7 +115,7 @@ describe('finesMci routes', () => {
     expect(criminalAccountSearchRoute).toEqual(
       expect.objectContaining({
         path: FINES_MCI_ROUTING_PATHS.children.paymentCategoryCriminalSearch,
-        canActivate: [authGuard, routePermissionsGuard],
+        canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
         data: {
           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
           title: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalSearch,

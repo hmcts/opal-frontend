@@ -23,6 +23,7 @@ import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS } from '@
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_REFERENCE_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-reference-defaults.constant';
 import { IOpalFinesDefendantAccountSearchParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-search-params.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { FinesMciStore } from '../stores/fines-mci.store';
 import {
   FINES_MCI_CRIMINAL_SEARCH_RESULTS,
   FinesMciCriminalSearchResults,
@@ -55,7 +56,6 @@ const LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidato
   LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
   'lettersSpacesHyphensApostrophesDotPattern',
 );
-const DEFAULT_SEARCH_BUSINESS_UNIT_IDS = [65, 66, 73, 77, 80, 78];
 
 @Component({
   selector: 'app-fines-mci-payment-category-criminal-search',
@@ -82,6 +82,7 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
     ...FINES_MCI_ROUTING_PATHS.children.paymentCategoryCriminalMatches.split('/'),
   ];
 
+  protected readonly finesMciStore = inject(FinesMciStore);
   protected readonly activeTab = signal<FinesMciCriminalSearchTab>('individuals');
   protected readonly financeDashboardRoute = [
     '/',
@@ -95,7 +96,6 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
   private setupSearchForm(): void {
     this.form = new FormGroup(
       {
-        fsa_search_account_business_unit_ids: new FormControl<number[] | null>(DEFAULT_SEARCH_BUSINESS_UNIT_IDS),
         fsa_search_account_number: new FormControl<string | null>(null, [
           patternValidator(ACCOUNT_NUMBER_PATTERN, 'invalidFormat'),
           ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
@@ -164,9 +164,10 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
   private buildSearchParams(): IOpalFinesDefendantAccountSearchParams {
     const formValue = this.form.value;
     const isCompany = this.activeTab() === 'companies';
+    const businessUnit = this.finesMciStore.businessUnit();
     const baseSearchParams = {
       ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
-      business_unit_ids: formValue.fsa_search_account_business_unit_ids,
+      business_unit_ids: businessUnit ? [businessUnit.business_unit_id] : [],
     };
 
     if (formValue.fsa_search_account_number) {

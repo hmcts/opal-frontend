@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, HostListener, inject } from '@angular/core';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
+import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FinesMciCreateTillPaymentCategoryFormComponent } from './fines-mci-create-till-payment-category-form/fines-mci-create-till-payment-category-form.component';
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
 import { FinesMciStore } from '../../stores/fines-mci.store';
@@ -27,7 +28,10 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
       const tillId = this.finesMciStore.ensureTill();
       this.finesMciStore.addPayment(tillId, paymentCategory);
       this.stateUnsavedChanges = false;
-      this.routerNavigate(FINES_MCI_ROUTING_PATHS.children.searchAccount);
+      this.routerNavigate(
+        `/${FINES_ROUTING_PATHS.root}/${FINES_MCI_ROUTING_PATHS.root}/${FINES_MCI_ROUTING_PATHS.children.paymentCategoryCriminalSearch}`,
+        true,
+      );
       return;
     }
 

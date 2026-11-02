@@ -43,7 +43,10 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
       nestedFlow: false,
     });
 
-    expect(navigateSpy).toHaveBeenCalledWith(['search-account'], { relativeTo: null });
+    expect(navigateSpy).toHaveBeenCalledWith(
+      ['/fines/manual-cash-input/create/till/payment/category/criminal/search'],
+      {},
+    );
     expect(fixture.componentInstance.stateUnsavedChanges).toBe(false);
     expect(finesMciStore.tills()[0].payments).toEqual([expect.objectContaining({ journey: 'criminal' })]);
   });
