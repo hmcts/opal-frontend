@@ -1,0 +1,9 @@
+<app-fines-acc-alternate-payment-reference-form
+  [contextKey]="formContext()"
+  [initialValue]="initialValue()"
+  [accountCaption]="accountCaption()"
+  [pending]="pending()"
+  (formSubmit)="handleSave($event.formData.apr_text)"
+  (unsavedChanges)="stateUnsavedChanges = $event"
+  (cancelRequested)="navigateToList()"
+/>

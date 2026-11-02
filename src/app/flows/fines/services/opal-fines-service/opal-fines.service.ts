@@ -83,6 +83,7 @@ import { IOpalFinesInterfaceJobsSummaryResponse } from './interfaces/opal-fines-
 import { IOpalFinesProcessInterfaceJobsPayload } from './interfaces/opal-fines-process-interface-jobs-payload.interface';
 import {
   IOpalFinesAlternatePaymentReference,
+  IOpalFinesAlternatePaymentReferenceResponse,
   IOpalFinesAlternatePaymentReferencesResponse,
 } from './interfaces/opal-fines-alternate-payment-reference.interface';
 
@@ -1253,6 +1254,25 @@ export class OpalFines {
       .pipe(
         map((response) => ({
           references: response.body ?? [],
+          version: this.extractEtagVersion(response.headers),
+        })),
+      );
+  }
+
+  public createAlternatePaymentReference(
+    accountId: number,
+    payload: { apr_text: string },
+    version: string,
+  ): Observable<IOpalFinesAlternatePaymentReferenceResponse> {
+    return this.http
+      .post<IOpalFinesAlternatePaymentReference>(
+        `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/alternate-payment-references`,
+        payload,
+        { observe: 'response', headers: { 'If-Match': version } },
+      )
+      .pipe(
+        map((response) => ({
+          reference: response.body!,
           version: this.extractEtagVersion(response.headers),
         })),
       );
