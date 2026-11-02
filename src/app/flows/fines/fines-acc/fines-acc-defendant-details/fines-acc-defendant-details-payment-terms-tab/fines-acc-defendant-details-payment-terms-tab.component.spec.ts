@@ -83,7 +83,7 @@ describe('FinesAccDefendantDetailsPaymentTermsTabComponent', () => {
   });
 
   it.each([
-    { currentBusinessUnitPermission: true, destination: 'list' },
+    { currentBusinessUnitPermission: true, destination: 'manage' },
     { currentBusinessUnitPermission: false, destination: 'denied' },
   ])(
     'should display the APR action to a user with permission in any BU and link to $destination',
