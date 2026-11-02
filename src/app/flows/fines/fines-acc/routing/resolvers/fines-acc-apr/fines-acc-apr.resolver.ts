@@ -5,8 +5,8 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
 import { FinesAccountStore } from '../../../stores/fines-acc.store';
 import { FinesAccPayloadService } from '../../../services/fines-acc-payload.service';
-import { FINES_ACC_APR_ROUTING_PATHS } from '../../../fines-acc-apr-list/constants/fines-acc-apr-routing-paths.constant';
-import { canAddApr, canChangeApr, canRemoveApr } from '../../../fines-acc-apr-list/utils/fines-acc-apr.utils';
+import { FINES_ACC_APR_ROUTING_PATHS } from '../../../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';
+import { canAddApr, canChangeApr, canRemoveApr } from '../../../fines-acc-apr-manage/utils/fines-acc-apr.utils';
 
 export const finesAccAprResolver: ResolveFn<IOpalFinesAprsResponse> = (route) => {
   const api = inject(OpalFines);
@@ -35,7 +35,7 @@ export const finesAccAprResolver: ResolveFn<IOpalFinesAprsResponse> = (route) =>
         (path === children.edit && (!selected || !canChangeApr(selected))) ||
         (path === children.delete && (!selected || !canRemoveApr(selected)));
       if (invalidSelection || (path === children.add && !canAddApr(data.references))) {
-        return new RedirectCommand(createUrlTreeFromSnapshot(route, ['../', children.list]));
+        return new RedirectCommand(createUrlTreeFromSnapshot(route, ['../', children.manage]));
       }
       return data;
     }),

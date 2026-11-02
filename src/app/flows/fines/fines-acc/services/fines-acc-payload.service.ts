@@ -64,7 +64,7 @@ import {
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from './constants/fines-acc-history-and-notes-details-transformation-config.constant';
 import { OPAL_FINES_NOTE_RECORD_TYPES } from '@services/fines/opal-fines-service/constants/opal-fines-note-record-types.constant';
 import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
-import { IFinesAccAprListData } from '../fines-acc-apr-list/interfaces/fines-acc-apr-list-data.interface';
+import { IFinesAccAprManageData } from '../fines-acc-apr-manage/interfaces/fines-acc-apr-manage-data.interface';
 import { transformAprsPayload } from './utils/fines-acc-payload-transform-apr-data.utils';
 
 @Injectable({
@@ -103,7 +103,7 @@ export class FinesAccPayloadService {
     );
   }
 
-  public transformAprsPayload(response: IOpalFinesAprsResponse): IFinesAccAprListData {
+  public transformAprsPayload(response: IOpalFinesAprsResponse): IFinesAccAprManageData {
     return transformAprsPayload(response);
   }
 

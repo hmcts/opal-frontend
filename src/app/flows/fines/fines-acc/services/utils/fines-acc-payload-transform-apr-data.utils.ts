@@ -1,8 +1,8 @@
 import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
 import { DateTime } from 'luxon';
-import { canAddApr, canChangeApr, canRemoveApr } from '../../fines-acc-apr-list/utils/fines-acc-apr.utils';
-import { IFinesAccAprListData } from '../../fines-acc-apr-list/interfaces/fines-acc-apr-list-data.interface';
-import { IFinesAccAprListRow } from '../../fines-acc-apr-list/interfaces/fines-acc-apr-list-row.interface';
+import { canAddApr, canChangeApr, canRemoveApr } from '../../fines-acc-apr-manage/utils/fines-acc-apr.utils';
+import { IFinesAccAprManageData } from '../../fines-acc-apr-manage/interfaces/fines-acc-apr-manage-data.interface';
+import { IFinesAccAprManageRow } from '../../fines-acc-apr-manage/interfaces/fines-acc-apr-manage-row.interface';
 
 /** APR timestamps without an explicit offset are UTC as well. */
 function formatAprDate(value: string | null): string {
@@ -11,13 +11,13 @@ function formatAprDate(value: string | null): string {
   return date.isValid ? date.setLocale('en-GB').toFormat('dd MMMM yyyy') : '—';
 }
 
-export function transformAprsPayload(response: IOpalFinesAprsResponse): IFinesAccAprListData {
-  const currentReferences: IFinesAccAprListRow[] = [];
-  const consolidatedReferences: IFinesAccAprListRow[] = [];
+export function transformAprsPayload(response: IOpalFinesAprsResponse): IFinesAccAprManageData {
+  const currentReferences: IFinesAccAprManageRow[] = [];
+  const consolidatedReferences: IFinesAccAprManageRow[] = [];
 
   for (const reference of response.references) {
     if (reference.category !== 'APR') continue;
-    const row: IFinesAccAprListRow = {
+    const row: IFinesAccAprManageRow = {
       ...reference,
       createdDate: formatAprDate(reference.created_at),
       updatedDate: formatAprDate(reference.updated_at),
