@@ -1,0 +1,10 @@
+<div class="govuk-grid-column-two-thirds" id="fines-mci-create-till-payment-category">
+  <span class="govuk-caption-l">{{ finesMciStore.businessUnit()?.business_unit_name }}</span>
+  <h1 class="govuk-heading-l">Payment category</h1>
+
+  <app-fines-mci-create-till-payment-category-form
+    (formSubmit)="handleSubmit($event)"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+    (cancelRequested)="handleCancel()"
+  ></app-fines-mci-create-till-payment-category-form>
+</div>

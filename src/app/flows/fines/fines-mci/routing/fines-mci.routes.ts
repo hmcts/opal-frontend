@@ -79,15 +79,32 @@ export const routing: Routes = [
           {
             path: FINES_MCI_ROUTING_PATHS.children.paymentCategory,
             loadComponent: () =>
+              import('../fines-mci-create-till/fines-mci-create-till-payment-category/fines-mci-create-till-payment-category.component').then(
+                (c) => c.FinesMciCreateTillPaymentCategoryComponent,
+              ),
+            canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+            canDeactivate: [canDeactivateGuard],
+            data: {
+              permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
+              routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+              title: FINES_MCI_ROUTING_TITLES.children.createTillPaymentCategory,
+            },
+            resolve: {
+              title: TitleResolver,
+            },
+          },
+          {
+            path: FINES_MCI_ROUTING_PATHS.children.searchAccount,
+            loadComponent: () =>
               import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
                 (c) => c.FinesMciPlaceholderComponent,
               ),
             canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
             data: {
-              heading: FINES_MCI_ROUTING_TITLES.children.createTillPaymentCategory,
+              heading: FINES_MCI_ROUTING_TITLES.children.createTillSearchAccount,
               permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
               routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
-              title: FINES_MCI_ROUTING_TITLES.children.createTillPaymentCategory,
+              title: FINES_MCI_ROUTING_TITLES.children.createTillSearchAccount,
             },
             resolve: {
               title: TitleResolver,

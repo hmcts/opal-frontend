@@ -9,6 +9,7 @@ export const FINES_MCI_ROUTING_PATHS: IFinesMciRoutingPaths = {
     selectBusinessUnit: 'select-bu',
     details: 'details',
     paymentCategory: 'payment-category',
+    searchAccount: 'search-account',
     cancel: 'cancel',
   },
 };

@@ -30,7 +30,9 @@ import { FinesApiSummaryReportComponent } from 'src/app/flows/fines/fines-api/fi
 import { FinesMciCreateAllocateComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-allocate/fines-mci-create-allocate.component';
 import { FinesMciCreateTillSelectBuComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-select-bu/fines-mci-create-till-select-bu.component';
 import { FinesMciCreateTillDetailsComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-details/fines-mci-create-till-details.component';
+import { FinesMciCreateTillPaymentCategoryComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-payment-category/fines-mci-create-till-payment-category.component';
 import { FinesMciPlaceholderComponent } from 'src/app/flows/fines/fines-mci/fines-mci-placeholder/fines-mci-placeholder.component';
+import { FinesMciStore } from 'src/app/flows/fines/fines-mci/stores/fines-mci.store';
 import { FinesApiStore } from 'src/app/flows/fines/fines-api/stores/fines-api.store';
 import { FINES_API_ROUTING_PATHS } from 'src/app/flows/fines/fines-api/routing/constants/fines-api-routing-paths.constant';
 import { FINES_MCI_ROUTING_PATHS } from 'src/app/flows/fines/fines-mci/routing/constants/fines-mci-routing-paths.constant';
@@ -137,8 +139,8 @@ const FINANCE_COMPONENT_ROUTES: Routes = [
           FINES_MCI_ROUTING_PATHS.children.till,
           FINES_MCI_ROUTING_PATHS.children.paymentCategory,
         ].join('/'),
-        component: FinesMciPlaceholderComponent,
-        data: { heading: 'Payment category' },
+        component: FinesMciCreateTillPaymentCategoryComponent,
+        canDeactivate: [canDeactivateGuard],
       },
       {
         path: [
@@ -256,9 +258,11 @@ export const setupFinancePageComponent = ({
     }).then(({ fixture }) => {
       const router = fixture.componentRef.injector.get(Router);
       const finesApiStore = fixture.componentRef.injector.get(FinesApiStore);
+      const finesMciStore = fixture.componentRef.injector.get(FinesMciStore);
       cy.wrap(fixture.componentInstance).as('appComponent');
       cy.wrap(router).as('financeRouter');
       cy.wrap(finesApiStore).as('finesApiStore');
+      cy.wrap(finesMciStore).as('finesMciStore');
 
       return router
         .navigate(['/', FINES_ROUTING_PATHS.root, FINES_DASHBOARD_ROUTING_PATHS.root, dashboardType])
