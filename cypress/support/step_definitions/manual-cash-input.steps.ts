@@ -55,6 +55,30 @@ When('I add a payment to the till', () => {
   manualCashInputFlow().addPayment();
 });
 
+When('I continue with payment category {string}', (category: 'criminal' | 'courtFee' | 'suspense') => {
+  manualCashInputFlow().continueWithPaymentCategory(category);
+});
+
+Then('I see Search for an Account', () => {
+  manualCashInputFlow().assertSearchForAccountIsDisplayed();
+});
+
+Then('I remain on Payment Category', () => {
+  manualCashInputFlow().assertPaymentCategoryIsDisplayed();
+});
+
+When('I continue without selecting a payment category', () => {
+  manualCashInputFlow().continueWithoutPaymentCategory();
+});
+
+Then('the payment category validation summary and field error are displayed', () => {
+  manualCashInputFlow().assertPaymentCategoryValidation();
+});
+
+When('I cancel Payment Category', () => {
+  manualCashInputFlow().cancelPaymentCategory();
+});
+
 When('I delete the till being created', () => {
   manualCashInputFlow().deleteTill();
 });
