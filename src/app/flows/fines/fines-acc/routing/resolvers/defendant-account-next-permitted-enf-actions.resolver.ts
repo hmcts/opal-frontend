@@ -27,18 +27,18 @@ export const nextPermittedEnfActionsResolver: ResolveFn<IOpalFinesResultsRefData
       );
 
       if (nextPermittedActionIds === null) {
-        return opalFinesService.getResults([], { enforcement: true, enforcement_override: false });
+        return opalFinesService.getResults([], { active: true, enforcement: true, enforcement_override: false });
       }
 
       if (nextPermittedActionIds.length === 0 && !enforcementStatus.last_enforcement_action) {
-        return opalFinesService.getResults([], { enforcement: true, enforcement_override: false });
+        return opalFinesService.getResults([], { active: true, enforcement: true, enforcement_override: false });
       }
 
       if (nextPermittedActionIds.length === 0) {
         return of(EMPTY_NEXT_PERMITTED_ENF_ACTIONS);
       }
 
-      return opalFinesService.getResults(nextPermittedActionIds);
+      return opalFinesService.getResults(nextPermittedActionIds, { active: true });
     }),
   );
 };
