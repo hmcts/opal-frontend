@@ -19,17 +19,6 @@ export const routing: Routes = [
     },
     resolve: { title: TitleResolver, aprs: finesAccAprResolver },
   },
-  {
-    path: FINES_ACC_APR_ROUTING_PATHS.children.delete,
-    loadComponent: () =>
-      import('../fines-acc-apr-delete/fines-acc-apr-delete.component').then((c) => c.FinesAccAprDeleteComponent),
-    canActivate: [businessUnitRoutePermissionsGuard],
-    runGuardsAndResolvers: 'always',
-    data: {
-      title: 'Remove Alternate Payment Reference',
-      routePermissionId: [FINES_PERMISSIONS['manage-alternate-payment-references']],
-      accessDeniedPath: FINES_ACC_APR_ROUTING_PATHS.children.denied,
-    },
     resolve: { title: TitleResolver, aprs: finesAccAprResolver },
   },
   {
@@ -41,4 +30,15 @@ export const routing: Routes = [
     data: { title: 'Access Denied' },
     resolve: { title: TitleResolver },
   },
+  {
+    path: FINES_ACC_APR_ROUTING_PATHS.children.delete,
+    loadComponent: () =>
+      import('../fines-acc-apr-delete/fines-acc-apr-delete.component').then((c) => c.FinesAccAprDeleteComponent),
+    canActivate: [businessUnitRoutePermissionsGuard],
+    runGuardsAndResolvers: 'always',
+    data: {
+      title: 'Remove Alternate Payment Reference',
+      routePermissionId: [FINES_PERMISSIONS['manage-alternate-payment-references']],
+      accessDeniedPath: FINES_ACC_APR_ROUTING_PATHS.children.denied,
+    },
 ];
