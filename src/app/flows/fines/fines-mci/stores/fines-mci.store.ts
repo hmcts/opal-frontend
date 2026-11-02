@@ -1,12 +1,14 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { FinesMciJourney, IFinesMciTill } from './interfaces/fines-mci.interface';
+import { IFinesMciCriminalSearch } from './interfaces/fines-mci-criminal-search.interface';
 
 export const FinesMciStore = signalStore(
   { providedIn: 'root' },
   withState(() => ({
     businessUnit: null as IOpalFinesBusinessUnit | null,
     tills: [] as IFinesMciTill[],
+    criminalSearch: null as IFinesMciCriminalSearch | null,
   })),
   withMethods((store) => {
     /** Returns the existing till ID or creates the first till for the current business unit. */
@@ -22,11 +24,14 @@ export const FinesMciStore = signalStore(
     };
 
     return {
+      setCriminalSearch(criminalSearch: IFinesMciCriminalSearch): void {
+        patchState(store, { criminalSearch });
+      },
       /** Sets the selected business unit and clears tills when switching to a different unit. */
       setBusinessUnit(businessUnit: IOpalFinesBusinessUnit): void {
         const currentBusinessUnit = store.businessUnit();
         if (currentBusinessUnit && currentBusinessUnit.business_unit_id !== businessUnit.business_unit_id) {
-          patchState(store, { businessUnit, tills: [] });
+          patchState(store, { businessUnit, tills: [], criminalSearch: null });
           return;
         }
 
@@ -48,7 +53,7 @@ export const FinesMciStore = signalStore(
       },
       /** Clears the selected business unit and all till data. */
       reset(): void {
-        patchState(store, { businessUnit: null, tills: [] });
+        patchState(store, { businessUnit: null, tills: [], criminalSearch: null });
       },
     };
   }),

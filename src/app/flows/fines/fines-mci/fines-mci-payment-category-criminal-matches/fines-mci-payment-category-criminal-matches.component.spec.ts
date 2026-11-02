@@ -1,15 +1,27 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
-import { BehaviorSubject, map } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
+import {
+  FINES_MCI_CRIMINAL_SEARCH_RESULTS,
+  FinesMciCriminalSearchResults,
+} from '../constants/fines-mci-criminal-search-results.constant';
+import { IFinesMciCriminalAccountsResult } from '../routing/resolvers/fines-mci-criminal-accounts/fines-mci-criminal-accounts.resolver';
+import { FinesMciStore } from '../stores/fines-mci.store';
+import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { FinesMciPaymentCategoryCriminalMatchesComponent } from './fines-mci-payment-category-criminal-matches.component';
 
 describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
   let fixture: ComponentFixture<FinesMciPaymentCategoryCriminalMatchesComponent>;
-  let queryParamSubject: BehaviorSubject<Record<string, string>>;
+  let routeDataSubject: BehaviorSubject<{ criminalAccounts: IFinesMciCriminalAccountsResult }>;
 
   beforeEach(async () => {
-    queryParamSubject = new BehaviorSubject<Record<string, string>>({ results: 'matches' });
+    routeDataSubject = new BehaviorSubject<{ criminalAccounts: IFinesMciCriminalAccountsResult }>({
+      criminalAccounts: {
+        results: FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches,
+        response: { count: 1, defendant_accounts: [] },
+      },
+    });
 
     await TestBed.configureTestingModule({
       imports: [FinesMciPaymentCategoryCriminalMatchesComponent],
@@ -17,12 +29,13 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            queryParamMap: queryParamSubject.pipe(map((queryParams) => convertToParamMap(queryParams))),
+            data: routeDataSubject.asObservable(),
           },
         },
       ],
     }).compileComponents();
 
+    TestBed.inject(FinesMciStore).setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
     fixture = TestBed.createComponent(FinesMciPaymentCategoryCriminalMatchesComponent);
     fixture.detectChanges();
   });
@@ -33,21 +46,13 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
     ['too-many', 'More than 100 matching criminal accounts', 'PO-3528'],
     ['search-criteria-cannot-be-combined', 'Search criteria cannot be combined', 'PO-3529'],
   ])('should render placeholder content for %s', (results, heading, ticket) => {
-    queryParamSubject.next({ results });
+    routeDataSubject.next({ criminalAccounts: { results: results as FinesMciCriminalSearchResults, response: null } });
     fixture.detectChanges();
 
     const text = fixture.nativeElement.textContent;
 
-    expect(text).toContain('Avon and Somerset');
+    expect(text).toContain(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name);
     expect(text).toContain(heading);
     expect(text).toContain(ticket);
-  });
-
-  it('should render the matching results placeholder by default', () => {
-    queryParamSubject.next({ results: 'unknown' });
-    fixture.detectChanges();
-
-    expect(fixture.nativeElement.textContent).toContain('Matching criminal accounts');
-    expect(fixture.nativeElement.textContent).toContain('PO-3480');
   });
 });

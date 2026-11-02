@@ -6,6 +6,7 @@ import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deact
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
 import { fetchBusinessUnitsResolver } from '@app/flows/fines/routing/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
+import { finesMciCriminalAccountsResolver } from './resolvers/fines-mci-criminal-accounts/fines-mci-criminal-accounts.resolver';
 import { routing } from './fines-mci.routes';
 import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.constant';
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
@@ -136,13 +137,14 @@ describe('finesMci routes', () => {
     expect(criminalAccountMatchesRoute).toEqual(
       expect.objectContaining({
         path: FINES_MCI_ROUTING_PATHS.children.paymentCategoryCriminalMatches,
-        canActivate: [authGuard, routePermissionsGuard],
+        canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
         data: {
           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
           title: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalMatches,
         },
         resolve: expect.objectContaining({
           title: TitleResolver,
+          criminalAccounts: finesMciCriminalAccountsResolver,
         }),
       }),
     );

@@ -9,6 +9,7 @@ import { fetchBusinessUnitsResolver } from '@app/flows/fines/routing/resolvers/f
 import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.constant';
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
+import { finesMciCriminalAccountsResolver } from './resolvers/fines-mci-criminal-accounts/fines-mci-criminal-accounts.resolver';
 
 export const routing: Routes = [
   {
@@ -53,12 +54,13 @@ export const routing: Routes = [
       import('../fines-mci-payment-category-criminal-matches/fines-mci-payment-category-criminal-matches.component').then(
         (c) => c.FinesMciPaymentCategoryCriminalMatchesComponent,
       ),
-    canActivate: [authGuard, routePermissionsGuard],
+    canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
     data: {
       routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
       title: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalMatches,
     },
     resolve: {
+      criminalAccounts: finesMciCriminalAccountsResolver,
       title: TitleResolver,
     },
   },

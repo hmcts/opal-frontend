@@ -1,9 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, NavigationExtras, provideRouter, Router } from '@angular/router';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { FinesMciStore } from '../stores/fines-mci.store';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesMciPaymentCategoryCriminalSearchComponent } from './fines-mci-payment-category-criminal-search.component';
 
@@ -22,14 +21,10 @@ const CRIMINAL_MATCHES_ROUTE = [
 describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
   let component: FinesMciPaymentCategoryCriminalSearchComponent;
   let fixture: ComponentFixture<FinesMciPaymentCategoryCriminalSearchComponent>;
-  let mockOpalFines: { getDefendantAccounts: ReturnType<typeof vi.fn> };
   let fragmentSubject: BehaviorSubject<string | null>;
   let routerNavigateSpy: ReturnType<typeof vi.fn<(_: readonly unknown[], __?: NavigationExtras) => Promise<boolean>>>;
 
   beforeEach(async () => {
-    mockOpalFines = {
-      getDefendantAccounts: vi.fn().mockReturnValue(of({ count: 1, defendant_accounts: [] })),
-    };
     fragmentSubject = new BehaviorSubject<string | null>(null);
     routerNavigateSpy = vi.fn<(_: readonly unknown[], __?: NavigationExtras) => Promise<boolean>>();
     routerNavigateSpy.mockResolvedValue(true);
@@ -44,7 +39,6 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
             fragment: fragmentSubject.asObservable(),
           },
         },
-        { provide: OpalFines, useValue: mockOpalFines },
       ],
     }).compileComponents();
 
@@ -86,12 +80,7 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
     expect(fixture.nativeElement.querySelector('.govuk-caption-m')?.textContent).toContain(
       businessUnit.business_unit_name,
     );
-    expect(mockOpalFines.getDefendantAccounts).toHaveBeenCalledWith(
-      expect.objectContaining({
-        business_unit_ids: [businessUnit.business_unit_id],
-        reference_number: expect.objectContaining({ account_number: '12345678' }),
-      }),
-    );
+    expect(TestBed.inject(FinesMciStore).criminalSearch()?.formData.fsa_search_account_number).toBe('12345678');
   });
 
   it('should default the tab fragment to individuals', () => {
@@ -148,131 +137,73 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
     ).toBeNull();
   });
 
-  it('should search individual defendant accounts and navigate to the matches results page when results are returned', () => {
-    routerNavigateSpy.mockClear();
-    component['form'].patchValue({
-      fsa_search_account_individuals_search_criteria: {
-        fsa_search_account_individuals_last_name: 'Smith',
-        fsa_search_account_individuals_first_names: 'John',
-        fsa_search_account_individuals_include_aliases: true,
-      },
-    });
+  it.each(['individuals', 'companies'] as const)(
+    'should store %s criteria and navigate without query parameters',
+    (tab) => {
+      fragmentSubject.next(tab);
+      routerNavigateSpy.mockClear();
+      component['form'].patchValue({
+        fsa_search_account_individuals_search_criteria: { fsa_search_account_individuals_last_name: 'Smith' },
+        fsa_search_account_companies_search_criteria: { fsa_search_account_companies_company_name: 'Acme Ltd' },
+      });
 
-    component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+      component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
 
-    expect(mockOpalFines.getDefendantAccounts).toHaveBeenCalledWith(
-      expect.objectContaining({
-        business_unit_ids: [OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_id],
-        reference_number: null,
-        defendant: expect.objectContaining({
-          surname: 'Smith',
-          forenames: 'John',
-          include_aliases: true,
-          organisation: false,
-        }),
-        active_accounts_only: true,
-      }),
-    );
-    expect(routerNavigateSpy).toHaveBeenCalledWith(CRIMINAL_MATCHES_ROUTE, {
-      queryParams: {
-        results: 'matches',
-      },
-    });
-  });
+      const search = TestBed.inject(FinesMciStore).criminalSearch();
+      expect(search?.activeTab).toBe(tab);
+      expect(search?.searchCriteriaCannotBeCombined).toBe(false);
+      expect(
+        search?.formData.fsa_search_account_individuals_search_criteria.fsa_search_account_individuals_last_name,
+      ).toBe(tab === 'individuals' ? 'Smith' : null);
+      expect(
+        search?.formData.fsa_search_account_companies_search_criteria.fsa_search_account_companies_company_name,
+      ).toBe(tab === 'companies' ? 'Acme Ltd' : null);
+      expect(routerNavigateSpy).toHaveBeenCalledExactlyOnceWith(CRIMINAL_MATCHES_ROUTE);
+    },
+  );
 
-  it('should search company defendant accounts from the companies tab', () => {
-    routerNavigateSpy.mockClear();
+  it('should restore the submitted criteria and tab when returning to search', () => {
     fragmentSubject.next('companies');
     component['form'].patchValue({
-      fsa_search_account_companies_search_criteria: {
-        fsa_search_account_companies_company_name: 'Acme Ltd',
-        fsa_search_account_companies_company_name_exact_match: true,
-      },
+      fsa_search_account_companies_search_criteria: { fsa_search_account_companies_company_name: 'Acme Ltd' },
     });
-
     component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+    fixture.destroy();
+    fragmentSubject.next(null);
 
-    expect(mockOpalFines.getDefendantAccounts).toHaveBeenCalledWith(
-      expect.objectContaining({
-        business_unit_ids: [OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_id],
-        reference_number: null,
-        defendant: expect.objectContaining({
-          organisation_name: 'Acme Ltd',
-          exact_match_organisation_name: true,
-          organisation: true,
-        }),
-        active_accounts_only: true,
-      }),
-    );
-    expect(routerNavigateSpy).toHaveBeenCalledWith(CRIMINAL_MATCHES_ROUTE, {
-      queryParams: {
-        results: 'matches',
-      },
-    });
+    fixture = TestBed.createComponent(FinesMciPaymentCategoryCriminalSearchComponent);
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance['activeTab']()).toBe('companies');
+    expect(
+      fixture.componentInstance['form'].getRawValue().fsa_search_account_companies_search_criteria
+        .fsa_search_account_companies_company_name,
+    ).toBe('Acme Ltd');
   });
 
-  it('should navigate to the no matches results page when the search returns no results', () => {
-    routerNavigateSpy.mockClear();
-    mockOpalFines.getDefendantAccounts.mockReturnValue(of({ count: 0, defendant_accounts: [] }));
-    component['form'].patchValue({
-      fsa_search_account_individuals_search_criteria: {
-        fsa_search_account_individuals_last_name: 'Smith',
-      },
-    });
-
-    component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
-
-    expect(routerNavigateSpy).toHaveBeenCalledWith(CRIMINAL_MATCHES_ROUTE, {
-      queryParams: {
-        results: 'no-matches',
-      },
-    });
-  });
-
-  it('should navigate to the too many matches results page when the search returns more than 100 results', () => {
-    routerNavigateSpy.mockClear();
-    mockOpalFines.getDefendantAccounts.mockReturnValue(of({ count: 101, defendant_accounts: [] }));
-    component['form'].patchValue({
-      fsa_search_account_individuals_search_criteria: {
-        fsa_search_account_individuals_last_name: 'Smith',
-      },
-    });
-
-    component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
-
-    expect(routerNavigateSpy).toHaveBeenCalledWith(CRIMINAL_MATCHES_ROUTE, {
-      queryParams: {
-        results: 'too-many',
-      },
-    });
-  });
-
-  it('should navigate to the search criteria cannot be combined results page when account number and account information are entered together', () => {
-    const preventDefault = vi.fn();
+  it('should store combined criteria for the matches resolver to handle', () => {
     routerNavigateSpy.mockClear();
     component['form'].patchValue({
       fsa_search_account_number: '12345678',
-      fsa_search_account_individuals_search_criteria: {
-        fsa_search_account_individuals_last_name: 'Smith',
-      },
+      fsa_search_account_individuals_search_criteria: { fsa_search_account_individuals_last_name: 'Smith' },
     });
 
-    component.handleFormSubmit({ preventDefault } as unknown as SubmitEvent);
-
-    expect(preventDefault).toHaveBeenCalled();
-    expect(mockOpalFines.getDefendantAccounts).not.toHaveBeenCalled();
-    expect(routerNavigateSpy).toHaveBeenCalledWith(CRIMINAL_MATCHES_ROUTE, {
-      queryParams: {
-        results: 'search-criteria-cannot-be-combined',
-      },
-    });
-  });
-
-  it('should not search when the form is empty', () => {
-    routerNavigateSpy.mockClear();
     component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
 
-    expect(mockOpalFines.getDefendantAccounts).not.toHaveBeenCalled();
-    expect(routerNavigateSpy).not.toHaveBeenCalled();
+    expect(TestBed.inject(FinesMciStore).criminalSearch()?.searchCriteriaCannotBeCombined).toBe(true);
+    expect(routerNavigateSpy).toHaveBeenCalledExactlyOnceWith(CRIMINAL_MATCHES_ROUTE);
   });
+
+  it.each([null, '1234567890'])(
+    'should not navigate or store criteria for an empty or invalid account number: %s',
+    (accountNumber) => {
+      routerNavigateSpy.mockClear();
+      component['form'].patchValue({ fsa_search_account_number: accountNumber });
+
+      component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+
+      expect(TestBed.inject(FinesMciStore).criminalSearch()).toBeNull();
+      expect(routerNavigateSpy).not.toHaveBeenCalled();
+    },
+  );
 });

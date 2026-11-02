@@ -18,16 +18,7 @@ import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { FINES_MCI_ROUTING_PATHS } from '../routing/constants/fines-mci-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
-import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defaults.constant';
-import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defendant-defaults.constant';
-import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_REFERENCE_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-reference-defaults.constant';
-import { IOpalFinesDefendantAccountSearchParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-search-params.interface';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesMciStore } from '../stores/fines-mci.store';
-import {
-  FINES_MCI_CRIMINAL_SEARCH_RESULTS,
-  FinesMciCriminalSearchResults,
-} from '../constants/fines-mci-criminal-search-results.constant';
 import { FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_SEARCH_FIELD_ERRORS } from './constants/fines-mci-payment-category-criminal-search-field-errors.constant';
 import {
   finesMciPaymentCategoryCriminalSearchCompaniesValidator,
@@ -35,17 +26,7 @@ import {
   finesMciPaymentCategoryCriminalSearchOneCriteriaValidator,
 } from './validators/fines-mci-payment-category-criminal-search.validator';
 import { distinctUntilChanged, takeUntil } from 'rxjs';
-
-type FinesMciCriminalSearchTab = 'individuals' | 'companies';
-type FinesMciCriminalSearchFormSubmissionResult =
-  | typeof FORM_SUBMISSION_RESULT.valid
-  | typeof FORM_SUBMISSION_RESULT.empty
-  | typeof FINES_MCI_CRIMINAL_SEARCH_RESULTS.searchCriteriaCannotBeCombined;
-
-const FORM_SUBMISSION_RESULT = {
-  valid: 'valid',
-  empty: 'empty',
-} as const;
+import { FinesMciCriminalSearchTab } from '../stores/interfaces/fines-mci-criminal-search.interface';
 
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
@@ -73,7 +54,6 @@ const LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidato
 })
 export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractFormBaseComponent {
   private readonly currentRoute = inject(ActivatedRoute);
-  private readonly opalFinesService = inject(OpalFines);
   private readonly angularRouter = inject(Router);
   private readonly criminalMatchesRoute = [
     '/',
@@ -140,12 +120,13 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
         return;
       }
 
-      this.setActiveTabFromFragment('individuals');
+      const tab = fragment ? 'individuals' : (this.finesMciStore.criminalSearch()?.activeTab ?? 'individuals');
+      this.setActiveTabFromFragment(tab);
 
       if (!fragment) {
         this.angularRouter.navigate([], {
           relativeTo: this.currentRoute,
-          fragment: 'individuals',
+          fragment: tab,
           replaceUrl: true,
         });
       }
@@ -161,97 +142,13 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
     inactiveGroup?.reset();
   }
 
-  private buildSearchParams(): IOpalFinesDefendantAccountSearchParams {
-    const formValue = this.form.value;
-    const isCompany = this.activeTab() === 'companies';
-    const businessUnit = this.finesMciStore.businessUnit();
-    const baseSearchParams = {
-      ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
-      business_unit_ids: businessUnit ? [businessUnit.business_unit_id] : [],
-    };
-
-    if (formValue.fsa_search_account_number) {
-      return {
-        ...baseSearchParams,
-        reference_number: {
-          ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_REFERENCE_DEFAULTS,
-          account_number: formValue.fsa_search_account_number,
-          organisation: isCompany,
-        },
-        active_accounts_only: false,
-      };
-    }
-
-    if (isCompany) {
-      const companyCriteria = formValue.fsa_search_account_companies_search_criteria;
-      return {
-        ...baseSearchParams,
-        defendant: {
-          ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS,
-          organisation_name: companyCriteria?.fsa_search_account_companies_company_name,
-          exact_match_organisation_name:
-            companyCriteria?.fsa_search_account_companies_company_name_exact_match ?? false,
-          include_aliases: companyCriteria?.fsa_search_account_companies_include_aliases ?? false,
-          organisation: true,
-        },
-        active_accounts_only: true,
-      };
-    }
-
-    const individualCriteria = formValue.fsa_search_account_individuals_search_criteria;
-
-    return {
-      ...baseSearchParams,
-      defendant: {
-        ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS,
-        surname: individualCriteria.fsa_search_account_individuals_last_name,
-        exact_match_surname: individualCriteria.fsa_search_account_individuals_last_name_exact_match ?? false,
-        forenames: individualCriteria.fsa_search_account_individuals_first_names,
-        exact_match_forenames: individualCriteria.fsa_search_account_individuals_first_names_exact_match ?? false,
-        include_aliases: individualCriteria.fsa_search_account_individuals_include_aliases ?? false,
-        organisation: false,
-      },
-      active_accounts_only: true,
-    };
-  }
-
-  private searchDefendantAccounts(): void {
-    this.opalFinesService.getDefendantAccounts(this.buildSearchParams()).subscribe((response) => {
-      if (response.count > 100) {
-        this.navigateToMatches(FINES_MCI_CRIMINAL_SEARCH_RESULTS.tooMany);
-        return;
-      }
-
-      if (response.count === 0) {
-        this.navigateToMatches(FINES_MCI_CRIMINAL_SEARCH_RESULTS.noMatches);
-        return;
-      }
-
-      this.navigateToMatches(FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches);
+  private navigateToMatches(): void {
+    this.finesMciStore.setCriminalSearch({
+      formData: this.form.getRawValue(),
+      activeTab: this.activeTab(),
+      searchCriteriaCannotBeCombined: !!this.form.errors?.['searchCriteriaCannotBeCombined'],
     });
-  }
-
-  private navigateToMatches(results: FinesMciCriminalSearchResults): void {
-    this.angularRouter.navigate(this.criminalMatchesRoute, {
-      queryParams: {
-        results,
-      },
-    });
-  }
-
-  private handleFormSubmission(): FinesMciCriminalSearchFormSubmissionResult {
-    this.clearInactiveTabCriteria();
-    this.form.updateValueAndValidity({ emitEvent: false });
-
-    if (this.form.errors?.['searchCriteriaCannotBeCombined']) {
-      return FINES_MCI_CRIMINAL_SEARCH_RESULTS.searchCriteriaCannotBeCombined;
-    }
-
-    if (this.form.errors?.['formEmpty']) {
-      return FORM_SUBMISSION_RESULT.empty;
-    }
-
-    return FORM_SUBMISSION_RESULT.valid;
+    this.angularRouter.navigate(this.criminalMatchesRoute);
   }
 
   private setActiveTabFromFragment(tab: FinesMciCriminalSearchTab): void {
@@ -269,28 +166,28 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
   }
 
   public override handleFormSubmit(event: SubmitEvent): void {
-    const formSubmissionResult = this.handleFormSubmission();
+    this.clearInactiveTabCriteria();
+    this.form.updateValueAndValidity({ emitEvent: false });
 
-    if (formSubmissionResult === FINES_MCI_CRIMINAL_SEARCH_RESULTS.searchCriteriaCannotBeCombined) {
+    if (this.form.errors?.['searchCriteriaCannotBeCombined']) {
       event.preventDefault();
-      this.navigateToMatches(FINES_MCI_CRIMINAL_SEARCH_RESULTS.searchCriteriaCannotBeCombined);
-      return;
-    }
-
-    if (formSubmissionResult === FORM_SUBMISSION_RESULT.empty) {
-      super.handleFormSubmit(event);
+      this.navigateToMatches();
       return;
     }
 
     super.handleFormSubmit(event);
 
     if (this.form.valid) {
-      this.searchDefendantAccounts();
+      this.navigateToMatches();
     }
   }
 
   public override ngOnInit(): void {
     this.setupSearchForm();
+    const search = this.finesMciStore.criminalSearch();
+    if (search) {
+      this.form.patchValue(search.formData);
+    }
     this.setupFragmentListener();
     this.setInitialErrorMessages();
     super.ngOnInit();

@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { map } from 'rxjs';
+import { FinesMciStore } from '../stores/fines-mci.store';
+import { IFinesMciCriminalAccountsResult } from '../routing/resolvers/fines-mci-criminal-accounts/fines-mci-criminal-accounts.resolver';
 import {
   FINES_MCI_CRIMINAL_SEARCH_RESULTS,
   FinesMciCriminalSearchResults,
@@ -12,9 +14,6 @@ interface FinesMciCriminalMatchesContent {
   ticket: string;
   body: string;
 }
-
-const FINES_MCI_CRIMINAL_MATCHES_DEFAULT_RESULTS: FinesMciCriminalSearchResults =
-  FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches;
 
 const FINES_MCI_CRIMINAL_MATCHES_CONTENT: Record<FinesMciCriminalSearchResults, FinesMciCriminalMatchesContent> = {
   [FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches]: {
@@ -39,9 +38,6 @@ const FINES_MCI_CRIMINAL_MATCHES_CONTENT: Record<FinesMciCriminalSearchResults, 
   },
 };
 
-const isFinesMciCriminalMatchesResults = (results: string | null): results is FinesMciCriminalSearchResults =>
-  Object.values(FINES_MCI_CRIMINAL_SEARCH_RESULTS).includes(results as FinesMciCriminalSearchResults);
-
 @Component({
   selector: 'app-fines-mci-payment-category-criminal-matches',
   templateUrl: './fines-mci-payment-category-criminal-matches.component.html',
@@ -49,15 +45,10 @@ const isFinesMciCriminalMatchesResults = (results: string | null): results is Fi
 })
 export class FinesMciPaymentCategoryCriminalMatchesComponent {
   private readonly route = inject(ActivatedRoute);
-  private readonly results = toSignal(
-    this.route.queryParamMap.pipe(
-      map((queryParamMap) => {
-        const results = queryParamMap.get('results');
-        return isFinesMciCriminalMatchesResults(results) ? results : FINES_MCI_CRIMINAL_MATCHES_DEFAULT_RESULTS;
-      }),
-    ),
-    { initialValue: FINES_MCI_CRIMINAL_MATCHES_DEFAULT_RESULTS },
+  private readonly accountsResult = toSignal(
+    this.route.data.pipe(map((data) => data['criminalAccounts'] as IFinesMciCriminalAccountsResult)),
+    { requireSync: true },
   );
-
-  protected readonly content = computed(() => FINES_MCI_CRIMINAL_MATCHES_CONTENT[this.results()]);
+  protected readonly finesMciStore = inject(FinesMciStore);
+  protected readonly content = computed(() => FINES_MCI_CRIMINAL_MATCHES_CONTENT[this.accountsResult().results]);
 }
