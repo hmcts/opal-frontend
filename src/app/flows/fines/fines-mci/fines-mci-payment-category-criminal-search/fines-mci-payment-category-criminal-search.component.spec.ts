@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
+import { AbstractControl } from '@angular/forms';
 import axe from 'axe-core';
 import { ActivatedRoute, NavigationExtras, provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
@@ -8,7 +9,8 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { FinesMciStore } from '../stores/fines-mci.store';
 import { BehaviorSubject, of } from 'rxjs';
-import { afterEach, beforeEach, describe, expect, it, MockInstance, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, expectTypeOf, it, MockInstance, vi } from 'vitest';
+import { IFinesMciCriminalSearch } from '../stores/interfaces/fines-mci-criminal-search.interface';
 import { FinesMciPaymentCategoryCriminalSearchComponent } from './fines-mci-payment-category-criminal-search.component';
 import { FinesMciPaymentCategoryCriminalMatchesComponent } from '../fines-mci-payment-category-criminal-matches/fines-mci-payment-category-criminal-matches.component';
 import { finesMciCriminalAccountsResolver } from '../routing/resolvers/fines-mci-criminal-accounts/fines-mci-criminal-accounts.resolver';
@@ -59,6 +61,13 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should expose typed form data matching the criminal search store', () => {
+    const formData = component.form.getRawValue();
+
+    expectTypeOf(formData).not.toBeAny();
+    expectTypeOf(formData).toEqualTypeOf<IFinesMciCriminalSearch['formData']>();
   });
 
   it('should render the stripped down criminal account search page', () => {
@@ -395,18 +404,36 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
     expect(TestBed.inject(FinesMciStore).criminalSearch()).toBeNull();
   });
 
-  it.each(['fsa_search_account_companies_include_aliases', 'fsa_search_account_companies_company_name_exact_match'])(
-    'should still require company name when %s is selected',
-    (field) => {
-      fragmentSubject.next('companies');
+  it.each([
+    ['individuals', 'first_names', 'last_name', 'John', 'Enter last name'],
+    ['individuals', 'last_name_exact_match', 'last_name', true, 'Enter last name'],
+    ['individuals', 'include_aliases', 'last_name', true, 'Enter last name'],
+    ['individuals', 'first_names_exact_match', 'first_names', true, 'Enter first name'],
+    ['companies', 'include_aliases', 'company_name', true, 'Enter company name'],
+    ['companies', 'company_name_exact_match', 'company_name', true, 'Enter company name'],
+  ] as const)(
+    'should apply and clear the required-field error for %s when %s changes',
+    (tab, trigger, dependent, value, message) => {
+      fragmentSubject.next(tab);
       routerNavigateSpy.mockClear();
-      component['form'].patchValue({ fsa_search_account_companies_search_criteria: { [field]: true } });
+      const fieldPrefix = `fsa_search_account_${tab}_`;
+      const criteria = component['form'].get(`${fieldPrefix}search_criteria`)!;
+      const triggerControl: AbstractControl<string | boolean | null> = criteria.get(`${fieldPrefix}${trigger}`)!;
+      const dependentControl = criteria.get(`${fieldPrefix}${dependent}`)!;
+      triggerControl.setValue(value);
 
       component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+      fixture.detectChanges();
 
-      expect(component.formControlErrorMessages['fsa_search_account_companies_company_name']).toBe(
-        'Enter company name',
-      );
+      expect(component.formControlErrorMessages[`${fieldPrefix}${dependent}`]).toBe(message);
+      expect(fixture.nativeElement.textContent).toContain(message);
+      expect(routerNavigateSpy).not.toHaveBeenCalled();
+
+      triggerControl.reset();
+      component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+
+      expect(dependentControl.errors).toBeNull();
+      expect(component.formControlErrorMessages[`${fieldPrefix}${dependent}`]).toBeUndefined();
       expect(routerNavigateSpy).not.toHaveBeenCalled();
     },
   );
