@@ -3,7 +3,6 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, EMPTY, finalize, Subject, takeUntil } from 'rxjs';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
-import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
 import { FinesAccAprManageTableComponent } from '../fines-acc-apr-manage/fines-acc-apr-manage-table/fines-acc-apr-manage-table.component';
@@ -14,7 +13,7 @@ import { FINES_ACC_APR_DELETE_SUCCESS_MESSAGE } from './constants/fines-acc-apr-
 
 @Component({
   selector: 'app-fines-acc-apr-delete',
-  imports: [GovukCancelLinkComponent, GovukHeadingWithCaptionComponent, FinesAccAprManageTableComponent],
+  imports: [GovukCancelLinkComponent, FinesAccAprManageTableComponent],
   templateUrl: './fines-acc-apr-delete.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -40,9 +39,6 @@ export class FinesAccAprDeleteComponent {
     const reference = this.selectedReference();
     return reference ? [reference] : [];
   });
-  public readonly accountCaption = computed(
-    () => `${this.accountStore.getAccountNumber()} - ${this.accountStore.party_name()}`,
-  );
   public readonly isRemoving = signal(false);
 
   constructor() {

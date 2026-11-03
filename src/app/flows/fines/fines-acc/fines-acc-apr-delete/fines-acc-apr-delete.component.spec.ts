@@ -97,7 +97,7 @@ describe('FinesAccAprDeleteComponent', () => {
     harness = await RouterTestingHarness.create();
   });
 
-  it('renders the selected APR and account caption with common controls and no table management actions', async () => {
+  it('renders the removal question and selected APR without an account caption or table management actions', async () => {
     data = {
       ...data,
       references: [reference, { ...reference, alternate_payment_reference_id: 12, apr_text: 'OTHER-REFERENCE' }],
@@ -106,10 +106,10 @@ describe('FinesAccAprDeleteComponent', () => {
     await render();
 
     const element = harness.routeNativeElement!;
-    expect(element.querySelector('h1')?.textContent).toContain(
-      'Are you sure you want to remove this alternate payment reference',
+    expect(element.querySelector('h1')?.textContent?.trim()).toBe(
+      'Are you sure you want to remove this alternate payment reference?',
     );
-    expect(element.textContent).toContain('177A - APR TEST');
+    expect(element.textContent).not.toContain('177A - APR TEST');
     expect(element.querySelectorAll('#apr-remove-table tbody tr')).toHaveLength(1);
     expect(element.querySelector('#apr-remove-table')?.textContent).toContain('TEST-REFERENCE');
     expect(element.querySelector('#apr-remove-table')?.textContent).toContain('01 June 2026');

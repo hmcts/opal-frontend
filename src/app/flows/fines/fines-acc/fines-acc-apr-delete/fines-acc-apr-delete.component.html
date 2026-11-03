@@ -1,14 +1,10 @@
 <div class="govuk-grid-column-full">
-  <opal-lib-govuk-heading-with-caption
-    [captionText]="accountCaption()"
-    headingText="Are you sure you want to remove this alternate payment reference"
-    headingClasses="govuk-heading-l"
-  />
+  <h1 class="govuk-heading-l">Are you sure you want to remove this alternate payment reference?</h1>
   <app-fines-acc-apr-manage-table [references]="references()" tableId="apr-remove-table" [showActions]="false" />
   <form (submit)="handleRemove($event)" [attr.aria-busy]="isRemoving()">
     <div class="govuk-button-group">
       <button
-        class="govuk-button govuk-!-margin-right-4"
+        class="govuk-button govuk-button--warning govuk-!-margin-right-4"
         id="apr-remove-confirm"
         type="submit"
         [disabled]="isRemoving()"
