@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { provideRouter, Router, RouterLink } from '@angular/router';
+import { ActivatedRouteSnapshot, provideRouter, Router, RouterLink, UrlTree } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesSuspenseItemSearchComponent } from '../fines-suspense-item-search/fines-suspense-item-search.component';
 import { routing } from './fines-suspense-item.routes';
 
-import { finesRouting } from '../../routing/fines.routes';
+import { finesRouting, release1cSuspenseFeatureFlagGuard } from '../../routing/fines.routes';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { RELEASE_1C_SUSPENSE_FEATURE_FLAG } from '../../constants/release-feature-flags.constant';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
@@ -78,9 +78,12 @@ class TestAccessDeniedComponent {}
 describe('Suspense entry access', () => {
   let suspenseEnabled: boolean;
   let permissionIds: number[];
+  const featureFlagsSpy = vi.fn();
 
   beforeEach(() => {
     suspenseEnabled = true;
+    featureFlagsSpy.mockReset();
+    featureFlagsSpy.mockImplementation(() => ({ [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: suspenseEnabled }));
     permissionIds = [24];
     const suspenseRoute = finesRouting
       .find((route) => route.children)
@@ -103,7 +106,7 @@ describe('Suspense entry access', () => {
         ]),
         {
           provide: GlobalStore,
-          useValue: { featureFlags: () => ({ [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: suspenseEnabled }) },
+          useValue: { featureFlags: featureFlagsSpy },
         },
         { provide: LaunchDarklyService, useValue: {} },
         {
@@ -125,6 +128,23 @@ describe('Suspense entry access', () => {
     });
   });
 
+  it('the configured Suspense feature guard reads a disabled flag and returns Access denied', async () => {
+    suspenseEnabled = false;
+    const router = TestBed.inject(Router);
+    expect(TestBed.inject(GlobalStore).featureFlags()).toHaveProperty(RELEASE_1C_SUSPENSE_FEATURE_FLAG, false);
+    featureFlagsSpy.mockClear();
+
+    const result = await TestBed.runInInjectionContext(() =>
+      release1cSuspenseFeatureFlagGuard(new ActivatedRouteSnapshot(), router.routerState.snapshot),
+    );
+
+    expect.soft(featureFlagsSpy, 'The configured feature guard must read the mocked flag store').toHaveBeenCalled();
+    expect(result, 'A disabled Suspense flag must produce a redirect, not allow entry').toBeInstanceOf(UrlTree);
+    if (result instanceof UrlTree) {
+      expect(router.serializeUrl(result)).toBe('/access-denied');
+    }
+  });
+
   it.each([
     { enabled: true, permissions: [24], allowed: true },
     { enabled: true, permissions: [25], allowed: true },
@@ -142,7 +162,12 @@ describe('Suspense entry access', () => {
       permissionIds = permissions;
       const harness = await RouterTestingHarness.create();
 
+      expect(TestBed.inject(GlobalStore).featureFlags()).toHaveProperty(RELEASE_1C_SUSPENSE_FEATURE_FLAG, enabled);
+      featureFlagsSpy.mockClear();
+
       await harness.navigateByUrl('/fines/suspense-item/search');
+
+      expect.soft(featureFlagsSpy, 'Router navigation must execute the feature-flag check').toHaveBeenCalled();
 
       expect(TestBed.inject(Router).url).toBe(allowed ? '/fines/suspense-item/search' : '/access-denied');
       expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe(
