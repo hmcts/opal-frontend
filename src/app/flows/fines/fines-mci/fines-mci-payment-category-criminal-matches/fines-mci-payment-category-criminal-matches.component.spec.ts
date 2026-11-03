@@ -41,7 +41,7 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
   });
 
   it.each([
-    ['matches', 'Matching criminal accounts', 'PO-3480'],
+    ['matches', 'Matching criminal accounts', 'PO-3490'],
     ['no-matches', 'No matching criminal accounts', 'PO-3528'],
     ['too-many', 'More than 100 matching criminal accounts', 'PO-3528'],
     ['search-criteria-cannot-be-combined', 'Search criteria cannot be combined', 'PO-3529'],
