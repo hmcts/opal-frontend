@@ -45,6 +45,7 @@ import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from './constants/route-data.constant
 import { FINES_ACC_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-minor-creditor-routing-paths.constant';
+import { FinesApiStore } from './flows/fines/fines-api/stores/fines-api.store';
 import { FINES_CON_ROUTING_PATHS } from './flows/fines/fines-con/routing/constants/fines-con-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from './flows/fines/fines-mac/routing/constants/fines-mac-routing-paths.constant';
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
@@ -248,6 +249,21 @@ describe('AppComponent - browser', () => {
 
     expect(spy).toHaveBeenCalled();
     expect(mockDocumentLocation.location.href).toBe(SSO_ENDPOINTS.logout);
+  });
+
+  it.each([
+    [false, false],
+    [true, true],
+  ])('should honor the unsaved changes confirmation when the user confirms=%s', (confirmation, shouldRedirect) => {
+    globalStore.setAuthenticated(true);
+    TestBed.inject(FinesApiStore).setUnsavedChanges(true);
+    const fixture = TestBed.createComponent(AppComponent);
+    const redirectSpy = vi.spyOn(fixture.componentInstance, 'handleRedirect');
+    vi.spyOn(window, 'confirm').mockReturnValue(confirmation);
+
+    fixture.componentInstance.handleAuthentication();
+
+    expect(redirectSpy).toHaveBeenCalledTimes(shouldRedirect ? 1 : 0);
   });
 
   it('should unsubscribe from the timeout interval subscription', () => {
