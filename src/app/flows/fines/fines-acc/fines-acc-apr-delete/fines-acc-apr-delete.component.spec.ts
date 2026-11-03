@@ -117,10 +117,8 @@ describe('FinesAccAprDeleteComponent', () => {
     expect(element.querySelector('#apr-remove-table')?.textContent).not.toContain('OTHER-REFERENCE');
     expect(element.querySelector('#apr-remove-table a')).toBeNull();
     expect(element.querySelectorAll('#apr-remove-table thead th')).toHaveLength(3);
-    expect(element.querySelector('opal-lib-govuk-button #apr-remove-confirm')?.textContent?.trim()).toBe(
-      'Yes - remove reference',
-    );
-    expect(element.querySelector('opal-lib-govuk-cancel-link a')?.textContent?.trim()).toBe('No - cancel');
+    expect(element.querySelector('#apr-remove-confirm')?.textContent?.trim()).toBe('Yes - remove reference');
+    expect(element.querySelector('opal-lib-govuk-cancel-link a')?.textContent?.trim()).toBe('Cancel');
     expect(api.deleteApr).not.toHaveBeenCalled();
   });
 
@@ -167,7 +165,7 @@ describe('FinesAccAprDeleteComponent', () => {
     harness.detectChanges();
 
     expect(component.isRemoving()).toBe(true);
-    expect(harness.routeNativeElement!.querySelector('fieldset')?.disabled).toBe(true);
+    expect((harness.routeNativeElement!.querySelector('#apr-remove-confirm') as HTMLButtonElement).disabled).toBe(true);
     expect(api.deleteApr).toHaveBeenCalledExactlyOnceWith(141, 11, '"7"');
     expect(api.clearAccountDetailsCache).not.toHaveBeenCalled();
     expect(accountStore.successMessage()).toBeNull();
@@ -261,18 +259,21 @@ describe('FinesAccAprDeleteComponent', () => {
     },
   );
 
-  it('cancels pending removal when the confirmation page is destroyed and ignores its late response', async () => {
+  it('keeps Cancel available during removal and ignores the pending response after leaving', async () => {
     const result = new Subject<IOpalFinesAprResponse>();
     api.deleteApr.mockReturnValue(result);
     const component = await render();
     confirm();
+    harness.detectChanges();
     expect(result.observed).toBe(true);
 
-    await harness.navigateByUrl(manageUrl);
+    (harness.routeNativeElement!.querySelector('#apr-remove-cancel a') as HTMLAnchorElement).click();
+    await harness.fixture.whenStable();
     result.next({ reference, version: '"8"' });
     result.complete();
 
     expect(result.observed).toBe(false);
+    expect(api.deleteApr).toHaveBeenCalledExactlyOnceWith(141, 11, '"7"');
     expect(component.isRemoving()).toBe(false);
     expect(accountStore.base_version()).toBe('"7"');
     expect(accountStore.successMessage()).toBeNull();

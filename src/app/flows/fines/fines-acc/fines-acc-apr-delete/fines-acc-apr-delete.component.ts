@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signa
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, EMPTY, finalize, Subject, takeUntil } from 'rxjs';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -15,12 +14,7 @@ import { FINES_ACC_APR_DELETE_SUCCESS_MESSAGE } from './constants/fines-acc-apr-
 
 @Component({
   selector: 'app-fines-acc-apr-delete',
-  imports: [
-    GovukButtonComponent,
-    GovukCancelLinkComponent,
-    GovukHeadingWithCaptionComponent,
-    FinesAccAprManageTableComponent,
-  ],
+  imports: [GovukCancelLinkComponent, GovukHeadingWithCaptionComponent, FinesAccAprManageTableComponent],
   templateUrl: './fines-acc-apr-delete.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -59,7 +53,8 @@ export class FinesAccAprDeleteComponent {
   }
 
   /** Removes only the selected APR, retaining global HTTP handling for failed requests. */
-  public handleRemove(): void {
+  public handleRemove(event?: SubmitEvent): void {
+    event?.preventDefault();
     const reference = this.selectedReference();
     const version = this.data().version;
 

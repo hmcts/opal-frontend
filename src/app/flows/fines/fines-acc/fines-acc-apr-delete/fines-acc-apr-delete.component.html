@@ -5,17 +5,17 @@
     headingClasses="govuk-heading-l"
   />
   <app-fines-acc-apr-manage-table [references]="references()" tableId="apr-remove-table" [showActions]="false" />
-  <fieldset class="govuk-fieldset" [disabled]="isRemoving()" [attr.aria-busy]="isRemoving()">
-    <legend class="govuk-visually-hidden">Confirm reference removal</legend>
+  <form (submit)="handleRemove($event)" [attr.aria-busy]="isRemoving()">
     <div class="govuk-button-group">
-      <opal-lib-govuk-button buttonId="apr-remove-confirm" type="button" (buttonClickEvent)="handleRemove()">
+      <button
+        class="govuk-button govuk-!-margin-right-4"
+        id="apr-remove-confirm"
+        type="submit"
+        [disabled]="isRemoving()"
+      >
         Yes - remove reference
-      </opal-lib-govuk-button>
-      <opal-lib-govuk-cancel-link
-        id="apr-remove-cancel"
-        cancelLinkText="No - cancel"
-        (linkClickEvent)="handleCancel()"
-      />
+      </button>
+      <opal-lib-govuk-cancel-link id="apr-remove-cancel" (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
     </div>
-  </fieldset>
+  </form>
 </div>
