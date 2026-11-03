@@ -455,6 +455,41 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
     });
   });
 
+  it('should allow browser unload when the search form is empty', () => {
+    const event = new Event('beforeunload', { cancelable: true });
+
+    expect(window.dispatchEvent(event)).toBe(true);
+    expect(event.defaultPrevented).toBe(false);
+  });
+
+  it.each([
+    ['fsa_search_account_number', '12345678'],
+    ['fsa_search_account_individuals_search_criteria.fsa_search_account_individuals_last_name', 'Smith'],
+    ['fsa_search_account_companies_search_criteria.fsa_search_account_companies_company_name', 'Acme Ltd'],
+    ['fsa_search_account_individuals_search_criteria.fsa_search_account_individuals_include_aliases', true],
+  ] as const)('should warn before browser unload when %s contains data', (path, value) => {
+    const control: AbstractControl<string | boolean | null> = component.form.get(path)!;
+    control.setValue(value);
+    const formData = component.form.getRawValue();
+    const event = new Event('beforeunload', { cancelable: true });
+
+    expect(window.dispatchEvent(event)).toBe(false);
+    expect(event.defaultPrevented).toBe(true);
+    expect(component.form.getRawValue()).toEqual(formData);
+  });
+
+  it('should allow browser unload once search data has been cleared', () => {
+    component.form.patchValue({ fsa_search_account_number: '12345678' });
+    component.form.reset();
+    component.form.controls.fsa_search_account_individuals_search_criteria.patchValue({
+      fsa_search_account_individuals_include_aliases: false,
+    });
+    const event = new Event('beforeunload', { cancelable: true });
+
+    expect(window.dispatchEvent(event)).toBe(true);
+    expect(event.defaultPrevented).toBe(false);
+  });
+
   it('should require confirmation again after a search navigation is cancelled', async () => {
     component['form'].patchValue({ fsa_search_account_number: '12345678' });
     routerNavigateSpy.mockResolvedValueOnce(false);

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
@@ -183,6 +183,11 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
 
   public canDeactivate(): CanDeactivateTypes {
     return this.isContinuing || !hasNestedValue(this.form);
+  }
+
+  @HostListener('window:beforeunload')
+  public handleBeforeUnload(): boolean {
+    return !hasNestedValue(this.form);
   }
 
   public override ngOnDestroy(): void {
