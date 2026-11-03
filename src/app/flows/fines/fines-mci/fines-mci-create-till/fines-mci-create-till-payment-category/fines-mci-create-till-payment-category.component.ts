@@ -29,7 +29,17 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
       this.finesMciStore.addPayment(tillId, paymentCategory);
       this.stateUnsavedChanges = false;
       this.routerNavigate(
-        `/${FINES_ROUTING_PATHS.root}/${FINES_MCI_ROUTING_PATHS.root}/${FINES_MCI_ROUTING_PATHS.children.paymentCategoryCriminalSearch}`,
+        [
+          '',
+          FINES_ROUTING_PATHS.root,
+          FINES_MCI_ROUTING_PATHS.root,
+          FINES_MCI_ROUTING_PATHS.children.create,
+          FINES_MCI_ROUTING_PATHS.children.till,
+          FINES_MCI_ROUTING_PATHS.children.payment,
+          FINES_MCI_ROUTING_PATHS.children.category,
+          FINES_MCI_ROUTING_PATHS.children.criminal,
+          FINES_MCI_ROUTING_PATHS.children.search,
+        ].join('/'),
         true,
       );
       return;

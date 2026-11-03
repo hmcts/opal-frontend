@@ -56,7 +56,12 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
     '/',
     FINES_ROUTING_PATHS.root,
     FINES_MCI_ROUTING_PATHS.root,
-    ...FINES_MCI_ROUTING_PATHS.children.paymentCategoryCriminalMatches.split('/'),
+    FINES_MCI_ROUTING_PATHS.children.create,
+    FINES_MCI_ROUTING_PATHS.children.till,
+    FINES_MCI_ROUTING_PATHS.children.payment,
+    FINES_MCI_ROUTING_PATHS.children.category,
+    FINES_MCI_ROUTING_PATHS.children.criminal,
+    FINES_MCI_ROUTING_PATHS.children.matches,
   ];
 
   protected readonly finesMciStore = inject(FinesMciStore);

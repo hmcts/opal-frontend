@@ -34,38 +34,6 @@ export const routing: Routes = [
     },
   },
   {
-    path: FINES_MCI_ROUTING_PATHS.children.paymentCategoryCriminalSearch,
-    loadComponent: () =>
-      import('../fines-mci-payment-category-criminal-search/fines-mci-payment-category-criminal-search.component').then(
-        (c) => c.FinesMciPaymentCategoryCriminalSearchComponent,
-      ),
-    canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
-    canDeactivate: [canDeactivateGuard],
-    data: {
-      routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
-      title: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalSearch,
-    },
-    resolve: {
-      title: TitleResolver,
-    },
-  },
-  {
-    path: FINES_MCI_ROUTING_PATHS.children.paymentCategoryCriminalMatches,
-    loadComponent: () =>
-      import('../fines-mci-payment-category-criminal-matches/fines-mci-payment-category-criminal-matches.component').then(
-        (c) => c.FinesMciPaymentCategoryCriminalMatchesComponent,
-      ),
-    canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
-    data: {
-      routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
-      title: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalMatches,
-    },
-    resolve: {
-      criminalAccounts: finesMciCriminalAccountsResolver,
-      title: TitleResolver,
-    },
-  },
-  {
     path: FINES_MCI_ROUTING_PATHS.children.create,
     children: [
       {
@@ -125,6 +93,53 @@ export const routing: Routes = [
             resolve: {
               title: TitleResolver,
             },
+          },
+          {
+            path: FINES_MCI_ROUTING_PATHS.children.payment,
+            children: [
+              {
+                path: FINES_MCI_ROUTING_PATHS.children.category,
+                children: [
+                  {
+                    path: FINES_MCI_ROUTING_PATHS.children.criminal,
+                    children: [
+                      {
+                        path: FINES_MCI_ROUTING_PATHS.children.search,
+                        loadComponent: () =>
+                          import('../fines-mci-payment-category-criminal-search/fines-mci-payment-category-criminal-search.component').then(
+                            (c) => c.FinesMciPaymentCategoryCriminalSearchComponent,
+                          ),
+                        canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+                        canDeactivate: [canDeactivateGuard],
+                        data: {
+                          routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+                          title: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalSearch,
+                        },
+                        resolve: {
+                          title: TitleResolver,
+                        },
+                      },
+                      {
+                        path: FINES_MCI_ROUTING_PATHS.children.matches,
+                        loadComponent: () =>
+                          import('../fines-mci-payment-category-criminal-matches/fines-mci-payment-category-criminal-matches.component').then(
+                            (c) => c.FinesMciPaymentCategoryCriminalMatchesComponent,
+                          ),
+                        canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+                        data: {
+                          routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+                          title: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalMatches,
+                        },
+                        resolve: {
+                          criminalAccounts: finesMciCriminalAccountsResolver,
+                          title: TitleResolver,
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
           },
           {
             path: FINES_MCI_ROUTING_PATHS.children.searchAccount,

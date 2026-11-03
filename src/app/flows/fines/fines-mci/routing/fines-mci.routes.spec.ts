@@ -1,4 +1,8 @@
 import { describe, expect, it } from 'vitest';
+import { Component } from '@angular/core';
+import { TestBed } from '@angular/core/testing';
+import { provideRouter, Router, Routes } from '@angular/router';
+import { RouterTestingHarness } from '@angular/router/testing';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
@@ -12,10 +16,29 @@ import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.con
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
 
+@Component({ template: '' })
+class RouteDestinationComponent {}
+
+// Exercise the production URL hierarchy and inherited data independently of authentication and API calls.
+const routesForRecognition = (routes: Routes): Routes =>
+  routes.map((route) => ({
+    path: route.path,
+    pathMatch: route.pathMatch,
+    redirectTo: route.redirectTo,
+    data: route.data,
+    component: route.loadComponent ? RouteDestinationComponent : undefined,
+    children: route.children ? routesForRecognition(route.children) : undefined,
+  }));
+
 describe('finesMci routes', () => {
   const createTillRoute = routing
     .find((route) => route.path === 'create')
     ?.children?.find((route) => route.path === 'till');
+
+  const criminalRoute = createTillRoute?.children
+    ?.find((route) => route.path === FINES_MCI_ROUTING_PATHS.children.payment)
+    ?.children?.find((route) => route.path === FINES_MCI_ROUTING_PATHS.children.category)
+    ?.children?.find((route) => route.path === FINES_MCI_ROUTING_PATHS.children.criminal);
 
   it('should redirect the manual cash input root to create allocate', () => {
     expect(routing[0]).toEqual({
@@ -75,6 +98,39 @@ describe('finesMci routes', () => {
     expect(createTillRoute?.data).toEqual(PRIMARY_NAV_HIDDEN_ROUTE_DATA);
   });
 
+  it.each([
+    ['search', FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalSearch],
+    ['matches', FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalMatches],
+  ])('should resolve the existing criminal %s URL and inherit the till navigation setting', async (page, title) => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([
+          { path: 'fines', children: [{ path: 'manual-cash-input', children: routesForRecognition(routing) }] },
+        ]),
+      ],
+    });
+    const harness = await RouterTestingHarness.create();
+    const url = `/fines/manual-cash-input/create/till/payment/category/criminal/${page}`;
+
+    await harness.navigateByUrl(url, RouteDestinationComponent);
+
+    const router = TestBed.inject(Router);
+    let snapshot = router.routerState.snapshot.root;
+    while (snapshot.firstChild) snapshot = snapshot.firstChild;
+    expect(router.url).toBe(url);
+    expect(snapshot.pathFromRoot.map((route) => route.routeConfig?.path).filter(Boolean)).toEqual([
+      'fines',
+      'manual-cash-input',
+      'create',
+      'till',
+      'payment',
+      'category',
+      'criminal',
+      page,
+    ]);
+    expect(snapshot.data).toEqual(expect.objectContaining({ ...PRIMARY_NAV_HIDDEN_ROUTE_DATA, title }));
+  });
+
   it('should guard navigation away from payment category when a radio option has been selected', () => {
     const paymentCategoryRoute = createTillRoute?.children?.find(
       (route) => route.path === FINES_MCI_ROUTING_PATHS.children.paymentCategory,
@@ -108,14 +164,14 @@ describe('finesMci routes', () => {
     expect(childRoute?.loadComponent).toEqual(expect.any(Function));
   });
 
-  it('should expose a guarded criminal account search placeholder route', () => {
-    const criminalAccountSearchRoute = routing.find(
-      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.paymentCategoryCriminalSearch,
+  it('should expose a guarded criminal account search route', () => {
+    const criminalAccountSearchRoute = criminalRoute?.children?.find(
+      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.search,
     );
 
     expect(criminalAccountSearchRoute).toEqual(
       expect.objectContaining({
-        path: FINES_MCI_ROUTING_PATHS.children.paymentCategoryCriminalSearch,
+        path: FINES_MCI_ROUTING_PATHS.children.search,
         canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
@@ -131,13 +187,13 @@ describe('finesMci routes', () => {
   });
 
   it('should expose a guarded criminal account matches placeholder route', () => {
-    const criminalAccountMatchesRoute = routing.find(
-      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.paymentCategoryCriminalMatches,
+    const criminalAccountMatchesRoute = criminalRoute?.children?.find(
+      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.matches,
     );
 
     expect(criminalAccountMatchesRoute).toEqual(
       expect.objectContaining({
-        path: FINES_MCI_ROUTING_PATHS.children.paymentCategoryCriminalMatches,
+        path: FINES_MCI_ROUTING_PATHS.children.matches,
         canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
         data: {
           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
