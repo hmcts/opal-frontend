@@ -4,6 +4,9 @@ import { FINES_DASHBOARD_ROUTING_PATHS } from '../constants/fines-dashboard-rout
 import { FINES_ROUTING_PATHS } from './constants/fines-routing-paths.constant';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
 
+import { RELEASE_1C_SUSPENSE_FEATURE_FLAG } from '../constants/release-feature-flags.constant';
+
+const suspenseFeatureFlagGuardMock = vi.fn();
 const featureFlagRedirectGuardMock = vi.fn();
 const release1aFeatureFlagGuardMock = vi.fn();
 const release1bFeatureFlagGuardMock = vi.fn();
@@ -19,6 +22,10 @@ const release1cPaymentFeatureFlagName = 'release-1c-payment';
 
 const mockFeatureFlagRedirectGuard = (): void => {
   featureFlagRedirectGuardMock.mockImplementation((featureFlagName: string) => {
+    if (featureFlagName === RELEASE_1C_SUSPENSE_FEATURE_FLAG) {
+      return suspenseFeatureFlagGuardMock;
+    }
+
     if (featureFlagName === financialMovementsFeatureFlagName) {
       return financialMovementsFeatureFlagGuardMock;
     }
@@ -116,13 +123,16 @@ describe('fines routes', () => {
     expect(featureFlagRedirectGuardMock).toHaveBeenCalledWith(financialMovementsFeatureFlagName);
   });
 
-  it('should register the Suspense item routes beneath fines with authentication', async () => {
+  it('protects Suspense entry with authentication, its feature flag and either Suspense permission', async () => {
     const { routing: suspenseItemRouting } = await import('../fines-suspense-item/routing/fines-suspense-item.routes');
-    const suspenseRoute = childRoutes.find((route) => route.path === 'suspense-item');
+    const { routePermissionsGuard } = await import('@hmcts/opal-frontend-common/guards/route-permissions');
+    const suspenseRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.suspenseItem.root);
 
     expect(suspenseRoute).toBeDefined();
     expect(suspenseRoute?.children).toBe(suspenseItemRouting);
-    expect(suspenseRoute?.canActivate).toEqual([authGuard]);
+    expect(suspenseRoute?.canActivate).toEqual([authGuard, suspenseFeatureFlagGuardMock, routePermissionsGuard]);
+    expect(featureFlagRedirectGuardMock).toHaveBeenCalledWith(RELEASE_1C_SUSPENSE_FEATURE_FLAG);
+    expect(suspenseRoute?.data?.['routePermissionId']).toEqual([24, 25]);
   });
 
   it('should create the release-1a feature flag guard from the common redirect guard', () => {

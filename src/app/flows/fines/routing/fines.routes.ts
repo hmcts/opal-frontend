@@ -11,6 +11,8 @@ import { routing as autoPaymentInRouting } from '../fines-api/routing/fines-api.
 import { routing as financeRouting } from '../fines-finance/routing/fines-finance.routes';
 import { routing as suspenseItemRouting } from '../fines-suspense-item/routing/fines-suspense-item.routes';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
+import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { accountGuard } from '@hmcts/opal-frontend-common/guards/account';
@@ -36,6 +38,7 @@ import {
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
   RELEASE_1C_PAYMENT_FEATURE_FLAG,
+  RELEASE_1C_SUSPENSE_FEATURE_FLAG,
   RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
 } from '../constants/release-feature-flags.constant';
 
@@ -49,6 +52,8 @@ export const release1cFinancialMovementsFeatureFlagGuard = featureFlagRedirectGu
   RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
 );
 export const release1cPaymentFeatureFlagGuard = featureFlagRedirectGuard(RELEASE_1C_PAYMENT_FEATURE_FLAG);
+
+export const release1cSuspenseFeatureFlagGuard = featureFlagRedirectGuard(RELEASE_1C_SUSPENSE_FEATURE_FLAG);
 
 export const finesRouting: Routes = [
   {
@@ -122,7 +127,10 @@ export const finesRouting: Routes = [
       {
         path: FINES_ROUTING_PATHS.children.suspenseItem.root,
         children: suspenseItemRouting,
-        canActivate: [authGuard],
+        canActivate: [authGuard, release1cSuspenseFeatureFlagGuard, routePermissionsGuard],
+        data: {
+          routePermissionId: [FINES_PERMISSIONS['view-suspense-items'], FINES_PERMISSIONS['manage-suspense-items']],
+        },
       },
       {
         path: FINES_ROUTING_PATHS.children.autoPaymentIn.root,
