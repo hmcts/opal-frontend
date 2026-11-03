@@ -107,6 +107,13 @@ export class ManualCashInputFlow {
     this.actions.assertSearchForAccountIsDisplayed();
   }
 
+  /** Verifies the details destination for the selected payment category.
+   * @param category - Payment category whose details destination should be displayed.
+   */
+  public assertPaymentCategoryDetailsAreDisplayed(category: 'courtFee' | 'suspense'): void {
+    this.actions.assertPaymentCategoryDetailsAreDisplayed(category);
+  }
+
   /** Verifies the Payment Category page remains displayed. */
   public assertPaymentCategoryIsDisplayed(): void {
     this.actions.assertPaymentCategoryIsDisplayed();
