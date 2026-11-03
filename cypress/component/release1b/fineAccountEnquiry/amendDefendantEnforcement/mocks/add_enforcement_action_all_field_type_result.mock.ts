@@ -6,6 +6,7 @@ import { FINES_ACC_ENF_ACTION_ADD_FIELD_TYPES } from '@app/flows/fines/fines-acc
 export const ADD_ENFORCEMENT_ACTION_ALL_FIELD_TYPES_RESULT_MOCK = {
   result_id: 'COLLO',
   result_title: 'Collection order',
+  active: true,
   allow_payment_terms: true,
   requires_employment_data: false,
   result_parameters: JSON.stringify([
