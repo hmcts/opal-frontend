@@ -29,157 +29,147 @@
 
     <h2 class="govuk-heading-m govuk-!-margin-bottom-3">Advanced search</h2>
 
-    <div class="govuk-tabs" data-module="govuk-tabs">
-      <ul class="govuk-tabs__list" role="tablist">
-        <li class="govuk-tabs__list-item" [class.govuk-tabs__list-item--selected]="activeTab() === 'individuals'">
-          <a
-            class="govuk-tabs__tab"
-            id="tab-individuals"
-            href="#individuals"
-            role="tab"
-            [attr.aria-selected]="activeTab() === 'individuals'"
-            (click)="setActiveTab('individuals', $event)"
-          >
-            Individuals
-          </a>
+    <opal-lib-govuk-tabs tabId="criminalAccountSearchTabs">
+      <ng-container tab-list-items>
+        <li
+          opal-lib-govuk-tabs-list-item
+          tabItemId="tab-individuals"
+          tabItemFragment="individuals"
+          [activeTabItemFragment]="activeTab()"
+        >
+          Individuals
         </li>
-        <li class="govuk-tabs__list-item" [class.govuk-tabs__list-item--selected]="activeTab() === 'companies'">
-          <a
-            class="govuk-tabs__tab"
-            id="tab-companies"
-            href="#companies"
-            role="tab"
-            [attr.aria-selected]="activeTab() === 'companies'"
-            (click)="setActiveTab('companies', $event)"
-          >
-            Companies
-          </a>
+        <li
+          opal-lib-govuk-tabs-list-item
+          tabItemId="tab-companies"
+          tabItemFragment="companies"
+          [activeTabItemFragment]="activeTab()"
+        >
+          Companies
         </li>
-      </ul>
+      </ng-container>
 
-      @if (activeTab() === 'individuals') {
-        <div
-          class="govuk-tabs__panel"
-          id="individuals"
-          role="tabpanel"
-          aria-labelledby="tab-individuals"
-          formGroupName="fsa_search_account_individuals_search_criteria"
-        >
-          <h3 class="govuk-heading-m">Individuals</h3>
-          <opal-lib-govuk-text-input
-            labelText="Last name"
-            labelClasses="govuk-label--s"
-            inputId="fsa_search_account_individuals_last_name"
-            inputName="fsa_search_account_individuals_last_name"
-            inputClasses="govuk-input--width-20"
-            [control]="
-              form.get('fsa_search_account_individuals_search_criteria.fsa_search_account_individuals_last_name')
-            "
-            [errors]="formControlErrorMessages['fsa_search_account_individuals_last_name']"
-          ></opal-lib-govuk-text-input>
-          <opal-lib-govuk-checkboxes fieldSetId="lastNameExactMatch" checkboxClasses="" legendText="">
-            <div
-              opal-lib-govuk-checkboxes-item
-              labelText="Search exact match"
-              inputId="fsa_search_account_individuals_last_name_exact_match"
-              inputName="fsa_search_account_individuals_last_name_exact_match"
-              class="govuk-checkboxes--small"
+      <ng-container tab-panels>
+        @if (activeTab() === 'individuals') {
+          <opal-lib-govuk-tabs-panel
+            id="individuals"
+            tabItemId="tab-individuals"
+            formGroupName="fsa_search_account_individuals_search_criteria"
+          >
+            <h3 class="govuk-heading-m">Individuals</h3>
+            <opal-lib-govuk-text-input
+              labelText="Last name"
+              labelClasses="govuk-label--s"
+              inputId="fsa_search_account_individuals_last_name"
+              inputName="fsa_search_account_individuals_last_name"
+              inputClasses="govuk-input--width-20"
               [control]="
-                form.get(
-                  'fsa_search_account_individuals_search_criteria.fsa_search_account_individuals_last_name_exact_match'
-                )
+                form.get('fsa_search_account_individuals_search_criteria.fsa_search_account_individuals_last_name')
               "
-            ></div>
-          </opal-lib-govuk-checkboxes>
-          <opal-lib-govuk-text-input
-            labelText="First names"
-            labelClasses="govuk-label--s"
-            inputId="fsa_search_account_individuals_first_names"
-            inputName="fsa_search_account_individuals_first_names"
-            inputClasses="govuk-input--width-20"
-            [control]="
-              form.get('fsa_search_account_individuals_search_criteria.fsa_search_account_individuals_first_names')
-            "
-            [errors]="formControlErrorMessages['fsa_search_account_individuals_first_names']"
-          ></opal-lib-govuk-text-input>
-          <opal-lib-govuk-checkboxes fieldSetId="firstNamesExactMatch" checkboxClasses="" legendText="">
-            <div
-              opal-lib-govuk-checkboxes-item
-              labelText="Search exact match"
-              inputId="fsa_search_account_individuals_first_names_exact_match"
-              inputName="fsa_search_account_individuals_first_names_exact_match"
-              class="govuk-checkboxes--small"
+              [errors]="formControlErrorMessages['fsa_search_account_individuals_last_name']"
+            ></opal-lib-govuk-text-input>
+            <opal-lib-govuk-checkboxes fieldSetId="lastNameExactMatch" checkboxClasses="" legendText="">
+              <div
+                opal-lib-govuk-checkboxes-item
+                labelText="Search exact match"
+                inputId="fsa_search_account_individuals_last_name_exact_match"
+                inputName="fsa_search_account_individuals_last_name_exact_match"
+                class="govuk-checkboxes--small"
+                [control]="
+                  form.get(
+                    'fsa_search_account_individuals_search_criteria.fsa_search_account_individuals_last_name_exact_match'
+                  )
+                "
+              ></div>
+            </opal-lib-govuk-checkboxes>
+            <opal-lib-govuk-text-input
+              labelText="First names"
+              labelClasses="govuk-label--s"
+              inputId="fsa_search_account_individuals_first_names"
+              inputName="fsa_search_account_individuals_first_names"
+              inputClasses="govuk-input--width-20"
               [control]="
-                form.get(
-                  'fsa_search_account_individuals_search_criteria.fsa_search_account_individuals_first_names_exact_match'
-                )
+                form.get('fsa_search_account_individuals_search_criteria.fsa_search_account_individuals_first_names')
               "
-            ></div>
-          </opal-lib-govuk-checkboxes>
-          <opal-lib-govuk-checkboxes fieldSetId="includeAliases" checkboxClasses="" legendText="">
-            <div
-              opal-lib-govuk-checkboxes-item
-              labelText="Include aliases"
-              inputId="fsa_search_account_individuals_include_aliases"
-              inputName="fsa_search_account_individuals_include_aliases"
-              class="govuk-checkboxes--small"
+              [errors]="formControlErrorMessages['fsa_search_account_individuals_first_names']"
+            ></opal-lib-govuk-text-input>
+            <opal-lib-govuk-checkboxes fieldSetId="firstNamesExactMatch" checkboxClasses="" legendText="">
+              <div
+                opal-lib-govuk-checkboxes-item
+                labelText="Search exact match"
+                inputId="fsa_search_account_individuals_first_names_exact_match"
+                inputName="fsa_search_account_individuals_first_names_exact_match"
+                class="govuk-checkboxes--small"
+                [control]="
+                  form.get(
+                    'fsa_search_account_individuals_search_criteria.fsa_search_account_individuals_first_names_exact_match'
+                  )
+                "
+              ></div>
+            </opal-lib-govuk-checkboxes>
+            <opal-lib-govuk-checkboxes fieldSetId="includeAliases" checkboxClasses="" legendText="">
+              <div
+                opal-lib-govuk-checkboxes-item
+                labelText="Include aliases"
+                inputId="fsa_search_account_individuals_include_aliases"
+                inputName="fsa_search_account_individuals_include_aliases"
+                class="govuk-checkboxes--small"
+                [control]="
+                  form.get(
+                    'fsa_search_account_individuals_search_criteria.fsa_search_account_individuals_include_aliases'
+                  )
+                "
+              ></div>
+            </opal-lib-govuk-checkboxes>
+          </opal-lib-govuk-tabs-panel>
+        } @else {
+          <opal-lib-govuk-tabs-panel
+            id="companies"
+            tabItemId="tab-companies"
+            formGroupName="fsa_search_account_companies_search_criteria"
+          >
+            <h3 class="govuk-heading-m">Companies</h3>
+            <opal-lib-govuk-text-input
+              labelText="Company name"
+              labelClasses="govuk-label--s"
+              inputId="fsa_search_account_companies_company_name"
+              inputName="fsa_search_account_companies_company_name"
+              inputClasses="govuk-input--width-20"
               [control]="
-                form.get(
-                  'fsa_search_account_individuals_search_criteria.fsa_search_account_individuals_include_aliases'
-                )
+                form.get('fsa_search_account_companies_search_criteria.fsa_search_account_companies_company_name')
               "
-            ></div>
-          </opal-lib-govuk-checkboxes>
-        </div>
-      } @else {
-        <div
-          class="govuk-tabs__panel"
-          id="companies"
-          role="tabpanel"
-          aria-labelledby="tab-companies"
-          formGroupName="fsa_search_account_companies_search_criteria"
-        >
-          <h3 class="govuk-heading-m">Companies</h3>
-          <opal-lib-govuk-text-input
-            labelText="Company name"
-            labelClasses="govuk-label--s"
-            inputId="fsa_search_account_companies_company_name"
-            inputName="fsa_search_account_companies_company_name"
-            inputClasses="govuk-input--width-20"
-            [control]="
-              form.get('fsa_search_account_companies_search_criteria.fsa_search_account_companies_company_name')
-            "
-            [errors]="formControlErrorMessages['fsa_search_account_companies_company_name']"
-          ></opal-lib-govuk-text-input>
-          <opal-lib-govuk-checkboxes fieldSetId="companyNameExactMatch" checkboxClasses="" legendText="">
-            <div
-              opal-lib-govuk-checkboxes-item
-              labelText="Search exact match"
-              inputId="fsa_search_account_companies_company_name_exact_match"
-              inputName="fsa_search_account_companies_company_name_exact_match"
-              class="govuk-checkboxes--small"
-              [control]="
-                form.get(
-                  'fsa_search_account_companies_search_criteria.fsa_search_account_companies_company_name_exact_match'
-                )
-              "
-            ></div>
-          </opal-lib-govuk-checkboxes>
-          <opal-lib-govuk-checkboxes fieldSetId="includeCompanyAliases" checkboxClasses="" legendText="">
-            <div
-              opal-lib-govuk-checkboxes-item
-              labelText="Include aliases"
-              inputId="fsa_search_account_companies_include_aliases"
-              inputName="fsa_search_account_companies_include_aliases"
-              class="govuk-checkboxes--small"
-              [control]="
-                form.get('fsa_search_account_companies_search_criteria.fsa_search_account_companies_include_aliases')
-              "
-            ></div>
-          </opal-lib-govuk-checkboxes>
-        </div>
-      }
-    </div>
+              [errors]="formControlErrorMessages['fsa_search_account_companies_company_name']"
+            ></opal-lib-govuk-text-input>
+            <opal-lib-govuk-checkboxes fieldSetId="companyNameExactMatch" checkboxClasses="" legendText="">
+              <div
+                opal-lib-govuk-checkboxes-item
+                labelText="Search exact match"
+                inputId="fsa_search_account_companies_company_name_exact_match"
+                inputName="fsa_search_account_companies_company_name_exact_match"
+                class="govuk-checkboxes--small"
+                [control]="
+                  form.get(
+                    'fsa_search_account_companies_search_criteria.fsa_search_account_companies_company_name_exact_match'
+                  )
+                "
+              ></div>
+            </opal-lib-govuk-checkboxes>
+            <opal-lib-govuk-checkboxes fieldSetId="includeCompanyAliases" checkboxClasses="" legendText="">
+              <div
+                opal-lib-govuk-checkboxes-item
+                labelText="Include aliases"
+                inputId="fsa_search_account_companies_include_aliases"
+                inputName="fsa_search_account_companies_include_aliases"
+                class="govuk-checkboxes--small"
+                [control]="
+                  form.get('fsa_search_account_companies_search_criteria.fsa_search_account_companies_include_aliases')
+                "
+              ></div>
+            </opal-lib-govuk-checkboxes>
+          </opal-lib-govuk-tabs-panel>
+        }
+      </ng-container>
+    </opal-lib-govuk-tabs>
 
     <div class="govuk-button-group">
       <button class="govuk-button" type="submit" buttonId="submitForm">Search</button>

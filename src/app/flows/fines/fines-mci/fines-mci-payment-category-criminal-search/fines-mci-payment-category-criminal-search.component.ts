@@ -3,6 +3,9 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
+import { GovukTabsComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-tabs';
+import { GovukTabsListItemComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-tabs/govuk-tabs-list-item';
+import { GovukTabsPanelComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-tabs/govuk-tabs-panel';
 import {
   GovukCheckboxesComponent,
   GovukCheckboxesItemComponent,
@@ -42,6 +45,9 @@ const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_
     RouterLink,
     GovukErrorSummaryComponent,
     GovukTextInputComponent,
+    GovukTabsComponent,
+    GovukTabsListItemComponent,
+    GovukTabsPanelComponent,
     GovukCheckboxesComponent,
     GovukCheckboxesItemComponent,
   ],
@@ -157,14 +163,6 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
     this.activeTab.set(tab);
     this.clearAllErrorMessages();
     this.setInitialErrorMessages();
-  }
-
-  protected setActiveTab(tab: FinesMciCriminalSearchTab, event: Event): void {
-    event.preventDefault();
-    this.angularRouter.navigate([], {
-      relativeTo: this.currentRoute,
-      fragment: tab,
-    });
   }
 
   public override handleFormSubmit(event: SubmitEvent): void {

@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
+import axe from 'axe-core';
 import { ActivatedRoute, NavigationExtras, provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
@@ -103,9 +104,9 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
   it('should update the fragment when changing tab', () => {
     routerNavigateSpy.mockClear();
 
-    component['setActiveTab']('companies', { preventDefault: vi.fn() } as unknown as Event);
+    (fixture.nativeElement.querySelector('#tab-companies') as HTMLAnchorElement).click();
 
-    expect(routerNavigateSpy).toHaveBeenCalledWith([], {
+    expect(routerNavigateSpy).toHaveBeenCalledWith(['./'], {
       relativeTo: TestBed.inject(ActivatedRoute),
       fragment: 'companies',
     });
@@ -117,6 +118,30 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
 
     expect(component['activeTab']()).toBe('companies');
     expect(fixture.nativeElement.textContent).toContain('Company name');
+  });
+
+  it.each(['individuals', 'companies'] as const)('should provide accessible tabs with %s selected', async (tab) => {
+    fragmentSubject.next(tab);
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    const selectedTab = element.querySelector(`#tab-${tab}`)!;
+    const otherTab = element.querySelector(`#tab-${tab === 'individuals' ? 'companies' : 'individuals'}`)!;
+    const panel = element.querySelector(`#${tab}`)!;
+
+    expect(selectedTab.getAttribute('aria-selected')).toBe('true');
+    expect(selectedTab.getAttribute('tabindex')).toBe('0');
+    expect(selectedTab.getAttribute('aria-controls')).toBe(panel.id);
+    expect(otherTab.getAttribute('aria-selected')).toBe('false');
+    expect(otherTab.getAttribute('tabindex')).toBe('-1');
+    expect(panel.getAttribute('aria-labelledby')).toBe(selectedTab.id);
+
+    const results = await axe.run(element, {
+      runOnly: {
+        type: 'rule',
+        values: ['aria-required-children', 'aria-required-parent', 'aria-required-attr', 'aria-valid-attr-value'],
+      },
+    });
+    expect(results.violations).toEqual([]);
   });
 
   it.each(['individuals', 'companies'] as const)(
