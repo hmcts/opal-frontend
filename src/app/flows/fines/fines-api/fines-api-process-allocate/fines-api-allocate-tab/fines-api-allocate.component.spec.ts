@@ -96,6 +96,22 @@ describe('FinesApiAllocateComponent', () => {
     ]);
   });
 
+  it('resolves the view query as the conditional table is created, removed and recreated', () => {
+    const query = fixture.componentInstance['table'];
+    expect(query()).toBeUndefined();
+
+    render(data());
+    const originalTable = table();
+    expect(query()).toBe(originalTable);
+
+    render(data([]));
+    expect(query()).toBeUndefined();
+
+    render(data(rows(1)));
+    expect(query()).toBe(table());
+    expect(query()).not.toBe(originalTable);
+  });
+
   it('clears selections before requesting refresh', () => {
     render(data());
     expect((fixture.componentInstance as unknown as { table: () => unknown }).table()).toBeTruthy();
