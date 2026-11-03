@@ -94,6 +94,60 @@ describe('finesMciCriminalAccountsResolver', () => {
     );
   });
 
+  it('defaults unselected individual search options to false', async () => {
+    search.formData.fsa_search_account_individuals_search_criteria = {
+      fsa_search_account_individuals_last_name: 'Smith',
+      fsa_search_account_individuals_first_names: null,
+      fsa_search_account_individuals_last_name_exact_match: null,
+      fsa_search_account_individuals_first_names_exact_match: null,
+      fsa_search_account_individuals_include_aliases: null,
+    };
+    store.setCriminalSearch({ ...search });
+
+    await resolveResult();
+
+    expect(service.getDefendantAccounts).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({
+        defendant: expect.objectContaining({
+          surname: 'Smith',
+          forenames: null,
+          exact_match_surname: false,
+          exact_match_forenames: false,
+          include_aliases: false,
+          organisation: false,
+        }),
+      }),
+    );
+  });
+
+  it('defaults unselected company search options to false', async () => {
+    store.setCriminalSearch({
+      ...search,
+      activeTab: 'companies',
+      formData: {
+        ...search.formData,
+        fsa_search_account_companies_search_criteria: {
+          fsa_search_account_companies_company_name: 'Acme Ltd',
+          fsa_search_account_companies_company_name_exact_match: null,
+          fsa_search_account_companies_include_aliases: null,
+        },
+      },
+    });
+
+    await resolveResult();
+
+    expect(service.getDefendantAccounts).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({
+        defendant: expect.objectContaining({
+          organisation_name: 'Acme Ltd',
+          exact_match_organisation_name: false,
+          include_aliases: false,
+          organisation: true,
+        }),
+      }),
+    );
+  });
+
   it.each(['individuals', 'companies'] as const)('searches an account number from the %s tab', async (tab) => {
     store.setCriminalSearch({
       ...search,
