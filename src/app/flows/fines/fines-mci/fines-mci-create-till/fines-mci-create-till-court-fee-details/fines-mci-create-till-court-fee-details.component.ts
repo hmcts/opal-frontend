@@ -1,10 +1,23 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  DestroyRef,
+  ElementRef,
+  OnInit,
+  ViewChild,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
+import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
+import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukTextInputPrefixSuffixComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input-prefix-suffix';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -16,6 +29,7 @@ import { FinesMciStore } from '../../stores/fines-mci.store';
   imports: [
     AlphagovAccessibleAutocompleteComponent,
     GovukCancelLinkComponent,
+    GovukErrorSummaryComponent,
     GovukTextInputComponent,
     GovukTextInputPrefixSuffixComponent,
     ReactiveFormsModule,
@@ -24,16 +38,25 @@ import { FinesMciStore } from '../../stores/fines-mci.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit {
+  @ViewChild('courtFeeAutocomplete', { read: ElementRef })
+  private readonly courtFeeAutocomplete?: ElementRef<HTMLElement>;
+  @ViewChild('errorSummary', { read: ElementRef }) private readonly errorSummary?: ElementRef<HTMLElement>;
+
   private readonly finesMciStore = inject(FinesMciStore);
   private readonly opalFines = inject(OpalFines);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly document = inject(DOCUMENT);
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private courtFeeSearchText = '';
 
   protected readonly businessUnitName = this.finesMciStore.businessUnit()?.business_unit_name;
   protected readonly courtFeeItems = signal<IAlphagovAccessibleAutocompleteItem[]>([]);
   protected readonly feeLoadFailed = signal(false);
   protected readonly feesLoaded = signal(false);
+  protected courtFeeSelectionError: string | null = null;
+  protected formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
   protected readonly form = new FormGroup({
     courtFeeId: new FormControl<number | null>(null),
     amountPaid: new FormControl<string | null>(null),
@@ -43,6 +66,47 @@ export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit {
   public constructor() {
     const draft = this.finesMciStore.courtFeeDraft();
     if (draft) this.form.setValue(draft);
+
+    this.form.controls.courtFeeId.valueChanges.pipe(takeUntilDestroyed()).subscribe((courtFeeId) => {
+      if (this.courtFeeItems().some(({ value }) => value === courtFeeId)) {
+        this.courtFeeSelectionError = null;
+        this.formErrorSummaryMessage = [];
+        this.changeDetector.markForCheck();
+      }
+    });
+  }
+
+  /** Keeps typed text available when the autocomplete clears an invalid selection on blur. */
+  protected handleCourtFeeInput(event: Event): void {
+    const target = event.target;
+    if (target instanceof HTMLInputElement && target.id === 'courtFeeId-autocomplete') {
+      this.courtFeeSearchText = target.value;
+    }
+  }
+
+  /** Focuses the field selected in the error summary. */
+  protected scrollTo(fieldId: string): void {
+    this.document.getElementById(fieldId)?.focus();
+  }
+
+  /** Validates the selected court fee before later payment validations are added. */
+  public handleSubmit(): void {
+    const courtFeeId = this.form.controls.courtFeeId.value;
+    const selectedFee = this.courtFeeItems().find(({ value }) => value === courtFeeId);
+    const input = this.courtFeeAutocomplete?.nativeElement.querySelector<HTMLInputElement>('#courtFeeId-autocomplete');
+    const enteredText = input?.value.trim() || this.courtFeeSearchText.trim();
+
+    if (selectedFee && (!input || enteredText === selectedFee.name)) {
+      this.courtFeeSelectionError = null;
+      this.formErrorSummaryMessage = [];
+      return;
+    }
+
+    this.courtFeeSelectionError = enteredText ? 'Enter a valid court fee' : 'Enter court fee code';
+    this.formErrorSummaryMessage = [{ fieldId: 'courtFeeId-autocomplete', message: this.courtFeeSelectionError }];
+    this.form.controls.courtFeeId.markAsTouched();
+    this.changeDetector.detectChanges();
+    this.errorSummary?.nativeElement.querySelector<HTMLElement>('.govuk-error-summary')?.focus({ preventScroll: true });
   }
 
   public ngOnInit(): void {

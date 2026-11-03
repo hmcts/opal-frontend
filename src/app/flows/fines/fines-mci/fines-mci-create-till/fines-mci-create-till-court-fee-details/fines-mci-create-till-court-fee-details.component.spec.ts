@@ -34,6 +34,18 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     return fixture.componentInstance;
   }
 
+  function enterCourtFeeText(value: string): HTMLInputElement {
+    const autocomplete = (fixture.nativeElement as HTMLElement).querySelector(
+      'opal-lib-alphagov-accessible-autocomplete',
+    );
+    const input = document.createElement('input');
+    input.id = 'courtFeeId-autocomplete';
+    autocomplete!.appendChild(input);
+    input.value = value;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    return input;
+  }
+
   it('displays the selected business unit and Court Fee fields', () => {
     const component = render();
     const element = fixture.nativeElement as HTMLElement;
@@ -47,6 +59,56 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     expect(element.textContent).toContain('Continue');
     expect(element.textContent).toContain('Cancel');
     expect(component['courtFeeItems']()).toContainEqual({ value: 1, name: 'CF001 - Application (£12.50)' });
+  });
+
+  it('shows the required court fee error when Continue is selected without a fee', () => {
+    render();
+    const element = fixture.nativeElement as HTMLElement;
+    element.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+
+    expect(element.querySelector('.govuk-error-summary')?.textContent).toContain('Enter court fee code');
+    expect(element.querySelector('#courtFeeId-autocomplete-error-message')?.textContent).toContain(
+      'Enter court fee code',
+    );
+  });
+
+  it('shows the invalid court fee error for text that was not selected from the list', () => {
+    const component = render();
+    enterCourtFeeText('NOT_A_FEE');
+    component.handleSubmit();
+
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('.govuk-error-summary')?.textContent).toContain('Enter a valid court fee');
+    expect(element.querySelector('#courtFeeId-autocomplete-error-message')?.textContent).toContain(
+      'Enter a valid court fee',
+    );
+  });
+
+  it('keeps the invalid error when the autocomplete clears typed text on blur', () => {
+    const component = render();
+    const input = enterCourtFeeText('NOT_A_FEE');
+    input.value = '';
+    component.handleSubmit();
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('.govuk-error-summary')?.textContent).toContain(
+      'Enter a valid court fee',
+    );
+  });
+
+  it('clears the court fee error after selecting a listed fee', () => {
+    const component = render();
+    const input = enterCourtFeeText('NOT_A_FEE');
+    component.handleSubmit();
+
+    input.value = 'CF001 - Application (£12.50)';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    component['form'].controls.courtFeeId.setValue(1);
+    component.handleSubmit();
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('.govuk-error-summary')).toBeNull();
+    expect(element.querySelector('#courtFeeId-autocomplete-error-message')).toBeNull();
   });
 
   it('waits for fee data before rendering the typeahead', () => {
