@@ -402,6 +402,7 @@ describe('FinesApiProcessAllocateComponent', () => {
       tills: [
         {
           till_id: 123,
+          business_unit_id: 77,
           till_number: 7,
           amount: '12.50',
           errors: 0,
@@ -491,7 +492,7 @@ describe('FinesApiProcessAllocateComponent', () => {
       tills.next({ tills: [] });
       tills.complete();
       fixture.detectChanges();
-      expect(native().textContent).toContain('There are no outstanding tills to allocate');
+      expect(native().textContent).toContain('There are no tills ready to allocate');
     });
 
     it('refreshes both areas together and clears selection even when till IDs are unchanged', () => {
@@ -579,7 +580,7 @@ describe('FinesApiProcessAllocateComponent', () => {
         getInterfaceJobsSummary.mockReturnValue(of({ interface_jobs: [] }));
         getTills.mockReturnValue(of({ tills: [] }));
         refresh();
-        expect(native().textContent).toContain('There are no outstanding tills to allocate');
+        expect(native().textContent).toContain('There are no tills ready to allocate');
         expect(native().querySelector('#fines-api-allocate-processing')).toBeNull();
       },
     );

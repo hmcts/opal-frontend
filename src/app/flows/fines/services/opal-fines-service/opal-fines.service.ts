@@ -76,6 +76,7 @@ import { IOpalFinesAccountDefendantDetailsConsolidatedAccounts } from './interfa
 import { IOpalFinesReport } from './interfaces/opal-fines-report.interface';
 import { IOpalFinesReportInstancesParams } from './interfaces/opal-fines-report-instances-params.interface';
 import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
+import { IOpalFinesAllocateTillsRequest } from './interfaces/opal-fines-allocate-tills-request.interface';
 import { IOpalFinesTillsParams } from './interfaces/opal-fines-tills-params.interface';
 import { IOpalFinesTillsResponse } from './interfaces/opal-fines-tills-response.interface';
 import { IOpalFinesInterfaceJobsSummaryParams } from './interfaces/opal-fines-interface-jobs-summary-params.interface';
@@ -1813,5 +1814,10 @@ export class OpalFines {
       OPAL_FINES_PATHS.tills,
       this.withRetrySafeReadOptions({ params: httpParams }),
     );
+  }
+
+  /** Submits a batch for asynchronous allocation without automatically retrying the mutation. */
+  public allocateTills(payload: IOpalFinesAllocateTillsRequest): Observable<void> {
+    return this.http.post<void>(OPAL_FINES_PATHS.allocateTills, payload);
   }
 }

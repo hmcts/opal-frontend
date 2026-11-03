@@ -9,6 +9,7 @@
   [defaultSort]="defaultSort"
   [cellTemplate]="cell"
   [selectedIds]="finesApiStore.selectedTillIds()"
+  [selectionErrorId]="selectionErrorId"
   (selectedIdsChange)="updateSelection($event)"
 />
 <ng-template #cell let-row let-column="column">

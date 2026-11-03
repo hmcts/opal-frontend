@@ -57,6 +57,7 @@ describe('FinesApiPayloadService', () => {
         tills: [
           {
             till_id: 123,
+            business_unit_id: 77,
             till_number: 7,
             errors: 0,
             amount: '12.50',

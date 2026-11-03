@@ -6,5 +6,6 @@ export const FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES: IFinesReportsSummaryList
     operationalReportsByEnforcement: 'Operational reports (by enforcement)',
     operationalReportsByPayments: 'Operational reports (by payments)',
     yourReports: 'Your reports',
+    cashList: 'Cash List report',
   },
 };

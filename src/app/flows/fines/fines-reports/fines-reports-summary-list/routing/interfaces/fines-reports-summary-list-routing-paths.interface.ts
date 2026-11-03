@@ -5,5 +5,6 @@ export interface IFinesReportsSummaryListRoutingPaths extends IChildRoutingPaths
     operationalReportsByEnforcement: string;
     operationalReportsByPayments: string;
     yourReports: string;
+    cashList: string;
   };
 }

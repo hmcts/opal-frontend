@@ -78,6 +78,7 @@ export const mapAllocateData = (
     ),
     tills: tillsResponse.tills.map((till) => ({
       tillId: mapTillId(till.till_id),
+      businessUnitId: till.business_unit_id,
       [FINES_API_ALLOCATE_TILLS_TABLE_WRAPPER_CONTENT.columns.tillNumber]: till.till_number,
       [FINES_API_ALLOCATE_TILLS_TABLE_WRAPPER_CONTENT.columns.errors]: till.errors ?? null,
       [FINES_API_ALLOCATE_TILLS_TABLE_WRAPPER_CONTENT.columns.fileName]: till.file_name || UNAVAILABLE,

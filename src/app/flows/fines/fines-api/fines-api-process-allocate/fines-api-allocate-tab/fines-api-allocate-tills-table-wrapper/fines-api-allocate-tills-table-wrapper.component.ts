@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
 import { FinesApiSelectableTableComponent } from '../../../fines-api-selectable-table/fines-api-selectable-table.component';
@@ -37,6 +37,9 @@ export class FinesApiAllocateTillsTableWrapperComponent {
     }),
   );
   protected readonly tillSummaryRoute = `/${FINES_ROUTING_PATHS.root}/${FINES_API_ROUTING_PATHS.root}/${FINES_API_ROUTING_PATHS.children.tillSummary}`;
+  @Input() public selectionErrorId: string | null = null;
+  @Output() public readonly selectionChanged = new EventEmitter<void>();
+
   /**
    * Returns the stable till identifier used for selection.
    *
@@ -84,6 +87,7 @@ export class FinesApiAllocateTillsTableWrapperComponent {
   /** Stores the selected till IDs so shared navigation guards can protect the selection. */
   protected updateSelection(selectedIds: string[]): void {
     this.finesApiStore.setSelectedTillIds(selectedIds);
+    this.selectionChanged.emit();
   }
 
   /**

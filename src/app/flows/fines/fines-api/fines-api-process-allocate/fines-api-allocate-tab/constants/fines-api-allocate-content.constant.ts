@@ -1,9 +1,16 @@
 export const FINES_API_ALLOCATE_CONTENT = {
   heading: 'Allocate processed tills',
   hint: 'Select the tills you want to allocate.',
-  emptyState: 'There are no outstanding tills to allocate',
+  emptyState: 'There are no tills ready to allocate',
   refresh: 'Refresh',
   allocate: 'Allocate',
+  selectAtLeastOneTill: 'Select at least 1 till to allocate.',
+  invalidSelection: 'Unable to allocate the selected tills. Refresh the page and try again.',
+  errorPrefix: 'Error:',
+  cashListReport: 'cash list report',
+  /** Builds the acknowledgement without claiming allocation has completed. */
+  sentForAllocation: (count: number): string =>
+    `${count} ${count === 1 ? 'till has' : 'tills have'} been sent for allocation.`,
   /**
    * Builds the processing-summary introduction with singular or plural wording.
    * @param count The number of files still processing.

@@ -1,3 +1,7 @@
+import { Subject } from 'rxjs';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { FinesApiStore } from '../../stores/fines-api.store';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -8,6 +12,7 @@ import { IFinesApiAllocateTillsTableWrapperTableData } from './fines-api-allocat
 const rows = (count = 2): IFinesApiAllocateTillsTableWrapperTableData[] =>
   Array.from({ length: count }, (_, index) => ({
     tillId: String(101 + index),
+    businessUnitId: 77 + index,
     'Till number': 7,
     Errors: index,
     Filename: `payments-${index}.dat`,
@@ -30,6 +35,9 @@ const data = (tills = rows(), processingTotal = 0): IFinesApiAllocateData => ({
 });
 
 describe('FinesApiAllocateComponent', () => {
+  let response: Subject<void>;
+  let allocateTills: ReturnType<typeof vi.fn>;
+  let store: InstanceType<typeof FinesApiStore>;
   let fixture: ComponentFixture<FinesApiAllocateComponent>;
   const element = (): HTMLElement => fixture.nativeElement;
   const checkbox = (id: string): HTMLInputElement => element().querySelector<HTMLInputElement>(`#${id}`)!;
@@ -44,10 +52,14 @@ describe('FinesApiAllocateComponent', () => {
   };
 
   beforeEach(async () => {
+    response = new Subject<void>();
+    allocateTills = vi.fn().mockReturnValue(response);
     await TestBed.configureTestingModule({
       imports: [FinesApiAllocateComponent],
-      providers: [provideRouter([])],
+      providers: [provideRouter([]), { provide: OpalFines, useValue: { allocateTills } }],
     }).compileComponents();
+    vi.spyOn(TestBed.inject(UtilsService), 'scrollToTop').mockImplementation(() => {});
+    store = TestBed.inject(FinesApiStore);
     fixture = TestBed.createComponent(FinesApiAllocateComponent);
   });
 
@@ -65,7 +77,7 @@ describe('FinesApiAllocateComponent', () => {
     expect(!!element().querySelector('#fines-api-allocate-empty')).toBe(tillCount === 0);
     expect(element().querySelector('#fines-api-allocate-refresh')).toBeTruthy();
     if (tillCount === 0) {
-      expect(element().textContent).toContain('There are no outstanding tills to allocate');
+      expect(element().textContent).toContain('There are no tills ready to allocate');
     }
   });
 
@@ -100,12 +112,126 @@ describe('FinesApiAllocateComponent', () => {
     expect(emitted).toHaveBeenCalledOnce();
   });
 
-  it('does not submit a form or require a selection when Allocate is clicked', () => {
+  it('requires a selection without submitting or navigating', () => {
     render(data());
     const button = element().querySelector<HTMLButtonElement>('#fines-api-allocate-submit')!;
     expect(button.type).toBe('button');
     click('fines-api-allocate-submit');
     expect(selectedText()).toBe('0 of 2 tills selected.');
+    expect(element().querySelector('.govuk-error-summary')?.textContent).toContain(
+      'Select at least 1 till to allocate.',
+    );
+    expect(allocateTills).not.toHaveBeenCalled();
+    click('fines-api-allocate-till-101');
     expect(element().querySelector('.govuk-error-summary')).toBeNull();
+  });
+
+  it('links the selection error to a focusable checkbox and associates the inline error', () => {
+    render(data());
+    click('fines-api-allocate-submit');
+    const link = element().querySelector<HTMLAnchorElement>('.govuk-error-summary a')!;
+    const focus = vi.spyOn(checkbox('fines-api-allocate-select-all'), 'focus');
+    link.click();
+    expect(focus).toHaveBeenCalledOnce();
+    expect(element().querySelector('#fines-api-allocate-select-all-group')?.getAttribute('aria-describedby')).toContain(
+      'fines-api-allocate-selection-error',
+    );
+  });
+
+  it('submits one snapshot across business units and removes only those tills on acknowledgement', () => {
+    render(data(rows(3), 3));
+    click('fines-api-allocate-till-101');
+    click('fines-api-allocate-till-102');
+    click('fines-api-allocate-submit');
+    expect(allocateTills).toHaveBeenCalledWith({
+      tills: [
+        { till_id: 101, business_unit_id: 77 },
+        { till_id: 102, business_unit_id: 78 },
+      ],
+    });
+    expect(element().querySelector<HTMLButtonElement>('#fines-api-allocate-refresh')!.disabled).toBe(true);
+    click('fines-api-allocate-submit');
+    expect(allocateTills).toHaveBeenCalledOnce();
+    expect(element().querySelector('#fines-api-allocate-success')).toBeNull();
+    // Selection changes during the request must not change the acknowledgement or removed rows.
+    click('fines-api-allocate-till-103');
+    response.next();
+    response.complete();
+    fixture.detectChanges();
+    expect(element().querySelector('#fines-api-allocate-till-101')).toBeNull();
+    expect(element().querySelector('#fines-api-allocate-till-102')).toBeNull();
+    expect(element().querySelector('#fines-api-allocate-till-103')).toBeTruthy();
+    expect(element().querySelector('#fines-api-allocate-success')?.textContent).toContain(
+      '2 tills have been sent for allocation.',
+    );
+    expect(element().querySelector('#fines-api-allocate-cash-list-report')?.getAttribute('href')).toBe(
+      '/fines/reports/cash_list/summary-list',
+    );
+    expect(element().querySelector('#fines-api-allocate-processing')?.textContent).toContain('3 files');
+    expect(store.selectedTillIds()).toEqual([]);
+    expect(store.unsavedChanges()).toBe(false);
+    expect(selectedText()).toBe('0 of 1 tills selected.');
+  });
+
+  it('keeps singular acknowledgement and report link when the last row is removed', () => {
+    render(data(rows(1)));
+    click('fines-api-allocate-till-101');
+    click('fines-api-allocate-submit');
+    response.next();
+    response.complete();
+    fixture.detectChanges();
+    expect(element().querySelector('#fines-api-allocate-success')?.textContent).toContain(
+      '1 till has been sent for allocation.',
+    );
+    expect(element().querySelector('#fines-api-allocate-empty')?.textContent).toBe(
+      'There are no tills ready to allocate',
+    );
+    expect(element().querySelector('table')).toBeNull();
+    expect(element().querySelector('#fines-api-allocate-cash-list-report')).toBeTruthy();
+    click('fines-api-allocate-refresh');
+    expect(element().querySelector('#fines-api-allocate-success')).toBeNull();
+    render(data(rows(1)));
+    expect(element().querySelector('#fines-api-allocate-till-101')).toBeTruthy();
+  });
+
+  it('retains rows and selection after rejection without acknowledging or automatically retrying', () => {
+    render(data());
+    click('fines-api-allocate-till-101');
+    click('fines-api-allocate-submit');
+    response.error(new Error('Request rejected'));
+    fixture.detectChanges();
+    expect(allocateTills).toHaveBeenCalledOnce();
+    expect(element().querySelector('#fines-api-allocate-success')).toBeNull();
+    expect(checkbox('fines-api-allocate-till-101').checked).toBe(true);
+    expect(selectedText()).toBe('1 of 2 tills selected.');
+    expect(element().querySelector<HTMLButtonElement>('#fines-api-allocate-submit')!.disabled).toBe(false);
+  });
+
+  it('does not treat completion without an HTTP response as successful submission', () => {
+    render(data());
+    click('fines-api-allocate-till-101');
+    click('fines-api-allocate-submit');
+    response.complete();
+    fixture.detectChanges();
+    expect(element().querySelector('#fines-api-allocate-success')).toBeNull();
+    expect(checkbox('fines-api-allocate-till-101').checked).toBe(true);
+  });
+
+  it('rejects stale selection before sending a request', () => {
+    render(data());
+    store.setSelectedTillIds(['999']);
+    click('fines-api-allocate-submit');
+    expect(allocateTills).not.toHaveBeenCalled();
+    expect(element().querySelector('.govuk-error-summary')?.textContent).toContain('Refresh the page and try again.');
+  });
+
+  it('cancels the view subscription when destroyed without resending', () => {
+    render(data());
+    click('fines-api-allocate-till-101');
+    click('fines-api-allocate-submit');
+    fixture.destroy();
+    response.next();
+    expect(store.selectedTillIds()).toEqual(['101']);
+    expect(allocateTills).toHaveBeenCalledOnce();
   });
 });
