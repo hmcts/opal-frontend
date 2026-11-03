@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import { CanActivateFn, Routes } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '../constants/fines-dashboard-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from './constants/fines-routing-paths.constant';
@@ -54,7 +54,8 @@ describe('fines routes', () => {
   let finesSectionPermissionsGuard: unknown;
   let dashboardTypeGuard: unknown;
   let finesFinanceRouting: Routes;
-  let authGuard: unknown;
+  let authGuard: CanActivateFn;
+  let authenticatedAccountGuard: CanActivateFn;
   let canDeactivateGuard: unknown;
   let aecRouting: Routes;
   let autoPaymentInRouting: Routes;
@@ -71,6 +72,7 @@ describe('fines routes', () => {
       dashboardTypeGuardModule,
       finesFinanceRoutingModule,
       authGuardModule,
+      accountGuardModule,
       canDeactivateGuardModule,
       aecRoutingModule,
       autoPaymentInRoutingModule,
@@ -80,6 +82,7 @@ describe('fines routes', () => {
       import('./guards/dashboard-type/dashboard-type.guard'),
       import('../fines-finance/routing/fines-finance.routes'),
       import('@hmcts/opal-frontend-common/guards/auth'),
+      import('@hmcts/opal-frontend-common/guards/account'),
       import('@hmcts/opal-frontend-common/guards/can-deactivate'),
       import('../fines-aec/routing/fines-aec.routes'),
       import('../fines-api/routing/fines-api.routes'),
@@ -96,6 +99,7 @@ describe('fines routes', () => {
     dashboardTypeGuard = dashboardTypeGuardModule.dashboardTypeGuard;
     finesFinanceRouting = finesFinanceRoutingModule.routing;
     authGuard = authGuardModule.authGuard;
+    authenticatedAccountGuard = accountGuardModule.authenticatedAccountGuard;
     canDeactivateGuard = canDeactivateGuardModule.canDeactivateGuard;
     aecRouting = aecRoutingModule.routing;
     autoPaymentInRouting = autoPaymentInRoutingModule.routing;
@@ -105,6 +109,18 @@ describe('fines routes', () => {
 
   it('should create the release-1a feature flag guard from the common redirect guard', () => {
     expect(release1aFeatureFlagGuard).toBe(release1aFeatureFlagGuardMock);
+  });
+
+  it('protects the fines route boundary without repeating authentication in descendants', () => {
+    const protectedRoute = finesRouting.find((route) => route.path === FINES_ROUTING_PATHS.root && route.children);
+    const descendants = (routes: Routes): Routes =>
+      routes.flatMap((route) => [route, ...descendants(route.children ?? [])]);
+
+    expect(protectedRoute?.canActivateChild).toEqual([authenticatedAccountGuard]);
+    for (const route of descendants(protectedRoute?.children ?? [])) {
+      expect(route.canActivate).not.toContain(authGuard);
+      expect(route.canActivateChild).not.toContain(authGuard);
+    }
   });
 
   it('should create the release-1b feature flag guard from the common redirect guard', () => {
@@ -160,11 +176,7 @@ describe('fines routes', () => {
     );
 
     expect(autoPaymentInRoute?.children).toBe(autoPaymentInRouting);
-    expect(autoPaymentInRoute?.canActivate).toEqual([
-      authGuard,
-      release1cPaymentFeatureFlagGuard,
-      finesSectionPermissionsGuard,
-    ]);
+    expect(autoPaymentInRoute?.canActivate).toEqual([release1cPaymentFeatureFlagGuard, finesSectionPermissionsGuard]);
     expect(autoPaymentInRoute?.canActivateChild).toEqual([release1cPaymentFeatureFlagGuard]);
     expect(autoPaymentInRoute?.canDeactivate).toEqual([canDeactivateGuard]);
     expect(autoPaymentInRoute?.data).toEqual({
@@ -220,7 +232,6 @@ describe('fines routes', () => {
     const autoEnforcementRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.aec.root);
 
     expect(autoEnforcementRoute?.children).toBe(aecRouting);
-    expect(autoEnforcementRoute?.canActivate).toContain(authGuard);
     expect(autoEnforcementRoute?.canActivate).toContain(finesSectionPermissionsGuard);
     expect(autoEnforcementRoute?.data).toEqual({
       sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.administration,
@@ -231,7 +242,7 @@ describe('fines routes', () => {
     const financeRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.finance.root);
 
     expect(financeRoute?.children).toBe(finesFinanceRouting);
-    expect(financeRoute?.canActivate).toEqual([authGuard, finesSectionPermissionsGuard]);
+    expect(financeRoute?.canActivate).toEqual([finesSectionPermissionsGuard]);
     expect(financeRoute?.data).toEqual({
       sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
     });
