@@ -11,7 +11,11 @@
       >
         Yes - remove reference
       </button>
-      <opal-lib-govuk-cancel-link id="apr-remove-cancel" (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
+      <opal-lib-govuk-cancel-link
+        id="apr-remove-cancel"
+        cancelLinkText="No - cancel"
+        (linkClickEvent)="handleCancel()"
+      ></opal-lib-govuk-cancel-link>
     </div>
   </form>
 </div>

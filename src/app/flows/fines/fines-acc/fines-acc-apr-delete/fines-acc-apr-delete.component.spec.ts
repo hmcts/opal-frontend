@@ -118,7 +118,7 @@ describe('FinesAccAprDeleteComponent', () => {
     expect(element.querySelector('#apr-remove-table a')).toBeNull();
     expect(element.querySelectorAll('#apr-remove-table thead th')).toHaveLength(3);
     expect(element.querySelector('#apr-remove-confirm')?.textContent?.trim()).toBe('Yes - remove reference');
-    expect(element.querySelector('opal-lib-govuk-cancel-link a')?.textContent?.trim()).toBe('Cancel');
+    expect(element.querySelector('opal-lib-govuk-cancel-link a')?.textContent?.trim()).toBe('No - cancel');
     expect(api.deleteApr).not.toHaveBeenCalled();
   });
 
