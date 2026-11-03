@@ -22,7 +22,8 @@ export const FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_SEARCH_FIELD_ERRORS: IAbstractF
       priority: 1,
     },
     singleAsciiCharacters: {
-      message: 'Last Name must only include letters a to z, hyphens, spaces and apostrophes',
+      message:
+        'Last Name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 2,
     },
     maxlength: {
@@ -37,7 +38,8 @@ export const FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_SEARCH_FIELD_ERRORS: IAbstractF
       priority: 1,
     },
     singleAsciiCharacters: {
-      message: 'First Names must only include letters a to z, hyphens, spaces and apostrophes',
+      message:
+        'First Names must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 1,
     },
     maxlength: {
@@ -54,7 +56,8 @@ export const FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_SEARCH_FIELD_ERRORS: IAbstractF
       priority: 1,
     },
     singleAsciiCharacters: {
-      message: 'Company Name must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      message:
+        'Company Name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 1,
     },
     maxlength: {

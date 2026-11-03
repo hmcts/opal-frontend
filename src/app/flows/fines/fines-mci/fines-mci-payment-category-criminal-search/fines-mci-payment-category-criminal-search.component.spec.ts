@@ -299,10 +299,10 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
     fixture.detectChanges();
 
     expect(component.formControlErrorMessages[`fsa_search_account_individuals_${field}`]).toBe(
-      `${label} must only include letters a to z, hyphens, spaces and apostrophes`,
+      `${label} must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
     );
     expect(fixture.nativeElement.textContent).toContain(
-      `${label} must only include letters a to z, hyphens, spaces and apostrophes`,
+      `${label} must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
     );
     expect(routerNavigateSpy).not.toHaveBeenCalled();
     expect(TestBed.inject(FinesMciStore).criminalSearch()).toBeNull();
@@ -345,8 +345,14 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
   );
 
   it.each([
-    ['Acme\u00e9', 'Company Name must only include letters a to z, numbers, hyphens, spaces and apostrophes'],
-    ['Acme\tLtd', 'Company Name must only include letters a to z, numbers, hyphens, spaces and apostrophes'],
+    [
+      'Acme\u00e9',
+      'Company Name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+    ],
+    [
+      'Acme\tLtd',
+      'Company Name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+    ],
     ['A'.repeat(51), 'Company name must be 50 characters or fewer'],
   ])('should prevent company searches with invalid names: %s', (name, message) => {
     fragmentSubject.next('companies');
