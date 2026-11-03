@@ -16,8 +16,10 @@
         [control]="form.controls.apr_text"
         [errors]="formControlErrorMessages['apr_text']"
       />
-      <opal-lib-govuk-button buttonId="apr-save" type="submit">Save</opal-lib-govuk-button>
     </fieldset>
-    <opal-lib-govuk-cancel-link (linkClickEvent)="cancelRequested.emit()" />
+    <div class="govuk-button-group">
+      <button opalLibGovukButton buttonId="apr-save" type="submit" [disabled]="pending">Save</button>
+      <opal-lib-govuk-cancel-link (linkClickEvent)="cancelRequested.emit()" />
+    </div>
   </form>
 </div>

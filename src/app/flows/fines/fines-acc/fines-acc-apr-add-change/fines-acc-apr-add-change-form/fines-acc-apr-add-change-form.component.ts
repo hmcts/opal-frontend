@@ -13,7 +13,7 @@ import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/ab
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
+import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { IFinesAccAprAddChangeFormState } from '../interfaces/fines-acc-apr-add-change-form-state.interface';
 import { FINES_ACC_APR_ADD_CHANGE_FIELD_ERRORS } from '../constants/fines-acc-apr-add-change-field-errors.constant';
@@ -27,7 +27,7 @@ import { FINES_ACC_APR_ADD_CHANGE_TEXT } from '../constants/fines-acc-apr-add-ch
     GovukHeadingWithCaptionComponent,
     GovukTextInputComponent,
     GovukErrorSummaryComponent,
-    GovukButtonComponent,
+    GovukButtonDirective,
     GovukCancelLinkComponent,
   ],
   templateUrl: './fines-acc-apr-add-change-form.component.html',
