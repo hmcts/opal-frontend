@@ -59,6 +59,12 @@ When('I continue with payment category {string}', (category: 'criminal' | 'court
   manualCashInputFlow().continueWithPaymentCategory(category);
 });
 
+Then('I see Court Fee Details', () => {
+  manualCashInputFlow().assertCourtFeeDetailsIsDisplayed();
+});
+Then('I can find a court fee by description', () => {
+  manualCashInputFlow().assertCourtFeeDescriptionSearch();
+});
 Then('I see Search for an Account', () => {
   manualCashInputFlow().assertSearchForAccountIsDisplayed();
 });

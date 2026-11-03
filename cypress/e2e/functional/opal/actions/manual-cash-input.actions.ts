@@ -4,6 +4,7 @@ import { createScopedLogger } from '../../../../support/utils/log.helper';
 const log = createScopedLogger('ManualCashInputActions');
 const TILLS_ENDPOINT = '/opal-fines-service/tills';
 const BUSINESS_UNITS_ENDPOINT = '/opal-fines-service/business-units';
+const COURT_FEES_ENDPOINT = '/opal-fines-service/court-fees';
 const FIRST_TILL_ID = 1001;
 const UNSAVED_CHANGES_WARNING =
   'WARNING: Are you sure you want to leave this page? Any information you entered will be lost.';
@@ -223,8 +224,42 @@ export class ManualCashInputActions {
    * @param category - Payment category value to select.
    */
   public continueWithPaymentCategory(category: 'criminal' | 'courtFee' | 'suspense'): void {
+    if (category === 'courtFee') {
+      cy.intercept(
+        { method: 'GET', pathname: COURT_FEES_ENDPOINT, query: { business_unit_id: '2' } },
+        {
+          court_fees: [
+            { court_fee_id: 101, court_fee_code: 'CF001', description: 'Application', amount: 12.5 },
+            { court_fee_id: 102, court_fee_code: 'CF002', description: 'Issue', amount: 0.1 },
+          ],
+        },
+      ).as('manualCashInputCourtFees');
+    }
     cy.get(`input[name="paymentCategory"][value="${category}"]`).check({ force: true });
     cy.get(ManualCashInputLocators.continueButton).click();
+    if (category === 'courtFee') {
+      cy.wait('@manualCashInputCourtFees').its('response.statusCode').should('eq', 200);
+    }
+  }
+
+  /** Confirms the Court Fee Details screen and selected business unit. */
+  public assertCourtFeeDetailsIsDisplayed(): void {
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/court-fee-details');
+    cy.get(ManualCashInputLocators.courtFeeDetailsPage).contains('h1', 'Court fee').should('be.visible');
+    cy.get(ManualCashInputLocators.courtFeeDetailsPage).contains('.govuk-caption-l', 'Camden and Islington');
+    cy.get('label[for="courtFeeId-autocomplete"]').should('contain.text', 'Court fee');
+    cy.get('label[for="amountPaid"]').should('contain.text', 'Amount');
+    cy.get('label[for="numberOfItems"]').should('contain.text', 'Number of items');
+    cy.get(ManualCashInputLocators.continueButton).should('be.visible');
+    cy.get(ManualCashInputLocators.cancelLink).should('be.visible');
+  }
+
+  /** Checks that a substring of the description finds the court fee from reference data. */
+  public assertCourtFeeDescriptionSearch(): void {
+    cy.get(ManualCashInputLocators.courtFeeCodeInput).type('ppli');
+    cy.get(ManualCashInputLocators.courtFeeCodeSuggestions)
+      .contains('CF001 - Application (£12.50)')
+      .should('be.visible');
   }
 
   /** Confirms the Criminal journey opens Search for an Account. */

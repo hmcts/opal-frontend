@@ -1,0 +1,51 @@
+<div class="govuk-grid-column-two-thirds" id="fines-mci-create-till-court-fee-details">
+  <span class="govuk-caption-l">{{ businessUnitName }}</span>
+  <h1 class="govuk-heading-l">Court fee</h1>
+
+  @if (feeLoadFailed()) {
+    <p class="govuk-error-message" role="alert">Court fees could not be loaded. Try again later.</p>
+    <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
+  } @else if (feesLoaded() && courtFeeItems().length === 0) {
+    <p class="govuk-body" role="status">No court fees are available for this business unit.</p>
+    <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
+  } @else if (feesLoaded()) {
+    <form [formGroup]="form" (submit)="$event.preventDefault()" autocomplete="off" novalidate>
+      <opal-lib-alphagov-accessible-autocomplete
+        [control]="form.controls.courtFeeId"
+        labelText="Court fee"
+        labelClasses="govuk-label--s"
+        inputId="courtFeeId"
+        inputName="courtFeeId"
+        inputClasses="govuk-input--width-20"
+        hintText="Search using court fee code or description"
+        [autoCompleteItems]="courtFeeItems()"
+      ></opal-lib-alphagov-accessible-autocomplete>
+
+      <opal-lib-govuk-text-input-prefix-suffix
+        labelText="Amount"
+        labelClasses="govuk-label--s"
+        inputId="amountPaid"
+        inputName="amountPaid"
+        inputClasses="govuk-input--width-10"
+        prefixText="£"
+        [control]="form.controls.amountPaid"
+      ></opal-lib-govuk-text-input-prefix-suffix>
+
+      <opal-lib-govuk-text-input
+        labelText="Number of items"
+        labelClasses="govuk-label--s"
+        inputId="numberOfItems"
+        inputName="numberOfItems"
+        inputClasses="govuk-input--width-5"
+        [control]="form.controls.numberOfItems"
+      ></opal-lib-govuk-text-input>
+
+      <div class="govuk-button-group">
+        <button class="govuk-button" id="submitForm" type="submit">Continue</button>
+        <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
+      </div>
+    </form>
+  } @else {
+    <p class="govuk-body" role="status">Loading court fees</p>
+  }
+</div>

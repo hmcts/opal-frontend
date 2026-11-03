@@ -1,6 +1,6 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
-import { FinesMciJourney, IFinesMciTill } from './interfaces/fines-mci.interface';
+import { FinesMciJourney, IFinesMciCourtFeeDraft, IFinesMciTill } from './interfaces/fines-mci.interface';
 
 export const FinesMciStore = signalStore(
   { providedIn: 'root' },
@@ -8,6 +8,7 @@ export const FinesMciStore = signalStore(
     businessUnit: null as IOpalFinesBusinessUnit | null,
     tills: [] as IFinesMciTill[],
     draftJourney: null as FinesMciJourney | null,
+    courtFeeDraft: null as IFinesMciCourtFeeDraft | null,
   })),
   withMethods((store) => {
     /** Returns the existing till ID or creates the first till for the current business unit. */
@@ -27,7 +28,7 @@ export const FinesMciStore = signalStore(
       setBusinessUnit(businessUnit: IOpalFinesBusinessUnit): void {
         const currentBusinessUnit = store.businessUnit();
         if (currentBusinessUnit && currentBusinessUnit.business_unit_id !== businessUnit.business_unit_id) {
-          patchState(store, { businessUnit, tills: [], draftJourney: null });
+          patchState(store, { businessUnit, tills: [], draftJourney: null, courtFeeDraft: null });
           return;
         }
 
@@ -37,7 +38,11 @@ export const FinesMciStore = signalStore(
       ensureTill,
       /** Stores the selected payment journey until its details are completed. */
       setDraftJourney(draftJourney: FinesMciJourney | null): void {
-        patchState(store, { draftJourney });
+        patchState(store, { draftJourney, ...(draftJourney !== 'courtFee' && { courtFeeDraft: null }) });
+      },
+      /** Holds court fee form values while the payment journey is in progress. */
+      setCourtFeeDraft(courtFeeDraft: IFinesMciCourtFeeDraft | null): void {
+        patchState(store, { courtFeeDraft });
       },
       /** Adds a payment journey to the matching till and returns the new payment ID. */
       addPayment(tillId: string, journey: FinesMciJourney): string {
@@ -55,7 +60,7 @@ export const FinesMciStore = signalStore(
       },
       /** Clears the selected business unit and all till data. */
       reset(): void {
-        patchState(store, { businessUnit: null, tills: [], draftJourney: null });
+        patchState(store, { businessUnit: null, tills: [], draftJourney: null, courtFeeDraft: null });
       },
     };
   }),

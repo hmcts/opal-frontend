@@ -102,6 +102,14 @@ export class ManualCashInputFlow {
     this.actions.continueWithPaymentCategory(category);
   }
 
+  /** Verifies the Court Fee Details screen. */
+  public assertCourtFeeDetailsIsDisplayed(): void {
+    this.actions.assertCourtFeeDetailsIsDisplayed();
+  }
+  /** Verifies that description text filters the court fee list. */
+  public assertCourtFeeDescriptionSearch(): void {
+    this.actions.assertCourtFeeDescriptionSearch();
+  }
   /** Verifies the Search for an Account destination. */
   public assertSearchForAccountIsDisplayed(): void {
     this.actions.assertSearchForAccountIsDisplayed();

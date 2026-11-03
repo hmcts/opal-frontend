@@ -1,0 +1,82 @@
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
+import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
+import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
+import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
+import { GovukTextInputPrefixSuffixComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input-prefix-suffix';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
+import { FinesMciStore } from '../../stores/fines-mci.store';
+
+@Component({
+  selector: 'app-fines-mci-create-till-court-fee-details',
+  imports: [
+    AlphagovAccessibleAutocompleteComponent,
+    GovukCancelLinkComponent,
+    GovukTextInputComponent,
+    GovukTextInputPrefixSuffixComponent,
+    ReactiveFormsModule,
+  ],
+  templateUrl: './fines-mci-create-till-court-fee-details.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit {
+  private readonly finesMciStore = inject(FinesMciStore);
+  private readonly opalFines = inject(OpalFines);
+  private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
+
+  protected readonly businessUnitName = this.finesMciStore.businessUnit()?.business_unit_name;
+  protected readonly courtFeeItems = signal<IAlphagovAccessibleAutocompleteItem[]>([]);
+  protected readonly feeLoadFailed = signal(false);
+  protected readonly feesLoaded = signal(false);
+  protected readonly form = new FormGroup({
+    courtFeeId: new FormControl<number | null>(null),
+    amountPaid: new FormControl<string | null>(null),
+    numberOfItems: new FormControl<string | null>(null),
+  });
+
+  public constructor() {
+    const draft = this.finesMciStore.courtFeeDraft();
+    if (draft) this.form.setValue(draft);
+  }
+
+  public ngOnInit(): void {
+    const businessUnitId = this.finesMciStore.businessUnit()?.business_unit_id;
+    if (businessUnitId == null) {
+      this.feeLoadFailed.set(true);
+      return;
+    }
+
+    this.opalFines
+      .getCourtFees(businessUnitId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: ({ court_fees }) => {
+          this.courtFeeItems.set(
+            court_fees.map(({ court_fee_id, court_fee_code, description, amount }) => ({
+              value: court_fee_id,
+              name: `${court_fee_code} - ${description} (£${amount.toFixed(2)})`,
+            })),
+          );
+          this.feesLoaded.set(true);
+        },
+        error: () => this.feeLoadFailed.set(true),
+      });
+  }
+
+  public handleCancel(): void {
+    void this.router
+      .navigate([`../${FINES_MCI_ROUTING_PATHS.children.details}`], { relativeTo: this.activatedRoute })
+      .then((navigated) => {
+        if (navigated) {
+          this.finesMciStore.setCourtFeeDraft(null);
+          this.finesMciStore.setDraftJourney(null);
+        }
+      });
+  }
+}

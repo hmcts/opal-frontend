@@ -42,6 +42,24 @@ describe('FinesMciStore', () => {
     expect(store.draftJourney()).toBeNull();
   });
 
+  it('keeps court fee details in memory until the journey is cancelled or the business unit changes', () => {
+    const [initialBusinessUnit, nextBusinessUnit] = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData;
+    const draft = {
+      courtFeeId: 1,
+      amountPaid: '25.00',
+      numberOfItems: '2',
+    };
+    store.setBusinessUnit(initialBusinessUnit);
+    store.setDraftJourney('courtFee');
+    store.setCourtFeeDraft(draft);
+
+    expect(store.courtFeeDraft()).toEqual(draft);
+
+    store.setBusinessUnit(nextBusinessUnit);
+
+    expect(store.courtFeeDraft()).toBeNull();
+  });
+
   it('should create the in-progress till and return its id', () => {
     vi.spyOn(crypto, 'randomUUID').mockReturnValue('00000000-0000-4000-8000-000000000001');
 

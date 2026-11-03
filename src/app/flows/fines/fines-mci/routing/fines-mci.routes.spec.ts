@@ -10,6 +10,7 @@ import { routing } from './fines-mci.routes';
 import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.constant';
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
+import { FinesMciCreateTillCourtFeeDetailsComponent } from '../fines-mci-create-till/fines-mci-create-till-court-fee-details/fines-mci-create-till-court-fee-details.component';
 
 describe('finesMci routes', () => {
   const createTillRoute = routing
@@ -80,6 +81,14 @@ describe('finesMci routes', () => {
     );
 
     expect(paymentCategoryRoute?.canDeactivate).toEqual([canDeactivateGuard]);
+  });
+
+  it('loads the Court Fee Details screen from the category journey', async () => {
+    const courtFeeRoute = createTillRoute?.children?.find(
+      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.courtFeeDetails,
+    );
+
+    expect(await courtFeeRoute?.loadComponent?.()).toBe(FinesMciCreateTillCourtFeeDetailsComponent);
   });
 
   it.each([

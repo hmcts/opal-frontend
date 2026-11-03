@@ -130,8 +130,8 @@ export const routing: Routes = [
           {
             path: FINES_MCI_ROUTING_PATHS.children.courtFeeDetails,
             loadComponent: () =>
-              import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
-                (c) => c.FinesMciPlaceholderComponent,
+              import('../fines-mci-create-till/fines-mci-create-till-court-fee-details/fines-mci-create-till-court-fee-details.component').then(
+                (c) => c.FinesMciCreateTillCourtFeeDetailsComponent,
               ),
             canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
             data: {

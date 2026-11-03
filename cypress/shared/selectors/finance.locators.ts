@@ -56,4 +56,7 @@ export const ManualCashInputLocators = {
   paymentCategoryHeading: '#fines-mci-create-till-payment-category h1',
   paymentCategoryForm: '#fines-mci-create-till-payment-category form',
   paymentCategoryRadio: (value: string): string => `input[name="paymentCategory"][value="${value}"]`,
+  courtFeeDetailsPage: '#fines-mci-create-till-court-fee-details',
+  courtFeeCodeInput: '#courtFeeId-autocomplete',
+  courtFeeCodeSuggestions: '#courtFeeId-autocomplete__listbox',
 } as const;
