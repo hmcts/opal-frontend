@@ -109,7 +109,7 @@ describe('DashboardComponent', () => {
     setupComponent();
 
     const element: HTMLElement = fixture.nativeElement;
-    expect(element.querySelectorAll('a[href="/fines/suspense-item/search"]').length).toBe(visible ? 1 : 0);
+    expect(element.querySelectorAll('a[href="/fines/suspense-item/search"]')).toHaveLength(visible ? 1 : 0);
     expect(
       Array.from(element.querySelectorAll('h2')).some((heading) => heading.textContent?.trim() === 'Suspense'),
     ).toBe(visible);
