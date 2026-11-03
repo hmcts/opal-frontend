@@ -58,17 +58,6 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
   private isContinuing = false;
   private readonly currentRoute = inject(ActivatedRoute);
   private readonly angularRouter = inject(Router);
-  private readonly criminalMatchesRoute = [
-    '/',
-    FINES_ROUTING_PATHS.root,
-    FINES_MCI_ROUTING_PATHS.root,
-    FINES_MCI_ROUTING_PATHS.children.create,
-    FINES_MCI_ROUTING_PATHS.children.till,
-    FINES_MCI_ROUTING_PATHS.children.payment,
-    FINES_MCI_ROUTING_PATHS.children.category,
-    FINES_MCI_ROUTING_PATHS.children.criminal,
-    FINES_MCI_ROUTING_PATHS.children.matches,
-  ];
 
   protected readonly finesMciStore = inject(FinesMciStore);
   protected readonly activeTab = signal<FinesMciCriminalSearchTab>('individuals');
@@ -148,9 +137,11 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
       searchCriteriaCannotBeCombined: !!this.form.errors?.['searchCriteriaCannotBeCombined'],
     });
     this.isContinuing = true;
-    void this.angularRouter.navigate(this.criminalMatchesRoute).finally(() => {
-      this.isContinuing = false;
-    });
+    void this.angularRouter
+      .navigate([FINES_MCI_ROUTING_PATHS.children.matches], { relativeTo: this.currentRoute.parent })
+      .finally(() => {
+        this.isContinuing = false;
+      });
   }
 
   private setActiveTabFromFragment(tab: FinesMciCriminalSearchTab): void {

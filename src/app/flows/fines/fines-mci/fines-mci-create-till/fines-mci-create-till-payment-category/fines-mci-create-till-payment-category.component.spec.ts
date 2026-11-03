@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router, provideRouter } from '@angular/router';
+import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesMciStore } from '../../stores/fines-mci.store';
@@ -43,10 +43,9 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
       nestedFlow: false,
     });
 
-    expect(navigateSpy).toHaveBeenCalledWith(
-      ['/fines/manual-cash-input/create/till/payment/category/criminal/search'],
-      {},
-    );
+    expect(navigateSpy).toHaveBeenCalledWith(['payment', 'category', 'criminal', 'search'], {
+      relativeTo: TestBed.inject(ActivatedRoute).parent,
+    });
     expect(fixture.componentInstance.stateUnsavedChanges).toBe(false);
     expect(finesMciStore.tills()[0].payments).toEqual([expect.objectContaining({ journey: 'criminal' })]);
   });

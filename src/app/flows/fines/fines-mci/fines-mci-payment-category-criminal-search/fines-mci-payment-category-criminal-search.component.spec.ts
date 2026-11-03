@@ -13,19 +13,10 @@ import { afterEach, beforeEach, describe, expect, expectTypeOf, it, MockInstance
 import { IFinesMciCriminalSearch } from '../stores/interfaces/fines-mci-criminal-search.interface';
 import { FinesMciPaymentCategoryCriminalSearchComponent } from './fines-mci-payment-category-criminal-search.component';
 import { FinesMciPaymentCategoryCriminalMatchesComponent } from '../fines-mci-payment-category-criminal-matches/fines-mci-payment-category-criminal-matches.component';
+import { FinesMciCreateTillPaymentCategoryComponent } from '../fines-mci-create-till/fines-mci-create-till-payment-category/fines-mci-create-till-payment-category.component';
 import { finesMciCriminalAccountsResolver } from '../routing/resolvers/fines-mci-criminal-accounts/fines-mci-criminal-accounts.resolver';
 
-const CRIMINAL_MATCHES_ROUTE = [
-  '/',
-  'fines',
-  'manual-cash-input',
-  'create',
-  'till',
-  'payment',
-  'category',
-  'criminal',
-  'matches',
-];
+const CRIMINAL_MATCHES_ROUTE = ['matches'];
 
 describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
   let component: FinesMciPaymentCategoryCriminalSearchComponent;
@@ -46,6 +37,7 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             fragment: fragmentSubject.asObservable(),
+            parent: {},
           },
         },
       ],
@@ -190,7 +182,9 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
       routerNavigateSpy.mockClear();
       component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
       expect(TestBed.inject(FinesMciStore).criminalSearch()?.searchCriteriaCannotBeCombined).toBe(false);
-      expect(routerNavigateSpy).toHaveBeenCalledExactlyOnceWith(CRIMINAL_MATCHES_ROUTE);
+      expect(routerNavigateSpy).toHaveBeenCalledExactlyOnceWith(CRIMINAL_MATCHES_ROUTE, {
+        relativeTo: TestBed.inject(ActivatedRoute).parent,
+      });
     },
   );
 
@@ -222,7 +216,9 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
       component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
 
       expect(TestBed.inject(FinesMciStore).criminalSearch()?.searchCriteriaCannotBeCombined).toBe(true);
-      expect(routerNavigateSpy).toHaveBeenCalledExactlyOnceWith(CRIMINAL_MATCHES_ROUTE);
+      expect(routerNavigateSpy).toHaveBeenCalledExactlyOnceWith(CRIMINAL_MATCHES_ROUTE, {
+        relativeTo: TestBed.inject(ActivatedRoute).parent,
+      });
     },
   );
 
@@ -276,7 +272,9 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
       expect(
         search?.formData.fsa_search_account_companies_search_criteria.fsa_search_account_companies_company_name,
       ).toBe(tab === 'companies' ? 'Acme Ltd' : null);
-      expect(routerNavigateSpy).toHaveBeenCalledExactlyOnceWith(CRIMINAL_MATCHES_ROUTE);
+      expect(routerNavigateSpy).toHaveBeenCalledExactlyOnceWith(CRIMINAL_MATCHES_ROUTE, {
+        relativeTo: TestBed.inject(ActivatedRoute).parent,
+      });
     },
   );
 
@@ -311,7 +309,9 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
     component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
 
     expect(component['form'].valid).toBe(true);
-    expect(routerNavigateSpy).toHaveBeenCalledExactlyOnceWith(CRIMINAL_MATCHES_ROUTE);
+    expect(routerNavigateSpy).toHaveBeenCalledExactlyOnceWith(CRIMINAL_MATCHES_ROUTE, {
+      relativeTo: TestBed.inject(ActivatedRoute).parent,
+    });
   });
 
   it.each([
@@ -374,7 +374,9 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
       component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
 
       expect(component['form'].valid).toBe(true);
-      expect(routerNavigateSpy).toHaveBeenCalledExactlyOnceWith(CRIMINAL_MATCHES_ROUTE);
+      expect(routerNavigateSpy).toHaveBeenCalledExactlyOnceWith(CRIMINAL_MATCHES_ROUTE, {
+        relativeTo: TestBed.inject(ActivatedRoute).parent,
+      });
     },
   );
 
@@ -448,7 +450,9 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
     component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
 
     expect(TestBed.inject(FinesMciStore).criminalSearch()?.searchCriteriaCannotBeCombined).toBe(true);
-    expect(routerNavigateSpy).toHaveBeenCalledExactlyOnceWith(CRIMINAL_MATCHES_ROUTE);
+    expect(routerNavigateSpy).toHaveBeenCalledExactlyOnceWith(CRIMINAL_MATCHES_ROUTE, {
+      relativeTo: TestBed.inject(ActivatedRoute).parent,
+    });
   });
 
   it('should require confirmation again after a search navigation is cancelled', async () => {
@@ -478,7 +482,7 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
 @Component({ template: '<h1>Till details</h1>' })
 class TillDetailsDestinationComponent {}
 
-describe('Criminal search Cancel navigation', () => {
+describe('Criminal search navigation', () => {
   const routeRoot = '/fines/manual-cash-input/create/till';
   const searchUrl = `${routeRoot}/payment/category/criminal/search`;
   const detailsUrl = `${routeRoot}/details`;
@@ -495,15 +499,40 @@ describe('Criminal search Cancel navigation', () => {
       providers: [
         provideRouter([
           {
-            path: searchUrl.slice(1),
-            component: FinesMciPaymentCategoryCriminalSearchComponent,
-            canDeactivate: [canDeactivateGuard],
-          },
-          { path: detailsUrl.slice(1), component: TillDetailsDestinationComponent },
-          {
-            path: matchesUrl.slice(1),
-            component: FinesMciPaymentCategoryCriminalMatchesComponent,
-            resolve: { criminalAccounts: finesMciCriminalAccountsResolver },
+            path: routeRoot.slice(1),
+            children: [
+              { path: 'details', component: TillDetailsDestinationComponent },
+              {
+                path: 'payment-category',
+                component: FinesMciCreateTillPaymentCategoryComponent,
+                canDeactivate: [canDeactivateGuard],
+              },
+              {
+                path: 'payment',
+                children: [
+                  {
+                    path: 'category',
+                    children: [
+                      {
+                        path: 'criminal',
+                        children: [
+                          {
+                            path: 'search',
+                            component: FinesMciPaymentCategoryCriminalSearchComponent,
+                            canDeactivate: [canDeactivateGuard],
+                          },
+                          {
+                            path: 'matches',
+                            component: FinesMciPaymentCategoryCriminalMatchesComponent,
+                            resolve: { criminalAccounts: finesMciCriminalAccountsResolver },
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
           },
         ]),
         { provide: OpalFines, useValue: service },
@@ -539,6 +568,33 @@ describe('Criminal search Cancel navigation', () => {
     (harness.routeNativeElement!.querySelector('a.govuk-link') as HTMLAnchorElement).click();
     await harness.fixture.whenStable();
   };
+
+  it('navigates from Payment Category to criminal search relative to the till', async () => {
+    const category = await harness.navigateByUrl(
+      `${routeRoot}/payment-category`,
+      FinesMciCreateTillPaymentCategoryComponent,
+    );
+
+    category.handleSubmit({ formData: { paymentCategory: 'criminal' }, nestedFlow: false });
+    await harness.fixture.whenStable();
+
+    expect(TestBed.inject(Router).url).toBe(searchUrl);
+    expect(harness.routeDebugElement?.componentInstance).toBeInstanceOf(FinesMciPaymentCategoryCriminalSearchComponent);
+    expect(confirmSpy).not.toHaveBeenCalled();
+  });
+
+  it('returns from Payment Category to till details using the same parent route', async () => {
+    const category = await harness.navigateByUrl(
+      `${routeRoot}/payment-category`,
+      FinesMciCreateTillPaymentCategoryComponent,
+    );
+
+    category.handleCancel();
+    await harness.fixture.whenStable();
+
+    expect(TestBed.inject(Router).url).toBe(detailsUrl);
+    expect(confirmSpy).not.toHaveBeenCalled();
+  });
 
   it('returns directly to till details without a warning when no inputs are populated', async () => {
     await clickCancel();

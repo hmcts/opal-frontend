@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, HostListener, inject } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
-import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FinesMciCreateTillPaymentCategoryFormComponent } from './fines-mci-create-till-payment-category-form/fines-mci-create-till-payment-category-form.component';
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
 import { FinesMciStore } from '../../stores/fines-mci.store';
@@ -14,6 +14,8 @@ import { IFinesMciCreateTillPaymentCategoryFormState } from './interfaces/fines-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormParentBaseComponent {
+  private readonly angularRouter = inject(Router);
+  private readonly currentRoute = inject(ActivatedRoute);
   protected readonly finesMciStore = inject(FinesMciStore);
 
   /** Handles Continue, adding a payment and advancing only when Criminal is selected. */
@@ -28,19 +30,14 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
       const tillId = this.finesMciStore.ensureTill();
       this.finesMciStore.addPayment(tillId, paymentCategory);
       this.stateUnsavedChanges = false;
-      this.routerNavigate(
+      void this.angularRouter.navigate(
         [
-          '',
-          FINES_ROUTING_PATHS.root,
-          FINES_MCI_ROUTING_PATHS.root,
-          FINES_MCI_ROUTING_PATHS.children.create,
-          FINES_MCI_ROUTING_PATHS.children.till,
           FINES_MCI_ROUTING_PATHS.children.payment,
           FINES_MCI_ROUTING_PATHS.children.category,
           FINES_MCI_ROUTING_PATHS.children.criminal,
           FINES_MCI_ROUTING_PATHS.children.search,
-        ].join('/'),
-        true,
+        ],
+        { relativeTo: this.currentRoute.parent },
       );
       return;
     }
@@ -50,7 +47,9 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
 
   /** Returns to Till Details when the user cancels. */
   public handleCancel(): void {
-    this.routerNavigate(FINES_MCI_ROUTING_PATHS.children.details);
+    void this.angularRouter.navigate([FINES_MCI_ROUTING_PATHS.children.details], {
+      relativeTo: this.currentRoute.parent,
+    });
   }
 
   /** Updates the route guard state when the child form changes. */
