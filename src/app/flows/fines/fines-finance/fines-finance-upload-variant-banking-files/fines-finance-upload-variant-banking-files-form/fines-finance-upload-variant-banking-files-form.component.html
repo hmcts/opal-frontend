@@ -1,0 +1,28 @@
+<div [formGroup]="form">
+  <opal-lib-moj-multi-file-upload>
+    @if (fileUploads().length === 0) {
+      <p id="fines-finance-upload-empty-state" class="govuk-body">No files uploaded</p>
+      <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+    }
+    <opal-lib-moj-multi-file-upload-files [files]="fileUploads()"></opal-lib-moj-multi-file-upload-files>
+    <opal-lib-moj-multi-file-upload-input
+      [control]="form.controls.files"
+      inputId="files"
+      inputName="files"
+      labelText="Choose Variant Banking files"
+      [hintText]="null"
+      [acceptedTypes]="acceptedTypes"
+      (filesSelected)="onFilesSelected($event)"
+    ></opal-lib-moj-multi-file-upload-input>
+  </opal-lib-moj-multi-file-upload>
+  <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+  @if (canViewInboundFiles) {
+    <p class="govuk-body">
+      You can view the
+      <a id="fines-finance-upload-view-files" class="govuk-link" [routerLink]="inboundFilesPath"
+        >files you uploaded here</a
+      >.
+    </p>
+  }
+  <p class="govuk-visually-hidden" role="status" aria-live="polite" aria-atomic="true">{{ announcement }}</p>
+</div>
