@@ -255,4 +255,85 @@ describe('FinesApiAllocateComponent', () => {
       'Select at least 1 till to allocate.',
     );
   });
+
+  it('ignores a refresh handler call while allocation is pending', () => {
+    render(data());
+    click('fines-api-allocate-till-101');
+    click('fines-api-allocate-submit');
+    const clearSelection = vi.spyOn(table(), 'clearSelection');
+    const refreshed = vi.fn();
+    fixture.componentInstance.refreshRequested.subscribe(refreshed);
+
+    // Invoke the handler directly: clicking the disabled button would not exercise its guard.
+    fixture.componentInstance['refresh']();
+
+    expect(clearSelection).not.toHaveBeenCalled();
+    expect(refreshed).not.toHaveBeenCalled();
+    expect(table().getSelectedIds()).toEqual(['101']);
+    expect(fixture.componentInstance['submitting']()).toBe(true);
+    expect(allocateTills).toHaveBeenCalledOnce();
+  });
+
+  it('ignores another allocation handler call while the first request is pending', () => {
+    render(data());
+    click('fines-api-allocate-till-101');
+    click('fines-api-allocate-submit');
+    const readSelection = vi.spyOn(table(), 'getSelectedIds');
+    const scrollToTop = vi.mocked(TestBed.inject(UtilsService).scrollToTop);
+
+    fixture.componentInstance['allocate']();
+
+    expect(readSelection).not.toHaveBeenCalled();
+    expect(scrollToTop).not.toHaveBeenCalled();
+    expect(allocateTills).toHaveBeenCalledOnce();
+    expect(fixture.componentInstance['submitting']()).toBe(true);
+  });
+
+  it('validates an allocation handler call when there is no table', () => {
+    render(data([]));
+
+    fixture.componentInstance['allocate']();
+    fixture.detectChanges();
+
+    expect(allocateTills).not.toHaveBeenCalled();
+    expect(TestBed.inject(UtilsService).scrollToTop).toHaveBeenCalledOnce();
+    expect(element().querySelector('.govuk-error-summary')?.textContent).toContain(
+      'Select at least 1 till to allocate.',
+    );
+    expect(fixture.componentInstance['submitting']()).toBe(false);
+  });
+
+  it('ignores an error-summary focus request after its target has disappeared', () => {
+    render(data());
+    click('fines-api-allocate-submit');
+    // A new empty response removes the table before an earlier focus request is handled.
+    render(data([]));
+
+    expect(() => fixture.componentInstance['scrollTo']('fines-api-allocate-select-all')).not.toThrow();
+    expect(element().querySelector('#fines-api-allocate-select-all')).toBeNull();
+    expect(allocateTills).not.toHaveBeenCalled();
+  });
+
+  it('acknowledges the submitted snapshot if fresh input removes the table before the response', () => {
+    render(data(rows(1)));
+    click('fines-api-allocate-till-101');
+    click('fines-api-allocate-submit');
+    render(data([]));
+    expect(element().querySelector('table')).toBeNull();
+
+    response.next();
+    response.complete();
+    fixture.detectChanges();
+
+    expect(allocateTills).toHaveBeenCalledOnce();
+    expect(element().querySelector('#fines-api-allocate-success')?.textContent).toContain(
+      '1 till has been sent for allocation.',
+    );
+    expect(element().querySelector('#fines-api-allocate-cash-list-report')).toBeTruthy();
+    expect(element().querySelector('#fines-api-allocate-empty')?.textContent).toBe(
+      'There are no tills ready to allocate',
+    );
+    expect(element().querySelector<HTMLButtonElement>('#fines-api-allocate-refresh')!.disabled).toBe(false);
+    expect(TestBed.inject(UtilsService).scrollToTop).toHaveBeenCalledOnce();
+  });
 });
