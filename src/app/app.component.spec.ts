@@ -233,7 +233,7 @@ describe('AppComponent - browser', () => {
 
     component.handleAuthentication();
 
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledExactlyOnceWith(SSO_ENDPOINTS.login);
     expect(mockDocumentLocation.location.href).toBe(SSO_ENDPOINTS.login);
   });
 
@@ -249,24 +249,33 @@ describe('AppComponent - browser', () => {
 
     component.handleAuthentication();
 
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledExactlyOnceWith(SSO_ENDPOINTS.logout);
     expect(mockDocumentLocation.location.href).toBe(SSO_ENDPOINTS.logout);
   });
 
-  it.each([
-    [false, false],
-    [true, true],
-  ])('should honor the unsaved changes confirmation when the user confirms=%s', (confirmation, shouldRedirect) => {
-    globalStore.setAuthenticated(true);
-    TestBed.inject(FinesApiStore).setUnsavedChanges(true);
-    const fixture = TestBed.createComponent(AppComponent);
-    const redirectSpy = vi.spyOn(fixture.componentInstance, 'handleRedirect');
-    vi.spyOn(window, 'confirm').mockReturnValue(confirmation);
+  it.each(['business units', 'files'] as const)(
+    'should request logout without application confirmation when ACI has selected %s',
+    (selection) => {
+      globalStore.setAuthenticated(true);
+      const finesApiStore = TestBed.inject(FinesApiStore);
+      finesApiStore.setSelectedBusinessUnitIds([77]);
+      if (selection === 'files') {
+        finesApiStore.setSelectedFileIds(['123']);
+      }
+      expect(finesApiStore.unsavedChanges()).toBe(true);
 
-    fixture.componentInstance.handleAuthentication();
+      const fixture = TestBed.createComponent(AppComponent);
+      const component = fixture.componentInstance;
+      const redirectSpy = vi.spyOn(component, 'handleRedirect').mockImplementation(() => {});
+      const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
 
-    expect(redirectSpy).toHaveBeenCalledTimes(shouldRedirect ? 1 : 0);
-  });
+      component.handleAuthentication();
+
+      expect(redirectSpy).toHaveBeenCalledExactlyOnceWith(SSO_ENDPOINTS.logout);
+      expect(confirmSpy).not.toHaveBeenCalled();
+      confirmSpy.mockRestore();
+    },
+  );
 
   it('should unsubscribe from the timeout interval subscription', () => {
     const fixture = TestBed.createComponent(AppComponent);
