@@ -1,3 +1,6 @@
+import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
+import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
+import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { By } from '@angular/platform-browser';
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
 import { FinesSuspenseItemComponent } from '../fines-suspense-item.component';
@@ -18,24 +21,54 @@ import { routing } from './fines-suspense-item.routes';
 class TestFinanceComponent {}
 
 describe('Suspense item navigation', () => {
-  const getBusinessUnits = vi.fn();
+  const getBusinessUnitsByPermission = vi.fn();
+  const getLoggedInUserState = vi.fn();
   const clearCache = vi.fn();
   beforeEach(() => {
     vi.spyOn(window, 'confirm').mockReturnValue(false);
     clearCache.mockReset();
-    getBusinessUnits.mockReset().mockReturnValue(of(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK));
+    const user = structuredClone(OPAL_USER_STATE_MOCK);
+    user.business_unit_users[0].permissions = [
+      { permission_id: FINES_PERMISSIONS['view-suspense-items'], permission_name: 'View suspense items' },
+    ];
+    getLoggedInUserState.mockReset().mockReturnValue(of(user));
+    getBusinessUnitsByPermission.mockReset().mockReturnValue(of(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK));
     TestBed.configureTestingModule({
       providers: [
-        { provide: OpalFines, useValue: { getBusinessUnits, clearCache } },
+        { provide: OpalUserService, useValue: { getLoggedInUserState } },
+        { provide: OpalFines, useValue: { getBusinessUnitsByPermission, clearCache } },
         provideRouter([
           { path: 'fines/suspense-item', component: FinesSuspenseItemComponent, children: routing },
           { path: 'fines/dashboard/finance', component: TestFinanceComponent },
+          { path: 'access-denied', component: TestFinanceComponent },
         ]),
       ],
     });
   });
 
   afterEach(() => vi.restoreAllMocks());
+
+  it.each([24, 25])('allows search with only permission %s', async (permissionId) => {
+    const user = structuredClone(OPAL_USER_STATE_MOCK);
+    user.business_unit_users = [user.business_unit_users[0]];
+    user.business_unit_users[0].permissions = [{ permission_id: permissionId, permission_name: 'Suspense permission' }];
+    getLoggedInUserState.mockReturnValue(of(user));
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/fines/suspense-item/search');
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/search');
+  });
+
+  it('denies direct access without suspense permission before requesting business units', async () => {
+    const user = structuredClone(OPAL_USER_STATE_MOCK);
+    user.business_unit_users.forEach((unit) => {
+      unit.permissions = [];
+    });
+    getLoggedInUserState.mockReturnValue(of(user));
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/fines/suspense-item/search');
+    expect(TestBed.inject(Router).url).toBe('/access-denied');
+    expect(getBusinessUnitsByPermission).not.toHaveBeenCalled();
+  });
 
   it('redirects the suspense root to the search screen', async () => {
     const harness = await RouterTestingHarness.create();
@@ -66,7 +99,8 @@ describe('Suspense item navigation', () => {
       By.directive(FinesSuspenseItemSearchComponent),
     ).componentInstance;
 
-    expect(getBusinessUnits).toHaveBeenCalledOnce();
+    expect(getBusinessUnitsByPermission).toHaveBeenCalledWith('VIEW_SUSPENSE_ITEMS');
+    expect(getBusinessUnitsByPermission).toHaveBeenCalledWith('MANAGE_SUSPENSE_ITEMS');
     expect(component.businessUnitAutoCompleteItems).toEqual(
       OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData.map((unit) => ({
         value: unit.business_unit_id,
@@ -78,7 +112,7 @@ describe('Suspense item navigation', () => {
 
   it('displays and selects the single resolved business unit', async () => {
     const unit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
-    getBusinessUnits.mockReturnValue(of({ count: 1, refData: [unit] }));
+    getBusinessUnitsByPermission.mockReturnValue(of({ count: 1, refData: [unit] }));
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/fines/suspense-item/search');
     const component: FinesSuspenseItemSearchComponent = harness.routeDebugElement!.query(
@@ -94,7 +128,7 @@ describe('Suspense item navigation', () => {
 
   it('does not activate the search page when business unit loading fails', async () => {
     const error = new Error('Business unit request failed');
-    getBusinessUnits.mockReturnValue(throwError(() => error));
+    getBusinessUnitsByPermission.mockReturnValue(throwError(() => error));
     const harness = await RouterTestingHarness.create('/fines/dashboard/finance');
 
     await expect(harness.navigateByUrl('/fines/suspense-item/search')).rejects.toThrow(error);
@@ -164,7 +198,7 @@ describe('Suspense item navigation', () => {
 
   it('does not confirm Cancel for an automatically selected sole business unit', async () => {
     const unit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
-    getBusinessUnits.mockReturnValue(of({ count: 1, refData: [unit] }));
+    getBusinessUnitsByPermission.mockReturnValue(of({ count: 1, refData: [unit] }));
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/fines/suspense-item/search');
 

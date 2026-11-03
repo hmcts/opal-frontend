@@ -1,5 +1,7 @@
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
-import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
+import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
+import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
+import { finesSuspenseBusinessUnitsResolver } from './resolvers/fines-suspense-business-units.resolver';
 import { Routes } from '@angular/router';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_SUSPENSE_ITEM_ROUTING_PATHS } from './constants/fines-suspense-item-routing-paths.constant';
@@ -17,14 +19,15 @@ export const routing: Routes = [
       import('../fines-suspense-item-search/fines-suspense-item-search.component').then(
         (c) => c.FinesSuspenseItemSearchComponent,
       ),
+    canActivate: [routePermissionsGuard],
     canDeactivate: [canDeactivateGuard],
     data: {
       title: FINES_SUSPENSE_ITEM_ROUTING_TITLES.children.search,
+      routePermissionId: [FINES_PERMISSIONS['view-suspense-items'], FINES_PERMISSIONS['manage-suspense-items']],
     },
     resolve: {
       title: TitleResolver,
-      // TODO(PO-9763): Apply suspense BU permissions when the permission contract is available.
-      businessUnits: fetchBusinessUnitsResolver,
+      businessUnits: finesSuspenseBusinessUnitsResolver,
     },
   },
 ];
