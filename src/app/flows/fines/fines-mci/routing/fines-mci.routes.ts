@@ -111,6 +111,40 @@ export const routing: Routes = [
             },
           },
           {
+            path: FINES_MCI_ROUTING_PATHS.children.suspenseDetails,
+            loadComponent: () =>
+              import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
+                (c) => c.FinesMciPlaceholderComponent,
+              ),
+            canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+            data: {
+              heading: FINES_MCI_ROUTING_TITLES.children.createTillSuspenseDetails,
+              permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
+              routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+              title: FINES_MCI_ROUTING_TITLES.children.createTillSuspenseDetails,
+            },
+            resolve: {
+              title: TitleResolver,
+            },
+          },
+          {
+            path: FINES_MCI_ROUTING_PATHS.children.courtFeeDetails,
+            loadComponent: () =>
+              import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
+                (c) => c.FinesMciPlaceholderComponent,
+              ),
+            canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+            data: {
+              heading: FINES_MCI_ROUTING_TITLES.children.createTillCourtFeeDetails,
+              permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
+              routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+              title: FINES_MCI_ROUTING_TITLES.children.createTillCourtFeeDetails,
+            },
+            resolve: {
+              title: TitleResolver,
+            },
+          },
+          {
             path: FINES_MCI_ROUTING_PATHS.children.cancel,
             loadComponent: () =>
               import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
