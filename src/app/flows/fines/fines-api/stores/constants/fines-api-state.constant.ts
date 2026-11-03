@@ -5,7 +5,6 @@ export const FINES_API_STATE: IFinesApiState = {
   availableBusinessUnits: [],
   selectedBusinessUnitIds: [],
   selectedFileIds: [],
-  selectedTillIds: [],
   overrideInhibitFileIds: [],
   processInterfaceJobs: null,
   activeTab: FINES_API_PROCESS_ALLOCATE_TABS_KEYS.process,

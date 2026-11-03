@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, Output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
 import { FinesApiSelectableTableComponent } from '../../../fines-api-selectable-table/fines-api-selectable-table.component';
@@ -8,7 +8,6 @@ import { FINES_API_ROUTING_PATHS } from '../../../routing/constants/fines-api-ro
 import { FINES_API_ALLOCATE_TILLS_TABLE_WRAPPER_CONTENT } from './constants/fines-api-allocate-tills-table-wrapper-content.constant';
 import { IFinesApiAllocateTillsTableWrapperTableData } from './interfaces/fines-api-allocate-tills-table-wrapper-table-data.interface';
 import { FINES_API_ALLOCATE_TILLS_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './constants/fines-api-allocate-tills-table-wrapper-table-sort-default.constant';
-import { FinesApiStore } from '../../../stores/fines-api.store';
 
 @Component({
   selector: 'app-fines-api-allocate-tills-table-wrapper',
@@ -17,8 +16,8 @@ import { FinesApiStore } from '../../../stores/fines-api.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesApiAllocateTillsTableWrapperComponent {
-  protected readonly finesApiStore = inject(FinesApiStore);
   protected readonly rows = signal<IFinesApiAllocateTillsTableWrapperTableData[]>([]);
+  protected readonly selectedIds = signal<string[]>([]);
   protected readonly defaultSort = FINES_API_ALLOCATE_TILLS_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
   protected readonly content = {
     ...FINES_API_ALLOCATE_TILLS_TABLE_WRAPPER_CONTENT,
@@ -84,10 +83,15 @@ export class FinesApiAllocateTillsTableWrapperComponent {
     this.clearSelection();
   }
 
-  /** Stores the selected till IDs so shared navigation guards can protect the selection. */
+  /** Updates local selection and clears parent validation feedback. */
   protected updateSelection(selectedIds: string[]): void {
-    this.finesApiStore.setSelectedTillIds(selectedIds);
+    this.selectedIds.set(selectedIds);
     this.selectionChanged.emit();
+  }
+
+  /** Returns an independent snapshot for submission without adding navigation-guard state. */
+  public getSelectedIds(): string[] {
+    return [...this.selectedIds()];
   }
 
   /**
@@ -96,6 +100,6 @@ export class FinesApiAllocateTillsTableWrapperComponent {
    * @returns Nothing; supplies an empty selection to the shared table.
    */
   public clearSelection(): void {
-    this.finesApiStore.setSelectedTillIds([]);
+    this.selectedIds.set([]);
   }
 }

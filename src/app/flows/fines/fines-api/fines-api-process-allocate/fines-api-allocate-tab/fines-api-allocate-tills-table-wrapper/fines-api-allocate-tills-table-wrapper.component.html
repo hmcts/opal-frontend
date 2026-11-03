@@ -8,7 +8,7 @@
   [columns]="columns"
   [defaultSort]="defaultSort"
   [cellTemplate]="cell"
-  [selectedIds]="finesApiStore.selectedTillIds()"
+  [selectedIds]="selectedIds()"
   [selectionErrorId]="selectionErrorId"
   (selectedIdsChange)="updateSelection($event)"
 />

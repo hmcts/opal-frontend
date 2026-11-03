@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { takeUntil } from 'rxjs';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
@@ -35,12 +35,13 @@ export class FinesMciCreateTillPaymentCategoryFormComponent extends AbstractForm
   protected override fieldErrors: IFinesMciCreateTillPaymentCategoryFieldErrors = {
     ...FINES_MCI_CREATE_TILL_PAYMENT_CATEGORY_FIELD_ERRORS,
   };
+  @Input() public initialPaymentCategory: FinesMciJourney | null = null;
   public override formControlErrorMessages: IAbstractFormControlErrorMessage = {};
 
   /** Creates the required payment category radio control. */
   private initialiseForm(): void {
     this.form = new FormGroup({
-      paymentCategory: new FormControl<FinesMciJourney | null>(null, Validators.required),
+      paymentCategory: new FormControl<FinesMciJourney | null>(this.initialPaymentCategory, Validators.required),
     });
   }
 

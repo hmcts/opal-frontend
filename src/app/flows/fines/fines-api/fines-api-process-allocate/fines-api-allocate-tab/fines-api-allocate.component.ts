@@ -8,7 +8,6 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { FINES_ROUTING_PATHS } from '../../../routing/constants/fines-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from '../../../fines-reports/routing/constants/fines-reports-routing-paths.constant';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../../../fines-reports/fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
-import { FinesApiStore } from '../../stores/fines-api.store';
 import { mapAllocateRequest } from '../../services/utils/fines-api-payload-map-allocate-request.utils';
 import {
   ChangeDetectionStrategy,
@@ -49,7 +48,6 @@ export class FinesApiAllocateComponent {
   private readonly document = inject(DOCUMENT);
   private readonly utilsService = inject(UtilsService);
   private readonly opalFines = inject(OpalFines);
-  private readonly finesApiStore = inject(FinesApiStore);
   private readonly table = viewChild(FinesApiAllocateTillsTableWrapperComponent);
   protected readonly submitting = signal(false);
   protected readonly submittedCount = signal(0);
@@ -120,7 +118,7 @@ export class FinesApiAllocateComponent {
   protected allocate(): void {
     if (this.submitting()) return;
     this.submittedCount.set(0);
-    const selectedIds = [...this.finesApiStore.selectedTillIds()];
+    const selectedIds = this.table()?.getSelectedIds() ?? [];
     const payload = mapAllocateRequest(this.data().tills, selectedIds);
     if (!payload) {
       this.errorMessage.set(selectedIds.length ? this.content.invalidSelection : this.content.selectAtLeastOneTill);
@@ -140,7 +138,7 @@ export class FinesApiAllocateComponent {
         next: () => {
           const submittedIds = new Set(selectedIds);
           this.data.update((data) => ({ ...data, tills: data.tills.filter((row) => !submittedIds.has(row.tillId)) }));
-          this.finesApiStore.setSelectedTillIds([]);
+          this.table()?.clearSelection();
           this.submittedCount.set(payload.tills.length);
           this.utilsService.scrollToTop();
         },
