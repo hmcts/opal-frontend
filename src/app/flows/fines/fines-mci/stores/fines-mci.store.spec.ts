@@ -32,12 +32,14 @@ describe('FinesMciStore', () => {
 
   it('should reset the selected business unit', () => {
     store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    store.setDraftJourney('suspense');
     store.ensureTill();
 
     store.reset();
 
     expect(store.businessUnit()).toBeNull();
     expect(store.tills()).toEqual([]);
+    expect(store.draftJourney()).toBeNull();
   });
 
   it('should create the in-progress till and return its id', () => {
@@ -62,6 +64,7 @@ describe('FinesMciStore', () => {
         .mockReturnValueOnce('00000000-0000-4000-8000-000000000001')
         .mockReturnValueOnce('00000000-0000-4000-8000-000000000002');
       store.ensureTill();
+      store.setDraftJourney(journey);
 
       expect(store.addPayment('00000000-0000-4000-8000-000000000001', journey)).toBe(
         '00000000-0000-4000-8000-000000000002',
@@ -72,6 +75,7 @@ describe('FinesMciStore', () => {
           payments: [{ paymentId: '00000000-0000-4000-8000-000000000002', journey }],
         },
       ]);
+      expect(store.draftJourney()).toBeNull();
     },
   );
 
@@ -80,8 +84,10 @@ describe('FinesMciStore', () => {
       .mockReturnValueOnce('00000000-0000-4000-8000-000000000001')
       .mockReturnValueOnce('00000000-0000-4000-8000-000000000002');
     store.ensureTill();
+    store.setDraftJourney('courtFee');
 
     expect(store.addPayment('missing-till', 'courtFee')).toBe('00000000-0000-4000-8000-000000000002');
     expect(store.tills()).toEqual([{ tillId: '00000000-0000-4000-8000-000000000001', payments: [] }]);
+    expect(store.draftJourney()).toBe('courtFee');
   });
 });
