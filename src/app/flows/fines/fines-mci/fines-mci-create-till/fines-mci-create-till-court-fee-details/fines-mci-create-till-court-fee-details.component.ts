@@ -25,6 +25,7 @@ import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routi
 import { FinesMciStore } from '../../stores/fines-mci.store';
 
 const AMOUNT_PATTERN = /^\d+(?:\.\d+)?$/;
+const NUMBER_OF_ITEMS_PATTERN = /^\d+$/;
 
 @Component({
   selector: 'app-fines-mci-create-till-court-fee-details',
@@ -59,6 +60,7 @@ export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit {
   protected readonly feesLoaded = signal(false);
   protected courtFeeSelectionError: string | null = null;
   protected amountError: string | null = null;
+  protected numberOfItemsError: string | null = null;
   protected formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
   protected readonly form = new FormGroup({
     courtFeeId: new FormControl<number | null>(null),
@@ -87,6 +89,16 @@ export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit {
         this.changeDetector.markForCheck();
       }
     });
+
+    this.form.controls.numberOfItems.valueChanges.pipe(takeUntilDestroyed()).subscribe((numberOfItems) => {
+      if (numberOfItems != null && NUMBER_OF_ITEMS_PATTERN.test(numberOfItems.trim())) {
+        this.numberOfItemsError = null;
+        this.formErrorSummaryMessage = this.formErrorSummaryMessage.filter(
+          ({ fieldId }) => fieldId !== 'numberOfItems',
+        );
+        this.changeDetector.markForCheck();
+      }
+    });
   }
 
   /** Keeps typed text available when the autocomplete clears an invalid selection on blur. */
@@ -102,7 +114,7 @@ export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit {
     this.document.getElementById(fieldId)?.focus();
   }
 
-  /** Validates the selected court fee and amount before later payment validations are added. */
+  /** Validates the court fee payment details before later navigation is added. */
   public handleSubmit(): void {
     const courtFeeId = this.form.controls.courtFeeId.value;
     const selectedFee = this.courtFeeItems().find(({ value }) => value === courtFeeId);
@@ -119,12 +131,22 @@ export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit {
     const amount = this.form.controls.amountPaid.value?.trim() ?? '';
     this.amountError = !amount ? 'Enter an amount' : AMOUNT_PATTERN.test(amount) ? null : 'Enter numbers only';
 
+    const numberOfItems = this.form.controls.numberOfItems.value?.trim() ?? '';
+    this.numberOfItemsError = !numberOfItems
+      ? 'Enter number of items'
+      : NUMBER_OF_ITEMS_PATTERN.test(numberOfItems)
+        ? null
+        : 'Enter numbers only';
+
     const errors: IAbstractFormBaseFormErrorSummaryMessage[] = [];
     if (this.courtFeeSelectionError) {
       errors.push({ fieldId: 'courtFeeId-autocomplete', message: this.courtFeeSelectionError });
     }
     if (this.amountError) {
       errors.push({ fieldId: 'amountPaid', message: this.amountError });
+    }
+    if (this.numberOfItemsError) {
+      errors.push({ fieldId: 'numberOfItems', message: this.numberOfItemsError });
     }
     this.formErrorSummaryMessage = errors;
     if (errors.length === 0) return;
