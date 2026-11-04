@@ -231,7 +231,7 @@ describe('AppComponent - browser', () => {
 
     component.handleAuthentication();
 
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledExactlyOnceWith(SSO_ENDPOINTS.login);
     expect(mockDocumentLocation.location.href).toBe(SSO_ENDPOINTS.login);
   });
 
@@ -247,7 +247,7 @@ describe('AppComponent - browser', () => {
 
     component.handleAuthentication();
 
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledExactlyOnceWith(SSO_ENDPOINTS.logout);
     expect(mockDocumentLocation.location.href).toBe(SSO_ENDPOINTS.logout);
   });
 
@@ -265,6 +265,29 @@ describe('AppComponent - browser', () => {
 
     expect(redirectSpy).toHaveBeenCalledTimes(shouldRedirect ? 1 : 0);
   });
+  it.each(['business units', 'files'] as const)(
+    'should request logout without application confirmation when ACI has selected %s',
+    (selection) => {
+      globalStore.setAuthenticated(true);
+      const finesApiStore = TestBed.inject(FinesApiStore);
+      finesApiStore.setSelectedBusinessUnitIds([77]);
+      if (selection === 'files') {
+        finesApiStore.setSelectedFileIds(['123']);
+      }
+      expect(finesApiStore.unsavedChanges()).toBe(true);
+
+      const fixture = TestBed.createComponent(AppComponent);
+      const component = fixture.componentInstance;
+      const redirectSpy = vi.spyOn(component, 'handleRedirect').mockImplementation(() => {});
+      const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+
+      component.handleAuthentication();
+
+      expect(redirectSpy).toHaveBeenCalledExactlyOnceWith(SSO_ENDPOINTS.logout);
+      expect(confirmSpy).not.toHaveBeenCalled();
+      confirmSpy.mockRestore();
+    },
+  );
 
   it('should unsubscribe from the timeout interval subscription', () => {
     const fixture = TestBed.createComponent(AppComponent);
