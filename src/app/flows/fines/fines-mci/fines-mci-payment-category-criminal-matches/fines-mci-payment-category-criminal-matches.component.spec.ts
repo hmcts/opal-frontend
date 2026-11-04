@@ -355,7 +355,7 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
       if (action === 'selection change') {
         checkbox.click();
       } else if (action === 'search again') {
-        fixture.componentInstance['clearCriminalSearch']();
+        fixture.componentInstance['handleSearchAgain']();
       } else {
         fixture.destroy();
       }

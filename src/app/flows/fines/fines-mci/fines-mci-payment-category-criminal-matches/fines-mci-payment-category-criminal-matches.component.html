@@ -35,8 +35,8 @@
     <a
       class="govuk-link govuk-link--no-visited-state"
       [routerLink]="criminalSearchRoute"
-      fragment="individuals"
-      (click)="clearCriminalSearch()"
+      [fragment]="finesMciStore.criminalSearch()?.activeTab ?? 'individuals'"
+      (click)="handleSearchAgain()"
       >Search again</a
     >
   </div>

@@ -179,9 +179,9 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
     this.router.navigate(this.criminalSearchRoute);
   }
 
-  protected clearCriminalSearch(): void {
+  protected handleSearchAgain(): void {
     this.cancelAccountDetailsRequest.next();
-    this.finesMciStore.resetCriminalSearch();
+    this.finesMciStore.setSelectedCriminalAccount(null);
   }
 
   protected onAccountSelectionChanged(

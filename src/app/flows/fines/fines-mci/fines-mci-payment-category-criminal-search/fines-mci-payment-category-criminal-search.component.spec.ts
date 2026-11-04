@@ -872,10 +872,9 @@ describe('Criminal search navigation', () => {
   });
 
   it.each(['individuals', 'companies'] as const)(
-    'clears submitted %s inputs when clicking Search again',
+    'restores submitted %s inputs and the active tab when clicking Search again',
     async (tab) => {
       component = await harness.navigateByUrl(`${searchUrl}#${tab}`, FinesMciPaymentCategoryCriminalSearchComponent);
-      const emptyFormData = component.form.getRawValue();
       const businessUnit = store.businessUnit();
       const tills = store.tills();
       store.setDraftJourney('criminal');
@@ -902,6 +901,8 @@ describe('Criminal search navigation', () => {
       await harness.fixture.whenStable();
       harness.detectChanges();
       expect(store.criminalSearch()).not.toBeNull();
+      const submittedSearch = store.criminalSearch();
+      const searchResults = store.criminalSearchResults();
 
       const searchAgainLink = [...harness.routeNativeElement!.querySelectorAll('a')].find(
         (link) => link.textContent?.trim() === 'Search again',
@@ -911,10 +912,11 @@ describe('Criminal search navigation', () => {
       harness.detectChanges();
 
       const search = harness.routeDebugElement!.componentInstance as FinesMciPaymentCategoryCriminalSearchComponent;
-      expect(TestBed.inject(Router).url).toBe(`${searchUrl}#individuals`);
-      expect(search.form.getRawValue()).toEqual(emptyFormData);
-      expect(store.criminalSearch()).toBeNull();
-      expect(store.criminalSearchResults()).toBeNull();
+      expect(TestBed.inject(Router).url).toBe(`${searchUrl}#${tab}`);
+      expect(search.form.getRawValue()).toEqual(submittedSearch?.formData);
+      expect(search['activeTab']()).toBe(tab);
+      expect(store.criminalSearch()).toEqual(submittedSearch);
+      expect(store.criminalSearchResults()).toEqual(searchResults);
       expect(store.selectedCriminalAccount()).toBeNull();
       expect(store.businessUnit()).toEqual(businessUnit);
       expect(store.tills()).toEqual(tills);
