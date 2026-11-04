@@ -102,72 +102,21 @@ export class ManualCashInputFlow {
     this.actions.continueWithPaymentCategory(category);
   }
 
-  /** Verifies the Court Fee Details screen. */
-  public assertCourtFeeDetailsIsDisplayed(): void {
-    this.actions.assertCourtFeeDetailsIsDisplayed();
-  }
-  /** Verifies that description text filters the court fee list. */
-  public assertCourtFeeDescriptionSearch(): void {
-    this.actions.assertCourtFeeDescriptionSearch();
-  }
-
-  /**
-   * Selects the mocked court fee and submits the entered payment details.
-   * @param amount - Amount paid for the court fee.
-   * @param numberOfItems - Number of court fee items paid for.
-   */
-  public submitCourtFeePayment(amount: string, numberOfItems: string): void {
-    this.actions.submitCourtFeePayment(amount, numberOfItems);
-  }
-
-  /** Verifies the exact-payment destination. */
-  public assertCourtFeePaymentDetailsIsDisplayed(): void {
-    this.actions.assertCourtFeePaymentDetailsIsDisplayed();
-  }
-
-  /** Verifies the over/underpayment destination. */
-  public assertCourtFeeOverUnderpaymentIsDisplayed(): void {
-    this.actions.assertCourtFeeOverUnderpaymentIsDisplayed();
-  }
-
-  /** Submits Court Fee Details without entering any values. */
-  public continueWithoutCourtFeeDetails(): void {
-    this.actions.continueWithoutCourtFeeDetails();
-  }
-
-  /** Checks the Court Fee Details validation messages and error links. */
-  public assertCourtFeeDetailsValidation(): void {
-    this.actions.assertCourtFeeDetailsValidation();
-  }
-
-  /** Cancels a blank Court Fee Details form. */
-  public cancelBlankCourtFeeDetails(): void {
-    this.actions.cancelBlankCourtFeeDetails();
-  }
-
-  /** Enters an amount and declines the leave-page warning. */
-  public enterCourtFeeAmountAndDeclineCancel(): void {
-    this.actions.enterCourtFeeAmountAndDeclineCancel();
-  }
-
-  /** Accepts the leave-page warning and returns to Till Details. */
-  public acceptCourtFeeCancel(): void {
-    this.actions.acceptCourtFeeCancel();
-  }
-
-  /** Checks that Court Fee Details were discarded after Cancel. */
-  public assertCourtFeeDetailsWereDiscarded(): void {
-    this.actions.assertCourtFeeDetailsWereDiscarded();
-  }
-
   /** Verifies the Search for an Account destination. */
   public assertSearchForAccountIsDisplayed(): void {
     this.actions.assertSearchForAccountIsDisplayed();
   }
 
-  /** Verifies the Suspense Details destination. */
-  public assertSuspenseDetailsIsDisplayed(): void {
-    this.actions.assertSuspenseDetailsIsDisplayed();
+  /** Verifies the details destination for the selected payment category.
+   * @param category - Payment category whose details destination should be displayed.
+   */
+  public assertPaymentCategoryDetailsAreDisplayed(category: 'courtFee' | 'suspense'): void {
+    this.actions.assertPaymentCategoryDetailsAreDisplayed(category);
+  }
+
+  /** Verifies the Payment Category page remains displayed. */
+  public assertPaymentCategoryIsDisplayed(): void {
+    this.actions.assertPaymentCategoryIsDisplayed();
   }
 
   /** Attempts to continue without selecting a payment category. */

@@ -4,8 +4,6 @@ import { createScopedLogger } from '../../../../support/utils/log.helper';
 const log = createScopedLogger('ManualCashInputActions');
 const TILLS_ENDPOINT = '/opal-fines-service/tills';
 const BUSINESS_UNITS_ENDPOINT = '/opal-fines-service/business-units';
-const COURT_FEES_ENDPOINT = '/opal-fines-service/court-fees';
-const COURT_FEE_OPTION = 'CF001 - Application (£12.50)';
 const FIRST_TILL_ID = 1001;
 const UNSAVED_CHANGES_WARNING =
   'WARNING: Are you sure you want to leave this page? Any information you entered will be lost.';
@@ -225,134 +223,8 @@ export class ManualCashInputActions {
    * @param category - Payment category value to select.
    */
   public continueWithPaymentCategory(category: 'criminal' | 'courtFee' | 'suspense'): void {
-    if (category === 'courtFee') {
-      cy.intercept(
-        { method: 'GET', pathname: COURT_FEES_ENDPOINT, query: { business_unit_id: '2' } },
-        {
-          court_fees: [
-            { court_fee_id: 101, court_fee_code: 'CF001', description: 'Application', amount: 12.5 },
-            { court_fee_id: 102, court_fee_code: 'CF002', description: 'Issue', amount: 0.1 },
-          ],
-        },
-      ).as('manualCashInputCourtFees');
-    }
     cy.get(`input[name="paymentCategory"][value="${category}"]`).check({ force: true });
     cy.get(ManualCashInputLocators.continueButton).click();
-    if (category === 'courtFee') {
-      cy.wait('@manualCashInputCourtFees').its('response.statusCode').should('eq', 200);
-    }
-  }
-
-  /** Confirms the Court Fee Details screen and selected business unit. */
-  public assertCourtFeeDetailsIsDisplayed(): void {
-    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/court-fee-details');
-    cy.get(ManualCashInputLocators.courtFeeDetailsPage).contains('h1', 'Court fee').should('be.visible');
-    cy.get(ManualCashInputLocators.courtFeeDetailsPage).contains('.govuk-caption-l', 'Camden and Islington');
-    cy.get('label[for="courtFeeId-autocomplete"]').should('contain.text', 'Court fee');
-    cy.get(ManualCashInputLocators.courtFeeCodeInput).should('be.visible');
-    cy.get('label[for="amountPaid"]').should('contain.text', 'Amount');
-    cy.get('label[for="numberOfItems"]').should('contain.text', 'Number of items');
-    cy.get(ManualCashInputLocators.continueButton).should('be.visible');
-    cy.get(ManualCashInputLocators.cancelLink).should('be.visible');
-  }
-
-  /** Checks that a substring of the description finds the court fee from reference data. */
-  public assertCourtFeeDescriptionSearch(): void {
-    cy.get(ManualCashInputLocators.courtFeeCodeInput).type('ppli');
-    cy.get(ManualCashInputLocators.courtFeeCodeSuggestions)
-      .contains('CF001 - Application (£12.50)')
-      .should('be.visible');
-  }
-
-  /**
-   * Selects a visible court fee suggestion, enters payment details, and continues.
-   * @param amount - Amount paid for the court fee.
-   * @param numberOfItems - Number of court fee items paid for.
-   */
-  public submitCourtFeePayment(amount: string, numberOfItems: string): void {
-    cy.get(ManualCashInputLocators.courtFeeCodeInput).should('be.visible').type('CF001');
-    cy.get(ManualCashInputLocators.courtFeeCodeSuggestions).contains('li', COURT_FEE_OPTION).click();
-    cy.get(ManualCashInputLocators.courtFeeCodeInput).should('have.value', COURT_FEE_OPTION);
-    cy.get(ManualCashInputLocators.courtFeeAmountInput).type(amount);
-    cy.get(ManualCashInputLocators.courtFeeNumberOfItemsInput).type(numberOfItems);
-    cy.get(ManualCashInputLocators.courtFeeDetailsPage).find(ManualCashInputLocators.continueButton).click();
-  }
-
-  /** Confirms an exact payment opens the temporary Court Fee Payment Details screen. */
-  public assertCourtFeePaymentDetailsIsDisplayed(): void {
-    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/court-fee-payment-details');
-    cy.contains('h1', 'Payment details – court fee').should('be.visible');
-  }
-
-  /** Confirms a mismatched payment opens the temporary over/underpayment screen. */
-  public assertCourtFeeOverUnderpaymentIsDisplayed(): void {
-    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/over-underpayment-confirmation');
-    cy.contains('h1', 'Overpayment/underpayment confirmation').should('be.visible');
-  }
-
-  /** Submits an empty Court Fee Details form to show its required-field errors. */
-  public continueWithoutCourtFeeDetails(): void {
-    cy.get(ManualCashInputLocators.courtFeeDetailsPage).find(ManualCashInputLocators.continueButton).click();
-    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/court-fee-details');
-  }
-
-  /** Checks the shared error summary, field messages, and links to each invalid field. */
-  public assertCourtFeeDetailsValidation(): void {
-    const errors = [
-      [ManualCashInputLocators.courtFeeCodeInput, 'Enter court fee code'],
-      [ManualCashInputLocators.courtFeeAmountInput, 'Enter an amount'],
-      [ManualCashInputLocators.courtFeeNumberOfItemsInput, 'Enter number of items'],
-    ] as const;
-
-    cy.get(ManualCashInputLocators.errorSummary)
-      .find('.govuk-error-summary__title')
-      .should('have.text', 'There is a problem');
-    errors.forEach(([field, message]) => {
-      cy.get(`${field}-error-message`).should('contain.text', message);
-      cy.get(ManualCashInputLocators.errorSummary).contains('a', message).click();
-      cy.focused().should('have.id', field.slice(1));
-    });
-  }
-
-  /** Cancels an untouched Court Fee Details form. */
-  public cancelBlankCourtFeeDetails(): void {
-    cy.get(ManualCashInputLocators.courtFeeDetailsPage).find(ManualCashInputLocators.cancelLink).click();
-    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/details');
-  }
-
-  /** Declines the leave-page warning and checks that entered Court Fee Details are retained. */
-  public enterCourtFeeAmountAndDeclineCancel(): void {
-    let confirmationWasRaised = false;
-    cy.get(ManualCashInputLocators.courtFeeAmountInput).type('12.50');
-    cy.once('window:confirm', (message) => {
-      confirmationWasRaised = true;
-      expect(String(message).replace(/\s+/g, ' ').trim()).to.equal(UNSAVED_CHANGES_WARNING);
-      return false;
-    });
-    cy.get(ManualCashInputLocators.courtFeeDetailsPage).find(ManualCashInputLocators.cancelLink).click();
-    cy.then(() => expect(confirmationWasRaised, 'native unsaved-changes warning').to.be.true);
-    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/court-fee-details');
-    cy.get(ManualCashInputLocators.courtFeeAmountInput).should('have.value', '12.50');
-  }
-
-  /** Accepts the leave-page warning and returns to Till Details. */
-  public acceptCourtFeeCancel(): void {
-    let confirmationWasRaised = false;
-    cy.once('window:confirm', (message) => {
-      confirmationWasRaised = true;
-      expect(String(message).replace(/\s+/g, ' ').trim()).to.equal(UNSAVED_CHANGES_WARNING);
-      return true;
-    });
-    cy.get(ManualCashInputLocators.courtFeeDetailsPage).find(ManualCashInputLocators.cancelLink).click();
-    cy.then(() => expect(confirmationWasRaised, 'native unsaved-changes warning').to.be.true);
-    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/details');
-  }
-
-  /** Checks that a cancelled Court Fee payment starts with a blank form when reopened. */
-  public assertCourtFeeDetailsWereDiscarded(): void {
-    cy.get(ManualCashInputLocators.courtFeeCodeInput).should('have.value', '');
-    cy.get(ManualCashInputLocators.courtFeeAmountInput).should('have.value', '');
-    cy.get(ManualCashInputLocators.courtFeeNumberOfItemsInput).should('have.value', '');
   }
 
   /** Confirms the Criminal journey opens Search for an Account. */
@@ -361,10 +233,24 @@ export class ManualCashInputActions {
     cy.contains('h1', 'Search for an account').should('be.visible');
   }
 
-  /** Confirms the Suspense journey opens its details screen. */
-  public assertSuspenseDetailsIsDisplayed(): void {
-    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/suspense-details');
-    cy.contains('h1', 'Suspense details').should('be.visible');
+  /** Confirms that the selected category opens its details destination.
+   * @param category - Payment category whose details destination should be displayed.
+   */
+  public assertPaymentCategoryDetailsAreDisplayed(category: 'courtFee' | 'suspense'): void {
+    const destinations = {
+      courtFee: { pathname: '/fines/manual-cash-input/create/till/court-fee-details', heading: 'Court fee details' },
+      suspense: { pathname: '/fines/manual-cash-input/create/till/suspense-details', heading: 'Suspense details' },
+    } as const;
+    const destination = destinations[category];
+
+    cy.location('pathname').should('eq', destination.pathname);
+    cy.contains('h1', destination.heading).should('be.visible');
+  }
+
+  /** Confirms an out-of-scope payment category leaves the user on Payment Category. */
+  public assertPaymentCategoryIsDisplayed(): void {
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/payment-category');
+    cy.contains('h1', 'Payment category').should('be.visible');
   }
 
   /** Submits Payment Category without choosing an option. */

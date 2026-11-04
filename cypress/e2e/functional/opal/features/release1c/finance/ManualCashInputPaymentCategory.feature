@@ -28,8 +28,10 @@ Feature: Manual Cash Input - Payment Category
     And I continue with payment category "criminal"
     Then I see Search for an Account
 
-  @JIRA-STORY:PO-3486 @JIRA-STORY:PO-3679 @JIRA-STORY:PO-3669 @JIRA-EPIC:PO-2660
-  Scenario: PO-3669 AC1 - Court fee opens Court Fee Details
+  # Update this test to assert the completed screen when PO-3669 is in QA.
+  @JIRA-STORY:PO-3486
+  @JIRA-STORY:PO-3679
+  Scenario: AC1, AC4a - Court Fee continues to Court Fee Details
     When I select the Fines primary navigation item "Finance"
     And I am taken to the "Finance" Fines landing page
     And I open Manual Cash Input
@@ -39,7 +41,6 @@ Feature: Manual Cash Input - Payment Category
     And I add a payment to the till
     And I continue with payment category "courtFee"
     Then I see Court Fee Details
-    And I can find a court fee by description
 
   # Update this test to assert the completed screen when PO-3673 is in QA.
   @JIRA-STORY:PO-3486

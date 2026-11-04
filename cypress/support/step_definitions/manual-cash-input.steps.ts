@@ -59,55 +59,20 @@ When('I continue with payment category {string}', (category: 'criminal' | 'court
   manualCashInputFlow().continueWithPaymentCategory(category);
 });
 
-Then('I see Court Fee Details', () => {
-  manualCashInputFlow().assertCourtFeeDetailsIsDisplayed();
-});
-Then('I can find a court fee by description', () => {
-  manualCashInputFlow().assertCourtFeeDescriptionSearch();
-});
-
-When('I submit a CF001 court fee payment of {string} for {string} items', (amount: string, numberOfItems: string) => {
-  manualCashInputFlow().submitCourtFeePayment(amount, numberOfItems);
-});
-
-Then('I see Court Fee Payment Details', () => {
-  manualCashInputFlow().assertCourtFeePaymentDetailsIsDisplayed();
-});
-
-Then('I see Court Fee Overpayment/Underpayment Confirmation', () => {
-  manualCashInputFlow().assertCourtFeeOverUnderpaymentIsDisplayed();
-});
-
-When('I continue without Court Fee Details', () => {
-  manualCashInputFlow().continueWithoutCourtFeeDetails();
-});
-
-Then('the Court Fee Details validation summary and field errors are displayed', () => {
-  manualCashInputFlow().assertCourtFeeDetailsValidation();
-});
-
-When('I cancel blank Court Fee Details', () => {
-  manualCashInputFlow().cancelBlankCourtFeeDetails();
-});
-
-When('I enter a court fee amount and decline Cancel', () => {
-  manualCashInputFlow().enterCourtFeeAmountAndDeclineCancel();
-});
-
-When('I accept Cancel on Court Fee Details', () => {
-  manualCashInputFlow().acceptCourtFeeCancel();
-});
-
-Then('the Court Fee Details form is blank', () => {
-  manualCashInputFlow().assertCourtFeeDetailsWereDiscarded();
-});
-
 Then('I see Search for an Account', () => {
   manualCashInputFlow().assertSearchForAccountIsDisplayed();
 });
 
+Then('I see Court Fee Details', () => {
+  manualCashInputFlow().assertPaymentCategoryDetailsAreDisplayed('courtFee');
+});
+
 Then('I see Suspense Details', () => {
-  manualCashInputFlow().assertSuspenseDetailsIsDisplayed();
+  manualCashInputFlow().assertPaymentCategoryDetailsAreDisplayed('suspense');
+});
+
+Then('I remain on Payment Category', () => {
+  manualCashInputFlow().assertPaymentCategoryIsDisplayed();
 });
 
 When('I continue without selecting a payment category', () => {
