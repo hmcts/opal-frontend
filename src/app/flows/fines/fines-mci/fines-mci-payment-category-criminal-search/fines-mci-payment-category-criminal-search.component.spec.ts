@@ -689,4 +689,75 @@ describe('Criminal search navigation', () => {
         .fsa_search_account_companies_company_name,
     ).toBe('Acme Ltd');
   });
+
+  it.each(['individuals', 'companies'] as const)(
+    'starts a blank Criminal search after abandoning %s results',
+    async (tab) => {
+      component = await harness.navigateByUrl(`${searchUrl}#${tab}`, FinesMciPaymentCategoryCriminalSearchComponent);
+      const emptyFormData = component.form.getRawValue();
+      const businessUnit = store.businessUnit();
+      const tills = store.tills();
+      component.form.patchValue(
+        tab === 'individuals'
+          ? {
+              fsa_search_account_individuals_search_criteria: {
+                fsa_search_account_individuals_last_name: 'Smith',
+                fsa_search_account_individuals_last_name_exact_match: true,
+                fsa_search_account_individuals_include_aliases: true,
+              },
+            }
+          : {
+              fsa_search_account_companies_search_criteria: {
+                fsa_search_account_companies_company_name: 'Acme Ltd',
+                fsa_search_account_companies_company_name_exact_match: true,
+                fsa_search_account_companies_include_aliases: true,
+              },
+            },
+      );
+      component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+      await harness.fixture.whenStable();
+      expect(TestBed.inject(Router).url).toBe(matchesUrl);
+      expect(store.criminalSearch()?.activeTab).toBe(tab);
+
+      await harness.navigateByUrl(detailsUrl, TillDetailsDestinationComponent);
+      const category = await harness.navigateByUrl(
+        `${routeRoot}/payment-category`,
+        FinesMciCreateTillPaymentCategoryComponent,
+      );
+      category.handleSubmit({ formData: { paymentCategory: 'criminal' }, nestedFlow: false });
+      await harness.fixture.whenStable();
+      harness.detectChanges();
+      await harness.fixture.whenStable();
+
+      const search = harness.routeDebugElement!.componentInstance as FinesMciPaymentCategoryCriminalSearchComponent;
+      expect(TestBed.inject(Router).url).toBe(`${searchUrl}#individuals`);
+      expect(search.form.getRawValue()).toEqual(emptyFormData);
+      expect(search['activeTab']()).toBe('individuals');
+      expect(store.criminalSearch()).toBeNull();
+      expect(store.draftJourney()).toBe('criminal');
+      expect(store.businessUnit()).toEqual(businessUnit);
+      expect(store.tills()).toEqual(tills);
+      expect(service.getDefendantAccounts).toHaveBeenCalledOnce();
+      expect(confirmSpy).not.toHaveBeenCalled();
+    },
+  );
+
+  it('retains submitted criteria when returning directly from matches to amend the search', async () => {
+    enterCompanyCriteria();
+    component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+    await harness.fixture.whenStable();
+    expect(TestBed.inject(Router).url).toBe(matchesUrl);
+    const submittedSearch = store.criminalSearch();
+
+    const search = await harness.navigateByUrl(
+      `${searchUrl}#companies`,
+      FinesMciPaymentCategoryCriminalSearchComponent,
+    );
+
+    expect(search.form.getRawValue()).toEqual(submittedSearch?.formData);
+    expect(search['activeTab']()).toBe('companies');
+    expect(store.criminalSearch()).toEqual(submittedSearch);
+    expect(service.getDefendantAccounts).toHaveBeenCalledOnce();
+    expect(confirmSpy).not.toHaveBeenCalled();
+  });
 });

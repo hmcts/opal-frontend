@@ -31,6 +31,9 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
       return;
     }
 
+    if (paymentCategory === 'criminal') {
+      this.finesMciStore.resetCriminalSearch();
+    }
     this.finesMciStore.setDraftJourney(paymentCategory);
     this.stateUnsavedChanges = false;
 
