@@ -5,6 +5,7 @@ const log = createScopedLogger('ManualCashInputActions');
 const TILLS_ENDPOINT = '/opal-fines-service/tills';
 const BUSINESS_UNITS_ENDPOINT = '/opal-fines-service/business-units';
 const COURT_FEES_ENDPOINT = '/opal-fines-service/court-fees';
+const COURT_FEE_OPTION = 'CF001 - Application (£12.50)';
 const FIRST_TILL_ID = 1001;
 const UNSAVED_CHANGES_WARNING =
   'WARNING: Are you sure you want to leave this page? Any information you entered will be lost.';
@@ -248,6 +249,7 @@ export class ManualCashInputActions {
     cy.get(ManualCashInputLocators.courtFeeDetailsPage).contains('h1', 'Court fee').should('be.visible');
     cy.get(ManualCashInputLocators.courtFeeDetailsPage).contains('.govuk-caption-l', 'Camden and Islington');
     cy.get('label[for="courtFeeId-autocomplete"]').should('contain.text', 'Court fee');
+    cy.get(ManualCashInputLocators.courtFeeCodeInput).should('be.visible');
     cy.get('label[for="amountPaid"]').should('contain.text', 'Amount');
     cy.get('label[for="numberOfItems"]').should('contain.text', 'Number of items');
     cy.get(ManualCashInputLocators.continueButton).should('be.visible');
@@ -260,6 +262,32 @@ export class ManualCashInputActions {
     cy.get(ManualCashInputLocators.courtFeeCodeSuggestions)
       .contains('CF001 - Application (£12.50)')
       .should('be.visible');
+  }
+
+  /**
+   * Selects a visible court fee suggestion, enters payment details, and continues.
+   * @param amount - Amount paid for the court fee.
+   * @param numberOfItems - Number of court fee items paid for.
+   */
+  public submitCourtFeePayment(amount: string, numberOfItems: string): void {
+    cy.get(ManualCashInputLocators.courtFeeCodeInput).should('be.visible').type('CF001');
+    cy.get(ManualCashInputLocators.courtFeeCodeSuggestions).contains('li', COURT_FEE_OPTION).click();
+    cy.get(ManualCashInputLocators.courtFeeCodeInput).should('have.value', COURT_FEE_OPTION);
+    cy.get(ManualCashInputLocators.courtFeeAmountInput).type(amount);
+    cy.get(ManualCashInputLocators.courtFeeNumberOfItemsInput).type(numberOfItems);
+    cy.get(ManualCashInputLocators.courtFeeDetailsPage).find(ManualCashInputLocators.continueButton).click();
+  }
+
+  /** Confirms an exact payment opens the temporary Court Fee Payment Details screen. */
+  public assertCourtFeePaymentDetailsIsDisplayed(): void {
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/court-fee-payment-details');
+    cy.contains('h1', 'Payment details – court fee').should('be.visible');
+  }
+
+  /** Confirms a mismatched payment opens the temporary over/underpayment screen. */
+  public assertCourtFeeOverUnderpaymentIsDisplayed(): void {
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/over-underpayment-confirmation');
+    cy.contains('h1', 'Overpayment/underpayment confirmation').should('be.visible');
   }
 
   /** Submits an empty Court Fee Details form to show its required-field errors. */

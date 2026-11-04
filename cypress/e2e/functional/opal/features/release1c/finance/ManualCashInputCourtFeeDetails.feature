@@ -13,6 +13,21 @@ Feature: Manual Cash Input - Court Fee Details
     And I continue with payment category "courtFee"
 
   @JIRA-STORY:PO-3669 @JIRA-EPIC:PO-2660
+  Scenario: AC5a - an exact court fee payment opens Payment Details
+    When I submit a CF001 court fee payment of "25.00" for "2" items
+    Then I see Court Fee Payment Details
+
+  @JIRA-STORY:PO-3669 @JIRA-EPIC:PO-2660
+  Scenario Outline: AC5b - an overpayment or underpayment opens confirmation
+    When I submit a CF001 court fee payment of "<amount>" for "2" items
+    Then I see Court Fee Overpayment/Underpayment Confirmation
+
+    Examples:
+      | amount |
+      | 25.01  |
+      | 24.99  |
+
+  @JIRA-STORY:PO-3669 @JIRA-EPIC:PO-2660
   Scenario: AC6 - Cancel on a blank Court Fee Details form returns to Till Details
     When I cancel blank Court Fee Details
     Then I see empty Till Details for "Camden and Islington"

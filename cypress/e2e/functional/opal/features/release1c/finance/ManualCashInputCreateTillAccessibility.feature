@@ -55,6 +55,8 @@ Feature: Manual Cash Input - Create Till Accessibility
     And I continue
     And I add a payment to the till
     And I continue with payment category "courtFee"
-    Then I check the page for accessibility
+    Then I see Court Fee Details
+    And I check the page for accessibility
     When I continue without Court Fee Details
-    Then I check the page for accessibility
+    Then the Court Fee Details validation summary and field errors are displayed
+    And I check the page for accessibility

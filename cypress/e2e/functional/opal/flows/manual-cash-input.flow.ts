@@ -111,6 +111,25 @@ export class ManualCashInputFlow {
     this.actions.assertCourtFeeDescriptionSearch();
   }
 
+  /**
+   * Selects the mocked court fee and submits the entered payment details.
+   * @param amount - Amount paid for the court fee.
+   * @param numberOfItems - Number of court fee items paid for.
+   */
+  public submitCourtFeePayment(amount: string, numberOfItems: string): void {
+    this.actions.submitCourtFeePayment(amount, numberOfItems);
+  }
+
+  /** Verifies the exact-payment destination. */
+  public assertCourtFeePaymentDetailsIsDisplayed(): void {
+    this.actions.assertCourtFeePaymentDetailsIsDisplayed();
+  }
+
+  /** Verifies the over/underpayment destination. */
+  public assertCourtFeeOverUnderpaymentIsDisplayed(): void {
+    this.actions.assertCourtFeeOverUnderpaymentIsDisplayed();
+  }
+
   /** Submits Court Fee Details without entering any values. */
   public continueWithoutCourtFeeDetails(): void {
     this.actions.continueWithoutCourtFeeDetails();
