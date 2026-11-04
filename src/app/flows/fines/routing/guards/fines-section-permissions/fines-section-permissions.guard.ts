@@ -1,8 +1,8 @@
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import {
-  getRequiredPermissionIdsForSection,
-  getUserPermissionIds,
+  getRequiredPermissionCodesForSection,
+  getUserPermissionCodes,
   hasAnyPermission,
   isFinesPrimaryNavigationSectionEnabled,
 } from '@app/flows/fines/utils/fines-section-permissions.utils';
@@ -71,20 +71,22 @@ export const finesSectionPermissionsGuard: CanActivateFn = async (
       return getAccessDeniedUrlTree();
     }
 
-    const requiredPermissionIds = getRequiredPermissionIdsForSection(sectionKey, currentFeatureFlagReleaseState);
+    const requiredPermissionCodes = getRequiredPermissionCodesForSection(sectionKey, currentFeatureFlagReleaseState);
 
-    if (!requiredPermissionIds) {
+    if (!requiredPermissionCodes) {
       return true;
     }
 
-    if (requiredPermissionIds.length === 0) {
+    if (requiredPermissionCodes.length === 0) {
       return getAccessDeniedUrlTree();
     }
 
     try {
       const userState = await firstValueFrom(opalUserService.getLoggedInUserState());
 
-      return hasAnyPermission(requiredPermissionIds, getUserPermissionIds(userState)) ? true : getAccessDeniedUrlTree();
+      return hasAnyPermission(requiredPermissionCodes, getUserPermissionCodes(userState))
+        ? true
+        : getAccessDeniedUrlTree();
     } catch {
       return false;
     }

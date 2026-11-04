@@ -1,3 +1,4 @@
+import { type FinesPermissionCode } from '@app/constants/fines-permissions.constant';
 import { IOpalFinesSourceMapping } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-source-mapping.interface';
 import { fetchSourceMappingsResolver } from 'src/app/flows/fines/routing/resolvers/fetch-source-mappings-resolver/fetch-source-mappings.resolver';
 import { OPAL_FINES_SOURCE_MAPPINGS_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-source-mappings.mock';
@@ -43,7 +44,7 @@ export type FinanceComponentSetupOptions = {
   dashboardType?: string;
   sourceMappings?: IOpalFinesSourceMapping[];
   featureFlags?: Record<string, boolean>;
-  permissionIds?: readonly number[];
+  permissionCodes?: readonly FinesPermissionCode[];
   paymentPermissionBusinessUnitIds?: readonly number[];
   businessUnits?: IOpalFinesBusinessUnitRefData;
 };
@@ -52,7 +53,7 @@ const DEFAULT_FEATURE_FLAGS = {
   ...Object.fromEntries(RELEASE_FEATURE_FLAGS.map((featureFlag) => [featureFlag, true])),
 };
 
-const DEFAULT_REPRESENTATIVE_PERMISSION_IDS = [
+const DEFAULT_REPRESENTATIVE_PERMISSION_CODES = [
   ...new Set([...SEARCH_PERMISSIONS, ...ACCOUNTS_PERMISSIONS, ...REPORTS_PERMISSIONS]),
 ];
 const DEFAULT_PAYMENT_PERMISSION_BUSINESS_UNIT_IDS = [OPAL_USER_STATE_MOCK.business_unit_users[0].business_unit_id];
@@ -160,7 +161,7 @@ const FINANCE_COMPONENT_ROUTES: Routes = [
 ];
 
 const createUserStateWithPermissions = (
-  permissionIds: readonly number[],
+  permissionCodes: readonly FinesPermissionCode[],
   paymentPermissionBusinessUnitIds: readonly number[],
 ): IOpalUserState => {
   const userState = structuredClone(OPAL_USER_STATE_MOCK);
@@ -169,14 +170,14 @@ const createUserStateWithPermissions = (
     ...businessUnitUser,
     permissions: [
       ...new Set([
-        ...permissionIds,
+        ...permissionCodes,
         ...(paymentPermissionBusinessUnitIds.includes(businessUnitUser.business_unit_id)
           ? [FINES_PERMISSIONS['process-and-allocate-payments']]
           : []),
       ]),
-    ].map((permissionId) => ({
-      permission_id: permissionId,
-      permission_name: `Permission ${permissionId}`,
+    ].map((permissionCode) => ({
+      permission_code: permissionCode,
+      permission_name: `Permission ${permissionCode}`,
     })),
   }));
 
@@ -186,12 +187,12 @@ const createUserStateWithPermissions = (
 const createGlobalStore = ({
   featureFlags = {},
   paymentPermissionBusinessUnitIds = [],
-  permissionIds = [],
+  permissionCodes = [],
 }: FinanceComponentSetupOptions) => {
   const store = new GlobalStore();
 
   store.setAuthenticated(true);
-  store.setUserState(createUserStateWithPermissions(permissionIds, paymentPermissionBusinessUnitIds));
+  store.setUserState(createUserStateWithPermissions(permissionCodes, paymentPermissionBusinessUnitIds));
   store.setFeatureFlags({ ...DEFAULT_FEATURE_FLAGS, ...featureFlags });
 
   return store;
@@ -205,7 +206,7 @@ export const setupFinancePageComponent = ({
   dashboardType = DEFAULT_DASHBOARD_TYPE,
   sourceMappings = OPAL_FINES_SOURCE_MAPPINGS_MOCK,
   paymentPermissionBusinessUnitIds = DEFAULT_PAYMENT_PERMISSION_BUSINESS_UNIT_IDS,
-  permissionIds = DEFAULT_REPRESENTATIVE_PERMISSION_IDS,
+  permissionCodes = DEFAULT_REPRESENTATIVE_PERMISSION_CODES,
   ...options
 }: FinanceComponentSetupOptions = {}) => {
   cy.intercept('GET', '/opal-fines-service/mappings/source', sourceMappings).as('sourceMappings');
@@ -240,7 +241,7 @@ export const setupFinancePageComponent = ({
         provideRouter(routes),
         {
           provide: GlobalStore,
-          useFactory: () => createGlobalStore({ ...options, paymentPermissionBusinessUnitIds, permissionIds }),
+          useFactory: () => createGlobalStore({ ...options, paymentPermissionBusinessUnitIds, permissionCodes }),
         },
         {
           provide: SessionService,

@@ -359,7 +359,7 @@ export class FinesAccDefendantDetailsComponent
    * @param permissionKey The key of the permission to check.
    * @returns True if the user has the permission, false otherwise.
    */
-  public hasBusinessUnitPermissionKey(permissionKey: string): boolean {
+  public hasBusinessUnitPermissionKey(permissionKey: keyof typeof FINES_PERMISSIONS): boolean {
     return super.hasBusinessUnitPermission(
       FINES_PERMISSIONS[permissionKey],
       Number(this.accountStore.business_unit_id()!),

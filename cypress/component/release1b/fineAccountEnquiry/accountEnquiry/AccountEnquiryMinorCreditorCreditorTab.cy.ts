@@ -26,7 +26,7 @@ const MINOR_CREDITOR_MAINTENANCE_STORY_TAG = '@JIRA-STORY:PO-9700';
 
 const buildTags = (...tags: string[]): string[] => [...tags, ACCOUNT_ENQUIRY_JIRA_LABEL, '@R1B'];
 const MINOR_CREDITOR_MAINTENANCE_PERMISSION = {
-  permission_id: FINES_PERMISSIONS['account-maintenance-minor-creditor'],
+  permission_code: FINES_PERMISSIONS['account-maintenance-minor-creditor'],
   permission_name: 'Account Maintenance - Minor Creditor',
 };
 

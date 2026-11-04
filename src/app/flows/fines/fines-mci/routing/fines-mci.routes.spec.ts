@@ -32,7 +32,7 @@ describe('finesMci routes', () => {
         path: FINES_MCI_ROUTING_PATHS.children.createAllocate,
         canActivate: [authGuard, routePermissionsGuard],
         data: {
-          routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+          routePermissionCodes: [FINES_PERMISSIONS['process-and-allocate-payments']],
           title: FINES_MCI_ROUTING_TITLES.children.createAllocate,
         },
         resolve: expect.objectContaining({
@@ -58,7 +58,7 @@ describe('finesMci routes', () => {
         canActivate: [authGuard, routePermissionsGuard],
         data: {
           permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
-          routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+          routePermissionCodes: [FINES_PERMISSIONS['process-and-allocate-payments']],
           title: FINES_MCI_ROUTING_TITLES.children.createTillSelectBusinessUnit,
         },
         resolve: expect.objectContaining({
@@ -98,7 +98,7 @@ describe('finesMci routes', () => {
         canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
         data: expect.objectContaining({
           permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
-          routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+          routePermissionCodes: [FINES_PERMISSIONS['process-and-allocate-payments']],
           title,
         }),
         resolve: expect.objectContaining({

@@ -1,4 +1,4 @@
-import { IDashboardPageConfiguration } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
+import { type IFinesDashboardConfiguration } from '@app/interfaces/fines-dashboard-configuration.interface';
 import { DASHBOARD_CONFIG_DEFAULT_DASHBOARD } from './dashboard-config-default-dashboard.constant';
 import { DashboardPageType } from '../types/dashboard.type';
 import { DASHBOARD_TYPES } from './dashboard-types.constant';
@@ -7,7 +7,7 @@ import { FINES_DASHBOARD_CONFIG } from '@app/flows/fines/constants/fines-dashboa
 import { REPORTS_DASHBOARD_CONFIG } from '@app/constants/reports-dashboard-config.constant';
 import { ADMINISTRATION_DASHBOARD_CONFIG } from '@app/constants/administration-dashboard-config.constant';
 
-export const DASHBOARD_PAGE_CONFIGURATION_MAP: Record<DashboardPageType, IDashboardPageConfiguration> = {
+export const DASHBOARD_PAGE_CONFIGURATION_MAP: Record<DashboardPageType, IFinesDashboardConfiguration> = {
   search: DASHBOARD_CONFIG_DEFAULT_DASHBOARD,
   accounts: FINES_DASHBOARD_CONFIG,
   finance: FINANCE_DASHBOARD_CONFIG,

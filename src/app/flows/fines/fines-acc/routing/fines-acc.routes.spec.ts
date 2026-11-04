@@ -146,7 +146,9 @@ describe('fines acc routes', () => {
     );
 
     expect(amendRoute?.canActivate).toEqual([authGuard, businessUnitRoutePermissionsGuard, finesAccStateGuard]);
-    expect(amendRoute?.data?.['routePermissionId']).toEqual([FINES_PERMISSIONS['account-maintenance-minor-creditor']]);
+    expect(amendRoute?.data?.['routePermissionCodes']).toEqual([
+      FINES_PERMISSIONS['account-maintenance-minor-creditor'],
+    ]);
     expect(amendRoute?.resolve?.['minorCreditorAccountCreditor']).toBe(minorCreditorAccountCreditorResolver);
   });
 

@@ -1,3 +1,4 @@
+import { type IFinesRoutePermissionData } from '@app/interfaces/fines-route-permission-data.interface';
 import { Routes } from '@angular/router';
 import { FINES_CON_ROUTING_PATHS } from './constants/fines-con-routing-paths.constant';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
@@ -10,7 +11,7 @@ import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-busin
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { finesConFlowStateGuard } from '../guards/fines-con-flow-state.guard';
 
-const consolidationRootPermissionIds = FINES_PERMISSIONS;
+const consolidationRootPermissionCodes = FINES_PERMISSIONS;
 export const routing: Routes = [
   {
     path: '',
@@ -18,8 +19,8 @@ export const routing: Routes = [
     pathMatch: 'full',
     canActivateChild: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [consolidationRootPermissionIds['consolidate']],
-    },
+      routePermissionCodes: [consolidationRootPermissionCodes['consolidate']],
+    } satisfies IFinesRoutePermissionData,
   },
   {
     path: FINES_CON_ROUTING_PATHS.children.selectBusinessUnit,
@@ -30,10 +31,10 @@ export const routing: Routes = [
     canActivate: [authGuard, routePermissionsGuard],
     canDeactivate: [canDeactivateGuard],
     data: {
-      routePermissionId: [consolidationRootPermissionIds['consolidate']],
+      routePermissionCodes: [consolidationRootPermissionCodes['consolidate']],
       permission: 'CONSOLIDATE',
       title: FINES_CON_ROUTING_TITLES.children.selectBusinessUnit,
-    },
+    } satisfies IFinesRoutePermissionData,
     resolve: { title: TitleResolver, businessUnits: fetchBusinessUnitsResolver },
   },
   {
@@ -45,10 +46,10 @@ export const routing: Routes = [
     canActivate: [authGuard, routePermissionsGuard, finesConFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
     data: {
-      routePermissionId: [consolidationRootPermissionIds['consolidate']],
+      routePermissionCodes: [consolidationRootPermissionCodes['consolidate']],
       permission: 'CONSOLIDATE',
       title: FINES_CON_ROUTING_TITLES.children.consolidateAcc,
-    },
+    } satisfies IFinesRoutePermissionData,
     resolve: { title: TitleResolver, businessUnits: fetchBusinessUnitsResolver },
   },
   {
@@ -59,10 +60,10 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, routePermissionsGuard, finesConFlowStateGuard],
     data: {
-      routePermissionId: [consolidationRootPermissionIds['consolidate']],
+      routePermissionCodes: [consolidationRootPermissionCodes['consolidate']],
       permission: 'CONSOLIDATE',
       title: FINES_CON_ROUTING_TITLES.children.searchError,
-    },
+    } satisfies IFinesRoutePermissionData,
     resolve: { title: TitleResolver },
   },
 ];

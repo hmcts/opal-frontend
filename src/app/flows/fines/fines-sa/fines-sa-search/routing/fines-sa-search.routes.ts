@@ -1,3 +1,4 @@
+import { type IFinesRoutePermissionData } from '@app/interfaces/fines-route-permission-data.interface';
 import { Routes } from '@angular/router';
 import { FINES_SA_SEARCH_ROUTING_PATHS } from './constants/fines-sa-search-routing-paths.constant';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
@@ -21,8 +22,8 @@ export const routing: Routes = [
     canActivate: [authGuard],
     data: {
       title: FINES_SA_SEARCH_ROUTING_TITLES.root,
-      routePermissionId: [finesPermissions['search-and-view-accounts']],
-    },
+      routePermissionCodes: [finesPermissions['search-and-view-accounts']],
+    } satisfies IFinesRoutePermissionData,
     resolve: {
       title: TitleResolver,
       businessUnits: fetchBusinessUnitsResolver,
@@ -39,8 +40,8 @@ export const routing: Routes = [
     canDeactivate: [canDeactivateGuard],
     data: {
       title: FINES_SA_SEARCH_ROUTING_TITLES.children.filterBusinessUnit,
-      routePermissionId: [finesPermissions['search-and-view-accounts']],
-    },
+      routePermissionCodes: [finesPermissions['search-and-view-accounts']],
+    } satisfies IFinesRoutePermissionData,
     resolve: {
       title: TitleResolver,
       businessUnits: fetchBusinessUnitsResolver,

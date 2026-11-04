@@ -634,11 +634,11 @@ describe('Account Enquiry Parent or Guardian Component', () => {
           business_unit_id: 77,
           permissions: [
             {
-              permission_id: 3,
+              permission_code: 'ACCOUNT_ENQUIRY',
               permission_name: 'Account Enquiry',
             },
             {
-              permission_id: 6,
+              permission_code: 'SEARCH_AND_VIEW_ACCOUNTS',
               permission_name: 'Search and view accounts',
             },
           ],

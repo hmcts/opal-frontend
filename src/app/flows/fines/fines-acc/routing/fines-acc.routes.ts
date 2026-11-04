@@ -1,3 +1,4 @@
+import { type IFinesRoutePermissionData } from '@app/interfaces/fines-route-permission-data.interface';
 import { Routes } from '@angular/router';
 import { FINES_ACC_ROUTING_PATHS } from './constants/fines-acc-routing-paths.constant';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
@@ -49,7 +50,7 @@ import { FINES_ACC_MINOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS } from '../fines-acc-m
 import { FinesAccBusinessUnitResolver } from './resolvers/fines-acc-business-unit.resolver';
 import { FINES_ACCOUNT_ROUTE_TYPES } from './constants/fines-acc-route-types.constant';
 
-const accRootPermissionIds = FINES_PERMISSIONS;
+const accRootPermissionCodes = FINES_PERMISSIONS;
 const finesAccountBusinessUnitResolverProvider = {
   provide: BUSINESS_UNIT_ID_RESOLVER,
   useExisting: FinesAccBusinessUnitResolver,
@@ -62,8 +63,8 @@ export const routing: Routes = [
     pathMatch: 'full',
     canActivateChild: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
-    },
+      routePermissionCodes: [accRootPermissionCodes['search-and-view-accounts']],
+    } satisfies IFinesRoutePermissionData,
   },
   {
     path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`,
@@ -71,8 +72,8 @@ export const routing: Routes = [
     canActivateChild: [authGuard, routePermissionsGuard],
     data: {
       accountType: FINES_ACCOUNT_ROUTE_TYPES.defendant,
-      routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
-    },
+      routePermissionCodes: [accRootPermissionCodes['search-and-view-accounts']],
+    } satisfies IFinesRoutePermissionData,
     children: [
       {
         path: FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
@@ -102,9 +103,9 @@ export const routing: Routes = [
               import('../fines-acc-convert/fines-acc-convert.component').then((c) => c.FinesAccConvertComponent),
             canActivate: [authGuard, businessUnitRoutePermissionsGuard, finesAccStateGuard],
             data: {
-              routePermissionId: [accRootPermissionIds['account-maintenance']],
+              routePermissionCodes: [accRootPermissionCodes['account-maintenance']],
               title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.convert,
-            },
+            } satisfies IFinesRoutePermissionData,
             resolve: { title: TitleResolver, defendantAccountHeadingData: defendantAccountHeadingResolver },
           },
           {
@@ -115,9 +116,9 @@ export const routing: Routes = [
             canActivate: [authGuard, businessUnitRoutePermissionsGuard, finesAccStateGuard],
             canDeactivate: [canDeactivateGuard],
             data: {
-              routePermissionId: [accRootPermissionIds['add-account-activity-notes']],
+              routePermissionCodes: [accRootPermissionCodes['add-account-activity-notes']],
               title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.note,
-            },
+            } satisfies IFinesRoutePermissionData,
             resolve: { title: TitleResolver },
           },
           {
@@ -130,9 +131,9 @@ export const routing: Routes = [
             canActivate: [businessUnitRoutePermissionsGuard, finesAccStateGuard],
             canDeactivate: [canDeactivateGuard],
             data: {
-              routePermissionId: [accRootPermissionIds['account-maintenance']],
+              routePermissionCodes: [accRootPermissionCodes['account-maintenance']],
               title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.comments,
-            },
+            } satisfies IFinesRoutePermissionData,
             resolve: {
               title: TitleResolver,
               defendantAccountHeadingData: defendantAccountHeadingResolver,
@@ -149,10 +150,10 @@ export const routing: Routes = [
             canActivate: [businessUnitRoutePermissionsGuard, finesAccStateGuard],
             canDeactivate: [canDeactivateGuard],
             data: {
-              routePermissionId: [accRootPermissionIds['amend-payment-terms']],
+              routePermissionCodes: [accRootPermissionCodes['amend-payment-terms']],
               title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children['payment-terms'],
               accessDeniedPath: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-terms']}/denied/permission`,
-            },
+            } satisfies IFinesRoutePermissionData,
             resolve: {
               title: TitleResolver,
               paymentTermsFormData: defendantAccountPaymentTermsLatestResolver,
@@ -186,9 +187,9 @@ export const routing: Routes = [
             canActivate: [businessUnitRoutePermissionsGuard, finesAccStateGuard],
             canDeactivate: [canDeactivateGuard],
             data: {
-              routePermissionId: [accRootPermissionIds['account-maintenance']],
+              routePermissionCodes: [accRootPermissionCodes['account-maintenance']],
               title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.debtor,
-            },
+            } satisfies IFinesRoutePermissionData,
             resolve: {
               title: TitleResolver,
               partyAddAmendConvertData: defendantAccountPartyResolver,
@@ -203,9 +204,9 @@ export const routing: Routes = [
               ),
             canActivate: [businessUnitRoutePermissionsGuard, finesAccStateGuard],
             data: {
-              routePermissionId: [accRootPermissionIds['account-maintenance']],
+              routePermissionCodes: [accRootPermissionCodes['account-maintenance']],
               title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.remove,
-            },
+            } satisfies IFinesRoutePermissionData,
             resolve: {
               title: TitleResolver,
             },
@@ -219,10 +220,10 @@ export const routing: Routes = [
               ),
             canActivate: [businessUnitRoutePermissionsGuard],
             data: {
-              routePermissionId: [accRootPermissionIds['amend-payment-terms']],
+              routePermissionCodes: [accRootPermissionCodes['amend-payment-terms']],
               title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children['payment-card'],
               accessDeniedPath: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children['payment-card']}/denied/permission`,
-            },
+            } satisfies IFinesRoutePermissionData,
             resolve: {
               title: TitleResolver,
             },
@@ -253,8 +254,8 @@ export const routing: Routes = [
             data: {
               resultsParams: { enforcement_override: true } as IOpalFinesResultsParams,
               title: FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_TITLES.children.add,
-              routePermissionId: [accRootPermissionIds['account-maintenance']],
-            },
+              routePermissionCodes: [accRootPermissionCodes['account-maintenance']],
+            } satisfies IFinesRoutePermissionData,
             resolve: {
               titleResolver: TitleResolver,
               resultsRefData: fetchResultsWithParamsResolver,
@@ -273,8 +274,8 @@ export const routing: Routes = [
             data: {
               resultsParams: { enforcement_override: true } as IOpalFinesResultsParams,
               title: FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_TITLES.children.change,
-              routePermissionId: [accRootPermissionIds['account-maintenance']],
-            },
+              routePermissionCodes: [accRootPermissionCodes['account-maintenance']],
+            } satisfies IFinesRoutePermissionData,
             resolve: {
               titleResolver: TitleResolver,
               resultsRefData: fetchResultsWithParamsResolver,
@@ -292,8 +293,8 @@ export const routing: Routes = [
             canActivate: [businessUnitRoutePermissionsGuard, finesAccStateGuard],
             data: {
               title: FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_TITLES.children.remove,
-              routePermissionId: [accRootPermissionIds['account-maintenance']],
-            },
+              routePermissionCodes: [accRootPermissionCodes['account-maintenance']],
+            } satisfies IFinesRoutePermissionData,
             resolve: {
               titleResolver: TitleResolver,
               enforcementStatus: defendantAccountEnforcementStatusResolver,
@@ -309,8 +310,8 @@ export const routing: Routes = [
             canDeactivate: [canDeactivateGuard],
             data: {
               title: FINES_ACC_ENF_ACTION_ROUTING_TITLES.children.select,
-              routePermissionId: [accRootPermissionIds['enter-enforcement']],
-            },
+              routePermissionCodes: [accRootPermissionCodes['enter-enforcement']],
+            } satisfies IFinesRoutePermissionData,
             resolve: {
               title: TitleResolver,
               defendantAccountHeadingData: defendantAccountHeadingResolver,
@@ -328,8 +329,8 @@ export const routing: Routes = [
             canDeactivate: [canDeactivateGuard],
             data: {
               title: FINES_ACC_ENF_ACTION_ROUTING_TITLES.children.add,
-              routePermissionId: [accRootPermissionIds['enter-enforcement']],
-            },
+              routePermissionCodes: [accRootPermissionCodes['enter-enforcement']],
+            } satisfies IFinesRoutePermissionData,
             resolve: {
               title: TitleResolver,
               defendantAccountHeadingData: defendantAccountHeadingResolver,
@@ -347,8 +348,8 @@ export const routing: Routes = [
             canActivate: [routePermissionsGuard, finesAccStateGuard],
             data: {
               title: FINES_ACC_ENF_ACTION_ROUTING_TITLES.children['add-new'],
-              routePermissionId: [accRootPermissionIds['enter-enforcement']],
-            },
+              routePermissionCodes: [accRootPermissionCodes['enter-enforcement']],
+            } satisfies IFinesRoutePermissionData,
             resolve: {
               title: TitleResolver,
               defendantAccountHeadingData: defendantAccountHeadingResolver,
@@ -364,8 +365,8 @@ export const routing: Routes = [
             canDeactivate: [canDeactivateGuard],
             data: {
               title: FINES_ACC_ENF_ACTION_ROUTING_TITLES.children.remove,
-              routePermissionId: [accRootPermissionIds['enter-enforcement']],
-            },
+              routePermissionCodes: [accRootPermissionCodes['enter-enforcement']],
+            } satisfies IFinesRoutePermissionData,
             resolve: {
               title: TitleResolver,
               defendantAccountHeadingData: defendantAccountHeadingResolver,
@@ -415,8 +416,8 @@ export const routing: Routes = [
             canDeactivate: [canDeactivateGuard],
             data: {
               title: FINES_ACC_ENF_COURT_CHANGE_ROUTING_TITLES.children.change,
-              routePermissionId: [accRootPermissionIds['account-maintenance']],
-            },
+              routePermissionCodes: [accRootPermissionCodes['account-maintenance']],
+            } satisfies IFinesRoutePermissionData,
             resolve: {
               title: TitleResolver,
               courtsRefData: fetchAccCourtsResolver,
@@ -431,9 +432,9 @@ export const routing: Routes = [
             canActivate: [businessUnitRoutePermissionsGuard, finesAccStateGuard],
             canDeactivate: [canDeactivateGuard],
             data: {
-              routePermissionId: [accRootPermissionIds['account-maintenance']],
+              routePermissionCodes: [accRootPermissionCodes['account-maintenance']],
               title: FINES_ACC_ENF_COLLO_CHANGE_ROUTING_TITLES.children.change,
-            },
+            } satisfies IFinesRoutePermissionData,
             resolve: {
               title: TitleResolver,
             },
@@ -446,8 +447,8 @@ export const routing: Routes = [
     path: `${FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS.root}/:accountId`,
     canActivateChild: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
-    },
+      routePermissionCodes: [accRootPermissionCodes['search-and-view-accounts']],
+    } satisfies IFinesRoutePermissionData,
     children: [
       {
         path: FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS.children.details,
@@ -472,8 +473,8 @@ export const routing: Routes = [
     canActivateChild: [authGuard, routePermissionsGuard],
     data: {
       accountType: FINES_ACCOUNT_ROUTE_TYPES.minorCreditor,
-      routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
-    },
+      routePermissionCodes: [accRootPermissionCodes['search-and-view-accounts']],
+    } satisfies IFinesRoutePermissionData,
     children: [
       {
         path: FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.details,
@@ -504,9 +505,9 @@ export const routing: Routes = [
             canActivate: [authGuard, businessUnitRoutePermissionsGuard, finesAccStateGuard],
             canDeactivate: [canDeactivateGuard],
             data: {
-              routePermissionId: [accRootPermissionIds['add-account-activity-notes']],
+              routePermissionCodes: [accRootPermissionCodes['add-account-activity-notes']],
               title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children.note,
-            },
+            } satisfies IFinesRoutePermissionData,
             resolve: { title: TitleResolver },
           },
         ],
@@ -521,10 +522,10 @@ export const routing: Routes = [
         canActivate: [authGuard, businessUnitRoutePermissionsGuard, finesAccStateGuard],
         data: {
           title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children['payment-hold'],
-          routePermissionId: [accRootPermissionIds['add-remove-payment-hold']],
+          routePermissionCodes: [accRootPermissionCodes['add-remove-payment-hold']],
           accessDeniedPath: `${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/${FINES_ACC_PAYMENT_HOLD_ROUTING_PATHS.children.denied}`,
           paymentHoldAction: 'add',
-        },
+        } satisfies IFinesRoutePermissionData,
         resolve: { title: TitleResolver, minorCreditorAccountAtAGlance: minorCreditorAccountAtAGlanceResolver },
       },
       {
@@ -537,10 +538,10 @@ export const routing: Routes = [
         canActivate: [authGuard, businessUnitRoutePermissionsGuard, finesAccStateGuard],
         data: {
           title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children['payment-hold'],
-          routePermissionId: [accRootPermissionIds['add-remove-payment-hold']],
+          routePermissionCodes: [accRootPermissionCodes['add-remove-payment-hold']],
           accessDeniedPath: `${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children['payment-hold']}/${FINES_ACC_PAYMENT_HOLD_ROUTING_PATHS.children.denied}`,
           paymentHoldAction: 'remove',
-        },
+        } satisfies IFinesRoutePermissionData,
         resolve: { title: TitleResolver, minorCreditorAccountAtAGlance: minorCreditorAccountAtAGlanceResolver },
       },
       {
@@ -566,9 +567,9 @@ export const routing: Routes = [
         canActivate: [authGuard, businessUnitRoutePermissionsGuard, finesAccStateGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
-          routePermissionId: [accRootPermissionIds['account-maintenance-minor-creditor']],
+          routePermissionCodes: [accRootPermissionCodes['account-maintenance-minor-creditor']],
           title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children.amend,
-        },
+        } satisfies IFinesRoutePermissionData,
         resolve: {
           title: TitleResolver,
           minorCreditorAccountCreditor: minorCreditorAccountCreditorResolver,

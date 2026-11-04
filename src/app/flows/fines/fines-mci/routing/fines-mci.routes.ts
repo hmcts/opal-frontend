@@ -1,3 +1,4 @@
+import { type IFinesRoutePermissionData } from '@app/interfaces/fines-route-permission-data.interface';
 import { Routes } from '@angular/router';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
@@ -25,9 +26,9 @@ export const routing: Routes = [
     canActivate: [authGuard, routePermissionsGuard],
     canDeactivate: [canDeactivateGuard],
     data: {
-      routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+      routePermissionCodes: [FINES_PERMISSIONS['process-and-allocate-payments']],
       title: FINES_MCI_ROUTING_TITLES.children.createAllocate,
-    },
+    } satisfies IFinesRoutePermissionData,
     resolve: {
       title: TitleResolver,
     },
@@ -51,9 +52,9 @@ export const routing: Routes = [
             canDeactivate: [canDeactivateGuard],
             data: {
               permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
-              routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+              routePermissionCodes: [FINES_PERMISSIONS['process-and-allocate-payments']],
               title: FINES_MCI_ROUTING_TITLES.children.createTillSelectBusinessUnit,
-            },
+            } satisfies IFinesRoutePermissionData,
             resolve: {
               businessUnits: fetchBusinessUnitsResolver,
               title: TitleResolver,
@@ -69,9 +70,9 @@ export const routing: Routes = [
             canDeactivate: [canDeactivateGuard],
             data: {
               permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
-              routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+              routePermissionCodes: [FINES_PERMISSIONS['process-and-allocate-payments']],
               title: FINES_MCI_ROUTING_TITLES.children.createTillDetails,
-            },
+            } satisfies IFinesRoutePermissionData,
             resolve: {
               title: TitleResolver,
             },
@@ -86,9 +87,9 @@ export const routing: Routes = [
             canDeactivate: [canDeactivateGuard],
             data: {
               permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
-              routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+              routePermissionCodes: [FINES_PERMISSIONS['process-and-allocate-payments']],
               title: FINES_MCI_ROUTING_TITLES.children.createTillPaymentCategory,
-            },
+            } satisfies IFinesRoutePermissionData,
             resolve: {
               title: TitleResolver,
             },
@@ -103,9 +104,9 @@ export const routing: Routes = [
             data: {
               heading: FINES_MCI_ROUTING_TITLES.children.createTillSearchAccount,
               permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
-              routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+              routePermissionCodes: [FINES_PERMISSIONS['process-and-allocate-payments']],
               title: FINES_MCI_ROUTING_TITLES.children.createTillSearchAccount,
-            },
+            } satisfies IFinesRoutePermissionData,
             resolve: {
               title: TitleResolver,
             },
@@ -120,9 +121,9 @@ export const routing: Routes = [
             data: {
               heading: FINES_MCI_ROUTING_TITLES.children.createTillSuspenseDetails,
               permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
-              routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+              routePermissionCodes: [FINES_PERMISSIONS['process-and-allocate-payments']],
               title: FINES_MCI_ROUTING_TITLES.children.createTillSuspenseDetails,
-            },
+            } satisfies IFinesRoutePermissionData,
             resolve: {
               title: TitleResolver,
             },
@@ -137,9 +138,9 @@ export const routing: Routes = [
             data: {
               heading: FINES_MCI_ROUTING_TITLES.children.createTillCourtFeeDetails,
               permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
-              routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+              routePermissionCodes: [FINES_PERMISSIONS['process-and-allocate-payments']],
               title: FINES_MCI_ROUTING_TITLES.children.createTillCourtFeeDetails,
-            },
+            } satisfies IFinesRoutePermissionData,
             resolve: {
               title: TitleResolver,
             },
@@ -154,9 +155,9 @@ export const routing: Routes = [
             data: {
               heading: FINES_MCI_ROUTING_TITLES.children.createTillCancel,
               permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
-              routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+              routePermissionCodes: [FINES_PERMISSIONS['process-and-allocate-payments']],
               title: FINES_MCI_ROUTING_TITLES.children.createTillCancel,
-            },
+            } satisfies IFinesRoutePermissionData,
             resolve: {
               title: TitleResolver,
             },

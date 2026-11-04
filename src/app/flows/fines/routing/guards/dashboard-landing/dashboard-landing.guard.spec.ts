@@ -1,3 +1,4 @@
+import { type FinesPermissionCode } from '@app/constants/fines-permissions.constant';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
@@ -36,7 +37,7 @@ const mockFeatureFlags = (featureFlags: Record<string, boolean>) => {
   );
 };
 
-const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpalUserState => {
+const createUserStateWithPermissions = (permissionCodes: readonly FinesPermissionCode[]): IOpalUserState => {
   const userState = structuredClone(OPAL_USER_STATE_MOCK);
   const [firstBusinessUnit, secondBusinessUnit] = userState.business_unit_users;
 
@@ -47,9 +48,9 @@ const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpal
     },
     {
       ...secondBusinessUnit,
-      permissions: permissionIds.map((permissionId) => ({
-        permission_id: permissionId,
-        permission_name: `Permission ${permissionId}`,
+      permissions: permissionCodes.map((permissionCode) => ({
+        permission_code: permissionCode,
+        permission_name: `Permission ${permissionCode}`,
       })),
     },
   ];

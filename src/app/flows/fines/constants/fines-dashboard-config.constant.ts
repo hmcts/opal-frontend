@@ -1,8 +1,8 @@
+import { type IFinesDashboardConfiguration } from '@app/interfaces/fines-dashboard-configuration.interface';
 import { FINES_CON_LINKS } from '@app/flows/fines/fines-con/constants/fines-con-links.constant';
 import { FINES_DRAFT_LINKS } from '@app/flows/fines/fines-draft/constants/fines-draft-links.constant';
-import { IDashboardPageConfiguration } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
 
-export const FINES_DASHBOARD_CONFIG: IDashboardPageConfiguration = {
+export const FINES_DASHBOARD_CONFIG: IFinesDashboardConfiguration = {
   title: 'Accounts',
   highlights: [],
   groups: [

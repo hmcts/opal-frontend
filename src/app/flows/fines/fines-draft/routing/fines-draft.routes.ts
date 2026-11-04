@@ -1,3 +1,4 @@
+import { type IFinesRoutePermissionData } from '@app/interfaces/fines-route-permission-data.interface';
 import { Routes } from '@angular/router';
 import { FINES_DRAFT_ROUTING_PATHS } from './constants/fines-draft-routing-paths.constant';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
@@ -9,7 +10,7 @@ import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.cons
 import { routing as createAndManageRouting } from '../fines-draft-create-and-manage/routing/fines-draft-create-and-manage.routes';
 import { routing as checkAndValidateRouting } from '../fines-draft-check-and-validate/routing/fines-draft-check-and-validate.routes';
 
-const draftRootPermissionIds = FINES_PERMISSIONS;
+const draftRootPermissionCodes = FINES_PERMISSIONS;
 
 export const routing: Routes = [
   {
@@ -27,9 +28,9 @@ export const routing: Routes = [
     children: createAndManageRouting,
     canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
+      routePermissionCodes: [draftRootPermissionCodes['create-and-manage-draft-accounts']],
       title: FINES_DRAFT_ROUTING_TITLES.children.createAndManage,
-    },
+    } satisfies IFinesRoutePermissionData,
     resolve: { title: TitleResolver },
   },
   {
@@ -41,9 +42,9 @@ export const routing: Routes = [
     children: checkAndValidateRouting,
     canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [draftRootPermissionIds['check-and-validate-draft-accounts']],
+      routePermissionCodes: [draftRootPermissionCodes['check-and-validate-draft-accounts']],
       title: FINES_DRAFT_ROUTING_TITLES.children.checkAndValidate,
-    },
+    } satisfies IFinesRoutePermissionData,
     resolve: { title: TitleResolver },
   },
 ];

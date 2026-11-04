@@ -1,3 +1,4 @@
+import { type FinesPermissionCode } from '@app/constants/fines-permissions.constant';
 import { INavigationBarConfiguration } from '@app/interfaces/navigation-bar-configuration.interface';
 import { DASHBOARD_PAGE_DEFAULT_TAB } from '@app/pages/dashboard/constants/dashboard-config-default-tab.constant';
 import { DashboardPageType } from '@app/pages/dashboard/types/dashboard.type';
@@ -33,30 +34,30 @@ const getDisabledFeatureFlagValues = <T>(
   );
 
 /**
- * Returns the unique permission IDs assigned to the logged-in user across their business units.
+ * Returns the unique permission codes assigned to the logged-in user across their business units.
  *
  * @param userState - The logged-in user's state, including business units and permissions.
- * @returns A deduplicated list of permission IDs, or an empty array when no user state is available.
+ * @returns A deduplicated list of permission codes, or an empty array when no user state is available.
  */
-export const getUserPermissionIds = (userState?: IOpalUserState | null): number[] => {
-  const permissionIds = (userState?.business_unit_users ?? []).flatMap((businessUnitUser) =>
-    businessUnitUser.permissions.map((permission) => permission.permission_id),
+export const getUserPermissionCodes = (userState?: IOpalUserState | null): string[] => {
+  const permissionCodes = (userState?.business_unit_users ?? []).flatMap((businessUnitUser) =>
+    businessUnitUser.permissions.map((permission) => permission.permission_code),
   );
 
-  return [...new Set(permissionIds)];
+  return [...new Set(permissionCodes)];
 };
 
 /**
- * Checks whether the user has at least one of the permission IDs required for a section or action.
+ * Checks whether the user has at least one of the permission codes required for a section or action.
  *
- * @param requiredPermissionIds - The permission IDs needed to access the section or action.
- * @param userPermissionIds - The permission IDs assigned to the user.
+ * @param requiredPermissionCodes - The permission codes needed to access the section or action.
+ * @param userPermissionCodes - The permission codes assigned to the user.
  * @returns True when the user has at least one required permission; otherwise false.
  */
 export const hasAnyPermission = (
-  requiredPermissionIds: readonly number[],
-  userPermissionIds: readonly number[],
-): boolean => requiredPermissionIds.some((permissionId) => userPermissionIds.includes(permissionId));
+  requiredPermissionCodes: readonly FinesPermissionCode[],
+  userPermissionCodes: readonly string[],
+): boolean => requiredPermissionCodes.some((permissionCode) => userPermissionCodes.includes(permissionCode));
 
 /**
  * Converts raw feature flag values into the release flag state used by fines permission helpers.
@@ -75,32 +76,34 @@ export const getFeatureFlagReleaseState = (featureFlags?: FeatureFlags | null): 
 };
 
 /**
- * Returns the permission IDs required for a dashboard section, excluding permissions for disabled release flags.
+ * Returns the permission codes required for a dashboard section, excluding permissions for disabled release flags.
  *
  * @param sectionKey - The dashboard section being checked.
  * @param featureFlagReleaseState - The current enabled or disabled state of release feature flags.
- * @returns The permission IDs required for the section, or undefined when the section has no permission restriction.
+ * @returns The permission codes required for the section, or undefined when the section has no permission restriction.
  */
-export const getRequiredPermissionIdsForSection = (
+export const getRequiredPermissionCodesForSection = (
   sectionKey: DashboardPageType,
   featureFlagReleaseState: FeatureFlagReleaseState = {},
-): readonly number[] | undefined => {
-  const requiredPermissionIds = FINES_PRIMARY_NAVIGATION_SECTION_PERMISSIONS[sectionKey];
+): readonly FinesPermissionCode[] | undefined => {
+  const requiredPermissionCodes = FINES_PRIMARY_NAVIGATION_SECTION_PERMISSIONS[sectionKey];
 
-  if (!requiredPermissionIds) {
+  if (!requiredPermissionCodes) {
     return undefined;
   }
 
-  const disabledFeatureFlagPermissionIds = getDisabledFeatureFlagValues(
+  const disabledFeatureFlagPermissionCodes = getDisabledFeatureFlagValues(
     FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS[sectionKey] ?? {},
     featureFlagReleaseState,
   );
 
-  if (!disabledFeatureFlagPermissionIds.length) {
-    return requiredPermissionIds;
+  if (!disabledFeatureFlagPermissionCodes.length) {
+    return requiredPermissionCodes;
   }
 
-  return requiredPermissionIds.filter((permissionId) => !disabledFeatureFlagPermissionIds.includes(permissionId));
+  return requiredPermissionCodes.filter(
+    (permissionCode) => !disabledFeatureFlagPermissionCodes.includes(permissionCode),
+  );
 };
 
 /**
@@ -135,17 +138,17 @@ export const canAccessFinesPrimaryNavigationSection = (
     return false;
   }
 
-  const requiredPermissionIds = getRequiredPermissionIdsForSection(sectionKey, featureFlagReleaseState);
+  const requiredPermissionCodes = getRequiredPermissionCodesForSection(sectionKey, featureFlagReleaseState);
 
-  if (!requiredPermissionIds) {
+  if (!requiredPermissionCodes) {
     return true;
   }
 
-  if (requiredPermissionIds.length === 0) {
+  if (requiredPermissionCodes.length === 0) {
     return false;
   }
 
-  return hasAnyPermission(requiredPermissionIds, getUserPermissionIds(userState));
+  return hasAnyPermission(requiredPermissionCodes, getUserPermissionCodes(userState));
 };
 
 /**

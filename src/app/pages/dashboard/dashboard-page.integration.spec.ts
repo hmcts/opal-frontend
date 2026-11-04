@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { DashboardPage } from '@hmcts/opal-frontend-common/pages/dashboard-page';
-import { IDashboardPageConfiguration } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
+import { type IFinesDashboardConfiguration } from '@app/interfaces/fines-dashboard-configuration.interface';
+import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { beforeEach, describe, expect, it } from 'vitest';
@@ -10,7 +11,7 @@ import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 
-const DASHBOARD_CONFIG: IDashboardPageConfiguration = {
+const DASHBOARD_CONFIG: IFinesDashboardConfiguration = {
   title: 'Dashboard Integration Test',
   highlights: [
     {
@@ -23,7 +24,7 @@ const DASHBOARD_CONFIG: IDashboardPageConfiguration = {
         FINES_DASHBOARD_ROUTING_PATHS.children.reports,
       ],
       fragment: 'review',
-      permissionIds: [101],
+      permissionCodes: [FINES_PERMISSIONS['operational-report-by-enforcement']],
       newTab: true,
       style: 'guidance-panel-blue',
     },
@@ -37,7 +38,7 @@ const DASHBOARD_CONFIG: IDashboardPageConfiguration = {
         FINES_DASHBOARD_ROUTING_PATHS.children.reports,
       ],
       fragment: null,
-      permissionIds: [202],
+      permissionCodes: [FINES_PERMISSIONS['operational-report-by-payments']],
       newTab: false,
       style: '',
     },
@@ -57,7 +58,7 @@ const DASHBOARD_CONFIG: IDashboardPageConfiguration = {
             FINES_DASHBOARD_ROUTING_PATHS.children.finance,
           ],
           fragment: 'summary',
-          permissionIds: [101],
+          permissionCodes: [FINES_PERMISSIONS['operational-report-by-enforcement']],
           newTab: false,
           style: '',
         },
@@ -71,7 +72,7 @@ const DASHBOARD_CONFIG: IDashboardPageConfiguration = {
             FINES_DASHBOARD_ROUTING_PATHS.children.finance,
           ],
           fragment: null,
-          permissionIds: [202],
+          permissionCodes: [FINES_PERMISSIONS['operational-report-by-payments']],
           newTab: false,
           style: '',
         },
@@ -109,7 +110,9 @@ describe('DashboardPage integration', () => {
   });
 
   it('should only render links the user has permission to access', () => {
-    permissionsServiceMock.getUniquePermissions.mockReturnValue([101]);
+    permissionsServiceMock.getUniquePermissions.mockReturnValue([
+      FINES_PERMISSIONS['operational-report-by-enforcement'],
+    ]);
 
     fixture = TestBed.createComponent(DashboardPageHostComponent);
     fixture.detectChanges();
@@ -124,7 +127,9 @@ describe('DashboardPage integration', () => {
   });
 
   it('should render new-tab and fragment link attributes from config', () => {
-    permissionsServiceMock.getUniquePermissions.mockReturnValue([101]);
+    permissionsServiceMock.getUniquePermissions.mockReturnValue([
+      FINES_PERMISSIONS['operational-report-by-enforcement'],
+    ]);
 
     fixture = TestBed.createComponent(DashboardPageHostComponent);
     fixture.detectChanges();
