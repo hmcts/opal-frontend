@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { IOpalFinesDefendantAccount } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
-import { map } from 'rxjs';
+import { catchError, EMPTY, finalize, map, Subject, takeUntil } from 'rxjs';
+import { FinesMciCriminalAccountService } from '../services/fines-mci-criminal-account.service';
 import { IFinesMciCriminalAccountsResult } from '../interfaces/fines-mci-criminal-accounts-result.interface';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import {
@@ -62,6 +63,9 @@ const FINES_MCI_CRIMINAL_MATCHES_CONTENT: Record<
 export class FinesMciPaymentCategoryCriminalMatchesComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly criminalAccountService = inject(FinesMciCriminalAccountService);
+  private readonly cancelAccountDetailsRequest = new Subject<void>();
   private readonly selectedAccountIdsSignal = signal<Set<number>>(new Set<number>());
   private readonly selectionValidationMessageSignal = signal<string | null>(null);
   private readonly accountsResult = toSignal(
@@ -71,6 +75,7 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
   private readonly results = computed(() => this.accountsResult().results);
 
   protected readonly finesMciStore = inject(FinesMciStore);
+  protected readonly isLoadingAccountDetails = signal(false);
   protected readonly selectionErrorFieldId =
     FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_MATCHES_ERROR_FIELD_IDS.accountSelection;
   protected readonly content = computed(
@@ -107,6 +112,7 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
 
   constructor() {
     effect(() => {
+      this.cancelAccountDetailsRequest.next();
       this.finesMciStore.setCriminalSearchResults(this.accountsResult().response);
       this.selectedAccountIdsSignal.set(new Set<number>());
       this.selectionValidationMessageSignal.set(null);
@@ -169,12 +175,14 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
   }
 
   protected clearCriminalSearch(): void {
+    this.cancelAccountDetailsRequest.next();
     this.finesMciStore.resetCriminalSearch();
   }
 
   protected onAccountSelectionChanged(
     accountSelection: IFinesMciPaymentCategoryCriminalMatchesTableWrapperAccountSelection,
   ): void {
+    this.cancelAccountDetailsRequest.next();
     const selectedAccountIds = new Set(this.selectedAccountIdsSignal());
 
     if (accountSelection.selected) {
@@ -189,6 +197,10 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
   }
 
   protected continue(): void {
+    if (this.isLoadingAccountDetails()) {
+      return;
+    }
+
     const selectedAccountIds = this.selectedAccountIds();
     const validationMessage = finesMciPaymentCategoryCriminalMatchesSelectionValidator(selectedAccountIds);
 
@@ -201,6 +213,28 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
 
     const selectedAccount =
       this.searchResults().find((account) => account.defendant_account_id === selectedAccountIds[0]) ?? null;
-    this.finesMciStore.setSelectedCriminalAccount(selectedAccount);
+    if (!selectedAccount || selectedAccount.defendant_account_id === null) {
+      return;
+    }
+
+    this.isLoadingAccountDetails.set(true);
+    this.criminalAccountService
+      .loadSelectedAccountAtAGlance(selectedAccount)
+      .pipe(
+        catchError(() => EMPTY),
+        finalize(() => this.isLoadingAccountDetails.set(false)),
+        takeUntil(this.cancelAccountDetailsRequest),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => {
+        void this.router.navigate(
+          [
+            FINES_MCI_ROUTING_PATHS.children.account,
+            selectedAccount.defendant_account_id,
+            selectedAccount.organisation_flag ? 'company' : 'individual',
+          ],
+          { relativeTo: this.route.parent },
+        );
+      });
   }
 }

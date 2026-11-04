@@ -135,6 +135,21 @@ export const routing: Routes = [
                           title: TitleResolver,
                         },
                       },
+                      {
+                        path: `${FINES_MCI_ROUTING_PATHS.children.account}/:accountId/:type`,
+                        loadComponent: () =>
+                          import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
+                            (c) => c.FinesMciPlaceholderComponent,
+                          ),
+                        canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+                        data: {
+                          routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+                          title: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalAccount,
+                          heading: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalAccount,
+                          message: 'Placeholder page. This page will be fully implemented under ticket PO-3530.',
+                        },
+                        resolve: { title: TitleResolver },
+                      },
                     ],
                   },
                 ],

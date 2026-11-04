@@ -1,8 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-defendant-account-response-individual.mock';
-import { BehaviorSubject } from 'rxjs';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { BehaviorSubject, of, Subject, throwError } from 'rxjs';
+import { beforeEach, describe, expect, it, MockInstance, vi } from 'vitest';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
+import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { IFinesMciCriminalAccountsResult } from '../interfaces/fines-mci-criminal-accounts-result.interface';
 import { FinesMciCriminalSearchResults } from '../constants/fines-mci-criminal-search-results.constant';
@@ -13,8 +16,14 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
   let fixture: ComponentFixture<FinesMciPaymentCategoryCriminalMatchesComponent>;
   let routeDataSubject: BehaviorSubject<{ criminalAccounts: IFinesMciCriminalAccountsResult }>;
   let finesMciStore: InstanceType<typeof FinesMciStore>;
+  let opalFines: { clearCache: ReturnType<typeof vi.fn>; getDefendantAccountAtAGlance: ReturnType<typeof vi.fn> };
+  let navigateSpy: MockInstance<Router['navigate']>;
 
   beforeEach(async () => {
+    opalFines = {
+      clearCache: vi.fn(),
+      getDefendantAccountAtAGlance: vi.fn().mockReturnValue(of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK)),
+    };
     routeDataSubject = new BehaviorSubject<{ criminalAccounts: IFinesMciCriminalAccountsResult }>({
       criminalAccounts: { results: 'matches', response: OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK },
     });
@@ -23,14 +32,17 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
       imports: [FinesMciPaymentCategoryCriminalMatchesComponent],
       providers: [
         provideRouter([]),
+        { provide: OpalFines, useValue: opalFines },
         {
           provide: ActivatedRoute,
           useValue: {
             data: routeDataSubject.asObservable(),
+            parent: {},
           },
         },
       ],
     }).compileComponents();
+    navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
 
     finesMciStore = TestBed.inject(FinesMciStore);
     finesMciStore.resetCriminalSearch();
@@ -114,6 +126,7 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Select 1 account');
     expect(fixture.nativeElement.querySelector('.govuk-form-group--error')).not.toBeNull();
     expect(finesMciStore.selectedCriminalAccount()).toBeNull();
+    expect(opalFines.getDefendantAccountAtAGlance).not.toHaveBeenCalled();
   });
 
   it('should show an error when continuing with more than one account selected', () => {
@@ -135,6 +148,7 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Select only 1 account');
     expect(fixture.nativeElement.querySelector('.govuk-form-group--error')).not.toBeNull();
     expect(finesMciStore.selectedCriminalAccount()).toBeNull();
+    expect(opalFines.getDefendantAccountAtAGlance).not.toHaveBeenCalled();
   });
 
   it('should clear the selection error when an account selection changes', () => {
@@ -169,5 +183,97 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
     expect(finesMciStore.selectedCriminalAccount()).toEqual(
       OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[1],
     );
+    expect(opalFines.getDefendantAccountAtAGlance).toHaveBeenCalledExactlyOnceWith(2);
+    expect(finesMciStore.selectedCriminalAccountAtAGlance()).toEqual(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+  });
+
+  it('should prevent duplicate requests while loading and store data only after success', () => {
+    const response = new Subject<IOpalFinesAccountDefendantAtAGlance>();
+    opalFines.getDefendantAccountAtAGlance.mockReturnValue(response);
+    const checkbox = fixture.nativeElement.querySelector('#fines-mci-criminal-account-2') as HTMLInputElement;
+    checkbox.click();
+    fixture.detectChanges();
+    const button = fixture.nativeElement.querySelector('button.govuk-button') as HTMLButtonElement;
+    button.click();
+    fixture.componentInstance['continue']();
+    fixture.detectChanges();
+
+    expect(button.disabled).toBe(true);
+    expect(navigateSpy).not.toHaveBeenCalled();
+    expect(opalFines.getDefendantAccountAtAGlance).toHaveBeenCalledExactlyOnceWith(2);
+    expect(finesMciStore.selectedCriminalAccountAtAGlance()).toBeNull();
+
+    response.next(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+    response.complete();
+    fixture.detectChanges();
+
+    expect(finesMciStore.selectedCriminalAccountAtAGlance()).toEqual(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+    expect(button.disabled).toBe(false);
+    expect(navigateSpy).toHaveBeenCalledExactlyOnceWith(['account', 2, 'individual'], {
+      relativeTo: TestBed.inject(ActivatedRoute).parent,
+    });
+  });
+
+  it('should leave details empty on failure and allow retrying Continue', () => {
+    opalFines.getDefendantAccountAtAGlance.mockReturnValueOnce(throwError(() => new Error('Request failed')));
+    (fixture.nativeElement.querySelector('#fines-mci-criminal-account-2') as HTMLInputElement).click();
+    fixture.detectChanges();
+    const button = fixture.nativeElement.querySelector('button.govuk-button') as HTMLButtonElement;
+    button.click();
+    fixture.detectChanges();
+
+    expect(finesMciStore.selectedCriminalAccountAtAGlance()).toBeNull();
+    expect(button.disabled).toBe(false);
+    expect(navigateSpy).not.toHaveBeenCalled();
+
+    button.click();
+    fixture.detectChanges();
+    expect(opalFines.getDefendantAccountAtAGlance).toHaveBeenCalledTimes(2);
+    expect(finesMciStore.selectedCriminalAccountAtAGlance()).toEqual(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+  });
+
+  it.each(['selection change', 'search again', 'destroy'] as const)(
+    'should discard an in-flight response after %s',
+    (action) => {
+      const response = new Subject<IOpalFinesAccountDefendantAtAGlance>();
+      opalFines.getDefendantAccountAtAGlance.mockReturnValue(response);
+      const checkbox = fixture.nativeElement.querySelector('#fines-mci-criminal-account-2') as HTMLInputElement;
+      checkbox.click();
+      fixture.detectChanges();
+      (fixture.nativeElement.querySelector('button.govuk-button') as HTMLButtonElement).click();
+      fixture.detectChanges();
+
+      if (action === 'selection change') {
+        checkbox.click();
+      } else if (action === 'search again') {
+        fixture.componentInstance['clearCriminalSearch']();
+      } else {
+        fixture.destroy();
+      }
+      response.next(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      response.complete();
+
+      expect(finesMciStore.selectedCriminalAccountAtAGlance()).toBeNull();
+      expect(fixture.componentInstance['isLoadingAccountDetails']()).toBe(false);
+      expect(navigateSpy).not.toHaveBeenCalled();
+    },
+  );
+
+  it('should open the company account route after loading company details', () => {
+    const account = {
+      ...OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0],
+      organisation_flag: true,
+    };
+    routeDataSubject.next({
+      criminalAccounts: { results: 'matches', response: { count: 1, defendant_accounts: [account] } },
+    });
+    fixture.detectChanges();
+    (fixture.nativeElement.querySelector('#fines-mci-criminal-account-1') as HTMLInputElement).click();
+    fixture.detectChanges();
+    (fixture.nativeElement.querySelector('button.govuk-button') as HTMLButtonElement).click();
+
+    expect(navigateSpy).toHaveBeenCalledExactlyOnceWith(['account', 1, 'company'], {
+      relativeTo: TestBed.inject(ActivatedRoute).parent,
+    });
   });
 });

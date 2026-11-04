@@ -15,6 +15,7 @@ import { routing } from './fines-mci.routes';
 import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.constant';
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
+import { FinesMciPlaceholderComponent } from '../fines-mci-placeholder/fines-mci-placeholder.component';
 
 @Component({ template: '' })
 class RouteDestinationComponent {}
@@ -209,4 +210,37 @@ describe('finesMci routes', () => {
     );
     expect(criminalAccountMatchesRoute?.loadComponent).toEqual(expect.any(Function));
   });
+
+  it.each(['individual', 'company'])(
+    'should render the PO-3530 placeholder at the criminal account URL for an %s',
+    async (type) => {
+      const accountRoute = criminalRoute!.children!.find(
+        (route) => route.path === `${FINES_MCI_ROUTING_PATHS.children.account}/:accountId/:type`,
+      )!;
+      expect(accountRoute.canActivate).toEqual([authGuard, routePermissionsGuard, finesMciFlowStateGuard]);
+      expect(accountRoute.data?.['routePermissionId']).toEqual([FINES_PERMISSIONS['process-and-allocate-payments']]);
+      expect(accountRoute.resolve).toEqual({ title: TitleResolver });
+      TestBed.configureTestingModule({
+        providers: [
+          provideRouter([
+            {
+              ...accountRoute,
+              path: `fines/manual-cash-input/create/till/payment/category/criminal/${accountRoute.path}`,
+              canActivate: [],
+              resolve: {},
+            },
+          ]),
+        ],
+      });
+      const harness = await RouterTestingHarness.create();
+      const url = `/fines/manual-cash-input/create/till/payment/category/criminal/account/2/${type}`;
+      await harness.navigateByUrl(url, FinesMciPlaceholderComponent);
+
+      expect(TestBed.inject(Router).url).toBe(url);
+      expect(harness.routeNativeElement?.textContent).toContain('Confirm account');
+      expect(harness.routeNativeElement?.textContent).toContain(
+        'Placeholder page. This page will be fully implemented under ticket PO-3530.',
+      );
+    },
+  );
 });
