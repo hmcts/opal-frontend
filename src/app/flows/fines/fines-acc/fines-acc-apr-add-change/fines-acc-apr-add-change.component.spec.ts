@@ -19,7 +19,7 @@ import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-manage/constants/f
 const routing = accountRouting
   .flatMap((route) => route.children ?? [])
   .flatMap((route) => route.children ?? [])
-  .find((route) => route.path === FINES_ACC_APR_ROUTING_PATHS.root)!.children!;
+  .filter((route) => route.path?.startsWith(`${FINES_ACC_APR_ROUTING_PATHS.root}/`));
 
 @Component({ template: '<p>APR manage</p>' })
 class ManagePageComponent {}
@@ -71,16 +71,16 @@ describe('FinesAccAprAddChangeComponent add mode', () => {
     const sharedResolvedData: IOpalFinesAprsResponse = { references: [], version: initialVersion };
     api = { createApr: vi.fn().mockReturnValue(of(response)), clearAccountDetailsCache: vi.fn() };
     utils = { scrollToTop: vi.fn() };
-    const formRoute = routing.find((route) => route.path === ':mode')!;
+    const formRoute = routing.find((route) => route.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/:mode`)!;
     await TestBed.configureTestingModule({
       providers: [
         { provide: OpalFines, useValue: api },
         { provide: UtilsService, useValue: utils },
         provideRouter([
           {
-            path: 'fines/account/defendant/:accountId/alternate/payment/reference',
+            path: 'fines/account/defendant/:accountId',
             children: [
-              { path: 'manage', component: ManagePageComponent },
+              { path: `${FINES_ACC_APR_ROUTING_PATHS.root}/manage`, component: ManagePageComponent },
               {
                 ...formRoute,
                 canActivate: [],

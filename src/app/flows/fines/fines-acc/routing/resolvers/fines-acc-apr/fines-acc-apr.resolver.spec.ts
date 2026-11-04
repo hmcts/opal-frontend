@@ -1,3 +1,4 @@
+import { FINES_ACC_APR_ROUTING_PATHS } from '../../../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, RedirectCommand, Router } from '@angular/router';
@@ -65,9 +66,9 @@ describe('finesAccAprResolver', () => {
       providers: [
         provideRouter([
           {
-            path: 'fines/account/defendant/:accountId/alternate/payment/reference',
+            path: 'fines/account/defendant/:accountId',
             children: ['manage', 'delete', ':mode'].map((path) => ({
-              path,
+              path: `${FINES_ACC_APR_ROUTING_PATHS.root}/${path}`,
               component: ResolverTestRouteComponent,
             })),
           },

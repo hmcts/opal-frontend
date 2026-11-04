@@ -6,6 +6,5 @@ export const FINES_ACC_APR_ROUTING_PATHS = {
     error: 'error',
     change: 'change',
     delete: 'delete',
-    denied: 'denied',
   },
 } as const;

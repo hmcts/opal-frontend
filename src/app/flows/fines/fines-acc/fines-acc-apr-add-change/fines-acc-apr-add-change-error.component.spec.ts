@@ -23,7 +23,7 @@ import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-manage/constants/f
 const routing = accountRouting
   .flatMap((route) => route.children ?? [])
   .flatMap((route) => route.children ?? [])
-  .find((route) => route.path === FINES_ACC_APR_ROUTING_PATHS.root)!.children!;
+  .filter((route) => route.path?.startsWith(`${FINES_ACC_APR_ROUTING_PATHS.root}/`));
 
 @Component({ template: 'APR manage destination' })
 class AprErrorManageDestinationComponent {}
@@ -65,8 +65,8 @@ describe('Alternate payment reference Add and Error integration', () => {
   beforeEach(async () => {
     globalStore = { setBannerError: vi.fn(), resetBannerError: vi.fn() };
     insights = { logException: vi.fn() };
-    const formRoute = routing.find((route) => route.path === ':mode')!;
-    const errorRoute = routing.find((route) => route.path === 'error')!;
+    const formRoute = routing.find((route) => route.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/:mode`)!;
+    const errorRoute = routing.find((route) => route.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/error`)!;
     await TestBed.configureTestingModule({
       providers: [
         provideHttpClient(withInterceptors([finesAccAprHttpErrorInterceptor, httpRetryInterceptor])),
@@ -81,10 +81,10 @@ describe('Alternate payment reference Add and Error integration', () => {
             component: FinesAccComponent,
             children: [
               {
-                path: 'defendant/:accountId/alternate/payment/reference',
+                path: 'defendant/:accountId',
                 children: [
                   { ...errorRoute, canActivate: [] },
-                  { path: 'manage', component: AprErrorManageDestinationComponent },
+                  { path: `${FINES_ACC_APR_ROUTING_PATHS.root}/manage`, component: AprErrorManageDestinationComponent },
                   {
                     ...formRoute,
                     canActivate: [],
