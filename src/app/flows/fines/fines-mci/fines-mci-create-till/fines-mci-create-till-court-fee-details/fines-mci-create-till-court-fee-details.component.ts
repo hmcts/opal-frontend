@@ -31,8 +31,17 @@ import { FinesMciStore } from '../../stores/fines-mci.store';
 const AMOUNT_PATTERN = /^\d+(?:\.\d+)?$/;
 const NUMBER_OF_ITEMS_PATTERN = /^\d+$/;
 
-function isPositiveNumberOfItems(value: string): boolean {
-  return NUMBER_OF_ITEMS_PATTERN.test(value) && Number(value) > 0;
+function getAmountError(amount: string): string | null {
+  if (!amount) return 'Enter an amount';
+  if (!AMOUNT_PATTERN.test(amount)) return 'Enter numbers only';
+  return null;
+}
+
+function getNumberOfItemsError(numberOfItems: string): string | null {
+  if (!numberOfItems) return 'Enter number of items';
+  if (!NUMBER_OF_ITEMS_PATTERN.test(numberOfItems)) return 'Enter numbers only';
+  if (Number(numberOfItems) <= 0) return 'Enter a number of items greater than 0';
+  return null;
 }
 
 /** Compares money as whole pence so decimal fee amounts do not introduce floating point errors. */
@@ -104,7 +113,7 @@ export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit, OnDes
     });
 
     this.form.controls.amountPaid.valueChanges.pipe(takeUntilDestroyed()).subscribe((amount) => {
-      if (amount != null && AMOUNT_PATTERN.test(amount.trim())) {
+      if (amount != null && getAmountError(amount.trim()) === null) {
         this.amountError = null;
         this.formErrorSummaryMessage = this.formErrorSummaryMessage.filter(({ fieldId }) => fieldId !== 'amountPaid');
         this.changeDetector.markForCheck();
@@ -112,7 +121,7 @@ export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit, OnDes
     });
 
     this.form.controls.numberOfItems.valueChanges.pipe(takeUntilDestroyed()).subscribe((numberOfItems) => {
-      if (numberOfItems != null && isPositiveNumberOfItems(numberOfItems.trim())) {
+      if (numberOfItems != null && getNumberOfItemsError(numberOfItems.trim()) === null) {
         this.numberOfItemsError = null;
         this.formErrorSummaryMessage = this.formErrorSummaryMessage.filter(
           ({ fieldId }) => fieldId !== 'numberOfItems',
@@ -120,6 +129,20 @@ export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit, OnDes
         this.changeDetector.markForCheck();
       }
     });
+  }
+
+  private getCourtFeeSelectionError(
+    courtFeeId: number | null,
+    selectedFee: IOpalFinesCourtFee | undefined,
+  ): string | null {
+    const selectedFeeItem = this.courtFeeItems().find(({ value }) => value === courtFeeId);
+    const input = this.courtFeeAutocomplete?.nativeElement.querySelector<HTMLInputElement>('#courtFeeId-autocomplete');
+    const enteredText = input?.value.trim() || this.courtFeeSearchText.trim();
+    const validCourtFee = selectedFeeItem && selectedFee && (!input || enteredText === selectedFeeItem.name);
+
+    if (validCourtFee) return null;
+    if (enteredText) return 'Enter a valid court fee';
+    return 'Enter court fee code';
   }
 
   /** Keeps typed text available when the autocomplete clears an invalid selection on blur. */
@@ -138,29 +161,14 @@ export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit, OnDes
   /** Validates the court fee payment details and opens the matching next screen. */
   public handleSubmit(): void {
     const courtFeeId = this.form.controls.courtFeeId.value;
-    const selectedFeeItem = this.courtFeeItems().find(({ value }) => value === courtFeeId);
     const selectedFee = this.courtFees().find(({ court_fee_id }) => court_fee_id === courtFeeId);
-    const input = this.courtFeeAutocomplete?.nativeElement.querySelector<HTMLInputElement>('#courtFeeId-autocomplete');
-    const enteredText = input?.value.trim() || this.courtFeeSearchText.trim();
-
-    const validCourtFee = selectedFeeItem && selectedFee && (!input || enteredText === selectedFeeItem.name);
-    this.courtFeeSelectionError = validCourtFee
-      ? null
-      : enteredText
-        ? 'Enter a valid court fee'
-        : 'Enter court fee code';
+    this.courtFeeSelectionError = this.getCourtFeeSelectionError(courtFeeId, selectedFee);
 
     const amount = this.form.controls.amountPaid.value?.trim() ?? '';
-    this.amountError = !amount ? 'Enter an amount' : AMOUNT_PATTERN.test(amount) ? null : 'Enter numbers only';
+    this.amountError = getAmountError(amount);
 
     const numberOfItems = this.form.controls.numberOfItems.value?.trim() ?? '';
-    this.numberOfItemsError = !numberOfItems
-      ? 'Enter number of items'
-      : !NUMBER_OF_ITEMS_PATTERN.test(numberOfItems)
-        ? 'Enter numbers only'
-        : isPositiveNumberOfItems(numberOfItems)
-          ? null
-          : 'Enter a number of items greater than 0';
+    this.numberOfItemsError = getNumberOfItemsError(numberOfItems);
 
     const errors: IAbstractFormBaseFormErrorSummaryMessage[] = [];
     if (this.courtFeeSelectionError) {
@@ -175,9 +183,10 @@ export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit, OnDes
     this.formErrorSummaryMessage = errors;
     if (errors.length === 0 && selectedFee) {
       this.finesMciStore.setCourtFeeDraft(this.form.getRawValue());
-      const destination = isExactCourtFeePayment(amount, selectedFee.amount, numberOfItems)
-        ? FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails
-        : FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation;
+      let destination = FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation;
+      if (isExactCourtFeePayment(amount, selectedFee.amount, numberOfItems)) {
+        destination = FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails;
+      }
       this.isContinuing = true;
       void this.router.navigate([`../${destination}`], { relativeTo: this.activatedRoute }).then((navigated) => {
         if (!navigated) this.isContinuing = false;

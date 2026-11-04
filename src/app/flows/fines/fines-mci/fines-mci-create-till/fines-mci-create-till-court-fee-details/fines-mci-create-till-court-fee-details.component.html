@@ -6,7 +6,7 @@
     <p class="govuk-error-message" role="alert">Court fees could not be loaded. Try again later.</p>
     <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
   } @else if (feesLoaded() && courtFeeItems().length === 0) {
-    <p class="govuk-body" role="status">No court fees are available for this business unit.</p>
+    <output class="govuk-body govuk-!-display-block">No court fees are available for this business unit.</output>
     <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
   } @else if (feesLoaded()) {
     <div #errorSummary>
@@ -58,6 +58,6 @@
       </div>
     </form>
   } @else {
-    <p class="govuk-body" role="status">Loading court fees</p>
+    <output class="govuk-body govuk-!-display-block">Loading court fees</output>
   }
 </div>
