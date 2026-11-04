@@ -233,6 +233,20 @@ export class ManualCashInputActions {
     cy.contains('h1', 'Search for an account').should('be.visible');
   }
 
+  /** Confirms that the selected category opens its details destination.
+   * @param category - Payment category whose details destination should be displayed.
+   */
+  public assertPaymentCategoryDetailsAreDisplayed(category: 'courtFee' | 'suspense'): void {
+    const destinations = {
+      courtFee: { pathname: '/fines/manual-cash-input/create/till/court-fee-details', heading: 'Court fee details' },
+      suspense: { pathname: '/fines/manual-cash-input/create/till/suspense-details', heading: 'Suspense details' },
+    } as const;
+    const destination = destinations[category];
+
+    cy.location('pathname').should('eq', destination.pathname);
+    cy.contains('h1', destination.heading).should('be.visible');
+  }
+
   /** Confirms an out-of-scope payment category leaves the user on Payment Category. */
   public assertPaymentCategoryIsDisplayed(): void {
     cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/payment-category');

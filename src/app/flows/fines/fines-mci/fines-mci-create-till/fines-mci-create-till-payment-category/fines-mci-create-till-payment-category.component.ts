@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostListener, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
@@ -13,12 +13,17 @@ import { IFinesMciCreateTillPaymentCategoryFormState } from './interfaces/fines-
   templateUrl: './fines-mci-create-till-payment-category.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormParentBaseComponent {
+export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormParentBaseComponent implements OnInit {
   private readonly angularRouter = inject(Router);
   private readonly currentRoute = inject(ActivatedRoute);
   protected readonly finesMciStore = inject(FinesMciStore);
 
-  /** Handles Continue, adding a payment and advancing only when Criminal is selected. */
+  /** Restores leave protection for a category draft restored into the child form. */
+  public ngOnInit(): void {
+    this.stateUnsavedChanges = this.finesMciStore.draftJourney() !== null;
+  }
+
+  /** Handles Continue, saving the selected journey as a draft and opening it. */
   public handleSubmit(form: IAbstractFormBaseForm<IFinesMciCreateTillPaymentCategoryFormState>): void {
     const paymentCategory = form.formData.paymentCategory;
     if (!paymentCategory) {
@@ -26,27 +31,26 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
       return;
     }
 
-    if (paymentCategory === 'criminal') {
-      const tillId = this.finesMciStore.ensureTill();
-      this.finesMciStore.addPayment(tillId, paymentCategory);
-      this.stateUnsavedChanges = false;
-      void this.angularRouter.navigate(
-        [
-          FINES_MCI_ROUTING_PATHS.children.payment,
-          FINES_MCI_ROUTING_PATHS.children.category,
-          FINES_MCI_ROUTING_PATHS.children.criminal,
-          FINES_MCI_ROUTING_PATHS.children.search,
-        ],
-        { relativeTo: this.currentRoute.parent },
-      );
-      return;
-    }
+    this.finesMciStore.setDraftJourney(paymentCategory);
+    this.stateUnsavedChanges = false;
 
-    this.stateUnsavedChanges = true;
+    const journeyRoute = {
+      criminal: [
+        FINES_MCI_ROUTING_PATHS.children.payment,
+        FINES_MCI_ROUTING_PATHS.children.category,
+        FINES_MCI_ROUTING_PATHS.children.criminal,
+        FINES_MCI_ROUTING_PATHS.children.search,
+      ],
+      courtFee: [FINES_MCI_ROUTING_PATHS.children.courtFeeDetails],
+      suspense: [FINES_MCI_ROUTING_PATHS.children.suspenseDetails],
+    }[paymentCategory];
+
+    void this.angularRouter.navigate(journeyRoute, { relativeTo: this.currentRoute.parent });
   }
 
   /** Returns to Till Details when the user cancels. */
   public handleCancel(): void {
+    this.finesMciStore.setDraftJourney(null);
     void this.angularRouter.navigate([FINES_MCI_ROUTING_PATHS.children.details], {
       relativeTo: this.currentRoute.parent,
     });

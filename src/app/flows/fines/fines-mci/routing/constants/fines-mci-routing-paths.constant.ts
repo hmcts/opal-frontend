@@ -14,6 +14,8 @@ export const FINES_MCI_ROUTING_PATHS: IFinesMciRoutingPaths = {
     criminal: 'criminal',
     search: 'search',
     matches: 'matches',
+    suspenseDetails: 'suspense-details',
+    courtFeeDetails: 'court-fee-details',
     searchAccount: 'search-account',
     cancel: 'cancel',
   },
