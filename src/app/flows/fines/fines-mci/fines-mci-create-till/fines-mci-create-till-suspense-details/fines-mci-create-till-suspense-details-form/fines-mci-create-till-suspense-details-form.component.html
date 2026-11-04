@@ -82,7 +82,7 @@
         <input
           class="govuk-input"
           id="paymentReferencePostalOrder"
-          maxlength="100"
+          maxlength="50"
           formControlName="paymentReferencePostalOrder"
         />
       </div>
@@ -110,7 +110,7 @@
         <input
           class="govuk-input"
           id="paymentReferenceCheque"
-          maxlength="100"
+          maxlength="50"
           formControlName="paymentReferenceCheque"
         />
       </div>
@@ -193,7 +193,7 @@
         <input
           class="govuk-input"
           id="paymentReferenceCreditTransfer"
-          maxlength="100"
+          maxlength="50"
           formControlName="paymentReferenceCreditTransfer"
         />
       </div>
@@ -249,7 +249,7 @@
         @if (formSubmitted && formControlErrorMessages['relevantDetails']; as message) {
           <p class="govuk-error-message">{{ message }}</p>
         }
-        <input class="govuk-input" id="relevantDetails" maxlength="100" formControlName="relevantDetails" />
+        <input class="govuk-input" id="relevantDetails" maxlength="50" formControlName="relevantDetails" />
       </div>
     </opal-lib-govuk-radios-conditional>
   </opal-lib-govuk-radio>
