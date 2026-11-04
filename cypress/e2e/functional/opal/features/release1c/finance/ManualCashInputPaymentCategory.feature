@@ -28,10 +28,10 @@ Feature: Manual Cash Input - Payment Category
     And I continue with payment category "criminal"
     Then I see Search for an Account
 
-  # Current AC4a behaviour: Continue leaves the user here.
-  # Update this expectation when PO-3669 and PO-3679 deliver the Court Fee journey.
+  # Update this test to assert the completed screen when PO-3669 is in QA.
   @JIRA-STORY:PO-3486
-  Scenario: AC4a - Court Fee Continue leaves the user on Payment Category
+  @JIRA-STORY:PO-3679
+  Scenario: AC1, AC4a - Court Fee continues to Court Fee Details
     When I select the Fines primary navigation item "Finance"
     And I am taken to the "Finance" Fines landing page
     And I open Manual Cash Input
@@ -40,12 +40,12 @@ Feature: Manual Cash Input - Payment Category
     And I continue
     And I add a payment to the till
     And I continue with payment category "courtFee"
-    Then I remain on Payment Category
+    Then I see Court Fee Details
 
-  # Current AC4b behaviour: Continue leaves the user here.
-  # Update this expectation when PO-3673 and PO-3679 deliver the Suspense journey.
+  # Update this test to assert the completed screen when PO-3673 is in QA.
   @JIRA-STORY:PO-3486
-  Scenario: AC4b - Suspense Continue leaves the user on Payment Category
+  @JIRA-STORY:PO-3679
+  Scenario: AC2, AC4b - Suspense continues to Suspense Details
     When I select the Fines primary navigation item "Finance"
     And I am taken to the "Finance" Fines landing page
     And I open Manual Cash Input
@@ -54,7 +54,7 @@ Feature: Manual Cash Input - Payment Category
     And I continue
     And I add a payment to the till
     And I continue with payment category "suspense"
-    Then I remain on Payment Category
+    Then I see Suspense Details
 
   @JIRA-STORY:PO-3486
   Scenario: AC5, EMAC1, EMAC1a - missing category shows a summary and focuses the field from its error link

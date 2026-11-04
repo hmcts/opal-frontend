@@ -3,14 +3,17 @@ import { IOpalFinesDefendantAccount } from '@services/fines/opal-fines-service/i
 import { IOpalFinesDefendantAccountResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-response.interface';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { FinesMciJourney, IFinesMciTill } from './interfaces/fines-mci.interface';
+import { IFinesMciCriminalSearch } from './interfaces/fines-mci-criminal-search.interface';
 
 export const FinesMciStore = signalStore(
   { providedIn: 'root' },
   withState(() => ({
     businessUnit: null as IOpalFinesBusinessUnit | null,
     tills: [] as IFinesMciTill[],
+    criminalSearch: null as IFinesMciCriminalSearch | null,
     criminalSearchResults: null as IOpalFinesDefendantAccountResponse | null,
     selectedCriminalAccount: null as IOpalFinesDefendantAccount | null,
+    draftJourney: null as FinesMciJourney | null,
   })),
   withMethods((store) => {
     /** Returns the existing till ID or creates the first till for the current business unit. */
@@ -26,11 +29,30 @@ export const FinesMciStore = signalStore(
     };
 
     return {
+      setCriminalSearch(criminalSearch: IFinesMciCriminalSearch): void {
+        patchState(store, { criminalSearch, criminalSearchResults: null, selectedCriminalAccount: null });
+      },
+      setCriminalSearchResults(criminalSearchResults: IOpalFinesDefendantAccountResponse | null): void {
+        patchState(store, { criminalSearchResults, selectedCriminalAccount: null });
+      },
+      setSelectedCriminalAccount(selectedCriminalAccount: IOpalFinesDefendantAccount | null): void {
+        patchState(store, { selectedCriminalAccount });
+      },
+      resetCriminalSearch(): void {
+        patchState(store, { criminalSearch: null, criminalSearchResults: null, selectedCriminalAccount: null });
+      },
       /** Sets the selected business unit and clears tills when switching to a different unit. */
       setBusinessUnit(businessUnit: IOpalFinesBusinessUnit): void {
         const currentBusinessUnit = store.businessUnit();
         if (currentBusinessUnit && currentBusinessUnit.business_unit_id !== businessUnit.business_unit_id) {
-          patchState(store, { businessUnit, tills: [] });
+          patchState(store, {
+            businessUnit,
+            tills: [],
+            criminalSearch: null,
+            criminalSearchResults: null,
+            selectedCriminalAccount: null,
+            draftJourney: null,
+          });
           return;
         }
 
@@ -38,30 +60,34 @@ export const FinesMciStore = signalStore(
       },
       /** Ensures a till exists and returns its ID. */
       ensureTill,
+      /** Stores the selected payment journey until its details are completed. */
+      setDraftJourney(draftJourney: FinesMciJourney | null): void {
+        patchState(store, { draftJourney });
+      },
       /** Adds a payment journey to the matching till and returns the new payment ID. */
       addPayment(tillId: string, journey: FinesMciJourney): string {
         const paymentId = crypto.randomUUID();
+        const tillExists = store.tills().some((till) => till.tillId === tillId);
         patchState(store, {
           tills: store
             .tills()
             .map((till) =>
               till.tillId === tillId ? { ...till, payments: [...till.payments, { paymentId, journey }] } : till,
             ),
+          ...(tillExists && { draftJourney: null }),
         });
         return paymentId;
       },
-      setCriminalSearchResults: (criminalSearchResults: IOpalFinesDefendantAccountResponse | null) => {
-        patchState(store, { criminalSearchResults, selectedCriminalAccount: null });
-      },
-      setSelectedCriminalAccount: (selectedCriminalAccount: IOpalFinesDefendantAccount | null) => {
-        patchState(store, { selectedCriminalAccount });
-      },
-      resetCriminalSearch: () => {
-        patchState(store, { criminalSearchResults: null, selectedCriminalAccount: null });
-      },
       /** Clears the selected business unit and all till data. */
       reset(): void {
-        patchState(store, { businessUnit: null, tills: [] });
+        patchState(store, {
+          businessUnit: null,
+          tills: [],
+          criminalSearch: null,
+          criminalSearchResults: null,
+          selectedCriminalAccount: null,
+          draftJourney: null,
+        });
       },
     };
   }),
