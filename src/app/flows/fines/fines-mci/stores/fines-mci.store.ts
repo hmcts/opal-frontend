@@ -1,6 +1,6 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { IOpalFinesDefendantAccount } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
-import { IOpalFinesDefendantAccountResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-response.interface';
+import { IFinesMciCriminalAccount } from '../interfaces/fines-mci-criminal-account.interface';
+import { IFinesMciCriminalAccountsResponse } from '../interfaces/fines-mci-criminal-accounts-response.interface';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { FinesMciJourney, IFinesMciTill } from './interfaces/fines-mci.interface';
 import { IFinesMciCriminalSearch } from './interfaces/fines-mci-criminal-search.interface';
@@ -12,8 +12,8 @@ export const FinesMciStore = signalStore(
     businessUnit: null as IOpalFinesBusinessUnit | null,
     tills: [] as IFinesMciTill[],
     criminalSearch: null as IFinesMciCriminalSearch | null,
-    criminalSearchResults: null as IOpalFinesDefendantAccountResponse | null,
-    selectedCriminalAccount: null as IOpalFinesDefendantAccount | null,
+    criminalSearchResults: null as IFinesMciCriminalAccountsResponse | null,
+    selectedCriminalAccount: null as IFinesMciCriminalAccount | null,
     selectedCriminalAccountAtAGlance: null as IOpalFinesAccountDefendantAtAGlance | null,
     draftJourney: null as FinesMciJourney | null,
   })),
@@ -39,14 +39,14 @@ export const FinesMciStore = signalStore(
           selectedCriminalAccountAtAGlance: null,
         });
       },
-      setCriminalSearchResults(criminalSearchResults: IOpalFinesDefendantAccountResponse | null): void {
+      setCriminalSearchResults(criminalSearchResults: IFinesMciCriminalAccountsResponse | null): void {
         patchState(store, {
           criminalSearchResults,
           selectedCriminalAccount: null,
           selectedCriminalAccountAtAGlance: null,
         });
       },
-      setSelectedCriminalAccount(selectedCriminalAccount: IOpalFinesDefendantAccount | null): void {
+      setSelectedCriminalAccount(selectedCriminalAccount: IFinesMciCriminalAccount | null): void {
         patchState(store, { selectedCriminalAccount, selectedCriminalAccountAtAGlance: null });
       },
       setSelectedCriminalAccountAtAGlance(selectedCriminalAccountAtAGlance: IOpalFinesAccountDefendantAtAGlance): void {

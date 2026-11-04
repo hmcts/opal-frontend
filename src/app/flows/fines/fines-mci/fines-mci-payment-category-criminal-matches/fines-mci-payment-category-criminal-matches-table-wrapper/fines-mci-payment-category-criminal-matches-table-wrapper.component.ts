@@ -18,9 +18,10 @@ import { IFinesMciPaymentCategoryCriminalMatchesTableWrapperTableSort } from './
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '@app/flows/fines/fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '@app/flows/fines/fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
+import { FinesMciCriminalAccountId } from '../../interfaces/fines-mci-criminal-account.interface';
 
 export interface IFinesMciPaymentCategoryCriminalMatchesTableWrapperAccountSelection {
-  accountId: number;
+  accountId: FinesMciCriminalAccountId;
   selected: boolean;
 }
 
@@ -46,10 +47,9 @@ export class FinesMciPaymentCategoryCriminalMatchesTableWrapperComponent extends
   protected readonly DATE_INPUT_FORMAT = 'yyyy-MM-dd';
   protected readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
 
-  @Input({ required: true }) set tableData(
-    tableData: IFinesMciPaymentCategoryCriminalMatchesTableWrapperTableData[],
-  ) {
+  @Input({ required: true }) set tableData(tableData: IFinesMciPaymentCategoryCriminalMatchesTableWrapperTableData[]) {
     this.setTableData(tableData);
+    this.onApplyFilters();
   }
 
   @Input({ required: true }) set existingSortState(
@@ -58,7 +58,7 @@ export class FinesMciPaymentCategoryCriminalMatchesTableWrapperComponent extends
     this.abstractExistingSortState = existingSortState;
   }
 
-  @Input() public selectedAccountIds: number[] = [];
+  @Input() public selectedAccountIds: FinesMciCriminalAccountId[] = [];
 
   @Output() public accountSelectionChanged =
     new EventEmitter<IFinesMciPaymentCategoryCriminalMatchesTableWrapperAccountSelection>();
@@ -69,11 +69,11 @@ export class FinesMciPaymentCategoryCriminalMatchesTableWrapperComponent extends
     return data.slice(this.startIndexComputed() - 1, this.endIndexComputed());
   });
 
-  public isAccountSelected(accountId: number | null): boolean {
+  public isAccountSelected(accountId: FinesMciCriminalAccountId | null): boolean {
     return accountId !== null && this.selectedAccountIds.includes(accountId);
   }
 
-  public onAccountSelectionChanged(accountId: number | null, event: Event): void {
+  public onAccountSelectionChanged(accountId: FinesMciCriminalAccountId | null, event: Event): void {
     if (accountId !== null) {
       this.accountSelectionChanged.emit({
         accountId,
@@ -82,7 +82,7 @@ export class FinesMciPaymentCategoryCriminalMatchesTableWrapperComponent extends
     }
   }
 
-  public getAccountDetailsRoute(accountId: number): (string | number)[] {
+  public getAccountDetailsRoute(accountId: FinesMciCriminalAccountId): (string | number)[] {
     return [
       '/',
       FINES_ROUTING_PATHS.root,

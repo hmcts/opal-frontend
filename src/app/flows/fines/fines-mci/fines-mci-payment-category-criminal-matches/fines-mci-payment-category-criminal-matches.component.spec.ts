@@ -11,6 +11,7 @@ import { IFinesMciCriminalAccountsResult } from '../interfaces/fines-mci-crimina
 import { FinesMciCriminalSearchResults } from '../constants/fines-mci-criminal-search-results.constant';
 import { FinesMciStore } from '../stores/fines-mci.store';
 import { FinesMciPaymentCategoryCriminalMatchesComponent } from './fines-mci-payment-category-criminal-matches.component';
+import { IFinesMciCriminalAccount } from '../interfaces/fines-mci-criminal-account.interface';
 
 describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
   let fixture: ComponentFixture<FinesMciPaymentCategoryCriminalMatchesComponent>;
@@ -80,6 +81,107 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
     );
   });
 
+  it('should render the supplied individual response fields and sort aliases by alias number', () => {
+    const account: IFinesMciCriminalAccount = {
+      ...OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0],
+      defendant_account_id: '9007199254740993',
+      organisation: false,
+      organisation_flag: true,
+      defendant_surname: 'Example',
+      defendant_firstnames: 'Test',
+      birth_date: '2001-01-02',
+      account_balance: 0,
+      has_collection_order: true,
+      last_enforcement_action: 'bwtd',
+      aliases: [
+        { alias_number: 2, surname: 'SECOND', forenames: 'Alias', organisation_name: null },
+        { alias_number: 1, surname: 'FIRST', forenames: 'Alias', organisation_name: null },
+      ],
+    };
+    routeDataSubject.next({
+      criminalAccounts: { results: 'matches', response: { count: 1, defendant_accounts: [account] } },
+    });
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('#criminalAccountName')?.textContent?.trim()).toBe('EXAMPLE, Test');
+    expect(element.querySelector('#criminalAccountDateOfBirth')?.textContent?.trim()).toBe('02 Jan 2001');
+    expect(element.querySelector('#criminalAccountBalance')?.textContent).toContain('\u00a30.00');
+    expect(element.querySelector('#criminalAccountEnf')?.textContent?.trim()).toBe('BWTD');
+    expect(element.querySelector('#criminalAccountCo')?.textContent?.trim()).toBe('Y');
+    expect(
+      [...element.querySelectorAll('#criminalAccountAliases div')].map((alias) => alias.textContent?.trim()),
+    ).toEqual(['FIRST, Alias', 'SECOND, Alias']);
+    expect(account.aliases?.map((alias) => alias.alias_number)).toEqual([2, 1]);
+    expect(element.querySelector('#criminalAccountNumber a')?.getAttribute('href')).toBe(
+      '/fines/account/defendant/9007199254740993/details',
+    );
+
+    (element.querySelector('#fines-mci-criminal-account-9007199254740993') as HTMLInputElement).click();
+    fixture.detectChanges();
+    (element.querySelector('button.govuk-button') as HTMLButtonElement).click();
+    expect(opalFines.getDefendantAccountAtAGlance).toHaveBeenCalledExactlyOnceWith('9007199254740993');
+    expect(navigateSpy).toHaveBeenCalledExactlyOnceWith(['account', '9007199254740993', 'individual'], {
+      relativeTo: TestBed.inject(ActivatedRoute).parent,
+    });
+  });
+
+  it('should display company names, company aliases in sequence, and an em dash for company birth dates', () => {
+    const account: IFinesMciCriminalAccount = {
+      ...OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0],
+      organisation_flag: undefined,
+      defendant_account_id: '99000000000010',
+      organisation: true,
+      organisation_name: 'Example Ltd',
+      birth_date: '2001-01-02',
+      has_collection_order: false,
+      aliases: [
+        { alias_number: 2, organisation_name: 'Second Ltd', surname: null, forenames: null },
+        { alias_number: 1, organisation_name: 'First Ltd', surname: null, forenames: null },
+      ],
+    };
+    routeDataSubject.next({
+      criminalAccounts: { results: 'matches', response: { count: 1, defendant_accounts: [account] } },
+    });
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('#criminalAccountName')?.textContent?.trim()).toBe('Example Ltd');
+    expect(element.querySelector('#criminalAccountDateOfBirth')?.textContent).toContain('\u2014');
+    expect(element.querySelector('#criminalAccountCo')?.textContent).toContain('\u2014');
+    expect(
+      [...element.querySelectorAll('#criminalAccountAliases div')].map((alias) => alias.textContent?.trim()),
+    ).toEqual(['First Ltd', 'Second Ltd']);
+    (element.querySelector('#fines-mci-criminal-account-99000000000010') as HTMLInputElement).click();
+    fixture.detectChanges();
+    (element.querySelector('button.govuk-button') as HTMLButtonElement).click();
+    expect(navigateSpy).toHaveBeenCalledExactlyOnceWith(['account', '99000000000010', 'company'], {
+      relativeTo: TestBed.inject(ActivatedRoute).parent,
+    });
+  });
+
+  it.each([null, []])('should display an em dash when there are no aliases: %s', (aliases) => {
+    const account = { ...OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0], aliases };
+    routeDataSubject.next({
+      criminalAccounts: { results: 'matches', response: { count: 1, defendant_accounts: [account] } },
+    });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('#criminalAccountAliases').textContent).toContain('\u2014');
+  });
+
+  it('should display every account when exactly 100 results are returned', () => {
+    const accounts = Array.from({ length: 100 }, (_, index) => ({
+      ...OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0],
+      defendant_account_id: String(index + 1),
+      account_number: `TEST${index + 1}`,
+    }));
+    routeDataSubject.next({
+      criminalAccounts: { results: 'matches', response: { count: 100, defendant_accounts: accounts } },
+    });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelectorAll('input[name="fines-mci-criminal-account"]').length).toBe(100);
+  });
+
   it('should clear the previous selection and validation when resolved search results change', () => {
     const checkbox = fixture.nativeElement.querySelector('#fines-mci-criminal-account-1') as HTMLInputElement;
     checkbox.click();
@@ -119,6 +221,9 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
     expect(text).toContain(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name);
     expect(text).toContain(heading);
     expect(text).toContain(ticket);
+    expect(
+      fixture.nativeElement.querySelector('app-fines-mci-payment-category-criminal-matches-table-wrapper'),
+    ).toBeNull();
   });
 
   it('should show an error when continuing without selecting an account', () => {

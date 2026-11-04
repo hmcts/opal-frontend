@@ -139,7 +139,9 @@
             @if (row['Aliases'] === null || row['Aliases'].length === 0) {
               <ng-container *ngTemplateOutlet="noData"></ng-container>
             } @else {
-              {{ row['Aliases'] }}
+              @for (alias of row['Aliases'].split('\n'); track $index) {
+                <div>{{ alias }}</div>
+              }
             }
           </td>
           <td opal-lib-moj-sortable-table-row-data id="criminalAccountDateOfBirth">

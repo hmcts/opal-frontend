@@ -2,7 +2,10 @@ import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, injec
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
-import { IOpalFinesDefendantAccount } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
+import {
+  FinesMciCriminalAccountId,
+  IFinesMciCriminalAccount,
+} from '../interfaces/fines-mci-criminal-account.interface';
 import { catchError, EMPTY, finalize, map, Subject, takeUntil } from 'rxjs';
 import { FinesMciCriminalAccountService } from '../services/fines-mci-criminal-account.service';
 import { IFinesMciCriminalAccountsResult } from '../interfaces/fines-mci-criminal-accounts-result.interface';
@@ -66,7 +69,7 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly criminalAccountService = inject(FinesMciCriminalAccountService);
   private readonly cancelAccountDetailsRequest = new Subject<void>();
-  private readonly selectedAccountIdsSignal = signal<Set<number>>(new Set<number>());
+  private readonly selectedAccountIdsSignal = signal<Set<FinesMciCriminalAccountId>>(new Set());
   private readonly selectionValidationMessageSignal = signal<string | null>(null);
   private readonly accountsResult = toSignal(
     this.route.data.pipe(map((data) => data['criminalAccounts'] as IFinesMciCriminalAccountsResult)),
@@ -114,13 +117,13 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
     effect(() => {
       this.cancelAccountDetailsRequest.next();
       this.finesMciStore.setCriminalSearchResults(this.accountsResult().response);
-      this.selectedAccountIdsSignal.set(new Set<number>());
+      this.selectedAccountIdsSignal.set(new Set());
       this.selectionValidationMessageSignal.set(null);
     });
   }
 
-  private formatDefendantName(account: IOpalFinesDefendantAccount): string | null {
-    if (account.organisation_flag) {
+  private formatDefendantName(account: IFinesMciCriminalAccount): string | null {
+    if (account.organisation ?? account.organisation_flag) {
       return account.organisation_name;
     }
 
@@ -128,45 +131,47 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
       return null;
     }
 
-    const surname = account.defendant_surname ?? '';
+    const surname = account.defendant_surname?.toUpperCase() ?? '';
     const firstnames = account.defendant_firstnames ?? '';
     const separator = account.defendant_surname && account.defendant_firstnames ? ', ' : '';
     return `${surname}${separator}${firstnames}`;
   }
 
-  private formatAliases(account: IOpalFinesDefendantAccount): string | null {
+  private formatAliases(account: IFinesMciCriminalAccount): string | null {
     if (!account.aliases || account.aliases.length === 0) {
       return null;
     }
 
-    const aliases = account.aliases.map((alias) => {
-      if (account.organisation_flag) {
-        return alias.organisation_name;
-      }
+    const aliases = [...account.aliases]
+      .sort((a, b) => (a.alias_number ?? Infinity) - (b.alias_number ?? Infinity))
+      .map((alias) => {
+        if (account.organisation ?? account.organisation_flag) {
+          return alias.organisation_name;
+        }
 
-      const surname = alias.surname ?? '';
-      const forenames = alias.forenames ?? '';
-      const separator = alias.surname && alias.forenames ? ', ' : '';
-      return `${surname}${separator}${forenames}`;
-    });
+        const surname = alias.surname ?? '';
+        const forenames = alias.forenames ?? '';
+        const separator = alias.surname && alias.forenames ? ', ' : '';
+        return `${surname}${separator}${forenames}`;
+      });
 
     return aliases.filter(Boolean).join('\n') || null;
   }
 
   private mapAccountsToTableData(
-    accounts: IOpalFinesDefendantAccount[],
+    accounts: IFinesMciCriminalAccount[],
   ): IFinesMciPaymentCategoryCriminalMatchesTableWrapperTableData[] {
     return accounts.map((account) => ({
       'Account ID': account.defendant_account_id,
       Account: account.account_number,
       Name: this.formatDefendantName(account),
       Aliases: this.formatAliases(account),
-      'Date of birth': account.birth_date,
+      'Date of birth': (account.organisation ?? account.organisation_flag) ? null : account.birth_date,
       'Address line 1': account.address_line_1,
       Postcode: account.postcode,
       Balance: account.account_balance,
       Enf: account.last_enforcement_action,
-      CO: null,
+      CO: account.has_collection_order ? 'Y' : null,
     }));
   }
 
@@ -231,7 +236,7 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
           [
             FINES_MCI_ROUTING_PATHS.children.account,
             selectedAccount.defendant_account_id,
-            selectedAccount.organisation_flag ? 'company' : 'individual',
+            (selectedAccount.organisation ?? selectedAccount.organisation_flag) ? 'company' : 'individual',
           ],
           { relativeTo: this.route.parent },
         );
