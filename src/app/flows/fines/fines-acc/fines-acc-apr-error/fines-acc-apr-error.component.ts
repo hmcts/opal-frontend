@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subject, takeUntil } from 'rxjs';
+import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { FinesAccountStore } from '../stores/fines-acc.store';
@@ -11,7 +11,8 @@ import { IFinesAccAprErrorContext } from './interfaces/fines-acc-apr-error-conte
   templateUrl: './fines-acc-apr-error.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccAprErrorComponent {
+export class FinesAccAprErrorComponent implements OnInit, OnDestroy {
+  private readonly ngUnsubscribe = new Subject<void>();
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly accountStore = inject(FinesAccountStore);
@@ -21,8 +22,8 @@ export class FinesAccAprErrorComponent {
     this.context()?.action === 'change' ? { alternatePaymentReferenceId: this.context()?.referenceId } : {},
   );
 
-  constructor() {
-    this.route.paramMap.pipe(takeUntilDestroyed()).subscribe((params) => {
+  public ngOnInit(): void {
+    this.route.paramMap.pipe(takeUntil(this.ngUnsubscribe)).subscribe((params) => {
       const context = this.accountStore.aprErrorContext();
       if (!context || context.accountId !== Number(params.get('accountId'))) {
         this.accountStore.clearAprErrorContext();
@@ -31,5 +32,10 @@ export class FinesAccAprErrorComponent {
       }
       this.context.set(context);
     });
+  }
+
+  public ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
   }
 }

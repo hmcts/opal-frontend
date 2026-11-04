@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { catchError, EMPTY, filter, finalize, Subject, takeUntil } from 'rxjs';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
@@ -15,6 +14,7 @@ import { FINES_ACC_APR_ADD_CHANGE_TEXT } from './constants/fines-acc-apr-add-cha
 import { TFinesAccAprAddChangeMode } from './types/fines-acc-apr-add-change-mode.type';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FinesAccAprAddChangeFormComponent } from './fines-acc-apr-add-change-form/fines-acc-apr-add-change-form.component';
+import { canAccessAprPage } from '../fines-acc-apr-manage/utils/fines-acc-apr.utils';
 import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';
 import { FINES_ACC_APR_DUPLICATE_MESSAGE } from '../fines-acc-apr-error/constants/fines-acc-apr-error-message.constant';
 import { isAprDuplicate } from '@app/interceptors/fines-acc-apr-http-error.interceptor';
@@ -26,14 +26,14 @@ import { IFinesAccAprErrorContext } from '../fines-acc-apr-error/interfaces/fine
   templateUrl: './fines-acc-apr-add-change.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesAccAprAddChangeComponent extends AbstractFormParentBaseComponent {
+export class FinesAccAprAddChangeComponent extends AbstractFormParentBaseComponent implements OnInit, OnDestroy {
   private readonly pageRoute = inject(ActivatedRoute);
   private readonly pageRouter = inject(Router);
   private readonly accountStore = inject(FinesAccountStore);
   private readonly api = inject(OpalFines);
   private readonly payloadService = inject(FinesAccPayloadService);
   private readonly utils = inject(UtilsService);
-  private readonly destroyRef = inject(DestroyRef);
+  private readonly ngUnsubscribe = new Subject<void>();
   private readonly contextChanged = new Subject<void>();
   private currentContext: {
     accountId: number;
@@ -55,17 +55,6 @@ export class FinesAccAprAddChangeComponent extends AbstractFormParentBaseCompone
     () => `${this.accountStore.getAccountNumber()} - ${this.accountStore.party_name()}`,
   );
 
-  constructor() {
-    super();
-    this.pageRoute.data.pipe(takeUntilDestroyed()).subscribe(() => this.resetFormContext());
-    this.pageRouter.events
-      .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        takeUntilDestroyed(),
-      )
-      .subscribe(() => this.resetFormContext());
-  }
-
   private resetFormContext(): void {
     const snapshot = this.pageRoute.snapshot;
     const mode = snapshot.paramMap.get('mode');
@@ -80,6 +69,14 @@ export class FinesAccAprAddChangeComponent extends AbstractFormParentBaseCompone
     }
     const accountId = Number(snapshot.paramMap.get('accountId'));
     const aprs = snapshot.data['aprs'] as IOpalFinesAprsResponse;
+    if (!canAccessAprPage(aprs.references, mode, undefined)) {
+      this.contextChanged.next();
+      this.currentContext = null;
+      this.pending.set(false);
+      this.stateUnsavedChanges = false;
+      this.navigateToManage();
+      return;
+    }
     const previous = this.currentContext;
     if (
       previous?.accountId === accountId &&
@@ -150,7 +147,7 @@ export class FinesAccAprAddChangeComponent extends AbstractFormParentBaseCompone
           return EMPTY;
         }),
         takeUntil(this.contextChanged),
-        takeUntilDestroyed(this.destroyRef),
+        takeUntil(this.ngUnsubscribe),
         finalize(() => this.pending.set(false)),
       )
       .subscribe((response) => {
@@ -160,5 +157,21 @@ export class FinesAccAprAddChangeComponent extends AbstractFormParentBaseCompone
         this.stateUnsavedChanges = false;
         this.navigateToManage();
       });
+  }
+
+  public ngOnInit(): void {
+    this.pageRoute.data.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => this.resetFormContext());
+    this.pageRouter.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntil(this.ngUnsubscribe),
+      )
+      .subscribe(() => this.resetFormContext());
+  }
+
+  public ngOnDestroy(): void {
+    this.ngUnsubscribe.next();
+    this.ngUnsubscribe.complete();
+    this.contextChanged.complete();
   }
 }

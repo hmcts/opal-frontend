@@ -234,7 +234,6 @@ describe('APR Add/Change route', () => {
       finesAccStateGuard,
     ]);
     expect(route?.canDeactivate).toEqual([canDeactivateGuard]);
-    expect(route?.runGuardsAndResolvers).toBe('always');
     expect(route?.data).toEqual({
       routePermissionId: [FINES_PERMISSIONS['manage-alternate-payment-references']],
     });
