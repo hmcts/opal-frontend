@@ -36,9 +36,6 @@ import { FinesAccBusinessUnitResolver } from './resolvers/fines-acc-business-uni
 import { FINES_ACCOUNT_ROUTE_TYPES } from './constants/fines-acc-route-types.constant';
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 import { fetchAccCourtsResolver } from './resolvers/fetch-acc-courts-resolver/fetch-acc-courts.resolver';
-import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';
-import { finesAccAprFeatureFlagGuard } from './guards/fines-acc-apr-feature-flag.guard';
-import { FinesAccAprAccessDeniedComponent } from '../fines-acc-apr-access-denied/fines-acc-apr-access-denied.component';
 
 describe('fines acc routes', () => {
   const defendantRoute = routing.find((route) => route.path === `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`);
@@ -112,23 +109,6 @@ describe('fines acc routes', () => {
     expect(minorCreditorJourneyPaths).toEqual(
       expect.arrayContaining([`${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.note}/add`]),
     );
-  });
-
-  it('should guard all APR routes with the banking interfaces flag', () => {
-    const aprRoute = defendantJourneyGroup?.children?.find((route) => route.path === FINES_ACC_APR_ROUTING_PATHS.root);
-
-    expect(aprRoute?.canActivate).toEqual([finesAccAprFeatureFlagGuard]);
-    expect(aprRoute?.canActivateChild).toEqual([finesAccAprFeatureFlagGuard]);
-  });
-
-  it('should load an account-scoped APR permission denied page without requiring the denied permission', async () => {
-    const aprRoute = defendantJourneyGroup?.children?.find((route) => route.path === FINES_ACC_APR_ROUTING_PATHS.root);
-    const deniedRoute = aprRoute?.children?.find((route) => route.path === FINES_ACC_APR_ROUTING_PATHS.children.denied);
-
-    expect(await deniedRoute?.loadComponent?.()).toBe(FinesAccAprAccessDeniedComponent);
-    expect(deniedRoute?.data?.['title']).toBe('Access Denied');
-    expect(deniedRoute?.resolve?.['title']).toBe(TitleResolver);
-    expect(deniedRoute?.data?.['routePermissionId']).toBeUndefined();
   });
 
   it('should load the add enforcement action component through the lazy route factory', async () => {

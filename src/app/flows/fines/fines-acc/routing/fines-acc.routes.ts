@@ -48,8 +48,6 @@ import { FINES_ACC_MAJOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS } from '../fines-acc-m
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS } from '../fines-acc-minor-creditor-details/constants/fines-acc-minor-creditor-details-route-data-keys.constant';
 import { FinesAccBusinessUnitResolver } from './resolvers/fines-acc-business-unit.resolver';
 import { FINES_ACCOUNT_ROUTE_TYPES } from './constants/fines-acc-route-types.constant';
-import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';
-import { finesAccAprFeatureFlagGuard } from './guards/fines-acc-apr-feature-flag.guard';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 const finesAccountBusinessUnitResolverProvider = {
@@ -97,22 +95,6 @@ export const routing: Routes = [
           ...PRIMARY_NAV_HIDDEN_ROUTE_DATA,
         },
         children: [
-          {
-            path: FINES_ACC_APR_ROUTING_PATHS.root,
-            canActivate: [finesAccAprFeatureFlagGuard],
-            canActivateChild: [finesAccAprFeatureFlagGuard],
-            children: [
-              {
-                path: FINES_ACC_APR_ROUTING_PATHS.children.denied,
-                loadComponent: () =>
-                  import('../fines-acc-apr-access-denied/fines-acc-apr-access-denied.component').then(
-                    (c) => c.FinesAccAprAccessDeniedComponent,
-                  ),
-                data: { title: 'Access Denied' },
-                resolve: { title: TitleResolver },
-              },
-            ],
-          },
           {
             path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.convert}/:partyType`,
 
