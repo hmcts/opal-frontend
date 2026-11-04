@@ -5,12 +5,7 @@ import { FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_ACCOUNT_CONTENT } from './constants
 
 @Component({
   selector: 'app-fines-mci-payment-category-criminal-account',
-  template: `
-    <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-l">{{ heading() }}</h1>
-      <p class="govuk-body">{{ content.placeholder }}</p>
-    </div>
-  `,
+  templateUrl: './fines-mci-payment-category-criminal-account.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMciPaymentCategoryCriminalAccountComponent {
