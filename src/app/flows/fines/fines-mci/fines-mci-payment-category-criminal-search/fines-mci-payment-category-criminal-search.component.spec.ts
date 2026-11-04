@@ -437,6 +437,97 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
     },
   );
 
+  it.each([
+    ['individuals', 'first_names', 'last_name', 'Jim', 'Enter last name'],
+    ['individuals', 'last_name_exact_match', 'last_name', true, 'Enter last name'],
+    ['individuals', 'include_aliases', 'last_name', true, 'Enter last name'],
+    ['individuals', 'first_names_exact_match', 'first_names', true, 'Enter first name'],
+    ['companies', 'include_aliases', 'company_name', true, 'Enter company name'],
+    ['companies', 'company_name_exact_match', 'company_name', true, 'Enter company name'],
+  ] as const)('should reject a spaces-only %s name when %s requires it', (tab, trigger, dependent, value, message) => {
+    fragmentSubject.next(tab);
+    const prefix = `fsa_search_account_${tab}_`;
+    const criteria = component.form.get(`${prefix}search_criteria`)!;
+    const triggerControl: AbstractControl<string | boolean | null> = criteria.get(`${prefix}${trigger}`)!;
+    const dependentControl: AbstractControl<string | null> = criteria.get(`${prefix}${dependent}`)!;
+    triggerControl.setValue(value);
+    dependentControl.setValue('   ');
+    routerNavigateSpy.mockClear();
+
+    component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+    fixture.detectChanges();
+
+    expect(dependentControl.value).toBe('');
+    expect(component.formControlErrorMessages[`${prefix}${dependent}`]).toBe(message);
+    expect(fixture.nativeElement.textContent).toContain(message);
+    expect(component.form.valid).toBe(false);
+    expect(routerNavigateSpy).not.toHaveBeenCalled();
+    expect(TestBed.inject(FinesMciStore).criminalSearch()).toBeNull();
+  });
+
+  it.each([
+    ['individuals', 'first_names', 'Jim Davidson'],
+    ['individuals', 'last_name', 'Jim Davidson'],
+    ['companies', 'company_name', 'Jim Davidson Ltd'],
+  ] as const)('should trim the %s %s while preserving spaces within the name', (tab, field, name) => {
+    fragmentSubject.next(tab);
+    const prefix = `fsa_search_account_${tab}_`;
+    const criteria = component.form.get(`${prefix}search_criteria`)!;
+    const nameControl: AbstractControl<string | null> = criteria.get(`${prefix}${field}`)!;
+    if (field === 'first_names') {
+      component.form.controls.fsa_search_account_individuals_search_criteria.patchValue({
+        fsa_search_account_individuals_last_name: 'Davidson',
+      });
+    }
+    nameControl.setValue(`  ${name}  `);
+    routerNavigateSpy.mockClear();
+
+    component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+    fixture.detectChanges();
+
+    expect(nameControl.value).toBe(name);
+    expect(fixture.nativeElement.querySelector(`#${prefix}${field}`).value).toBe(name);
+    expect(TestBed.inject(FinesMciStore).criminalSearch()?.formData).toEqual(component.form.getRawValue());
+    expect(routerNavigateSpy).toHaveBeenCalledExactlyOnceWith(CRIMINAL_MATCHES_ROUTE, {
+      relativeTo: TestBed.inject(ActivatedRoute).parent,
+    });
+  });
+
+  it('should ignore spaces-only names when searching by account number', () => {
+    component.form.patchValue({
+      fsa_search_account_number: '12345678',
+      fsa_search_account_individuals_search_criteria: {
+        fsa_search_account_individuals_last_name: '   ',
+        fsa_search_account_individuals_first_names: '   ',
+      },
+    });
+    routerNavigateSpy.mockClear();
+
+    component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+
+    expect(component.form.valid).toBe(true);
+    expect(TestBed.inject(FinesMciStore).criminalSearch()?.searchCriteriaCannotBeCombined).toBe(false);
+    expect(routerNavigateSpy).toHaveBeenCalledOnce();
+  });
+
+  it('should not search when all name fields contain only spaces', () => {
+    component.form.patchValue({
+      fsa_search_account_individuals_search_criteria: {
+        fsa_search_account_individuals_last_name: '   ',
+        fsa_search_account_individuals_first_names: '   ',
+      },
+      fsa_search_account_companies_search_criteria: { fsa_search_account_companies_company_name: '   ' },
+    });
+    routerNavigateSpy.mockClear();
+
+    component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+
+    expect(component.form.errors).toEqual({ formEmpty: true });
+    expect(component.formErrorSummaryMessage).toEqual([]);
+    expect(routerNavigateSpy).not.toHaveBeenCalled();
+    expect(TestBed.inject(FinesMciStore).criminalSearch()).toBeNull();
+  });
+
   it('should store combined criteria for the matches resolver to handle', () => {
     routerNavigateSpy.mockClear();
     component['form'].patchValue({

@@ -155,7 +155,26 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
     this.setInitialErrorMessages();
   }
 
+  private trimSearchNames(): void {
+    const individuals = this.form.controls.fsa_search_account_individuals_search_criteria.controls;
+    const companies = this.form.controls.fsa_search_account_companies_search_criteria.controls;
+    const nameControls = [
+      individuals.fsa_search_account_individuals_last_name,
+      individuals.fsa_search_account_individuals_first_names,
+      companies.fsa_search_account_companies_company_name,
+    ];
+
+    for (const control of nameControls) {
+      // Preserve non-printable characters so ASCII validation can still reject them.
+      const trimmedValue = control.value?.replace(/^ +| +$/g, '') ?? null;
+      if (trimmedValue !== control.value) {
+        control.setValue(trimmedValue, { emitEvent: false });
+      }
+    }
+  }
+
   public override handleFormSubmit(event: SubmitEvent): void {
+    this.trimSearchNames();
     this.form.updateValueAndValidity({ emitEvent: false });
 
     if (this.form.errors?.['searchCriteriaCannotBeCombined']) {
