@@ -1,0 +1,46 @@
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
+
+<form [formGroup]="form" (submit)="handleFormSubmit($event)" autocomplete="off" novalidate>
+  <opal-lib-alphagov-accessible-autocomplete
+    #courtFeeAutocomplete
+    (input)="handleCourtFeeInput($event)"
+    [control]="form.controls['courtFeeId']"
+    labelText="Court fee"
+    labelClasses="govuk-label--s"
+    inputId="courtFeeId"
+    inputName="courtFeeId"
+    inputClasses="govuk-input--width-20"
+    hintText="Search using court fee code or description"
+    [autoCompleteItems]="courtFeeItems"
+    [errors]="formControlErrorMessages['courtFeeId']"
+  ></opal-lib-alphagov-accessible-autocomplete>
+
+  <opal-lib-govuk-text-input-prefix-suffix
+    labelText="Amount"
+    labelClasses="govuk-label--s"
+    inputId="amountPaid"
+    inputName="amountPaid"
+    inputClasses="govuk-input--width-10"
+    prefixText="£"
+    [control]="form.controls['amountPaid']"
+    [errors]="formControlErrorMessages['amountPaid']"
+  ></opal-lib-govuk-text-input-prefix-suffix>
+
+  <opal-lib-govuk-text-input
+    labelText="Number of items"
+    labelClasses="govuk-label--s"
+    inputId="numberOfItems"
+    inputName="numberOfItems"
+    inputClasses="govuk-input--width-5"
+    [control]="form.controls['numberOfItems']"
+    [errors]="formControlErrorMessages['numberOfItems']"
+  ></opal-lib-govuk-text-input>
+
+  <div class="govuk-button-group">
+    <button class="govuk-button" id="submitForm" type="submit">Continue</button>
+    <opal-lib-govuk-cancel-link (linkClickEvent)="cancelRequested.emit()"></opal-lib-govuk-cancel-link>
+  </div>
+</form>

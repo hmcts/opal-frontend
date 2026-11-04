@@ -1,11 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { Router, provideRouter } from '@angular/router';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { of, Subject, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesMciStore } from '../../stores/fines-mci.store';
 import { FinesMciCreateTillCourtFeeDetailsComponent } from './fines-mci-create-till-court-fee-details.component';
+import { FinesMciCreateTillCourtFeeDetailsFormComponent } from './fines-mci-create-till-court-fee-details-form/fines-mci-create-till-court-fee-details-form.component';
 
 describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
   let fixture: ComponentFixture<FinesMciCreateTillCourtFeeDetailsComponent>;
@@ -25,6 +28,7 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     }).compileComponents();
     store = TestBed.inject(FinesMciStore);
     store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    vi.spyOn(TestBed.inject(UtilsService), 'scrollToTop').mockImplementation(() => {});
     router = TestBed.inject(Router);
     vi.spyOn(router, 'navigate').mockResolvedValue(true);
   });
@@ -33,6 +37,17 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     fixture = TestBed.createComponent(FinesMciCreateTillCourtFeeDetailsComponent);
     fixture.detectChanges();
     return fixture.componentInstance;
+  }
+
+  function courtFeeForm(): FinesMciCreateTillCourtFeeDetailsFormComponent {
+    return fixture.debugElement.query(By.directive(FinesMciCreateTillCourtFeeDetailsFormComponent)).componentInstance;
+  }
+
+  function submitForm(): void {
+    (fixture.nativeElement as HTMLElement)
+      .querySelector('form')!
+      .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    fixture.detectChanges();
   }
 
   function enterCourtFeeText(value: string): HTMLInputElement {
@@ -77,41 +92,63 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     expect(element.querySelector('#numberOfItems-error-message')?.textContent).toContain('Enter number of items');
     expect(router.navigate).not.toHaveBeenCalled();
     expect(store.courtFeeDraft()).toBeNull();
+    expect(courtFeeForm().form.valid).toBe(false);
+    expect(document.activeElement).toBe(element.querySelector('.govuk-error-summary'));
+    expect(TestBed.inject(UtilsService).scrollToTop).toHaveBeenCalledOnce();
   });
 
   it('shows the invalid court fee error for text that was not selected from the list', () => {
-    const component = render();
+    render();
     enterCourtFeeText('NOT_A_FEE');
-    component.handleSubmit();
+    submitForm();
 
     const element = fixture.nativeElement as HTMLElement;
     expect(element.querySelector('.govuk-error-summary')?.textContent).toContain('Enter a valid court fee');
     expect(element.querySelector('#courtFeeId-autocomplete-error-message')?.textContent).toContain(
       'Enter a valid court fee',
     );
+    expect(courtFeeForm().form.controls['courtFeeId'].invalid).toBe(true);
   });
 
   it('keeps the invalid error when the autocomplete clears typed text on blur', () => {
-    const component = render();
+    render();
     const input = enterCourtFeeText('NOT_A_FEE');
     input.value = '';
-    component.handleSubmit();
+    submitForm();
 
     expect((fixture.nativeElement as HTMLElement).querySelector('.govuk-error-summary')?.textContent).toContain(
       'Enter a valid court fee',
     );
   });
 
+  it('rejects unmatched autocomplete text when a fee ID remains selected', () => {
+    render();
+    const input = enterCourtFeeText('CF001 - Application (£12.50)');
+    courtFeeForm().form.controls['courtFeeId'].setValue(1);
+    courtFeeForm().form.controls['amountPaid'].setValue('12.50');
+    courtFeeForm().form.controls['numberOfItems'].setValue('1');
+
+    input.value = 'NOT_A_FEE';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    submitForm();
+
+    expect(courtFeeForm().form.controls['courtFeeId'].invalid).toBe(true);
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector('#courtFeeId-autocomplete-error-message')?.textContent,
+    ).toContain('Enter a valid court fee');
+    expect(router.navigate).not.toHaveBeenCalled();
+  });
+
   it('clears the court fee error while retaining an amount error', () => {
-    const component = render();
-    component['form'].controls.numberOfItems.setValue('1');
+    render();
+    courtFeeForm().form.controls['numberOfItems'].setValue('1');
     const input = enterCourtFeeText('NOT_A_FEE');
-    component.handleSubmit();
+    submitForm();
 
     input.value = 'CF001 - Application (£12.50)';
     input.dispatchEvent(new Event('input', { bubbles: true }));
-    component['form'].controls.courtFeeId.setValue(1);
-    component.handleSubmit();
+    courtFeeForm().form.controls['courtFeeId'].setValue(1);
+    submitForm();
     fixture.detectChanges();
 
     const element = fixture.nativeElement as HTMLElement;
@@ -121,11 +158,11 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
   });
 
   it('shows the required amount error when a fee is selected but Amount is blank', () => {
-    const component = render();
+    render();
     enterCourtFeeText('CF001 - Application (£12.50)');
-    component['form'].controls.courtFeeId.setValue(1);
-    component['form'].controls.numberOfItems.setValue('1');
-    component.handleSubmit();
+    courtFeeForm().form.controls['courtFeeId'].setValue(1);
+    courtFeeForm().form.controls['numberOfItems'].setValue('1');
+    submitForm();
 
     const element = fixture.nativeElement as HTMLElement;
     expect(element.querySelector('.govuk-error-summary')?.textContent).toContain('Enter an amount');
@@ -134,12 +171,12 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
   });
 
   it.each(['abc', '12x', '12.3.4', '£12'])('shows the numeric amount error for %s', (amount) => {
-    const component = render();
+    render();
     enterCourtFeeText('CF001 - Application (£12.50)');
-    component['form'].controls.courtFeeId.setValue(1);
-    component['form'].controls.amountPaid.setValue(amount);
-    component['form'].controls.numberOfItems.setValue('1');
-    component.handleSubmit();
+    courtFeeForm().form.controls['courtFeeId'].setValue(1);
+    courtFeeForm().form.controls['amountPaid'].setValue(amount);
+    courtFeeForm().form.controls['numberOfItems'].setValue('1');
+    submitForm();
 
     const element = fixture.nativeElement as HTMLElement;
     expect(element.querySelector('.govuk-error-summary')?.textContent).toContain('Enter numbers only');
@@ -147,22 +184,22 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
   });
 
   it.each(['12', '12.50', '0.5'])('accepts the numeric amount %s', (amount) => {
-    const component = render();
+    render();
     enterCourtFeeText('CF001 - Application (£12.50)');
-    component['form'].controls.courtFeeId.setValue(1);
-    component['form'].controls.amountPaid.setValue(amount);
-    component['form'].controls.numberOfItems.setValue('1');
-    component.handleSubmit();
+    courtFeeForm().form.controls['courtFeeId'].setValue(1);
+    courtFeeForm().form.controls['amountPaid'].setValue(amount);
+    courtFeeForm().form.controls['numberOfItems'].setValue('1');
+    submitForm();
     fixture.detectChanges();
 
     expect((fixture.nativeElement as HTMLElement).querySelector('.govuk-error-summary')).toBeNull();
   });
 
   it('keeps the court fee error when Amount is corrected', () => {
-    const component = render();
-    component['form'].controls.numberOfItems.setValue('1');
-    component.handleSubmit();
-    component['form'].controls.amountPaid.setValue('12.50');
+    render();
+    courtFeeForm().form.controls['numberOfItems'].setValue('1');
+    submitForm();
+    courtFeeForm().form.controls['amountPaid'].setValue('12.50');
     fixture.detectChanges();
 
     const element = fixture.nativeElement as HTMLElement;
@@ -172,11 +209,11 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
   });
 
   it('shows the required number of items error when a fee and amount are entered', () => {
-    const component = render();
+    render();
     enterCourtFeeText('CF001 - Application (£12.50)');
-    component['form'].controls.courtFeeId.setValue(1);
-    component['form'].controls.amountPaid.setValue('12.50');
-    component.handleSubmit();
+    courtFeeForm().form.controls['courtFeeId'].setValue(1);
+    courtFeeForm().form.controls['amountPaid'].setValue('12.50');
+    submitForm();
 
     const element = fixture.nativeElement as HTMLElement;
     expect(element.querySelector('.govuk-error-summary')?.textContent).toContain('Enter number of items');
@@ -186,32 +223,32 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
   });
 
   it.each(['two', '1.5', '-1'])('shows the number of items numeric error for %s', (numberOfItems) => {
-    const component = render();
+    render();
     enterCourtFeeText('CF001 - Application (£12.50)');
-    component['form'].controls.courtFeeId.setValue(1);
-    component['form'].controls.amountPaid.setValue('12.50');
-    component['form'].controls.numberOfItems.setValue(numberOfItems);
-    component.handleSubmit();
+    courtFeeForm().form.controls['courtFeeId'].setValue(1);
+    courtFeeForm().form.controls['amountPaid'].setValue('12.50');
+    courtFeeForm().form.controls['numberOfItems'].setValue(numberOfItems);
+    submitForm();
 
     const element = fixture.nativeElement as HTMLElement;
     expect(element.querySelector('.govuk-error-summary')?.textContent).toContain('Enter numbers only');
     expect(element.querySelector('#numberOfItems-error-message')?.textContent).toContain('Enter numbers only');
   });
 
-  it.each(['0', '00'])('rejects %s items and does not clear the existing error', (numberOfItems) => {
-    const component = render();
+  it.each(['0', '00'])('rejects %s items and updates the existing error', (numberOfItems) => {
+    render();
     enterCourtFeeText('CF001 - Application (£12.50)');
-    component['form'].controls.courtFeeId.setValue(1);
-    component['form'].controls.amountPaid.setValue('12.50');
-    component.handleSubmit();
+    courtFeeForm().form.controls['courtFeeId'].setValue(1);
+    courtFeeForm().form.controls['amountPaid'].setValue('12.50');
+    submitForm();
 
-    component['form'].controls.numberOfItems.setValue(numberOfItems);
+    courtFeeForm().form.controls['numberOfItems'].setValue(numberOfItems);
     fixture.detectChanges();
     expect((fixture.nativeElement as HTMLElement).querySelector('#numberOfItems-error-message')?.textContent).toContain(
-      'Enter number of items',
+      'Enter a number of items greater than 0',
     );
 
-    component.handleSubmit();
+    submitForm();
 
     const element = fixture.nativeElement as HTMLElement;
     expect(element.querySelector('.govuk-error-summary')?.textContent).toContain(
@@ -222,15 +259,16 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     );
     expect(router.navigate).not.toHaveBeenCalled();
     expect(store.courtFeeDraft()).toBeNull();
+    expect(courtFeeForm().form.controls['numberOfItems'].invalid).toBe(true);
   });
 
   it.each(['1', '12'])('accepts the whole number of items %s', (numberOfItems) => {
-    const component = render();
+    render();
     enterCourtFeeText('CF001 - Application (£12.50)');
-    component['form'].controls.courtFeeId.setValue(1);
-    component['form'].controls.amountPaid.setValue('12.50');
-    component['form'].controls.numberOfItems.setValue(numberOfItems);
-    component.handleSubmit();
+    courtFeeForm().form.controls['courtFeeId'].setValue(1);
+    courtFeeForm().form.controls['amountPaid'].setValue('12.50');
+    courtFeeForm().form.controls['numberOfItems'].setValue(numberOfItems);
+    submitForm();
     fixture.detectChanges();
 
     expect((fixture.nativeElement as HTMLElement).querySelector('.govuk-error-summary')).toBeNull();
@@ -241,34 +279,35 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     ['25.01', '2', 'over-underpayment-confirmation'],
     ['24.99', '2', 'over-underpayment-confirmation'],
   ])('routes a £%s payment for %s items to %s', (amount, numberOfItems, destination) => {
-    const component = render();
+    render();
     enterCourtFeeText('CF001 - Application (£12.50)');
-    component['form'].controls.courtFeeId.setValue(1);
-    component['form'].controls.amountPaid.setValue(amount);
-    component['form'].controls.numberOfItems.setValue(numberOfItems);
+    courtFeeForm().form.controls['courtFeeId'].setValue(1);
+    courtFeeForm().form.controls['amountPaid'].setValue(amount);
+    courtFeeForm().form.controls['numberOfItems'].setValue(numberOfItems);
 
-    component.handleSubmit();
+    submitForm();
 
     expect(router.navigate).toHaveBeenCalledWith([`../${destination}`], expect.any(Object));
     expect(store.courtFeeDraft()).toEqual({ courtFeeId: 1, amountPaid: amount, numberOfItems });
+    expect(courtFeeForm().form.valid).toBe(true);
   });
 
   it('uses pence when comparing a decimal court fee for multiple items', () => {
-    const component = render();
+    render();
     enterCourtFeeText('CF002 - Issue (£0.10)');
-    component['form'].controls.courtFeeId.setValue(2);
-    component['form'].controls.amountPaid.setValue('0.30');
-    component['form'].controls.numberOfItems.setValue('3');
+    courtFeeForm().form.controls['courtFeeId'].setValue(2);
+    courtFeeForm().form.controls['amountPaid'].setValue('0.30');
+    courtFeeForm().form.controls['numberOfItems'].setValue('3');
 
-    component.handleSubmit();
+    submitForm();
 
     expect(router.navigate).toHaveBeenCalledWith(['../court-fee-payment-details'], expect.any(Object));
   });
 
   it('keeps other field errors when Number of items is corrected', () => {
-    const component = render();
-    component.handleSubmit();
-    component['form'].controls.numberOfItems.setValue('2');
+    render();
+    submitForm();
+    courtFeeForm().form.controls['numberOfItems'].setValue('2');
     fixture.detectChanges();
 
     const element = fixture.nativeElement as HTMLElement;
@@ -298,7 +337,7 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
 
     const component = render();
 
-    expect(component['form'].getRawValue()).toEqual(draft);
+    expect(courtFeeForm().form.getRawValue()).toEqual(draft);
     expect(component.canDeactivate()).toBe(false);
   });
 
@@ -315,7 +354,7 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     ['number of items', { courtFeeId: null, amountPaid: null, numberOfItems: '2' }],
   ])('warns before leaving when only the %s is entered', (_field, values) => {
     const component = render();
-    component['form'].setValue(values);
+    courtFeeForm().form.setValue(values);
 
     expect(component.canDeactivate()).toBe(false);
     expect(component.handleBeforeUnload()).toBe(false);
@@ -329,21 +368,21 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
   });
 
   it('prevents browser exit or refresh while Court Fee Details are entered', () => {
-    const component = render();
-    component['form'].controls.amountPaid.setValue('12.50');
+    render();
+    courtFeeForm().form.controls['amountPaid'].setValue('12.50');
     const beforeUnloadEvent = new Event('beforeunload', { cancelable: true });
 
     expect(window.dispatchEvent(beforeUnloadEvent)).toBe(false);
     expect(beforeUnloadEvent.defaultPrevented).toBe(true);
-    expect(component['form'].controls.amountPaid.value).toBe('12.50');
+    expect(courtFeeForm().form.controls['amountPaid'].value).toBe('12.50');
   });
 
   it('allows a valid Continue without a warning and keeps the draft for the next screen', () => {
     const component = render();
     enterCourtFeeText('CF001 - Application (£12.50)');
-    component['form'].setValue({ courtFeeId: 1, amountPaid: '12.50', numberOfItems: '1' });
+    courtFeeForm().form.setValue({ courtFeeId: 1, amountPaid: '12.50', numberOfItems: '1' });
 
-    component.handleSubmit();
+    submitForm();
     fixture.destroy();
 
     expect(component.canDeactivate()).toBe(true);
@@ -355,9 +394,9 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     vi.mocked(router.navigate).mockResolvedValueOnce(false);
     const component = render();
     enterCourtFeeText('CF001 - Application (£12.50)');
-    component['form'].setValue({ courtFeeId: 1, amountPaid: '12.50', numberOfItems: '1' });
+    courtFeeForm().form.setValue({ courtFeeId: 1, amountPaid: '12.50', numberOfItems: '1' });
 
-    component.handleSubmit();
+    submitForm();
     await Promise.resolve();
 
     expect(component.canDeactivate()).toBe(false);
@@ -401,7 +440,7 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     await Promise.resolve();
 
     expect(component.canDeactivate()).toBe(false);
-    expect(component['form'].getRawValue()).toEqual(draft);
+    expect(courtFeeForm().form.getRawValue()).toEqual(draft);
     expect(store.courtFeeDraft()).toEqual(draft);
     expect(store.draftJourney()).toBe('courtFee');
   });

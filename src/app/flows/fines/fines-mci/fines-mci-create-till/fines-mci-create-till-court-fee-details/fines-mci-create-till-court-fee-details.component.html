@@ -1,5 +1,5 @@
 <div class="govuk-grid-column-two-thirds" id="fines-mci-create-till-court-fee-details">
-  <span class="govuk-caption-l">{{ businessUnitName }}</span>
+  <span class="govuk-caption-l">{{ finesMciStore.businessUnit()?.business_unit_name }}</span>
   <h1 class="govuk-heading-l">Court fee</h1>
 
   @if (feeLoadFailed()) {
@@ -9,54 +9,13 @@
     <output class="govuk-body govuk-!-display-block">No court fees are available for this business unit.</output>
     <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
   } @else if (feesLoaded()) {
-    <div #errorSummary>
-      <opal-lib-govuk-error-summary
-        [errors]="formErrorSummaryMessage"
-        (errorClick)="scrollTo($event)"
-      ></opal-lib-govuk-error-summary>
-    </div>
-
-    <form [formGroup]="form" (ngSubmit)="handleSubmit()" autocomplete="off" novalidate>
-      <opal-lib-alphagov-accessible-autocomplete
-        #courtFeeAutocomplete
-        (input)="handleCourtFeeInput($event)"
-        [control]="form.controls.courtFeeId"
-        labelText="Court fee"
-        labelClasses="govuk-label--s"
-        inputId="courtFeeId"
-        inputName="courtFeeId"
-        inputClasses="govuk-input--width-20"
-        hintText="Search using court fee code or description"
-        [autoCompleteItems]="courtFeeItems()"
-        [errors]="courtFeeSelectionError"
-      ></opal-lib-alphagov-accessible-autocomplete>
-
-      <opal-lib-govuk-text-input-prefix-suffix
-        labelText="Amount"
-        labelClasses="govuk-label--s"
-        inputId="amountPaid"
-        inputName="amountPaid"
-        inputClasses="govuk-input--width-10"
-        prefixText="£"
-        [control]="form.controls.amountPaid"
-        [errors]="amountError"
-      ></opal-lib-govuk-text-input-prefix-suffix>
-
-      <opal-lib-govuk-text-input
-        labelText="Number of items"
-        labelClasses="govuk-label--s"
-        inputId="numberOfItems"
-        inputName="numberOfItems"
-        inputClasses="govuk-input--width-5"
-        [control]="form.controls.numberOfItems"
-        [errors]="numberOfItemsError"
-      ></opal-lib-govuk-text-input>
-
-      <div class="govuk-button-group">
-        <button class="govuk-button" id="submitForm" type="submit">Continue</button>
-        <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
-      </div>
-    </form>
+    <app-fines-mci-create-till-court-fee-details-form
+      [courtFeeItems]="courtFeeItems()"
+      [initialDraft]="finesMciStore.courtFeeDraft()"
+      (formSubmit)="handleSubmit($event)"
+      (unsavedChanges)="handleUnsavedChanges($event)"
+      (cancelRequested)="handleCancel()"
+    ></app-fines-mci-create-till-court-fee-details-form>
   } @else {
     <output class="govuk-body govuk-!-display-block">Loading court fees</output>
   }
