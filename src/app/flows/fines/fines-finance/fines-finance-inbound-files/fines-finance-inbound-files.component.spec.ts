@@ -146,6 +146,65 @@ describe('FinesFinanceInboundFilesComponent', () => {
     httpMock.expectNone((req) => req.url === '/opal-file-handling-service/interface-files');
   });
 
+  it('submits a historic range through the date inputs and displays the returned inbound files', async () => {
+    vi.setSystemTime(new Date('2026-11-04T12:00:00Z'));
+    fixture.detectChanges();
+    httpMock
+      .expectOne((req) => req.url === '/opal-file-handling-service/interface-files')
+      .flush({ number_of_results: 0, interface_files: [] });
+    const element = fixture.nativeElement as HTMLElement;
+    element.querySelector<HTMLInputElement>('input[type="radio"][value="dateRange"]')!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    await vi.dynamicImportSettled();
+
+    for (const [boundary, value] of [
+      ['from', '23/06/2025'],
+      ['to', '04/11/2026'],
+    ]) {
+      const input = element.querySelector<HTMLInputElement>(`#custom-file-interface-viewer-date-${boundary}`)!;
+      input.value = value;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    fixture.detectChanges();
+    element.querySelector<HTMLButtonElement>('#refresh-reports-button')!.click();
+
+    const request = httpMock.expectOne((req) => req.url === '/opal-file-handling-service/interface-files');
+    expect(request.cancelled).toBe(false);
+    expect(
+      Object.fromEntries(request.request.params.keys().map((key) => [key, request.request.params.get(key)])),
+    ).toEqual({
+      domain: 'FINES',
+      target: 'OPAL',
+      not_status: 'FAILED_SUPERSEDED',
+      type: 'SOURCE,TRANSFORMED_JSON',
+      from_date: '2025-06-22T23:00:00',
+      to_date: '2026-11-04T23:59:59.999999',
+    });
+    request.flush({
+      number_of_results: 1,
+      interface_files: [
+        {
+          ...FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files![0],
+          created_datetime: '2025-06-23T12:00:00',
+          file_name: 'historic-inbound.xml',
+        },
+      ],
+    });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(element.querySelector('tbody')?.textContent).toContain('historic-inbound.xml');
+    expect(element.querySelector('tbody')?.textContent).toContain('23 Jun 2025');
+    expect(element.querySelector<HTMLInputElement>('#custom-file-interface-viewer-date-from')?.value).toBe(
+      '23/06/2025',
+    );
+    expect(element.querySelector<HTMLInputElement>('#custom-file-interface-viewer-date-to')?.value).toBe('04/11/2026');
+    expect(TestBed.inject(GlobalStore).setBannerError).not.toHaveBeenCalled();
+    httpMock.expectNone((req) => req.url === '/opal-file-handling-service/interface-files');
+  });
+
   it('offers only permitted business units using codes rather than IDs', () => {
     expect(component.businessUnits).toEqual([{ name: 'Camberwell Green', value: '0046' }]);
   });
