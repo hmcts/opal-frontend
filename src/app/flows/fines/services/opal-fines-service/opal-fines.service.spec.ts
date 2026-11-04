@@ -1,8 +1,3 @@
-import { Router } from '@angular/router';
-import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-error';
-import { AppInsightsService } from '@hmcts/opal-frontend-common/services/app-insights-service';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { IOpalFinesApr } from './interfaces/opal-fines-apr.interface';
 import { OPAL_FINES_SOURCE_MAPPINGS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-source-mappings.mock';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -68,6 +63,11 @@ import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from '../../fines-acc/fi
 import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-ref-data.interface';
 import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { Router } from '@angular/router';
+import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-error';
+import { AppInsightsService } from '@hmcts/opal-frontend-common/services/app-insights-service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { IOpalFinesApr } from './interfaces/opal-fines-apr.interface';
 import { OPAL_FINES_ENFORCER_MOCK } from './mocks/opal-fines-enforcer.mock';
 import { OPAL_FINES_MINOR_CREDITOR_UPDATE_PAYLOAD_MOCK } from './mocks/opal-fines-minor-creditor-update-payload.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from './mocks/opal-fines-account-minor-creditor-creditor.mock';
