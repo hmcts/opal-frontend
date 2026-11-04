@@ -6,6 +6,8 @@ import {
   businessUnitRoutePermissionsGuard,
 } from '@hmcts/opal-frontend-common/guards/business-unit-route-permissions';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
+import { featureFlagRedirectGuard } from '@hmcts/opal-frontend-common/guards/feature-flag';
+import { RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG } from '../../constants/release-feature-flags.constant';
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
@@ -54,6 +56,10 @@ const finesAccountBusinessUnitResolverProvider = {
   provide: BUSINESS_UNIT_ID_RESOLVER,
   useExisting: FinesAccBusinessUnitResolver,
 };
+
+export const release1cBankingInterfacesFeatureFlagGuard = featureFlagRedirectGuard(
+  RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
+);
 
 export const routing: Routes = [
   {
