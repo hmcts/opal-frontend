@@ -10,8 +10,9 @@ describe('FinesSuspenseItemStore', () => {
     store = TestBed.inject(FinesSuspenseItemStore);
   });
 
-  it('starts without a selected BU', () => {
+  it('starts without a selected BU or unsaved changes', () => {
     expect(store.selectedBusinessUnitId()).toBeNull();
+    expect(store.unsavedChanges()).toBe(false);
   });
 
   it('retains the selected BU and allows it to be cleared', () => {
@@ -19,11 +20,23 @@ describe('FinesSuspenseItemStore', () => {
     expect(store.selectedBusinessUnitId()).toBe(22);
     store.setSelectedBusinessUnitId(null);
     expect(store.selectedBusinessUnitId()).toBeNull();
+    expect(store.unsavedChanges()).toBe(false);
   });
 
-  it('clears the selected BU when the journey is reset', () => {
+  it('tracks edits and allows them to be cleared without losing the BU', () => {
     store.setSelectedBusinessUnitId(22);
+    store.setUnsavedChanges(true);
+    expect(store.unsavedChanges()).toBe(true);
+    store.setUnsavedChanges(false);
+    expect(store.unsavedChanges()).toBe(false);
+    expect(store.selectedBusinessUnitId()).toBe(22);
+  });
+
+  it('clears the selected BU and unsaved changes when the journey is reset', () => {
+    store.setSelectedBusinessUnitId(22);
+    store.setUnsavedChanges(true);
     store.resetStore();
     expect(store.selectedBusinessUnitId()).toBeNull();
+    expect(store.unsavedChanges()).toBe(false);
   });
 });

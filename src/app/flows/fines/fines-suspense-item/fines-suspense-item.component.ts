@@ -8,10 +8,18 @@ import { FinesSuspenseItemStore } from './stores/fines-suspense-item.store';
   imports: [RouterOutlet],
   template: '<router-outlet />',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(window:beforeunload)': 'handleBeforeUnload()',
+  },
 })
 export class FinesSuspenseItemComponent implements OnDestroy {
   private readonly opalFines = inject(OpalFines);
   private readonly store = inject(FinesSuspenseItemStore);
+
+  /** Browser refresh and close bypass the route guard, so check the shared form state. */
+  public handleBeforeUnload(): boolean {
+    return !this.store.unsavedChanges();
+  }
 
   /** Keep state between Suspense pages, but clear it when the whole journey is left. */
   public ngOnDestroy(): void {

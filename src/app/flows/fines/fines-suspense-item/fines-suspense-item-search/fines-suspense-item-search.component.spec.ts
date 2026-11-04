@@ -149,13 +149,28 @@ describe('FinesSuspenseItemSearchComponent', () => {
 
   it('requires confirmation after editing but allows navigation after a valid submission', () => {
     fixture.detectChanges();
+    const store = TestBed.inject(FinesSuspenseItemStore);
+    expect(store.unsavedChanges()).toBe(false);
     expect(component.canDeactivate()).toBe(true);
     const child = fixture.debugElement.query(By.directive(FinesSuspenseItemSearchFormComponent)).componentInstance;
     child.form.markAsDirty();
     child.form.setValue({ fsis_business_unit_id: 22, fsis_suspense_reference_number: '1234' });
     expect(component.canDeactivate()).toBe(false);
+    expect(store.unsavedChanges()).toBe(true);
     fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     expect(component.canDeactivate()).toBe(true);
+    expect(store.unsavedChanges()).toBe(false);
+  });
+
+  it('keeps the warning while the dirty page remains and clears it on destruction', () => {
+    fixture.detectChanges();
+    const store = TestBed.inject(FinesSuspenseItemStore);
+    component.handleUnsavedChanges(true);
+    expect(component.canDeactivate()).toBe(false);
+    expect(store.unsavedChanges()).toBe(true);
+
+    fixture.destroy();
+    expect(store.unsavedChanges()).toBe(false);
   });
 
   it('logs the response and clears both caches before each lookup', () => {

@@ -2,7 +2,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, EMPTY } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
-import { ChangeDetectionStrategy, Component, OnInit, inject, DestroyRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, inject, DestroyRef } from '@angular/core';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { FinesSuspenseItemStore } from '../stores/fines-suspense-item.store';
 import { IFinesSuspenseItemSearchFormState } from './interfaces/fines-suspense-item-search-form-state.interface';
@@ -18,7 +18,7 @@ import { FinesSuspenseItemSearchFormComponent } from './fines-suspense-item-sear
   templateUrl: './fines-suspense-item-search.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesSuspenseItemSearchComponent implements OnInit {
+export class FinesSuspenseItemSearchComponent implements OnInit, OnDestroy {
   private readonly opalFines = inject(OpalFines);
   private readonly destroyRef = inject(DestroyRef);
   private readonly suspenseItemStore = inject(FinesSuspenseItemStore);
@@ -99,6 +99,7 @@ export class FinesSuspenseItemSearchComponent implements OnInit {
 
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.stateUnsavedChanges = unsavedChanges;
+    this.suspenseItemStore.setUnsavedChanges(unsavedChanges);
   }
 
   /** Allows the shared route guard to confirm leaving after the user edits the form. */
@@ -108,6 +109,11 @@ export class FinesSuspenseItemSearchComponent implements OnInit {
 
   public ngOnInit(): void {
     this.initialiseBusinessUnits();
+  }
+
+  public ngOnDestroy(): void {
+    // Only clear after leaving succeeds; cancelling the route guard keeps the warning active.
+    this.suspenseItemStore.setUnsavedChanges(false);
   }
 
   /**
