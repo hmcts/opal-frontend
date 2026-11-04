@@ -89,6 +89,10 @@ const FINANCE_COMPONENT_ROUTES: Routes = [
         path: `${FINES_API_ROUTING_PATHS.children.tillSummary}/:tillId`,
         component: FinesApiSummaryReportComponent,
       },
+      {
+        path: `${FINES_API_ROUTING_PATHS.children.fileSummary}/:fileId`,
+        component: FinesApiSummaryReportComponent,
+      },
     ],
   },
   {

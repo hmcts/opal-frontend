@@ -23,6 +23,14 @@ describe('FinesMciCreateTillPaymentCategoryFormComponent', () => {
     expect(component.form.controls['paymentCategory'].value).toBeNull();
   });
 
+  it('restores the saved draft category when returning to the form', () => {
+    const draftFixture = TestBed.createComponent(FinesMciCreateTillPaymentCategoryFormComponent);
+    draftFixture.componentRef.setInput('initialPaymentCategory', 'suspense');
+    draftFixture.detectChanges();
+
+    expect(draftFixture.componentInstance.form.controls['paymentCategory'].value).toBe('suspense');
+  });
+
   it('shows the required error in the summary and beside the radio group', () => {
     component.handleFormSubmit(new SubmitEvent('submit'));
     fixture.detectChanges();

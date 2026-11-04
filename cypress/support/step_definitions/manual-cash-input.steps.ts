@@ -63,6 +63,14 @@ Then('I see Search for an Account', () => {
   manualCashInputFlow().assertSearchForAccountIsDisplayed();
 });
 
+Then('I see Court Fee Details', () => {
+  manualCashInputFlow().assertPaymentCategoryDetailsAreDisplayed('courtFee');
+});
+
+Then('I see Suspense Details', () => {
+  manualCashInputFlow().assertPaymentCategoryDetailsAreDisplayed('suspense');
+});
+
 Then('I remain on Payment Category', () => {
   manualCashInputFlow().assertPaymentCategoryIsDisplayed();
 });

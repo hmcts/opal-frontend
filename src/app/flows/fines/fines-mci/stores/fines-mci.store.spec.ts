@@ -3,6 +3,7 @@ import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fin
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-defendant-account-response-individual.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesMciStore } from './fines-mci.store';
+import { IFinesMciCriminalSearch } from './interfaces/fines-mci-criminal-search.interface';
 
 describe('FinesMciStore', () => {
   let store: InstanceType<typeof FinesMciStore>;
@@ -11,6 +12,50 @@ describe('FinesMciStore', () => {
     TestBed.configureTestingModule({ providers: [FinesMciStore] });
     store = TestBed.inject(FinesMciStore);
   });
+
+  it.each(['business unit change', 'reset'] as const)(
+    'should clear criminal search and the draft journey on %s',
+    (action) => {
+      const [initialBusinessUnit, nextBusinessUnit] = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData;
+      const criminalSearch: IFinesMciCriminalSearch = {
+        activeTab: 'individuals',
+        searchCriteriaCannotBeCombined: false,
+        formData: {
+          fsa_search_account_number: '12345678',
+          fsa_search_account_individuals_search_criteria: {
+            fsa_search_account_individuals_last_name: null,
+            fsa_search_account_individuals_first_names: null,
+            fsa_search_account_individuals_last_name_exact_match: false,
+            fsa_search_account_individuals_first_names_exact_match: false,
+            fsa_search_account_individuals_include_aliases: false,
+          },
+          fsa_search_account_companies_search_criteria: {
+            fsa_search_account_companies_company_name: null,
+            fsa_search_account_companies_company_name_exact_match: false,
+            fsa_search_account_companies_include_aliases: false,
+          },
+        },
+      };
+      store.setBusinessUnit(initialBusinessUnit);
+      store.ensureTill();
+      store.setDraftJourney('criminal');
+      store.setCriminalSearch(criminalSearch);
+      store.setCriminalSearchResults(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK);
+      store.setSelectedCriminalAccount(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0]);
+
+      if (action === 'reset') {
+        store.reset();
+      } else {
+        store.setBusinessUnit(nextBusinessUnit);
+      }
+
+      expect(store.criminalSearch()).toBeNull();
+      expect(store.criminalSearchResults()).toBeNull();
+      expect(store.selectedCriminalAccount()).toBeNull();
+      expect(store.draftJourney()).toBeNull();
+      expect(store.tills()).toEqual([]);
+    },
+  );
 
   it('should store the selected business unit', () => {
     const businessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
@@ -51,12 +96,14 @@ describe('FinesMciStore', () => {
 
   it('should reset the selected business unit', () => {
     store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    store.setDraftJourney('suspense');
     store.ensureTill();
 
     store.reset();
 
     expect(store.businessUnit()).toBeNull();
     expect(store.tills()).toEqual([]);
+    expect(store.draftJourney()).toBeNull();
   });
 
   it('should create the in-progress till and return its id', () => {
@@ -81,6 +128,7 @@ describe('FinesMciStore', () => {
         .mockReturnValueOnce('00000000-0000-4000-8000-000000000001')
         .mockReturnValueOnce('00000000-0000-4000-8000-000000000002');
       store.ensureTill();
+      store.setDraftJourney(journey);
 
       expect(store.addPayment('00000000-0000-4000-8000-000000000001', journey)).toBe(
         '00000000-0000-4000-8000-000000000002',
@@ -91,6 +139,7 @@ describe('FinesMciStore', () => {
           payments: [{ paymentId: '00000000-0000-4000-8000-000000000002', journey }],
         },
       ]);
+      expect(store.draftJourney()).toBeNull();
     },
   );
 
@@ -99,9 +148,11 @@ describe('FinesMciStore', () => {
       .mockReturnValueOnce('00000000-0000-4000-8000-000000000001')
       .mockReturnValueOnce('00000000-0000-4000-8000-000000000002');
     store.ensureTill();
+    store.setDraftJourney('courtFee');
 
     expect(store.addPayment('missing-till', 'courtFee')).toBe('00000000-0000-4000-8000-000000000002');
     expect(store.tills()).toEqual([{ tillId: '00000000-0000-4000-8000-000000000001', payments: [] }]);
+    expect(store.draftJourney()).toBe('courtFee');
   });
 
   it('should clear the previous account selection when replacing or clearing search results without changing till state', () => {
