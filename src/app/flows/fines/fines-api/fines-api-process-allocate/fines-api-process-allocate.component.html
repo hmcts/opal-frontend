@@ -74,6 +74,7 @@
   @case (tabKeys.allocate) {
     @if (tabAllocate$ | async; as tabData) {
       <app-fines-api-allocate
+        (allocationStarted)="handleAllocationStarted()"
         (allocationCountChanged)="submittedCount.set($event)"
         [tabData]="tabData"
         (refreshRequested)="refreshAllocateData()"

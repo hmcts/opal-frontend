@@ -75,6 +75,9 @@ export class FinesApiAllocateComponent {
     this.data.set(value);
   }
 
+  /** Cancels older reads in the parent before a validated allocation request starts. */
+  @Output() public readonly allocationStarted = new EventEmitter<void>();
+
   /** Reports the accepted till count to the page; zero clears previous feedback. */
   @Output() public readonly allocationCountChanged = new EventEmitter<number>();
 
@@ -118,6 +121,7 @@ export class FinesApiAllocateComponent {
 
     this.errorMessage.set(null);
     this.submitting.set(true);
+    this.allocationStarted.emit();
     this.opalFines
       .allocateTills(payload)
       .pipe(

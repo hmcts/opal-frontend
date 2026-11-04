@@ -31,6 +31,7 @@ import {
   map,
   startWith,
   switchMap,
+  takeUntil,
 } from 'rxjs';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
@@ -85,6 +86,7 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly processDataRefresh = new Subject<void>();
   private readonly allocateDataRefresh = new Subject<void>();
+  private readonly cancelAllocateRefresh = new Subject<void>();
   private readonly ignoredDataRefresh = new Subject<void>();
 
   protected readonly finesApiStore = inject(FinesApiStore);
@@ -109,7 +111,8 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
   /** Each tab entry subscribes afresh; refresh replaces any in-flight pair of reads. */
   protected readonly tabAllocate$: Observable<IFinesApiAllocateData> = this.allocateDataRefresh.pipe(
     startWith(undefined),
-    switchMap(() => this.fetchAllocateData()),
+    // Cancel only the current reads so subsequent explicit refreshes still work.
+    switchMap(() => this.fetchAllocateData().pipe(takeUntil(this.cancelAllocateRefresh))),
   );
 
   /** One shell-level subscription keeps the counter and table in sync across tab switches. */
@@ -281,6 +284,11 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
     this.processDataRefresh.next();
   }
 
+  /** Prevents reads started before allocation from restoring submitted tills. */
+  protected handleAllocationStarted(): void {
+    this.cancelAllocateRefresh.next();
+  }
+
   /** Reloads both Allocate datasets; the child clears local selection before emitting. */
   protected refreshAllocateData(): void {
     this.submittedCount.set(0);
@@ -324,5 +332,6 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
     this.ignoredDataRefresh.complete();
     this.processDataRefresh.complete();
     this.allocateDataRefresh.complete();
+    this.cancelAllocateRefresh.complete();
   }
 }

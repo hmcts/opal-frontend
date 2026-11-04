@@ -1,3 +1,4 @@
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { By } from '@angular/platform-browser';
 import { FinesApiAllocateComponent } from './fines-api-allocate-tab/fines-api-allocate.component';
 import { MojAlertComponent } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
@@ -68,6 +69,7 @@ describe('FinesApiProcessAllocateComponent', () => {
   let getInterfaceJobsSummary: ReturnType<
     typeof vi.fn<(...args: unknown[]) => Observable<IOpalFinesInterfaceJobsSummaryResponse>>
   >;
+  let allocateTills: ReturnType<typeof vi.fn>;
   let getTills: ReturnType<typeof vi.fn>;
   let getIgnoredJobs: ReturnType<
     typeof vi.fn<(...args: unknown[]) => Observable<IOpalFinesInterfaceJobsSummaryResponse>>
@@ -84,6 +86,7 @@ describe('FinesApiProcessAllocateComponent', () => {
   beforeEach(async () => {
     activatedRoute.snapshot.data.sourceMappings = OPAL_FINES_SOURCE_MAPPINGS_MOCK;
     processJobs = PROCESS_JOBS;
+    allocateTills = vi.fn();
     getIgnoredJobs = vi.fn(() => of({ interface_jobs: [] }));
     getTills = vi.fn((): Observable<IOpalFinesTillsResponse> => of({ tills: [] }));
     activatedRoute.snapshot.fragment = 'process';
@@ -108,6 +111,7 @@ describe('FinesApiProcessAllocateComponent', () => {
             getInterfaceJobsSummary: (params: { statuses?: string[] }) =>
               params.statuses?.includes('IGNORED') ? getIgnoredJobs(params) : getInterfaceJobsSummary(params),
             getTills,
+            allocateTills,
           },
         },
       ],
@@ -508,6 +512,76 @@ describe('FinesApiProcessAllocateComponent', () => {
     beforeEach(() => {
       processJobs = [{ ...PROCESS_JOBS[0], status: 'PROCESSING', business_unit_name: 'BU Alpha' }];
       getTills.mockReturnValue(of(tillResponse()));
+    });
+
+    it.each(['success', 'failure'] as const)(
+      'cancels an older refresh on allocation and allows subsequent refresh after %s',
+      (outcome) => {
+        const jobs = new Subject<IOpalFinesInterfaceJobsSummaryResponse>();
+        const tills = new Subject<IOpalFinesTillsResponse>();
+        const allocation = new Subject<void>();
+        getInterfaceJobsSummary.mockReturnValueOnce(of({ interface_jobs: [] })).mockReturnValueOnce(jobs);
+        getTills.mockReturnValueOnce(of(tillResponse())).mockReturnValueOnce(tills);
+        allocateTills.mockReturnValue(allocation);
+        vi.spyOn(TestBed.inject(UtilsService), 'scrollToTop').mockImplementation(() => {});
+        startAllocate();
+        refresh();
+        expect(jobs.observed).toBe(true);
+        expect(tills.observed).toBe(true);
+        native().querySelector<HTMLInputElement>('#fines-api-allocate-till-123')!.click();
+        fixture.detectChanges();
+        native().querySelector<HTMLButtonElement>('#fines-api-allocate-submit')!.click();
+        fixture.detectChanges();
+        expect(allocateTills).toHaveBeenCalledExactlyOnceWith({ tills: [{ till_id: 123, business_unit_id: 77 }] });
+        expect(jobs.observed).toBe(false);
+        expect(tills.observed).toBe(false);
+
+        if (outcome === 'success') {
+          allocation.next();
+          allocation.complete();
+        } else {
+          allocation.error(new Error('Rejected'));
+        }
+        fixture.detectChanges();
+        // Deliver the stale response after the write has finished.
+        jobs.next({ interface_jobs: [] });
+        jobs.complete();
+        tills.next(tillResponse('stale.dat'));
+        tills.complete();
+        fixture.detectChanges();
+        expect(native().textContent).not.toContain('stale.dat');
+        if (outcome === 'success') {
+          expect(native().querySelector('#fines-api-allocate-till-123')).toBeNull();
+          expect(native().querySelector('#fines-api-allocate-submit')).toBeNull();
+          expect(native().querySelector('#fines-api-allocate-success')?.textContent).toContain(
+            '1 till is being allocated.',
+          );
+        } else {
+          expect(native().querySelector<HTMLInputElement>('#fines-api-allocate-till-123')!.checked).toBe(true);
+          expect(native().querySelector<HTMLButtonElement>('#fines-api-allocate-submit')!.disabled).toBe(false);
+          expect(native().querySelector('#fines-api-allocate-success')).toBeNull();
+        }
+        getTills.mockReturnValueOnce(of(tillResponse('fresh.dat')));
+        refresh();
+        expect(native().textContent).toContain('fresh.dat');
+        expect(allocateTills).toHaveBeenCalledOnce();
+      },
+    );
+
+    it('keeps an in-flight refresh when allocation validation fails', () => {
+      const tills = new Subject<IOpalFinesTillsResponse>();
+      getTills.mockReturnValueOnce(of(tillResponse())).mockReturnValueOnce(tills);
+      vi.spyOn(TestBed.inject(UtilsService), 'scrollToTop').mockImplementation(() => {});
+      startAllocate();
+      refresh();
+      native().querySelector<HTMLButtonElement>('#fines-api-allocate-submit')!.click();
+      fixture.detectChanges();
+      expect(allocateTills).not.toHaveBeenCalled();
+      expect(tills.observed).toBe(true);
+      tills.next(tillResponse('updated.dat'));
+      tills.complete();
+      fixture.detectChanges();
+      expect(native().textContent).toContain('updated.dat');
     });
 
     it('uses the resolved mapping in both tabs and after refresh', () => {
