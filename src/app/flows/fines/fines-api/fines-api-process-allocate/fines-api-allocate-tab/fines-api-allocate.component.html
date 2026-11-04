@@ -4,23 +4,6 @@
     [errors]="errors()"
     (errorClick)="scrollTo($event)"
   />
-  @if (submittedCount() > 0) {
-    <opal-lib-moj-alert
-      id="fines-api-allocate-success"
-      type="success"
-      [ariaLabel]="content.sentForAllocation(submittedCount())"
-    >
-      <opal-lib-moj-alert-icon icon type="success" />
-      <opal-lib-moj-alert-content content>
-        <p class="govuk-body">{{ content.sentForAllocation(submittedCount()) }}</p>
-        <p class="govuk-body">
-          <a id="fines-api-allocate-cash-list-report" class="govuk-link" [routerLink]="cashListRoute">{{
-            content.cashListReport
-          }}</a>
-        </p>
-      </opal-lib-moj-alert-content>
-    </opal-lib-moj-alert>
-  }
   @if (data().processingTotal > 0) {
     <opal-lib-moj-alert id="fines-api-allocate-processing" type="information" [ariaLabel]="processingAnnouncement()">
       <opal-lib-moj-alert-icon icon type="information" />

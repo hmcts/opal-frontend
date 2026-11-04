@@ -1,3 +1,6 @@
+import { By } from '@angular/platform-browser';
+import { FinesApiAllocateComponent } from './fines-api-allocate-tab/fines-api-allocate.component';
+import { MojAlertComponent } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { DateTime } from 'luxon';
 import { OPAL_FINES_SOURCE_MAPPINGS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-source-mappings.mock';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
@@ -141,6 +144,68 @@ describe('FinesApiProcessAllocateComponent', () => {
       finalUrl: TestBed.inject(Router).parseUrl(url),
     });
   };
+
+  describe('allocation success banner', () => {
+    const allocateTab = (): FinesApiAllocateComponent =>
+      fixture.debugElement.query(By.directive(FinesApiAllocateComponent)).componentInstance;
+    const banner = (): HTMLElement | null => fixture.nativeElement.querySelector('#fines-api-allocate-success');
+
+    beforeEach(() => {
+      activatedRoute.snapshot.fragment = 'allocate';
+      activatedRoute.fragment = of('allocate');
+    });
+
+    it.each([
+      [1, '1 till is'],
+      [14, '14 tills are'],
+    ])('renders acceptance of %i tills above the H1 using the shared dismissible alert', (count, subject) => {
+      render();
+      expect(banner()).toBeNull();
+      allocateTab().allocationCountChanged.emit(count as number);
+      fixture.detectChanges();
+      const message = `${subject} being allocated. View the cash list report.`;
+      const alert = fixture.debugElement.query(By.directive(MojAlertComponent)).componentInstance;
+      expect(alert.ariaLabel).toBe(message);
+      expect(banner()!.classList.contains('moj-alert--success')).toBe(true);
+      expect(
+        banner()!.compareDocumentPosition(fixture.nativeElement.querySelector('h1')) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
+      const text = banner()!.querySelector('opal-lib-moj-alert-content-text')!;
+      expect(text.textContent!.replace(/\s+/g, ' ').trim()).toBe(message);
+      expect(text.querySelector('a')!.getAttribute('href')).toBe('/fines/reports/cash_list/summary-list');
+      expect(text.querySelector('a')!.textContent!.trim()).toBe('cash list report');
+      expect(banner()!.querySelector('opal-lib-moj-alert-icon')).toBeTruthy();
+      banner()!.querySelector<HTMLButtonElement>('.moj-alert__dismiss')!.click();
+      fixture.detectChanges();
+      expect(banner()).toBeNull();
+      allocateTab().allocationCountChanged.emit(1);
+      fixture.detectChanges();
+      expect(banner()).toBeTruthy();
+    });
+
+    it('clears previous success when another allocation starts or data is refreshed', () => {
+      render();
+      allocateTab().allocationCountChanged.emit(2);
+      fixture.detectChanges();
+      allocateTab().allocationCountChanged.emit(0);
+      fixture.detectChanges();
+      expect(banner()).toBeNull();
+      allocateTab().allocationCountChanged.emit(2);
+      fixture.detectChanges();
+      allocateTab().refreshRequested.emit();
+      fixture.detectChanges();
+      expect(banner()).toBeNull();
+    });
+
+    it('clears success when leaving the Allocate tab', () => {
+      render();
+      allocateTab().allocationCountChanged.emit(2);
+      fixture.detectChanges();
+      component['handleTabSwitch']('process');
+      fixture.detectChanges();
+      expect(banner()).toBeNull();
+    });
+  });
 
   it('should render the shell and load the Process tab component by default', () => {
     render();

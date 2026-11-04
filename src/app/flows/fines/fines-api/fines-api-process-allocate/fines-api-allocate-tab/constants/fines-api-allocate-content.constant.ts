@@ -9,8 +9,7 @@ export const FINES_API_ALLOCATE_CONTENT = {
   errorPrefix: 'Error:',
   cashListReport: 'cash list report',
   /** Builds the acknowledgement without claiming allocation has completed. */
-  sentForAllocation: (count: number): string =>
-    `${count} ${count === 1 ? 'till has' : 'tills have'} been sent for allocation.`,
+  sentForAllocation: (count: number): string => `${count} ${count === 1 ? 'till is' : 'tills are'} being allocated.`,
   /**
    * Builds the processing-summary introduction with singular or plural wording.
    * @param count The number of files still processing.

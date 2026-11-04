@@ -38,6 +38,7 @@ const data = (tills = rows(), processingTotal = 0): IFinesApiAllocateData => ({
 
 describe('FinesApiAllocateComponent', () => {
   let response: Subject<void>;
+  let allocationCountChanged: ReturnType<typeof vi.fn>;
   let allocateTills: ReturnType<typeof vi.fn>;
   let store: InstanceType<typeof FinesApiStore>;
   let fixture: ComponentFixture<FinesApiAllocateComponent>;
@@ -65,6 +66,8 @@ describe('FinesApiAllocateComponent', () => {
     vi.spyOn(TestBed.inject(UtilsService), 'scrollToTop').mockImplementation(() => {});
     store = TestBed.inject(FinesApiStore);
     fixture = TestBed.createComponent(FinesApiAllocateComponent);
+    allocationCountChanged = vi.fn();
+    fixture.componentInstance.allocationCountChanged.subscribe(allocationCountChanged);
   });
 
   it.each([
@@ -173,7 +176,7 @@ describe('FinesApiAllocateComponent', () => {
     expect(element().querySelector<HTMLButtonElement>('#fines-api-allocate-refresh')!.disabled).toBe(true);
     click('fines-api-allocate-submit');
     expect(allocateTills).toHaveBeenCalledOnce();
-    expect(element().querySelector('#fines-api-allocate-success')).toBeNull();
+    expect(allocationCountChanged).toHaveBeenLastCalledWith(0);
     // Selection changes during the request must not change the acknowledgement or removed rows.
     click('fines-api-allocate-till-103');
     response.next();
@@ -182,35 +185,27 @@ describe('FinesApiAllocateComponent', () => {
     expect(element().querySelector('#fines-api-allocate-till-101')).toBeNull();
     expect(element().querySelector('#fines-api-allocate-till-102')).toBeNull();
     expect(element().querySelector('#fines-api-allocate-till-103')).toBeTruthy();
-    expect(element().querySelector('#fines-api-allocate-success')?.textContent).toContain(
-      '2 tills have been sent for allocation.',
-    );
-    expect(element().querySelector('#fines-api-allocate-cash-list-report')?.getAttribute('href')).toBe(
-      '/fines/reports/cash_list/summary-list',
-    );
+    expect(allocationCountChanged).toHaveBeenLastCalledWith(2);
     expect(element().querySelector('#fines-api-allocate-processing')?.textContent).toContain('3 files');
     expect(table().getSelectedIds()).toEqual([]);
     expect(store.unsavedChanges()).toBe(false);
     expect(selectedText()).toBe('0 of 1 tills selected.');
   });
 
-  it('keeps singular acknowledgement and report link when the last row is removed', () => {
+  it('reports acceptance when the last row is removed', () => {
     render(data(rows(1)));
     click('fines-api-allocate-till-101');
     click('fines-api-allocate-submit');
     response.next();
     response.complete();
     fixture.detectChanges();
-    expect(element().querySelector('#fines-api-allocate-success')?.textContent).toContain(
-      '1 till has been sent for allocation.',
-    );
+    expect(allocationCountChanged).toHaveBeenLastCalledWith(1);
     expect(element().querySelector('#fines-api-allocate-empty')?.textContent).toBe(
       'There are no tills ready to allocate',
     );
     expect(element().querySelector('table')).toBeNull();
-    expect(element().querySelector('#fines-api-allocate-cash-list-report')).toBeTruthy();
     click('fines-api-allocate-refresh');
-    expect(element().querySelector('#fines-api-allocate-success')).toBeNull();
+    expect(allocationCountChanged).toHaveBeenLastCalledWith(0);
     render(data(rows(1)));
     expect(element().querySelector('#fines-api-allocate-till-101')).toBeTruthy();
   });
@@ -222,7 +217,7 @@ describe('FinesApiAllocateComponent', () => {
     response.error(new Error('Request rejected'));
     fixture.detectChanges();
     expect(allocateTills).toHaveBeenCalledOnce();
-    expect(element().querySelector('#fines-api-allocate-success')).toBeNull();
+    expect(allocationCountChanged).toHaveBeenLastCalledWith(0);
     expect(checkbox('fines-api-allocate-till-101').checked).toBe(true);
     expect(selectedText()).toBe('1 of 2 tills selected.');
     expect(element().querySelector<HTMLButtonElement>('#fines-api-allocate-submit')!.disabled).toBe(false);
@@ -234,7 +229,7 @@ describe('FinesApiAllocateComponent', () => {
     click('fines-api-allocate-submit');
     response.complete();
     fixture.detectChanges();
-    expect(element().querySelector('#fines-api-allocate-success')).toBeNull();
+    expect(allocationCountChanged).toHaveBeenLastCalledWith(0);
     expect(checkbox('fines-api-allocate-till-101').checked).toBe(true);
   });
 
@@ -342,10 +337,7 @@ describe('FinesApiAllocateComponent', () => {
     fixture.detectChanges();
 
     expect(allocateTills).toHaveBeenCalledOnce();
-    expect(element().querySelector('#fines-api-allocate-success')?.textContent).toContain(
-      '1 till has been sent for allocation.',
-    );
-    expect(element().querySelector('#fines-api-allocate-cash-list-report')).toBeTruthy();
+    expect(allocationCountChanged).toHaveBeenLastCalledWith(1);
     expect(element().querySelector('#fines-api-allocate-empty')?.textContent).toBe(
       'There are no tills ready to allocate',
     );
