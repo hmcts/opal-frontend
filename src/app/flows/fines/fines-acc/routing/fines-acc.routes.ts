@@ -104,6 +104,23 @@ export const routing: Routes = [
         },
         children: [
           {
+            path: `${FINES_ACC_APR_ROUTING_PATHS.root}/${FINES_ACC_APR_ROUTING_PATHS.children.delete}`,
+            loadComponent: () =>
+              import('../fines-acc-apr-delete/fines-acc-apr-delete.component').then(
+                (c) => c.FinesAccAprDeleteComponent,
+              ),
+            canActivate: [
+              release1cBankingInterfacesFeatureFlagGuard,
+              businessUnitRoutePermissionsGuard,
+              finesAccStateGuard,
+            ],
+            data: {
+              title: 'Remove Alternate Payment Reference',
+              routePermissionId: [FINES_PERMISSIONS['manage-alternate-payment-references']],
+            },
+            resolve: { title: TitleResolver, aprs: finesAccAprResolver },
+          },
+          {
             path: `${FINES_ACC_APR_ROUTING_PATHS.root}/${FINES_ACC_APR_ROUTING_PATHS.children.manage}`,
             loadComponent: () =>
               import('../fines-acc-apr-manage/fines-acc-apr-manage.component').then(
