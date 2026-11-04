@@ -1,0 +1,59 @@
+<div class="govuk-grid-column-full" id="fines-api-ignored-tab-content">
+  <h2 class="govuk-heading-m">{{ content.heading }}</h2>
+  <p class="govuk-body">{{ content.description }}</p>
+  <button id="fines-api-ignored-refresh" class="govuk-button govuk-button--secondary" type="button" (click)="refresh()">
+    {{ content.refresh }}
+  </button>
+  @if (rows().length > 0) {
+    <opal-lib-custom-horizontal-scroll-pane>
+      <opal-lib-moj-sortable-table id="fines-api-ignored-files">
+        <ng-container caption
+          ><span class="govuk-visually-hidden">{{ content.heading }}</span></ng-container
+        >
+        <ng-container head>
+          @for (column of content.columns; track column; let index = $index) {
+            <th
+              opal-lib-moj-sortable-table-header
+              [columnKey]="column"
+              [dataIndex]="index"
+              [sortDirection]="sort()?.key === column ? sort()!.sortType : 'none'"
+              (sortChange)="onSortChange($event)"
+            >
+              {{ column }}
+            </th>
+          }
+        </ng-container>
+        <ng-container row>
+          @for (row of rows(); track row.interfaceJobId) {
+            <tr opal-lib-moj-sortable-table-row>
+              @for (column of content.columns; track column; let index = $index) {
+                <td
+                  opal-lib-moj-sortable-table-row-data
+                  [id]="'fines-api-ignored-' + row.interfaceJobId + '-cell-' + index"
+                >
+                  @switch (column) {
+                    @case ('File name') {
+                      <a class="govuk-link" [routerLink]="[fileSummaryRoute, row.interfaceJobId]">{{ row[column] }}</a>
+                    }
+                    @case ('Date processed') {
+                      {{ row.dateProcessedDisplay }}
+                    }
+                    @default {
+                      {{ row[column] }}
+                    }
+                  }
+                </td>
+              }
+            </tr>
+          }
+        </ng-container>
+        <ng-container status>
+          <opal-lib-moj-sortable-table-status
+            [columnTitle]="sort()?.key ?? ''"
+            [sortDirection]="sort()?.sortType ?? 'none'"
+          />
+        </ng-container>
+      </opal-lib-moj-sortable-table>
+    </opal-lib-custom-horizontal-scroll-pane>
+  }
+</div>
