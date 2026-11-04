@@ -50,17 +50,6 @@ export class FinesFinanceInboundFilesComponent extends FinesFinanceInterfaceFile
   }
 
   /**
-   * Passes through records already selected by the API's inbound filters without further client filtering.
-   * @param files - Metadata returned for the submitted inbound criteria, including an absent list.
-   * @returns The original file-list reference or its absent value.
-   */
-  protected override selectFiles(
-    files: IOpalFileHandlingInterfaceFile[] | null | undefined,
-  ): IOpalFileHandlingInterfaceFile[] | null | undefined {
-    return files;
-  }
-
-  /**
    * Prepares inbound rows with local timestamps, source/type labels and shared status labels.
    * @param files - Returned file metadata, or an absent list.
    * @param businessUnits - Display names for all resolved business-unit codes, beyond the permitted filter choices.
