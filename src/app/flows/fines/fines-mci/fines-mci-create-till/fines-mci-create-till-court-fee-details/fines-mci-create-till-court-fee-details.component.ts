@@ -24,6 +24,8 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
 import { FinesMciStore } from '../../stores/fines-mci.store';
 
+const AMOUNT_PATTERN = /^\d+(?:\.\d+)?$/;
+
 @Component({
   selector: 'app-fines-mci-create-till-court-fee-details',
   imports: [
@@ -56,6 +58,7 @@ export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit {
   protected readonly feeLoadFailed = signal(false);
   protected readonly feesLoaded = signal(false);
   protected courtFeeSelectionError: string | null = null;
+  protected amountError: string | null = null;
   protected formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
   protected readonly form = new FormGroup({
     courtFeeId: new FormControl<number | null>(null),
@@ -70,7 +73,17 @@ export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit {
     this.form.controls.courtFeeId.valueChanges.pipe(takeUntilDestroyed()).subscribe((courtFeeId) => {
       if (this.courtFeeItems().some(({ value }) => value === courtFeeId)) {
         this.courtFeeSelectionError = null;
-        this.formErrorSummaryMessage = [];
+        this.formErrorSummaryMessage = this.formErrorSummaryMessage.filter(
+          ({ fieldId }) => fieldId !== 'courtFeeId-autocomplete',
+        );
+        this.changeDetector.markForCheck();
+      }
+    });
+
+    this.form.controls.amountPaid.valueChanges.pipe(takeUntilDestroyed()).subscribe((amount) => {
+      if (amount != null && AMOUNT_PATTERN.test(amount.trim())) {
+        this.amountError = null;
+        this.formErrorSummaryMessage = this.formErrorSummaryMessage.filter(({ fieldId }) => fieldId !== 'amountPaid');
         this.changeDetector.markForCheck();
       }
     });
@@ -89,22 +102,34 @@ export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit {
     this.document.getElementById(fieldId)?.focus();
   }
 
-  /** Validates the selected court fee before later payment validations are added. */
+  /** Validates the selected court fee and amount before later payment validations are added. */
   public handleSubmit(): void {
     const courtFeeId = this.form.controls.courtFeeId.value;
     const selectedFee = this.courtFeeItems().find(({ value }) => value === courtFeeId);
     const input = this.courtFeeAutocomplete?.nativeElement.querySelector<HTMLInputElement>('#courtFeeId-autocomplete');
     const enteredText = input?.value.trim() || this.courtFeeSearchText.trim();
 
-    if (selectedFee && (!input || enteredText === selectedFee.name)) {
-      this.courtFeeSelectionError = null;
-      this.formErrorSummaryMessage = [];
-      return;
-    }
+    const validCourtFee = selectedFee && (!input || enteredText === selectedFee.name);
+    this.courtFeeSelectionError = validCourtFee
+      ? null
+      : enteredText
+        ? 'Enter a valid court fee'
+        : 'Enter court fee code';
 
-    this.courtFeeSelectionError = enteredText ? 'Enter a valid court fee' : 'Enter court fee code';
-    this.formErrorSummaryMessage = [{ fieldId: 'courtFeeId-autocomplete', message: this.courtFeeSelectionError }];
-    this.form.controls.courtFeeId.markAsTouched();
+    const amount = this.form.controls.amountPaid.value?.trim() ?? '';
+    this.amountError = !amount ? 'Enter an amount' : AMOUNT_PATTERN.test(amount) ? null : 'Enter numbers only';
+
+    const errors: IAbstractFormBaseFormErrorSummaryMessage[] = [];
+    if (this.courtFeeSelectionError) {
+      errors.push({ fieldId: 'courtFeeId-autocomplete', message: this.courtFeeSelectionError });
+    }
+    if (this.amountError) {
+      errors.push({ fieldId: 'amountPaid', message: this.amountError });
+    }
+    this.formErrorSummaryMessage = errors;
+    if (errors.length === 0) return;
+
+    this.form.markAllAsTouched();
     this.changeDetector.detectChanges();
     this.errorSummary?.nativeElement.querySelector<HTMLElement>('.govuk-error-summary')?.focus({ preventScroll: true });
   }

@@ -70,6 +70,8 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     expect(element.querySelector('#courtFeeId-autocomplete-error-message')?.textContent).toContain(
       'Enter court fee code',
     );
+    expect(element.querySelector('.govuk-error-summary')?.textContent).toContain('Enter an amount');
+    expect(element.querySelector('#amountPaid-error-message')?.textContent).toContain('Enter an amount');
   });
 
   it('shows the invalid court fee error for text that was not selected from the list', () => {
@@ -95,7 +97,7 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     );
   });
 
-  it('clears the court fee error after selecting a listed fee', () => {
+  it('clears the court fee error while retaining an amount error', () => {
     const component = render();
     const input = enterCourtFeeText('NOT_A_FEE');
     component.handleSubmit();
@@ -107,8 +109,56 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     fixture.detectChanges();
 
     const element = fixture.nativeElement as HTMLElement;
-    expect(element.querySelector('.govuk-error-summary')).toBeNull();
+    expect(element.querySelector('.govuk-error-summary')?.textContent).toContain('Enter an amount');
+    expect(element.querySelector('.govuk-error-summary')?.textContent).not.toContain('Enter court fee code');
     expect(element.querySelector('#courtFeeId-autocomplete-error-message')).toBeNull();
+  });
+
+  it('shows the required amount error when a fee is selected but Amount is blank', () => {
+    const component = render();
+    enterCourtFeeText('CF001 - Application (£12.50)');
+    component['form'].controls.courtFeeId.setValue(1);
+    component.handleSubmit();
+
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('.govuk-error-summary')?.textContent).toContain('Enter an amount');
+    expect(element.querySelector('#amountPaid-error-message')?.textContent).toContain('Enter an amount');
+    expect(element.querySelector('#courtFeeId-autocomplete-error-message')).toBeNull();
+  });
+
+  it.each(['abc', '12x', '12.3.4', '£12'])('shows the numeric amount error for %s', (amount) => {
+    const component = render();
+    enterCourtFeeText('CF001 - Application (£12.50)');
+    component['form'].controls.courtFeeId.setValue(1);
+    component['form'].controls.amountPaid.setValue(amount);
+    component.handleSubmit();
+
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('.govuk-error-summary')?.textContent).toContain('Enter numbers only');
+    expect(element.querySelector('#amountPaid-error-message')?.textContent).toContain('Enter numbers only');
+  });
+
+  it.each(['12', '12.50', '0.5'])('accepts the numeric amount %s', (amount) => {
+    const component = render();
+    enterCourtFeeText('CF001 - Application (£12.50)');
+    component['form'].controls.courtFeeId.setValue(1);
+    component['form'].controls.amountPaid.setValue(amount);
+    component.handleSubmit();
+    fixture.detectChanges();
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('.govuk-error-summary')).toBeNull();
+  });
+
+  it('keeps the court fee error when Amount is corrected', () => {
+    const component = render();
+    component.handleSubmit();
+    component['form'].controls.amountPaid.setValue('12.50');
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('.govuk-error-summary')?.textContent).toContain('Enter court fee code');
+    expect(element.querySelector('.govuk-error-summary')?.textContent).not.toContain('Enter an amount');
+    expect(element.querySelector('#amountPaid-error-message')).toBeNull();
   });
 
   it('waits for fee data before rendering the typeahead', () => {
