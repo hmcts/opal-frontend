@@ -181,7 +181,6 @@ describe('FinesAccAprManageComponent', () => {
           {
             path: 'fines/account/defendant/:accountId/alternate/payment/reference/manage',
             component: FinesAccAprManageComponent,
-            runGuardsAndResolvers: 'always',
             resolve: { aprs: finesAccAprResolver },
           },
         ]),

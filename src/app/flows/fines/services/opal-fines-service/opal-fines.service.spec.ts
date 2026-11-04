@@ -158,6 +158,35 @@ describe('OpalFines', () => {
     expect(error).not.toHaveBeenCalled();
   });
 
+  describe('getAprs', () => {
+    const url = '/opal-fines-service/defendant-accounts/77/alternate-payment-references';
+
+    it('maps a bare array and preserves the quoted account ETag', () => {
+      const result = vi.fn();
+      service.getAprs(77).subscribe(result);
+      const request = httpMock.expectOne(url);
+      expect(request.request.method).toBe('GET');
+      request.flush([], { headers: { ETag: '"7"' } });
+      expect(result).toHaveBeenCalledWith({ references: [], version: '"7"' });
+    });
+
+    it('does not cache across entries or accounts', () => {
+      service.getAprs(77).subscribe();
+      httpMock.expectOne(url).flush([]);
+      service.getAprs(77).subscribe();
+      httpMock.expectOne(url).flush([]);
+      service.getAprs(78).subscribe();
+      httpMock.expectOne(url.replace('/77/', '/78/')).flush([]);
+    });
+
+    it('represents a missing ETag explicitly', () => {
+      const result = vi.fn();
+      service.getAprs(77).subscribe(result);
+      httpMock.expectOne(url).flush([]);
+      expect(result).toHaveBeenCalledWith({ references: [], version: null });
+    });
+  });
+
   it('should retry selected account detail reads after transient timeout failures', () => {
     const defendantAccountId = 456;
     const minorCreditorAccountId = 77;
