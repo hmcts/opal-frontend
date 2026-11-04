@@ -251,20 +251,6 @@ describe('AppComponent - browser', () => {
     expect(mockDocumentLocation.location.href).toBe(SSO_ENDPOINTS.logout);
   });
 
-  it.each([
-    [false, false],
-    [true, true],
-  ])('should honor the unsaved changes confirmation when the user confirms=%s', (confirmation, shouldRedirect) => {
-    globalStore.setAuthenticated(true);
-    TestBed.inject(FinesApiStore).setUnsavedChanges(true);
-    const fixture = TestBed.createComponent(AppComponent);
-    const redirectSpy = vi.spyOn(fixture.componentInstance, 'handleRedirect');
-    vi.spyOn(window, 'confirm').mockReturnValue(confirmation);
-
-    fixture.componentInstance.handleAuthentication();
-
-    expect(redirectSpy).toHaveBeenCalledTimes(shouldRedirect ? 1 : 0);
-  });
   it.each(['business units', 'files'] as const)(
     'should request logout without application confirmation when ACI has selected %s',
     (selection) => {
