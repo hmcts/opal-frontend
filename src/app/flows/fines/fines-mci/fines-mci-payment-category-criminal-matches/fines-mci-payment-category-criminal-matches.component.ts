@@ -2,11 +2,12 @@ import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, injec
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import {
   FinesMciCriminalAccountId,
   IFinesMciCriminalAccount,
 } from '../interfaces/fines-mci-criminal-account.interface';
-import { catchError, EMPTY, finalize, map, Subject, takeUntil } from 'rxjs';
+import { catchError, defaultIfEmpty, finalize, map, of, Subject, takeUntil } from 'rxjs';
 import { FinesMciCriminalAccountService } from '../services/fines-mci-criminal-account.service';
 import { IFinesMciCriminalAccountsResult } from '../interfaces/fines-mci-criminal-accounts-result.interface';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
@@ -66,6 +67,7 @@ const FINES_MCI_CRIMINAL_MATCHES_CONTENT: Record<
 export class FinesMciPaymentCategoryCriminalMatchesComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly utilsService = inject(UtilsService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly criminalAccountService = inject(FinesMciCriminalAccountService);
   private readonly cancelAccountDetailsRequest = new Subject<void>();
@@ -226,12 +228,18 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
     this.criminalAccountService
       .loadSelectedAccountDetails(selectedAccount)
       .pipe(
-        catchError(() => EMPTY),
+        catchError(() => of(null)),
+        // The shared interceptor can complete retriable 409 responses without emitting data.
+        defaultIfEmpty(null),
         finalize(() => this.isLoadingAccountDetails.set(false)),
         takeUntil(this.cancelAccountDetailsRequest),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(() => {
+      .subscribe((accountDetails) => {
+        if (!accountDetails) {
+          this.utilsService.scrollToTop();
+          return;
+        }
         void this.router.navigate(
           [
             FINES_MCI_ROUTING_PATHS.children.account,
