@@ -15,9 +15,15 @@ import { FinesAccComponent } from '../fines-acc.component';
 import { FINES_ACC_APR_DUPLICATE_MESSAGE } from '../fines-acc-apr-error/constants/fines-acc-apr-error-message.constant';
 import { IFinesAccAprErrorContext } from '../fines-acc-apr-error/interfaces/fines-acc-apr-error-context.interface';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
-import { routing } from '../routing/fines-acc-apr.routes';
+import { routing as accountRouting } from '../routing/fines-acc.routes';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FinesAccAprAddChangeComponent } from './fines-acc-apr-add-change.component';
+import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';
+
+const routing = accountRouting
+  .flatMap((route) => route.children ?? [])
+  .flatMap((route) => route.children ?? [])
+  .find((route) => route.path === FINES_ACC_APR_ROUTING_PATHS.root)!.children!;
 
 @Component({ template: 'APR manage destination' })
 class AprErrorManageDestinationComponent {}
