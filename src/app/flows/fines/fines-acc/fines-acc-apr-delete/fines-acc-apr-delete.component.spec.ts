@@ -90,7 +90,6 @@ describe('FinesAccAprDeleteComponent', () => {
               {
                 path: `${FINES_ACC_APR_ROUTING_PATHS.root}/delete`,
                 component: FinesAccAprDeleteComponent,
-                runGuardsAndResolvers: 'always',
                 resolve: { aprs: finesAccAprResolver },
               },
               { path: `${FINES_ACC_APR_ROUTING_PATHS.root}/manage`, component: DeleteTestDestinationComponent },
@@ -202,10 +201,10 @@ describe('FinesAccAprDeleteComponent', () => {
     },
   );
 
-  it('uses newly resolved selection and version when Angular reuses the component after a query change', async () => {
-    const component = await render();
+  it('selects another loaded reference and keeps its captured version on query-only navigation', async () => {
     const nextReference = { ...reference, alternate_payment_reference_id: 12, apr_text: 'NEXT-REFERENCE' };
-    data = { references: [reference, nextReference], version: '"9"' };
+    data = { references: [reference, nextReference], version: '"7"' };
+    const component = await render();
     api.deleteApr.mockReturnValue(of({ reference: nextReference, version: '"10"' }));
 
     const reused = await harness.navigateByUrl(
@@ -214,10 +213,11 @@ describe('FinesAccAprDeleteComponent', () => {
     );
 
     expect(reused).toBe(component);
+    expect(api.getAprs).toHaveBeenCalledExactlyOnceWith(141);
     expect(harness.routeNativeElement!.querySelector('#apr-remove-table')?.textContent).toContain('NEXT-REFERENCE');
     confirm();
     await harness.fixture.whenStable();
-    expect(api.deleteApr).toHaveBeenCalledExactlyOnceWith(141, 12, '"9"');
+    expect(api.deleteApr).toHaveBeenCalledExactlyOnceWith(141, 12, '"7"');
     expect(accountStore.base_version()).toBe('"10"');
   });
 
@@ -226,6 +226,10 @@ describe('FinesAccAprDeleteComponent', () => {
     async (change) => {
       const result = new Subject<IOpalFinesAprResponse>();
       api.deleteApr.mockReturnValue(result);
+      data = {
+        ...data,
+        references: [reference, { ...reference, alternate_payment_reference_id: 12, apr_text: 'NEXT-REFERENCE' }],
+      };
       const component = await render();
       confirm();
       expect(result.observed).toBe(true);
@@ -252,7 +256,9 @@ describe('FinesAccAprDeleteComponent', () => {
       expect(component.isRemoving()).toBe(false);
       expect(TestBed.inject(Router).url).toBe(nextUrl);
       expect(accountStore.account_id()).toBe(accountId);
-      expect(accountStore.base_version()).toBe('"9"');
+      const version = change === 'account' ? '"9"' : '"7"';
+      expect(accountStore.base_version()).toBe(version);
+      expect(api.getAprs).toHaveBeenCalledTimes(change === 'account' ? 2 : 1);
       expect(accountStore.successMessage()).toBeNull();
       expect(api.clearAccountDetailsCache).not.toHaveBeenCalled();
       expect(harness.routeNativeElement!.querySelector('#apr-remove-table')?.textContent).toContain('NEXT-REFERENCE');
@@ -260,7 +266,7 @@ describe('FinesAccAprDeleteComponent', () => {
       api.deleteApr.mockReturnValue(of({ reference: nextReference, version: '"10"' }));
       confirm();
       await harness.fixture.whenStable();
-      expect(api.deleteApr).toHaveBeenLastCalledWith(accountId, 12, '"9"');
+      expect(api.deleteApr).toHaveBeenLastCalledWith(accountId, 12, version);
       expect(accountStore.base_version()).toBe('"10"');
       expect(TestBed.inject(Router).url).toBe(manageUrl.replace('/141/', `/${accountId}/`));
     },
@@ -287,6 +293,24 @@ describe('FinesAccAprDeleteComponent', () => {
     expect(api.clearAccountDetailsCache).not.toHaveBeenCalled();
     expect(TestBed.inject(Router).url).toBe(manageUrl);
   });
+
+  it.each(['invalid', '999', '31'])(
+    'returns query-only selection %s to Manage when it is missing or read-only',
+    async (selectedId) => {
+      data = {
+        ...data,
+        references: [reference, { ...reference, alternate_payment_reference_id: 31, category: 'ACC' }],
+      };
+      await render();
+
+      await harness.navigateByUrl(deleteUrl.replace('Id=11', `Id=${selectedId}`));
+      await harness.fixture.whenStable();
+
+      expect(TestBed.inject(Router).url).toBe(manageUrl);
+      expect(api.getAprs).toHaveBeenCalledExactlyOnceWith(141);
+      expect(api.deleteApr).not.toHaveBeenCalled();
+    },
+  );
 
   it.each(['999', 'invalid', ''])(
     'returns missing selection %s to manage without exposing a delete action',
@@ -335,6 +359,5 @@ describe('FinesAccAprDeleteComponent', () => {
       title: TitleResolver,
       aprs: finesAccAprResolver,
     });
-    expect(deleteRoute?.runGuardsAndResolvers).toBe('always');
   });
 });

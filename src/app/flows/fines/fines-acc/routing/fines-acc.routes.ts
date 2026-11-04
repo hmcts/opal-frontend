@@ -114,7 +114,6 @@ export const routing: Routes = [
               businessUnitRoutePermissionsGuard,
               finesAccStateGuard,
             ],
-            runGuardsAndResolvers: 'always',
             data: {
               title: 'Remove Alternate Payment Reference',
               routePermissionId: [FINES_PERMISSIONS['manage-alternate-payment-references']],
@@ -132,7 +131,6 @@ export const routing: Routes = [
               businessUnitRoutePermissionsGuard,
               finesAccStateGuard,
             ],
-            runGuardsAndResolvers: 'always',
             data: {
               title: 'Manage Alternate Payment References',
               routePermissionId: [FINES_PERMISSIONS['manage-alternate-payment-references']],
