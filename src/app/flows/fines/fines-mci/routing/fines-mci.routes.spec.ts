@@ -15,7 +15,10 @@ import { routing } from './fines-mci.routes';
 import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.constant';
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
-import { FinesMciPlaceholderComponent } from '../fines-mci-placeholder/fines-mci-placeholder.component';
+import { FinesMciPaymentCategoryCriminalAccountComponent } from '../fines-mci-payment-category-criminal-account/fines-mci-payment-category-criminal-account.component';
+import { FinesMciStore } from '../stores/fines-mci.store';
+import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-defendant-account-response-individual.mock';
 
 @Component({ template: '' })
 class RouteDestinationComponent {}
@@ -234,10 +237,13 @@ describe('finesMci routes', () => {
       });
       const harness = await RouterTestingHarness.create();
       const url = `/fines/manual-cash-input/create/till/payment/category/criminal/account/2/${type}`;
-      await harness.navigateByUrl(url, FinesMciPlaceholderComponent);
+      const store = TestBed.inject(FinesMciStore);
+      store.setSelectedCriminalAccount(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[1]);
+      store.setSelectedCriminalAccountHeader(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
+      await harness.navigateByUrl(url, FinesMciPaymentCategoryCriminalAccountComponent);
 
       expect(TestBed.inject(Router).url).toBe(url);
-      expect(harness.routeNativeElement?.textContent).toContain('Confirm account');
+      expect(harness.routeNativeElement?.textContent).toContain('Successful confirm account');
       expect(harness.routeNativeElement?.textContent).toContain(
         'Placeholder page. This page will be fully implemented under ticket PO-3530.',
       );

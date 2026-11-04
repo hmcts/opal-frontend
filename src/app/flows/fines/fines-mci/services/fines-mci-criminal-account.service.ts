@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { defer, EMPTY, Observable, tap } from 'rxjs';
+import { defer, EMPTY, forkJoin, map, Observable } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IFinesMciCriminalAccount } from '../interfaces/fines-mci-criminal-account.interface';
 import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
@@ -11,7 +11,7 @@ export class FinesMciCriminalAccountService {
   private readonly store = inject(FinesMciStore);
 
   /** Loads the selected account details for the next payment page. */
-  public loadSelectedAccountAtAGlance(
+  public loadSelectedAccountDetails(
     account: IFinesMciCriminalAccount,
   ): Observable<IOpalFinesAccountDefendantAtAGlance> {
     return defer(() => {
@@ -22,11 +22,16 @@ export class FinesMciCriminalAccountService {
       this.store.setSelectedCriminalAccount(account);
       // The shared at-a-glance cache is not keyed by account ID.
       this.opalFines.clearCache('defendantAccountAtAGlanceCache$');
-      return this.opalFines.getDefendantAccountAtAGlance(account.defendant_account_id).pipe(
-        tap((atAGlance) => {
+      return forkJoin({
+        atAGlance: this.opalFines.getDefendantAccountAtAGlance(account.defendant_account_id),
+        header: this.opalFines.getDefendantAccountHeadingData(account.defendant_account_id),
+      }).pipe(
+        map(({ atAGlance, header }) => {
           if (this.store.selectedCriminalAccount() === account) {
             this.store.setSelectedCriminalAccountAtAGlance(atAGlance);
+            this.store.setSelectedCriminalAccountHeader(header);
           }
+          return atAGlance;
         }),
       );
     });

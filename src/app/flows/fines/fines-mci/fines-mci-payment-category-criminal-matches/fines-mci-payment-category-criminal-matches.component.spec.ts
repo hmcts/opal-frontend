@@ -9,6 +9,7 @@ import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { IFinesMciCriminalAccountsResult } from '../interfaces/fines-mci-criminal-accounts-result.interface';
 import { FinesMciCriminalSearchResults } from '../constants/fines-mci-criminal-search-results.constant';
+import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { FinesMciStore } from '../stores/fines-mci.store';
 import { FinesMciPaymentCategoryCriminalMatchesComponent } from './fines-mci-payment-category-criminal-matches.component';
 import { IFinesMciCriminalAccount } from '../interfaces/fines-mci-criminal-account.interface';
@@ -17,12 +18,17 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
   let fixture: ComponentFixture<FinesMciPaymentCategoryCriminalMatchesComponent>;
   let routeDataSubject: BehaviorSubject<{ criminalAccounts: IFinesMciCriminalAccountsResult }>;
   let finesMciStore: InstanceType<typeof FinesMciStore>;
-  let opalFines: { clearCache: ReturnType<typeof vi.fn>; getDefendantAccountAtAGlance: ReturnType<typeof vi.fn> };
+  let opalFines: {
+    clearCache: ReturnType<typeof vi.fn>;
+    getDefendantAccountAtAGlance: ReturnType<typeof vi.fn>;
+    getDefendantAccountHeadingData: ReturnType<typeof vi.fn>;
+  };
   let navigateSpy: MockInstance<Router['navigate']>;
 
   beforeEach(async () => {
     opalFines = {
       clearCache: vi.fn(),
+      getDefendantAccountHeadingData: vi.fn().mockReturnValue(of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK)),
       getDefendantAccountAtAGlance: vi.fn().mockReturnValue(of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK)),
     };
     routeDataSubject = new BehaviorSubject<{ criminalAccounts: IFinesMciCriminalAccountsResult }>({
@@ -323,23 +329,26 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
     });
   });
 
-  it('should leave details empty on failure and allow retrying Continue', () => {
-    opalFines.getDefendantAccountAtAGlance.mockReturnValueOnce(throwError(() => new Error('Request failed')));
-    (fixture.nativeElement.querySelector('#fines-mci-criminal-account-2') as HTMLInputElement).click();
-    fixture.detectChanges();
-    const button = fixture.nativeElement.querySelector('button.govuk-button') as HTMLButtonElement;
-    button.click();
-    fixture.detectChanges();
+  it.each(['getDefendantAccountAtAGlance', 'getDefendantAccountHeadingData'] as const)(
+    'should leave details empty when %s fails and allow retrying Continue',
+    (method) => {
+      opalFines[method].mockReturnValueOnce(throwError(() => new Error('Request failed')));
+      (fixture.nativeElement.querySelector('#fines-mci-criminal-account-2') as HTMLInputElement).click();
+      fixture.detectChanges();
+      const button = fixture.nativeElement.querySelector('button.govuk-button') as HTMLButtonElement;
+      button.click();
+      fixture.detectChanges();
 
-    expect(finesMciStore.selectedCriminalAccountAtAGlance()).toBeNull();
-    expect(button.disabled).toBe(false);
-    expect(navigateSpy).not.toHaveBeenCalled();
+      expect(finesMciStore.selectedCriminalAccountAtAGlance()).toBeNull();
+      expect(button.disabled).toBe(false);
+      expect(navigateSpy).not.toHaveBeenCalled();
 
-    button.click();
-    fixture.detectChanges();
-    expect(opalFines.getDefendantAccountAtAGlance).toHaveBeenCalledTimes(2);
-    expect(finesMciStore.selectedCriminalAccountAtAGlance()).toEqual(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
-  });
+      button.click();
+      fixture.detectChanges();
+      expect(opalFines.getDefendantAccountAtAGlance).toHaveBeenCalledTimes(2);
+      expect(finesMciStore.selectedCriminalAccountAtAGlance()).toEqual(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+    },
+  );
 
   it.each(['selection change', 'search again', 'destroy'] as const)(
     'should discard an in-flight response after %s',

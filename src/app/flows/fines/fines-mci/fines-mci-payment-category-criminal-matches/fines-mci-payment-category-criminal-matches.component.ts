@@ -224,7 +224,7 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
 
     this.isLoadingAccountDetails.set(true);
     this.criminalAccountService
-      .loadSelectedAccountAtAGlance(selectedAccount)
+      .loadSelectedAccountDetails(selectedAccount)
       .pipe(
         catchError(() => EMPTY),
         finalize(() => this.isLoadingAccountDetails.set(false)),

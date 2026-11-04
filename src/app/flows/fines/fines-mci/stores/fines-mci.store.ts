@@ -6,6 +6,8 @@ import { FinesMciJourney, IFinesMciTill } from './interfaces/fines-mci.interface
 import { IFinesMciCriminalSearch } from './interfaces/fines-mci-criminal-search.interface';
 import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
 
+import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
+
 export const FinesMciStore = signalStore(
   { providedIn: 'root' },
   withState(() => ({
@@ -14,6 +16,7 @@ export const FinesMciStore = signalStore(
     criminalSearch: null as IFinesMciCriminalSearch | null,
     criminalSearchResults: null as IFinesMciCriminalAccountsResponse | null,
     selectedCriminalAccount: null as IFinesMciCriminalAccount | null,
+    selectedCriminalAccountHeader: null as IOpalFinesAccountDefendantDetailsHeader | null,
     selectedCriminalAccountAtAGlance: null as IOpalFinesAccountDefendantAtAGlance | null,
     draftJourney: null as FinesMciJourney | null,
   })),
@@ -37,6 +40,7 @@ export const FinesMciStore = signalStore(
           criminalSearchResults: null,
           selectedCriminalAccount: null,
           selectedCriminalAccountAtAGlance: null,
+          selectedCriminalAccountHeader: null,
         });
       },
       setCriminalSearchResults(criminalSearchResults: IFinesMciCriminalAccountsResponse | null): void {
@@ -44,13 +48,21 @@ export const FinesMciStore = signalStore(
           criminalSearchResults,
           selectedCriminalAccount: null,
           selectedCriminalAccountAtAGlance: null,
+          selectedCriminalAccountHeader: null,
         });
       },
       setSelectedCriminalAccount(selectedCriminalAccount: IFinesMciCriminalAccount | null): void {
-        patchState(store, { selectedCriminalAccount, selectedCriminalAccountAtAGlance: null });
+        patchState(store, {
+          selectedCriminalAccount,
+          selectedCriminalAccountAtAGlance: null,
+          selectedCriminalAccountHeader: null,
+        });
       },
       setSelectedCriminalAccountAtAGlance(selectedCriminalAccountAtAGlance: IOpalFinesAccountDefendantAtAGlance): void {
         patchState(store, { selectedCriminalAccountAtAGlance });
+      },
+      setSelectedCriminalAccountHeader(selectedCriminalAccountHeader: IOpalFinesAccountDefendantDetailsHeader): void {
+        patchState(store, { selectedCriminalAccountHeader });
       },
       resetCriminalSearch(): void {
         patchState(store, {
@@ -58,6 +70,7 @@ export const FinesMciStore = signalStore(
           criminalSearchResults: null,
           selectedCriminalAccount: null,
           selectedCriminalAccountAtAGlance: null,
+          selectedCriminalAccountHeader: null,
         });
       },
       /** Sets the selected business unit and clears tills when switching to a different unit. */
@@ -71,6 +84,7 @@ export const FinesMciStore = signalStore(
             criminalSearchResults: null,
             selectedCriminalAccount: null,
             selectedCriminalAccountAtAGlance: null,
+            selectedCriminalAccountHeader: null,
             draftJourney: null,
           });
           return;
@@ -107,6 +121,7 @@ export const FinesMciStore = signalStore(
           criminalSearchResults: null,
           selectedCriminalAccount: null,
           selectedCriminalAccountAtAGlance: null,
+          selectedCriminalAccountHeader: null,
           draftJourney: null,
         });
       },
