@@ -158,6 +158,35 @@ describe('OpalFines', () => {
     expect(error).not.toHaveBeenCalled();
   });
 
+  describe('getAprs', () => {
+    const url = '/opal-fines-service/defendant-accounts/77/alternate-payment-references';
+
+    it('maps a bare array and preserves the quoted account ETag', () => {
+      const result = vi.fn();
+      service.getAprs(77).subscribe(result);
+      const request = httpMock.expectOne(url);
+      expect(request.request.method).toBe('GET');
+      request.flush([], { headers: { ETag: '"7"' } });
+      expect(result).toHaveBeenCalledWith({ references: [], version: '"7"' });
+    });
+
+    it('does not cache across entries or accounts', () => {
+      service.getAprs(77).subscribe();
+      httpMock.expectOne(url).flush([]);
+      service.getAprs(77).subscribe();
+      httpMock.expectOne(url).flush([]);
+      service.getAprs(78).subscribe();
+      httpMock.expectOne(url.replace('/77/', '/78/')).flush([]);
+    });
+
+    it('represents a missing ETag explicitly', () => {
+      const result = vi.fn();
+      service.getAprs(77).subscribe(result);
+      httpMock.expectOne(url).flush([]);
+      expect(result).toHaveBeenCalledWith({ references: [], version: null });
+    });
+  });
+
   it('should retry selected account detail reads after transient timeout failures', () => {
     const defendantAccountId = 456;
     const minorCreditorAccountId = 77;
@@ -243,6 +272,33 @@ describe('OpalFines', () => {
     minorCreditorSearchRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
     httpMock.expectNone(OPAL_FINES_PATHS.searchMinorCreditorAccounts);
     expect(minorCreditorSearchError).toHaveBeenCalledTimes(1);
+  });
+
+  describe('createApr', () => {
+    const url = '/opal-fines-service/defendant-accounts/77/alternate-payment-references';
+
+    it('creates the reference with its original text and account ETag, with no business unit header', () => {
+      const result = vi.fn();
+      const reference = { alternate_payment_reference_id: 11, apr_text: ' MiXeD-123 ' };
+      service.createApr(77, { apr_text: ' MiXeD-123 ' }, '"7"').subscribe(result);
+      const request = httpMock.expectOne(url);
+
+      expect(request.request.method).toBe('POST');
+      expect(request.request.body).toEqual({ apr_text: ' MiXeD-123 ' });
+      expect(request.request.headers.get('If-Match')).toBe('"7"');
+      expect(request.request.headers.keys()).toEqual(['If-Match']);
+      request.flush(reference, { status: 201, statusText: 'Created', headers: { ETag: '"8"' } });
+      expect(result).toHaveBeenCalledWith({ reference, version: '"8"' });
+    });
+
+    it.each([409, 412, 500, 503])('does not retry a failed create request with status %s', (status) => {
+      const error = vi.fn();
+      service.createApr(77, { apr_text: 'Reference' }, '"7"').subscribe({ error });
+      httpMock.expectOne(url).flush({ status }, { status, statusText: 'Failure' });
+
+      expect(error).toHaveBeenCalledOnce();
+      httpMock.expectNone(url);
+    });
   });
 
   it('should not retry mutation calls after transient timeout failures', () => {
