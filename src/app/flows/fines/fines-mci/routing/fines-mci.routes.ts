@@ -134,6 +134,7 @@ export const routing: Routes = [
                 (c) => c.FinesMciCreateTillCourtFeeDetailsComponent,
               ),
             canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+            canDeactivate: [canDeactivateGuard],
             data: {
               heading: FINES_MCI_ROUTING_TITLES.children.createTillCourtFeeDetails,
               permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',

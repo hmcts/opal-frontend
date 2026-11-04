@@ -273,6 +273,68 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     const component = render();
 
     expect(component['form'].getRawValue()).toEqual(draft);
+    expect(component.canDeactivate()).toBe(false);
+  });
+
+  it('allows leaving without a warning when no Court Fee Details have been entered', () => {
+    const component = render();
+
+    expect(component.canDeactivate()).toBe(true);
+    expect(component.handleBeforeUnload()).toBe(true);
+  });
+
+  it.each([
+    ['court fee', { courtFeeId: 1, amountPaid: null, numberOfItems: null }],
+    ['amount', { courtFeeId: null, amountPaid: '12.50', numberOfItems: null }],
+    ['number of items', { courtFeeId: null, amountPaid: null, numberOfItems: '2' }],
+  ])('warns before leaving when only the %s is entered', (_field, values) => {
+    const component = render();
+    component['form'].setValue(values);
+
+    expect(component.canDeactivate()).toBe(false);
+    expect(component.handleBeforeUnload()).toBe(false);
+  });
+
+  it('warns before leaving when an unmatched court fee search was typed', () => {
+    const component = render();
+    enterCourtFeeText('unknown fee');
+
+    expect(component.canDeactivate()).toBe(false);
+  });
+
+  it('prevents browser exit or refresh while Court Fee Details are entered', () => {
+    const component = render();
+    component['form'].controls.amountPaid.setValue('12.50');
+    const beforeUnloadEvent = new Event('beforeunload', { cancelable: true });
+
+    expect(window.dispatchEvent(beforeUnloadEvent)).toBe(false);
+    expect(beforeUnloadEvent.defaultPrevented).toBe(true);
+    expect(component['form'].controls.amountPaid.value).toBe('12.50');
+  });
+
+  it('allows a valid Continue without a warning and keeps the draft for the next screen', () => {
+    const component = render();
+    enterCourtFeeText('CF001 - Application (£12.50)');
+    component['form'].setValue({ courtFeeId: 1, amountPaid: '12.50', numberOfItems: '1' });
+
+    component.handleSubmit();
+    fixture.destroy();
+
+    expect(component.canDeactivate()).toBe(true);
+    expect(component.handleBeforeUnload()).toBe(true);
+    expect(store.courtFeeDraft()).toEqual({ courtFeeId: 1, amountPaid: '12.50', numberOfItems: '1' });
+  });
+
+  it('protects the form again if Continue cannot navigate', async () => {
+    vi.mocked(router.navigate).mockResolvedValueOnce(false);
+    const component = render();
+    enterCourtFeeText('CF001 - Application (£12.50)');
+    component['form'].setValue({ courtFeeId: 1, amountPaid: '12.50', numberOfItems: '1' });
+
+    component.handleSubmit();
+    await Promise.resolve();
+
+    expect(component.canDeactivate()).toBe(false);
   });
 
   it('shows an error when court fee reference data cannot load', () => {
@@ -299,6 +361,34 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     await Promise.resolve();
 
     expect(router.navigate).toHaveBeenCalledWith(['../details'], expect.any(Object));
+    expect(store.draftJourney()).toBeNull();
+  });
+
+  it('retains entered data and the draft when Cancel is declined', async () => {
+    const draft = { courtFeeId: 1, amountPaid: '12.50', numberOfItems: '1' };
+    store.setCourtFeeDraft(draft);
+    store.setDraftJourney('courtFee');
+    vi.mocked(router.navigate).mockResolvedValueOnce(false);
+    const component = render();
+
+    component.handleCancel();
+    await Promise.resolve();
+
+    expect(component.canDeactivate()).toBe(false);
+    expect(component['form'].getRawValue()).toEqual(draft);
+    expect(store.courtFeeDraft()).toEqual(draft);
+    expect(store.draftJourney()).toBe('courtFee');
+  });
+
+  it('discards entered data and the draft after Cancel is confirmed', async () => {
+    store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: '12.50', numberOfItems: '1' });
+    store.setDraftJourney('courtFee');
+    const component = render();
+
+    component.handleCancel();
+    await Promise.resolve();
+
+    expect(store.courtFeeDraft()).toBeNull();
     expect(store.draftJourney()).toBeNull();
   });
 });

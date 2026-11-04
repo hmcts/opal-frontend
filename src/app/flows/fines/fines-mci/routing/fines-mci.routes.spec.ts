@@ -90,6 +90,7 @@ describe('finesMci routes', () => {
     );
 
     expect(await courtFeeRoute?.loadComponent?.()).toBe(FinesMciCreateTillCourtFeeDetailsComponent);
+    expect(courtFeeRoute?.canDeactivate).toEqual([canDeactivateGuard]);
   });
 
   it.each([

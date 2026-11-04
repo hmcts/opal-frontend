@@ -110,6 +110,37 @@ export class ManualCashInputFlow {
   public assertCourtFeeDescriptionSearch(): void {
     this.actions.assertCourtFeeDescriptionSearch();
   }
+
+  /** Submits Court Fee Details without entering any values. */
+  public continueWithoutCourtFeeDetails(): void {
+    this.actions.continueWithoutCourtFeeDetails();
+  }
+
+  /** Checks the Court Fee Details validation messages and error links. */
+  public assertCourtFeeDetailsValidation(): void {
+    this.actions.assertCourtFeeDetailsValidation();
+  }
+
+  /** Cancels a blank Court Fee Details form. */
+  public cancelBlankCourtFeeDetails(): void {
+    this.actions.cancelBlankCourtFeeDetails();
+  }
+
+  /** Enters an amount and declines the leave-page warning. */
+  public enterCourtFeeAmountAndDeclineCancel(): void {
+    this.actions.enterCourtFeeAmountAndDeclineCancel();
+  }
+
+  /** Accepts the leave-page warning and returns to Till Details. */
+  public acceptCourtFeeCancel(): void {
+    this.actions.acceptCourtFeeCancel();
+  }
+
+  /** Checks that Court Fee Details were discarded after Cancel. */
+  public assertCourtFeeDetailsWereDiscarded(): void {
+    this.actions.assertCourtFeeDetailsWereDiscarded();
+  }
+
   /** Verifies the Search for an Account destination. */
   public assertSearchForAccountIsDisplayed(): void {
     this.actions.assertSearchForAccountIsDisplayed();

@@ -5,6 +5,8 @@ import {
   Component,
   DestroyRef,
   ElementRef,
+  HostListener,
+  OnDestroy,
   OnInit,
   ViewChild,
   inject,
@@ -20,6 +22,7 @@ import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukTextInputPrefixSuffixComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input-prefix-suffix';
+import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
 import { IOpalFinesCourtFee } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-fees.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
@@ -52,7 +55,7 @@ function isExactCourtFeePayment(amount: string, feeAmount: number, numberOfItems
   templateUrl: './fines-mci-create-till-court-fee-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit {
+export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit, OnDestroy {
   @ViewChild('courtFeeAutocomplete', { read: ElementRef })
   private readonly courtFeeAutocomplete?: ElementRef<HTMLElement>;
   @ViewChild('errorSummary', { read: ElementRef }) private readonly errorSummary?: ElementRef<HTMLElement>;
@@ -66,6 +69,7 @@ export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit {
   private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly courtFees = signal<IOpalFinesCourtFee[]>([]);
   private courtFeeSearchText = '';
+  private isContinuing = false;
 
   protected readonly businessUnitName = this.finesMciStore.businessUnit()?.business_unit_name;
   protected readonly courtFeeItems = signal<IAlphagovAccessibleAutocompleteItem[]>([]);
@@ -168,7 +172,10 @@ export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit {
       const destination = isExactCourtFeePayment(amount, selectedFee.amount, numberOfItems)
         ? FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails
         : FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation;
-      void this.router.navigate([`../${destination}`], { relativeTo: this.activatedRoute });
+      this.isContinuing = true;
+      void this.router.navigate([`../${destination}`], { relativeTo: this.activatedRoute }).then((navigated) => {
+        if (!navigated) this.isContinuing = false;
+      });
       return;
     }
 
@@ -211,5 +218,31 @@ export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit {
           this.finesMciStore.setDraftJourney(null);
         }
       });
+  }
+
+  /** Warns before leaving when the current Court Fee Details form contains entered data. */
+  public canDeactivate(): CanDeactivateTypes {
+    const { courtFeeId, amountPaid, numberOfItems } = this.form.getRawValue();
+    const hasEnteredData =
+      this.form.dirty ||
+      courtFeeId !== null ||
+      !!amountPaid?.trim() ||
+      !!numberOfItems?.trim() ||
+      !!this.courtFeeSearchText.trim();
+
+    return this.isContinuing || !hasEnteredData;
+  }
+
+  @HostListener('window:beforeunload')
+  public handleBeforeUnload(): boolean {
+    return this.canDeactivate() === true;
+  }
+
+  /** Discards the Court Fee draft after a confirmed departure other than Continue. */
+  public ngOnDestroy(): void {
+    if (!this.isContinuing) {
+      this.finesMciStore.setCourtFeeDraft(null);
+      this.finesMciStore.setDraftJourney(null);
+    }
   }
 }

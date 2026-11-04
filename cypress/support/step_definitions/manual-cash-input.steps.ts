@@ -65,6 +65,30 @@ Then('I see Court Fee Details', () => {
 Then('I can find a court fee by description', () => {
   manualCashInputFlow().assertCourtFeeDescriptionSearch();
 });
+
+When('I continue without Court Fee Details', () => {
+  manualCashInputFlow().continueWithoutCourtFeeDetails();
+});
+
+Then('the Court Fee Details validation summary and field errors are displayed', () => {
+  manualCashInputFlow().assertCourtFeeDetailsValidation();
+});
+
+When('I cancel blank Court Fee Details', () => {
+  manualCashInputFlow().cancelBlankCourtFeeDetails();
+});
+
+When('I enter a court fee amount and decline Cancel', () => {
+  manualCashInputFlow().enterCourtFeeAmountAndDeclineCancel();
+});
+
+When('I accept Cancel on Court Fee Details', () => {
+  manualCashInputFlow().acceptCourtFeeCancel();
+});
+
+Then('the Court Fee Details form is blank', () => {
+  manualCashInputFlow().assertCourtFeeDetailsWereDiscarded();
+});
 Then('I see Search for an Account', () => {
   manualCashInputFlow().assertSearchForAccountIsDisplayed();
 });

@@ -262,6 +262,71 @@ export class ManualCashInputActions {
       .should('be.visible');
   }
 
+  /** Submits an empty Court Fee Details form to show its required-field errors. */
+  public continueWithoutCourtFeeDetails(): void {
+    cy.get(ManualCashInputLocators.courtFeeDetailsPage).find(ManualCashInputLocators.continueButton).click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/court-fee-details');
+  }
+
+  /** Checks the shared error summary, field messages, and links to each invalid field. */
+  public assertCourtFeeDetailsValidation(): void {
+    const errors = [
+      [ManualCashInputLocators.courtFeeCodeInput, 'Enter court fee code'],
+      [ManualCashInputLocators.courtFeeAmountInput, 'Enter an amount'],
+      [ManualCashInputLocators.courtFeeNumberOfItemsInput, 'Enter number of items'],
+    ] as const;
+
+    cy.get(ManualCashInputLocators.errorSummary)
+      .find('.govuk-error-summary__title')
+      .should('have.text', 'There is a problem');
+    errors.forEach(([field, message]) => {
+      cy.get(`${field}-error-message`).should('contain.text', message);
+      cy.get(ManualCashInputLocators.errorSummary).contains('a', message).click();
+      cy.focused().should('have.id', field.slice(1));
+    });
+  }
+
+  /** Cancels an untouched Court Fee Details form. */
+  public cancelBlankCourtFeeDetails(): void {
+    cy.get(ManualCashInputLocators.courtFeeDetailsPage).find(ManualCashInputLocators.cancelLink).click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/details');
+  }
+
+  /** Declines the leave-page warning and checks that entered Court Fee Details are retained. */
+  public enterCourtFeeAmountAndDeclineCancel(): void {
+    let confirmationWasRaised = false;
+    cy.get(ManualCashInputLocators.courtFeeAmountInput).type('12.50');
+    cy.once('window:confirm', (message) => {
+      confirmationWasRaised = true;
+      expect(String(message).replace(/\s+/g, ' ').trim()).to.equal(UNSAVED_CHANGES_WARNING);
+      return false;
+    });
+    cy.get(ManualCashInputLocators.courtFeeDetailsPage).find(ManualCashInputLocators.cancelLink).click();
+    cy.then(() => expect(confirmationWasRaised, 'native unsaved-changes warning').to.be.true);
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/court-fee-details');
+    cy.get(ManualCashInputLocators.courtFeeAmountInput).should('have.value', '12.50');
+  }
+
+  /** Accepts the leave-page warning and returns to Till Details. */
+  public acceptCourtFeeCancel(): void {
+    let confirmationWasRaised = false;
+    cy.once('window:confirm', (message) => {
+      confirmationWasRaised = true;
+      expect(String(message).replace(/\s+/g, ' ').trim()).to.equal(UNSAVED_CHANGES_WARNING);
+      return true;
+    });
+    cy.get(ManualCashInputLocators.courtFeeDetailsPage).find(ManualCashInputLocators.cancelLink).click();
+    cy.then(() => expect(confirmationWasRaised, 'native unsaved-changes warning').to.be.true);
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/details');
+  }
+
+  /** Checks that a cancelled Court Fee payment starts with a blank form when reopened. */
+  public assertCourtFeeDetailsWereDiscarded(): void {
+    cy.get(ManualCashInputLocators.courtFeeCodeInput).should('have.value', '');
+    cy.get(ManualCashInputLocators.courtFeeAmountInput).should('have.value', '');
+    cy.get(ManualCashInputLocators.courtFeeNumberOfItemsInput).should('have.value', '');
+  }
+
   /** Confirms the Criminal journey opens Search for an Account. */
   public assertSearchForAccountIsDisplayed(): void {
     cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/search-account');

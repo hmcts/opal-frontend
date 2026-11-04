@@ -59,4 +59,6 @@ export const ManualCashInputLocators = {
   courtFeeDetailsPage: '#fines-mci-create-till-court-fee-details',
   courtFeeCodeInput: '#courtFeeId-autocomplete',
   courtFeeCodeSuggestions: '#courtFeeId-autocomplete__listbox',
+  courtFeeAmountInput: '#amountPaid',
+  courtFeeNumberOfItemsInput: '#numberOfItems',
 } as const;
