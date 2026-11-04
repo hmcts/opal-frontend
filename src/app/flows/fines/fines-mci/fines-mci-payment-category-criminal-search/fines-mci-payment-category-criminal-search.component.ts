@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, HostListener, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukTabsComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-tabs';
@@ -42,7 +43,7 @@ const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    RouterLink,
+    GovukCancelLinkComponent,
     GovukErrorSummaryComponent,
     GovukTextInputComponent,
     GovukTabsComponent,
@@ -183,6 +184,14 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
 
   public canDeactivate(): CanDeactivateTypes {
     return this.isContinuing || !hasNestedValue(this.form);
+  }
+
+  public handleCancel(): void {
+    void this.angularRouter.navigate(this.tillDetailsRoute).then((navigated) => {
+      if (navigated) {
+        this.finesMciStore.setDraftJourney(null);
+      }
+    });
   }
 
   @HostListener('window:beforeunload')

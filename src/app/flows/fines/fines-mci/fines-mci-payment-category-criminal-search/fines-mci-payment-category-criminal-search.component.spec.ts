@@ -74,9 +74,6 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
     expect(text).toContain('Individuals');
     expect(text).toContain('Companies');
     expect(text).toContain('Cancel');
-    expect(fixture.nativeElement.querySelector('a.govuk-link')?.getAttribute('href')).toBe(
-      '/fines/manual-cash-input/create/till/details',
-    );
   });
 
   it('should use the current selected business unit for the caption and account number search', () => {
@@ -632,13 +629,16 @@ describe('Criminal search navigation', () => {
   });
 
   it('returns directly to till details without a warning when no inputs are populated', async () => {
+    store.setDraftJourney('criminal');
     await clickCancel();
 
     expect(TestBed.inject(Router).url).toBe(detailsUrl);
+    expect(store.draftJourney()).toBeNull();
     expect(confirmSpy).not.toHaveBeenCalled();
   });
 
   it('retains the form, selected tab and stored criteria when leaving is declined', async () => {
+    store.setDraftJourney('criminal');
     enterCompanyCriteria();
     const criteria = store.criminalSearch();
     const values = component['form'].getRawValue();
@@ -652,10 +652,12 @@ describe('Criminal search navigation', () => {
     expect(component['activeTab']()).toBe('companies');
     expect(component['form'].getRawValue()).toEqual(values);
     expect(store.criminalSearch()).toEqual(criteria);
+    expect(store.draftJourney()).toBe('criminal');
     expect(service.getDefendantAccounts).not.toHaveBeenCalled();
   });
 
   it('clears form and stored search data after confirmed departure while preserving the business unit and till', async () => {
+    store.setDraftJourney('criminal');
     enterCompanyCriteria();
     confirmSpy.mockReturnValue(true);
     const businessUnit = store.businessUnit();
@@ -666,6 +668,7 @@ describe('Criminal search navigation', () => {
     expect(confirmSpy).toHaveBeenCalledOnce();
     expect(TestBed.inject(Router).url).toBe(detailsUrl);
     expect(store.criminalSearch()).toBeNull();
+    expect(store.draftJourney()).toBeNull();
     expect(
       component['form'].get('fsa_search_account_companies_search_criteria.fsa_search_account_companies_company_name')
         ?.value,
@@ -676,6 +679,7 @@ describe('Criminal search navigation', () => {
   });
 
   it('allows a search to reach matches without a warning or clearing the submitted criteria', async () => {
+    store.setDraftJourney('criminal');
     enterCompanyCriteria();
 
     component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
@@ -684,10 +688,25 @@ describe('Criminal search navigation', () => {
     expect(TestBed.inject(Router).url).toBe(matchesUrl);
     expect(confirmSpy).not.toHaveBeenCalled();
     expect(service.getDefendantAccounts).toHaveBeenCalledOnce();
+    expect(store.draftJourney()).toBe('criminal');
     expect(
       store.criminalSearch()?.formData.fsa_search_account_companies_search_criteria
         .fsa_search_account_companies_company_name,
     ).toBe('Acme Ltd');
+  });
+
+  it('preserves the category draft when returning to Payment Category after declining Cancel', async () => {
+    store.setDraftJourney('criminal');
+    enterCompanyCriteria();
+    await clickCancel();
+    expect(store.draftJourney()).toBe('criminal');
+    expect(TestBed.inject(Router).url).toBe(`${searchUrl}#companies`);
+
+    confirmSpy.mockReturnValue(true);
+    await harness.navigateByUrl(`${routeRoot}/payment-category`, FinesMciCreateTillPaymentCategoryComponent);
+
+    expect(store.draftJourney()).toBe('criminal');
+    expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#paymentCategory')?.checked).toBe(true);
   });
 
   it.each(['individuals', 'companies'] as const)(
