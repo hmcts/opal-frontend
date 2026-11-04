@@ -4,8 +4,11 @@ import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT } from '../../constants/fines-mac-p
 import { IFinesMacPayloadAccountDefendantComplete } from '../interfaces/fines-mac-payload-account-defendant-complete.interface';
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_MOCK } from './fines-mac-payload-account-defendant-parent-guardian.mock';
 
-const { aliases: _aliases, ...parentGuardianDefendantMock } = FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_MOCK;
-void _aliases;
+const parentGuardianDefendantMock = {
+  ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_MOCK,
+};
+
+delete (parentGuardianDefendantMock as Partial<typeof parentGuardianDefendantMock>).aliases;
 
 export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_MOCK: IFinesMacPayloadAccountDefendantComplete =
   {
