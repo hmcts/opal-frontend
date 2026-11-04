@@ -82,26 +82,19 @@ describe('FinesAccDefendantDetailsPaymentTermsTabComponent', () => {
     expect(fixture.nativeElement.querySelector('.govuk-grid-column-one-third')).toBeNull();
   });
 
-  it.each([
-    { currentBusinessUnitPermission: true, destination: 'manage' },
-    { currentBusinessUnitPermission: false, destination: 'denied' },
-  ])(
-    'should display the APR action to a user with permission in any BU and link to $destination',
-    ({ currentBusinessUnitPermission, destination }) => {
-      component.bankingInterfacesEnabled = true;
-      component.hasManageAprPermission = true;
-      component.canManageApr = currentBusinessUnitPermission;
+  it('should display the APR action to a user with permission in any BU and let the Manage route guard enforce access', () => {
+    component.bankingInterfacesEnabled = true;
+    component.hasManageAprPermission = true;
 
-      fixture.detectChanges();
+    fixture.detectChanges();
 
-      const link = fixture.nativeElement.querySelector('#manage-alternate-payment-references') as HTMLAnchorElement;
-      expect(link.textContent?.trim()).toBe('Manage alternate payment references');
-      expect(link.getAttribute('href')).toBe(`/alternate/payment/reference/${destination}`);
-      expect(link.closest('.govuk-grid-column-one-third')).toBeTruthy();
-      expect(getLinkByText('Change')).toBeUndefined();
-      expect(getLinkByText('Request payment card')).toBeUndefined();
-    },
-  );
+    const link = fixture.nativeElement.querySelector('#manage-alternate-payment-references') as HTMLAnchorElement;
+    expect(link.textContent?.trim()).toBe('Manage alternate payment references');
+    expect(link.getAttribute('href')).toBe('/alternate/payment/reference/manage');
+    expect(link.closest('.govuk-grid-column-one-third')).toBeTruthy();
+    expect(getLinkByText('Change')).toBeUndefined();
+    expect(getLinkByText('Request payment card')).toBeUndefined();
+  });
 
   it('should display Change when enforcement prevents amending so the user can follow the existing denied route', () => {
     component.hasAmendPaymentTermsPermission = true;

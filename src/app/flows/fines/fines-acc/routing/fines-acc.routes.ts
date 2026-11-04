@@ -101,51 +101,38 @@ export const routing: Routes = [
         },
         children: [
           {
-            path: FINES_ACC_APR_ROUTING_PATHS.root,
-            canActivate: [finesAccAprFeatureFlagGuard],
-            canActivateChild: [finesAccAprFeatureFlagGuard],
-            children: [
-              {
-                path: FINES_ACC_APR_ROUTING_PATHS.children.manage,
-                loadComponent: () =>
-                  import('../fines-acc-apr-manage/fines-acc-apr-manage.component').then(
-                    (c) => c.FinesAccAprManageComponent,
-                  ),
-                canActivate: [businessUnitRoutePermissionsGuard],
-                runGuardsAndResolvers: 'always',
-                data: {
-                  title: 'Manage Alternate Payment References',
-                  routePermissionId: [FINES_PERMISSIONS['manage-alternate-payment-references']],
-                  accessDeniedPath: FINES_ACC_APR_ROUTING_PATHS.children.denied,
-                },
-                resolve: { title: TitleResolver, aprs: finesAccAprResolver },
-              },
-              {
-                path: FINES_ACC_APR_ROUTING_PATHS.children.denied,
-                loadComponent: () =>
-                  import('../fines-acc-apr-access-denied/fines-acc-apr-access-denied.component').then(
-                    (c) => c.FinesAccAprAccessDeniedComponent,
-                  ),
-                data: { title: 'Access Denied' },
-                resolve: { title: TitleResolver },
-              },
-              {
-                path: ':mode',
-                title: finesAccAprAddChangeTitleResolver,
-                loadComponent: () =>
-                  import('../fines-acc-apr-add-change/fines-acc-apr-add-change.component').then(
-                    (c) => c.FinesAccAprAddChangeComponent,
-                  ),
-                canActivate: [finesAccAprAddChangeModeGuard, businessUnitRoutePermissionsGuard],
-                canDeactivate: [canDeactivateGuard],
-                runGuardsAndResolvers: 'always',
-                data: {
-                  routePermissionId: [FINES_PERMISSIONS['manage-alternate-payment-references']],
-                  accessDeniedPath: FINES_ACC_APR_ROUTING_PATHS.children.denied,
-                },
-                resolve: { aprs: finesAccAprResolver },
-              },
+            path: `${FINES_ACC_APR_ROUTING_PATHS.root}/${FINES_ACC_APR_ROUTING_PATHS.children.manage}`,
+            loadComponent: () =>
+              import('../fines-acc-apr-manage/fines-acc-apr-manage.component').then(
+                (c) => c.FinesAccAprManageComponent,
+              ),
+            canActivate: [finesAccAprFeatureFlagGuard, businessUnitRoutePermissionsGuard, finesAccStateGuard],
+            runGuardsAndResolvers: 'always',
+            data: {
+              title: 'Manage Alternate Payment References',
+              routePermissionId: [FINES_PERMISSIONS['manage-alternate-payment-references']],
+            },
+            resolve: { title: TitleResolver, aprs: finesAccAprResolver },
+          },
+          {
+            path: `${FINES_ACC_APR_ROUTING_PATHS.root}/:mode`,
+            title: finesAccAprAddChangeTitleResolver,
+            loadComponent: () =>
+              import('../fines-acc-apr-add-change/fines-acc-apr-add-change.component').then(
+                (c) => c.FinesAccAprAddChangeComponent,
+              ),
+            canActivate: [
+              finesAccAprFeatureFlagGuard,
+              finesAccAprAddChangeModeGuard,
+              businessUnitRoutePermissionsGuard,
+              finesAccStateGuard,
             ],
+            canDeactivate: [canDeactivateGuard],
+            runGuardsAndResolvers: 'always',
+            data: {
+              routePermissionId: [FINES_PERMISSIONS['manage-alternate-payment-references']],
+            },
+            resolve: { aprs: finesAccAprResolver },
           },
           {
             path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.convert}/:partyType`,

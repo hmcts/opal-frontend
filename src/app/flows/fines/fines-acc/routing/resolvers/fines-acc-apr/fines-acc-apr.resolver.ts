@@ -34,7 +34,7 @@ export const finesAccAprResolver: ResolveFn<IOpalFinesAprsResponse> = (route) =>
       const selected = data.references.find((reference) => reference.alternate_payment_reference_id === selectedId);
       const invalidSelection =
         (mode === children.change && (!selected || !canChangeApr(selected))) ||
-        (path === children.delete && (!selected || !canRemoveApr(selected)));
+        (path === `${FINES_ACC_APR_ROUTING_PATHS.root}/${children.delete}` && (!selected || !canRemoveApr(selected)));
       if (invalidSelection || (mode === children.add && !canAddApr(data.references))) {
         return new RedirectCommand(createUrlTreeFromSnapshot(route, ['../', children.manage]));
       }
