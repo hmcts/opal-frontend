@@ -145,6 +145,40 @@ export const routing: Routes = [
             },
           },
           {
+            path: FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,
+            loadComponent: () =>
+              import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
+                (c) => c.FinesMciPlaceholderComponent,
+              ),
+            canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+            data: {
+              heading: FINES_MCI_ROUTING_TITLES.children.createTillCourtFeePaymentDetails,
+              permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
+              routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+              title: FINES_MCI_ROUTING_TITLES.children.createTillCourtFeePaymentDetails,
+            },
+            resolve: {
+              title: TitleResolver,
+            },
+          },
+          {
+            path: FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation,
+            loadComponent: () =>
+              import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
+                (c) => c.FinesMciPlaceholderComponent,
+              ),
+            canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+            data: {
+              heading: FINES_MCI_ROUTING_TITLES.children.createTillOverUnderpaymentConfirmation,
+              permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
+              routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+              title: FINES_MCI_ROUTING_TITLES.children.createTillOverUnderpaymentConfirmation,
+            },
+            resolve: {
+              title: TitleResolver,
+            },
+          },
+          {
             path: FINES_MCI_ROUTING_PATHS.children.cancel,
             loadComponent: () =>
               import('../fines-mci-placeholder/fines-mci-placeholder.component').then(

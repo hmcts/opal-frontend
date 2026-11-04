@@ -26,6 +26,7 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     store = TestBed.inject(FinesMciStore);
     store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
     router = TestBed.inject(Router);
+    vi.spyOn(router, 'navigate').mockResolvedValue(true);
   });
 
   function render(): FinesMciCreateTillCourtFeeDetailsComponent {
@@ -74,6 +75,8 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     expect(element.querySelector('#amountPaid-error-message')?.textContent).toContain('Enter an amount');
     expect(element.querySelector('.govuk-error-summary')?.textContent).toContain('Enter number of items');
     expect(element.querySelector('#numberOfItems-error-message')?.textContent).toContain('Enter number of items');
+    expect(router.navigate).not.toHaveBeenCalled();
+    expect(store.courtFeeDraft()).toBeNull();
   });
 
   it('shows the invalid court fee error for text that was not selected from the list', () => {
@@ -207,6 +210,35 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     expect((fixture.nativeElement as HTMLElement).querySelector('.govuk-error-summary')).toBeNull();
   });
 
+  it.each([
+    ['25.00', '2', 'court-fee-payment-details'],
+    ['25.01', '2', 'over-underpayment-confirmation'],
+    ['24.99', '2', 'over-underpayment-confirmation'],
+  ])('routes a £%s payment for %s items to %s', (amount, numberOfItems, destination) => {
+    const component = render();
+    enterCourtFeeText('CF001 - Application (£12.50)');
+    component['form'].controls.courtFeeId.setValue(1);
+    component['form'].controls.amountPaid.setValue(amount);
+    component['form'].controls.numberOfItems.setValue(numberOfItems);
+
+    component.handleSubmit();
+
+    expect(router.navigate).toHaveBeenCalledWith([`../${destination}`], expect.any(Object));
+    expect(store.courtFeeDraft()).toEqual({ courtFeeId: 1, amountPaid: amount, numberOfItems });
+  });
+
+  it('uses pence when comparing a decimal court fee for multiple items', () => {
+    const component = render();
+    enterCourtFeeText('CF002 - Issue (£0.10)');
+    component['form'].controls.courtFeeId.setValue(2);
+    component['form'].controls.amountPaid.setValue('0.30');
+    component['form'].controls.numberOfItems.setValue('3');
+
+    component.handleSubmit();
+
+    expect(router.navigate).toHaveBeenCalledWith(['../court-fee-payment-details'], expect.any(Object));
+  });
+
   it('keeps other field errors when Number of items is corrected', () => {
     const component = render();
     component.handleSubmit();
@@ -262,12 +294,11 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
   it('returns to Till Details and clears the selected journey on Cancel', async () => {
     store.setDraftJourney('courtFee');
     const component = render();
-    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
     component.handleCancel();
     await Promise.resolve();
 
-    expect(navigateSpy).toHaveBeenCalledWith(['../details'], expect.any(Object));
+    expect(router.navigate).toHaveBeenCalledWith(['../details'], expect.any(Object));
     expect(store.draftJourney()).toBeNull();
   });
 });

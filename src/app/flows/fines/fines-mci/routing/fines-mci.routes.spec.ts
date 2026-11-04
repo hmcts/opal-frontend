@@ -11,6 +11,7 @@ import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.con
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
 import { FinesMciCreateTillCourtFeeDetailsComponent } from '../fines-mci-create-till/fines-mci-create-till-court-fee-details/fines-mci-create-till-court-fee-details.component';
+import { FinesMciPlaceholderComponent } from '../fines-mci-placeholder/fines-mci-placeholder.component';
 
 describe('finesMci routes', () => {
   const createTillRoute = routing
@@ -92,10 +93,34 @@ describe('finesMci routes', () => {
   });
 
   it.each([
+    [
+      FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,
+      FINES_MCI_ROUTING_TITLES.children.createTillCourtFeePaymentDetails,
+    ],
+    [
+      FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation,
+      FINES_MCI_ROUTING_TITLES.children.createTillOverUnderpaymentConfirmation,
+    ],
+  ])('loads the %s temporary destination with its own heading', async (path, heading) => {
+    const route = createTillRoute?.children?.find((child) => child.path === path);
+
+    expect(await route?.loadComponent?.()).toBe(FinesMciPlaceholderComponent);
+    expect(route?.data?.['heading']).toBe(heading);
+  });
+
+  it.each([
     [FINES_MCI_ROUTING_PATHS.children.details, FINES_MCI_ROUTING_TITLES.children.createTillDetails],
     [FINES_MCI_ROUTING_PATHS.children.paymentCategory, FINES_MCI_ROUTING_TITLES.children.createTillPaymentCategory],
     [FINES_MCI_ROUTING_PATHS.children.suspenseDetails, FINES_MCI_ROUTING_TITLES.children.createTillSuspenseDetails],
     [FINES_MCI_ROUTING_PATHS.children.courtFeeDetails, FINES_MCI_ROUTING_TITLES.children.createTillCourtFeeDetails],
+    [
+      FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,
+      FINES_MCI_ROUTING_TITLES.children.createTillCourtFeePaymentDetails,
+    ],
+    [
+      FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation,
+      FINES_MCI_ROUTING_TITLES.children.createTillOverUnderpaymentConfirmation,
+    ],
     [FINES_MCI_ROUTING_PATHS.children.searchAccount, FINES_MCI_ROUTING_TITLES.children.createTillSearchAccount],
     [FINES_MCI_ROUTING_PATHS.children.cancel, FINES_MCI_ROUTING_TITLES.children.createTillCancel],
   ])('should expose the guarded create till %s route', (path, title) => {

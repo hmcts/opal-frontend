@@ -20,12 +20,24 @@ import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukTextInputPrefixSuffixComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input-prefix-suffix';
+import { IOpalFinesCourtFee } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-fees.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
 import { FinesMciStore } from '../../stores/fines-mci.store';
 
 const AMOUNT_PATTERN = /^\d+(?:\.\d+)?$/;
 const NUMBER_OF_ITEMS_PATTERN = /^\d+$/;
+
+/** Compares money as whole pence so decimal fee amounts do not introduce floating point errors. */
+function isExactCourtFeePayment(amount: string, feeAmount: number, numberOfItems: string): boolean {
+  const [pounds, decimals = ''] = amount.split('.');
+  const paddedDecimals = decimals.padEnd(2, '0');
+  if (/[1-9]/.test(paddedDecimals.slice(2))) return false;
+
+  const paidPence = BigInt(pounds) * 100n + BigInt(paddedDecimals.slice(0, 2));
+  const expectedPence = BigInt(Math.round(feeAmount * 100)) * BigInt(numberOfItems);
+  return paidPence === expectedPence;
+}
 
 @Component({
   selector: 'app-fines-mci-create-till-court-fee-details',
@@ -52,6 +64,7 @@ export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly document = inject(DOCUMENT);
   private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly courtFees = signal<IOpalFinesCourtFee[]>([]);
   private courtFeeSearchText = '';
 
   protected readonly businessUnitName = this.finesMciStore.businessUnit()?.business_unit_name;
@@ -114,14 +127,15 @@ export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit {
     this.document.getElementById(fieldId)?.focus();
   }
 
-  /** Validates the court fee payment details before later navigation is added. */
+  /** Validates the court fee payment details and opens the matching next screen. */
   public handleSubmit(): void {
     const courtFeeId = this.form.controls.courtFeeId.value;
-    const selectedFee = this.courtFeeItems().find(({ value }) => value === courtFeeId);
+    const selectedFeeItem = this.courtFeeItems().find(({ value }) => value === courtFeeId);
+    const selectedFee = this.courtFees().find(({ court_fee_id }) => court_fee_id === courtFeeId);
     const input = this.courtFeeAutocomplete?.nativeElement.querySelector<HTMLInputElement>('#courtFeeId-autocomplete');
     const enteredText = input?.value.trim() || this.courtFeeSearchText.trim();
 
-    const validCourtFee = selectedFee && (!input || enteredText === selectedFee.name);
+    const validCourtFee = selectedFeeItem && selectedFee && (!input || enteredText === selectedFeeItem.name);
     this.courtFeeSelectionError = validCourtFee
       ? null
       : enteredText
@@ -149,7 +163,14 @@ export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit {
       errors.push({ fieldId: 'numberOfItems', message: this.numberOfItemsError });
     }
     this.formErrorSummaryMessage = errors;
-    if (errors.length === 0) return;
+    if (errors.length === 0 && selectedFee) {
+      this.finesMciStore.setCourtFeeDraft(this.form.getRawValue());
+      const destination = isExactCourtFeePayment(amount, selectedFee.amount, numberOfItems)
+        ? FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails
+        : FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation;
+      void this.router.navigate([`../${destination}`], { relativeTo: this.activatedRoute });
+      return;
+    }
 
     this.form.markAllAsTouched();
     this.changeDetector.detectChanges();
@@ -168,6 +189,7 @@ export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: ({ court_fees }) => {
+          this.courtFees.set(court_fees);
           this.courtFeeItems.set(
             court_fees.map(({ court_fee_id, court_fee_code, description, amount }) => ({
               value: court_fee_id,
