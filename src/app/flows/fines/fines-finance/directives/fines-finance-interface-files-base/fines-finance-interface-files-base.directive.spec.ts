@@ -46,13 +46,6 @@ class TestInterfaceFilesComponent extends FinesFinanceInterfaceFilesBaseDirectiv
       ) => ICustomFileInterfaceViewerTableData[]
     >()
     .mockReturnValue([]);
-
-  public override readonly selectFiles = vi.fn<
-    (
-      files: IOpalFileHandlingInterfaceFile[] | null | undefined,
-      formData: IFinesFinanceInterfaceFilesForm,
-    ) => IOpalFileHandlingInterfaceFile[] | null | undefined
-  >((files) => files);
 }
 
 describe('FinesFinanceInterfaceFilesBaseDirective', () => {
@@ -186,12 +179,10 @@ describe('FinesFinanceInterfaceFilesBaseDirective', () => {
     expect(component.mapFilesToTableData).toHaveBeenCalledExactlyOnceWith([], displayOptions);
   });
 
-  it('selects returned files using the submitted filter snapshot before mapping rows', () => {
+  it('sends a filter snapshot and maps the API response when the submitted form changes', () => {
     const formData = { ...component.initialFilterState, businessUnit: '0046' };
     const submittedFormData = { ...formData };
-    const selectedFiles = [FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files![0]];
     const mappedRows = [{ ...mappedRow, Title: 'selected-file.xml' }];
-    component.selectFiles.mockReturnValue(selectedFiles);
     component.mapFilesToTableData.mockReturnValue(mappedRows);
 
     component.onFormSubmit({ formData, nestedFlow: false });
@@ -199,13 +190,13 @@ describe('FinesFinanceInterfaceFilesBaseDirective', () => {
     request.next(FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK);
 
     expect(component.tableData()).toBe(mappedRows);
-    expect(component.selectFiles).toHaveBeenCalledExactlyOnceWith(
-      FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files,
-      submittedFormData,
-    );
-    expect(component.selectFiles.mock.calls[0][1]).not.toBe(formData);
     expect(component.buildSearchParams).toHaveBeenCalledExactlyOnceWith(submittedFormData);
-    expect(component.mapFilesToTableData).toHaveBeenCalledExactlyOnceWith(selectedFiles, displayOptions);
+    expect(component.buildSearchParams.mock.calls[0][0]).not.toBe(formData);
+    expect(getInterfaceFilesRefData).toHaveBeenCalledExactlyOnceWith({ business_unit_code: '0046' });
+    expect(component.mapFilesToTableData).toHaveBeenCalledExactlyOnceWith(
+      FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files,
+      displayOptions,
+    );
   });
 
   it('unsubscribes from the active request when the component is destroyed', () => {

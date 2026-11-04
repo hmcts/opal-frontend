@@ -6,12 +6,10 @@ import { buildInterfaceFilesFilters } from '../../services/utils/fines-finance-p
 import { FINES_FINANCE_OUTBOUND_FILES_SEARCH_SCOPE } from '../constants/fines-finance-outbound-files-search-scope.constant';
 
 /**
- * Limits searches to files originating in Opal for external recipients.
- * The API business-unit predicate excludes files without a unit, so unit selection
- * is applied to the returned metadata instead.
+ * Limits searches to files originating in Opal for external recipients and applies the selected filters.
  * @param formData - Current business-unit and date selections.
  * @param dateService - Calendar parser and formatter.
- * @returns Outbound restrictions and date filters, including files without a unit.
+ * @returns Outbound restrictions with optional business-unit and UTC date filters.
  */
 export function buildOutboundFilesSearchParams(
   formData: IFinesFinanceInterfaceFilesForm,
@@ -20,6 +18,6 @@ export function buildOutboundFilesSearchParams(
   return {
     ...FINES_FINANCE_OUTBOUND_FILES_SEARCH_SCOPE,
     not_status: [...FINES_FINANCE_OUTBOUND_FILES_SEARCH_SCOPE.not_status],
-    ...buildInterfaceFilesFilters({ ...formData, businessUnit: null }, dateService),
+    ...buildInterfaceFilesFilters(formData, dateService),
   };
 }

@@ -40,7 +40,7 @@ import { canDownloadInterfaceFile } from '../../services/utils/fines-finance-int
 
 /**
  * Shares business-unit choices, searches, result state and downloads between the two Finance file pages.
- * Subclasses supply direction, request parameters, response selection and row mapping. Their templates render
+ * Subclasses supply direction, request parameters and row mapping. Their templates render
  * the library viewer, action template, download error summary and dedicated save anchor.
  */
 @Directive()
@@ -102,19 +102,8 @@ export abstract class FinesFinanceInterfaceFilesBaseDirective<
   protected abstract buildSearchParams(formData: TForm): IOpalFileHandlingInterfaceFileParams;
 
   /**
-   * Selects metadata after a successful response, before it becomes the current table result set.
-   * @param files - Metadata returned by the current search.
-   * @param formData - Snapshot of its submitted filter values.
-   * @returns Metadata to map into table rows.
-   */
-  protected abstract selectFiles(
-    files: IOpalFileHandlingInterfaceFile[] | null | undefined,
-    formData: TForm,
-  ): IOpalFileHandlingInterfaceFile[] | null | undefined;
-
-  /**
-   * Maps the selected metadata into the corresponding viewer's display and sort fields.
-   * @param files - Selected metadata, or an absent result list.
+   * Maps API metadata into the corresponding viewer's display and sort fields.
+   * @param files - Metadata returned by the API, or an absent result list.
    * @param businessUnits - Names for all resolved business units, rather than only permitted filter choices.
    * @returns Prepared rows for the current direction.
    */
@@ -125,7 +114,7 @@ export abstract class FinesFinanceInterfaceFilesBaseDirective<
 
   /**
    * Captures the submitted filters and cancels the previous search so only the latest response is applied.
-   * Successful responses pass through the subclass selector; failures retain the last successful rows.
+   * Successful responses replace the displayed metadata; failures retain the last successful rows.
    * Existing HTTP interceptors handle request errors, and destruction cancels any pending subscription.
    * @param form - Valid filter data and submission metadata emitted by the viewer.
    */
@@ -139,14 +128,7 @@ export abstract class FinesFinanceInterfaceFilesBaseDirective<
         takeUntilDestroyed(this.destroyRef),
         catchError(() => EMPTY),
       )
-      .subscribe((response) => {
-        const files = this.selectFiles(response.interface_files, formData);
-        this.interfaceFilesRefData.set({
-          ...response,
-          interface_files: files ?? null,
-          number_of_results: files?.length ?? 0,
-        });
-      });
+      .subscribe((response) => this.interfaceFilesRefData.set(response));
   }
 
   /**

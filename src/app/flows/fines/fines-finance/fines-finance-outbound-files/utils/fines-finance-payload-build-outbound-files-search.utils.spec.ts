@@ -34,7 +34,7 @@ describe('buildOutboundFilesSearchParams', () => {
     });
   });
 
-  it('applies custom days without sending the API business-unit predicate that excludes unassigned files', () => {
+  it('sends the selected business-unit code together with custom days', () => {
     expect(
       buildOutboundFilesSearchParams(
         {
@@ -47,6 +47,7 @@ describe('buildOutboundFilesSearchParams', () => {
       ),
     ).toEqual({
       ...scope,
+      business_unit_code: '0046',
       from_date: '2026-10-06T23:00:00',
       to_date: '2026-10-20T22:59:59.999999',
     });
@@ -108,16 +109,19 @@ describe('buildOutboundFilesSearchParams', () => {
     ).toEqual(scope);
   });
 
-  it('preserves the selected business unit for response filtering without restricting the API query', () => {
-    const form = Object.freeze({
-      ...FINES_FINANCE_INTERFACE_FILES_INITIAL_FILTER_STATE,
-      businessUnit: '0046',
-      dateFilter: null,
-    });
+  it.each(['0046', '0034'])(
+    'preserves the selected business-unit code %s without mutating the form',
+    (businessUnit) => {
+      const form = Object.freeze({
+        ...FINES_FINANCE_INTERFACE_FILES_INITIAL_FILTER_STATE,
+        businessUnit,
+        dateFilter: null,
+      });
 
-    expect(buildOutboundFilesSearchParams(form, dateService)).toEqual(scope);
-    expect(form.businessUnit).toBe('0046');
-  });
+      expect(buildOutboundFilesSearchParams(form, dateService)).toEqual({ ...scope, business_unit_code: businessUnit });
+      expect(form.businessUnit).toBe(businessUnit);
+    },
+  );
 
   it('keeps each search independent when a caller changes excluded statuses', () => {
     const form = { ...FINES_FINANCE_INTERFACE_FILES_INITIAL_FILTER_STATE };
