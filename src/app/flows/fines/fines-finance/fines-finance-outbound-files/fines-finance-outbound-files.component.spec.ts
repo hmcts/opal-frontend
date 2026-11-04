@@ -113,6 +113,63 @@ describe('FinesFinanceOutboundFilesComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('There are no outbound interface files to display.');
   });
 
+  it('submits a historic range through the date inputs and displays the returned outbound files', async () => {
+    vi.setSystemTime(new Date('2026-11-04T12:00:00Z'));
+    fixture.detectChanges();
+    httpMock.expectOne((req) => req.url === searchUrl).flush({ number_of_results: 0, interface_files: [] });
+    const element = fixture.nativeElement as HTMLElement;
+    element.querySelector<HTMLInputElement>('input[type="radio"][value="dateRange"]')!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    await vi.dynamicImportSettled();
+
+    for (const [boundary, value] of [
+      ['from', '23/06/2025'],
+      ['to', '04/11/2026'],
+    ]) {
+      const input = element.querySelector<HTMLInputElement>(`#custom-file-interface-viewer-date-${boundary}`)!;
+      input.value = value;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    fixture.detectChanges();
+    refreshButton().click();
+
+    const request = httpMock.expectOne((req) => req.url === searchUrl);
+    expect(request.cancelled).toBe(false);
+    expect(
+      Object.fromEntries(request.request.params.keys().map((key) => [key, request.request.params.get(key)])),
+    ).toEqual({
+      domain: 'FINES',
+      source: 'OPAL',
+      not_target: 'OPAL',
+      not_status: 'FAILED_SUPERSEDED',
+      from_date: '2025-06-22T23:00:00',
+      to_date: '2026-11-04T23:59:59.999999',
+    });
+    request.flush({
+      number_of_results: 1,
+      interface_files: [
+        {
+          ...FINES_FINANCE_OUTBOUND_FILES_RESPONSE_MOCK.interface_files![0],
+          created_datetime: '2025-06-23T12:00:00',
+          file_name: 'historic-outbound.csv',
+        },
+      ],
+    });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(element.querySelector('tbody')?.textContent).toContain('historic-outbound.csv');
+    expect(element.querySelector('tbody')?.textContent).toContain('23 Jun 2025');
+    expect(element.querySelector<HTMLInputElement>('#custom-file-interface-viewer-date-from')?.value).toBe(
+      '23/06/2025',
+    );
+    expect(element.querySelector<HTMLInputElement>('#custom-file-interface-viewer-date-to')?.value).toBe('04/11/2026');
+    expect(TestBed.inject(GlobalStore).setBannerError).not.toHaveBeenCalled();
+    httpMock.expectNone((req) => req.url === searchUrl);
+  });
+
   it('offers permitted business units alphabetically while resolving names for every returned row', () => {
     expect(component.businessUnits).toEqual([
       { name: 'Camberwell Green', value: '0046' },
