@@ -198,6 +198,32 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     expect(element.querySelector('#numberOfItems-error-message')?.textContent).toContain('Enter numbers only');
   });
 
+  it.each(['0', '00'])('rejects %s items and does not clear the existing error', (numberOfItems) => {
+    const component = render();
+    enterCourtFeeText('CF001 - Application (£12.50)');
+    component['form'].controls.courtFeeId.setValue(1);
+    component['form'].controls.amountPaid.setValue('12.50');
+    component.handleSubmit();
+
+    component['form'].controls.numberOfItems.setValue(numberOfItems);
+    fixture.detectChanges();
+    expect((fixture.nativeElement as HTMLElement).querySelector('#numberOfItems-error-message')?.textContent).toContain(
+      'Enter number of items',
+    );
+
+    component.handleSubmit();
+
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector('.govuk-error-summary')?.textContent).toContain(
+      'Enter a number of items greater than 0',
+    );
+    expect(element.querySelector('#numberOfItems-error-message')?.textContent).toContain(
+      'Enter a number of items greater than 0',
+    );
+    expect(router.navigate).not.toHaveBeenCalled();
+    expect(store.courtFeeDraft()).toBeNull();
+  });
+
   it.each(['1', '12'])('accepts the whole number of items %s', (numberOfItems) => {
     const component = render();
     enterCourtFeeText('CF001 - Application (£12.50)');

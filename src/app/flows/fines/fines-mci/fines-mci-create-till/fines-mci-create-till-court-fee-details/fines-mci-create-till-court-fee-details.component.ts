@@ -31,6 +31,10 @@ import { FinesMciStore } from '../../stores/fines-mci.store';
 const AMOUNT_PATTERN = /^\d+(?:\.\d+)?$/;
 const NUMBER_OF_ITEMS_PATTERN = /^\d+$/;
 
+function isPositiveNumberOfItems(value: string): boolean {
+  return NUMBER_OF_ITEMS_PATTERN.test(value) && Number(value) > 0;
+}
+
 /** Compares money as whole pence so decimal fee amounts do not introduce floating point errors. */
 function isExactCourtFeePayment(amount: string, feeAmount: number, numberOfItems: string): boolean {
   const [pounds, decimals = ''] = amount.split('.');
@@ -108,7 +112,7 @@ export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit, OnDes
     });
 
     this.form.controls.numberOfItems.valueChanges.pipe(takeUntilDestroyed()).subscribe((numberOfItems) => {
-      if (numberOfItems != null && NUMBER_OF_ITEMS_PATTERN.test(numberOfItems.trim())) {
+      if (numberOfItems != null && isPositiveNumberOfItems(numberOfItems.trim())) {
         this.numberOfItemsError = null;
         this.formErrorSummaryMessage = this.formErrorSummaryMessage.filter(
           ({ fieldId }) => fieldId !== 'numberOfItems',
@@ -152,9 +156,11 @@ export class FinesMciCreateTillCourtFeeDetailsComponent implements OnInit, OnDes
     const numberOfItems = this.form.controls.numberOfItems.value?.trim() ?? '';
     this.numberOfItemsError = !numberOfItems
       ? 'Enter number of items'
-      : NUMBER_OF_ITEMS_PATTERN.test(numberOfItems)
-        ? null
-        : 'Enter numbers only';
+      : !NUMBER_OF_ITEMS_PATTERN.test(numberOfItems)
+        ? 'Enter numbers only'
+        : isPositiveNumberOfItems(numberOfItems)
+          ? null
+          : 'Enter a number of items greater than 0';
 
     const errors: IAbstractFormBaseFormErrorSummaryMessage[] = [];
     if (this.courtFeeSelectionError) {
