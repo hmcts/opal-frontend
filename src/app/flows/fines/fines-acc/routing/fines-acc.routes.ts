@@ -6,6 +6,8 @@ import {
   businessUnitRoutePermissionsGuard,
 } from '@hmcts/opal-frontend-common/guards/business-unit-route-permissions';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
+import { featureFlagRedirectGuard } from '@hmcts/opal-frontend-common/guards/feature-flag';
+import { RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG } from '../../constants/release-feature-flags.constant';
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
@@ -49,7 +51,6 @@ import { FINES_ACC_MINOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS } from '../fines-acc-m
 import { FinesAccBusinessUnitResolver } from './resolvers/fines-acc-business-unit.resolver';
 import { FINES_ACCOUNT_ROUTE_TYPES } from './constants/fines-acc-route-types.constant';
 import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';
-import { finesAccAprFeatureFlagGuard } from './guards/fines-acc-apr-feature-flag.guard';
 import { finesAccAprResolver } from './resolvers/fines-acc-apr/fines-acc-apr.resolver';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
@@ -57,6 +58,10 @@ const finesAccountBusinessUnitResolverProvider = {
   provide: BUSINESS_UNIT_ID_RESOLVER,
   useExisting: FinesAccBusinessUnitResolver,
 };
+
+export const release1cBankingInterfacesFeatureFlagGuard = featureFlagRedirectGuard(
+  RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
+);
 
 export const routing: Routes = [
   {
@@ -104,7 +109,11 @@ export const routing: Routes = [
               import('../fines-acc-apr-delete/fines-acc-apr-delete.component').then(
                 (c) => c.FinesAccAprDeleteComponent,
               ),
-            canActivate: [finesAccAprFeatureFlagGuard, businessUnitRoutePermissionsGuard, finesAccStateGuard],
+            canActivate: [
+              release1cBankingInterfacesFeatureFlagGuard,
+              businessUnitRoutePermissionsGuard,
+              finesAccStateGuard,
+            ],
             runGuardsAndResolvers: 'always',
             data: {
               title: 'Remove Alternate Payment Reference',
@@ -118,7 +127,11 @@ export const routing: Routes = [
               import('../fines-acc-apr-manage/fines-acc-apr-manage.component').then(
                 (c) => c.FinesAccAprManageComponent,
               ),
-            canActivate: [finesAccAprFeatureFlagGuard, businessUnitRoutePermissionsGuard, finesAccStateGuard],
+            canActivate: [
+              release1cBankingInterfacesFeatureFlagGuard,
+              businessUnitRoutePermissionsGuard,
+              finesAccStateGuard,
+            ],
             runGuardsAndResolvers: 'always',
             data: {
               title: 'Manage Alternate Payment References',

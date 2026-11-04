@@ -17,13 +17,12 @@ import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
 import { finesAccAprResolver } from '../routing/resolvers/fines-acc-apr/fines-acc-apr.resolver';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
-import { routing as accountRouting } from '../routing/fines-acc.routes';
+import { release1cBankingInterfacesFeatureFlagGuard, routing as accountRouting } from '../routing/fines-acc.routes';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { transformAprsPayload } from '../services/utils/fines-acc-payload-transform-apr-data.utils';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FinesAccAprDeleteComponent } from './fines-acc-apr-delete.component';
 import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';
-import { finesAccAprFeatureFlagGuard } from '../routing/guards/fines-acc-apr-feature-flag.guard';
 import { finesAccStateGuard } from '../routing/guards/fines-acc-state-guard/fines-acc-state.guard';
 
 const routing = accountRouting
@@ -328,7 +327,7 @@ describe('FinesAccAprDeleteComponent', () => {
       FINES_PERMISSIONS['manage-alternate-payment-references'],
     ]);
     expect(deleteRoute?.canActivate).toEqual([
-      finesAccAprFeatureFlagGuard,
+      release1cBankingInterfacesFeatureFlagGuard,
       businessUnitRoutePermissionsGuard,
       finesAccStateGuard,
     ]);

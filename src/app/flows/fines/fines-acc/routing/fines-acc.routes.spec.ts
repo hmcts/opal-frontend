@@ -1,8 +1,18 @@
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import {
+  ActivatedRoute,
+  ActivatedRouteSnapshot,
+  provideRouter,
+  Router,
+  RouterStateSnapshot,
+  UrlTree,
+} from '@angular/router';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
-import { describe, expect, it, vi } from 'vitest';
-import { routing } from './fines-acc.routes';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { release1cBankingInterfacesFeatureFlagGuard, routing } from './fines-acc.routes';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch-darkly-service';
+import { RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG } from '../../constants/release-feature-flags.constant';
 import {
   BUSINESS_UNIT_ID_RESOLVER,
   businessUnitRoutePermissionsGuard,
@@ -37,7 +47,6 @@ import { FINES_ACCOUNT_ROUTE_TYPES } from './constants/fines-acc-route-types.con
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 import { fetchAccCourtsResolver } from './resolvers/fetch-acc-courts-resolver/fetch-acc-courts.resolver';
 import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';
-import { finesAccAprFeatureFlagGuard } from './guards/fines-acc-apr-feature-flag.guard';
 
 describe('fines acc routes', () => {
   const defendantRoute = routing.find((route) => route.path === `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`);
@@ -119,7 +128,7 @@ describe('fines acc routes', () => {
     );
     expect(aprRoutes.length).toBeGreaterThan(0);
     for (const route of aprRoutes) {
-      expect(route.canActivate).toContain(finesAccAprFeatureFlagGuard);
+      expect(route.canActivate).toContain(release1cBankingInterfacesFeatureFlagGuard);
       expect(route.canActivate?.slice(-2)).toEqual([businessUnitRoutePermissionsGuard, finesAccStateGuard]);
       expect(route.data?.['routePermissionId']).toEqual([FINES_PERMISSIONS['manage-alternate-payment-references']]);
       expect(route.data?.['accessDeniedPath']).toBeUndefined();
@@ -184,5 +193,43 @@ describe('fines acc routes', () => {
     expect(detailsRoute?.resolve?.[FINES_ACC_MAJOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS.headingData]).toBe(
       majorCreditorAccountHeadingResolver,
     );
+  });
+});
+
+describe('account banking interfaces feature flag', () => {
+  let featureFlags: Record<string, boolean>;
+
+  beforeEach(() => {
+    featureFlags = {};
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        { provide: GlobalStore, useValue: { featureFlags: () => featureFlags } },
+        {
+          provide: LaunchDarklyService,
+          useValue: { initializeLaunchDarklyFlags: vi.fn(), initializeLaunchDarklyClient: vi.fn() },
+        },
+      ],
+    });
+  });
+
+  it.each([false, undefined])('uses the shared access-denied redirect when the flag is %s', async (enabled) => {
+    if (enabled !== undefined) featureFlags[RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG] = enabled;
+
+    const result = await TestBed.runInInjectionContext(() =>
+      release1cBankingInterfacesFeatureFlagGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot),
+    );
+
+    expect(TestBed.inject(Router).serializeUrl(result as UrlTree)).toBe('/access-denied');
+  });
+
+  it('allows the APR journey when banking interfaces is enabled', async () => {
+    featureFlags[RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG] = true;
+
+    const result = await TestBed.runInInjectionContext(() =>
+      release1cBankingInterfacesFeatureFlagGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot),
+    );
+
+    expect(result).toBe(true);
   });
 });
