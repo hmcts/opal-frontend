@@ -132,6 +132,14 @@ describe('finesMci routes', () => {
     expect(paymentCategoryRoute?.canDeactivate).toEqual([canDeactivateGuard]);
   });
 
+  it('should guard navigation away from suspense details when form data has been entered', () => {
+    const suspenseDetailsRoute = createTillRoute?.children?.find(
+      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.suspenseDetails,
+    );
+
+    expect(suspenseDetailsRoute?.canDeactivate).toEqual([canDeactivateGuard]);
+  });
+
   it.each([
     ['search', FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalSearch],
     ['matches', FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalMatches],
