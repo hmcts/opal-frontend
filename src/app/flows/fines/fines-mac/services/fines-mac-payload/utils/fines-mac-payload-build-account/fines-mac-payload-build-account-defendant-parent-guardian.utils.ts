@@ -11,6 +11,12 @@ import { IFinesMacPayloadAccountDefendantParentGuardianParentGuardian } from '..
 import { IFinesMacPayloadAccountDefendantParentGuardian } from '../interfaces/fines-mac-payload-account-defendant-parent-guardian.interface';
 import { IFinesMacPersonalDetailsAliasState } from '../../../../fines-mac-personal-details/interfaces/fines-mac-personal-details-alias-state.interface';
 
+/**
+ * Builds youth defendant aliases from personal details state.
+ *
+ * @param aliases - The youth defendant alias form values.
+ * @returns The mapped aliases, or null when no aliases are provided.
+ */
 const buildYouthDefendantAliases = (
   aliases: IFinesMacPersonalDetailsAliasState[],
 ): IFinesMacPayloadAccountDefendantIndividualDebtorDetailsAlias[] | null => {

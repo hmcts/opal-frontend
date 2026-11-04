@@ -152,6 +152,12 @@ const mapAccountDefendantParentGuardianDetailsPayloadToFinesMacState = (
   return mappedFinesMacState;
 };
 
+/**
+ * Maps youth defendant aliases from the account payload to personal details state.
+ *
+ * @param payloadAliases - The youth defendant aliases from the account payload.
+ * @returns The mapped alias form values, or an empty array when no aliases are provided.
+ */
 const mapYouthDefendantAliases = (
   payloadAliases: IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete[] | null,
 ): IFinesMacPersonalDetailsAliasState[] => {
