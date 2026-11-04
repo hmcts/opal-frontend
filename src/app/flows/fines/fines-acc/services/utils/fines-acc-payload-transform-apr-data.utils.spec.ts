@@ -4,7 +4,7 @@ import {
   IOpalFinesApr,
   IOpalFinesAprsResponse,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
-import { transformAprsPayload } from './fines-acc-payload-transform-apr-data.utils';
+import { transformAprToForm, transformAprsPayload } from './fines-acc-payload-transform-apr-data.utils';
 
 const reference: IOpalFinesApr = {
   alternate_payment_reference_id: 11,
@@ -16,6 +16,17 @@ const reference: IOpalFinesApr = {
   created_at: '2026-06-01T12:00:00Z',
   updated_at: null,
 };
+
+describe('transformAprToForm', () => {
+  it('initialises an empty Add form without an API reference', () => {
+    expect(transformAprToForm(null)).toEqual({ apr_text: '' });
+  });
+
+  it('prepopulates only the editable reference text while preserving its exact value', () => {
+    expect(transformAprToForm(reference)).toEqual({ apr_text: ' MiXeD-123 ' });
+    expect(reference.apr_text).toBe(' MiXeD-123 ');
+  });
+});
 
 describe('transformAprsPayload', () => {
   const originalZone = Settings.defaultZone;

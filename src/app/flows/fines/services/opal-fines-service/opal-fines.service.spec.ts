@@ -274,6 +274,33 @@ describe('OpalFines', () => {
     expect(minorCreditorSearchError).toHaveBeenCalledTimes(1);
   });
 
+  describe('createApr', () => {
+    const url = '/opal-fines-service/defendant-accounts/77/alternate-payment-references';
+
+    it('creates the reference with its original text and account ETag, with no business unit header', () => {
+      const result = vi.fn();
+      const reference = { alternate_payment_reference_id: 11, apr_text: ' MiXeD-123 ' };
+      service.createApr(77, { apr_text: ' MiXeD-123 ' }, '"7"').subscribe(result);
+      const request = httpMock.expectOne(url);
+
+      expect(request.request.method).toBe('POST');
+      expect(request.request.body).toEqual({ apr_text: ' MiXeD-123 ' });
+      expect(request.request.headers.get('If-Match')).toBe('"7"');
+      expect(request.request.headers.keys()).toEqual(['If-Match']);
+      request.flush(reference, { status: 201, statusText: 'Created', headers: { ETag: '"8"' } });
+      expect(result).toHaveBeenCalledWith({ reference, version: '"8"' });
+    });
+
+    it.each([409, 412, 500, 503])('does not retry a failed create request with status %s', (status) => {
+      const error = vi.fn();
+      service.createApr(77, { apr_text: 'Reference' }, '"7"').subscribe({ error });
+      httpMock.expectOne(url).flush({ status }, { status, statusText: 'Failure' });
+
+      expect(error).toHaveBeenCalledOnce();
+      httpMock.expectNone(url);
+    });
+  });
+
   it('should not retry mutation calls after transient timeout failures', () => {
     const error = vi.fn();
     const businessUnitId = '61';

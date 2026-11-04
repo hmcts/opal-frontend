@@ -1,3 +1,4 @@
+import { IOpalFinesAprPayload } from './interfaces/opal-fines-apr-payload.interface';
 import { IOpalFinesSourceMapping } from './interfaces/opal-fines-source-mapping.interface';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
@@ -81,7 +82,7 @@ import { IOpalFinesTillsResponse } from './interfaces/opal-fines-tills-response.
 import { IOpalFinesInterfaceJobsSummaryParams } from './interfaces/opal-fines-interface-jobs-summary-params.interface';
 import { IOpalFinesInterfaceJobsSummaryResponse } from './interfaces/opal-fines-interface-jobs-summary-response.interface';
 import { IOpalFinesProcessInterfaceJobsPayload } from './interfaces/opal-fines-process-interface-jobs-payload.interface';
-import { IOpalFinesApr, IOpalFinesAprsResponse } from './interfaces/opal-fines-apr.interface';
+import { IOpalFinesApr, IOpalFinesAprResponse, IOpalFinesAprsResponse } from './interfaces/opal-fines-apr.interface';
 
 const SAFE_READ_RETRY_POLICY = {
   retryCount: 1,
@@ -1250,6 +1251,24 @@ export class OpalFines {
       .pipe(
         map((response) => ({
           references: response.body ?? [],
+          version: this.extractEtagVersion(response.headers),
+        })),
+      );
+  }
+
+  public createApr(
+    accountId: number,
+    payload: IOpalFinesAprPayload,
+    version: string,
+  ): Observable<IOpalFinesAprResponse> {
+    return this.http
+      .post<IOpalFinesApr>(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/alternate-payment-references`, payload, {
+        observe: 'response',
+        headers: { 'If-Match': version },
+      })
+      .pipe(
+        map((response) => ({
+          reference: response.body!,
           version: this.extractEtagVersion(response.headers),
         })),
       );

@@ -1,0 +1,25 @@
+<div class="govuk-grid-column-two-thirds">
+  <opal-lib-govuk-error-summary [errors]="formErrorSummaryMessage" (errorClick)="scrollTo($event)" />
+  <opal-lib-govuk-heading-with-caption
+    [captionText]="accountCaption"
+    [headingText]="headingText"
+    headingClasses="govuk-heading-l"
+  />
+  <form autocomplete="off" [formGroup]="form" (submit)="handleFormSubmit($event)" [attr.aria-busy]="pending">
+    <fieldset class="govuk-fieldset" [disabled]="pending">
+      <opal-lib-govuk-text-input
+        [labelText]="labelText"
+        labelClasses="govuk-label--m"
+        inputId="apr_text"
+        inputName="apr_text"
+        inputClasses="govuk-input--width-20"
+        [control]="form.controls.apr_text"
+        [errors]="formControlErrorMessages['apr_text']"
+      />
+    </fieldset>
+    <div class="govuk-button-group">
+      <button opalLibGovukButton buttonId="apr-save" type="submit" [disabled]="pending">Save</button>
+      <opal-lib-govuk-cancel-link (linkClickEvent)="cancelRequested.emit()" />
+    </div>
+  </form>
+</div>

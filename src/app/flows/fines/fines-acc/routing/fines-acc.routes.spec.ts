@@ -47,6 +47,10 @@ import { FINES_ACCOUNT_ROUTE_TYPES } from './constants/fines-acc-route-types.con
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 import { fetchAccCourtsResolver } from './resolvers/fetch-acc-courts-resolver/fetch-acc-courts.resolver';
 import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';
+import { FinesAccAprAddChangeComponent } from '../fines-acc-apr-add-change/fines-acc-apr-add-change.component';
+import { finesAccAprAddChangeModeGuard } from './guards/fines-acc-apr-add-change-mode.guard';
+import { finesAccAprAddChangeTitleResolver } from './resolvers/fines-acc-apr/fines-acc-apr-add-change-title.resolver';
+import { finesAccAprResolver } from './resolvers/fines-acc-apr/fines-acc-apr.resolver';
 
 describe('fines acc routes', () => {
   const defendantRoute = routing.find((route) => route.path === `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`);
@@ -193,6 +197,52 @@ describe('fines acc routes', () => {
     expect(detailsRoute?.resolve?.[FINES_ACC_MAJOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS.headingData]).toBe(
       majorCreditorAccountHeadingResolver,
     );
+  });
+});
+
+describe('APR Add/Change route', () => {
+  const aprRouting = routing
+    .flatMap((route) => route.children ?? [])
+    .flatMap((route) => route.children ?? [])
+    .filter((route) => route.path?.startsWith(`${FINES_ACC_APR_ROUTING_PATHS.root}/`));
+
+  const route = aprRouting.find((route) => route.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/:mode`);
+
+  it('uses one mode parameter after every static APR page', () => {
+    expect(aprRouting.filter((entry) => entry.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/:mode`)).toHaveLength(1);
+    expect(aprRouting.at(-1)).toBe(route);
+    expect(
+      aprRouting.some((entry) =>
+        [`${FINES_ACC_APR_ROUTING_PATHS.root}/add`, `${FINES_ACC_APR_ROUTING_PATHS.root}/change`].includes(
+          entry.path ?? '',
+        ),
+      ),
+    ).toBe(false);
+    expect(aprRouting.slice(0, -1).map((entry) => entry.path)).toEqual(
+      expect.arrayContaining([`${FINES_ACC_APR_ROUTING_PATHS.root}/manage`]),
+    );
+  });
+
+  it('validates the mode and current-business-unit permission before resolving fresh account APR data', () => {
+    expect(route?.canActivate).toEqual([
+      release1cBankingInterfacesFeatureFlagGuard,
+      finesAccAprAddChangeModeGuard,
+      businessUnitRoutePermissionsGuard,
+      finesAccStateGuard,
+    ]);
+    expect(route?.canDeactivate).toEqual([canDeactivateGuard]);
+    expect(route?.data).toEqual({
+      routePermissionId: [FINES_PERMISSIONS['manage-alternate-payment-references']],
+    });
+    expect(route?.resolve).toEqual({ aprs: finesAccAprResolver });
+  });
+
+  it('uses the mode-specific Angular page-title resolver', () => {
+    expect(route?.title).toBe(finesAccAprAddChangeTitleResolver);
+  });
+
+  it('lazy loads the shared Add/Change page', async () => {
+    expect(await route?.loadComponent?.()).toBe(FinesAccAprAddChangeComponent);
   });
 });
 
