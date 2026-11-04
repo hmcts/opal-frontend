@@ -18,10 +18,12 @@ export class FinesMciCreateTillSuspenseDetailsComponent extends AbstractFormPare
   private readonly navigationRouter = inject(Router);
   protected readonly finesMciStore = inject(FinesMciStore);
 
+  /** Restores leave protection when suspense details were saved before returning to this screen. */
   public ngOnInit(): void {
     this.stateUnsavedChanges = this.finesMciStore.suspensePayment() !== null;
   }
 
+  /** Stores validated suspense details and routes to the next screen for the selected reason. */
   public handleSubmit(form: IAbstractFormBaseForm<IFinesMciSuspensePayment>): void {
     this.finesMciStore.setSuspensePayment(form.formData);
     this.stateUnsavedChanges = false;
@@ -32,6 +34,7 @@ export class FinesMciCreateTillSuspenseDetailsComponent extends AbstractFormPare
     this.routerNavigate(target);
   }
 
+  /** Returns to Till Details and clears suspense data after navigation is accepted. */
   public handleCancel(): void {
     void this.navigationRouter
       .navigate([
@@ -47,11 +50,13 @@ export class FinesMciCreateTillSuspenseDetailsComponent extends AbstractFormPare
       });
   }
 
+  /** Keeps leave protection enabled for child form input or previously stored details. */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.stateUnsavedChanges = unsavedChanges || this.finesMciStore.suspensePayment() !== null;
   }
 
   @HostListener('window:beforeunload')
+  /** Prevents closing the browser tab while suspense details have been entered. */
   public handleBeforeUnload(): boolean {
     return !this.stateUnsavedChanges;
   }

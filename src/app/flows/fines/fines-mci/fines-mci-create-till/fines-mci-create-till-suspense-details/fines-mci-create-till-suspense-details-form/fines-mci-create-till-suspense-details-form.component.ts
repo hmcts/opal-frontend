@@ -15,6 +15,7 @@ import { IFinesMciSuspensePayment } from '../../../stores/interfaces/fines-mci.i
 import { FINES_MCI_CREATE_TILL_SUSPENSE_DETAILS_FIELD_ERRORS } from './constants/fines-mci-create-till-suspense-details-field-errors.constant';
 import { IFinesMciCreateTillSuspenseDetailsFieldErrors } from './interfaces/fines-mci-create-till-suspense-details-field-errors.interface';
 
+/** Distinguishes non-numeric amounts from numeric values in an unsupported money format. */
 const amountValidator: ValidatorFn = (control: AbstractControl) => {
   const value = String(control.value ?? '');
   if (!value || /[^\d.]/.test(value)) return value ? { validAmount: true } : null;
@@ -43,6 +44,7 @@ export class FinesMciCreateTillSuspenseDetailsFormComponent extends AbstractForm
   @Input() public initialValue: IFinesMciSuspensePayment | null = null;
   public override formControlErrorMessages: IAbstractFormControlErrorMessage = {};
 
+  /** Builds the suspense form using any saved values and applies the initial conditional validators. */
   private initialiseForm(): void {
     const initial = this.initialValue ?? {
       amount: '',
@@ -72,6 +74,7 @@ export class FinesMciCreateTillSuspenseDetailsFormComponent extends AbstractForm
     this.updateConditionalValidators();
   }
 
+  /** Applies reference, source, and additional-detail validators only when their fields are relevant. */
   private updateConditionalValidators(): void {
     const method = this.form.controls['methodOfPayment'].value;
     const referenceValidators = [Validators.maxLength(50), Validators.pattern(/^[a-zA-Z0-9\- '\u2019]*$/)];
@@ -94,12 +97,14 @@ export class FinesMciCreateTillSuspenseDetailsFormComponent extends AbstractForm
     this.form.controls['relevantDetails'].updateValueAndValidity({ emitEvent: false });
   }
 
+  /** Reports unsaved changes whenever at least one field contains a value. */
   protected override hasUnsavedChanges(): boolean {
     return Object.values(this.form.getRawValue()).some(
       (value) => value !== null && value !== undefined && value !== '',
     );
   }
 
+  /** Initialises the form and refreshes conditional validators when selections change. */
   public override ngOnInit(): void {
     this.initialiseForm();
     this.setInitialErrorMessages();
@@ -109,6 +114,7 @@ export class FinesMciCreateTillSuspenseDetailsFormComponent extends AbstractForm
     super.ngOnInit();
   }
 
+  /** Marks the form as submitted before delegating validation and error handling to the base form. */
   public submitForm(event: SubmitEvent): void {
     this.formSubmitted = true;
     this.handleFormSubmit(event);
