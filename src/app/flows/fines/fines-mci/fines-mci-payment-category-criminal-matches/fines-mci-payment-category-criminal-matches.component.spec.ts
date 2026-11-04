@@ -60,7 +60,7 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
       (link) => link.textContent?.trim() === 'Search again',
     ) as HTMLAnchorElement;
     expect(searchAgainLink.getAttribute('href')).toBe(
-      '/fines/manual-cash-input/create/till/payment/category/criminal/search',
+      '/fines/manual-cash-input/create/till/payment/category/criminal/search#individuals',
     );
   });
 

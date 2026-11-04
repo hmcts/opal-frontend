@@ -5,7 +5,6 @@ import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/g
 import { IOpalFinesDefendantAccount } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
 import { map } from 'rxjs';
 import { IFinesMciCriminalAccountsResult } from '../interfaces/fines-mci-criminal-accounts-result.interface';
-import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import {
   FINES_MCI_CRIMINAL_SEARCH_RESULTS,
@@ -86,11 +85,13 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
   protected readonly tableData = computed(() => this.mapAccountsToTableData(this.searchResults()));
   protected readonly sortState = FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_MATCHES_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
   protected readonly isMatchesResults = computed(() => this.results() === FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches);
-  protected readonly financeDashboardRoute = [
+  protected readonly tillDetailsRoute = [
     '/',
     FINES_ROUTING_PATHS.root,
-    FINES_DASHBOARD_ROUTING_PATHS.root,
-    FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+    FINES_MCI_ROUTING_PATHS.root,
+    FINES_MCI_ROUTING_PATHS.children.create,
+    FINES_MCI_ROUTING_PATHS.children.till,
+    FINES_MCI_ROUTING_PATHS.children.details,
   ];
   protected readonly criminalSearchRoute = [
     '/',
@@ -165,6 +166,10 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
 
   protected navigateBack(): void {
     this.router.navigate(this.criminalSearchRoute);
+  }
+
+  protected clearCriminalSearch(): void {
+    this.finesMciStore.resetCriminalSearch();
   }
 
   protected onAccountSelectionChanged(
