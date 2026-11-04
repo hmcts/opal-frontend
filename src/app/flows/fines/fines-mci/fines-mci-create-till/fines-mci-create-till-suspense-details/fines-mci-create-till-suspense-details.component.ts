@@ -25,20 +25,26 @@ export class FinesMciCreateTillSuspenseDetailsComponent extends AbstractFormPare
   public handleSubmit(form: IAbstractFormBaseForm<IFinesMciSuspensePayment>): void {
     this.finesMciStore.setSuspensePayment(form.formData);
     this.stateUnsavedChanges = false;
-    const target = form.formData.reason === 'unidentified'
-      ? FINES_MCI_ROUTING_PATHS.children.checkSuspensePayment
-      : FINES_MCI_ROUTING_PATHS.children.payerDetails;
+    const target =
+      form.formData.reason === 'unidentified'
+        ? FINES_MCI_ROUTING_PATHS.children.checkSuspensePayment
+        : FINES_MCI_ROUTING_PATHS.children.payerDetails;
     this.routerNavigate(target);
   }
 
   public handleCancel(): void {
-    void this.navigationRouter.navigate([
-      '/', FINES_ROUTING_PATHS.root, FINES_MCI_ROUTING_PATHS.root,
-      FINES_MCI_ROUTING_PATHS.children.create, FINES_MCI_ROUTING_PATHS.children.till,
-      FINES_MCI_ROUTING_PATHS.children.details,
-    ]).then((navigated) => {
-      if (navigated) this.finesMciStore.setSuspensePayment(null);
-    });
+    void this.navigationRouter
+      .navigate([
+        '/',
+        FINES_ROUTING_PATHS.root,
+        FINES_MCI_ROUTING_PATHS.root,
+        FINES_MCI_ROUTING_PATHS.children.create,
+        FINES_MCI_ROUTING_PATHS.children.till,
+        FINES_MCI_ROUTING_PATHS.children.details,
+      ])
+      .then((navigated) => {
+        if (navigated) this.finesMciStore.setSuspensePayment(null);
+      });
   }
 
   public handleUnsavedChanges(unsavedChanges: boolean): void {
@@ -46,5 +52,7 @@ export class FinesMciCreateTillSuspenseDetailsComponent extends AbstractFormPare
   }
 
   @HostListener('window:beforeunload')
-  public handleBeforeUnload(): boolean { return !this.stateUnsavedChanges; }
+  public handleBeforeUnload(): boolean {
+    return !this.stateUnsavedChanges;
+  }
 }

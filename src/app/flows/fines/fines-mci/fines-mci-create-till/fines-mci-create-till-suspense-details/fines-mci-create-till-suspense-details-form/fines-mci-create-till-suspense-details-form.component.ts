@@ -45,13 +45,23 @@ export class FinesMciCreateTillSuspenseDetailsFormComponent extends AbstractForm
 
   private initialiseForm(): void {
     const initial = this.initialValue ?? {
-      amount: '', payerType: null, methodOfPayment: null, paymentReferencePostalOrder: '', paymentReferenceCheque: '',
-      paymentReferenceCreditTransfer: '', source: null, reason: null, relevantDetails: '',
+      amount: '',
+      payerType: null,
+      methodOfPayment: null,
+      paymentReferencePostalOrder: '',
+      paymentReferenceCheque: '',
+      paymentReferenceCreditTransfer: '',
+      source: null,
+      reason: null,
+      relevantDetails: '',
     };
     this.form = new FormGroup({
       amount: new FormControl(initial.amount, [Validators.required, amountValidator]),
       payerType: new FormControl<IFinesMciSuspensePayment['payerType']>(initial.payerType, Validators.required),
-      methodOfPayment: new FormControl<IFinesMciSuspensePayment['methodOfPayment']>(initial.methodOfPayment, Validators.required),
+      methodOfPayment: new FormControl<IFinesMciSuspensePayment['methodOfPayment']>(
+        initial.methodOfPayment,
+        Validators.required,
+      ),
       paymentReferencePostalOrder: new FormControl(initial.paymentReferencePostalOrder),
       paymentReferenceCheque: new FormControl(initial.paymentReferenceCheque),
       paymentReferenceCreditTransfer: new FormControl(initial.paymentReferenceCreditTransfer),
@@ -85,7 +95,9 @@ export class FinesMciCreateTillSuspenseDetailsFormComponent extends AbstractForm
   }
 
   protected override hasUnsavedChanges(): boolean {
-    return Object.values(this.form.getRawValue()).some((value) => value !== null && value !== undefined && value !== '');
+    return Object.values(this.form.getRawValue()).some(
+      (value) => value !== null && value !== undefined && value !== '',
+    );
   }
 
   public override ngOnInit(): void {

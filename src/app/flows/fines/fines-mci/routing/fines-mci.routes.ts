@@ -134,7 +134,9 @@ export const routing: Routes = [
           ].map(([path, heading]) => ({
             path,
             loadComponent: () =>
-              import('../fines-mci-placeholder/fines-mci-placeholder.component').then((c) => c.FinesMciPlaceholderComponent),
+              import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
+                (c) => c.FinesMciPlaceholderComponent,
+              ),
             canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
             data: {
               heading,
