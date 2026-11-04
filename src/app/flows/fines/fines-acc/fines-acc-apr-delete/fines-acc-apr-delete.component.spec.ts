@@ -23,11 +23,13 @@ import { transformAprsPayload } from '../services/utils/fines-acc-payload-transf
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { FinesAccAprDeleteComponent } from './fines-acc-apr-delete.component';
 import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';
+import { finesAccAprFeatureFlagGuard } from '../routing/guards/fines-acc-apr-feature-flag.guard';
+import { finesAccStateGuard } from '../routing/guards/fines-acc-state-guard/fines-acc-state.guard';
 
 const routing = accountRouting
   .flatMap((route) => route.children ?? [])
   .flatMap((route) => route.children ?? [])
-  .find((route) => route.path === FINES_ACC_APR_ROUTING_PATHS.root)!.children!;
+  .filter((route) => route.path?.startsWith(`${FINES_ACC_APR_ROUTING_PATHS.root}/`));
 
 @Component({ template: '' })
 class DeleteTestDestinationComponent {}
@@ -84,15 +86,15 @@ describe('FinesAccAprDeleteComponent', () => {
         },
         provideRouter([
           {
-            path: 'fines/account/defendant/:accountId/alternate/payment/reference',
+            path: 'fines/account/defendant/:accountId',
             children: [
               {
-                path: 'delete',
+                path: `${FINES_ACC_APR_ROUTING_PATHS.root}/delete`,
                 component: FinesAccAprDeleteComponent,
                 runGuardsAndResolvers: 'always',
                 resolve: { aprs: finesAccAprResolver },
               },
-              { path: 'manage', component: DeleteTestDestinationComponent },
+              { path: `${FINES_ACC_APR_ROUTING_PATHS.root}/manage`, component: DeleteTestDestinationComponent },
             ],
           },
           { path: 'error/internal-server', component: DeleteTestDestinationComponent },
@@ -318,14 +320,18 @@ describe('FinesAccAprDeleteComponent', () => {
   });
 
   it('registers a descriptive lazy delete route with business-unit permission and fresh APR resolution', async () => {
-    const deleteRoute = routing.find((route) => route.path === 'delete');
+    const deleteRoute = routing.find((route) => route.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/delete`);
 
     expect(await deleteRoute?.loadComponent?.()).toBe(FinesAccAprDeleteComponent);
     expect(deleteRoute?.data?.['title']).toBe('Remove Alternate Payment Reference');
     expect(deleteRoute?.data?.['routePermissionId']).toEqual([
       FINES_PERMISSIONS['manage-alternate-payment-references'],
     ]);
-    expect(deleteRoute?.canActivate).toEqual([businessUnitRoutePermissionsGuard]);
+    expect(deleteRoute?.canActivate).toEqual([
+      finesAccAprFeatureFlagGuard,
+      businessUnitRoutePermissionsGuard,
+      finesAccStateGuard,
+    ]);
     expect(deleteRoute?.resolve).toEqual({
       title: TitleResolver,
       aprs: finesAccAprResolver,
