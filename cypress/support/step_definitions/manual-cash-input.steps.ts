@@ -101,20 +101,13 @@ When('I accept Cancel on Court Fee Details', () => {
 Then('the Court Fee Details form is blank', () => {
   manualCashInputFlow().assertCourtFeeDetailsWereDiscarded();
 });
+
 Then('I see Search for an Account', () => {
   manualCashInputFlow().assertSearchForAccountIsDisplayed();
 });
 
-Then('I see Court Fee Details', () => {
-  manualCashInputFlow().assertPaymentCategoryDetailsAreDisplayed('courtFee');
-});
-
 Then('I see Suspense Details', () => {
-  manualCashInputFlow().assertPaymentCategoryDetailsAreDisplayed('suspense');
-});
-
-Then('I remain on Payment Category', () => {
-  manualCashInputFlow().assertPaymentCategoryIsDisplayed();
+  manualCashInputFlow().assertSuspenseDetailsIsDisplayed();
 });
 
 When('I continue without selecting a payment category', () => {
