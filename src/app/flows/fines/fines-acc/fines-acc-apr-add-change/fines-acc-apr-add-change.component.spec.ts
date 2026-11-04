@@ -1,3 +1,5 @@
+import { HttpErrorResponse, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, provideRouter, Router } from '@angular/router';
@@ -7,6 +9,7 @@ import { Subject, of, throwError } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import {
+  IOpalFinesApr,
   IOpalFinesAprResponse,
   IOpalFinesAprsResponse,
 } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
@@ -15,6 +18,11 @@ import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { routing as accountRouting } from '../routing/fines-acc.routes';
 import { FinesAccAprAddChangeComponent } from './fines-acc-apr-add-change.component';
 import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';
+import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-error';
+import { contentDigestInterceptor } from '@hmcts/opal-frontend-common/interceptors/content-digest';
+import { httpRetryInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-retry';
+import { AppInsightsService } from '@hmcts/opal-frontend-common/services/app-insights-service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 
 const routing = accountRouting
   .flatMap((route) => route.children ?? [])
@@ -24,7 +32,7 @@ const routing = accountRouting
 @Component({ template: '<p>APR manage</p>' })
 class ManagePageComponent {}
 
-const response: IOpalFinesAprResponse = {
+const addResponse: IOpalFinesAprResponse = {
   reference: {
     alternate_payment_reference_id: 11,
     defendant_account_id: 141,
@@ -69,7 +77,7 @@ describe('FinesAccAprAddChangeComponent add mode', () => {
   beforeEach(async () => {
     initialVersion = '"7"';
     const sharedResolvedData: IOpalFinesAprsResponse = { references: [], version: initialVersion };
-    api = { createApr: vi.fn().mockReturnValue(of(response)), clearAccountDetailsCache: vi.fn() };
+    api = { createApr: vi.fn().mockReturnValue(of(addResponse)), clearAccountDetailsCache: vi.fn() };
     utils = { scrollToTop: vi.fn() };
     const formRoute = routing.find((route) => route.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/:mode`)!;
     await TestBed.configureTestingModule({
@@ -223,7 +231,7 @@ describe('FinesAccAprAddChangeComponent add mode', () => {
     save();
 
     await harness.navigateByUrl(addUrl.replace('/141/', '/142/'), FinesAccAprAddChangeComponent);
-    result.next(response);
+    result.next(addResponse);
 
     expect(component.pending()).toBe(false);
     expect(result.observed).toBe(false);
@@ -253,4 +261,514 @@ describe('FinesAccAprAddChangeComponent add mode', () => {
 
     expect(api.createApr).toHaveBeenCalledExactlyOnceWith(141, { apr_text: 'Original-Snapshot' }, '"7"');
   });
+});
+
+const reference: IOpalFinesApr = {
+  alternate_payment_reference_id: 11,
+  defendant_account_id: 141,
+  relationship: 'APR',
+  category: 'APR',
+  business_unit_id: 77,
+  apr_text: 'Original',
+  created_at: '2026-06-01T12:00:00Z',
+  updated_at: null,
+};
+const changeResponse: IOpalFinesAprResponse = {
+  reference: { ...reference, apr_text: 'Changed' },
+  version: '"8"',
+};
+const changeUrl = '/fines/account/defendant/141/alternate/payment/reference/change?alternatePaymentReferenceId=11';
+
+describe('FinesAccAprAddChangeComponent change mode', () => {
+  let accountStore: InstanceType<typeof FinesAccountStore>;
+  let api: {
+    createApr: ReturnType<typeof vi.fn>;
+    updateApr: ReturnType<typeof vi.fn>;
+    clearAccountDetailsCache: ReturnType<typeof vi.fn>;
+  };
+  let utils: { scrollToTop: ReturnType<typeof vi.fn> };
+  let reuseResolvedData: boolean;
+
+  const render = async (url = changeUrl) => {
+    const harness = await RouterTestingHarness.create();
+    const component = await harness.navigateByUrl(url, FinesAccAprAddChangeComponent);
+    const input = () => harness.routeNativeElement!.querySelector('#apr_text') as HTMLInputElement;
+    const enter = (value: string) => {
+      input().value = value;
+      input().dispatchEvent(new Event('input', { bubbles: true }));
+    };
+    const save = () =>
+      harness
+        .routeNativeElement!.querySelector('form')!
+        .dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+    const cancel = () =>
+      (harness.routeNativeElement!.querySelector('opal-lib-govuk-cancel-link a') as HTMLAnchorElement).click();
+    return { harness, component, input, enter, save, cancel };
+  };
+
+  beforeEach(async () => {
+    reuseResolvedData = false;
+    const sharedResolvedData: IOpalFinesAprsResponse = { references: [], version: '"7"' };
+    api = {
+      createApr: vi.fn().mockReturnValue(of(changeResponse)),
+      updateApr: vi.fn().mockReturnValue(of(changeResponse)),
+      clearAccountDetailsCache: vi.fn(),
+    };
+    utils = { scrollToTop: vi.fn() };
+    const formRoute = routing.find((route) => route.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/:mode`)!;
+    await TestBed.configureTestingModule({
+      providers: [
+        { provide: OpalFines, useValue: api },
+        { provide: UtilsService, useValue: utils },
+        provideRouter([
+          {
+            path: 'fines/account/defendant/:accountId',
+            children: [
+              { path: `${FINES_ACC_APR_ROUTING_PATHS.root}/manage`, component: ManagePageComponent },
+              {
+                ...formRoute,
+                canActivate: [],
+                resolve: {
+                  aprs: (route: ActivatedRouteSnapshot) => {
+                    const accountId = Number(route.paramMap.get('accountId'));
+                    const referenceId = Number(route.queryParamMap.get('alternatePaymentReferenceId'));
+                    const mode = route.paramMap.get('mode');
+                    const version = reuseResolvedData
+                      ? mode === 'add'
+                        ? '"7"'
+                        : '"9"'
+                      : referenceId === 11
+                        ? '"7"'
+                        : '"9"';
+                    accountStore.setAccountState({
+                      ...MOCK_FINES_ACCOUNT_STATE,
+                      account_id: accountId,
+                      account_number: `${accountId}A`,
+                      party_name: `APR TEST ${accountId}`,
+                      base_version: version,
+                    });
+                    const resolvedData: IOpalFinesAprsResponse = {
+                      references:
+                        mode === 'add'
+                          ? []
+                          : [
+                              { ...reference, defendant_account_id: accountId },
+                              {
+                                ...reference,
+                                defendant_account_id: accountId,
+                                alternate_payment_reference_id: 12,
+                                apr_text: 'Second',
+                              },
+                              {
+                                ...reference,
+                                defendant_account_id: accountId,
+                                alternate_payment_reference_id: 21,
+                                apr_text: 'Other-Account',
+                              },
+                              { ...reference, alternate_payment_reference_id: 31, category: 'ACC' },
+                              { ...reference, alternate_payment_reference_id: 32, relationship: 'CONSOLIDATED' },
+                            ],
+                      version,
+                    };
+                    if (reuseResolvedData) {
+                      Object.assign(sharedResolvedData, resolvedData);
+                      return sharedResolvedData;
+                    }
+                    return resolvedData;
+                  },
+                },
+              },
+            ],
+          },
+        ]),
+      ],
+    }).compileComponents();
+    accountStore = TestBed.inject(FinesAccountStore);
+  });
+
+  afterEach(() => vi.restoreAllMocks());
+
+  it('displays the current account and selected reference as a saved baseline', async () => {
+    const { harness, component, input } = await render();
+
+    expect(harness.routeNativeElement!.textContent).toContain('141A - APR TEST 141');
+    expect(harness.routeNativeElement!.querySelector('h1')!.textContent).toContain(
+      'Change Alternate Payment Reference',
+    );
+    expect(harness.routeNativeElement!.querySelector('label')!.textContent.trim()).toBe(
+      'Change alternate payment reference',
+    );
+    expect(input().value).toBe('Original');
+    expect(component.savedValue()).toBe('Original');
+    expect(component.stateUnsavedChanges).toBe(false);
+  });
+
+  it('patches the selected ID with exact entered text and the resolved quoted version, then refreshes manage feedback', async () => {
+    const { harness, component, enter, save } = await render();
+    const confirm = vi.spyOn(window, 'confirm');
+    accountStore.setAccountState({ ...accountStore.getAccountState(), base_version: '"99"' });
+    enter(' MiXeD-123 ');
+    save();
+    await harness.fixture.whenStable();
+
+    expect(api.updateApr).toHaveBeenCalledExactlyOnceWith(141, 11, { apr_text: ' MiXeD-123 ' }, '"7"');
+    expect(accountStore.base_version()).toBe('"8"');
+    expect(accountStore.successMessage()).toBe('Alternate payment reference updated');
+    expect(api.clearAccountDetailsCache).toHaveBeenCalledOnce();
+    expect(component.stateUnsavedChanges).toBe(false);
+    expect(TestBed.inject(Router).url).toBe(manageUrl);
+    expect(confirm).not.toHaveBeenCalled();
+  });
+
+  it.each([false, true])(
+    'returns unchanged Save to manage without PATCH or success feedback after editing=$0',
+    async (edited) => {
+      const { harness, component, enter, save } = await render();
+      const confirm = vi.spyOn(window, 'confirm');
+      if (edited) {
+        enter('Temporary');
+        enter('Original');
+      }
+      save();
+      await harness.fixture.whenStable();
+
+      expect(component.stateUnsavedChanges).toBe(false);
+      expect(api.updateApr).not.toHaveBeenCalled();
+      expect(api.clearAccountDetailsCache).not.toHaveBeenCalled();
+      expect(accountStore.successMessage()).toBeNull();
+      expect(TestBed.inject(Router).url).toBe(manageUrl);
+      expect(confirm).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each(['', '   ', '1234567890123456789'])(
+    'rejects invalid changed text %j using the shared form',
+    async (value) => {
+      const { harness, enter, save } = await render();
+      enter(value);
+      save();
+
+      expect(api.updateApr).not.toHaveBeenCalled();
+      expect(TestBed.inject(Router).url).toBe(changeUrl);
+      expect(harness.routeNativeElement!.querySelector('.govuk-error-summary')).not.toBeNull();
+    },
+  );
+
+  it('returns pristine Cancel to manage without writing or confirming', async () => {
+    const { harness, cancel } = await render();
+    const confirm = vi.spyOn(window, 'confirm');
+    cancel();
+    await harness.fixture.whenStable();
+
+    expect(TestBed.inject(Router).url).toBe(manageUrl);
+    expect(confirm).not.toHaveBeenCalled();
+    expect(api.updateApr).not.toHaveBeenCalled();
+  });
+
+  it('keeps changed text when leaving is declined and discards it on confirmed Cancel', async () => {
+    const { harness, input, enter, cancel } = await render();
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    enter('Unsaved');
+    cancel();
+    await harness.fixture.whenStable();
+
+    expect(confirm).toHaveBeenCalledOnce();
+    expect(TestBed.inject(Router).url).toBe(changeUrl);
+    expect(input().value).toBe('Unsaved');
+    confirm.mockReturnValue(true);
+    cancel();
+    await harness.fixture.whenStable();
+    expect(TestBed.inject(Router).url).toBe(manageUrl);
+    expect(api.updateApr).not.toHaveBeenCalled();
+  });
+
+  it('allows only one pending update and disables Save', async () => {
+    api.updateApr.mockReturnValue(new Subject<IOpalFinesAprResponse>());
+    const { harness, component, enter, save } = await render();
+    enter('Pending');
+    save();
+    harness.detectChanges();
+    component.handleSubmit({ formData: { apr_text: 'Pending' }, nestedFlow: false });
+
+    expect(api.updateApr).toHaveBeenCalledOnce();
+    expect(component.pending()).toBe(true);
+    expect((harness.routeNativeElement!.querySelector('#apr-save') as HTMLButtonElement).matches(':disabled')).toBe(
+      true,
+    );
+  });
+
+  it('retains changed text, the baseline and dirty warning after a retryable processing failure', async () => {
+    api.updateApr.mockReturnValue(throwError(() => new HttpErrorResponse({ status: 503, error: { retriable: true } })));
+    const { component, input, enter, save } = await render();
+    enter('Retry-Value');
+    save();
+
+    expect(component.pending()).toBe(false);
+    expect(component.stateUnsavedChanges).toBe(true);
+    expect(component.savedValue()).toBe('Original');
+    expect(input().value).toBe('Retry-Value');
+    expect(accountStore.base_version()).toBe('"7"');
+    expect(accountStore.successMessage()).toBeNull();
+    expect(api.clearAccountDetailsCache).not.toHaveBeenCalled();
+    expect(utils.scrollToTop).toHaveBeenCalledOnce();
+    expect(TestBed.inject(Router).url).toBe(changeUrl);
+  });
+
+  it('changes the selected reference while retaining the resolved account version on query-only navigation', async () => {
+    const { harness, component, input, enter, save } = await render();
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    enter('Discard-First');
+
+    const reused = await harness.navigateByUrl(changeUrl.replace('Id=11', 'Id=12'), FinesAccAprAddChangeComponent);
+
+    expect(reused).toBe(component);
+    expect(component.stateUnsavedChanges).toBe(false);
+    expect(component.savedValue()).toBe('Second');
+    expect(input().value).toBe('Second');
+    enter('Changed-Second');
+    save();
+    await harness.fixture.whenStable();
+    expect(api.updateApr).toHaveBeenCalledExactlyOnceWith(141, 12, { apr_text: 'Changed-Second' }, '"7"');
+  });
+
+  it.each(['invalid', '999', '31', '32'])(
+    'returns query-only selection %s to Manage when it is missing or cannot be changed',
+    async (selectedId) => {
+      const { harness } = await render();
+
+      await harness.navigateByUrl(changeUrl.replace('Id=11', `Id=${selectedId}`));
+      await harness.fixture.whenStable();
+
+      expect(TestBed.inject(Router).url).toBe(manageUrl);
+      expect(api.updateApr).not.toHaveBeenCalled();
+      expect(api.createApr).not.toHaveBeenCalled();
+    },
+  );
+
+  it('reloads the account caption, selected reference and version when the account changes', async () => {
+    const { harness, component, input, enter, save } = await render();
+    const nextUrl = changeUrl.replace('/141/', '/142/').replace('Id=11', 'Id=21');
+
+    const reused = await harness.navigateByUrl(nextUrl, FinesAccAprAddChangeComponent);
+
+    expect(reused).toBe(component);
+    expect(harness.routeNativeElement!.textContent).toContain('142A - APR TEST 142');
+    expect(input().value).toBe('Other-Account');
+    enter('New-Account');
+    save();
+    await harness.fixture.whenStable();
+    expect(api.updateApr).toHaveBeenCalledExactlyOnceWith(142, 21, { apr_text: 'New-Account' }, '"9"');
+    expect(TestBed.inject(Router).url).toBe(manageUrl.replace('/141/', '/142/'));
+  });
+
+  it('cancels an old pending update when the selected reference changes so its response cannot mutate new page state', async () => {
+    const result = new Subject<IOpalFinesAprResponse>();
+    api.updateApr.mockReturnValue(result);
+    const { harness, component, input, enter, save } = await render();
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    enter('Old-Pending');
+    save();
+    const nextUrl = changeUrl.replace('Id=11', 'Id=12');
+
+    await harness.navigateByUrl(nextUrl, FinesAccAprAddChangeComponent);
+    result.next(changeResponse);
+
+    expect(result.observed).toBe(false);
+    expect(component.pending()).toBe(false);
+    expect(component.stateUnsavedChanges).toBe(false);
+    expect(input().value).toBe('Second');
+    expect(accountStore.base_version()).toBe('"7"');
+    expect(accountStore.successMessage()).toBeNull();
+    expect(api.clearAccountDetailsCache).not.toHaveBeenCalled();
+    expect(TestBed.inject(Router).url).toBe(nextUrl);
+  });
+
+  it('reuses one parent across Add, Change and Add with an identical resolver object, refreshing each form context and cancelling the old PATCH', async () => {
+    reuseResolvedData = true;
+    const pendingUpdate = new Subject<IOpalFinesAprResponse>();
+    api.updateApr.mockReturnValue(pendingUpdate);
+    const { harness, component, input, enter, save } = await render(addUrl);
+    const resolvedData = component.formContext()['aprs'];
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+
+    expect(component.mode()).toBe('add');
+    expect(component.savedValue()).toBe('');
+    expect(input().value).toBe('');
+    expect(harness.routeNativeElement!.querySelector('h1')!.textContent).toContain('Add Alternate Payment Reference');
+    expect(harness.routeNativeElement!.querySelector('label')!.textContent.trim()).toBe('Enter payment reference');
+    enter('1234567890123456789');
+    save();
+    expect(harness.routeNativeElement!.querySelector('.govuk-error-summary')).not.toBeNull();
+
+    const change = await harness.navigateByUrl(changeUrl, FinesAccAprAddChangeComponent);
+
+    expect(change).toBe(component);
+    expect(component.formContext()['aprs']).toBe(resolvedData);
+    expect(component.mode()).toBe('change');
+    expect(component.savedValue()).toBe('Original');
+    expect(input().value).toBe('Original');
+    expect(component.stateUnsavedChanges).toBe(false);
+    expect(harness.routeNativeElement!.querySelector('.govuk-error-summary')).toBeNull();
+    expect(harness.routeNativeElement!.querySelector('h1')!.textContent).toContain(
+      'Change Alternate Payment Reference',
+    );
+    expect(harness.routeNativeElement!.querySelector('label')!.textContent.trim()).toBe(
+      'Change alternate payment reference',
+    );
+    enter('Pending-Change');
+    save();
+    harness.detectChanges();
+    expect(api.updateApr).toHaveBeenCalledExactlyOnceWith(141, 11, { apr_text: 'Pending-Change' }, '"9"');
+    expect(api.createApr).not.toHaveBeenCalled();
+    expect(component.pending()).toBe(true);
+
+    const add = await harness.navigateByUrl(addUrl, FinesAccAprAddChangeComponent);
+    pendingUpdate.next(changeResponse);
+
+    expect(add).toBe(component);
+    expect(component.formContext()['aprs']).toBe(resolvedData);
+    expect(pendingUpdate.observed).toBe(false);
+    expect(component.mode()).toBe('add');
+    expect(component.pending()).toBe(false);
+    expect(component.initialValue()).toBe('');
+    expect(component.savedValue()).toBe('');
+    expect(component.stateUnsavedChanges).toBe(false);
+    expect(input().value).toBe('');
+    expect(harness.routeNativeElement!.querySelector('.govuk-error-summary')).toBeNull();
+    expect(harness.routeNativeElement!.querySelector('h1')!.textContent).toContain('Add Alternate Payment Reference');
+    expect(harness.routeNativeElement!.querySelector('label')!.textContent.trim()).toBe('Enter payment reference');
+    expect(accountStore.base_version()).toBe('"7"');
+    expect(accountStore.successMessage()).toBeNull();
+    expect(api.clearAccountDetailsCache).not.toHaveBeenCalled();
+    enter('Added-After-Change');
+    save();
+    await harness.fixture.whenStable();
+
+    expect(api.createApr).toHaveBeenCalledExactlyOnceWith(141, { apr_text: 'Added-After-Change' }, '"7"');
+    expect(accountStore.successMessage()).toBe('Alternate payment reference added');
+    expect(TestBed.inject(Router).url).toBe(manageUrl);
+  });
+
+  it('cancels a pending Add when the same parent becomes Change so a late POST cannot overwrite its selected reference', async () => {
+    const pendingCreate = new Subject<IOpalFinesAprResponse>();
+    api.createApr.mockReturnValue(pendingCreate);
+    const { harness, component, input, enter, save } = await render(addUrl);
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    enter('Pending-Add');
+    save();
+
+    const change = await harness.navigateByUrl(changeUrl, FinesAccAprAddChangeComponent);
+    pendingCreate.next(changeResponse);
+
+    expect(change).toBe(component);
+    expect(pendingCreate.observed).toBe(false);
+    expect(component.pending()).toBe(false);
+    expect(component.mode()).toBe('change');
+    expect(component.savedValue()).toBe('Original');
+    expect(input().value).toBe('Original');
+    expect(component.stateUnsavedChanges).toBe(false);
+    expect(accountStore.base_version()).toBe('"7"');
+    expect(accountStore.successMessage()).toBeNull();
+    expect(api.clearAccountDetailsCache).not.toHaveBeenCalled();
+    expect(TestBed.inject(Router).url).toBe(changeUrl);
+    enter('Changed-After-Add');
+    save();
+    await harness.fixture.whenStable();
+
+    expect(api.updateApr).toHaveBeenCalledExactlyOnceWith(141, 11, { apr_text: 'Changed-After-Add' }, '"7"');
+    expect(accountStore.successMessage()).toBe('Alternate payment reference updated');
+  });
+});
+
+describe('APR forms with the shared API error interceptor', () => {
+  let http: HttpTestingController;
+  let accountStore: InstanceType<typeof FinesAccountStore>;
+  let globalStore: InstanceType<typeof GlobalStore>;
+
+  const duplicateProblem = {
+    status: 422,
+    type: 'https://hmcts.gov.uk/problems/BusinessRuleViolationException',
+    title: 'Alternate Payment Reference text already exists in business unit',
+    detail: 'This payment reference is already used in this business unit.',
+    is_warning: true,
+    is_retryable: false,
+  };
+  const render = async (mode: 'add' | 'change') => {
+    const url = mode === 'add' ? addUrl : changeUrl;
+    const requestUrl = `/opal-fines-service/defendant-accounts/141/alternate-payment-references${mode === 'change' ? '/11' : ''}`;
+    const harness = await RouterTestingHarness.create();
+    const component = await harness.navigateByUrl(url, FinesAccAprAddChangeComponent);
+    const input = harness.routeNativeElement!.querySelector('#apr_text') as HTMLInputElement;
+    input.value = 'Taken-Reference';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    harness
+      .routeNativeElement!.querySelector('form')!
+      .dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+    const request = await vi.waitFor(() => http.expectOne(requestUrl));
+    expect(request.request.method).toBe(mode === 'add' ? 'POST' : 'PATCH');
+    expect(request.request.serializeBody()).toBe(JSON.stringify({ apr_text: 'Taken-Reference' }));
+    expect(request.request.headers.get('If-Match')).toBe('"7"');
+    return { harness, component, input, request, requestUrl, url };
+  };
+
+  beforeEach(async () => {
+    vi.stubGlobal('crypto', { subtle: { digest: async () => new ArrayBuffer(64) } });
+    const formRoute = routing.find((route) => route.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/:mode`)!;
+    await TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(withInterceptors([httpErrorInterceptor, contentDigestInterceptor, httpRetryInterceptor])),
+        provideHttpClientTesting(),
+        { provide: AppInsightsService, useValue: { logException: vi.fn() } },
+        { provide: UtilsService, useValue: { scrollToTop: vi.fn() } },
+        provideRouter([
+          {
+            path: 'fines/account/defendant/:accountId',
+            children: [
+              {
+                ...formRoute,
+                canActivate: [],
+                resolve: {
+                  aprs: (route: ActivatedRouteSnapshot) => ({
+                    references: route.paramMap.get('mode') === 'change' ? [reference] : [],
+                    version: '"7"',
+                  }),
+                },
+              },
+              { path: `${FINES_ACC_APR_ROUTING_PATHS.root}/manage`, component: ManagePageComponent },
+            ],
+          },
+          { path: 'error/internal-server', component: ManagePageComponent },
+        ]),
+      ],
+    }).compileComponents();
+    http = TestBed.inject(HttpTestingController);
+    accountStore = TestBed.inject(FinesAccountStore);
+    globalStore = TestBed.inject(GlobalStore);
+    accountStore.setAccountState({ ...MOCK_FINES_ACCOUNT_STATE, account_id: 141, base_version: '"7"' });
+  });
+
+  afterEach(() => {
+    http.verify();
+    vi.unstubAllGlobals();
+    vi.restoreAllMocks();
+  });
+
+  it.each(['add', 'change'] as const)(
+    'retains the generic redirect for an explicitly non-retriable %s error',
+    async (mode) => {
+      const { harness, component, request, requestUrl } = await render(mode);
+      const confirm = vi.spyOn(window, 'confirm');
+
+      request.flush({ ...duplicateProblem, retriable: false }, { status: 422, statusText: 'Unprocessable Content' });
+      await harness.fixture.whenStable();
+
+      expect(TestBed.inject(Router).url).toBe('/error/internal-server');
+      expect(component.pending()).toBe(false);
+      expect(component.stateUnsavedChanges).toBe(false);
+      expect(confirm).not.toHaveBeenCalled();
+      expect(globalStore.bannerError().error).toBeFalsy();
+      expect(accountStore.successMessage()).toBeNull();
+      http.expectNone(requestUrl);
+    },
+  );
 });
