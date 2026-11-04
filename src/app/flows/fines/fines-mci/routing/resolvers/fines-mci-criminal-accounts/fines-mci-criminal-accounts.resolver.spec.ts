@@ -6,10 +6,8 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { FinesMciStore } from '../../../stores/fines-mci.store';
 import { IFinesMciCriminalSearch } from '../../../stores/interfaces/fines-mci-criminal-search.interface';
-import {
-  finesMciCriminalAccountsResolver,
-  IFinesMciCriminalAccountsResult,
-} from './fines-mci-criminal-accounts.resolver';
+import { finesMciCriminalAccountsResolver } from './fines-mci-criminal-accounts.resolver';
+import { IFinesMciCriminalAccountsResult } from '../../../interfaces/fines-mci-criminal-accounts-result.interface';
 
 describe('finesMciCriminalAccountsResolver', () => {
   let store: InstanceType<typeof FinesMciStore>;
