@@ -173,7 +173,7 @@
 
     <div class="govuk-button-group">
       <button class="govuk-button" type="submit" buttonId="submitForm">Search</button>
-      <a class="govuk-link govuk-link--no-visited-state" [routerLink]="tillDetailsRoute">Cancel</a>
+      <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
     </div>
   </form>
 </div>

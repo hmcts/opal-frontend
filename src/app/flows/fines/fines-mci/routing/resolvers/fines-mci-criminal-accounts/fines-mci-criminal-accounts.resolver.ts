@@ -2,7 +2,6 @@ import { inject } from '@angular/core';
 import { RedirectCommand, ResolveFn, Router } from '@angular/router';
 import { map, of } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { IOpalFinesDefendantAccountResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-response.interface';
 import { IOpalFinesDefendantAccountSearchParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-search-params.interface';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defaults.constant';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFENDANT_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defendant-defaults.constant';
@@ -11,15 +10,8 @@ import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-ro
 import { FinesMciStore } from '../../../stores/fines-mci.store';
 import { IFinesMciCriminalSearch } from '../../../stores/interfaces/fines-mci-criminal-search.interface';
 import { FINES_MCI_ROUTING_PATHS } from '../../constants/fines-mci-routing-paths.constant';
-import {
-  FINES_MCI_CRIMINAL_SEARCH_RESULTS,
-  FinesMciCriminalSearchResults,
-} from '../../../constants/fines-mci-criminal-search-results.constant';
-
-export interface IFinesMciCriminalAccountsResult {
-  results: FinesMciCriminalSearchResults;
-  response: IOpalFinesDefendantAccountResponse | null;
-}
+import { FINES_MCI_CRIMINAL_SEARCH_RESULTS } from '../../../constants/fines-mci-criminal-search-results.constant';
+import { IFinesMciCriminalAccountsResult } from '../../../interfaces/fines-mci-criminal-accounts-result.interface';
 
 const buildSearchParams = (
   search: IFinesMciCriminalSearch,
