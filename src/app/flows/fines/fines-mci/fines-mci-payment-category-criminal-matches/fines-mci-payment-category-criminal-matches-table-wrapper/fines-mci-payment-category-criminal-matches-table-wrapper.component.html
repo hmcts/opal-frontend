@@ -114,10 +114,18 @@
           <td opal-lib-moj-sortable-table-row-data id="criminalAccountNumber">
             @if (row['Account'] === null) {
               <ng-container *ngTemplateOutlet="noData"></ng-container>
-            } @else {
-              <a class="govuk-link govuk-link--no-visited-state" href="" (click)="preventAccountLinkNavigation($event)">
+            } @else if (row['Account ID'] !== null) {
+              <a
+                class="govuk-link govuk-link--no-visited-state"
+                [routerLink]="getAccountDetailsRoute(row['Account ID'])"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {{ row['Account'] }}
+                <span class="govuk-visually-hidden"> (opens in a new tab)</span>
               </a>
+            } @else {
+              {{ row['Account'] }}
             }
           </td>
           <td opal-lib-moj-sortable-table-row-data id="criminalAccountName">

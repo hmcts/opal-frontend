@@ -67,6 +67,10 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
     expect(text).toContain('Search again');
     expect(text).toContain('Cancel');
     expect(accountCheckboxes.length).toBe(30);
+    const accountLink = fixture.nativeElement.querySelector('#criminalAccountNumber a') as HTMLAnchorElement;
+    expect(accountLink.getAttribute('href')).toBe('/fines/account/defendant/1/details');
+    expect(accountLink.target).toBe('_blank');
+    expect(accountLink.rel).toBe('noopener noreferrer');
     expect(finesMciStore.criminalSearchResults()).toEqual(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK);
     const searchAgainLink = [...fixture.nativeElement.querySelectorAll('a')].find(
       (link) => link.textContent?.trim() === 'Search again',

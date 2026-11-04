@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { ChangeDetectionStrategy, Component, computed, EventEmitter, Input, Output, signal } from '@angular/core';
 import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-sortable-table-pagination';
 import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
@@ -14,6 +15,9 @@ import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
 import { IFinesMciPaymentCategoryCriminalMatchesTableWrapperTableData } from './interfaces/fines-mci-payment-category-criminal-matches-table-wrapper-table-data.interface';
 import { IFinesMciPaymentCategoryCriminalMatchesTableWrapperTableSort } from './interfaces/fines-mci-payment-category-criminal-matches-table-wrapper-table-sort.interface';
+import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
+import { FINES_ACC_ROUTING_PATHS } from '@app/flows/fines/fines-acc/routing/constants/fines-acc-routing-paths.constant';
+import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '@app/flows/fines/fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
 
 export interface IFinesMciPaymentCategoryCriminalMatchesTableWrapperAccountSelection {
   accountId: number;
@@ -24,6 +28,7 @@ export interface IFinesMciPaymentCategoryCriminalMatchesTableWrapperAccountSelec
   selector: 'app-fines-mci-payment-category-criminal-matches-table-wrapper',
   imports: [
     CommonModule,
+    RouterLink,
     CustomAccessibleMonetaryComponent,
     CustomHorizontalScrollPaneComponent,
     DateFormatPipe,
@@ -77,7 +82,14 @@ export class FinesMciPaymentCategoryCriminalMatchesTableWrapperComponent extends
     }
   }
 
-  public preventAccountLinkNavigation(event: Event): void {
-    event.preventDefault();
+  public getAccountDetailsRoute(accountId: number): (string | number)[] {
+    return [
+      '/',
+      FINES_ROUTING_PATHS.root,
+      FINES_ACC_ROUTING_PATHS.root,
+      FINES_ACC_ROUTING_PATHS.children.defendant,
+      accountId,
+      FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
+    ];
   }
 }
