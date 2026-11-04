@@ -1,87 +1,37 @@
-import { AbstractControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
-import { hasNestedValue } from '@app/flows/fines/validators/utils/has-nested-value.util';
+import { createConditionalRequiredValidator } from '@app/flows/fines/validators/conditional-required.validator';
+import { createExclusiveFieldValidator } from '@app/flows/fines/validators/exclusive-field.validator';
 
-const syncRequiredValidator = (control: AbstractControl | null, required: boolean): void => {
-  if (!control) {
-    return;
-  }
+export const finesMciPaymentCategoryCriminalSearchIndividualsValidator = createConditionalRequiredValidator([
+  {
+    dependentField: 'fsa_search_account_individuals_last_name',
+    triggerFields: [
+      'fsa_search_account_individuals_first_names',
+      'fsa_search_account_individuals_last_name_exact_match',
+      'fsa_search_account_individuals_include_aliases',
+    ],
+  },
+  {
+    dependentField: 'fsa_search_account_individuals_first_names',
+    triggerFields: ['fsa_search_account_individuals_first_names_exact_match'],
+  },
+]);
 
-  const hasRequiredValidator = control.hasValidator(Validators.required);
+export const finesMciPaymentCategoryCriminalSearchCompaniesValidator = createConditionalRequiredValidator([
+  {
+    dependentField: 'fsa_search_account_companies_company_name',
+    triggerFields: [
+      'fsa_search_account_companies_company_name_exact_match',
+      'fsa_search_account_companies_include_aliases',
+    ],
+  },
+]);
 
-  if (required && !hasRequiredValidator) {
-    control.addValidators(Validators.required);
-    control.updateValueAndValidity({ onlySelf: true, emitEvent: false });
-  }
-
-  if (!required && hasRequiredValidator) {
-    control.removeValidators(Validators.required);
-    control.updateValueAndValidity({ onlySelf: true, emitEvent: false });
-  }
-};
-
-export const finesMciPaymentCategoryCriminalSearchIndividualsValidator = (
-  control: AbstractControl,
-): ValidationErrors | null => {
-  if (!(control instanceof FormGroup)) {
-    return null;
-  }
-
-  const lastNameControl = control.get('fsa_search_account_individuals_last_name');
-  const firstNamesControl = control.get('fsa_search_account_individuals_first_names');
-
-  syncRequiredValidator(
-    lastNameControl,
-    hasNestedValue(control.get('fsa_search_account_individuals_first_names')!) ||
-      hasNestedValue(control.get('fsa_search_account_individuals_last_name_exact_match')!) ||
-      hasNestedValue(control.get('fsa_search_account_individuals_include_aliases')!),
-  );
-  syncRequiredValidator(
-    firstNamesControl,
-    hasNestedValue(control.get('fsa_search_account_individuals_first_names_exact_match')!),
-  );
-
-  return null;
-};
-
-export const finesMciPaymentCategoryCriminalSearchCompaniesValidator = (
-  control: AbstractControl,
-): ValidationErrors | null => {
-  if (!(control instanceof FormGroup)) {
-    return null;
-  }
-
-  syncRequiredValidator(
-    control.get('fsa_search_account_companies_company_name'),
-    hasNestedValue(control.get('fsa_search_account_companies_company_name_exact_match')!) ||
-      hasNestedValue(control.get('fsa_search_account_companies_include_aliases')!),
-  );
-
-  return null;
-};
-
-export const finesMciPaymentCategoryCriminalSearchOneCriteriaValidator = (
-  control: AbstractControl,
-): ValidationErrors | null => {
-  if (!(control instanceof FormGroup)) {
-    return null;
-  }
-
-  const populatedCriteriaCount = [
+export const finesMciPaymentCategoryCriminalSearchOneCriteriaValidator = createExclusiveFieldValidator([], {
+  criteriaPaths: [
     'fsa_search_account_number',
     'fsa_search_account_individuals_search_criteria',
     'fsa_search_account_companies_search_criteria',
-  ].filter((path) => {
-    const criteriaControl = control.get(path);
-    return criteriaControl ? hasNestedValue(criteriaControl) : false;
-  }).length;
-
-  if (populatedCriteriaCount === 0) {
-    return { formEmpty: true };
-  }
-
-  if (populatedCriteriaCount > 1) {
-    return { searchCriteriaCannotBeCombined: true };
-  }
-
-  return null;
-};
+  ],
+  emptyErrorKey: 'formEmpty',
+  multipleErrorKey: 'searchCriteriaCannotBeCombined',
+});

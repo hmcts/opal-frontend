@@ -1,19 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-defendant-account-response-individual.mock';
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { beforeEach, describe, expect, it } from 'vitest';
+import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
+import { IFinesMciCriminalAccountsResult } from '../routing/resolvers/fines-mci-criminal-accounts/fines-mci-criminal-accounts.resolver';
 import { FinesMciStore } from '../stores/fines-mci.store';
 import { FinesMciPaymentCategoryCriminalMatchesComponent } from './fines-mci-payment-category-criminal-matches.component';
 
 describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
   let fixture: ComponentFixture<FinesMciPaymentCategoryCriminalMatchesComponent>;
-  let queryParamSubject: BehaviorSubject<Record<string, string>>;
+  let routeDataSubject: BehaviorSubject<{ criminalAccounts: IFinesMciCriminalAccountsResult }>;
   let finesMciStore: InstanceType<typeof FinesMciStore>;
   const criminalSearchPath = '/fines/manual-cash-input/create/till/payment/category/criminal/search';
 
   beforeEach(async () => {
-    queryParamSubject = new BehaviorSubject<Record<string, string>>({ results: 'matches' });
+    routeDataSubject = new BehaviorSubject<{ criminalAccounts: IFinesMciCriminalAccountsResult }>({
+      criminalAccounts: { results: 'matches', response: OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK },
+    });
 
     await TestBed.configureTestingModule({
       imports: [FinesMciPaymentCategoryCriminalMatchesComponent],
@@ -22,7 +26,7 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            queryParamMap: queryParamSubject.pipe(map((queryParams) => convertToParamMap(queryParams))),
+            data: routeDataSubject.asObservable(),
           },
         },
       ],
@@ -30,7 +34,7 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
 
     finesMciStore = TestBed.inject(FinesMciStore);
     finesMciStore.resetCriminalSearch();
-    finesMciStore.setCriminalSearchResults(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK);
+    finesMciStore.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
 
     fixture = TestBed.createComponent(FinesMciPaymentCategoryCriminalMatchesComponent);
     fixture.detectChanges();
@@ -40,7 +44,7 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
     const text = fixture.nativeElement.textContent;
     const accountCheckboxes = fixture.nativeElement.querySelectorAll('input[name="fines-mci-criminal-account"]');
 
-    expect(text).toContain('Avon and Somerset');
+    expect(text).toContain(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name);
     expect(text).toContain('Search results');
     expect(text).toContain('Select 1 account to continue');
     expect(text).toContain('130001BU');
@@ -51,16 +55,51 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
     expect(text).toContain('Search again');
     expect(text).toContain('Cancel');
     expect(accountCheckboxes.length).toBe(30);
+    expect(finesMciStore.criminalSearchResults()).toEqual(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK);
+    const searchAgainLink = [...fixture.nativeElement.querySelectorAll('a')].find(
+      (link) => link.textContent?.trim() === 'Search again',
+    ) as HTMLAnchorElement;
+    expect(searchAgainLink.getAttribute('href')).toBe(
+      '/fines/manual-cash-input/create/till/payment/category/criminal/search',
+    );
+  });
+
+  it('should clear the previous selection and validation when resolved search results change', () => {
+    const checkbox = fixture.nativeElement.querySelector('#fines-mci-criminal-account-1') as HTMLInputElement;
+    checkbox.click();
+    fixture.detectChanges();
+    (fixture.nativeElement.querySelector('button.govuk-button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+    expect(finesMciStore.selectedCriminalAccount()).not.toBeNull();
+
+    routeDataSubject.next({
+      criminalAccounts: { results: 'no-matches', response: { count: 0, defendant_accounts: [] } },
+    });
+    fixture.detectChanges();
+
+    expect(finesMciStore.selectedCriminalAccount()).toBeNull();
+    expect(finesMciStore.criminalSearchResults()).toEqual({ count: 0, defendant_accounts: [] });
+
+    routeDataSubject.next({
+      criminalAccounts: { results: 'matches', response: OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK },
+    });
+    fixture.detectChanges();
+    expect((fixture.nativeElement.querySelector('#fines-mci-criminal-account-1') as HTMLInputElement).checked).toBe(
+      false,
+    );
+    expect(fixture.nativeElement.querySelector('.govuk-form-group--error')).toBeNull();
   });
 
   it('should render no matches content with a link back to the criminal search page', () => {
-    queryParamSubject.next({ results: 'no-matches' });
+    routeDataSubject.next({
+      criminalAccounts: { results: 'no-matches', response: { count: 0, defendant_accounts: [] } },
+    });
     fixture.detectChanges();
 
     const text = fixture.nativeElement.textContent;
     const link = fixture.nativeElement.querySelector('a.govuk-link') as HTMLAnchorElement;
 
-    expect(text).toContain('Avon and Somerset');
+    expect(text).toContain(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name);
     expect(text).toContain('Search results');
     expect(text).toContain('There are no matching results');
     expect(text).toContain('Check your search');
@@ -71,13 +110,15 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
   });
 
   it('should render too many results content with a link back to the criminal search page', () => {
-    queryParamSubject.next({ results: 'too-many' });
+    routeDataSubject.next({
+      criminalAccounts: { results: 'too-many', response: { count: 101, defendant_accounts: [] } },
+    });
     fixture.detectChanges();
 
     const text = fixture.nativeElement.textContent;
     const link = fixture.nativeElement.querySelector('a.govuk-link') as HTMLAnchorElement;
 
-    expect(text).toContain('Avon and Somerset');
+    expect(text).toContain(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name);
     expect(text).toContain('Search results');
     expect(text).toContain('There are more than 100 results');
     expect(text).toContain('Try adding more information');
@@ -88,22 +129,16 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
   });
 
   it('should render placeholder content for search criteria that cannot be combined', () => {
-    queryParamSubject.next({ results: 'search-criteria-cannot-be-combined' });
+    routeDataSubject.next({
+      criminalAccounts: { results: 'search-criteria-cannot-be-combined', response: null },
+    });
     fixture.detectChanges();
 
     const text = fixture.nativeElement.textContent;
 
-    expect(text).toContain('Avon and Somerset');
+    expect(text).toContain(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name);
     expect(text).toContain('Search criteria cannot be combined');
     expect(text).toContain('PO-3529');
-  });
-
-  it('should render matching criminal accounts by default', () => {
-    queryParamSubject.next({ results: 'unknown' });
-    fixture.detectChanges();
-
-    expect(fixture.nativeElement.textContent).toContain('Search results');
-    expect(fixture.nativeElement.textContent).toContain('Select 1 account to continue');
   });
 
   it('should show an error when continuing without selecting an account', () => {

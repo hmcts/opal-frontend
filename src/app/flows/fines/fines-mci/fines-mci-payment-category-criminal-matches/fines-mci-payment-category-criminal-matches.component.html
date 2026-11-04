@@ -1,7 +1,7 @@
 <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
 
 @if (isMatchesResults()) {
-  <span class="govuk-caption-m">Avon and Somerset</span>
+  <span class="govuk-caption-m">{{ finesMciStore.businessUnit()?.business_unit_name }}</span>
   <h1 class="govuk-heading-l">Search results</h1>
 
   <div class="govuk-form-group" [class.govuk-form-group--error]="hasSelectionValidationError()">
@@ -37,7 +37,7 @@
     <a class="govuk-link govuk-link--no-visited-state" [routerLink]="financeDashboardRoute">Cancel</a>
   </p>
 } @else if (isNoMatchesResults()) {
-  <span class="govuk-caption-m">Avon and Somerset</span>
+  <span class="govuk-caption-m">{{ finesMciStore.businessUnit()?.business_unit_name }}</span>
   <h1 class="govuk-heading-l">Search results</h1>
   <h2 class="govuk-heading-m">There are no matching results</h2>
   <p class="govuk-body">
@@ -45,7 +45,7 @@
     and try again.
   </p>
 } @else if (isTooManyResults()) {
-  <span class="govuk-caption-m">Avon and Somerset</span>
+  <span class="govuk-caption-m">{{ finesMciStore.businessUnit()?.business_unit_name }}</span>
   <h1 class="govuk-heading-l">Search results</h1>
   <h2 class="govuk-heading-m">There are more than 100 results</h2>
   <p class="govuk-body">
@@ -56,7 +56,7 @@
   </p>
 } @else if (isSearchCriteriaCannotBeCombinedResults()) {
   <div class="govuk-grid-column-two-thirds">
-    <span class="govuk-caption-m">Avon and Somerset</span>
+    <span class="govuk-caption-m">{{ finesMciStore.businessUnit()?.business_unit_name }}</span>
     <h1 class="govuk-heading-l">Search criteria cannot be combined</h1>
     <p class="govuk-body">
       The design and functionality for searches where reference data and account information are entered together will
