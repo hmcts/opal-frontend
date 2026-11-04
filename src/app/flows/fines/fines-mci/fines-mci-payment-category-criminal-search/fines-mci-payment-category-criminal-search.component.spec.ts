@@ -386,6 +386,14 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
       'Acme\tLtd',
       'Company Name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
     ],
+    [
+      '  \tAcme\t  ',
+      'Company Name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+    ],
+    [
+      '  \u00a0Acme\u00a0  ',
+      'Company Name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+    ],
     ['A'.repeat(51), 'Company name must be 50 characters or fewer'],
   ])('should prevent company searches with invalid names: %s', (name, message) => {
     fragmentSubject.next('companies');

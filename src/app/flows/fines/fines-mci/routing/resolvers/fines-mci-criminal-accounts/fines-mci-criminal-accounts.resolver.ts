@@ -96,14 +96,14 @@ export const finesMciCriminalAccountsResolver: ResolveFn<IFinesMciCriminalAccoun
   }
 
   return opalFines.getDefendantAccounts(buildSearchParams(search, businessUnit.business_unit_id)).pipe(
-    map((response) => ({
-      response,
-      results:
-        response.count > 100
-          ? FINES_MCI_CRIMINAL_SEARCH_RESULTS.tooMany
-          : response.count === 0
-            ? FINES_MCI_CRIMINAL_SEARCH_RESULTS.noMatches
-            : FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches,
-    })),
+    map((response): IFinesMciCriminalAccountsResult => {
+      if (response.count > 100) {
+        return { response, results: FINES_MCI_CRIMINAL_SEARCH_RESULTS.tooMany };
+      }
+      if (response.count === 0) {
+        return { response, results: FINES_MCI_CRIMINAL_SEARCH_RESULTS.noMatches };
+      }
+      return { response, results: FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches };
+    }),
   );
 };

@@ -122,7 +122,7 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
       this.setActiveTabFromFragment(tab);
 
       if (!fragment) {
-        this.angularRouter.navigate([], {
+        void this.angularRouter.navigate([], {
           relativeTo: this.currentRoute,
           fragment: tab,
           replaceUrl: true,
@@ -165,10 +165,22 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
     ];
 
     for (const control of nameControls) {
+      const value = control.value;
+      if (value === null) {
+        continue;
+      }
+
       // Preserve non-printable characters so ASCII validation can still reject them.
-      const trimmedValue = control.value?.replace(/^ +| +$/g, '') ?? null;
-      if (trimmedValue !== control.value) {
-        control.setValue(trimmedValue, { emitEvent: false });
+      let start = 0;
+      let end = value.length;
+      while (start < end && value[start] === ' ') {
+        start++;
+      }
+      while (end > start && value[end - 1] === ' ') {
+        end--;
+      }
+      if (start > 0 || end < value.length) {
+        control.setValue(value.slice(start, end), { emitEvent: false });
       }
     }
   }
