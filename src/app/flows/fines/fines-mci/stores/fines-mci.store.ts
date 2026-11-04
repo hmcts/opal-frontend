@@ -157,6 +157,10 @@ export const FinesMciStore = signalStore(
       setSuspensePayment(suspensePayment: IFinesMciSuspensePayment | null): void {
         patchState(store, { suspensePayment });
       },
+      /** Stores validated suspense details in application memory. */
+      setSuspensePayment(suspensePayment: IFinesMciSuspensePayment | null): void {
+        patchState(store, { suspensePayment });
+      },
       /** Adds a payment journey to the matching till and returns the new payment ID. */
       addPayment(tillId: string, journey: FinesMciJourney): string {
         const paymentId = crypto.randomUUID();
