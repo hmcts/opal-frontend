@@ -82,6 +82,7 @@ describe('FinesApiAllocateComponent', () => {
 
   it('clears selections before requesting refresh', () => {
     render(data());
+    expect((fixture.componentInstance as unknown as { table: () => unknown }).table()).toBeTruthy();
     click('fines-api-allocate-select-all');
     const emitted = vi.fn();
     fixture.componentInstance.refreshRequested.subscribe(emitted);
