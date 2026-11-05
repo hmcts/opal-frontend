@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { RedirectCommand, ResolveFn, Router } from '@angular/router';
-import { map, of } from 'rxjs';
+import { forkJoin, map, of } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesDefendantAccountSearchParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-search-params.interface';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defaults.constant';
@@ -13,12 +13,22 @@ import { FINES_MCI_ROUTING_PATHS } from '../../constants/fines-mci-routing-paths
 import { FINES_MCI_CRIMINAL_SEARCH_RESULTS } from '../../../constants/fines-mci-criminal-search-results.constant';
 import { IFinesMciCriminalAccountsResult } from '../../../interfaces/fines-mci-criminal-accounts-result.interface';
 
+/**
+ * Builds the API payload for the selected business unit and stored search criteria.
+ * Account-number searches include inactive accounts; name searches include active accounts only.
+ *
+ * @param search The submitted form data and selected advanced-search tab.
+ * @param businessUnitId The business unit selected for the manual cash input journey.
+ * @param isCompany The party type to query, defaulting to the selected tab for name searches.
+ * Account-number searches supply each party type explicitly to search across both.
+ * @returns The defendant account search request parameters.
+ */
 const buildSearchParams = (
   search: IFinesMciCriminalSearch,
   businessUnitId: number,
+  isCompany = search.activeTab === 'companies',
 ): IOpalFinesDefendantAccountSearchParams => {
   const formValue = search.formData;
-  const isCompany = search.activeTab === 'companies';
   const baseSearchParams = {
     ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
     business_unit_ids: [businessUnitId],
@@ -68,6 +78,14 @@ const buildSearchParams = (
   };
 };
 
+/**
+ * Resolves the matches page from stored criteria, redirecting to search when required state is absent.
+ * Conflicting criteria return a local outcome without calling the API. Account-number searches query
+ * both party types and combine their counts and records; name searches use the selected tab.
+ * Classifies the total count as zero, 1–100, or over 100, and lets request errors propagate.
+ *
+ * @returns A redirect or an observable containing the search outcome and API response.
+ */
 export const finesMciCriminalAccountsResolver: ResolveFn<IFinesMciCriminalAccountsResult> = () => {
   const store = inject(FinesMciStore);
   const router = inject(Router);
@@ -95,15 +113,27 @@ export const finesMciCriminalAccountsResolver: ResolveFn<IFinesMciCriminalAccoun
     return of({ results: FINES_MCI_CRIMINAL_SEARCH_RESULTS.searchCriteriaCannotBeCombined, response: null });
   }
 
-  return opalFines.getDefendantAccounts(buildSearchParams(search, businessUnit.business_unit_id)).pipe(
-    map((response) => ({
-      response,
-      results:
-        response.count > 100
-          ? FINES_MCI_CRIMINAL_SEARCH_RESULTS.tooMany
-          : response.count === 0
-            ? FINES_MCI_CRIMINAL_SEARCH_RESULTS.noMatches
-            : FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches,
-    })),
+  const accounts$ = search.formData.fsa_search_account_number
+    ? forkJoin({
+        individuals: opalFines.getDefendantAccounts(buildSearchParams(search, businessUnit.business_unit_id, false)),
+        companies: opalFines.getDefendantAccounts(buildSearchParams(search, businessUnit.business_unit_id, true)),
+      }).pipe(
+        map(({ individuals, companies }) => ({
+          count: individuals.count + companies.count,
+          defendant_accounts: [...individuals.defendant_accounts, ...companies.defendant_accounts],
+        })),
+      )
+    : opalFines.getDefendantAccounts(buildSearchParams(search, businessUnit.business_unit_id));
+
+  return accounts$.pipe(
+    map((response): IFinesMciCriminalAccountsResult => {
+      if (response.count > 100) {
+        return { response, results: FINES_MCI_CRIMINAL_SEARCH_RESULTS.tooMany };
+      }
+      if (response.count === 0) {
+        return { response, results: FINES_MCI_CRIMINAL_SEARCH_RESULTS.noMatches };
+      }
+      return { response, results: FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches };
+    }),
   );
 };

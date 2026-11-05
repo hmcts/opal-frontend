@@ -1,9 +1,12 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { IOpalFinesDefendantAccount } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
-import { IOpalFinesDefendantAccountResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-response.interface';
+import { IFinesMciCriminalAccount } from '../interfaces/fines-mci-criminal-account.interface';
+import { IFinesMciCriminalAccountsResponse } from '../interfaces/fines-mci-criminal-accounts-response.interface';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { FinesMciJourney, IFinesMciTill } from './interfaces/fines-mci.interface';
 import { IFinesMciCriminalSearch } from './interfaces/fines-mci-criminal-search.interface';
+import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
+
+import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 
 export const FinesMciStore = signalStore(
   { providedIn: 'root' },
@@ -11,8 +14,10 @@ export const FinesMciStore = signalStore(
     businessUnit: null as IOpalFinesBusinessUnit | null,
     tills: [] as IFinesMciTill[],
     criminalSearch: null as IFinesMciCriminalSearch | null,
-    criminalSearchResults: null as IOpalFinesDefendantAccountResponse | null,
-    selectedCriminalAccount: null as IOpalFinesDefendantAccount | null,
+    criminalSearchResults: null as IFinesMciCriminalAccountsResponse | null,
+    selectedCriminalAccount: null as IFinesMciCriminalAccount | null,
+    selectedCriminalAccountHeader: null as IOpalFinesAccountDefendantDetailsHeader | null,
+    selectedCriminalAccountAtAGlance: null as IOpalFinesAccountDefendantAtAGlance | null,
     draftJourney: null as FinesMciJourney | null,
   })),
   withMethods((store) => {
@@ -29,19 +34,53 @@ export const FinesMciStore = signalStore(
     };
 
     return {
+      /**
+       * Stores submitted criteria, the selected tab and the conflict flag for the matches resolver
+       * and for restoring the form when the user returns to amend their search.
+       *
+       * @param criminalSearch The submitted criminal account search state.
+       */
       setCriminalSearch(criminalSearch: IFinesMciCriminalSearch): void {
-        patchState(store, { criminalSearch, criminalSearchResults: null, selectedCriminalAccount: null });
+        patchState(store, {
+          criminalSearch,
+          criminalSearchResults: null,
+          selectedCriminalAccount: null,
+          selectedCriminalAccountAtAGlance: null,
+          selectedCriminalAccountHeader: null,
+        });
       },
-      setCriminalSearchResults(criminalSearchResults: IOpalFinesDefendantAccountResponse | null): void {
-        patchState(store, { criminalSearchResults, selectedCriminalAccount: null });
+      setCriminalSearchResults(criminalSearchResults: IFinesMciCriminalAccountsResponse | null): void {
+        patchState(store, {
+          criminalSearchResults,
+          selectedCriminalAccount: null,
+          selectedCriminalAccountAtAGlance: null,
+          selectedCriminalAccountHeader: null,
+        });
       },
-      setSelectedCriminalAccount(selectedCriminalAccount: IOpalFinesDefendantAccount | null): void {
-        patchState(store, { selectedCriminalAccount });
+      setSelectedCriminalAccount(selectedCriminalAccount: IFinesMciCriminalAccount | null): void {
+        patchState(store, {
+          selectedCriminalAccount,
+          selectedCriminalAccountAtAGlance: null,
+          selectedCriminalAccountHeader: null,
+        });
       },
+      setSelectedCriminalAccountAtAGlance(selectedCriminalAccountAtAGlance: IOpalFinesAccountDefendantAtAGlance): void {
+        patchState(store, { selectedCriminalAccountAtAGlance });
+      },
+      setSelectedCriminalAccountHeader(selectedCriminalAccountHeader: IOpalFinesAccountDefendantDetailsHeader): void {
+        patchState(store, { selectedCriminalAccountHeader });
+      },
+      /** Clears submitted search state while preserving the selected business unit, tills and category draft. */
       resetCriminalSearch(): void {
-        patchState(store, { criminalSearch: null, criminalSearchResults: null, selectedCriminalAccount: null });
+        patchState(store, {
+          criminalSearch: null,
+          criminalSearchResults: null,
+          selectedCriminalAccount: null,
+          selectedCriminalAccountAtAGlance: null,
+          selectedCriminalAccountHeader: null,
+        });
       },
-      /** Sets the selected business unit and clears tills when switching to a different unit. */
+      /** Sets the business unit, clearing tills, the category draft and search criteria when the unit changes. */
       setBusinessUnit(businessUnit: IOpalFinesBusinessUnit): void {
         const currentBusinessUnit = store.businessUnit();
         if (currentBusinessUnit && currentBusinessUnit.business_unit_id !== businessUnit.business_unit_id) {
@@ -51,6 +90,8 @@ export const FinesMciStore = signalStore(
             criminalSearch: null,
             criminalSearchResults: null,
             selectedCriminalAccount: null,
+            selectedCriminalAccountAtAGlance: null,
+            selectedCriminalAccountHeader: null,
             draftJourney: null,
           });
           return;
@@ -78,7 +119,7 @@ export const FinesMciStore = signalStore(
         });
         return paymentId;
       },
-      /** Clears the selected business unit and all till data. */
+      /** Clears the business unit, tills, category draft and submitted search criteria. */
       reset(): void {
         patchState(store, {
           businessUnit: null,
@@ -86,6 +127,8 @@ export const FinesMciStore = signalStore(
           criminalSearch: null,
           criminalSearchResults: null,
           selectedCriminalAccount: null,
+          selectedCriminalAccountAtAGlance: null,
+          selectedCriminalAccountHeader: null,
           draftJourney: null,
         });
       },

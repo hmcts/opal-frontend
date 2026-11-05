@@ -108,6 +108,7 @@ describe('OpalFines', () => {
       account_type: payload.account_type!,
       account_status: payload.account_status,
       status_message: null,
+      source: 'MAC',
     };
   };
 
@@ -1224,6 +1225,7 @@ describe('OpalFines', () => {
       'account_type',
       'account_status',
       'status_message',
+      'source',
     ]);
 
     req.flush(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK);
@@ -1536,8 +1538,7 @@ describe('OpalFines', () => {
     expect(result).toEqual({});
   });
 
-  it('should getDefendantAccountHeader', () => {
-    const accountId = 456;
+  it.each([456, '9007199254740993'])('should getDefendantAccountHeader for account %s', (accountId) => {
     const expectedResponse = FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK;
     const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
 
@@ -1552,8 +1553,7 @@ describe('OpalFines', () => {
     req.flush(expectedResponse);
   });
 
-  it('should getDefendantAccountAtAGlance data', () => {
-    const account_id: number = 77;
+  it.each([77, '9007199254740993'])('should getDefendantAccountAtAGlance data for account %s', (account_id) => {
     const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK;
     const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/at-a-glance`;
 

@@ -919,7 +919,7 @@ export class OpalFines {
    * @param account_id - The ID of the defendant account.
    * @returns An Observable that emits the account details at a glance for the specified tab.
    */
-  public getDefendantAccountAtAGlance(account_id: number | null): Observable<IOpalFinesAccountDefendantAtAGlance> {
+  public getDefendantAccountAtAGlance(account_id: number | string | null): Observable<IOpalFinesAccountDefendantAtAGlance> {
     if (!this.cache.defendantAccountAtAGlanceCache$) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/at-a-glance`;
       this.cache.defendantAccountAtAGlanceCache$ = this.http
@@ -1221,7 +1221,7 @@ export class OpalFines {
    * @param accountId - The unique identifier of the defendant account.
    * @returns An Observable that emits the defendant account header data.
    */
-  public getDefendantAccountHeadingData(accountId: number): Observable<IOpalFinesAccountDefendantDetailsHeader> {
+  public getDefendantAccountHeadingData(accountId: number | string): Observable<IOpalFinesAccountDefendantDetailsHeader> {
     const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
     return this.http
       .get<IOpalFinesAccountDefendantDetailsHeader>(

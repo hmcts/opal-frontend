@@ -5,6 +5,7 @@ import { IFinesMacAddAccountPayload } from 'src/app/flows/fines/fines-mac/servic
 import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_MOCK } from 'src/app/flows/fines/fines-mac/services/fines-mac-payload/utils/mocks/fines-mac-payload-account-defendant-individual.mock';
 
 export const FINES_REJECTED_ACCOUNT_MOCK: IFinesMacAddAccountPayload = {
+  source: null,
   draft_account_id: null,
   created_at: null,
   account_snapshot: null,

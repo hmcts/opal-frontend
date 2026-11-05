@@ -4,6 +4,9 @@ import { firstValueFrom, Observable, of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-defendant-account-response-individual.mock';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-defendant-account-response-company.mock';
+import { IOpalFinesDefendantAccountSearchParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-search-params.interface';
 import { FinesMciStore } from '../../../stores/fines-mci.store';
 import { IFinesMciCriminalSearch } from '../../../stores/interfaces/fines-mci-criminal-search.interface';
 import { finesMciCriminalAccountsResolver } from './fines-mci-criminal-accounts.resolver';
@@ -79,7 +82,7 @@ describe('finesMciCriminalAccountsResolver', () => {
 
     await resolveResult();
 
-    expect(service.getDefendantAccounts).toHaveBeenCalledWith(
+    expect(service.getDefendantAccounts).toHaveBeenCalledExactlyOnceWith(
       expect.objectContaining({
         active_accounts_only: true,
         defendant: expect.objectContaining({
@@ -146,22 +149,112 @@ describe('finesMciCriminalAccountsResolver', () => {
     );
   });
 
-  it.each(['individuals', 'companies'] as const)('searches an account number from the %s tab', async (tab) => {
+  it.each(['individuals', 'companies'] as const)(
+    'searches both party types for an account number from %s',
+    async (tab) => {
+      store.setCriminalSearch({
+        ...search,
+        activeTab: tab,
+        formData: { ...search.formData, fsa_search_account_number: '12345678' },
+      });
+
+      await resolveResult();
+
+      expect(service.getDefendantAccounts).toHaveBeenCalledTimes(2);
+      for (const organisation of [false, true]) {
+        expect(service.getDefendantAccounts).toHaveBeenCalledWith(
+          expect.objectContaining({
+            business_unit_ids: [OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_id],
+            active_accounts_only: false,
+            defendant: null,
+            reference_number: expect.objectContaining({ account_number: '12345678', organisation }),
+          }),
+        );
+      }
+    },
+  );
+
+  it.each(['individuals', 'companies'] as const)(
+    'finds an account belonging to the opposite party type when %s is selected',
+    async (tab) => {
+      const isCompanyAccount = tab === 'individuals';
+      const account = isCompanyAccount
+        ? OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK.defendant_accounts[0]
+        : OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0];
+      store.setCriminalSearch({
+        ...search,
+        activeTab: tab,
+        formData: { ...search.formData, fsa_search_account_number: '12345678' },
+      });
+      service.getDefendantAccounts.mockImplementation((params: IOpalFinesDefendantAccountSearchParams) =>
+        of(
+          params.reference_number?.organisation === isCompanyAccount
+            ? { count: 1, defendant_accounts: [account] }
+            : { count: 0, defendant_accounts: [] },
+        ),
+      );
+
+      expect(await resolveResult()).toEqual({
+        results: 'matches',
+        response: { count: 1, defendant_accounts: [account] },
+      });
+    },
+  );
+
+  it('retains account records from both account-number searches', async () => {
+    const individual = OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0];
+    const company = OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_COMPANY_MOCK.defendant_accounts[0];
     store.setCriminalSearch({
       ...search,
-      activeTab: tab,
       formData: { ...search.formData, fsa_search_account_number: '12345678' },
     });
+    service.getDefendantAccounts
+      .mockReturnValueOnce(of({ count: 1, defendant_accounts: [individual] }))
+      .mockReturnValueOnce(of({ count: 1, defendant_accounts: [company] }));
 
-    await resolveResult();
+    expect(await resolveResult()).toEqual({
+      results: 'matches',
+      response: { count: 2, defendant_accounts: [individual, company] },
+    });
+  });
 
-    expect(service.getDefendantAccounts).toHaveBeenCalledWith(
-      expect.objectContaining({
-        active_accounts_only: false,
-        defendant: null,
-        reference_number: expect.objectContaining({ account_number: '12345678', organisation: tab === 'companies' }),
-      }),
+  it.each([
+    [0, 0, 'no-matches'],
+    [0, 1, 'matches'],
+    [1, 0, 'matches'],
+    [50, 50, 'matches'],
+    [50, 51, 'too-many'],
+  ] as const)(
+    'classifies combined account-number counts of %s and %s as %s',
+    async (individualCount, companyCount, results) => {
+      store.setCriminalSearch({
+        ...search,
+        formData: { ...search.formData, fsa_search_account_number: '12345678' },
+      });
+      service.getDefendantAccounts
+        .mockReturnValueOnce(of({ count: individualCount, defendant_accounts: [] }))
+        .mockReturnValueOnce(of({ count: companyCount, defendant_accounts: [] }));
+
+      expect(await resolveResult()).toEqual({
+        results,
+        response: { count: individualCount + companyCount, defendant_accounts: [] },
+      });
+    },
+  );
+
+  it.each([false, true])('propagates account-number search failures for organisation=%s', async (organisation) => {
+    const error = new Error('Search failed');
+    store.setCriminalSearch({
+      ...search,
+      formData: { ...search.formData, fsa_search_account_number: '12345678' },
+    });
+    service.getDefendantAccounts.mockImplementation((params: IOpalFinesDefendantAccountSearchParams) =>
+      params.reference_number?.organisation === organisation
+        ? throwError(() => error)
+        : of({ count: 0, defendant_accounts: [] }),
     );
+
+    await expect(resolveResult()).rejects.toBe(error);
   });
 
   it.each([
