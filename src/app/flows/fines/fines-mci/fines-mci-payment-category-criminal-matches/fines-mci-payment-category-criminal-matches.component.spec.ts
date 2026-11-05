@@ -240,11 +240,17 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
   it('should show an error when continuing without selecting an account', () => {
     const continueButton = fixture.nativeElement.querySelector('button.govuk-button') as HTMLButtonElement;
 
+    continueButton.focus();
     continueButton.click();
     fixture.detectChanges();
 
     expect(fixture.nativeElement.textContent).toContain('Select 1 account');
     expect(fixture.nativeElement.querySelector('.govuk-form-group--error')).not.toBeNull();
+    const errorSummary = fixture.nativeElement.querySelector('.govuk-error-summary') as HTMLElement;
+    expect(errorSummary.textContent).toContain('Select 1 account');
+    expect(errorSummary.querySelector('[role="alert"]')).not.toBeNull();
+    expect(document.activeElement).toBe(errorSummary);
+    expect(scrollToTopSpy).toHaveBeenCalledOnce();
     expect(finesMciStore.selectedCriminalAccount()).toBeNull();
     expect(opalFines.getDefendantAccountAtAGlance).not.toHaveBeenCalled();
   });
@@ -262,13 +268,37 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
     secondAccountCheckbox.click();
     fixture.detectChanges();
 
+    continueButton.focus();
     continueButton.click();
     fixture.detectChanges();
 
     expect(fixture.nativeElement.textContent).toContain('Select only 1 account');
     expect(fixture.nativeElement.querySelector('.govuk-form-group--error')).not.toBeNull();
+    const errorSummary = fixture.nativeElement.querySelector('.govuk-error-summary') as HTMLElement;
+    expect(errorSummary.textContent).toContain('Select only 1 account');
+    expect(document.activeElement).toBe(errorSummary);
+    expect(scrollToTopSpy).toHaveBeenCalledOnce();
     expect(finesMciStore.selectedCriminalAccount()).toBeNull();
     expect(opalFines.getDefendantAccountAtAGlance).not.toHaveBeenCalled();
+  });
+
+  it('should focus the account selection from the summary link and refocus the summary on another invalid submission', () => {
+    const continueButton = fixture.nativeElement.querySelector('button.govuk-button') as HTMLButtonElement;
+    continueButton.click();
+    fixture.detectChanges();
+
+    const errorLink = fixture.nativeElement.querySelector('.govuk-error-summary__list a') as HTMLAnchorElement;
+    errorLink.click();
+
+    const legend = fixture.nativeElement.querySelector('legend') as HTMLLegendElement;
+    expect(document.activeElement).toBe(legend);
+
+    continueButton.focus();
+    continueButton.click();
+    fixture.detectChanges();
+
+    expect(document.activeElement).toBe(fixture.nativeElement.querySelector('.govuk-error-summary'));
+    expect(scrollToTopSpy).toHaveBeenCalledTimes(2);
   });
 
   it('should clear the selection error when an account selection changes', () => {
@@ -286,6 +316,7 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
 
     expect(fixture.nativeElement.textContent).not.toContain('Error: Select 1 account');
     expect(fixture.nativeElement.querySelector('.govuk-form-group--error')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.govuk-error-summary')).toBeNull();
   });
 
   it('should store the selected criminal account when continuing with one account selected', () => {
