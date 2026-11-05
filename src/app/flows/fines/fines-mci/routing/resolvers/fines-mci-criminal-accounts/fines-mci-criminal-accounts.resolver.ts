@@ -13,6 +13,16 @@ import { FINES_MCI_ROUTING_PATHS } from '../../constants/fines-mci-routing-paths
 import { FINES_MCI_CRIMINAL_SEARCH_RESULTS } from '../../../constants/fines-mci-criminal-search-results.constant';
 import { IFinesMciCriminalAccountsResult } from '../../../interfaces/fines-mci-criminal-accounts-result.interface';
 
+/**
+ * Builds the API payload for the selected business unit and stored search criteria.
+ * Account-number searches include inactive accounts; name searches include active accounts only.
+ *
+ * @param search The submitted form data and selected advanced-search tab.
+ * @param businessUnitId The business unit selected for the manual cash input journey.
+ * @param isCompany The party type to query, defaulting to the selected tab for name searches.
+ * Account-number searches supply each party type explicitly to search across both.
+ * @returns The defendant account search request parameters.
+ */
 const buildSearchParams = (
   search: IFinesMciCriminalSearch,
   businessUnitId: number,
@@ -68,6 +78,14 @@ const buildSearchParams = (
   };
 };
 
+/**
+ * Resolves the matches page from stored criteria, redirecting to search when required state is absent.
+ * Conflicting criteria return a local outcome without calling the API. Account-number searches query
+ * both party types and combine their counts and records; name searches use the selected tab.
+ * Classifies the total count as zero, 1–100, or over 100, and lets request errors propagate.
+ *
+ * @returns A redirect or an observable containing the search outcome and API response.
+ */
 export const finesMciCriminalAccountsResolver: ResolveFn<IFinesMciCriminalAccountsResult> = () => {
   const store = inject(FinesMciStore);
   const router = inject(Router);

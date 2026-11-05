@@ -25,13 +25,20 @@ export const FinesMciStore = signalStore(
     };
 
     return {
+      /**
+       * Stores submitted criteria, the selected tab and the conflict flag for the matches resolver
+       * and for restoring the form when the user returns to amend their search.
+       *
+       * @param criminalSearch The submitted criminal account search state.
+       */
       setCriminalSearch(criminalSearch: IFinesMciCriminalSearch): void {
         patchState(store, { criminalSearch });
       },
+      /** Clears submitted search state while preserving the selected business unit, tills and category draft. */
       resetCriminalSearch(): void {
         patchState(store, { criminalSearch: null });
       },
-      /** Sets the selected business unit and clears tills when switching to a different unit. */
+      /** Sets the business unit, clearing tills, the category draft and search criteria when the unit changes. */
       setBusinessUnit(businessUnit: IOpalFinesBusinessUnit): void {
         const currentBusinessUnit = store.businessUnit();
         if (currentBusinessUnit && currentBusinessUnit.business_unit_id !== businessUnit.business_unit_id) {
@@ -61,7 +68,7 @@ export const FinesMciStore = signalStore(
         });
         return paymentId;
       },
-      /** Clears the selected business unit and all till data. */
+      /** Clears the business unit, tills, category draft and submitted search criteria. */
       reset(): void {
         patchState(store, { businessUnit: null, tills: [], criminalSearch: null, draftJourney: null });
       },

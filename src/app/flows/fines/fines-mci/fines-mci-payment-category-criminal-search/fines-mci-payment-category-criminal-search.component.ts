@@ -111,6 +111,11 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
     { validators: finesMciPaymentCategoryCriminalSearchOneCriteriaValidator },
   );
 
+  /**
+   * Keeps the selected tab in sync with the route fragment until the component is destroyed.
+   * When no fragment is supplied, restores the submitted tab or defaults to Individuals
+   * and updates the URL without adding a browser history entry.
+   */
   private setupFragmentListener(): void {
     this.currentRoute.fragment.pipe(distinctUntilChanged(), takeUntil(this.ngUnsubscribe)).subscribe((fragment) => {
       if (fragment === 'companies') {
@@ -131,6 +136,11 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
     });
   }
 
+  /**
+   * Stores the submitted criteria for the matches resolver and subsequent search amendments.
+   * Bypasses the leave warning and retains search state during this navigation, then restores
+   * leave protection if navigation is cancelled or fails.
+   */
   private navigateToMatches(): void {
     this.finesMciStore.setCriminalSearch({
       formData: this.form.getRawValue(),
@@ -145,6 +155,12 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
       });
   }
 
+  /**
+   * Selects the requested tab and clears displayed validation errors.
+   * Changing tabs resets both advanced-search groups while retaining the quick-search account number.
+   *
+   * @param tab The tab selected by the route fragment.
+   */
   private setActiveTabFromFragment(tab: FinesMciCriminalSearchTab): void {
     if (this.activeTab() !== tab) {
       this.form.get('fsa_search_account_individuals_search_criteria')?.reset(undefined, { emitEvent: false });
@@ -155,6 +171,11 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
     this.setInitialErrorMessages();
   }
 
+  /**
+   * Removes leading and trailing spaces from names before validation and storage so spaces-only
+   * values trigger existing required-field errors. Preserves spaces within names and characters
+   * such as tabs and newlines that must still fail ASCII validation.
+   */
   private trimSearchNames(): void {
     const individuals = this.form.controls.fsa_search_account_individuals_search_criteria.controls;
     const companies = this.form.controls.fsa_search_account_companies_search_criteria.controls;
@@ -185,6 +206,13 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
     }
   }
 
+  /**
+   * Moves focus and activates tabs with Left/Right arrows, Home/End, or Enter/Space.
+   * Uses the shared tab click handler to keep fragment navigation and panel rendering consistent.
+   * Leaves other keys and keyboard events from panel inputs to their native browser behaviour.
+   *
+   * @param event The keyboard event bubbling from the tabs component.
+   */
   public handleTabKeydown(event: KeyboardEvent): void {
     if (!(event.target instanceof HTMLAnchorElement) || event.target.getAttribute('role') !== 'tab') {
       return;
@@ -220,6 +248,13 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
     tabs[nextIndex].click();
   }
 
+  /**
+   * Normalises names before checking exclusive criteria and field validation.
+   * Sends combined criteria to the conflict outcome; otherwise navigates only when the form is valid.
+   * Empty or invalid searches remain on this page, with field errors handled by the base form.
+   *
+   * @param event The search form submission event.
+   */
   public override handleFormSubmit(event: SubmitEvent): void {
     this.trimSearchNames();
     this.form.updateValueAndValidity({ emitEvent: false });
@@ -237,6 +272,10 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
     }
   }
 
+  /**
+   * Restores submitted criteria and the selected tab before listening for fragment changes,
+   * then initialises error messages and the base form's value-change subscription.
+   */
   public override ngOnInit(): void {
     const search = this.finesMciStore.criminalSearch();
     if (search) {
@@ -248,10 +287,20 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
     super.ngOnInit();
   }
 
+  /**
+   * Allows the intended matches navigation or departure from an empty form without a warning.
+   * Other departures with populated criteria require confirmation through the shared route guard.
+   *
+   * @returns Whether navigation may proceed without confirmation.
+   */
   public canDeactivate(): CanDeactivateTypes {
     return this.isContinuing || !hasNestedValue(this.form);
   }
 
+  /**
+   * Requests navigation to Till Details through the existing leave guard.
+   * Clears the category draft only after successful navigation, preserving it if leaving is declined.
+   */
   public handleCancel(): void {
     void this.angularRouter.navigate(this.tillDetailsRoute).then((navigated) => {
       if (navigated) {
@@ -260,11 +309,20 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
     });
   }
 
+  /**
+   * Requests the browser's data-loss warning on refresh or close when search criteria are populated.
+   *
+   * @returns Whether the browser may unload without a warning.
+   */
   @HostListener('window:beforeunload')
   public handleBeforeUnload(): boolean {
     return !hasNestedValue(this.form);
   }
 
+  /**
+   * Clears form and stored search data on departure, preserving them when navigating to matches
+   * so the resolver and return-to-search journey can reuse the criteria. Releases form subscriptions.
+   */
   public override ngOnDestroy(): void {
     if (!this.isContinuing) {
       this.form.reset(undefined, { emitEvent: false });
