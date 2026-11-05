@@ -3,8 +3,8 @@ import { IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/compon
 export interface IFinesMciCreateTillSuspenseDetailsFieldErrors extends IAbstractFormBaseFieldErrors {
   amount: {
     required: { message: string; priority: number };
-    validAmount: { message: string; priority: number };
-    amountFormat: { message: string; priority: number };
+    invalidAmountValue: { message: string; priority: number };
+    invalidAmount: { message: string; priority: number };
   };
   payerType: { required: { message: string; priority: number } };
   methodOfPayment: { required: { message: string; priority: number } };

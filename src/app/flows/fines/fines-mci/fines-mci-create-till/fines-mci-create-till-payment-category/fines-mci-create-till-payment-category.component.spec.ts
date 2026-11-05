@@ -3,7 +3,20 @@ import { Router, provideRouter } from '@angular/router';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesMciStore } from '../../stores/fines-mci.store';
+import { IFinesMciSuspensePayment } from '../../stores/interfaces/fines-mci.interface';
 import { FinesMciCreateTillPaymentCategoryComponent } from './fines-mci-create-till-payment-category.component';
+
+const SUSPENSE_PAYMENT: IFinesMciSuspensePayment = {
+  amount: '25.00',
+  payerType: 'defendant',
+  methodOfPayment: 'creditTransfer',
+  paymentReferencePostalOrder: '',
+  paymentReferenceCheque: '',
+  paymentReferenceCreditTransfer: 'ref-02',
+  source: 'allpay',
+  reason: 'unidentified',
+  relevantDetails: 'payment details',
+};
 
 describe('FinesMciCreateTillPaymentCategoryComponent', () => {
   let fixture: ComponentFixture<FinesMciCreateTillPaymentCategoryComponent>;
@@ -106,6 +119,18 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
 
     expect(navigateSpy).toHaveBeenCalledWith(['details'], { relativeTo: null });
     expect(finesMciStore.draftJourney()).toBeNull();
+  });
+
+  it('clears saved suspense details when cancelling the payment draft', () => {
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    finesMciStore.setDraftJourney('suspense');
+    finesMciStore.setSuspensePayment(SUSPENSE_PAYMENT);
+
+    fixture.componentInstance.handleCancel();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['details'], { relativeTo: null });
+    expect(finesMciStore.draftJourney()).toBeNull();
+    expect(finesMciStore.suspensePayment()).toBeNull();
   });
 
   it('keeps leave protection active when Cancel is selected after changing category', () => {

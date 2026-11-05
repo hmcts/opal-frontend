@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { takeUntil } from 'rxjs';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
@@ -11,16 +11,10 @@ import {
   GovukRadiosConditionalComponent,
   GovukRadiosItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
+import { amountValidator } from '@hmcts/opal-frontend-common/validators/amount';
 import { IFinesMciSuspensePayment } from '../../../stores/interfaces/fines-mci.interface';
 import { FINES_MCI_CREATE_TILL_SUSPENSE_DETAILS_FIELD_ERRORS } from './constants/fines-mci-create-till-suspense-details-field-errors.constant';
 import { IFinesMciCreateTillSuspenseDetailsFieldErrors } from './interfaces/fines-mci-create-till-suspense-details-field-errors.interface';
-
-/** Distinguishes non-numeric amounts from numeric values in an unsupported money format. */
-const amountValidator: ValidatorFn = (control: AbstractControl) => {
-  const value = String(control.value ?? '');
-  if (!value || /[^\d.]/.test(value)) return value ? { validAmount: true } : null;
-  return /^\d{1,18}(\.\d{1,2})?$/.test(value) ? null : { amountFormat: true };
-};
 
 @Component({
   selector: 'app-fines-mci-create-till-suspense-details-form',
@@ -58,7 +52,7 @@ export class FinesMciCreateTillSuspenseDetailsFormComponent extends AbstractForm
       relevantDetails: '',
     };
     this.form = new FormGroup({
-      amount: new FormControl(initial.amount, [Validators.required, amountValidator]),
+      amount: new FormControl(initial.amount, [Validators.required, amountValidator(18, 2)]),
       payerType: new FormControl<IFinesMciSuspensePayment['payerType']>(initial.payerType, Validators.required),
       methodOfPayment: new FormControl<IFinesMciSuspensePayment['methodOfPayment']>(
         initial.methodOfPayment,
@@ -117,6 +111,19 @@ export class FinesMciCreateTillSuspenseDetailsFormComponent extends AbstractForm
   /** Marks the form as submitted before delegating validation and error handling to the base form. */
   public submitForm(event: SubmitEvent): void {
     this.formSubmitted = true;
+    const selectedMethod = this.form.controls['methodOfPayment'].value;
+    const referenceFields = [
+      { method: 'postalOrder', controlName: 'paymentReferencePostalOrder' },
+      { method: 'cheque', controlName: 'paymentReferenceCheque' },
+      { method: 'creditTransfer', controlName: 'paymentReferenceCreditTransfer' },
+    ] as const;
+
+    for (const referenceField of referenceFields) {
+      if (referenceField.method !== selectedMethod) {
+        this.form.controls[referenceField.controlName].setValue('', { emitEvent: false });
+      }
+    }
+
     this.handleFormSubmit(event);
   }
 }

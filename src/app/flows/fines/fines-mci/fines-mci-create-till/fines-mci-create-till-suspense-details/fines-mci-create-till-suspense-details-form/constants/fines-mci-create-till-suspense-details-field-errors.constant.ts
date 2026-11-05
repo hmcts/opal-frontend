@@ -3,8 +3,8 @@ import { IFinesMciCreateTillSuspenseDetailsFieldErrors } from '../interfaces/fin
 export const FINES_MCI_CREATE_TILL_SUSPENSE_DETAILS_FIELD_ERRORS: IFinesMciCreateTillSuspenseDetailsFieldErrors = {
   amount: {
     required: { message: 'Enter an amount', priority: 1 },
-    validAmount: { message: 'Enter a valid amount', priority: 2 },
-    amountFormat: {
+    invalidAmountValue: { message: 'Enter a valid amount', priority: 2 },
+    invalidAmount: {
       message: 'Enter an amount with no more than 18 digits before the decimal and 2 or fewer after.',
       priority: 3,
     },

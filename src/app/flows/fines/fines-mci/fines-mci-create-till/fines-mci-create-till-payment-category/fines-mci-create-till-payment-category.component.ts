@@ -43,6 +43,7 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
   /** Returns to Till Details when the user cancels. */
   public handleCancel(): void {
     this.finesMciStore.setDraftJourney(null);
+    this.finesMciStore.setSuspensePayment(null);
     this.routerNavigate(FINES_MCI_ROUTING_PATHS.children.details);
   }
 

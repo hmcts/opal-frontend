@@ -86,6 +86,8 @@ describe('FinesMciCreateTillSuspenseDetailsFormComponent', () => {
     expect(element.textContent).toContain('Select who payment was received from');
     expect(element.textContent).toContain('Select a method of payment');
     expect(element.textContent).toContain('Select a reason for the suspense');
+    expect(element.querySelector('#amount-error')?.textContent).toContain('Enter an amount');
+    expect(element.querySelector('#amount')?.getAttribute('aria-describedby')).toBe('amount-error');
   });
 
   it('refreshes displayed validation only after Continue is clicked again', () => {
@@ -136,6 +138,12 @@ describe('FinesMciCreateTillSuspenseDetailsFormComponent', () => {
     expect((fixture.nativeElement as HTMLElement).textContent).toContain(
       'Payment reference (Postal order) must only include letters a to z, numbers, hyphens, spaces and apostrophes',
     );
+    expect(
+      (fixture.nativeElement as HTMLElement)
+        .querySelector('#paymentReferencePostalOrder')
+        ?.getAttribute('aria-describedby'),
+    ).toBe('paymentReferencePostalOrder-error');
+    expect((fixture.nativeElement as HTMLElement).querySelector('#paymentReferencePostalOrder-error')).not.toBeNull();
   });
 
   it('validates a cheque reference that exceeds 50 characters', () => {
@@ -148,6 +156,10 @@ describe('FinesMciCreateTillSuspenseDetailsFormComponent', () => {
     expect((fixture.nativeElement as HTMLElement).textContent).toContain(
       'Payment reference (Cheque) must be 50 characters or fewer',
     );
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector('#paymentReferenceCheque')?.getAttribute('aria-describedby'),
+    ).toBe('paymentReferenceCheque-error');
+    expect((fixture.nativeElement as HTMLElement).querySelector('#paymentReferenceCheque-error')).not.toBeNull();
   });
 
   it('requires a source and validates the credit transfer reference', () => {
@@ -156,6 +168,11 @@ describe('FinesMciCreateTillSuspenseDetailsFormComponent', () => {
     component.form.controls['methodOfPayment'].setValue('creditTransfer');
     submit();
     expect((fixture.nativeElement as HTMLElement).textContent).toContain('Select a source');
+    expect(
+      (fixture.nativeElement as HTMLElement)
+        .querySelector('#paymentReferenceCreditTransfer')
+        ?.hasAttribute('aria-describedby'),
+    ).toBe(false);
 
     component.form.controls['source'].setValue('NatWest');
     component.form.controls['paymentReferenceCreditTransfer'].setValue('invalid!');
@@ -163,6 +180,14 @@ describe('FinesMciCreateTillSuspenseDetailsFormComponent', () => {
     expect((fixture.nativeElement as HTMLElement).textContent).toContain(
       'Payment reference (Credit transfer) must only include letters a to z, numbers, hyphens, spaces and apostrophes',
     );
+    expect(
+      (fixture.nativeElement as HTMLElement)
+        .querySelector('#paymentReferenceCreditTransfer')
+        ?.getAttribute('aria-describedby'),
+    ).toBe('paymentReferenceCreditTransfer-error');
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector('#paymentReferenceCreditTransfer-error'),
+    ).not.toBeNull();
   });
 
   it('validates unidentified additional details for length and invalid characters', () => {
@@ -180,6 +205,10 @@ describe('FinesMciCreateTillSuspenseDetailsFormComponent', () => {
     expect((fixture.nativeElement as HTMLElement).textContent).toContain(
       'Add Relevant Details must only include letters a to z, numbers, hyphens, spaces and apostrophes',
     );
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector('#relevantDetails')?.getAttribute('aria-describedby'),
+    ).toBe('relevantDetails-error');
+    expect((fixture.nativeElement as HTMLElement).querySelector('#relevantDetails-error')).not.toBeNull();
   });
 
   it('emits valid form values when Continue is clicked', () => {

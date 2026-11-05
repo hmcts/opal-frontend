@@ -9,7 +9,7 @@
     <h2 class="govuk-heading-m">Amount</h2>
     <label class="govuk-label govuk-visually-hidden" for="amount">Amount</label>
     @if (formSubmitted && formControlErrorMessages['amount']; as message) {
-      <p class="govuk-error-message">{{ message }}</p>
+      <p class="govuk-error-message" id="amount-error">{{ message }}</p>
     }
     <div class="govuk-input__wrapper">
       <span class="govuk-input__prefix">£</span
@@ -19,6 +19,7 @@
         type="text"
         inputmode="decimal"
         formControlName="amount"
+        [attr.aria-describedby]="formSubmitted && formControlErrorMessages['amount'] ? 'amount-error' : null"
       />
     </div>
   </div>
@@ -77,13 +78,18 @@
           >Payment reference</label
         >
         @if (formSubmitted && formControlErrorMessages['paymentReferencePostalOrder']; as message) {
-          <p class="govuk-error-message">{{ message }}</p>
+          <p class="govuk-error-message" id="paymentReferencePostalOrder-error">{{ message }}</p>
         }
         <input
           class="govuk-input"
           id="paymentReferencePostalOrder"
           maxlength="50"
           formControlName="paymentReferencePostalOrder"
+          [attr.aria-describedby]="
+            formSubmitted && formControlErrorMessages['paymentReferencePostalOrder']
+              ? 'paymentReferencePostalOrder-error'
+              : null
+          "
         />
       </div>
     </opal-lib-govuk-radios-conditional>
@@ -105,13 +111,16 @@
           >Payment reference</label
         >
         @if (formSubmitted && formControlErrorMessages['paymentReferenceCheque']; as message) {
-          <p class="govuk-error-message">{{ message }}</p>
+          <p class="govuk-error-message" id="paymentReferenceCheque-error">{{ message }}</p>
         }
         <input
           class="govuk-input"
           id="paymentReferenceCheque"
           maxlength="50"
           formControlName="paymentReferenceCheque"
+          [attr.aria-describedby]="
+            formSubmitted && formControlErrorMessages['paymentReferenceCheque'] ? 'paymentReferenceCheque-error' : null
+          "
         />
       </div>
     </opal-lib-govuk-radios-conditional>
@@ -188,13 +197,18 @@
           >Payment reference</label
         >
         @if (formSubmitted && formControlErrorMessages['paymentReferenceCreditTransfer']; as message) {
-          <p class="govuk-error-message">{{ message }}</p>
+          <p class="govuk-error-message" id="paymentReferenceCreditTransfer-error">{{ message }}</p>
         }
         <input
           class="govuk-input"
           id="paymentReferenceCreditTransfer"
           maxlength="50"
           formControlName="paymentReferenceCreditTransfer"
+          [attr.aria-describedby]="
+            formSubmitted && formControlErrorMessages['paymentReferenceCreditTransfer']
+              ? 'paymentReferenceCreditTransfer-error'
+              : null
+          "
         />
       </div>
     </opal-lib-govuk-radios-conditional>
@@ -247,9 +261,17 @@
           >Add relevant details</label
         >
         @if (formSubmitted && formControlErrorMessages['relevantDetails']; as message) {
-          <p class="govuk-error-message">{{ message }}</p>
+          <p class="govuk-error-message" id="relevantDetails-error">{{ message }}</p>
         }
-        <input class="govuk-input" id="relevantDetails" maxlength="50" formControlName="relevantDetails" />
+        <input
+          class="govuk-input"
+          id="relevantDetails"
+          maxlength="50"
+          formControlName="relevantDetails"
+          [attr.aria-describedby]="
+            formSubmitted && formControlErrorMessages['relevantDetails'] ? 'relevantDetails-error' : null
+          "
+        />
       </div>
     </opal-lib-govuk-radios-conditional>
   </opal-lib-govuk-radio>
