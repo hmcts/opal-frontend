@@ -111,34 +111,49 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
     expect(finesMciStore.tills()[0].payments).toHaveLength(0);
   });
 
-  it('navigates to Till Details when Cancel is selected', () => {
+  it('navigates to Till Details when Cancel is selected', async () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     finesMciStore.setDraftJourney('criminal');
 
     fixture.componentInstance.handleCancel();
+    await fixture.whenStable();
 
     expect(navigateSpy).toHaveBeenCalledWith(['details'], { relativeTo: null });
     expect(finesMciStore.draftJourney()).toBeNull();
   });
 
-  it('clears saved suspense details when cancelling the payment draft', () => {
+  it('clears saved suspense details when cancelling navigation succeeds', async () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     finesMciStore.setDraftJourney('suspense');
     finesMciStore.setSuspensePayment(SUSPENSE_PAYMENT);
 
     fixture.componentInstance.handleCancel();
+    await fixture.whenStable();
 
     expect(navigateSpy).toHaveBeenCalledWith(['details'], { relativeTo: null });
     expect(finesMciStore.draftJourney()).toBeNull();
     expect(finesMciStore.suspensePayment()).toBeNull();
   });
 
-  it('keeps leave protection active when Cancel is selected after changing category', () => {
+  it('retains the suspense draft when Cancel navigation is rejected', async () => {
+    vi.spyOn(router, 'navigate').mockResolvedValue(false);
+    finesMciStore.setDraftJourney('suspense');
+    finesMciStore.setSuspensePayment(SUSPENSE_PAYMENT);
+
+    fixture.componentInstance.handleCancel();
+    await fixture.whenStable();
+
+    expect(finesMciStore.draftJourney()).toBe('suspense');
+    expect(finesMciStore.suspensePayment()).toEqual(SUSPENSE_PAYMENT);
+  });
+
+  it('keeps leave protection active when Cancel is selected after changing category', async () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     const component = fixture.componentInstance;
     component.handleUnsavedChanges(true);
 
     component.handleCancel();
+    await fixture.whenStable();
 
     expect(component['canDeactivate']()).toBe(false);
     expect(navigateSpy).toHaveBeenCalledWith(['details'], { relativeTo: null });
