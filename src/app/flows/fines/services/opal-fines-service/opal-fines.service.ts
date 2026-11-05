@@ -81,6 +81,7 @@ import { IOpalFinesTillsResponse } from './interfaces/opal-fines-tills-response.
 import { IOpalFinesInterfaceJobsSummaryParams } from './interfaces/opal-fines-interface-jobs-summary-params.interface';
 import { IOpalFinesInterfaceJobsSummaryResponse } from './interfaces/opal-fines-interface-jobs-summary-response.interface';
 import { IOpalFinesProcessInterfaceJobsPayload } from './interfaces/opal-fines-process-interface-jobs-payload.interface';
+import { IOpalFinesApr, IOpalFinesAprsResponse } from './interfaces/opal-fines-apr.interface';
 
 const SAFE_READ_RETRY_POLICY = {
   retryCount: 1,
@@ -1237,6 +1238,20 @@ export class OpalFines {
             version,
           };
         }),
+      );
+  }
+
+  /** Reads APRs together with the defendant-account version used for subsequent writes. */
+  public getAprs(accountId: number): Observable<IOpalFinesAprsResponse> {
+    return this.http
+      .get<
+        IOpalFinesApr[]
+      >(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/alternate-payment-references`, this.withRetrySafeReadOptions({ observe: 'response' as const }))
+      .pipe(
+        map((response) => ({
+          references: response.body ?? [],
+          version: this.extractEtagVersion(response.headers),
+        })),
       );
   }
 
