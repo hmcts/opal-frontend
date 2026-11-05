@@ -49,6 +49,7 @@ export const FinesMciStore = signalStore(
           selectedCriminalAccountHeader: null,
         });
       },
+      /** Replaces search results and clears the previous selection and its fetched details. */
       setCriminalSearchResults(criminalSearchResults: IFinesMciCriminalAccountsResponse | null): void {
         patchState(store, {
           criminalSearchResults,
@@ -57,6 +58,7 @@ export const FinesMciStore = signalStore(
           selectedCriminalAccountHeader: null,
         });
       },
+      /** Sets or clears the selected account, invalidating both detail responses even when reselecting an account. */
       setSelectedCriminalAccount(selectedCriminalAccount: IFinesMciCriminalAccount | null): void {
         patchState(store, {
           selectedCriminalAccount,
@@ -64,9 +66,11 @@ export const FinesMciStore = signalStore(
           selectedCriminalAccountHeader: null,
         });
       },
+      /** Stores the selected account's at-a-glance response for the subsequent payment page. */
       setSelectedCriminalAccountAtAGlance(selectedCriminalAccountAtAGlance: IOpalFinesAccountDefendantAtAGlance): void {
         patchState(store, { selectedCriminalAccountAtAGlance });
       },
+      /** Stores the selected account's header, including the status used to choose the account placeholder. */
       setSelectedCriminalAccountHeader(selectedCriminalAccountHeader: IOpalFinesAccountDefendantDetailsHeader): void {
         patchState(store, { selectedCriminalAccountHeader });
       },
