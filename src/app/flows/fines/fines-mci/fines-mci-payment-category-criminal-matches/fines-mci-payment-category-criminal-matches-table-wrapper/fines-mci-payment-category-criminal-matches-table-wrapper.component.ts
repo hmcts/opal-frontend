@@ -47,6 +47,7 @@ export class FinesMciPaymentCategoryCriminalMatchesTableWrapperComponent extends
   protected readonly DATE_INPUT_FORMAT = 'yyyy-MM-dd';
   protected readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
 
+  /** Replaces the source rows and reapplies table filters so subsequent searches refresh the displayed results. */
   @Input({ required: true }) set tableData(tableData: IFinesMciPaymentCategoryCriminalMatchesTableWrapperTableData[]) {
     this.setTableData(tableData);
     this.onApplyFilters();
@@ -69,10 +70,12 @@ export class FinesMciPaymentCategoryCriminalMatchesTableWrapperComponent extends
     return data.slice(this.startIndexComputed() - 1, this.endIndexComputed());
   });
 
+  /** Reflects the parent's selection state; accounts without an ID cannot be selected. */
   public isAccountSelected(accountId: FinesMciCriminalAccountId | null): boolean {
     return accountId !== null && this.selectedAccountIds.includes(accountId);
   }
 
+  /** Reports checkbox changes to the parent, which owns selection and validation state. Ignores null IDs. */
   public onAccountSelectionChanged(accountId: FinesMciCriminalAccountId | null, event: Event): void {
     if (accountId !== null) {
       this.accountSelectionChanged.emit({
@@ -82,6 +85,7 @@ export class FinesMciPaymentCategoryCriminalMatchesTableWrapperComponent extends
     }
   }
 
+  /** Builds the account enquiry route for the link opened in a new tab, preserving the supplied ID type. */
   public getAccountDetailsRoute(accountId: FinesMciCriminalAccountId): (string | number)[] {
     return [
       '/',
