@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { RedirectCommand, ResolveFn, Router } from '@angular/router';
-import { map, of } from 'rxjs';
+import { forkJoin, map, of } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesDefendantAccountSearchParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-search-params.interface';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS } from '@services/fines/opal-fines-service/constants/opal-fines-defendant-account-search-params-defaults.constant';
@@ -16,9 +16,9 @@ import { IFinesMciCriminalAccountsResult } from '../../../interfaces/fines-mci-c
 const buildSearchParams = (
   search: IFinesMciCriminalSearch,
   businessUnitId: number,
+  isCompany = search.activeTab === 'companies',
 ): IOpalFinesDefendantAccountSearchParams => {
   const formValue = search.formData;
-  const isCompany = search.activeTab === 'companies';
   const baseSearchParams = {
     ...OPAL_FINES_DEFENDANT_ACCOUNT_SEARCH_PARAMS_DEFAULTS,
     business_unit_ids: [businessUnitId],
@@ -95,7 +95,19 @@ export const finesMciCriminalAccountsResolver: ResolveFn<IFinesMciCriminalAccoun
     return of({ results: FINES_MCI_CRIMINAL_SEARCH_RESULTS.searchCriteriaCannotBeCombined, response: null });
   }
 
-  return opalFines.getDefendantAccounts(buildSearchParams(search, businessUnit.business_unit_id)).pipe(
+  const accounts$ = search.formData.fsa_search_account_number
+    ? forkJoin({
+        individuals: opalFines.getDefendantAccounts(buildSearchParams(search, businessUnit.business_unit_id, false)),
+        companies: opalFines.getDefendantAccounts(buildSearchParams(search, businessUnit.business_unit_id, true)),
+      }).pipe(
+        map(({ individuals, companies }) => ({
+          count: individuals.count + companies.count,
+          defendant_accounts: [...individuals.defendant_accounts, ...companies.defendant_accounts],
+        })),
+      )
+    : opalFines.getDefendantAccounts(buildSearchParams(search, businessUnit.business_unit_id));
+
+  return accounts$.pipe(
     map((response): IFinesMciCriminalAccountsResult => {
       if (response.count > 100) {
         return { response, results: FINES_MCI_CRIMINAL_SEARCH_RESULTS.tooMany };
