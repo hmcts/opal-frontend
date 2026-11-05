@@ -23,7 +23,12 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
     this.stateUnsavedChanges = this.finesMciStore.draftJourney() !== null;
   }
 
-  /** Handles Continue, saving the selected journey as a draft and opening it. */
+  /**
+   * Saves the selected payment category as a draft and opens its journey without a leave warning.
+   * Starting Criminal search clears previous search criteria so a new payment starts with a blank form.
+   *
+   * @param form The validated payment category form submission.
+   */
   public handleSubmit(form: IAbstractFormBaseForm<IFinesMciCreateTillPaymentCategoryFormState>): void {
     const paymentCategory = form.formData.paymentCategory;
     if (!paymentCategory) {
@@ -64,8 +69,8 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
     this.stateUnsavedChanges = unsavedChanges;
   }
 
-  @HostListener('window:beforeunload')
   /** Allows the browser to unload only when there are no unsaved changes. */
+  @HostListener('window:beforeunload')
   public handleBeforeUnload(): boolean {
     return !this.stateUnsavedChanges;
   }

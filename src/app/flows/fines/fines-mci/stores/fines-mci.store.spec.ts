@@ -4,6 +4,8 @@ import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from '@services
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesMciStore } from './fines-mci.store';
 import { IFinesMciCriminalSearch } from './interfaces/fines-mci-criminal-search.interface';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
+import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 
 describe('FinesMciStore', () => {
   let store: InstanceType<typeof FinesMciStore>;
@@ -42,6 +44,8 @@ describe('FinesMciStore', () => {
       store.setCriminalSearch(criminalSearch);
       store.setCriminalSearchResults(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK);
       store.setSelectedCriminalAccount(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0]);
+      store.setSelectedCriminalAccountAtAGlance(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      store.setSelectedCriminalAccountHeader(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
 
       if (action === 'reset') {
         store.reset();
@@ -52,6 +56,8 @@ describe('FinesMciStore', () => {
       expect(store.criminalSearch()).toBeNull();
       expect(store.criminalSearchResults()).toBeNull();
       expect(store.selectedCriminalAccount()).toBeNull();
+      expect(store.selectedCriminalAccountAtAGlance()).toBeNull();
+      expect(store.selectedCriminalAccountHeader()).toBeNull();
       expect(store.draftJourney()).toBeNull();
       expect(store.tills()).toEqual([]);
     },
@@ -64,6 +70,28 @@ describe('FinesMciStore', () => {
 
     expect(store.businessUnit()).toEqual(businessUnit);
   });
+
+  it.each(['selection', 'results', 'search reset'] as const)(
+    'should clear stored at-a-glance data when changing the %s',
+    (action) => {
+      const account = OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0];
+      store.setSelectedCriminalAccount(account);
+      store.setSelectedCriminalAccountAtAGlance(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      expect(store.selectedCriminalAccountAtAGlance()).toEqual(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      store.setSelectedCriminalAccountHeader(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
+
+      if (action === 'selection') {
+        store.setSelectedCriminalAccount(null);
+      } else if (action === 'results') {
+        store.setCriminalSearchResults(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK);
+      } else {
+        store.resetCriminalSearch();
+      }
+
+      expect(store.selectedCriminalAccountAtAGlance()).toBeNull();
+      expect(store.selectedCriminalAccountHeader()).toBeNull();
+    },
+  );
 
   it('should clear the in-progress till when the selected business unit changes', () => {
     const [initialBusinessUnit, nextBusinessUnit] = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData;

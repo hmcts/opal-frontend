@@ -1,11 +1,15 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
-import { IOpalFinesDefendantAccount } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account.interface';
-import { map } from 'rxjs';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import {
+  FinesMciCriminalAccountId,
+  IFinesMciCriminalAccount,
+} from '../interfaces/fines-mci-criminal-account.interface';
+import { catchError, defaultIfEmpty, finalize, map, of, Subject, takeUntil } from 'rxjs';
+import { FinesMciCriminalAccountService } from '../services/fines-mci-criminal-account.service';
 import { IFinesMciCriminalAccountsResult } from '../interfaces/fines-mci-criminal-accounts-result.interface';
-import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { FINES_MCI_CRIMINAL_SEARCH_RESULTS } from '../constants/fines-mci-criminal-search-results.constant';
 import { FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_MATCHES_ERROR_FIELD_IDS } from './constants/fines-mci-payment-category-criminal-matches-errors.constant';
@@ -28,7 +32,11 @@ import { finesMciPaymentCategoryCriminalMatchesSelectionValidator } from './vali
 export class FinesMciPaymentCategoryCriminalMatchesComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly selectedAccountIdsSignal = signal<Set<number>>(new Set<number>());
+  private readonly utilsService = inject(UtilsService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly criminalAccountService = inject(FinesMciCriminalAccountService);
+  private readonly cancelAccountDetailsRequest = new Subject<void>();
+  private readonly selectedAccountIdsSignal = signal<Set<FinesMciCriminalAccountId>>(new Set());
   private readonly selectionValidationMessageSignal = signal<string | null>(null);
   private readonly accountsResult = toSignal(
     this.route.data.pipe(map((data) => data['criminalAccounts'] as IFinesMciCriminalAccountsResult)),
@@ -37,6 +45,7 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
   private readonly results = computed(() => this.accountsResult().results);
 
   protected readonly finesMciStore = inject(FinesMciStore);
+  protected readonly isLoadingAccountDetails = signal(false);
   protected readonly selectionErrorFieldId =
     FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_MATCHES_ERROR_FIELD_IDS.accountSelection;
   protected readonly searchResults = computed(
@@ -55,11 +64,13 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
   protected readonly isSearchCriteriaCannotBeCombinedResults = computed(
     () => this.results() === FINES_MCI_CRIMINAL_SEARCH_RESULTS.searchCriteriaCannotBeCombined,
   );
-  protected readonly financeDashboardRoute = [
+  protected readonly tillDetailsRoute = [
     '/',
     FINES_ROUTING_PATHS.root,
-    FINES_DASHBOARD_ROUTING_PATHS.root,
-    FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+    FINES_MCI_ROUTING_PATHS.root,
+    FINES_MCI_ROUTING_PATHS.children.create,
+    FINES_MCI_ROUTING_PATHS.children.till,
+    FINES_MCI_ROUTING_PATHS.children.details,
   ];
   protected readonly criminalSearchRoute = [
     '/',
@@ -75,14 +86,15 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
 
   constructor() {
     effect(() => {
+      this.cancelAccountDetailsRequest.next();
       this.finesMciStore.setCriminalSearchResults(this.accountsResult().response);
-      this.selectedAccountIdsSignal.set(new Set<number>());
+      this.selectedAccountIdsSignal.set(new Set());
       this.selectionValidationMessageSignal.set(null);
     });
   }
 
-  private formatDefendantName(account: IOpalFinesDefendantAccount): string | null {
-    if (account.organisation_flag) {
+  private formatDefendantName(account: IFinesMciCriminalAccount): string | null {
+    if (account.organisation ?? account.organisation_flag) {
       return account.organisation_name;
     }
 
@@ -90,45 +102,47 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
       return null;
     }
 
-    const surname = account.defendant_surname ?? '';
+    const surname = account.defendant_surname?.toUpperCase() ?? '';
     const firstnames = account.defendant_firstnames ?? '';
     const separator = account.defendant_surname && account.defendant_firstnames ? ', ' : '';
     return `${surname}${separator}${firstnames}`;
   }
 
-  private formatAliases(account: IOpalFinesDefendantAccount): string | null {
+  private formatAliases(account: IFinesMciCriminalAccount): string | null {
     if (!account.aliases || account.aliases.length === 0) {
       return null;
     }
 
-    const aliases = account.aliases.map((alias) => {
-      if (account.organisation_flag) {
-        return alias.organisation_name;
-      }
+    const aliases = [...account.aliases]
+      .sort((a, b) => (a.alias_number ?? Infinity) - (b.alias_number ?? Infinity))
+      .map((alias) => {
+        if (account.organisation ?? account.organisation_flag) {
+          return alias.organisation_name;
+        }
 
-      const surname = alias.surname ?? '';
-      const forenames = alias.forenames ?? '';
-      const separator = alias.surname && alias.forenames ? ', ' : '';
-      return `${surname}${separator}${forenames}`;
-    });
+        const surname = alias.surname ?? '';
+        const forenames = alias.forenames ?? '';
+        const separator = alias.surname && alias.forenames ? ', ' : '';
+        return `${surname}${separator}${forenames}`;
+      });
 
     return aliases.filter(Boolean).join('\n') || null;
   }
 
   private mapAccountsToTableData(
-    accounts: IOpalFinesDefendantAccount[],
+    accounts: IFinesMciCriminalAccount[],
   ): IFinesMciPaymentCategoryCriminalMatchesTableWrapperTableData[] {
     return accounts.map((account) => ({
       'Account ID': account.defendant_account_id,
       Account: account.account_number,
       Name: this.formatDefendantName(account),
       Aliases: this.formatAliases(account),
-      'Date of birth': account.birth_date,
+      'Date of birth': (account.organisation ?? account.organisation_flag) ? null : account.birth_date,
       'Address line 1': account.address_line_1,
       Postcode: account.postcode,
       Balance: account.account_balance,
       Enf: account.last_enforcement_action,
-      CO: null,
+      CO: account.has_collection_order ? 'Y' : null,
     }));
   }
 
@@ -136,9 +150,15 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
     this.router.navigate(this.criminalSearchRoute);
   }
 
+  protected handleSearchAgain(): void {
+    this.cancelAccountDetailsRequest.next();
+    this.finesMciStore.setSelectedCriminalAccount(null);
+  }
+
   protected onAccountSelectionChanged(
     accountSelection: IFinesMciPaymentCategoryCriminalMatchesTableWrapperAccountSelection,
   ): void {
+    this.cancelAccountDetailsRequest.next();
     const selectedAccountIds = new Set(this.selectedAccountIdsSignal());
 
     if (accountSelection.selected) {
@@ -153,6 +173,10 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
   }
 
   protected continue(): void {
+    if (this.isLoadingAccountDetails()) {
+      return;
+    }
+
     const selectedAccountIds = this.selectedAccountIds();
     const validationMessage = finesMciPaymentCategoryCriminalMatchesSelectionValidator(selectedAccountIds);
 
@@ -165,6 +189,34 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
 
     const selectedAccount =
       this.searchResults().find((account) => account.defendant_account_id === selectedAccountIds[0]) ?? null;
-    this.finesMciStore.setSelectedCriminalAccount(selectedAccount);
+    if (!selectedAccount || selectedAccount.defendant_account_id === null) {
+      return;
+    }
+
+    this.isLoadingAccountDetails.set(true);
+    this.criminalAccountService
+      .loadSelectedAccountDetails(selectedAccount)
+      .pipe(
+        catchError(() => of(null)),
+        // The shared interceptor can complete retriable 409 responses without emitting data.
+        defaultIfEmpty(null),
+        finalize(() => this.isLoadingAccountDetails.set(false)),
+        takeUntil(this.cancelAccountDetailsRequest),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((accountDetails) => {
+        if (!accountDetails) {
+          this.utilsService.scrollToTop();
+          return;
+        }
+        void this.router.navigate(
+          [
+            FINES_MCI_ROUTING_PATHS.children.account,
+            selectedAccount.defendant_account_id,
+            (selectedAccount.organisation ?? selectedAccount.organisation_flag) ? 'company' : 'individual',
+          ],
+          { relativeTo: this.route.parent },
+        );
+      });
   }
 }
