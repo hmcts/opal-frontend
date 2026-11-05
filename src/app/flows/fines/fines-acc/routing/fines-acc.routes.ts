@@ -125,6 +125,7 @@ export const routing: Routes = [
           {
             path: `${FINES_ACC_APR_ROUTING_PATHS.root}/:mode`,
             title: finesAccAprAddChangeTitleResolver,
+            runGuardsAndResolvers: 'paramsOrQueryParamsChange',
             loadComponent: () =>
               import('../fines-acc-apr-add-change/fines-acc-apr-add-change.component').then(
                 (c) => c.FinesAccAprAddChangeComponent,

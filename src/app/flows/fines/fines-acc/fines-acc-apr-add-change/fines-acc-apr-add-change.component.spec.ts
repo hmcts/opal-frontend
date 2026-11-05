@@ -514,13 +514,70 @@ describe('FinesAccAprAddChangeComponent change mode', () => {
     expect(TestBed.inject(Router).url).toBe(changeUrl);
   });
 
-  it('changes the selected reference while retaining the resolved account version on query-only navigation', async () => {
+  it.each(['12', '999'])(
+    'keeps the selected reference and edits when query-only navigation to %s is declined',
+    async (selectedId) => {
+      const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+      const { harness, component, input, enter, save } = await render();
+      const originalContext = component.formContext();
+      enter('Keep-This-Edit');
+
+      const router = TestBed.inject(Router);
+      const navigated = await router.navigateByUrl(changeUrl.replace('Id=11', `Id=${selectedId}`));
+      await harness.fixture.whenStable();
+
+      expect(navigated).toBe(false);
+      expect(confirm).toHaveBeenCalledOnce();
+      expect(router.url).toBe(changeUrl);
+      expect(component.formContext()).toBe(originalContext);
+      expect(component.savedValue()).toBe('Original');
+      expect(component.stateUnsavedChanges).toBe(true);
+      expect(input().value).toBe('Keep-This-Edit');
+      expect(accountStore.base_version()).toBe('"7"');
+      expect(api.updateApr).not.toHaveBeenCalled();
+
+      save();
+      await harness.fixture.whenStable();
+
+      expect(api.updateApr).toHaveBeenCalledExactlyOnceWith(141, 11, { apr_text: 'Keep-This-Edit' }, '"7"');
+    },
+  );
+
+  it('keeps a pending update active when a selected-reference change is declined', async () => {
+    const result = new Subject<IOpalFinesAprResponse>();
+    api.updateApr.mockReturnValue(result);
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
     const { harness, component, input, enter, save } = await render();
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    enter('Pending-Edit');
+    save();
+
+    const router = TestBed.inject(Router);
+    const navigated = await router.navigateByUrl(changeUrl.replace('Id=11', 'Id=12'));
+
+    expect(navigated).toBe(false);
+    expect(confirm).toHaveBeenCalledOnce();
+    expect(router.url).toBe(changeUrl);
+    expect(result.observed).toBe(true);
+    expect(component.pending()).toBe(true);
+    expect(input().value).toBe('Pending-Edit');
+    expect(api.updateApr).toHaveBeenCalledExactlyOnceWith(141, 11, { apr_text: 'Pending-Edit' }, '"7"');
+
+    result.next(changeResponse);
+    result.complete();
+    await harness.fixture.whenStable();
+
+    expect(router.url).toBe(manageUrl);
+    expect(accountStore.successMessage()).toBe('Alternate payment reference updated');
+  });
+
+  it('changes the selected reference after the user confirms discarding their edits', async () => {
+    const { harness, component, input, enter, save } = await render();
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true);
     enter('Discard-First');
 
     const reused = await harness.navigateByUrl(changeUrl.replace('Id=11', 'Id=12'), FinesAccAprAddChangeComponent);
 
+    expect(confirm).toHaveBeenCalledOnce();
     expect(reused).toBe(component);
     expect(component.stateUnsavedChanges).toBe(false);
     expect(component.savedValue()).toBe('Second');
@@ -528,7 +585,24 @@ describe('FinesAccAprAddChangeComponent change mode', () => {
     enter('Changed-Second');
     save();
     await harness.fixture.whenStable();
-    expect(api.updateApr).toHaveBeenCalledExactlyOnceWith(141, 12, { apr_text: 'Changed-Second' }, '"7"');
+    expect(api.updateApr).toHaveBeenCalledExactlyOnceWith(141, 12, { apr_text: 'Changed-Second' }, '"9"');
+  });
+
+  it('changes a pristine selected reference without prompting and refreshes its account version', async () => {
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const { harness, component, input } = await render();
+    const nextUrl = changeUrl.replace('Id=11', 'Id=12');
+
+    const reused = await harness.navigateByUrl(nextUrl, FinesAccAprAddChangeComponent);
+
+    expect(reused).toBe(component);
+    expect(confirm).not.toHaveBeenCalled();
+    expect(TestBed.inject(Router).url).toBe(nextUrl);
+    expect(component.savedValue()).toBe('Second');
+    expect(component.stateUnsavedChanges).toBe(false);
+    expect(input().value).toBe('Second');
+    expect(accountStore.base_version()).toBe('"9"');
+    expect(api.updateApr).not.toHaveBeenCalled();
   });
 
   it.each(['invalid', '999', '31', '32'])(
@@ -577,7 +651,7 @@ describe('FinesAccAprAddChangeComponent change mode', () => {
     expect(component.pending()).toBe(false);
     expect(component.stateUnsavedChanges).toBe(false);
     expect(input().value).toBe('Second');
-    expect(accountStore.base_version()).toBe('"7"');
+    expect(accountStore.base_version()).toBe('"9"');
     expect(accountStore.successMessage()).toBeNull();
     expect(api.clearAccountDetailsCache).not.toHaveBeenCalled();
     expect(TestBed.inject(Router).url).toBe(nextUrl);
