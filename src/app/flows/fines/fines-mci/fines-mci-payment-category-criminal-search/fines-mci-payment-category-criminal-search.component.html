@@ -29,7 +29,7 @@
 
     <h2 class="govuk-heading-m govuk-!-margin-bottom-3">Advanced search</h2>
 
-    <opal-lib-govuk-tabs tabId="criminalAccountSearchTabs">
+    <opal-lib-govuk-tabs tabId="criminalAccountSearchTabs" (keydown)="handleTabKeydown($event)">
       <ng-container tab-list-items>
         <li
           opal-lib-govuk-tabs-list-item

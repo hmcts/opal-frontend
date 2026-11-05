@@ -7,8 +7,9 @@ import { RouterTestingHarness } from '@angular/router/testing';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
+import { IOpalFinesDefendantAccountResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-response.interface';
 import { FinesMciStore } from '../stores/fines-mci.store';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, of, Subject } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, expectTypeOf, it, MockInstance, vi } from 'vitest';
 import { IFinesMciCriminalSearch } from '../stores/interfaces/fines-mci-criminal-search.interface';
 import { FinesMciPaymentCategoryCriminalSearchComponent } from './fines-mci-payment-category-criminal-search.component';
@@ -386,6 +387,14 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
       'Acme\tLtd',
       'Company Name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
     ],
+    [
+      '  \tAcme\t  ',
+      'Company Name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+    ],
+    [
+      '  \u00a0Acme\u00a0  ',
+      'Company Name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
+    ],
     ['A'.repeat(51), 'Company name must be 50 characters or fewer'],
   ])('should prevent company searches with invalid names: %s', (name, message) => {
     fragmentSubject.next('companies');
@@ -578,14 +587,22 @@ describe('FinesMciPaymentCategoryCriminalSearchComponent', () => {
     expect(event.defaultPrevented).toBe(false);
   });
 
-  it('should require confirmation again after a search navigation is cancelled', async () => {
+  it('should allow retry and require confirmation again after a search navigation is cancelled', async () => {
     component['form'].patchValue({ fsa_search_account_number: '12345678' });
+    routerNavigateSpy.mockClear();
     routerNavigateSpy.mockResolvedValueOnce(false);
 
     component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
     await fixture.whenStable();
 
     expect(component.canDeactivate()).toBe(false);
+
+    component.form.patchValue({ fsa_search_account_number: '12345679' });
+    component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+    await fixture.whenStable();
+
+    expect(routerNavigateSpy).toHaveBeenCalledTimes(2);
+    expect(TestBed.inject(FinesMciStore).criminalSearch()?.formData.fsa_search_account_number).toBe('12345679');
   });
 
   it.each([null, '1234567890'])(
@@ -717,6 +734,64 @@ describe('Criminal search navigation', () => {
 
     expect(TestBed.inject(Router).url).toBe(detailsUrl);
     expect(confirmSpy).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ['individuals', 'ArrowRight', 'companies'],
+    ['companies', 'ArrowLeft', 'individuals'],
+    ['individuals', 'ArrowLeft', 'companies'],
+    ['companies', 'ArrowRight', 'individuals'],
+    ['companies', 'Home', 'individuals'],
+    ['individuals', 'End', 'companies'],
+    ['individuals', 'Enter', 'individuals'],
+    ['companies', ' ', 'companies'],
+  ] as const)('activates %s with %s and renders the %s panel', async (initialTab, key, expectedTab) => {
+    await harness.navigateByUrl(`${searchUrl}#${initialTab}`, FinesMciPaymentCategoryCriminalSearchComponent);
+    const element = harness.routeNativeElement!;
+    const initialTabLink = element.querySelector<HTMLAnchorElement>(`#tab-${initialTab}`)!;
+    initialTabLink.focus();
+    const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+
+    initialTabLink.dispatchEvent(event);
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    const selectedTab = element.querySelector<HTMLAnchorElement>(`#tab-${expectedTab}`)!;
+    const otherTab = expectedTab === 'individuals' ? 'companies' : 'individuals';
+    expect(event.defaultPrevented).toBe(true);
+    expect(document.activeElement).toBe(selectedTab);
+    expect(TestBed.inject(Router).url).toBe(`${searchUrl}#${expectedTab}`);
+    expect(selectedTab.getAttribute('aria-selected')).toBe('true');
+    expect(selectedTab.getAttribute('tabindex')).toBe('0');
+    expect(element.querySelector(`#tab-${otherTab}`)?.getAttribute('tabindex')).toBe('-1');
+    expect(element.querySelector(`#${expectedTab}[role="tabpanel"]`)).not.toBeNull();
+    expect(element.querySelector(`#${otherTab}[role="tabpanel"]`)).toBeNull();
+    expect(
+      element.querySelector(
+        expectedTab === 'companies'
+          ? '#fsa_search_account_companies_company_name'
+          : '#fsa_search_account_individuals_last_name',
+      ),
+    ).not.toBeNull();
+    expect(confirmSpy).not.toHaveBeenCalled();
+    expect(service.getDefendantAccounts).not.toHaveBeenCalled();
+  });
+
+  it('leaves Tab navigation and arrow keys in search inputs to the browser', () => {
+    const element = harness.routeNativeElement!;
+    const tabLink = element.querySelector<HTMLAnchorElement>('#tab-companies')!;
+    const nameInput = element.querySelector<HTMLInputElement>('#fsa_search_account_companies_company_name')!;
+    const tabEvent = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true });
+    const inputEvent = new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true, cancelable: true });
+    tabLink.focus();
+    tabLink.dispatchEvent(tabEvent);
+    nameInput.focus();
+    nameInput.dispatchEvent(inputEvent);
+
+    expect(tabEvent.defaultPrevented).toBe(false);
+    expect(inputEvent.defaultPrevented).toBe(false);
+    expect(document.activeElement).toBe(nameInput);
+    expect(TestBed.inject(Router).url).toBe(`${searchUrl}#companies`);
   });
 
   it('returns directly to till details without a warning when no inputs are populated', async () => {
@@ -851,6 +926,59 @@ describe('Criminal search navigation', () => {
       expect(confirmSpy).not.toHaveBeenCalled();
     },
   );
+
+  it('ignores repeated Search while a request is pending and retains criteria for returning to search', async () => {
+    enterCompanyCriteria();
+    const response = new Subject<IOpalFinesDefendantAccountResponse>();
+    service.getDefendantAccounts.mockReturnValueOnce(response);
+    const submittedCriteria = component.form.getRawValue();
+    component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(service.getDefendantAccounts).toHaveBeenCalledOnce();
+    const preventDefault = vi.fn();
+
+    component.handleFormSubmit({ preventDefault } as unknown as SubmitEvent);
+
+    expect(preventDefault).toHaveBeenCalledOnce();
+    expect(service.getDefendantAccounts).toHaveBeenCalledOnce();
+    expect(confirmSpy).not.toHaveBeenCalled();
+
+    response.next({ count: 1, defendant_accounts: [] });
+    response.complete();
+    await harness.fixture.whenStable();
+
+    expect(TestBed.inject(Router).url).toBe(matchesUrl);
+    expect(store.criminalSearch()?.formData).toEqual(submittedCriteria);
+    expect(confirmSpy).not.toHaveBeenCalled();
+
+    const search = await harness.navigateByUrl(
+      `${searchUrl}#companies`,
+      FinesMciPaymentCategoryCriminalSearchComponent,
+    );
+    expect(search.form.getRawValue()).toEqual(submittedCriteria);
+    expect(search['activeTab']()).toBe('companies');
+  });
+
+  it('allows retry when the pending resolver completes without results', async () => {
+    enterCompanyCriteria();
+    const response = new Subject<IOpalFinesDefendantAccountResponse>();
+    service.getDefendantAccounts.mockReturnValueOnce(response);
+    component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    response.complete();
+    await harness.fixture.whenStable();
+    expect(TestBed.inject(Router).url).toBe(`${searchUrl}#companies`);
+    expect(component.canDeactivate()).toBe(false);
+
+    component.handleFormSubmit({ preventDefault: vi.fn() } as unknown as SubmitEvent);
+    await harness.fixture.whenStable();
+
+    expect(service.getDefendantAccounts).toHaveBeenCalledTimes(2);
+    expect(TestBed.inject(Router).url).toBe(matchesUrl);
+    expect(store.criminalSearch()?.activeTab).toBe('companies');
+    expect(confirmSpy).not.toHaveBeenCalled();
+  });
 
   it('retains submitted criteria when returning directly from matches to amend the search', async () => {
     enterCompanyCriteria();
