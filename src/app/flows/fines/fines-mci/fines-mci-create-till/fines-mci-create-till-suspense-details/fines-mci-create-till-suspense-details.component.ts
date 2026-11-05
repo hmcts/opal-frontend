@@ -34,7 +34,7 @@ export class FinesMciCreateTillSuspenseDetailsComponent extends AbstractFormPare
     this.routerNavigate(target);
   }
 
-  /** Returns to Till Details and clears suspense data after navigation is accepted. */
+  /** Returns to Till Details and clears the payment draft after navigation is accepted. */
   public handleCancel(): void {
     void this.navigationRouter
       .navigate([
@@ -46,7 +46,10 @@ export class FinesMciCreateTillSuspenseDetailsComponent extends AbstractFormPare
         FINES_MCI_ROUTING_PATHS.children.details,
       ])
       .then((navigated) => {
-        if (navigated) this.finesMciStore.setSuspensePayment(null);
+        if (navigated) {
+          this.finesMciStore.setDraftJourney(null);
+          this.finesMciStore.setSuspensePayment(null);
+        }
       });
   }
 

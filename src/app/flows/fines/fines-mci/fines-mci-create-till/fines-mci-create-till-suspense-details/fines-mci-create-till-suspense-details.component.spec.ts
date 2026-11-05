@@ -94,6 +94,7 @@ describe('FinesMciCreateTillSuspenseDetailsComponent', () => {
   });
 
   it('clears suspense data after Cancel navigation succeeds', async () => {
+    store.setDraftJourney('suspense');
     store.setSuspensePayment(SUSPENSE_PAYMENT);
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
@@ -101,16 +102,19 @@ describe('FinesMciCreateTillSuspenseDetailsComponent', () => {
     await fixture.whenStable();
 
     expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create', 'till', 'details']);
+    expect(store.draftJourney()).toBeNull();
     expect(store.suspensePayment()).toBeNull();
   });
 
   it('retains suspense data when Cancel navigation is rejected', async () => {
+    store.setDraftJourney('suspense');
     store.setSuspensePayment(SUSPENSE_PAYMENT);
     vi.spyOn(router, 'navigate').mockResolvedValue(false);
 
     fixture.componentInstance.handleCancel();
     await fixture.whenStable();
 
+    expect(store.draftJourney()).toBe('suspense');
     expect(store.suspensePayment()).toEqual(SUSPENSE_PAYMENT);
   });
 });
