@@ -727,6 +727,64 @@ describe('Criminal search navigation', () => {
     expect(confirmSpy).not.toHaveBeenCalled();
   });
 
+  it.each([
+    ['individuals', 'ArrowRight', 'companies'],
+    ['companies', 'ArrowLeft', 'individuals'],
+    ['individuals', 'ArrowLeft', 'companies'],
+    ['companies', 'ArrowRight', 'individuals'],
+    ['companies', 'Home', 'individuals'],
+    ['individuals', 'End', 'companies'],
+    ['individuals', 'Enter', 'individuals'],
+    ['companies', ' ', 'companies'],
+  ] as const)('activates %s with %s and renders the %s panel', async (initialTab, key, expectedTab) => {
+    await harness.navigateByUrl(`${searchUrl}#${initialTab}`, FinesMciPaymentCategoryCriminalSearchComponent);
+    const element = harness.routeNativeElement!;
+    const initialTabLink = element.querySelector<HTMLAnchorElement>(`#tab-${initialTab}`)!;
+    initialTabLink.focus();
+    const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true });
+
+    initialTabLink.dispatchEvent(event);
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    const selectedTab = element.querySelector<HTMLAnchorElement>(`#tab-${expectedTab}`)!;
+    const otherTab = expectedTab === 'individuals' ? 'companies' : 'individuals';
+    expect(event.defaultPrevented).toBe(true);
+    expect(document.activeElement).toBe(selectedTab);
+    expect(TestBed.inject(Router).url).toBe(`${searchUrl}#${expectedTab}`);
+    expect(selectedTab.getAttribute('aria-selected')).toBe('true');
+    expect(selectedTab.getAttribute('tabindex')).toBe('0');
+    expect(element.querySelector(`#tab-${otherTab}`)?.getAttribute('tabindex')).toBe('-1');
+    expect(element.querySelector(`#${expectedTab}[role="tabpanel"]`)).not.toBeNull();
+    expect(element.querySelector(`#${otherTab}[role="tabpanel"]`)).toBeNull();
+    expect(
+      element.querySelector(
+        expectedTab === 'companies'
+          ? '#fsa_search_account_companies_company_name'
+          : '#fsa_search_account_individuals_last_name',
+      ),
+    ).not.toBeNull();
+    expect(confirmSpy).not.toHaveBeenCalled();
+    expect(service.getDefendantAccounts).not.toHaveBeenCalled();
+  });
+
+  it('leaves Tab navigation and arrow keys in search inputs to the browser', () => {
+    const element = harness.routeNativeElement!;
+    const tabLink = element.querySelector<HTMLAnchorElement>('#tab-companies')!;
+    const nameInput = element.querySelector<HTMLInputElement>('#fsa_search_account_companies_company_name')!;
+    const tabEvent = new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true });
+    const inputEvent = new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true, cancelable: true });
+    tabLink.focus();
+    tabLink.dispatchEvent(tabEvent);
+    nameInput.focus();
+    nameInput.dispatchEvent(inputEvent);
+
+    expect(tabEvent.defaultPrevented).toBe(false);
+    expect(inputEvent.defaultPrevented).toBe(false);
+    expect(document.activeElement).toBe(nameInput);
+    expect(TestBed.inject(Router).url).toBe(`${searchUrl}#companies`);
+  });
+
   it('returns directly to till details without a warning when no inputs are populated', async () => {
     store.setDraftJourney('criminal');
     await clickCancel();

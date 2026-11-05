@@ -185,6 +185,41 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
     }
   }
 
+  public handleTabKeydown(event: KeyboardEvent): void {
+    if (!(event.target instanceof HTMLAnchorElement) || event.target.getAttribute('role') !== 'tab') {
+      return;
+    }
+
+    const tabs = Array.from((event.currentTarget as HTMLElement).querySelectorAll<HTMLAnchorElement>('[role="tab"]'));
+    const currentIndex = tabs.indexOf(event.target);
+    let nextIndex: number;
+
+    switch (event.key) {
+      case 'ArrowLeft':
+        nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+        break;
+      case 'ArrowRight':
+        nextIndex = (currentIndex + 1) % tabs.length;
+        break;
+      case 'Home':
+        nextIndex = 0;
+        break;
+      case 'End':
+        nextIndex = tabs.length - 1;
+        break;
+      case 'Enter':
+      case ' ':
+        nextIndex = currentIndex;
+        break;
+      default:
+        return;
+    }
+
+    event.preventDefault();
+    tabs[nextIndex].focus();
+    tabs[nextIndex].click();
+  }
+
   public override handleFormSubmit(event: SubmitEvent): void {
     this.trimSearchNames();
     this.form.updateValueAndValidity({ emitEvent: false });
