@@ -34,9 +34,9 @@ describe('buildInterfaceFilesFilters', () => {
     expect(buildInterfaceFilesFilters({ ...emptyFilters, businessUnit }, dateService)).toEqual({});
   });
 
-  it('preserves leading zeros in business-unit codes without adding direction-specific restrictions', () => {
-    expect(buildInterfaceFilesFilters({ ...emptyFilters, businessUnit: '0046' }, dateService)).toEqual({
-      business_unit_code: '0046',
+  it('converts selected business-unit IDs to numbers without adding direction-specific restrictions', () => {
+    expect(buildInterfaceFilesFilters({ ...emptyFilters, businessUnit: '77' }, dateService)).toEqual({
+      business_unit_id: 77,
     });
   });
 
@@ -70,12 +70,9 @@ describe('buildInterfaceFilesFilters', () => {
     { days: '14', from: '2026-10-06T23:00:00' },
   ])('combines the business unit with $days inclusive calendar days', ({ days, from }) => {
     expect(
-      buildInterfaceFilesFilters(
-        { ...emptyFilters, businessUnit: '0046', dateFilter: 'customDays', days },
-        dateService,
-      ),
+      buildInterfaceFilesFilters({ ...emptyFilters, businessUnit: '77', dateFilter: 'customDays', days }, dateService),
     ).toEqual({
-      business_unit_code: '0046',
+      business_unit_id: 77,
       from_date: from,
       to_date: '2026-10-20T22:59:59.999999',
     });
@@ -83,11 +80,8 @@ describe('buildInterfaceFilesFilters', () => {
 
   it.each([null, ''])('keeps the business-unit filter when custom days are missing (%s)', (days) => {
     expect(
-      buildInterfaceFilesFilters(
-        { ...emptyFilters, businessUnit: '0046', dateFilter: 'customDays', days },
-        dateService,
-      ),
-    ).toEqual({ business_unit_code: '0046' });
+      buildInterfaceFilesFilters({ ...emptyFilters, businessUnit: '77', dateFilter: 'customDays', days }, dateService),
+    ).toEqual({ business_unit_id: 77 });
   });
 
   it.each([
@@ -173,13 +167,13 @@ describe('buildInterfaceFilesFilters', () => {
   });
 
   it('does not mutate submitted filters or share the returned parameters between searches', () => {
-    const form = Object.freeze({ ...emptyFilters, businessUnit: '0046', dateFilter: 'last7Days' as const });
+    const form = Object.freeze({ ...emptyFilters, businessUnit: '77', dateFilter: 'last7Days' as const });
     const first = buildInterfaceFilesFilters(form, dateService);
     const expected = { ...first };
-    first.business_unit_code = 'OTHER';
+    first.business_unit_id = 999;
     first.from_date = 'changed';
 
     expect(buildInterfaceFilesFilters(form, dateService)).toEqual(expected);
-    expect(form).toEqual({ ...emptyFilters, businessUnit: '0046', dateFilter: 'last7Days' });
+    expect(form).toEqual({ ...emptyFilters, businessUnit: '77', dateFilter: 'last7Days' });
   });
 });

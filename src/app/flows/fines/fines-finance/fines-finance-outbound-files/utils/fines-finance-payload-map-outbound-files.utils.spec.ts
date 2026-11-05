@@ -9,7 +9,7 @@ describe('mapOutboundFilesToTableData', () => {
   let dateService: DateService;
   let previousZone: typeof Settings.defaultZone;
   const file = FINES_FINANCE_OUTBOUND_FILES_RESPONSE_MOCK.interface_files![0];
-  const businessUnits = [{ name: 'Camberwell Green', value: '0046' }];
+  const businessUnits = [{ name: 'Camberwell Green', value: '77' }];
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -30,7 +30,7 @@ describe('mapOutboundFilesToTableData', () => {
         'Date and time': Date.parse('2026-10-20T12:00:00Z'),
         dateTimeDisplay: '20 Oct 2026 at 13:00',
         Title: 'ant_2001.csv',
-        'Business unit': 'Camberwell Green',
+        'Business unit': ['Camberwell Green'],
         Target: 'ANT CSV',
         Status: 'Ready',
         Actions: 'Download',
@@ -48,18 +48,18 @@ describe('mapOutboundFilesToTableData', () => {
     expect(mapOutboundFilesToTableData([{ ...file, target }], businessUnits, dateService)[0].Target).toBe(expected);
   });
 
-  it('retains files with null business units and joins multiple codes with an unknown-code fallback', () => {
+  it('retains files with null business units and maps multiple IDs with an unknown-ID fallback', () => {
     const rows = mapOutboundFilesToTableData(
       [
-        { ...file, business_unit_codes: null },
-        { ...file, business_unit_codes: ['0046', 'UNKNOWN'] },
+        { ...file, business_unit_ids: null },
+        { ...file, business_unit_ids: [77, 999] },
       ],
       businessUnits,
       dateService,
     );
     expect(rows).toHaveLength(2);
     expect(rows[0]['Business unit']).toBeNull();
-    expect(rows[1]['Business unit']).toBe('Camberwell Green, UNKNOWN');
+    expect(rows[1]['Business unit']).toEqual(['Camberwell Green', '999']);
   });
 
   it.each([null, undefined, []])('returns no rows for %s files', (files) => {

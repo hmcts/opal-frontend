@@ -41,6 +41,6 @@ export function buildInterfaceFilesFilters(
         ) + FINES_FINANCE_INTERFACE_FILES_DATE_FILTER_CONFIG.inclusiveEndFraction;
     }
   }
-  if (formData.businessUnit) params.business_unit_code = formData.businessUnit;
+  if (formData.businessUnit) params.business_unit_id = Number(formData.businessUnit);
   return params;
 }

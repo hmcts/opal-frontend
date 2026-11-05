@@ -53,7 +53,7 @@ describe('buildInboundFilesSearchParams', () => {
 
   it('combines business unit, source, type and an inclusive custom-day range', () => {
     const formData: IFinesFinanceInboundFilesForm = {
-      businessUnit: '077',
+      businessUnit: '77',
       dateFilter: 'customDays',
       days: '14',
       dateFrom: '',
@@ -65,7 +65,7 @@ describe('buildInboundFilesSearchParams', () => {
     const params = buildInboundFilesSearchParams(formData, dateService);
 
     expect(params).toEqual({
-      business_unit_code: '077',
+      business_unit_id: 77,
       domain: InterfaceFileViewerSupportedDomain.Fines,
       from_date: '2026-09-22T23:00:00',
       not_status: [InterfaceFileViewerFileStatus.FailedSuperseded],

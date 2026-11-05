@@ -7,14 +7,14 @@ import {
 } from './fines-finance-payload-business-unit-options.utils';
 
 describe('Finance business-unit options', () => {
-  it('sorts name/code pairs without mutating the API order or losing leading zeros', () => {
+  it('sorts name/ID pairs without mutating the API order', () => {
     const units = FINES_FINANCE_BUSINESS_UNIT_REF_DATA_MOCK.refData;
     const original = structuredClone(units);
     expect(mapBusinessUnitsToOptions(units)).toEqual([
-      { name: 'Camberwell Green', value: '0046' },
-      { name: 'Camden and Islington', value: '0034' },
-      { name: 'N E Region', value: '0047' },
-      { name: 'West London', value: '0042' },
+      { name: 'Camberwell Green', value: '77' },
+      { name: 'Camden and Islington', value: '65' },
+      { name: 'N E Region', value: '78' },
+      { name: 'West London', value: '73' },
     ]);
     expect(units).toEqual(original);
     expect(mapBusinessUnitsToOptions([])).toEqual([]);
@@ -40,7 +40,7 @@ describe('Finance business-unit options', () => {
       },
     ];
     expect(getPermittedBusinessUnitOptions(FINES_FINANCE_BUSINESS_UNIT_REF_DATA_MOCK.refData, users)).toEqual([
-      { name: 'Camberwell Green', value: '0046' },
+      { name: 'Camberwell Green', value: '77' },
     ]);
   });
 

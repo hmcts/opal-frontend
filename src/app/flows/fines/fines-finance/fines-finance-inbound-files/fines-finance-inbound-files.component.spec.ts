@@ -205,8 +205,32 @@ describe('FinesFinanceInboundFilesComponent', () => {
     httpMock.expectNone((req) => req.url === '/opal-file-handling-service/interface-files');
   });
 
-  it('offers only permitted business units using codes rather than IDs', () => {
-    expect(component.businessUnits).toEqual([{ name: 'Camberwell Green', value: '0046' }]);
+  it('resolves every returned business-unit ID into a separate GOV.UK list item', async () => {
+    fixture.detectChanges();
+    httpMock
+      .expectOne((req) => req.url === '/opal-file-handling-service/interface-files')
+      .flush({
+        number_of_results: 1,
+        interface_files: [
+          { ...FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files![0], business_unit_ids: [78, 77, 999, 65] },
+        ],
+      });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const cell = fixture.nativeElement.querySelector('td#business-unit-0') as HTMLTableCellElement;
+    expect(cell.classList).toContain('govuk-table__cell');
+    expect(cell.querySelectorAll('ul.govuk-list')).toHaveLength(1);
+    expect(Array.from(cell.querySelectorAll('li'), (item) => item.textContent?.trim())).toEqual([
+      'N E Region',
+      'Camberwell Green',
+      '999',
+      'Camden and Islington',
+    ]);
+  });
+
+  it('offers only permitted business units using IDs rather than codes', () => {
+    expect(component.businessUnits).toEqual([{ name: 'Camberwell Green', value: '77' }]);
   });
 
   it('offers no business units when reference data is absent', () => {
@@ -236,7 +260,7 @@ describe('FinesFinanceInboundFilesComponent', () => {
       dateTimeDisplay: '20 Oct 2026 at 13:00',
       Title: 'allpay_1001.xml',
       Type: 'RAW',
-      'Business unit': 'Camberwell Green',
+      'Business unit': ['Camberwell Green'],
       Source: 'Allpay',
       Status: 'Ready',
       Actions: 'Download',
@@ -248,7 +272,7 @@ describe('FinesFinanceInboundFilesComponent', () => {
       Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('thead th')).map((cell) =>
         cell.textContent?.trim(),
       ),
-    ).toEqual(['Date and time', 'Title', 'Type', 'Business unit', 'Source', 'Status', 'Action']);
+    ).toEqual(['Date and time', 'Title', 'Type', 'Business unit', 'Source', 'Status', 'Actions']);
     const rows = component.tableData();
     fixture.detectChanges();
     expect(component.tableData()).toBe(rows);
@@ -268,7 +292,7 @@ describe('FinesFinanceInboundFilesComponent', () => {
       descending: ['NatWest', 'Allpay DD', 'Allpay', 'Allpay'],
     },
     {
-      heading: 'Action',
+      heading: 'Actions',
       cellIndex: 6,
       ascending: ['', 'Download', 'Download', 'Download'],
       descending: ['Download', 'Download', 'Download', ''],
@@ -323,12 +347,12 @@ describe('FinesFinanceInboundFilesComponent', () => {
       .flush(FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK);
     const filters = fixture.debugElement.query(By.directive(CustomFileInterfaceViewerFiltersComponent))
       .componentInstance as CustomFileInterfaceViewerFiltersComponent;
-    filters.filtersForm.patchValue({ businessUnit: '0046', source: 'ALLPAY', fileType: 'TRANSFORMED_JSON' });
+    filters.filtersForm.patchValue({ businessUnit: '77', source: 'ALLPAY', fileType: 'TRANSFORMED_JSON' });
     filters.filtersForm.markAsDirty();
     fixture.detectChanges();
     (fixture.nativeElement.querySelector('#refresh-reports-button') as HTMLButtonElement).click();
     const request = httpMock.expectOne((req) => req.url === '/opal-file-handling-service/interface-files');
-    expect(request.request.params.get('business_unit_code')).toBe('0046');
+    expect(request.request.params.get('business_unit_id')).toBe('77');
     expect(request.request.params.get('source')).toBe('ALLPAY');
     expect(request.request.params.get('type')).toBe('TRANSFORMED_JSON');
     request.flush({ number_of_results: 0, interface_files: [] });
@@ -486,10 +510,10 @@ describe('FinesFinanceInboundFilesComponent', () => {
     await selectFilterOption('business-unit', 'Camberwell Green');
     await selectFilterOption('source', 'Allpay');
     await selectFilterOption('type', 'RAW');
-    expect(filters.filtersForm.controls.businessUnit.value).toBe('0046');
+    expect(filters.filtersForm.controls.businessUnit.value).toBe('77');
     (fixture.nativeElement.querySelector('#refresh-reports-button') as HTMLButtonElement).click();
     const selected = httpMock.expectOne((req) => req.url === '/opal-file-handling-service/interface-files');
-    expect(selected.request.params.get('business_unit_code')).toBe('0046');
+    expect(selected.request.params.get('business_unit_id')).toBe('77');
     expect(selected.request.params.get('source')).toBe('ALLPAY');
     expect(selected.request.params.get('type')).toBe('SOURCE');
     selected.flush({
@@ -497,7 +521,11 @@ describe('FinesFinanceInboundFilesComponent', () => {
       interface_files: [FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files![0]],
     });
     fixture.detectChanges();
-    expect(component.tableData()?.every((row) => row['Business unit'] === 'Camberwell Green')).toBe(true);
+    expect(
+      component
+        .tableData()
+        ?.every((row) => row['Business unit']?.length === 1 && row['Business unit'][0] === 'Camberwell Green'),
+    ).toBe(true);
 
     await selectFilterOption('business-unit', 'All business units');
     await selectFilterOption('source', 'All sources');
@@ -508,7 +536,7 @@ describe('FinesFinanceInboundFilesComponent', () => {
     expect(filters.filtersForm.controls.dateFilter.value).toBe('last7Days');
     (fixture.nativeElement.querySelector('#refresh-reports-button') as HTMLButtonElement).click();
     const all = httpMock.expectOne((req) => req.url === '/opal-file-handling-service/interface-files');
-    expect(all.request.params.has('business_unit_code')).toBe(false);
+    expect(all.request.params.has('business_unit_id')).toBe(false);
     expect(all.request.params.has('source')).toBe(false);
     expect(all.request.params.get('type')).toBe('SOURCE,TRANSFORMED_JSON');
     expect(all.request.params.get('from_date')).toBe('2026-10-13T23:00:00');

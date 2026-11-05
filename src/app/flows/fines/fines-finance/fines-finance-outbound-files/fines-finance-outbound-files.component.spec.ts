@@ -170,14 +170,38 @@ describe('FinesFinanceOutboundFilesComponent', () => {
     httpMock.expectNone((req) => req.url === searchUrl);
   });
 
+  it('resolves every returned business-unit ID into a separate GOV.UK list item', async () => {
+    fixture.detectChanges();
+    httpMock
+      .expectOne((req) => req.url === '/opal-file-handling-service/interface-files')
+      .flush({
+        number_of_results: 1,
+        interface_files: [
+          { ...FINES_FINANCE_OUTBOUND_FILES_RESPONSE_MOCK.interface_files![0], business_unit_ids: [78, 77, 999, 65] },
+        ],
+      });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const cell = fixture.nativeElement.querySelector('td#business-unit-0') as HTMLTableCellElement;
+    expect(cell.classList).toContain('govuk-table__cell');
+    expect(cell.querySelectorAll('ul.govuk-list')).toHaveLength(1);
+    expect(Array.from(cell.querySelectorAll('li'), (item) => item.textContent?.trim())).toEqual([
+      'N E Region',
+      'Camberwell Green',
+      '999',
+      'Camden and Islington',
+    ]);
+  });
+
   it('offers permitted business units alphabetically while resolving names for every returned row', () => {
     expect(component.businessUnits).toEqual([
-      { name: 'Camberwell Green', value: '0046' },
-      { name: 'Camden and Islington', value: '0034' },
+      { name: 'Camberwell Green', value: '77' },
+      { name: 'Camden and Islington', value: '65' },
     ]);
     fixture.detectChanges();
     httpMock.expectOne((req) => req.url === searchUrl).flush(FINES_FINANCE_OUTBOUND_FILES_RESPONSE_MOCK);
-    expect(component.tableData()?.find((row) => row['File ID'] === 2002)?.['Business unit']).toBe('N E Region');
+    expect(component.tableData()?.find((row) => row['File ID'] === 2002)?.['Business unit']).toEqual(['N E Region']);
   });
 
   it('displays outbound columns and dates descending, with ready and failed downloads but no in-progress action', async () => {
@@ -190,7 +214,7 @@ describe('FinesFinanceOutboundFilesComponent', () => {
       'Date and time': Date.parse('2026-10-20T12:00:00Z'),
       dateTimeDisplay: '20 Oct 2026 at 13:00',
       Title: 'ant_2001.csv',
-      'Business unit': 'Camberwell Green',
+      'Business unit': ['Camberwell Green'],
       Target: 'ANT CSV',
       Status: 'Ready',
       Actions: 'Download',
@@ -202,7 +226,7 @@ describe('FinesFinanceOutboundFilesComponent', () => {
       'Business unit',
       'Target',
       'Status',
-      'Action',
+      'Actions',
     ]);
     expect(
       Array.from(element.querySelectorAll('tbody tr')).map((row) => row.querySelectorAll('td')[1]?.textContent),
@@ -218,7 +242,7 @@ describe('FinesFinanceOutboundFilesComponent', () => {
     expect(element.querySelector('tbody')?.textContent).toContain('In-Progress');
   });
 
-  it('sorts the final Action column in both directions through its heading button', async () => {
+  it('sorts the final Actions column in both directions through its heading button', async () => {
     fixture.detectChanges();
     httpMock.expectOne((req) => req.url === searchUrl).flush(FINES_FINANCE_OUTBOUND_FILES_RESPONSE_MOCK);
     await fixture.whenStable();
@@ -231,7 +255,7 @@ describe('FinesFinanceOutboundFilesComponent', () => {
         row.querySelector('td:last-child')?.textContent?.trim(),
       );
 
-    expect(button.textContent?.trim()).toBe('Action');
+    expect(button.textContent?.trim()).toBe('Actions');
     button.click();
     fixture.detectChanges();
     expect(header.getAttribute('aria-sort')).toBe('ascending');
@@ -250,7 +274,7 @@ describe('FinesFinanceOutboundFilesComponent', () => {
     fixture.detectChanges();
     httpMock.expectOne((req) => req.url === searchUrl).flush(FINES_FINANCE_OUTBOUND_FILES_RESPONSE_MOCK);
     filters().filtersForm.patchValue({
-      businessUnit: '0046',
+      businessUnit: '77',
       dateFilter: 'dateRange',
       dateFrom: '01/10/2026',
       dateTo: '05/10/2026',
@@ -259,7 +283,7 @@ describe('FinesFinanceOutboundFilesComponent', () => {
     fixture.detectChanges();
     refreshButton().click();
     const request = httpMock.expectOne((req) => req.url === searchUrl);
-    expect(request.request.params.get('business_unit_code')).toBe('0046');
+    expect(request.request.params.get('business_unit_id')).toBe('77');
     expect(request.request.params.get('from_date')).toBe('2026-09-30T23:00:00');
     expect(request.request.params.get('to_date')).toBe('2026-10-05T22:59:59.999999');
     expect(request.request.params.get('source')).toBe('OPAL');
@@ -271,7 +295,7 @@ describe('FinesFinanceOutboundFilesComponent', () => {
         {
           ...FINES_FINANCE_OUTBOUND_FILES_RESPONSE_MOCK.interface_files![0],
           interface_file_id: 2006,
-          business_unit_codes: ['0047', '0046'],
+          business_unit_ids: [78, 77],
           file_name: 'multiple-units.csv',
         },
       ],
@@ -288,13 +312,13 @@ describe('FinesFinanceOutboundFilesComponent', () => {
   it('keeps the submitted business-unit selection while edits are made during a pending search', () => {
     fixture.detectChanges();
     httpMock.expectOne((req) => req.url === searchUrl).flush(FINES_FINANCE_OUTBOUND_FILES_RESPONSE_MOCK);
-    filters().filtersForm.controls.businessUnit.setValue('0046');
+    filters().filtersForm.controls.businessUnit.setValue('77');
     fixture.detectChanges();
     refreshButton().click();
     const submitted = httpMock.expectOne((req) => req.url === searchUrl);
-    expect(submitted.request.params.get('business_unit_code')).toBe('0046');
+    expect(submitted.request.params.get('business_unit_id')).toBe('77');
 
-    filters().filtersForm.controls.businessUnit.setValue('0034');
+    filters().filtersForm.controls.businessUnit.setValue('65');
     submitted.flush({
       number_of_results: 1,
       interface_files: [FINES_FINANCE_OUTBOUND_FILES_RESPONSE_MOCK.interface_files![0]],
@@ -302,11 +326,11 @@ describe('FinesFinanceOutboundFilesComponent', () => {
     fixture.detectChanges();
 
     expect(component.tableData()?.map((row) => row['File ID'])).toEqual([2001]);
-    expect(filters().filtersForm.controls.businessUnit.value).toBe('0034');
+    expect(filters().filtersForm.controls.businessUnit.value).toBe('65');
 
     refreshButton().click();
     const next = httpMock.expectOne((req) => req.url === searchUrl);
-    expect(next.request.params.get('business_unit_code')).toBe('0034');
+    expect(next.request.params.get('business_unit_id')).toBe('65');
     next.flush({
       number_of_results: 1,
       interface_files: [FINES_FINANCE_OUTBOUND_FILES_RESPONSE_MOCK.interface_files![2]],
@@ -371,7 +395,7 @@ describe('FinesFinanceOutboundFilesComponent', () => {
       '#custom-file-interface-viewer-business-unit-autocomplete',
     ) as HTMLInputElement;
     for (const [name, code] of [
-      ['Camberwell Green', '0046'],
+      ['Camberwell Green', '77'],
       ['All business units', ''],
     ]) {
       input.value = '';
@@ -390,7 +414,7 @@ describe('FinesFinanceOutboundFilesComponent', () => {
       expect(filters().filtersForm.controls.businessUnit.value).toBe(code);
       refreshButton().click();
       const request = httpMock.expectOne((req) => req.url === searchUrl);
-      expect(request.request.params.get('business_unit_code')).toBe(code || null);
+      expect(request.request.params.get('business_unit_id')).toBe(code || null);
       expect(request.request.params.get('source')).toBe('OPAL');
       expect(request.request.params.get('not_target')).toBe('OPAL');
       request.flush(
@@ -413,13 +437,13 @@ describe('FinesFinanceOutboundFilesComponent', () => {
     const router = TestBed.inject(Router);
     const route = router.url;
     const navigate = vi.spyOn(router, 'navigate');
-    filters().filtersForm.controls.businessUnit.setValue('0046');
+    filters().filtersForm.controls.businessUnit.setValue('77');
     filters().filtersForm.markAsDirty();
     fixture.detectChanges();
     refreshButton().click();
     const failed = httpMock.expectOne((req) => req.url === searchUrl);
     const criteria = failed.request.params.toString();
-    expect(failed.request.params.get('business_unit_code')).toBe('0046');
+    expect(failed.request.params.get('business_unit_id')).toBe('77');
     failed.flush({}, { status: 500, statusText: 'Search failed' });
     fixture.detectChanges();
     expect(component.tableData()).toBe(rows);
@@ -441,24 +465,24 @@ describe('FinesFinanceOutboundFilesComponent', () => {
   it('cancels superseded searches and the pending request when leaving the page', () => {
     fixture.detectChanges();
     const initial = httpMock.expectOne((req) => req.url === searchUrl);
-    filters().filtersForm.controls.businessUnit.setValue('0046');
+    filters().filtersForm.controls.businessUnit.setValue('77');
     filters().filtersForm.markAsDirty();
     fixture.detectChanges();
     refreshButton().click();
     const refreshed = httpMock.expectOne((req) => req.url === searchUrl);
     expect(initial.cancelled).toBe(true);
-    expect(refreshed.request.params.get('business_unit_code')).toBe('0046');
+    expect(refreshed.request.params.get('business_unit_id')).toBe('77');
     refreshed.flush({
       number_of_results: 1,
       interface_files: [FINES_FINANCE_OUTBOUND_FILES_RESPONSE_MOCK.interface_files![0]],
     });
     expect(component.tableData()?.map((row) => row['File ID'])).toEqual([2001]);
-    filters().filtersForm.controls.businessUnit.setValue('0034');
+    filters().filtersForm.controls.businessUnit.setValue('65');
     filters().filtersForm.markAsDirty();
     fixture.detectChanges();
     refreshButton().click();
     const pending = httpMock.expectOne((req) => req.url === searchUrl);
-    expect(pending.request.params.get('business_unit_code')).toBe('0034');
+    expect(pending.request.params.get('business_unit_id')).toBe('65');
     fixture.destroy();
     expect(pending.cancelled).toBe(true);
   });
