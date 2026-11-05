@@ -4,7 +4,7 @@ import { FINES_ACC_APR_ROUTING_PATHS } from '../../fines-acc-apr-manage/constant
 
 export const finesAccAprAddChangeModeGuard: CanActivateFn = (route) => {
   const mode = route.paramMap.get('mode');
-  if (mode === FINES_ACC_APR_ADD_CHANGE_MODES.ADD) {
+  if (mode === FINES_ACC_APR_ADD_CHANGE_MODES.ADD || mode === FINES_ACC_APR_ADD_CHANGE_MODES.CHANGE) {
     return true;
   }
 
