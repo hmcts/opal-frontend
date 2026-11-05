@@ -10,14 +10,14 @@ import {
 } from './fines-finance-payload-map-interface-files.utils';
 
 const businessUnits: IAlphagovAccessibleAutocompleteItem[] = [
-  { name: 'Camberwell Green', value: '0046' },
+  { name: 'Camberwell Green', value: '77' },
   { name: 'Unpadded unit', value: 46 },
   { name: 'Numeric unit', value: 99 },
 ];
 
 describe('getInterfaceFileDisplayName', () => {
   it.each([
-    { name: 'a known string code', value: '0046', expected: 'Camberwell Green' },
+    { name: 'a known string code', value: '77', expected: 'Camberwell Green' },
     { name: 'a numeric option value', value: '99', expected: 'Numeric unit' },
     { name: 'an unpadded numeric code', value: '46', expected: 'Unpadded unit' },
     { name: 'an unmatched code with leading zeros', value: '046', expected: '046' },
@@ -29,7 +29,7 @@ describe('getInterfaceFileDisplayName', () => {
   });
 
   it('retains the original code when reference options are empty', () => {
-    expect(getInterfaceFileDisplayName('0046', [])).toBe('0046');
+    expect(getInterfaceFileDisplayName('77', [])).toBe('77');
   });
 
   it('leaves reference option values and ordering unchanged', () => {
@@ -39,7 +39,7 @@ describe('getInterfaceFileDisplayName', () => {
     Object.freeze(options);
 
     expect(getInterfaceFileDisplayName('99', options)).toBe('Numeric unit');
-    expect(getInterfaceFileDisplayName('0046', options)).toBe('Camberwell Green');
+    expect(getInterfaceFileDisplayName('77', options)).toBe('Camberwell Green');
     expect(options).toEqual(original);
   });
 });
@@ -66,7 +66,7 @@ describe('mapInterfaceFileToTableData', () => {
       'Date and time': Date.parse('2026-10-20T12:00:00Z'),
       dateTimeDisplay: '20 Oct 2026 at 13:00',
       Title: 'allpay_1001.xml',
-      'Business unit': 'Camberwell Green',
+      'Business unit': ['Camberwell Green'],
       Status: 'Ready',
       Actions: 'Download',
     });
@@ -86,21 +86,20 @@ describe('mapInterfaceFileToTableData', () => {
 
   it.each([
     {
-      name: 'multiple codes in API order, including duplicates and unknown codes',
-      codes: ['99', '0046', 'UNKNOWN', '99'],
-      expected: 'Numeric unit, Camberwell Green, UNKNOWN, Numeric unit',
+      name: 'multiple IDs in API order, including duplicates and unknown IDs',
+      ids: [99, 77, 999, 99],
+      expected: ['Numeric unit', 'Camberwell Green', '999', 'Numeric unit'],
     },
-    { name: 'an empty list', codes: [], expected: '' },
-    { name: 'a missing list', codes: null, expected: null },
-    { name: 'an unknown code', codes: ['UNLISTED'], expected: 'UNLISTED' },
-  ])('maps business units for $name', ({ codes, expected }) => {
-    const row = mapInterfaceFileToTableData({ ...file, business_unit_codes: codes }, businessUnits, dateService);
-
-    expect(row['Business unit']).toBe(expected);
+    { name: 'an empty list', ids: [], expected: [] },
+    { name: 'a missing list', ids: null, expected: null },
+    { name: 'an unknown ID', ids: [999], expected: ['999'] },
+  ])('maps business units for $name', ({ ids, expected }) => {
+    const row = mapInterfaceFileToTableData({ ...file, business_unit_ids: ids }, businessUnits, dateService);
+    expect(row['Business unit']).toEqual(expected);
   });
 
-  it('retains business-unit codes when reference data is unavailable', () => {
-    expect(mapInterfaceFileToTableData(file, [], dateService)['Business unit']).toBe('0046');
+  it('retains business-unit IDs when reference data is unavailable', () => {
+    expect(mapInterfaceFileToTableData(file, [], dateService)['Business unit']).toEqual(['77']);
   });
 
   it.each([
@@ -184,11 +183,11 @@ describe('mapInterfaceFileToTableData', () => {
     },
   );
 
-  it('leaves file metadata, business-unit codes and reference options unchanged', () => {
+  it('leaves file metadata, business-unit IDs and reference options unchanged', () => {
     const originalFile = structuredClone(file);
     const options = structuredClone(businessUnits);
     const originalOptions = structuredClone(options);
-    Object.freeze(file.business_unit_codes);
+    Object.freeze(file.business_unit_ids);
     Object.freeze(file);
     options.forEach((option) => Object.freeze(option));
     Object.freeze(options);

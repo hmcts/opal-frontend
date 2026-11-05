@@ -43,7 +43,7 @@ function getFileDateTime(timestamp: string | null, dateService: DateService): Fi
 /**
  * Maps metadata shared by inbound and outbound Finance file rows.
  * @param file - File metadata returned by the service.
- * @param businessUnits - Reference names for business-unit codes.
+ * @param businessUnits - Reference names for business-unit IDs.
  * @param dateService - Timestamp parser and local formatter.
  * @returns Common cells with Download or an empty action label for sorting, retaining files without a business unit.
  */
@@ -58,7 +58,7 @@ export function mapInterfaceFileToTableData(
     ...getFileDateTime(file.created_datetime, dateService),
     Title: file.file_name,
     'Business unit':
-      file.business_unit_codes?.map((code) => getInterfaceFileDisplayName(code, businessUnits)).join(', ') ?? null,
+      file.business_unit_ids?.map((id) => getInterfaceFileDisplayName(String(id), businessUnits) ?? String(id)) ?? null,
     Status: status,
     Actions: canDownloadInterfaceFile({ 'File ID': file.interface_file_id, Status: status }) ? 'Download' : '',
   };

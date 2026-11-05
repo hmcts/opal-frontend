@@ -15,7 +15,7 @@ export class FinesFinanceInterfaceFilesPayloadService {
   /**
    * Resolves every business-unit name for displaying returned API codes.
    * @param businessUnits - Resolved business-unit reference data.
-   * @returns Alphabetic name/code options, preserving leading zeros.
+   * @returns Alphabetic name/ID options for the autocomplete.
    */
   public mapBusinessUnitsToOptions(businessUnits: IOpalFinesBusinessUnit[]): IAlphagovAccessibleAutocompleteItem[] {
     return mapBusinessUnitsToOptions(businessUnits);

@@ -35,7 +35,7 @@ class TestInterfaceFilesComponent extends FinesFinanceInterfaceFilesBaseDirectiv
 
   public readonly buildSearchParams = vi.fn(
     (formData: IFinesFinanceInterfaceFilesForm): IOpalFileHandlingInterfaceFileParams =>
-      formData.businessUnit ? { business_unit_code: formData.businessUnit } : {},
+      formData.businessUnit ? { business_unit_id: Number(formData.businessUnit) } : {},
   );
 
   public readonly mapFilesToTableData = vi
@@ -52,14 +52,14 @@ describe('FinesFinanceInterfaceFilesBaseDirective', () => {
   let fixture: ComponentFixture<TestInterfaceFilesComponent>;
   let component: TestInterfaceFilesComponent;
   let request: Subject<IOpalFileHandlingInterfaceFilesRefData>;
-  const permittedOptions = [{ name: 'Camberwell Green', value: '0046' }];
-  const displayOptions = [...permittedOptions, { name: 'N E Region', value: '0047' }];
+  const permittedOptions = [{ name: 'Camberwell Green', value: '77' }];
+  const displayOptions = [...permittedOptions, { name: 'N E Region', value: '78' }];
   const mappedRow: ICustomFileInterfaceViewerTableData = {
     'File ID': 1001,
     'Date and time': Date.parse('2026-10-20T12:00:00Z'),
     dateTimeDisplay: '20 Oct 2026 at 13:00',
     Title: 'allpay_1001.xml',
-    'Business unit': 'Camberwell Green',
+    'Business unit': ['Camberwell Green'],
     Status: 'Ready',
     Actions: null,
   };
@@ -149,14 +149,14 @@ describe('FinesFinanceInterfaceFilesBaseDirective', () => {
     getInterfaceFilesRefData.mockReturnValue(refreshRequest);
 
     component.onFormSubmit({
-      formData: { ...component.initialFilterState, businessUnit: '0046' },
+      formData: { ...component.initialFilterState, businessUnit: '77' },
       nestedFlow: false,
     });
     refreshRequest.error(new Error('Search failed'));
 
     expect(component.tableData()).toBe(mappedRows);
     expect(component.mapFilesToTableData).toHaveBeenCalledTimes(1);
-    expect(getInterfaceFilesRefData).toHaveBeenLastCalledWith({ business_unit_code: '0046' });
+    expect(getInterfaceFilesRefData).toHaveBeenLastCalledWith({ business_unit_id: 77 });
   });
 
   it('retries after failure and cancels the previous search so only the latest response is used', () => {
@@ -180,19 +180,19 @@ describe('FinesFinanceInterfaceFilesBaseDirective', () => {
   });
 
   it('sends a filter snapshot and maps the API response when the submitted form changes', () => {
-    const formData = { ...component.initialFilterState, businessUnit: '0046' };
+    const formData = { ...component.initialFilterState, businessUnit: '77' };
     const submittedFormData = { ...formData };
     const mappedRows = [{ ...mappedRow, Title: 'selected-file.xml' }];
     component.mapFilesToTableData.mockReturnValue(mappedRows);
 
     component.onFormSubmit({ formData, nestedFlow: false });
-    formData.businessUnit = '0034';
+    formData.businessUnit = '65';
     request.next(FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK);
 
     expect(component.tableData()).toBe(mappedRows);
     expect(component.buildSearchParams).toHaveBeenCalledExactlyOnceWith(submittedFormData);
     expect(component.buildSearchParams.mock.calls[0][0]).not.toBe(formData);
-    expect(getInterfaceFilesRefData).toHaveBeenCalledExactlyOnceWith({ business_unit_code: '0046' });
+    expect(getInterfaceFilesRefData).toHaveBeenCalledExactlyOnceWith({ business_unit_id: 77 });
     expect(component.mapFilesToTableData).toHaveBeenCalledExactlyOnceWith(
       FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files,
       displayOptions,

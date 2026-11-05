@@ -12,7 +12,7 @@ import { FINES_FINANCE_OUTBOUND_FILES_TARGET_OPTIONS } from '../constants/fines-
 /**
  * Adds recipient labels to the shared Finance file metadata.
  * @param files - Returned files, or an absent list.
- * @param businessUnits - Reference names for business-unit codes.
+ * @param businessUnits - Reference names for business-unit IDs.
  * @param dateService - Timestamp parser and local formatter.
  * @returns Localized rows for the outbound viewer.
  */

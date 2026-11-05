@@ -39,7 +39,7 @@ describe('buildOutboundFilesSearchParams', () => {
       buildOutboundFilesSearchParams(
         {
           ...FINES_FINANCE_INTERFACE_FILES_INITIAL_FILTER_STATE,
-          businessUnit: '0046',
+          businessUnit: '77',
           dateFilter: 'customDays',
           days: '14',
         },
@@ -47,7 +47,7 @@ describe('buildOutboundFilesSearchParams', () => {
       ),
     ).toEqual({
       ...scope,
-      business_unit_code: '0046',
+      business_unit_id: 77,
       from_date: '2026-10-06T23:00:00',
       to_date: '2026-10-20T22:59:59.999999',
     });
@@ -109,19 +109,19 @@ describe('buildOutboundFilesSearchParams', () => {
     ).toEqual(scope);
   });
 
-  it.each(['0046', '0034'])(
-    'preserves the selected business-unit code %s without mutating the form',
-    (businessUnit) => {
-      const form = Object.freeze({
-        ...FINES_FINANCE_INTERFACE_FILES_INITIAL_FILTER_STATE,
-        businessUnit,
-        dateFilter: null,
-      });
+  it.each(['77', '65'])('serializes the selected business-unit ID %s without mutating the form', (businessUnit) => {
+    const form = Object.freeze({
+      ...FINES_FINANCE_INTERFACE_FILES_INITIAL_FILTER_STATE,
+      businessUnit,
+      dateFilter: null,
+    });
 
-      expect(buildOutboundFilesSearchParams(form, dateService)).toEqual({ ...scope, business_unit_code: businessUnit });
-      expect(form.businessUnit).toBe(businessUnit);
-    },
-  );
+    expect(buildOutboundFilesSearchParams(form, dateService)).toEqual({
+      ...scope,
+      business_unit_id: Number(businessUnit),
+    });
+    expect(form.businessUnit).toBe(businessUnit);
+  });
 
   it('keeps each search independent when a caller changes excluded statuses', () => {
     const form = { ...FINES_FINANCE_INTERFACE_FILES_INITIAL_FILTER_STATE };

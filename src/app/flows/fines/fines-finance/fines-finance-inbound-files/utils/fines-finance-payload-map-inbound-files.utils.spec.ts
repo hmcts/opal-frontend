@@ -12,8 +12,8 @@ describe('mapInboundFilesToTableData', () => {
   const file = FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files![0];
   const options: IFinesFinanceInboundFilesTableOptions = {
     businessUnits: [
-      { name: 'Camberwell Green', value: '0046' },
-      { name: 'Numeric code', value: 99 },
+      { name: 'Camberwell Green', value: '77' },
+      { name: 'Numeric ID', value: 99 },
     ],
     sources: [{ name: 'Allpay', value: 'ALLPAY' }],
     types: [{ name: 'RAW', value: 'SOURCE' }],
@@ -29,8 +29,8 @@ describe('mapInboundFilesToTableData', () => {
     vi.restoreAllMocks();
   });
 
-  it('resolves known labels and joins multiple business units with a raw fallback', () => {
-    const response = { ...file, business_unit_codes: ['0046', '99', 'UNKNOWN'] };
+  it('resolves business-unit ID arrays to names with an unknown-ID fallback', () => {
+    const response = { ...file, business_unit_ids: [77, 99, 999] };
     const original = structuredClone(response);
     expect(mapInboundFilesToTableData([response], options, dateService)).toEqual([
       {
@@ -39,7 +39,7 @@ describe('mapInboundFilesToTableData', () => {
         dateTimeDisplay: '20 Oct 2026 at 13:00',
         Title: 'allpay_1001.xml',
         Type: 'RAW',
-        'Business unit': 'Camberwell Green, Numeric code, UNKNOWN',
+        'Business unit': ['Camberwell Green', 'Numeric ID', '999'],
         Source: 'Allpay',
         Status: 'Ready',
         Actions: 'Download',
@@ -54,7 +54,7 @@ describe('mapInboundFilesToTableData', () => {
 
   it('retains unknown values and missing nullable fields', () => {
     const unknown = mapInboundFilesToTableData(
-      [{ ...file, type: 'OTHER_TYPE', source: 'OTHER_SOURCE', status: 'UNKNOWN_STATUS', business_unit_codes: [] }],
+      [{ ...file, type: 'OTHER_TYPE', source: 'OTHER_SOURCE', status: 'UNKNOWN_STATUS', business_unit_ids: [] }],
       options,
       dateService,
     )[0];
@@ -62,7 +62,7 @@ describe('mapInboundFilesToTableData', () => {
       Type: 'OTHER_TYPE',
       Source: 'OTHER_SOURCE',
       Status: 'UNKNOWN_STATUS',
-      'Business unit': '',
+      'Business unit': [],
     });
     const missing = mapInboundFilesToTableData(
       [
@@ -73,7 +73,7 @@ describe('mapInboundFilesToTableData', () => {
           type: null,
           source: null,
           status: null,
-          business_unit_codes: null,
+          business_unit_ids: null,
           created_datetime: null,
         },
       ],
