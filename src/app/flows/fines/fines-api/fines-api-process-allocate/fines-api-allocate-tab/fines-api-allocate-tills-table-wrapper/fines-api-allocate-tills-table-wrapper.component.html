@@ -1,0 +1,32 @@
+<app-fines-api-selectable-table
+  [rows]="rows()"
+  [getRowId]="getRowId"
+  [getRowDomId]="getRowDomId"
+  [getCellId]="getCellId"
+  [rowLabel]="rowLabel"
+  [content]="content"
+  [columns]="columns"
+  [defaultSort]="defaultSort"
+  [cellTemplate]="cell"
+  [selectedIds]="selectedIds()"
+  (selectedIdsChange)="selectedIds.set($event)"
+/>
+<ng-template #cell let-row let-column="column">
+  @switch (column.key) {
+    @case (content.columns.tillNumber) {
+      <a class="govuk-link" [routerLink]="[tillSummaryRoute, row.tillId]">{{ row[column.key] }}</a>
+    }
+    @case (content.columns.amount) {
+      <opal-lib-custom-accessible-monetary [value]="row[column.key]" />
+    }
+    @case (content.columns.errors) {
+      {{ row[column.key] ?? '—' }}
+    }
+    @case (content.columns.dateProcessed) {
+      {{ row.dateProcessedDisplay }}
+    }
+    @default {
+      {{ row[column.key] }}
+    }
+  }
+</ng-template>

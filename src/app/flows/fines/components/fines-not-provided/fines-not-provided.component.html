@@ -1,3 +1,10 @@
-<p class="govuk-!-margin-0" [ariaLabel]="defaultValues.notProvidedAriaLabel">
-  {{ defaultValues.notProvidedLabel }}
-</p>
+@if (release1a1_2Enabled()) {
+  <p class="govuk-!-margin-0">
+    <span aria-hidden="true">{{ defaultValues.notProvidedLabel }}</span>
+    <span class="govuk-visually-hidden">{{ defaultValues.notProvidedAriaLabel }}</span>
+  </p>
+} @else {
+  <p class="govuk-!-margin-0" [ariaLabel]="defaultValues.notProvidedAriaLabel">
+    {{ defaultValues.notProvidedLabel }}
+  </p>
+}

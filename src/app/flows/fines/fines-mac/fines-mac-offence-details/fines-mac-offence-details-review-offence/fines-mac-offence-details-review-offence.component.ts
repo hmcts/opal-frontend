@@ -11,6 +11,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details.service';
 import { IOpalFinesOffencesRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences-ref-data.interface';
 import { IOpalFinesOffences } from '@services/fines/opal-fines-service/interfaces/opal-fines-offences.interface';
+import { HeadingLevel } from '@hmcts/opal-frontend-common/types';
 
 type OffenceDisplayDetails = Pick<IOpalFinesOffences, 'cjs_code' | 'offence_title'>;
 
@@ -32,6 +33,7 @@ export class FinesMacOffenceDetailsReviewOffenceComponent implements OnInit {
   @Input({ required: true }) offence!: IFinesMacOffenceDetailsForm;
   @Input({ required: true }) impositionRefData!: IOpalFinesResultsRefData;
   @Input({ required: true }) majorCreditorRefData!: IOpalFinesMajorCreditorRefData;
+  @Input({ required: true }) headingLevel!: HeadingLevel;
   @Input({ required: false }) showActions!: boolean;
   @Input({ required: false }) isReadOnly: boolean = false;
   @Output() public actionClicked = new EventEmitter<{ actionName: string; offenceId: number }>();

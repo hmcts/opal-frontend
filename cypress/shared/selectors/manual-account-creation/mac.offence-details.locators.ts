@@ -332,7 +332,7 @@ export const MacOffenceDetailsSearchOffenceResultsLocators = {
   actAndSectionCell: 'td[opal-lib-moj-sortable-table-row-data][id="actAndSection"]',
   usedFromCell: 'td[opal-lib-moj-sortable-table-row-data][id="usedFrom"]',
   usedToCell: 'td[opal-lib-moj-sortable-table-row-data][id="usedTo"]',
-  copyCodeLink: 'a.govuk-link',
+  copyCodeButton: 'td[id="actions"] button',
   backLink: 'opal-lib-govuk-back-link',
   paginationElement: 'opal-lib-moj-pagination',
   paginationText: '.moj-pagination__results',

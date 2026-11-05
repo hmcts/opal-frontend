@@ -139,7 +139,11 @@ describe('FinesMacAccountDetailsComponent', () => {
   it(
     'Simple page changes should be less than 250ms - Personal Details Page',
     {
-      tags: [...buildTags('@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'), '@JIRA-TEST-KEY:PO-8739'],
+      tags: [
+        ...buildTags('@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'),
+        '@JIRA-TEST-KEY:PO-8739',
+        '@extendedTest',
+      ],
     },
     () => {
       interceptAuthenticatedUser();
@@ -169,7 +173,11 @@ describe('FinesMacAccountDetailsComponent', () => {
   it(
     'Simple page changes should be less than 250ms - Contact Details Page',
     {
-      tags: [...buildTags('@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'), '@JIRA-TEST-KEY:PO-8740'],
+      tags: [
+        ...buildTags('@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'),
+        '@JIRA-TEST-KEY:PO-8740',
+        '@extendedTest',
+      ],
     },
     () => {
       interceptAuthenticatedUser();
@@ -199,7 +207,11 @@ describe('FinesMacAccountDetailsComponent', () => {
   it(
     'Simple page changes should be less than 250ms - Employer Details Page',
     {
-      tags: [...buildTags('@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'), '@JIRA-TEST-KEY:PO-8741'],
+      tags: [
+        ...buildTags('@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'),
+        '@JIRA-TEST-KEY:PO-8741',
+        '@extendedTest',
+      ],
     },
     () => {
       interceptAuthenticatedUser();
@@ -229,7 +241,11 @@ describe('FinesMacAccountDetailsComponent', () => {
   it(
     'Simple page changes should be less than 250ms - Payment Terms Page',
     {
-      tags: [...buildTags('@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'), '@JIRA-TEST-KEY:PO-8742'],
+      tags: [
+        ...buildTags('@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'),
+        '@JIRA-TEST-KEY:PO-8742',
+        '@extendedTest',
+      ],
     },
     () => {
       interceptAuthenticatedUser();
@@ -259,7 +275,11 @@ describe('FinesMacAccountDetailsComponent', () => {
   it(
     'Simple page changes should be less than 250ms - Comments and Notes Page',
     {
-      tags: [...buildTags('@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'), '@JIRA-TEST-KEY:PO-8743'],
+      tags: [
+        ...buildTags('@JIRA-EPIC:PO-2479', '@JIRA-NFR:PO-2547', '@JIRA-STORY:PO-2547'),
+        '@JIRA-TEST-KEY:PO-8743',
+        '@extendedTest',
+      ],
     },
     () => {
       interceptAuthenticatedUser();

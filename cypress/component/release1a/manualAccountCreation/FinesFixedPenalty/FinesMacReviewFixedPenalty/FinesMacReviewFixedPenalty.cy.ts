@@ -23,7 +23,10 @@ import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonInte
 import { ACCOUNT_SESSION_USER_STATE_MOCK } from '../mocks/user_state_mock';
 import { FINES_DEFAULT_VALUES } from 'src/app/flows/fines/constants/fines-default-values.constant';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
-import { RELEASE_1A_1_1_FEATURE_FLAG } from 'src/app/flows/fines/constants/release-feature-flags.constant';
+import {
+  RELEASE_1A_1_1_FEATURE_FLAG,
+  RELEASE_1A_1_2_FEATURE_FLAG,
+} from 'src/app/flows/fines/constants/release-feature-flags.constant';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
@@ -93,7 +96,10 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
               title: null,
               operationId: null,
             });
-            store.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: true });
+            store.setFeatureFlags({
+              [RELEASE_1A_1_1_FEATURE_FLAG]: true,
+              [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+            });
             return store;
           },
         },
@@ -260,7 +266,8 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       adultNotProvidedFields.forEach((selector) => {
         cy.get(selector)
           .find(`${DOM_ELEMENTS.notProvided} p`)
-          .should('have.attr', 'aria-label', FINES_DEFAULT_VALUES.notProvidedAriaLabel);
+          .find('.govuk-visually-hidden')
+          .should('have.text', FINES_DEFAULT_VALUES.notProvidedAriaLabel);
       });
     },
   );
@@ -390,7 +397,8 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       companyNotProvidedFields.forEach((selector) => {
         cy.get(selector)
           .find(`${DOM_ELEMENTS.notProvided} p`)
-          .should('have.attr', 'aria-label', FINES_DEFAULT_VALUES.notProvidedAriaLabel);
+          .find('.govuk-visually-hidden')
+          .should('have.text', FINES_DEFAULT_VALUES.notProvidedAriaLabel);
       });
     },
   );
@@ -442,7 +450,10 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
           'account_type',
           'account_status',
           'status_message',
+          'source',
         );
+        expect(request.request.body.source).to.equal('MAC');
+        expect(request.request.body).not.to.have.property('source_reference');
         expect(request.request.body.status_message).to.equal(null);
 
         expect(request.request.body.account.defendant.company_flag).to.equal(false);
@@ -516,7 +527,10 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
           'account_type',
           'account_status',
           'status_message',
+          'source',
         );
+        expect(request.request.body.source).to.equal('MAC');
+        expect(request.request.body).not.to.have.property('source_reference');
         expect(request.request.body.status_message).to.equal(null);
 
         // Check company defendant details

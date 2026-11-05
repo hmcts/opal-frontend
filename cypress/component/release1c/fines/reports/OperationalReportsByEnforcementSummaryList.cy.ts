@@ -3,6 +3,7 @@ import { mount } from 'cypress/angular';
 import { BehaviorSubject, of } from 'rxjs';
 
 import { FinesReportsSummaryListComponent } from 'src/app/flows/fines/fines-reports/fines-reports-summary-list/fines-reports-summary-list.component';
+import { FinesReportsStore } from 'src/app/flows/fines/fines-reports/stores/fines-reports.store';
 import { OpalFines } from 'src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { ReportsSummaryListLocators as L } from '../../../../shared/selectors/reports-summary-list.locators';
@@ -65,6 +66,7 @@ describe(
       return mount(FinesReportsSummaryListComponent, {
         providers: [
           provideRouter([]),
+          FinesReportsStore,
           {
             provide: ActivatedRoute,
             useValue: activatedRoute,
@@ -242,13 +244,15 @@ describe(
 
     // AC6a–d require permission-filtered API data and will be covered by a follow-up E2E test.
     it(
-      'AC6: defaults the business unit filter to All business units',
-      { tags: ['@JIRA-STORY:PO-2307', '@JIRA-EPIC:PO-2248', '@JIRA-TEST-KEY:PO-9928'] },
+      'PO-11125: defaults the business unit filter to blank while keeping All business units selectable',
+      { tags: ['@JIRA-STORY:PO-11125', '@JIRA-TEST-KEY:PO-9928'] },
       () => {
         setupComponent();
 
-        cy.get(L.filters.businessUnitAutocomplete).should('be.visible').and('have.value', 'All business units');
-        cy.get(L.filters.businessUnit).should('have.value', 'all');
+        cy.get(L.filters.businessUnitAutocomplete).should('be.visible').and('have.value', '');
+        cy.get(L.filters.businessUnit).should('have.value', '');
+        cy.get(L.filters.businessUnitAutocomplete).click();
+        cy.contains(L.filters.businessUnitOptions, 'All business units').should('be.visible');
       },
     );
 

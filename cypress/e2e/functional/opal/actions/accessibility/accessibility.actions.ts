@@ -35,9 +35,21 @@ export class AccessibilityActions {
       undefined,
       undefined,
       (violations) => {
-        const filteredViolations = exemptionIds.size
-          ? violations.filter((violation) => !exemptionIds.has(violation.id))
-          : violations;
+        const filteredViolations = violations
+          .filter((violation) => !exemptionIds.has(violation.id))
+          .map((violation) => {
+            if (violation.id !== 'region') {
+              return violation;
+            }
+
+            // The skip link intentionally precedes the page landmarks so users can bypass the header and navigation.
+            const nodes = violation.nodes.filter(
+              (node) => !node.target.some((target) => target.includes('opal-lib-govuk-skip-link')),
+            );
+
+            return { ...violation, nodes };
+          })
+          .filter((violation) => violation.nodes.length > 0);
 
         if (exemptionIds.size) {
           const exemptedIds = violations

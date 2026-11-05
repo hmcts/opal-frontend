@@ -35,6 +35,7 @@ import { finesAccStateGuard } from './guards/fines-acc-state-guard/fines-acc-sta
 import { FinesAccBusinessUnitResolver } from './resolvers/fines-acc-business-unit.resolver';
 import { FINES_ACCOUNT_ROUTE_TYPES } from './constants/fines-acc-route-types.constant';
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
+import { fetchAccCourtsResolver } from './resolvers/fetch-acc-courts-resolver/fetch-acc-courts.resolver';
 
 describe('fines acc routes', () => {
   const defendantRoute = routing.find((route) => route.path === `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`);
@@ -131,6 +132,8 @@ describe('fines acc routes', () => {
         `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.add}`,
     );
     const componentType = (await addRoute?.loadComponent?.()) as unknown as { ɵfac: () => unknown };
+
+    expect(addRoute?.resolve?.['courtsRefData']).toBe(fetchAccCourtsResolver);
 
     const componentInstance = TestBed.runInInjectionContext(() => componentType.ɵfac());
 

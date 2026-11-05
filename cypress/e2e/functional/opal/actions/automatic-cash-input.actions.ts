@@ -8,6 +8,7 @@ const OUTSTANDING_AUTO_PAYMENT_COUNTS_ENDPOINT = '/opal-fines-service/business-u
 const OUTSTANDING_AUTO_PAYMENT_COUNTS_ALIAS = 'outstandingAutoPaymentCounts';
 const INTERFACE_JOBS_SUMMARY_ENDPOINT = '/opal-fines-service/interface-jobs/summary';
 const INTERFACE_JOBS_SUMMARY_ALIAS = 'interfaceJobsSummary';
+const IGNORED_INTERFACE_JOBS_SUMMARY_ALIAS = 'ignoredInterfaceJobsSummary';
 const PROCESS_AND_ALLOCATE_PAYMENTS_PERMISSION_ID = 16;
 const ELIGIBLE_PROCESS_STATUSES = ['CREATED', 'FAILED'];
 
@@ -156,9 +157,16 @@ export class AutomaticCashInputActions {
   public selectBusinessUnitsAndContinueWithStubbedProcessFiles(): void {
     let selectedBusinessUnits: BusinessUnitCount[] = [];
 
-    cy.intercept({ method: 'GET', pathname: INTERFACE_JOBS_SUMMARY_ENDPOINT }, (request) => {
-      request.reply(buildInterfaceJobsForSelectedBusinessUnits(selectedBusinessUnits));
-    }).as(INTERFACE_JOBS_SUMMARY_ALIAS);
+    cy.intercept(
+      {
+        method: 'GET',
+        pathname: INTERFACE_JOBS_SUMMARY_ENDPOINT,
+        query: { statuses: ELIGIBLE_PROCESS_STATUSES.join(',') },
+      },
+      (request) => {
+        request.reply(buildInterfaceJobsForSelectedBusinessUnits(selectedBusinessUnits));
+      },
+    ).as(INTERFACE_JOBS_SUMMARY_ALIAS);
 
     cy.wait(`@${OUTSTANDING_AUTO_PAYMENT_COUNTS_ALIAS}`).then((interception) => {
       expect(interception.response?.statusCode, 'outstanding auto-payment counts response').to.eq(200);
@@ -235,5 +243,121 @@ export class AutomaticCashInputActions {
     cy.get(AutomaticCashInputLocators.processFileCheckbox(1000)).check({ force: true });
     cy.get(AutomaticCashInputLocators.processFilesProcessButton).should('be.visible').click();
     cy.get(AutomaticCashInputLocators.confirmProcessPage).should('be.visible');
+  }
+
+  /** Selects live displayed BUs and loads deterministic ignored-file data for the past fourteen days. */
+  public selectBusinessUnitsAndContinueWithStubbedIgnoredFiles(): void {
+    cy.intercept({ method: 'GET', pathname: INTERFACE_JOBS_SUMMARY_ENDPOINT }, (request) => {
+      if (request.query.statuses === 'IGNORED') {
+        request.alias = IGNORED_INTERFACE_JOBS_SUMMARY_ALIAS;
+        request.reply({
+          interface_jobs: [
+            {
+              business_unit_name: 'Bexley',
+              completed_datetime: '2026-10-11T13:30:00',
+              created_datetime: '2026-10-10T12:17:04',
+              file_name: 'bexley-ignored.xml',
+              interface_file_id: 201,
+              interface_job_id: 2001,
+              source: 'NATWEST',
+              status: 'IGNORED',
+            },
+            {
+              business_unit_name: 'Camden and Islington',
+              completed_datetime: '2026-10-10T13:30:00',
+              created_datetime: '2026-10-09T12:17:04',
+              file_name: 'camden-ignored.xml',
+              interface_file_id: 202,
+              interface_job_id: 2002,
+              source: 'ALLPAY',
+              status: 'IGNORED',
+            },
+            {
+              business_unit_name: 'Derby',
+              completed_datetime: '2026-10-09T13:30:00',
+              created_datetime: '2026-10-08T12:17:04',
+              file_name: 'derby-ignored.xml',
+              interface_file_id: 203,
+              interface_job_id: 2003,
+              source: 'DWP',
+              status: 'IGNORED',
+            },
+            {
+              business_unit_name: 'West London',
+              completed_datetime: '2026-10-08T13:30:00',
+              created_datetime: '2026-10-07T12:17:04',
+              file_name: 'west-london-ignored.xml',
+              interface_file_id: 204,
+              interface_job_id: 2004,
+              source: 'ALLPAY',
+              status: 'IGNORED',
+            },
+          ],
+        });
+        return;
+      }
+
+      request.alias = INTERFACE_JOBS_SUMMARY_ALIAS;
+      request.reply({ interface_jobs: [] });
+    });
+
+    cy.wait(`@${OUTSTANDING_AUTO_PAYMENT_COUNTS_ALIAS}`).then((interception) => {
+      const responseBody = interception.response?.body as OutstandingAutoPaymentCountsResponse;
+      const selectedBusinessUnits = responseBody.business_units.slice(0, 2);
+
+      expect(selectedBusinessUnits, 'at least two displayed business units').to.have.length.at.least(2);
+      cy.wrap(selectedBusinessUnits.map(({ business_unit_id }) => business_unit_id)).as('ignoredBusinessUnitIds');
+      selectedBusinessUnits.forEach(({ business_unit_id }) => {
+        cy.get(AutomaticCashInputLocators.businessUnitCheckbox(business_unit_id)).check({ force: true });
+      });
+      cy.get(AutomaticCashInputLocators.continueButton).click();
+      cy.get(AutomaticCashInputLocators.ignoredFilesTabLink).click().should('have.attr', 'aria-current', 'page');
+    });
+  }
+
+  /** Verifies ignored-file details, counter, request scope, and file-summary navigation. */
+  public assertIgnoredFilesAndOpenFileSummary(): void {
+    cy.wait(`@${IGNORED_INTERFACE_JOBS_SUMMARY_ALIAS}`).then((interception) => {
+      expect(interception.response?.statusCode, 'ignored files response').to.eq(200);
+      expect(interception.request.query.statuses, 'ignored file status').to.eq('IGNORED');
+      expect(interception.request.query.interface_name, 'ignored file interface').to.eq('payments_in');
+      expect(interception.request.query.completed_date_from, 'fourteen-day start timestamp').to.match(
+        /^\d{4}-\d{2}-\d{2}T/,
+      );
+      expect(interception.request.query.completed_date_to, 'fourteen-day end timestamp').to.match(
+        /^\d{4}-\d{2}-\d{2}T/,
+      );
+      cy.get('@ignoredBusinessUnitIds').then((businessUnitIds) => {
+        expect(interception.request.query.business_unit_ids, 'selected business units').to.eq(
+          (businessUnitIds as number[]).join(','),
+        );
+      });
+    });
+
+    cy.get(AutomaticCashInputLocators.ignoredFilesTabLink).should('have.attr', 'aria-current', 'page');
+    cy.get(AutomaticCashInputLocators.ignoredFilesCount).should(($count) => {
+      expect($count.text().trim()).to.eq('4');
+    });
+    cy.get(AutomaticCashInputLocators.ignoredFilesTable).should('be.visible');
+    cy.get(AutomaticCashInputLocators.ignoredFileNameLinks).then(($links) => {
+      expect(
+        [...$links].map((link) => link.textContent?.trim()),
+        'backend-provided default order',
+      ).to.deep.equal(['bexley-ignored.xml', 'camden-ignored.xml', 'derby-ignored.xml', 'west-london-ignored.xml']);
+    });
+    const expectedBusinessUnits: Array<[number, string]> = [
+      [2001, 'Bexley'],
+      [2002, 'Camden and Islington'],
+      [2003, 'Derby'],
+      [2004, 'West London'],
+    ];
+    expectedBusinessUnits.forEach(([interfaceJobId, businessUnitName]) => {
+      cy.get(AutomaticCashInputLocators.ignoredFileCell(interfaceJobId, 2)).should(($cell) => {
+        expect($cell.text().trim()).to.eq(businessUnitName);
+      });
+    });
+    cy.get(AutomaticCashInputLocators.ignoredFileNameLink(2002)).click();
+    cy.location('pathname').should('eq', '/fines/auto-payment-in/file-summary/2002');
+    cy.contains('h1', 'Till/File summary report').should('be.visible');
   }
 }

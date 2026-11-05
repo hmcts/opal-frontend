@@ -50,5 +50,9 @@ export const DOM_ELEMENTS = {
 
   errorSummary: '.govuk-error-summary',
   cancelLink: '.govuk-link',
+  courtCodeAutocomplete: '#fines-acc-enf-action-add_courtcode-autocomplete',
+  courtCodeOptions:
+    '#fines-acc-enf-action-add_courtcode-autocomplete__listbox .autocomplete__option:not(.autocomplete__option--no-results)',
+  prisonDetentionFieldset: '#fines-acc-enf-action-add_prisondetention',
   addEnforcementActionButton: '#submitForm',
 } as const;
