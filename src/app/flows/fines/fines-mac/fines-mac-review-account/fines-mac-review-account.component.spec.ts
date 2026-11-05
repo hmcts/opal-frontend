@@ -46,6 +46,7 @@ const ADD_ACCOUNT_REQUEST: IFinesMacAddAccountRequestPayload = {
   account_type: FINES_MAC_PAYLOAD_ADD_ACCOUNT.account_type!,
   account_status: FINES_MAC_PAYLOAD_ADD_ACCOUNT.account_status,
   status_message: null,
+  source: 'MAC',
 };
 
 const REPLACE_ACCOUNT_REQUEST: IFinesMacReplaceAccountRequestPayload = {
