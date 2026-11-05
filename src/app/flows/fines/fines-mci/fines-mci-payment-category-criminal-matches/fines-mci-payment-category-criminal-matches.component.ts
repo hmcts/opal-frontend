@@ -124,6 +124,10 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
     });
   }
 
+  /**
+   * Formats individuals as SURNAME, First names and companies using their organisation name.
+   * Returns null when no name is available so the table can display its missing-value marker.
+   */
   private formatDefendantName(account: IFinesMciCriminalAccount): string | null {
     if (account.organisation ?? account.organisation_flag) {
       return account.organisation_name;
@@ -139,6 +143,10 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
     return `${surname}${separator}${firstnames}`;
   }
 
+  /**
+   * Formats aliases on separate lines in ascending alias-number order without mutating the response.
+   * Aliases without a number appear last; missing or empty aliases return null for the table marker.
+   */
   private formatAliases(account: IFinesMciCriminalAccount): string | null {
     if (!account.aliases || account.aliases.length === 0) {
       return null;
@@ -160,6 +168,10 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
     return aliases.filter(Boolean).join('\n') || null;
   }
 
+  /**
+   * Maps API accounts to sortable table rows, retaining account IDs for selection and enquiry links.
+   * Company dates of birth and absent collection orders use the table's missing-value marker.
+   */
   private mapAccountsToTableData(
     accounts: IFinesMciCriminalAccount[],
   ): IFinesMciPaymentCategoryCriminalMatchesTableWrapperTableData[] {
@@ -177,15 +189,23 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
     }));
   }
 
+  /** Returns to the search form, where stored criteria and the submitted tab are restored. */
   protected navigateBack(): void {
     this.router.navigate(this.criminalSearchRoute);
   }
 
+  /** Cancels pending detail loading and clears the selected account while retaining search criteria. */
   protected handleSearchAgain(): void {
     this.cancelAccountDetailsRequest.next();
     this.finesMciStore.setSelectedCriminalAccount(null);
   }
 
+  /**
+   * Updates the selected IDs and clears validation feedback and previously loaded account details.
+   * Cancels pending detail loading so a superseded selection cannot trigger navigation.
+   *
+   * @param accountSelection The account ID and its updated checkbox state.
+   */
   protected onAccountSelectionChanged(
     accountSelection: IFinesMciPaymentCategoryCriminalMatchesTableWrapperAccountSelection,
   ): void {
@@ -203,6 +223,11 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
     this.finesMciStore.setSelectedCriminalAccount(null);
   }
 
+  /**
+   * Requires exactly one selected account, then loads and stores its details before navigating.
+   * Ignores duplicate submissions while loading. Failed or empty responses keep the user here
+   * and scroll to the top, where shared HTTP error handling displays any applicable feedback.
+   */
   protected continue(): void {
     if (this.isLoadingAccountDetails()) {
       return;

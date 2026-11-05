@@ -10,7 +10,14 @@ export class FinesMciCriminalAccountService {
   private readonly opalFines = inject(OpalFines);
   private readonly store = inject(FinesMciStore);
 
-  /** Loads the selected account details for the next payment page. */
+  /**
+   * On subscription, selects the account and fetches fresh at-a-glance and header data in parallel.
+   * Stores both responses only if this account is still selected when both requests complete.
+   *
+   * @param account The search result selected for the next payment page.
+   * @returns The at-a-glance response after both requests complete, or an empty observable for a null ID.
+   * Request errors propagate to the caller.
+   */
   public loadSelectedAccountDetails(
     account: IFinesMciCriminalAccount,
   ): Observable<IOpalFinesAccountDefendantAtAGlance> {
