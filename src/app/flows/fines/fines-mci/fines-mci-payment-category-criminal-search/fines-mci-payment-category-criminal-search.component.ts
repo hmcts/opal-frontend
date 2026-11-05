@@ -252,10 +252,16 @@ export class FinesMciPaymentCategoryCriminalSearchComponent extends AbstractForm
    * Normalises names before checking exclusive criteria and field validation.
    * Sends combined criteria to the conflict outcome; otherwise navigates only when the form is valid.
    * Empty or invalid searches remain on this page, with field errors handled by the base form.
+   * Ignores further submissions while matches navigation is pending to avoid cancelling the active search.
    *
    * @param event The search form submission event.
    */
   public override handleFormSubmit(event: SubmitEvent): void {
+    if (this.isContinuing) {
+      event.preventDefault();
+      return;
+    }
+
     this.trimSearchNames();
     this.form.updateValueAndValidity({ emitEvent: false });
 
