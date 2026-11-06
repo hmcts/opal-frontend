@@ -13,6 +13,8 @@ import { AccountDetailsMinorCreditorActions } from '../actions/account-details/d
 import { AccountDetailsPaymentTermsActions } from '../actions/account-details/details.payment-terms.actions';
 import { AccountDetailsFixedPenaltyActions } from '../actions/account-details/details.fixed-penalty.actions';
 import { AccountDetailsHistoryActions } from '../actions/account-details/details.history.actions';
+import { AccountDetailsImpositionsActions } from '../actions/account-details/details.impositions.actions';
+import { AccountDetailsConsolidatedAccountsActions } from '../actions/account-details/details.consolidated-accounts.actions';
 import { AccountSearchIndividualsLocators as L } from '../../../../shared/selectors/account-search/account.search.individuals.locators';
 import { AccountSearchCompaniesLocators as C } from '../../../../shared/selectors/account-search/account.search.companies.locators';
 import { ForceSingleTabNavigation } from '../../../../support/utils/navigation';
@@ -23,10 +25,15 @@ import { EditParentGuardianDetailsActions } from '../actions/account-details/edi
 import { EditMinorCreditorDetailsActions } from '../actions/account-details/edit.minor-creditor-details.actions';
 import { AccountConvertActions } from '../actions/account-details/convert.account.actions';
 import { AccountDetailsEnforcementActions } from '../actions/account-details/details.enforcement.actions';
+import { DOM_ELEMENTS as ENF_ACTION_ADD } from '../../../../component/release1b/fineAccountEnquiry/accountEnquiry/locators/account.enquiry.enforcement-action-add.locators';
 import { RemoveParentGuardianActions } from '../actions/account-details/remove.parent-guardian.actions';
 import { createScopedLogger, createScopedSyncLogger } from '../../../../support/utils/log.helper';
 import { EtagUpdate } from '../actions/draft-account/draft-account.api';
 import { MINOR_CREDITOR_AMEND_ELEMENTS } from '../../../../shared/selectors/account-enquiry/account.enquiry.minor-creditor-amend.locators';
+import { AccountDetailsResponsiveLayoutActions } from '../actions/account-details/details.responsive-layout.actions';
+import type { DataTable } from '@badeball/cypress-cucumber-preprocessor';
+import { applyUniqPlaceholder } from '../../../../support/utils/stringUtils';
+import { captureUatTechnicalEvidenceScreenshot } from '../../../../support/utils/screenshot';
 
 const logAE = createScopedLogger('AccountEnquiryFlow');
 const logAESync = createScopedSyncLogger('AccountEnquiryFlow');
@@ -35,6 +42,97 @@ type MinorCreditorAmendmentSearchResult = {
   amendments: Array<Record<string, unknown>>;
   count: number | undefined;
   recordType: string;
+};
+
+type LegacyDefendantTabName =
+  | 'Defendant'
+  | 'Parent or guardian'
+  | 'Payment terms'
+  | 'Enforcement'
+  | 'Impositions'
+  | 'History and notes'
+  | 'Fixed penalty';
+
+type LegacyCompanyTabName = 'Defendant' | 'Payment terms';
+
+const normalizeComparisonText = (value: unknown): string =>
+  String(value ?? '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+
+const isLegacyAccountMode = (): boolean => {
+  const legacyEnabled = Cypress.env('LEGACY_ENABLED');
+
+  if (typeof legacyEnabled === 'string') {
+    const normalizedLegacyEnabled = legacyEnabled.trim().toLowerCase();
+
+    if (['true', 'legacy', '1'].includes(normalizedLegacyEnabled)) {
+      return true;
+    }
+  } else if (legacyEnabled === true) {
+    return true;
+  }
+
+  const testMode = String(Cypress.env('TEST_MODE') ?? '')
+    .trim()
+    .toLowerCase();
+  const appMode = String(Cypress.env('DEV_DEFAULT_APP_MODE') ?? Cypress.env('DEFAULT_APP_MODE') ?? '')
+    .trim()
+    .toLowerCase();
+
+  return testMode === 'legacy' || appMode === 'legacy';
+};
+
+const expectTextToContainIgnoringCase = (actual: unknown, expected: string, message: string): void => {
+  expect(actual, message).to.be.a('string');
+  expect(normalizeComparisonText(actual), message).to.contain(normalizeComparisonText(expected));
+};
+
+type LegacyDefendantAccountFixture = {
+  header?: {
+    accountNumber?: string;
+    name?: string;
+    summary?: Record<string, string>;
+    metrics?: Record<string, string>;
+  };
+  atAGlance?: {
+    defendant?: Record<string, string>;
+    parentGuardian?: Record<string, string>;
+    company?: Record<string, string>;
+    paymentTerms?: Record<string, string>;
+    enforcementStatus?: Record<string, string>;
+    comments?: {
+      comment?: string;
+      lines?: string[];
+    };
+  };
+  defendantTab?: {
+    defendant?: Record<string, string>;
+    company?: Record<string, string>;
+    contact?: Record<string, string>;
+    employer?: Record<string, string>;
+  };
+  parentGuardianTab?: {
+    header?: string;
+    parentGuardian?: Record<string, string>;
+  };
+  paymentTermsTab?: Record<string, string>;
+  enforcementTab?: {
+    overview?: Record<string, string>;
+    lastEnforcementAction?: Record<string, string>;
+    noOutstandingEnforcementActionMessage?: string;
+  };
+  impositionsTab?: {
+    rows?: string[][];
+    emptyState?: string;
+  };
+  historyAndNotesTab?: {
+    columns?: string[];
+    rows?: Array<Record<string, string>>;
+    noResultsMessage?: string;
+  };
+  fixedPenaltyTab?: Record<string, string>;
 };
 
 /**
@@ -56,6 +154,9 @@ export class AccountEnquiryFlow {
   /** Timeout (ms) for route transitions back to the defendant details shell. */
   private static readonly DETAILS_NAV_WAIT_MS = 45_000;
   private static readonly BASE_API_PATH = '/opal-fines-service';
+  private static readonly AT_A_GLANCE_TAB_SELECTOR =
+    'app-fines-acc-defendant-details-at-a-glance-tab, app-fines-acc-minor-creditor-details-at-a-glance-tab';
+  private static readonly MINOR_CREDITOR_RESULTS_SELECTOR = 'app-fines-sa-results-minor-creditor-table-wrapper';
 
   /** Waits for the account header summary call to succeed and the At a glance tab to render. */
   private waitForHeaderSummaryAndAtAGlance(): void {
@@ -66,9 +167,8 @@ export class AccountEnquiryFlow {
       }
     });
 
-    cy.get('app-fines-acc-defendant-details-at-a-glance-tab', { timeout: AccountEnquiryFlow.WAIT_MS }).should(
-      'be.visible',
-    );
+    cy.get(AccountEnquiryFlow.AT_A_GLANCE_TAB_SELECTOR, { timeout: AccountEnquiryFlow.WAIT_MS }).should('be.visible');
+    captureUatTechnicalEvidenceScreenshot('at-a-glance-tab');
   }
 
   private readonly searchIndividuals = new AccountSearchIndividualsActions();
@@ -95,6 +195,19 @@ export class AccountEnquiryFlow {
   private readonly enforcement = new AccountDetailsEnforcementActions();
   private readonly removeParentGuardian = new RemoveParentGuardianActions();
   private readonly historyAndNotes = new AccountDetailsHistoryActions();
+  private readonly impositionsDetails = new AccountDetailsImpositionsActions();
+  private readonly consolidatedAccounts = new AccountDetailsConsolidatedAccountsActions();
+  private readonly responsiveLayout = new AccountDetailsResponsiveLayoutActions();
+
+  /**
+   * Loads the legacy defendant validation fixture used by the Search and Matches journeys.
+   *
+   * @param fixturePath - Cypress fixture path relative to `cypress/fixtures`.
+   * @returns Chainable resolving to the parsed fixture object.
+   */
+  private loadLegacyDefendantAccountFixture(fixturePath: string): Cypress.Chainable<LegacyDefendantAccountFixture> {
+    return cy.fixture<LegacyDefendantAccountFixture>(fixturePath.trim());
+  }
 
   /**
    * Ensures the test is on the Individuals Account Search page.
@@ -119,10 +232,10 @@ export class AccountEnquiryFlow {
    * @returns Chainable resolving to a trimmed account number or `null` when absent/empty.
    */
   private resolveAccountNumberFromAlias(): Cypress.Chainable<string | null> {
-    return cy
-      .get('@etagUpdate', { timeout: 0 })
-      .then((etag: any) => (etag ? (etag.accountNumber ?? null) : null))
-      .then((n: string | null) => (n && String(n).trim() ? String(n).trim() : null));
+    return cy.then(function (this: { etagUpdate?: EtagUpdate }): string | null {
+      const accountNumber = this.etagUpdate?.accountNumber ?? null;
+      return accountNumber && String(accountNumber).trim() ? String(accountNumber).trim() : null;
+    }) as Cypress.Chainable<string | null>;
   }
 
   /**
@@ -156,44 +269,44 @@ export class AccountEnquiryFlow {
    * Clicks the latest published account from the current results page.
    *
    * Behaviour:
-   *  - If `@etagUpdate` has an `accountNumber` and it's visible on the current page → click it.
-   *  - Otherwise → open the first row via {@link ResultsActions.openLatestPublished}.
-   *  - If the @etagUpdate account number is not on the current page, we paginate to find it.
+   *  - If the visible results are minor-creditor results, open the top matching minor-creditor row.
+   *  - If `@etagUpdate` has a defendant `accountNumber`, paginate to find and open it.
+   *  - Otherwise, open the first visible row via {@link ResultsActions.openLatestPublished}.
    */
   public clickLatestPublishedFromResultsOrAcrossPages(): void {
     logAE('method', 'clickLatestPublishedFromResultsOrAcrossPages()');
-    logAE('click', 'Click latest published account or matching @etagUpdate (current page only)');
+    logAE('click', 'Click latest visible result or matching @etagUpdate account');
 
-    cy.intercept('GET', '**/defendant-accounts/**/header-summary').as('headerSummary');
+    cy.intercept('GET', '**/header-summary').as('headerSummary');
     ForceSingleTabNavigation();
     this.results.waitForResultsTable();
 
-    this.resolveAccountNumberFromAlias().then((accOrNull) => {
-      if (!accOrNull) {
-        logAE('fallback', 'No @etagUpdate found → opening latest row');
+    cy.get('body', { timeout: AccountEnquiryFlow.WAIT_MS }).then(($body) => {
+      if ($body.find(`${AccountEnquiryFlow.MINOR_CREDITOR_RESULTS_SELECTOR}:visible`).length) {
+        logAE('match', 'Opening latest visible minor creditor result');
         this.results.openLatestPublished();
         this.waitForHeaderSummaryAndAtAGlance();
         return;
       }
 
-      const acc = accOrNull;
-      logAE('match', 'Opening account by number from @etagUpdate', { accountNumber: acc });
+      // Prefer the seeded account captured during draft setup; only use the first
+      // visible result when the scenario did not create or retain account metadata.
+      this.resolveAccountNumberFromAlias().then((accOrNull) => {
+        if (!accOrNull) {
+          logAE('fallback', 'No @etagUpdate found → opening latest row');
+          this.results.openLatestPublished();
+          this.waitForHeaderSummaryAndAtAGlance();
+          return;
+        }
 
-      // Wait for the specific account we just created; traverse pagination if needed.
-      this.results.openByAccountNumberAcrossPages(acc);
-      this.waitForHeaderSummaryAndAtAGlance();
+        const acc = accOrNull;
+        logAE('match', 'Opening account by number from @etagUpdate', { accountNumber: acc });
+
+        // Wait for the specific account we just created; traverse pagination if needed.
+        this.results.openByAccountNumberAcrossPages(acc);
+        this.waitForHeaderSummaryAndAtAGlance();
+      });
     });
-  }
-
-  /**
-   * Convenience flow: search by surname (no automatic click).
-   *
-   * @param surname - Surname to search for.
-   */
-  public searchBySurname(surname: string): void {
-    logAE('method', 'searchBySurname()');
-    logAE('flow', 'Search by surname', { surname });
-    this.searchByLastName(surname);
   }
 
   /**
@@ -204,8 +317,113 @@ export class AccountEnquiryFlow {
   public searchAndClickLatestBySurnameOpenLatestResult(surname: string): void {
     logAE('method', 'searchAndClickLatestBySurnameOpenLatestResult()');
     logAE('flow', 'Search and open latest by surname', { surname });
-    this.searchBySurname(surname);
+    this.searchByLastName(surname);
     this.clickLatestPublishedFromResultsOrAcrossPages();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the amend payment terms form.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantPaymentTermsAmendFormBySurname(surname: string): void {
+    logAE('method', 'openDefendantPaymentTermsAmendFormBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToPaymentTermsTab();
+    this.openPaymentTermsAmendForm();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the Payment terms tab.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantPaymentTermsTabBySurname(surname: string): void {
+    logAE('method', 'openDefendantPaymentTermsTabBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToPaymentTermsTab();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the Enforcement tab.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantEnforcementTabBySurname(surname: string): void {
+    logAE('method', 'openDefendantEnforcementTabBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToEnforcementTab();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the remove enforcement hold form.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantRemoveEnforcementHoldFormBySurname(surname: string): void {
+    logAE('method', 'openDefendantRemoveEnforcementHoldFormBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToEnforcementTab();
+    this.openRemoveEnforcementHoldForm();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the Collection Order status form.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantCollectionOrderStatusFormBySurname(surname: string): void {
+    logAE('method', 'openDefendantCollectionOrderStatusFormBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToEnforcementTab();
+    this.openChangeCollectionOrderStatusForm();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the add enforcement action form.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantAddEnforcementActionFormBySurname(surname: string): void {
+    logAE('method', 'openDefendantAddEnforcementActionFormBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToEnforcementTab();
+    this.openAddEnforcementActionForm();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the add enforcement override form.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantAddEnforcementOverrideFormBySurname(surname: string): void {
+    logAE('method', 'openDefendantAddEnforcementOverrideFormBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToEnforcementTab();
+    this.openAddEnforcementOverrideForm();
+  }
+
+  /**
+   * Opens the latest defendant account matching a surname and presents the change enforcement court form.
+   *
+   * @param surname - Surname to search for.
+   */
+  public openDefendantChangeEnforcementCourtFormBySurname(surname: string): void {
+    logAE('method', 'openDefendantChangeEnforcementCourtFormBySurname()', { surname });
+    this.searchAndClickLatestBySurnameOpenLatestResult(surname);
+    this.goToEnforcementTab();
+    this.openChangeEnforcementCourtForm();
+  }
+
+  /** Asserts that the user is on the FAE defendant account-details At a glance page. */
+  public assertOnDefendantAccountDetailsPage(): void {
+    logAE('assert', 'FAE defendant account-details page is visible');
+    cy.location('pathname', this.common.getPathTimeoutOptions()).should(
+      'match',
+      /\/fines\/account\/defendant\/\d+\/details$/,
+    );
+    this.detailsNav.assertAtAGlanceTabIsActive();
+    this.atAGlanceDetails.assertAtAGlancePageVisible();
   }
 
   /**
@@ -215,7 +433,7 @@ export class AccountEnquiryFlow {
    */
   public searchOpenLatestAndAssertHeader(surname: string, expectedHeader: string): void {
     logAE('method', 'searchOpenLatestAndAssertHeader()', { surname, expectedHeader });
-    this.searchBySurname(surname);
+    this.searchByLastName(surname);
     this.openLatestAndAssertHeader(expectedHeader);
   }
 
@@ -230,15 +448,40 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Opens the most recent account from the results (top row) and asserts navigation.
+   * Opens the seeded matching account from results when available.
+   * Falls back to the top row only when no seeded account metadata exists.
    */
   public openMostRecentFromResults(): void {
     logAE('method', 'openMostRecentFromResults()');
-    logAE('open', 'Opening most recent account from results');
+    logAE('open', 'Opening seeded matching account from results or falling back to top row');
+    this.clickLatestPublishedFromResultsOrAcrossPages();
+  }
+
+  /**
+   * Opens the single result matching all supplied result-table values.
+   * @param table Two-column table of optional result column/value pairs.
+   */
+  public openMatchingResultFromResults(table: DataTable): void {
+    const expectations = Object.fromEntries(
+      Object.entries(table.rowsHash()).map(([key, value]) => [key.trim(), applyUniqPlaceholder(String(value).trim())]),
+    );
+
+    logAE('method', 'openMatchingResultFromResults()', { expectations });
+    logAE('open', 'Opening result matching supplied column values');
 
     ForceSingleTabNavigation();
     this.results.waitForResultsTable();
-    this.results.openLatestPublished();
+    this.results.openByColumnValues(expectations);
+  }
+
+  /** Opens the associated defendant linked from the latest minor creditor result. */
+  public openLatestMinorCreditorDefendantFromResults(): void {
+    logAE('method', 'openLatestMinorCreditorDefendantFromResults()');
+    logAE('open', 'Opening associated defendant from latest minor creditor result');
+
+    ForceSingleTabNavigation();
+    this.results.waitForResultsTable();
+    this.results.openLatestMinorCreditorDefendant();
   }
 
   /**
@@ -268,6 +511,36 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Sets the browser viewport used for Account Details responsive checks.
+   *
+   * @param width - Viewport width in CSS pixels.
+   * @param height - Viewport height in CSS pixels.
+   */
+  public setResponsiveViewport(width: number, height: number): void {
+    this.responsiveLayout.setViewport(width, height);
+  }
+
+  /** Asserts that Account Details has no horizontal overflow at the current viewport. */
+  public assertNoHorizontalOverflow(): void {
+    this.responsiveLayout.assertNoHorizontalOverflow();
+  }
+
+  /** Asserts that the header action reflows below the account title. */
+  public assertHeaderActionReflowsBelowTitle(): void {
+    this.responsiveLayout.assertHeaderActionReflowsBelowTitle();
+  }
+
+  /** Asserts that the At a glance content columns stack vertically. */
+  public assertAtAGlanceColumnsStacked(): void {
+    this.responsiveLayout.assertAtAGlanceColumnsStacked();
+  }
+
+  /** Asserts that account information and summary metrics remain readable at the current viewport. */
+  public assertSummaryContentReadable(): void {
+    this.responsiveLayout.assertSummaryContentReadable();
+  }
+
+  /**
    * Navigates to the Defendant tab and asserts a specific section header.
    *
    * @param headerText - Expected section header text.
@@ -277,46 +550,6 @@ export class AccountEnquiryFlow {
     logAE('navigate', 'Navigating to Defendant tab and asserting section header', { headerText });
     this.detailsNav.goToDefendantTab();
     this.defendantDetails.assertSectionHeader(headerText);
-  }
-
-  /**
-   * Asserts the Defendant tab shows the convert-to-company action.
-   */
-  public assertConvertToCompanyActionVisible(): void {
-    logAE('method', 'assertConvertToCompanyActionVisible()');
-    this.defendantDetails.assertConvertToCompanyActionVisible();
-  }
-
-  /**
-   * Asserts the Defendant tab shows the convert-to-individual action.
-   */
-  public assertConvertToIndividualActionVisible(): void {
-    logAE('method', 'assertConvertToIndividualActionVisible()');
-    this.defendantDetails.assertConvertToIndividualActionVisible();
-  }
-
-  /**
-   * Asserts the Defendant tab shows the add parent or guardian action.
-   */
-  public assertAddParentGuardianActionVisible(): void {
-    logAE('method', 'assertAddParentGuardianActionVisible()');
-    this.defendantDetails.assertAddParentGuardianActionVisible();
-  }
-
-  /**
-   * Asserts the Defendant tab does not show the convert-to-company action.
-   */
-  public assertConvertToCompanyActionNotPresent(): void {
-    logAE('method', 'assertConvertToCompanyActionNotPresent()');
-    this.defendantDetails.assertConvertToCompanyActionNotPresent();
-  }
-
-  /**
-   * Asserts the visible convert action is not the company-convert label.
-   */
-  public assertConvertToCompanyActionTextNotPresent(): void {
-    logAE('method', 'assertConvertToCompanyActionTextNotPresent()');
-    this.defendantDetails.assertConvertToCompanyActionTextNotPresent();
   }
 
   /**
@@ -358,94 +591,6 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Asserts the convert-to-company confirmation page.
-   *
-   * @param expectedCaptionName - Expected defendant name shown in the caption.
-   */
-  public assertOnConvertToCompanyConfirmation(expectedCaptionName: string): void {
-    logAE('method', 'assertOnConvertToCompanyConfirmation()', { expectedCaptionName });
-    this.accountConvert.assertOnConvertToCompanyConfirmation(expectedCaptionName);
-  }
-
-  /**
-   * Confirms the convert-to-company action.
-   */
-  public confirmConvertToCompanyAccount(): void {
-    logAE('method', 'confirmConvertToCompanyAccount()');
-    this.accountConvert.confirmConvertToCompany();
-  }
-
-  /**
-   * Cancels the convert-to-company action.
-   */
-  public cancelConvertToCompanyAccount(): void {
-    logAE('method', 'cancelConvertToCompanyAccount()');
-    this.accountConvert.cancelConvertToCompany();
-  }
-
-  /**
-   * Asserts the convert-to-individual confirmation page.
-   *
-   * @param expectedCaptionName - Expected company name shown in the caption.
-   */
-  public assertOnConvertToIndividualConfirmation(expectedCaptionName: string): void {
-    logAE('method', 'assertOnConvertToIndividualConfirmation()', { expectedCaptionName });
-    this.accountConvert.assertOnConvertToIndividualConfirmation(expectedCaptionName);
-  }
-
-  /**
-   * Confirms the convert-to-individual action.
-   */
-  public confirmConvertToIndividualAccount(): void {
-    logAE('method', 'confirmConvertToIndividualAccount()');
-    this.accountConvert.confirmConvertToIndividual();
-  }
-
-  /**
-   * Cancels the convert-to-individual action.
-   */
-  public cancelConvertToIndividualAccount(): void {
-    logAE('method', 'cancelConvertToIndividualAccount()');
-    this.accountConvert.cancelConvertToIndividual();
-  }
-
-  /**
-   * Asserts the Company details form contains the expected pre-populated values.
-   *
-   * @param expectedFieldValues - Key/value map of ticket field labels to expected values.
-   */
-  public assertCompanyDetailsPrefilledValues(expectedFieldValues: Record<string, string>): void {
-    logAE('method', 'assertCompanyDetailsPrefilledValues()', expectedFieldValues);
-    this.editCompanyDetailsActions.assertPrefilledFieldValues(expectedFieldValues);
-  }
-
-  /**
-   * Asserts the convert flow lands on the Company details convert route.
-   */
-  public assertOnCompanyDetailsConvertRoute(): void {
-    logAE('method', 'assertOnCompanyDetailsConvertRoute()');
-    this.editCompanyDetailsActions.assertOnConvertRoute();
-  }
-
-  /**
-   * Asserts the convert flow lands on the Defendant details convert route.
-   */
-  public assertOnDefendantDetailsConvertRoute(): void {
-    logAE('method', 'assertOnDefendantDetailsConvertRoute()');
-    this.editDefendantDetailsActions.assertOnConvertRoute();
-  }
-
-  /**
-   * Asserts the Defendant details form contains the expected pre-populated values.
-   *
-   * @param expectedFieldValues - Key/value map of ticket field labels to expected values.
-   */
-  public assertDefendantDetailsPrefilledValues(expectedFieldValues: Record<string, string>): void {
-    logAE('method', 'assertDefendantDetailsPrefilledValues()', expectedFieldValues);
-    this.editDefendantDetailsActions.assertPrefilledFieldValues(expectedFieldValues);
-  }
-
-  /**
    * Completes the convert-to-company form by providing a company name and saving the form.
    *
    * @param companyName - Company name to use for the converted account.
@@ -470,58 +615,6 @@ export class AccountEnquiryFlow {
     this.editDefendantDetailsActions.updateFirstName(details.firstName);
     this.editDefendantDetailsActions.updateSurname(details.lastName);
     this.editDefendantDetailsActions.saveChanges();
-  }
-
-  /**
-   * Asserts the account details success banner contains the expected conversion message.
-   *
-   * @param expected - Expected banner text.
-   */
-  public assertAccountConversionSuccessMessage(expected: string): void {
-    logAE('method', 'assertAccountConversionSuccessMessage()', { expected });
-    this.detailsNav.assertSuccessBannerText(expected);
-  }
-
-  /**
-   * Asserts the company summary card is visible in the Defendant tab.
-   */
-  public assertCompanySummaryVisible(): void {
-    logAE('method', 'assertCompanySummaryVisible()');
-    this.editCompanyDetailsActions.assertCompanySummaryVisible();
-  }
-
-  /**
-   * Asserts the company summary card is not visible in the Defendant tab.
-   */
-  public assertCompanySummaryNotPresent(): void {
-    logAE('method', 'assertCompanySummaryNotPresent()');
-    this.editCompanyDetailsActions.assertCompanySummaryNotPresent();
-  }
-
-  /**
-   * Asserts the defendant summary card is visible in the Defendant tab.
-   */
-  public assertDefendantSummaryVisible(): void {
-    logAE('method', 'assertDefendantSummaryVisible()');
-    this.defendantDetails.assertDefendantSummaryVisible();
-  }
-
-  /**
-   * Asserts the defendant summary card is not visible in the Defendant tab.
-   */
-  public assertDefendantSummaryNotPresent(): void {
-    logAE('method', 'assertDefendantSummaryNotPresent()');
-    this.defendantDetails.assertDefendantSummaryNotPresent();
-  }
-
-  /**
-   * Asserts the primary email address shown in the contact card contains the expected value.
-   *
-   * @param expected - Expected email text.
-   */
-  public assertPrimaryEmailContains(expected: string): void {
-    logAE('method', 'assertPrimaryEmailContains()', { expected });
-    this.defendantDetails.assertPrimaryEmailContains(expected);
   }
 
   /**
@@ -557,14 +650,174 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Asserts the remove parent or guardian confirmation page is visible.
-   *
-   * @param expectedIdentifierText - Expected account identifier text fragment.
+   * Asserts the Change actions are visible on the Parent or guardian tab.
    */
-  public assertOnRemoveParentGuardianPage(expectedIdentifierText: string): void {
-    logAE('method', 'assertOnRemoveParentGuardianPage()', { expectedIdentifierText });
-    this.removeParentGuardian.assertOnRemoveParentGuardianConfirmation(expectedIdentifierText);
+  public assertChangeParentGuardianActionsVisible(): void {
+    logAE('method', 'assertChangeParentGuardianActionsVisible()');
+    this.detailsNav.goToParentGuardianTab();
+    this.parentGuardianDetails.assertChangeActionsVisible();
   }
+
+  /**
+   * Stubs the defendant header-summary response so the account renders as a restricted status.
+   *
+   * @param statusCode Restricted account status code to inject into the response.
+   */
+  public stubRestrictedParentGuardianStatusCode(statusCode: string): void {
+    logAE('intercept', 'Stubbing defendant header-summary restricted account status', { statusCode });
+
+    cy.intercept('GET', '**/defendant-accounts/**/header-summary', (req) => {
+      req.continue((res) => {
+        const body = res.body as { account_status_reference?: { account_status_code?: string } };
+
+        if (!body?.account_status_reference) {
+          throw new Error('Expected defendant header-summary response to include account_status_reference.');
+        }
+
+        body.account_status_reference.account_status_code = statusCode;
+        res.send({ body });
+      });
+    }).as('restrictedParentGuardianHeaderSummary');
+  }
+
+  /**
+   * Stubs the defendant header-summary response with a payment-terms restricted status.
+   *
+   * @param statusCode Restricted account status code to inject into the response.
+   */
+  public stubPaymentTermsAccountStatusCode(statusCode: string): void {
+    logAE('intercept', 'Stubbing defendant header-summary payment terms account status', { statusCode });
+
+    cy.intercept('GET', '**/defendant-accounts/**/header-summary', (req) => {
+      req.continue((res) => {
+        const body = res.body as { account_status_reference?: { account_status_code?: string } };
+
+        if (!body?.account_status_reference) {
+          throw new Error('Expected defendant header-summary response to include account_status_reference.');
+        }
+
+        body.account_status_reference.account_status_code = statusCode;
+        res.send({ body });
+      });
+    }).as('restrictedPaymentTermsStatusHeaderSummary');
+  }
+
+  /**
+   * Stubs the defendant header-summary response with the supplied payment-terms account balance.
+   *
+   * @param balance Account balance to inject into the response.
+   */
+  public stubPaymentTermsAccountBalance(balance: number): void {
+    logAE('intercept', 'Stubbing defendant header-summary payment terms account balance', { balance });
+
+    cy.intercept('GET', '**/defendant-accounts/**/header-summary', (req) => {
+      req.continue((res) => {
+        const body = res.body as { payment_state_summary?: { account_balance?: number } };
+
+        if (!body?.payment_state_summary) {
+          throw new Error('Expected defendant header-summary response to include payment_state_summary.');
+        }
+
+        body.payment_state_summary.account_balance = balance;
+        res.send({ body });
+      });
+    }).as('restrictedPaymentTermsBalanceHeaderSummary');
+  }
+
+  /**
+   * Stubs the defendant header-summary response with a business-unit code that is
+   * intentionally distinct from the internal business-unit identifier.
+   *
+   * @param businessUnitCode Public business-unit code to inject into the response.
+   */
+  public stubHeaderSummaryBusinessUnitCode(businessUnitCode: string): void {
+    logAE('intercept', 'Stubbing defendant header-summary business-unit code', { businessUnitCode });
+
+    cy.intercept('GET', '**/defendant-accounts/**/header-summary', (req) => {
+      req.continue((res) => {
+        const body = res.body as { business_unit_summary?: { business_unit_code?: string } };
+
+        if (!body?.business_unit_summary) {
+          throw new Error('Expected defendant header-summary response to include business_unit_summary.');
+        }
+
+        body.business_unit_summary.business_unit_code = businessUnitCode;
+        res.send({ body });
+      });
+    }).as('businessUnitCodeHeaderSummary');
+  }
+
+  /**
+   * Stubs the header API with a Collection Order mismatch for the named account category.
+   * This represents the data-quality conditions that cannot be created through normal UI flows.
+   * @param category - Account category whose mismatch should be returned by the header API.
+   */
+  public stubCollectionOrderWarningScenario(category: 'Adult' | 'Youth' | 'Company' | 'Conditional Caution'): void {
+    logAE('intercept', 'Stubbing Collection Order warning header scenario', { category });
+
+    cy.intercept('GET', '**/defendant-accounts/**/header-summary', (req) => {
+      req.continue((res) => {
+        const body = res.body as {
+          account_type?: string | null;
+          collection_order?: boolean | null;
+          debtor_type?: string;
+          is_youth?: boolean;
+          party_details?: { organisation_flag?: boolean };
+        };
+
+        if (!body?.party_details) {
+          throw new Error('Expected defendant header-summary response to include party_details.');
+        }
+
+        body.debtor_type = 'Defendant';
+        body.is_youth = category === 'Youth';
+        body.party_details.organisation_flag = category === 'Company';
+        body.account_type = category === 'Conditional Caution' ? 'Conditional Caution' : 'Fine';
+        body.collection_order = category === 'Adult' ? false : true;
+        res.send({ body });
+      });
+    }).as('collectionOrderWarningHeaderSummary');
+  }
+
+  /**
+   * Asserts the permanent Collection Order warning message.
+   * @param message - Warning text expected in the account header.
+   */
+  public assertCollectionOrderWarning(message: string): void {
+    this.defendantDetails.assertCollectionOrderWarning(message);
+  }
+
+  /** Asserts Collection Order data has no warning banner. */
+  public assertCollectionOrderWarningNotPresent(): void {
+    this.defendantDetails.assertCollectionOrderWarningNotPresent();
+  }
+
+  /**
+   * Asserts that neither payment-terms action is displayed.
+   */
+  public assertPaymentTermsActionsNotVisible(): void {
+    logAE('assert', 'Payment terms Change and Request payment card actions are absent');
+    this.paymentTerms.assertPaymentTermsActionsNotPresent();
+  }
+
+  /**
+   * Asserts the Change actions are hidden on the Parent or guardian tab.
+   */
+  public assertChangeParentGuardianActionsNotVisible(): void {
+    logAE('method', 'assertChangeParentGuardianActionsNotVisible()');
+    this.detailsNav.goToParentGuardianTab();
+    this.parentGuardianDetails.assertChangeActionsNotPresent();
+  }
+
+  /**
+   * Asserts the remove parent or guardian action is hidden on the Parent or guardian tab.
+   */
+  public assertRemoveParentGuardianActionNotVisible(): void {
+    logAE('method', 'assertRemoveParentGuardianActionNotVisible()');
+    this.detailsNav.goToParentGuardianTab();
+    this.parentGuardianDetails.assertRemoveParentGuardianActionNotPresent();
+  }
+
   /**
    * Asserts the amend parent or guardian route is active and the information banner is shown.
    */
@@ -627,22 +880,6 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Asserts the amend minor creditor route is active and the form heading is shown.
-   */
-  public assertOnAmendMinorCreditorDetailsPage(): void {
-    logAE('method', 'assertOnAmendMinorCreditorDetailsPage()');
-    this.editMinorCreditorActions.assertHeader({ route: 'amend' });
-  }
-
-  /**
-   * Asserts the Payment terms tab is active.
-   */
-  public assertPaymentTermsTabIsActive(): void {
-    logAE('method', 'assertPaymentTermsTabIsActive()');
-    this.detailsNav.assertPaymentTermsTabIsActive();
-  }
-
-  /**
    * Opens the amend payment terms form from the Payment terms tab.
    */
   public openPaymentTermsAmendForm(): void {
@@ -671,6 +908,432 @@ export class AccountEnquiryFlow {
     this.detailsNav.goToHistoryAndNotesTab();
     this.detailsNav.assertHistoryAndNotesTabIsActive();
     this.historyAndNotes.assertHistoryAndNotesTabLoaded();
+  }
+
+  /**
+   * Validates the header summary and At a glance sections for a legacy company account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyCompanyHeaderAndAtAGlance(fixturePath: string): void {
+    logAE('method', 'validateLegacyCompanyHeaderAndAtAGlance()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertAtAGlanceTabIsActive();
+      this.atAGlanceDetails.assertAtAGlancePageVisible();
+
+      if (fixture.header?.accountNumber) {
+        this.atAGlanceDetails.assertAccountNumberCaption(fixture.header.accountNumber);
+      }
+
+      if (fixture.header?.name) {
+        this.atAGlanceDetails.assertHeaderContains(fixture.header.name);
+      }
+
+      if (fixture.header?.summary) {
+        this.atAGlanceDetails.assertAccountHeaderSummaryValues(fixture.header.summary);
+      }
+
+      if (fixture.header?.metrics) {
+        this.atAGlanceDetails.assertSummaryMetricValues(fixture.header.metrics);
+      }
+
+      if (fixture.atAGlance?.company) {
+        this.atAGlanceDetails.assertCompanyValues(fixture.atAGlance.company);
+      }
+
+      if (fixture.atAGlance?.paymentTerms) {
+        this.atAGlanceDetails.assertPaymentTermsValues(fixture.atAGlance.paymentTerms);
+      }
+
+      if (fixture.atAGlance?.enforcementStatus) {
+        this.atAGlanceDetails.assertEnforcementStatusValues(fixture.atAGlance.enforcementStatus);
+      }
+
+      if (fixture.atAGlance?.comments?.comment || fixture.atAGlance?.comments?.lines?.length) {
+        this.atAGlanceDetails.assertCommentsSection(fixture.atAGlance.comments ?? {});
+      }
+    });
+  }
+
+  /**
+   * Validates the Defendant tab summary card for a legacy company account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyCompanyDefendantTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyCompanyDefendantTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertDefendantTabIsActive();
+      this.defendantDetails.assertSectionHeader('Company details');
+
+      if (fixture.defendantTab?.company) {
+        this.defendantDetails.assertCompanyDetails(fixture.defendantTab.company);
+      }
+    });
+  }
+
+  /**
+   * Validates the Payment terms tab values for a legacy company account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyCompanyPaymentTermsTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyCompanyPaymentTermsTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertPaymentTermsTabIsActive();
+      this.paymentTerms.assertPaymentTermsTabVisible();
+
+      if (fixture.paymentTermsTab && Object.keys(fixture.paymentTermsTab).length > 0) {
+        this.paymentTerms.assertPaymentTermsValues(fixture.paymentTermsTab);
+      }
+    });
+  }
+
+  /**
+   * Navigates to a legacy company tab and validates it using fixture-backed expectations.
+   *
+   * @param tabName - Tab label to navigate to.
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public goToLegacyCompanyTabAndValidate(tabName: LegacyCompanyTabName, fixturePath: string): void {
+    logAE('method', 'goToLegacyCompanyTabAndValidate()', { tabName, fixturePath });
+
+    switch (tabName) {
+      case 'Defendant':
+        this.detailsNav.goToDefendantTab();
+        this.validateLegacyCompanyDefendantTab(fixturePath);
+        break;
+      case 'Payment terms':
+        this.goToPaymentTermsTab();
+        this.validateLegacyCompanyPaymentTermsTab(fixturePath);
+        break;
+      default:
+        throw new Error(`Unsupported legacy company tab: ${tabName}`);
+    }
+  }
+
+  /**
+   * Validates the header summary and At a glance sections for a legacy defendant account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantHeaderAndAtAGlance(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantHeaderAndAtAGlance()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertAtAGlanceTabIsActive();
+      this.atAGlanceDetails.assertAtAGlancePageVisible();
+
+      if (fixture.header?.accountNumber) {
+        this.atAGlanceDetails.assertAccountNumberCaption(fixture.header.accountNumber);
+      }
+
+      if (fixture.header?.name) {
+        this.atAGlanceDetails.assertHeaderContains(fixture.header.name);
+      }
+
+      if (fixture.header?.summary) {
+        this.atAGlanceDetails.assertAccountHeaderSummaryValues(fixture.header.summary);
+      }
+
+      if (fixture.header?.metrics) {
+        this.atAGlanceDetails.assertSummaryMetricValues(fixture.header.metrics);
+      }
+
+      if (fixture.atAGlance?.defendant) {
+        this.atAGlanceDetails.assertDefendantValues(fixture.atAGlance.defendant);
+      }
+
+      if (fixture.atAGlance?.parentGuardian) {
+        this.atAGlanceDetails.assertParentGuardianValues(fixture.atAGlance.parentGuardian);
+      }
+
+      if (fixture.atAGlance?.paymentTerms) {
+        this.atAGlanceDetails.assertPaymentTermsValues(fixture.atAGlance.paymentTerms);
+      }
+
+      if (fixture.atAGlance?.enforcementStatus) {
+        this.atAGlanceDetails.assertEnforcementStatusValues(fixture.atAGlance.enforcementStatus);
+      }
+
+      if (fixture.atAGlance?.comments?.comment || fixture.atAGlance?.comments?.lines?.length) {
+        this.atAGlanceDetails.assertCommentsSection(fixture.atAGlance.comments ?? {});
+      }
+    });
+  }
+
+  /**
+   * Validates the Defendant tab summary cards for a legacy defendant account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertDefendantTabIsActive();
+      this.defendantDetails.assertSectionHeader('Defendant details');
+
+      if (fixture.defendantTab?.defendant) {
+        this.defendantDetails.assertDefendantDetails(fixture.defendantTab.defendant);
+      }
+
+      if (fixture.defendantTab?.contact) {
+        this.defendantDetails.assertContactDetails(fixture.defendantTab.contact);
+      }
+
+      if (fixture.defendantTab?.employer) {
+        this.defendantDetails.assertEmployerDetails(fixture.defendantTab.employer);
+      }
+    });
+  }
+
+  /**
+   * Validates the Payment terms tab values for a legacy defendant account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantPaymentTermsTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantPaymentTermsTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertPaymentTermsTabIsActive();
+      this.paymentTerms.assertPaymentTermsTabVisible();
+
+      if (fixture.paymentTermsTab && Object.keys(fixture.paymentTermsTab).length > 0) {
+        this.paymentTerms.assertPaymentTermsValues(fixture.paymentTermsTab);
+      }
+    });
+  }
+
+  /**
+   * Validates the Parent or guardian tab values for a legacy defendant account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantParentGuardianTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantParentGuardianTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertParentGuardianTabIsActive();
+      this.parentGuardianDetails.assertSectionHeader(fixture.parentGuardianTab?.header ?? 'Parent or guardian details');
+
+      if (fixture.parentGuardianTab?.parentGuardian) {
+        this.parentGuardianDetails.assertParentGuardianDetails(fixture.parentGuardianTab.parentGuardian);
+      }
+    });
+  }
+
+  /**
+   * Validates the Enforcement tab values for a legacy defendant account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantEnforcementTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantEnforcementTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertEnforcementTabIsActive();
+      this.enforcement.assertEnforcementTabVisible();
+
+      if (fixture.enforcementTab?.overview) {
+        this.enforcement.assertEnforcementOverview(fixture.enforcementTab.overview);
+      }
+
+      if (fixture.enforcementTab?.lastEnforcementAction) {
+        this.enforcement.assertLastEnforcementActionDetails(fixture.enforcementTab.lastEnforcementAction);
+      } else if (fixture.enforcementTab?.noOutstandingEnforcementActionMessage) {
+        this.enforcement.assertNoOutstandingEnforcementActionMessage(
+          fixture.enforcementTab.noOutstandingEnforcementActionMessage,
+        );
+      }
+    });
+  }
+
+  /**
+   * Asserts imposition rows using the expected court value for the active account mode.
+   * @param table - Expected rows with optional mode-specific imposed-by columns.
+   */
+  public assertDefendantAccountImpositionsLoaded(table: DataTable): void {
+    const [headings, ...rows] = table.raw();
+    const modeHeading = isLegacyAccountMode() ? 'Imposed by (Legacy)' : 'Imposed by (Opal)';
+    const columns = headings
+      .map((heading, index) => ({ heading, index }))
+      .filter(({ heading }) => !heading.startsWith('Imposed by (') || heading === modeHeading);
+
+    this.impositionsDetails.assertDefendantAccountImpositionsLoaded([
+      columns.map(({ heading }) => (heading === modeHeading ? 'Imposed by' : heading)),
+      ...rows.map((row) => columns.map(({ index }) => row[index])),
+    ]);
+  }
+
+  /**
+   * Validates the Impositions tab data when fixture expectations are available.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantImpositionsTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantImpositionsTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertImpositionsTabIsActive();
+      this.impositionsDetails.assertImpositionsTabVisible();
+
+      if (fixture.impositionsTab?.rows?.length) {
+        this.impositionsDetails.assertDefendantAccountImpositionsLoaded(fixture.impositionsTab.rows);
+      } else if (fixture.impositionsTab?.emptyState) {
+        this.impositionsDetails.assertEmptyState(fixture.impositionsTab.emptyState);
+      }
+    });
+  }
+
+  /**
+   * Validates the History and notes tab data when fixture expectations are available.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantHistoryAndNotesTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantHistoryAndNotesTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertHistoryAndNotesTabIsActive();
+      this.historyAndNotes.assertHistoryAndNotesTabVisible();
+
+      if (fixture.historyAndNotesTab?.noResultsMessage) {
+        this.historyAndNotes.assertHistoryAndNotesNoResultsMessage(fixture.historyAndNotesTab.noResultsMessage);
+        return;
+      }
+
+      if (fixture.historyAndNotesTab?.columns?.length) {
+        this.historyAndNotes.assertHistoryAndNotesColumns(fixture.historyAndNotesTab.columns);
+      }
+
+      if (fixture.historyAndNotesTab?.rows?.length) {
+        this.historyAndNotes.assertHistoryAndNotesRows(fixture.historyAndNotesTab.rows);
+      }
+    });
+  }
+
+  /**
+   * Validates the Fixed penalty tab values for a legacy defendant account.
+   *
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public validateLegacyDefendantFixedPenaltyTab(fixturePath: string): void {
+    logAE('method', 'validateLegacyDefendantFixedPenaltyTab()', { fixturePath });
+
+    this.loadLegacyDefendantAccountFixture(fixturePath).then((fixture) => {
+      this.detailsNav.assertFixedPenaltyTabIsActive();
+      this.fixedPenaltyDetails.assertSectionHeader('Fixed Penalty details');
+
+      if (fixture.fixedPenaltyTab && Object.keys(fixture.fixedPenaltyTab).length > 0) {
+        this.fixedPenaltyDetails.assertDetails(fixture.fixedPenaltyTab);
+      }
+    });
+  }
+
+  /**
+   * Navigates to a legacy defendant tab and validates it using fixture-backed expectations.
+   *
+   * @param tabName - Tab label to navigate to.
+   * @param fixturePath - Cypress fixture path containing expected legacy account values.
+   */
+  public goToLegacyDefendantTabAndValidate(tabName: LegacyDefendantTabName, fixturePath: string): void {
+    logAE('method', 'goToLegacyDefendantTabAndValidate()', { tabName, fixturePath });
+
+    switch (tabName) {
+      case 'Defendant':
+        this.detailsNav.goToDefendantTab();
+        this.validateLegacyDefendantTab(fixturePath);
+        break;
+      case 'Parent or guardian':
+        this.detailsNav.goToParentGuardianTab();
+        this.validateLegacyDefendantParentGuardianTab(fixturePath);
+        break;
+      case 'Payment terms':
+        this.goToPaymentTermsTab();
+        this.validateLegacyDefendantPaymentTermsTab(fixturePath);
+        break;
+      case 'Enforcement':
+        this.goToEnforcementTab();
+        this.validateLegacyDefendantEnforcementTab(fixturePath);
+        break;
+      case 'Impositions':
+        this.detailsNav.goToImpositionsTab();
+        this.validateLegacyDefendantImpositionsTab(fixturePath);
+        break;
+      case 'History and notes':
+        this.goToHistoryAndNotesTab();
+        this.validateLegacyDefendantHistoryAndNotesTab(fixturePath);
+        break;
+      case 'Fixed penalty':
+        this.detailsNav.goToFixedPenaltyTab();
+        this.validateLegacyDefendantFixedPenaltyTab(fixturePath);
+        break;
+      default:
+        throw new Error(`Unsupported legacy defendant tab: ${tabName}`);
+    }
+  }
+
+  /**
+   * Presents the current account as a master account with one consolidated child account.
+   */
+  public prepareMasterAccountWithConsolidatedChildAccount(): void {
+    logAE('method', 'prepareMasterAccountWithConsolidatedChildAccount()');
+
+    this.extractDefendantAccountIdFromUrl().then((accountId) => {
+      this.fetchHeaderSummary(accountId).then((header) => {
+        this.consolidatedAccounts.stubMasterAccountWithChild(accountId, header);
+        cy.reload();
+        cy.wait('@consolidatedHeaderSummary', { timeout: AccountEnquiryFlow.WAIT_MS })
+          .its('response.statusCode')
+          .should('eq', 200);
+      });
+    });
+  }
+
+  /**
+   * Asserts the consolidated accounts table is visible.
+   */
+  public assertConsolidatedAccountsTableVisible(): void {
+    logAE('method', 'assertConsolidatedAccountsTableVisible()');
+    this.consolidatedAccounts.assertChildAccountsTableVisible();
+  }
+
+  /**
+   * Navigates to the Consolidated accounts tab and asserts it has loaded.
+   */
+  public goToConsolidatedAccountsTab(): void {
+    logAE('method', 'goToConsolidatedAccountsTab()');
+    this.consolidatedAccounts.openTab();
+  }
+
+  /**
+   * Opens the first Consolidated accounts child account link and asserts the At a glance route.
+   */
+  public openFirstConsolidatedAccountLinkAtAGlance(): void {
+    logAE('method', 'openFirstConsolidatedAccountLinkAtAGlance()');
+    this.consolidatedAccounts.openFirstChildAtAGlance();
+    this.detailsNav.assertAtAGlanceTabIsActive();
+  }
+
+  /**
+   * Asserts the selected child account details are displayed.
+   */
+  public assertSelectedChildAccountDetailsVisible(): void {
+    logAE('method', 'assertSelectedChildAccountDetailsVisible()');
+    this.consolidatedAccounts.assertSelectedChildAccountDetailsVisible();
+  }
+
+  /**
+   * Asserts the selected consolidated child account displays the closed account banner.
+   */
+  public assertSelectedChildAccountStatusBannerVisible(): void {
+    logAE('method', 'assertSelectedChildAccountStatusBannerVisible()');
+    this.consolidatedAccounts.assertSelectedChildAccountStatusBannerVisible();
   }
 
   /**
@@ -733,19 +1396,83 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Asserts the add enforcement action form is visible.
+   * Asserts that Court code options are available on the add enforcement action form.
    */
-  public assertAddEnforcementActionFormVisible(): void {
-    logAE('method', 'assertAddEnforcementActionFormVisible()');
-    this.enforcement.assertAddEnforcementActionFormVisible();
+  public assertCourtCodeAutocompleteDisplayed(): void {
+    logAE('method', 'assertCourtCodeAutocompleteDisplayed()');
+    this.enforcement.assertCourtCodeAutocompleteDisplayed();
   }
 
   /**
-   * Asserts the add enforcement action form is visible.
+   * Asserts that Court options use the Court name (court code) format.
    */
-  public assertAddNewEnforcementActionFormVisible(): void {
-    logAE('method', 'assertAddNewEnforcementActionFormVisible()');
-    this.enforcement.assertAddNewEnforcementActionFormVisible();
+  public assertCourtCodeOptionLabelsUseNameAndCodeFormat(): void {
+    logAE('method', 'assertCourtCodeOptionLabelsUseNameAndCodeFormat()');
+    this.enforcement.assertCourtCodeOptionLabelsUseNameAndCodeFormat();
+  }
+
+  /**
+   * Searches Court code options on the add enforcement action form.
+   *
+   * @param searchText - Court name or code fragment to search for.
+   */
+  public searchCourtCodeOptions(searchText: string): void {
+    logAE('method', 'searchCourtCodeOptions()', { searchText });
+    this.enforcement.searchCourtCodeOptions(searchText);
+  }
+
+  /**
+   * Selects the first filtered Court code option.
+   */
+  public selectFirstCourtCodeOption(): void {
+    logAE('method', 'selectFirstCourtCodeOption()');
+    this.enforcement.selectFirstCourtCodeOption();
+  }
+
+  /**
+   * Asserts that the selected Court code is displayed.
+   */
+  public assertSelectedCourtCodeIsDisplayed(): void {
+    logAE('method', 'assertSelectedCourtCodeIsDisplayed()');
+    this.enforcement.assertSelectedCourtCodeIsDisplayed();
+  }
+
+  /**
+   * Selects the mandatory SUMM prison/detention option.
+   *
+   * @param option - Visible option label.
+   */
+  public selectPrisonDetentionOption(option: string): void {
+    logAE('method', 'selectPrisonDetentionOption()', { option });
+    this.enforcement.selectDynamicEnforcementActionRadio(ENF_ACTION_ADD.prisonDetentionFieldset, option);
+  }
+
+  /**
+   * Submits the enforcement action and captures its request body.
+   */
+  public submitAddEnforcementActionAndCaptureRequest(): void {
+    logAE('method', 'submitAddEnforcementActionAndCaptureRequest()');
+    cy.intercept('POST', '**/defendant-accounts/*/enforcements').as('addEnforcementAction');
+    this.enforcement.submitAddEnforcementActionForm();
+    cy.wait('@addEnforcementAction').then(({ request }) => {
+      cy.wrap(request.body, { log: false }).as('addEnforcementActionBody');
+    });
+  }
+
+  /**
+   * Verifies that the selected court code is submitted under the configured parameter name.
+   */
+  public assertSubmittedCourtCode(): void {
+    logAE('method', 'assertSubmittedCourtCode()');
+    cy.get('@selectedCourtCode').then((selectedCourtCode) => {
+      cy.get('@addEnforcementActionBody').then((requestBody) => {
+        expect(requestBody).to.have.nested.property('enforcement_result_responses');
+        expect(requestBody.enforcement_result_responses).to.deep.include({
+          parameter_name: 'courtcode',
+          response: selectedCourtCode,
+        });
+      });
+    });
   }
 
   /**
@@ -758,65 +1485,12 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Asserts the remove enforcement hold account identifier.
-   *
-   * @param expected - Expected account identifier caption text.
-   */
-  public assertRemoveEnforcementHoldAccountIdentifier(expected: string): void {
-    logAE('method', 'assertRemoveEnforcementHoldAccountIdentifier()', { expected });
-    this.enforcement.assertRemoveEnforcementHoldAccountIdentifier(expected);
-  }
-
-  /**
-   * Submits the add enforcement action form.
-   */
-  public submitAddEnforcementActionForm(): void {
-    logAE('method', 'submitAddEnforcementActionForm()');
-    this.enforcement.submitAddEnforcementActionForm();
-  }
-
-  /**
    * Opens the Change Collection Order status form from the Enforcement tab.
    */
-  public openChangeCollectionOrderForm(): void {
-    logAE('method', 'openChangeCollectionOrderForm()');
+  public openChangeCollectionOrderStatusForm(): void {
+    logAE('method', 'openChangeCollectionOrderStatusForm()');
     this.enforcement.openChangeCollectionOrderForm();
-  }
-
-  /**
-   * Asserts the Change Collection Order status form is visible.
-   */
-  public assertChangeCollectionOrderFormVisible(): void {
-    logAE('method', 'assertChangeCollectionOrderFormVisible()');
     this.enforcement.assertChangeCollectionOrderFormVisible();
-  }
-
-  /**
-   * Asserts the account identifier shown on the Change Collection Order status page.
-   *
-   * @param expected - Expected account identifier text.
-   */
-  public assertChangeCollectionOrderAccountIdentifier(expected: string): void {
-    logAE('method', 'assertChangeCollectionOrderAccountIdentifier()', { expected });
-    this.enforcement.assertChangeCollectionOrderAccountIdentifier(expected);
-  }
-
-  /**
-   * Selects a Collection Order status option on the change form.
-   *
-   * @param option - Visible radio label to select.
-   */
-  public selectChangeCollectionOrderStatus(option: string): void {
-    logAE('method', 'selectChangeCollectionOrderStatus()', { option });
-    this.enforcement.selectCollectionOrderStatus(option);
-  }
-
-  /**
-   * Submits the Change Collection Order status form.
-   */
-  public submitChangeCollectionOrderForm(): void {
-    logAE('method', 'submitChangeCollectionOrderForm()');
-    this.enforcement.submitChangeCollectionOrderForm();
   }
 
   /**
@@ -840,96 +1514,6 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Asserts the Collection Order success banner text.
-   *
-   * @param expected - Expected success banner message.
-   */
-  public assertCollectionOrderSuccessBanner(expected: string): void {
-    logAE('method', 'assertCollectionOrderSuccessBanner()', { expected });
-    this.enforcement.assertCollectionOrderSuccessBannerText(expected);
-  }
-
-  /**
-   * Asserts the Collection Order summary value on the Enforcement tab.
-   *
-   * @param expected - Expected Collection Order summary value.
-   */
-  public assertCollectionOrderSummary(expected: string): void {
-    logAE('method', 'assertCollectionOrderSummary()', { expected });
-    this.enforcement.assertCollectionOrderSummary(expected);
-  }
-
-  /**
-   * Selects an enforcement override code on the add form.
-   *
-   * @param resultCode - Enforcement override result code.
-   */
-  public selectEnforcementOverride(resultCode: string): void {
-    logAE('method', 'selectEnforcementOverride()', { resultCode });
-    this.enforcement.selectEnforcementOverride(resultCode);
-  }
-
-  /**
-   * Selects an enforcement action code on the add form.
-   *
-   * @param resultCode - Enforcement action result code.
-   */
-  public selectEnforcementAction(resultCode: string): void {
-    logAE('method', 'selectEnforcementAction()', { resultCode });
-    this.enforcement.selectEnforcementAction(resultCode);
-  }
-
-  /**
-   * Enters a reason on the add enforcement action details form.
-   *
-   * @param reason - Enforcement action reason text.
-   */
-  public enterEnforcementActionReason(reason: string): void {
-    logAE('method', 'enterEnforcementActionReason()', { reason });
-    this.enforcement.enterEnforcementActionReason(reason);
-  }
-
-  /**
-   * Chooses whether to change existing payment terms on the add enforcement action details form.
-   *
-   * @param option - Visible option text, usually "Yes" or "No".
-   */
-  public chooseChangeExistingPaymentTerms(option: string): void {
-    logAE('method', 'chooseChangeExistingPaymentTerms()', { option });
-    this.enforcement.chooseChangeExistingPaymentTerms(option);
-  }
-
-  /**
-   * Asserts the enforcement action added success banner text.
-   *
-   * @param expected - Expected success banner message.
-   */
-  public assertEnforcementActionSuccessBanner(expected: string): void {
-    logAE('method', 'assertEnforcementActionSuccessBanner()', { expected });
-    this.enforcement.assertSuccessBannerText(expected);
-  }
-
-  /**
-   * Selects a Local Justice Area on the add form.
-   *
-   * @param localJusticeArea - Visible LJA option text.
-   */
-  public selectEnforcementOverrideLocalJusticeArea(localJusticeArea: string): void {
-    logAE('method', 'selectEnforcementOverrideLocalJusticeArea()', { localJusticeArea });
-    this.enforcement.selectLocalJusticeArea(localJusticeArea);
-  }
-
-  /**
-   * Selects an enforcer on the add form.
-   *
-   * @param enforcer - Visible enforcer option text.
-   */
-  public selectEnforcementOverrideEnforcer(enforcer: string): void {
-    logAE('method', 'selectEnforcementOverrideEnforcer()', { enforcer });
-    this.enforcement.selectEnforcer(enforcer);
-  }
-
-  /**
    * Submits the add enforcement override form and stores the request body for later assertions.
    */
   public submitAddEnforcementOverride(): void {
@@ -944,6 +1528,32 @@ export class AccountEnquiryFlow {
 
     this.detailsNav.assertEnforcementTabIsActive();
     this.enforcement.assertEnforcementTabVisible();
+  }
+
+  /**
+   * Completes the add enforcement override form with a Local Justice Area and submits it.
+   *
+   * @param resultCode - Enforcement override result code.
+   * @param localJusticeArea - Visible LJA option text.
+   */
+  public addEnforcementOverrideWithLocalJusticeArea(resultCode: string, localJusticeArea: string): void {
+    logAE('method', 'addEnforcementOverrideWithLocalJusticeArea()', { resultCode, localJusticeArea });
+    this.enforcement.selectEnforcementOverride(resultCode);
+    this.enforcement.selectLocalJusticeArea(localJusticeArea);
+    this.submitAddEnforcementOverride();
+  }
+
+  /**
+   * Completes the add enforcement override form with an enforcer and submits it.
+   *
+   * @param resultCode - Enforcement override result code.
+   * @param enforcer - Visible enforcer option text.
+   */
+  public addEnforcementOverrideWithEnforcer(resultCode: string, enforcer: string): void {
+    logAE('method', 'addEnforcementOverrideWithEnforcer()', { resultCode, enforcer });
+    this.enforcement.selectEnforcementOverride(resultCode);
+    this.enforcement.selectEnforcer(enforcer);
+    this.submitAddEnforcementOverride();
   }
 
   /**
@@ -968,26 +1578,6 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Asserts the enforcement override success banner text.
-   *
-   * @param expected - Expected success banner message.
-   */
-  public assertEnforcementOverrideSuccessBanner(expected: string): void {
-    logAE('method', 'assertEnforcementOverrideSuccessBanner()', { expected });
-    this.enforcement.assertSuccessBannerText(expected);
-  }
-
-  /**
-   * Asserts the enforcement hold success banner text.
-   *
-   * @param expected - Expected success banner message.
-   */
-  public assertEnforcementHoldSuccessBanner(expected: string): void {
-    logAE('method', 'assertEnforcementHoldSuccessBanner()', { expected });
-    this.enforcement.assertSuccessBannerText(expected);
-  }
-
-  /**
    * Opens the change enforcement court form from the Enforcement tab.
    */
   public openChangeEnforcementCourtForm(): void {
@@ -1007,8 +1597,22 @@ export class AccountEnquiryFlow {
     this.enforcement.selectDifferentEnforcementCourt('originalEnforcementCourt', 'selectedEnforcementCourt');
     this.enforcement.submitChangeEnforcementCourt();
 
+    cy.location('pathname', { timeout: AccountEnquiryFlow.DETAILS_NAV_WAIT_MS }).should(
+      'match',
+      /\/fines\/account\/(?:defendant|company)\/\d+\/details$/,
+    );
+    this.detailsNav.goToEnforcementTab();
     this.detailsNav.assertEnforcementTabIsActive();
     this.enforcement.assertEnforcementTabVisible();
+  }
+
+  /**
+   * Stores and asserts the currently displayed enforcement court summary value.
+   */
+  public captureCurrentEnforcementCourtSummary(): void {
+    logAE('method', 'captureCurrentEnforcementCourtSummary()');
+    this.enforcement.storeCurrentEnforcementCourtValue('originalEnforcementCourt');
+    this.enforcement.assertEnforcementCourtMatchesAlias('originalEnforcementCourt');
   }
 
   /**
@@ -1022,6 +1626,11 @@ export class AccountEnquiryFlow {
     this.enforcement.selectEnforcementCourtFromAlias('selectedEnforcementCourt');
     this.enforcement.submitChangeEnforcementCourt();
 
+    cy.location('pathname', { timeout: AccountEnquiryFlow.DETAILS_NAV_WAIT_MS }).should(
+      'match',
+      /\/fines\/account\/(?:defendant|company)\/\d+\/details$/,
+    );
+    this.detailsNav.goToEnforcementTab();
     this.detailsNav.assertEnforcementTabIsActive();
     this.enforcement.assertEnforcementTabVisible();
   }
@@ -1046,34 +1655,13 @@ export class AccountEnquiryFlow {
       }
     });
 
+    cy.location('pathname', { timeout: AccountEnquiryFlow.DETAILS_NAV_WAIT_MS }).should(
+      'match',
+      /\/fines\/account\/(?:defendant|company)\/\d+\/details$/,
+    );
+    this.detailsNav.goToEnforcementTab();
     this.detailsNav.assertEnforcementTabIsActive();
     this.enforcement.assertEnforcementTabVisible();
-  }
-
-  /**
-   * Asserts the enforcement court summary matches the selected value stored during the test.
-   */
-  public assertSelectedEnforcementCourtSummary(): void {
-    logAE('method', 'assertSelectedEnforcementCourtSummary()');
-    this.enforcement.assertEnforcementCourtMatchesAlias('selectedEnforcementCourt');
-  }
-
-  /**
-   * Asserts the enforcement court success banner text.
-   *
-   * @param expected - Expected success banner message.
-   */
-  public assertEnforcementCourtSuccessBanner(expected: string): void {
-    logAE('method', 'assertEnforcementCourtSuccessBanner()', { expected });
-    this.enforcement.assertSuccessBannerText(expected);
-  }
-
-  /**
-   * Asserts the enforcement success banner is not displayed.
-   */
-  public assertEnforcementSuccessBannerNotVisible(): void {
-    logAE('method', 'assertEnforcementSuccessBannerNotVisible()');
-    this.enforcement.assertSuccessBannerNotVisible();
   }
 
   /**
@@ -1107,29 +1695,6 @@ export class AccountEnquiryFlow {
         expect(String(body?.enforcement_override?.enforcer?.enforcer_id)).to.eq(expected.enforcerId);
       }
     });
-  }
-
-  /**
-   * Asserts the enforcement override summary card values.
-   *
-   * @param expected - Expected summary values.
-   * @param expected.override - Expected enforcement override display text.
-   * @param expected.enforcer - Expected enforcer display text.
-   * @param expected.lja - Expected LJA display text.
-   */
-  public assertEnforcementOverrideSummary(expected: { override?: string; enforcer?: string; lja?: string }): void {
-    logAE('method', 'assertEnforcementOverrideSummary()', expected);
-    this.enforcement.assertEnforcementOverrideSummary(expected);
-  }
-
-  /**
-   * Asserts the last enforcement action summary value shown on the Enforcement tab.
-   *
-   * @param expected - Expected enforcement action text.
-   */
-  public assertEnforcementActionSummary(expected: string): void {
-    logAE('method', 'assertEnforcementActionSummary()', { expected });
-    this.enforcement.assertEnforcementActionSummary(expected);
   }
 
   /**
@@ -1181,39 +1746,6 @@ export class AccountEnquiryFlow {
 
     this.detailsNav.assertPaymentTermsTabIsActive();
     cy.get('@paymentTermsSave.all').should('have.length', 0);
-  }
-
-  /**
-   * Asserts payment terms summary values for instalments-only payments.
-   * @param expected - Expected summary values.
-   * @param expected.amount - Instalment amount.
-   * @param expected.frequency - Instalment frequency.
-   * @param expected.startDate - Instalment start date.
-   */
-  public assertPaymentTermsInstalmentsSummary(expected: {
-    amount: string;
-    frequency: string;
-    startDate: string;
-  }): void {
-    logAE('method', 'assertPaymentTermsInstalmentsSummary()', expected);
-    this.paymentTerms.assertInstalmentSummary(expected);
-  }
-
-  /**
-   * Asserts the pay by date value on the payment terms tab.
-   * @param expected - Expected pay by date value.
-   */
-  public assertPaymentTermsPayByDate(expected: string): void {
-    logAE('method', 'assertPaymentTermsPayByDate()', { expected });
-    this.paymentTerms.assertPayByDate(expected);
-  }
-
-  /**
-   * Asserts that instalment rows are not present on the payment terms tab.
-   */
-  public assertPaymentTermsInstalmentsAbsent(): void {
-    logAE('method', 'assertPaymentTermsInstalmentsAbsent()');
-    this.paymentTerms.assertInstalmentRowsNotPresent();
   }
 
   /**
@@ -1284,6 +1816,10 @@ export class AccountEnquiryFlow {
     this.parentGuardianDetails.change();
     this.editParentGuardianActions.assertHeader();
     this.editParentGuardianActions.editFirstNames(value);
+
+    if (isLegacyAccountMode()) {
+      this.editParentGuardianActions.normaliseLegacySurnameFromCombinedName();
+    }
   }
 
   /**
@@ -1295,6 +1831,10 @@ export class AccountEnquiryFlow {
     this.detailsNav.goToParentGuardianTab();
     this.parentGuardianDetails.change();
     this.editParentGuardianActions.assertStillOnEditPage();
+
+    if (isLegacyAccountMode()) {
+      this.editParentGuardianActions.normaliseLegacyCombinedNameIntoRequiredFields();
+    }
   }
 
   /**
@@ -1315,7 +1855,7 @@ export class AccountEnquiryFlow {
     this.detailsNav.goToCreditorTab();
     this.minorCreditorDetails.assertSectionHeader('Creditor Details');
     this.minorCreditorDetails.change({ formSelector: MINOR_CREDITOR_AMEND_ELEMENTS.form });
-    this.assertOnAmendMinorCreditorDetailsPage();
+    this.editMinorCreditorActions.assertHeader({ route: 'amend' });
   }
 
   /**
@@ -1358,7 +1898,7 @@ export class AccountEnquiryFlow {
    */
   public enterAmendMinorCreditorFirstName(value: string): void {
     logAE('method', 'enterAmendMinorCreditorFirstName()', { value });
-    this.assertOnAmendMinorCreditorDetailsPage();
+    this.editMinorCreditorActions.assertHeader({ route: 'amend' });
     this.editMinorCreditorActions.editFirstNames(value);
   }
 
@@ -1405,19 +1945,9 @@ export class AccountEnquiryFlow {
    */
   public attemptToSaveCurrentMinorCreditorAmendFormWithFirstName(value: string): void {
     logAE('method', 'attemptToSaveCurrentMinorCreditorAmendFormWithFirstName()', { value });
-    this.assertOnAmendMinorCreditorDetailsPage();
+    this.editMinorCreditorActions.assertHeader({ route: 'amend' });
     this.editMinorCreditorActions.editFirstNames(value);
     this.editMinorCreditorActions.saveChanges();
-  }
-
-  /**
-   * Enters a last name on the parent or guardian form.
-   *
-   * @param value - New last name value.
-   */
-  public enterParentGuardianLastName(value: string): void {
-    logAE('method', 'enterParentGuardianLastName()', { value });
-    this.editParentGuardianActions.editLastName(value);
   }
 
   /**
@@ -1428,16 +1958,6 @@ export class AccountEnquiryFlow {
   public enterAddParentGuardianAddressLine1(value: string): void {
     logAE('method', 'enterAddParentGuardianAddressLine1()', { value });
     this.editParentGuardianActions.assertHeader({ route: 'add' });
-    this.editParentGuardianActions.editAddressLine1(value);
-  }
-
-  /**
-   * Enters address line 1 on the parent or guardian form.
-   *
-   * @param value - New address line 1 value.
-   */
-  public enterParentGuardianAddressLine1(value: string): void {
-    logAE('method', 'enterParentGuardianAddressLine1()', { value });
     this.editParentGuardianActions.editAddressLine1(value);
   }
 
@@ -1505,21 +2025,17 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Saves the minor creditor details after editing.
-   */
-  public saveMinorCreditorDetails(): void {
-    logAE('method', 'saveMinorCreditorDetails()');
-    this.editMinorCreditorActions.saveChanges();
-  }
-
-  /**
    * Asserts the defendant summary name contains the expected value.
    * @param expected text expected in name field
    */
   public assertDefendantNameContains(expected: string): void {
     logAE('assert', 'assertDefendantNameContains()', { expected });
     this.detailsNav.goToDefendantTab();
-    this.defendantDetails.assertDefendantNameContains(expected);
+    if (isLegacyAccountMode()) {
+      this.defendantDetails.assertDefendantNameContainsIgnoringCase(expected);
+    } else {
+      this.defendantDetails.assertDefendantNameContains(expected);
+    }
   }
 
   /**
@@ -1561,15 +2077,6 @@ export class AccountEnquiryFlow {
     logAE('cancel', 'Cancelling edit and staying on edit page');
     this.common.cancelEditing(false);
     this.editDefendantDetailsActions.assertStillOnEditPage();
-  }
-
-  /**
-   * Cancels the edit operation
-   */
-  public cancelEditAndLeave(): void {
-    logAE('method', 'cancelEditAndLeave()');
-    logAE('cancel', 'Cancelling edit and returning to details page');
-    this.common.cancelEditing(true);
   }
 
   /**
@@ -1643,7 +2150,7 @@ export class AccountEnquiryFlow {
    */
   public cancelAmendMinorCreditorAndLeave(): void {
     logAE('method', 'cancelAmendMinorCreditorAndLeave()');
-    this.assertOnAmendMinorCreditorDetailsPage();
+    this.editMinorCreditorActions.assertHeader({ route: 'amend' });
     this.common.cancelEditing(true);
   }
 
@@ -1661,7 +2168,7 @@ export class AccountEnquiryFlow {
    */
   public attemptSaveAmendParentGuardianDetails(): void {
     logAE('method', 'attemptSaveAmendParentGuardianDetails()');
-    this.assertOnAmendParentGuardianDetailsPage();
+    this.editParentGuardianActions.assertHeader({ route: 'amend' });
     this.editParentGuardianActions.saveChanges();
   }
 
@@ -1708,16 +2215,6 @@ export class AccountEnquiryFlow {
   }
 
   /**
-   * Asserts the account details success banner text.
-   *
-   * @param expected - Expected success message.
-   */
-  public assertAccountDetailsSuccessBanner(expected: string): void {
-    logAE('method', 'assertAccountDetailsSuccessBanner()', { expected });
-    this.detailsNav.assertSuccessBannerText(expected);
-  }
-
-  /**
    * Verifies the non-paying parent or guardian has been removed from the account via API.
    */
   public verifyParentGuardianRemovedViaApi(): void {
@@ -1752,7 +2249,7 @@ export class AccountEnquiryFlow {
    */
   public assertAmendMinorCreditorFirstName(expected: string): void {
     logAE('method', 'assertAmendMinorCreditorFirstName()', { expected });
-    this.assertOnAmendMinorCreditorDetailsPage();
+    this.editMinorCreditorActions.assertHeader({ route: 'amend' });
     this.editMinorCreditorActions.verifyFirstName(expected);
   }
 
@@ -1763,7 +2260,7 @@ export class AccountEnquiryFlow {
    */
   public assertAmendParentGuardianErrorSummaryContains(expected: string): void {
     logAE('method', 'assertAmendParentGuardianErrorSummaryContains()', { expected });
-    this.assertOnAmendParentGuardianDetailsPage();
+    this.editParentGuardianActions.assertHeader({ route: 'amend' });
     this.editParentGuardianActions.assertErrorSummaryContains(expected);
   }
 
@@ -1774,7 +2271,7 @@ export class AccountEnquiryFlow {
    */
   public assertAmendMinorCreditorErrorSummaryContains(expected: string): void {
     logAE('method', 'assertAmendMinorCreditorErrorSummaryContains()', { expected });
-    this.assertOnAmendMinorCreditorDetailsPage();
+    this.editMinorCreditorActions.assertHeader({ route: 'amend' });
     this.editMinorCreditorActions.assertErrorSummaryContains(expected);
   }
 
@@ -2119,12 +2616,106 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Opens the latest company account matching a company name and presents the amend payment terms form.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyPaymentTermsAmendFormByName(companyName: string): void {
+    logAE('method', 'openCompanyPaymentTermsAmendFormByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToPaymentTermsTab();
+    this.openPaymentTermsAmendForm();
+  }
+
+  /**
+   * Opens the latest company account matching a company name and presents the Payment terms tab.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyPaymentTermsTabByName(companyName: string): void {
+    logAE('method', 'openCompanyPaymentTermsTabByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToPaymentTermsTab();
+  }
+
+  /**
+   * Opens the latest company account matching a company name and presents the Enforcement tab.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyEnforcementTabByName(companyName: string): void {
+    logAE('method', 'openCompanyEnforcementTabByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToEnforcementTab();
+  }
+
+  /**
+   * Opens the latest company account matching a company name and presents the remove enforcement hold form.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyRemoveEnforcementHoldFormByName(companyName: string): void {
+    logAE('method', 'openCompanyRemoveEnforcementHoldFormByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToEnforcementTab();
+    this.openRemoveEnforcementHoldForm();
+  }
+
+  /**
+   * Opens the latest company account matching a company name and presents the Collection Order status form.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyCollectionOrderStatusFormByName(companyName: string): void {
+    logAE('method', 'openCompanyCollectionOrderStatusFormByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToEnforcementTab();
+    this.openChangeCollectionOrderStatusForm();
+  }
+
+  /**
+   * Opens the latest company account matching a company name and presents the add enforcement action form.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyAddEnforcementActionFormByName(companyName: string): void {
+    logAE('method', 'openCompanyAddEnforcementActionFormByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToEnforcementTab();
+    this.openAddEnforcementActionForm();
+  }
+
+  /**
+   * Opens the latest company account matching a company name and presents the add enforcement override form.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyAddEnforcementOverrideFormByName(companyName: string): void {
+    logAE('method', 'openCompanyAddEnforcementOverrideFormByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToEnforcementTab();
+    this.openAddEnforcementOverrideForm();
+  }
+
+  /**
+   * Opens the latest company account matching a company name and presents the change enforcement court form.
+   *
+   * @param companyName - Company name to search and open.
+   */
+  public openCompanyChangeEnforcementCourtFormByName(companyName: string): void {
+    logAE('method', 'openCompanyChangeEnforcementCourtFormByName()', { companyName });
+    this.openCompanyAccountDetailsByNameAndSelectLatest(companyName);
+    this.goToEnforcementTab();
+    this.openChangeEnforcementCourtForm();
+  }
+
+  /**
    * Opens the "Add account note" screen and verifies the header.
    *
    */
   public openAddAccountNoteAndVerifyHeader(): void {
     logAE('method', 'openAddAccountNoteAndVerifyHeader()');
-    cy.location('pathname').then((pathname) => {
+    cy.location('pathname', this.common.getTimeoutOptions()).then((pathname) => {
       const alreadyOnAddAccountNotePage = pathname.includes('/note/add');
 
       if (alreadyOnAddAccountNotePage) {
@@ -2132,6 +2723,9 @@ export class AccountEnquiryFlow {
         return;
       }
 
+      expect(pathname, 'current pathname before opening Add account note').to.match(
+        /\/fines\/account\/(?:defendant|company|minor-creditor)\/\d+\/details$/,
+      );
       logAE('navigate', 'Opening "Add account note" screen');
       this.detailsNav.clickAddAccountNoteButton();
     });
@@ -2174,7 +2768,9 @@ export class AccountEnquiryFlow {
     this.openNotesScreenAndEnterText(note);
 
     logAE('save', 'Saving account note');
+    this.notes.watchAddNoteRequest();
     this.notes.save();
+    this.notes.assertAddNoteRequest();
 
     cy.location('pathname', { timeout: 20000 }).should('match', /\/fines\/account\/defendant\/\d+\/details$/);
   }
@@ -2499,6 +3095,12 @@ export class AccountEnquiryFlow {
     this.editDefendantAndChangeFirstName(updatedFirstName);
     this.saveDefendantDetails();
     this.assertDefendantNameContains(updatedFirstName);
+
+    if (isLegacyAccountMode()) {
+      logAE('info', 'Skipping OPAL-only defendant amendment baseline verification');
+      return;
+    }
+
     this.verifyDefendantAmendmentsViaApi(updatedFirstName);
   }
 
@@ -2514,6 +3116,12 @@ export class AccountEnquiryFlow {
     this.editCompanyDetailsAndChangeName(updatedCompanyName);
     this.saveCompanyDetails();
     this.assertCompanyNameContains(updatedCompanyName);
+
+    if (isLegacyAccountMode()) {
+      logAE('info', 'Skipping OPAL-only company amendment baseline verification');
+      return;
+    }
+
     this.verifyCompanyAmendmentsViaApi(updatedCompanyName);
   }
 
@@ -2529,6 +3137,12 @@ export class AccountEnquiryFlow {
     this.editParentGuardianAndChangeFirstName(updatedFirstName);
     this.saveParentGuardianDetails();
     this.assertParentGuardianNameContains(updatedFirstName);
+
+    if (isLegacyAccountMode()) {
+      logAE('info', 'Skipping OPAL-only parent/guardian amendment baseline verification');
+      return;
+    }
+
     this.verifyParentGuardianAmendmentsViaApi(updatedFirstName);
   }
 
@@ -2618,6 +3232,22 @@ export class AccountEnquiryFlow {
           const party = partyBody['defendant_account_party'] as Record<string, unknown> | undefined;
           const details = party?.['party_details'] as Record<string, unknown> | undefined;
           const individual = details?.['individual_details'] as Record<string, unknown> | undefined;
+
+          if (isLegacyAccountMode()) {
+            const forenames = individual?.['forenames'];
+
+            if (forenames === null || forenames === undefined || String(forenames).trim() === '') {
+              expectTextToContainIgnoringCase(
+                individual?.['surname'],
+                expectedForename,
+                'Legacy individual surname should contain expected forename',
+              );
+              logAESync('assert', 'Legacy forename verified in combined surname field', {
+                surname: individual?.['surname'],
+              });
+              return data.defendantAccountId;
+            }
+          }
 
           expect(individual?.['forenames'], 'Forename should match expected value').to.eq(expectedForename);
           logAESync('assert', 'Forename verified in party details', { forenames: individual?.['forenames'] });
@@ -2756,6 +3386,21 @@ export class AccountEnquiryFlow {
           const details = party?.['party_details'] as Record<string, unknown> | undefined;
           const individual = details?.['individual_details'] as Record<string, unknown> | undefined;
 
+          if (isLegacyAccountMode()) {
+            expect(individual?.['forenames'] ?? null, 'Legacy parent/guardian forenames should not be inferred').to.be
+              .null;
+            expectTextToContainIgnoringCase(
+              individual?.['surname'],
+              expectedGuardianName,
+              'Legacy parent/guardian surname should contain the combined GoB name',
+            );
+            logAESync('assert', 'Legacy parent/guardian name verified in combined surname field', {
+              forenames: individual?.['forenames'],
+              surname: individual?.['surname'],
+            });
+            return data.defendantAccountId;
+          }
+
           expect(individual?.['forenames'], 'Guardian forename should match expected value').to.eq(
             expectedGuardianName,
           );
@@ -2836,6 +3481,16 @@ export class AccountEnquiryFlow {
 
           const organisation = details?.['organisation_details'] as Record<string, unknown> | undefined;
           const organisationName = organisation?.['organisation_name'];
+
+          if (isLegacyAccountMode()) {
+            expectTextToContainIgnoringCase(
+              organisationName,
+              expectedCompanyName,
+              'Legacy organisation name should contain expected value',
+            );
+            logAESync('assert', 'Legacy organisation name verified in party details', { organisationName });
+            return data.defendantAccountId;
+          }
 
           expect(organisationName, 'Organisation name should match expected value').to.eq(expectedCompanyName);
           logAESync('assert', 'Organisation name verified in party details', { organisationName });

@@ -173,7 +173,7 @@ describe('finesSaMinorCreditorAccountsResolver', () => {
     expect(result).toEqual({ count: 1, creditor_accounts: [] });
   });
 
-  it('should return empty result if no search criteria is provided', async () => {
+  it('should return empty result if all search criteria are null', async () => {
     finesSaStore.setSearchAccount({
       fsa_search_account_number: null,
       fsa_search_account_reference_case_number: null,
@@ -193,7 +193,7 @@ describe('finesSaMinorCreditorAccountsResolver', () => {
     expect(opalFinesService.getMinorCreditorAccounts).not.toHaveBeenCalled();
   });
 
-  it('should return empty result if no search criteria is provided', async () => {
+  it('should return empty result if minor creditor search criteria is empty', async () => {
     finesSaStore.setSearchAccount({
       fsa_search_account_number: null,
       fsa_search_account_reference_case_number: null,

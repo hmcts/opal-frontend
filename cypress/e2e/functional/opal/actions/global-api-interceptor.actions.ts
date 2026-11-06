@@ -328,7 +328,7 @@ export class GlobalApiInterceptorActions {
    */
   public stubAddNoteNonRetriablePermissionError(statusCode: number): void {
     log('intercept', 'Stubbing add note non-retriable permission error', { statusCode });
-    cy.intercept('POST', '**/opal-fines-service/notes/add', {
+    cy.intercept('POST', '**/opal-fines-service/notes', {
       statusCode,
       body: {
         retriable: false,
@@ -388,14 +388,19 @@ export class GlobalApiInterceptorActions {
   }
 
   /**
-   * Asserts the global banner is not visible.
-   * @remarks Uses the shared global alert selector for absence checks.
+   * Asserts the global API error banner has cleared.
+   * @remarks Allows unrelated global alerts, such as session expiry warnings, to remain visible.
    * @example
-   * actions.assertGlobalBannerNotVisible();
+   * actions.assertGlobalApiBannerCleared();
    */
-  public assertGlobalBannerNotVisible(): void {
-    log('assert', 'Asserting global banner is not visible');
-    cy.get(FixedPenaltyLocators.globalErrorBanner).should('not.exist');
+  public assertGlobalApiBannerCleared(): void {
+    log('assert', 'Asserting global API banner is cleared');
+    this.assertGlobalBannerDoesNotContain([
+      GLOBAL_ERROR_MESSAGE,
+      RETRIABLE_WARNING_TITLE,
+      RETRIABLE_WARNING_MESSAGE,
+      RETRIABLE_WARNING_OPERATION_ID,
+    ]);
   }
 
   /**
@@ -505,5 +510,25 @@ export class GlobalApiInterceptorActions {
           expect(text).to.include(value);
         }
       });
+  }
+
+  /**
+   * Asserts no global alert banner contains any of the supplied text fragments.
+   * @param values - Text fragments that should no longer appear in global alert banners.
+   * @remarks Scopes to banner text so unrelated alerts do not fail the absence check.
+   * @example
+   * this.assertGlobalBannerDoesNotContain(['Temporary System Issue']);
+   */
+  private assertGlobalBannerDoesNotContain(values: string[]): void {
+    const unexpected = values.map((value) => value.trim()).filter(Boolean);
+    cy.get('body').should(($body) => {
+      const matchingBannerText = $body
+        .find(FixedPenaltyLocators.globalErrorBanner)
+        .toArray()
+        .map((banner) => Cypress.$(banner).text())
+        .find((text) => unexpected.some((value) => text.includes(value)));
+
+      expect(matchingBannerText, `global banner containing one of: ${unexpected.join(', ')}`).to.be.undefined;
+    });
   }
 }

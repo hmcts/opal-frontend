@@ -1,0 +1,17 @@
+<div class="govuk-grid-column-full">
+  <h2 [class]="style.heading">History and notes</h2>
+  <app-fines-acc-history-and-notes-filter-form
+    [filterFieldErrors]="fieldErrors"
+    [filterForm]="filterForm"
+    [filterOpen]="filterOpen"
+    [filterSummaryText]="summaryText"
+    (formSubmit)="handleFilterApplied($event)"
+    (filterOpenChange)="handleFilterOpenChange($event)"
+  ></app-fines-acc-history-and-notes-filter-form>
+
+  @if (historyAndNotesTabData$ | async; as historyAndNotesTabData) {
+    <app-fines-acc-major-creditor-details-history-and-notes-table
+      [tabData]="historyAndNotesTabData"
+    ></app-fines-acc-major-creditor-details-history-and-notes-table>
+  }
+</div>

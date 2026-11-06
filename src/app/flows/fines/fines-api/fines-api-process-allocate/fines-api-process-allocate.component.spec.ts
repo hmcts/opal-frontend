@@ -1,0 +1,812 @@
+import { DateTime } from 'luxon';
+import { OPAL_FINES_SOURCE_MAPPINGS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-source-mappings.mock';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
+import { IOpalFinesInterfaceJobSummary } from '@services/fines/opal-fines-service/interfaces/opal-fines-interface-job-summary.interface';
+import { IOpalFinesInterfaceJobsSummaryResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-interface-jobs-summary-response.interface';
+import { IOpalFinesTillsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-tills-response.interface';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { Observable, Subject, of, throwError } from 'rxjs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_API_ROUTING_PATHS } from '../routing/constants/fines-api-routing-paths.constant';
+import { FinesApiStore } from '../stores/fines-api.store';
+import { FinesApiProcessAllocateComponent } from './fines-api-process-allocate.component';
+import { FinesApiProcessComponent } from './fines-api-process-tab/fines-api-process.component';
+import { IFinesApiProcessData } from './fines-api-process-tab/interfaces/fines-api-process-data.interface';
+
+type ComponentFactory = (componentType?: typeof FinesApiProcessAllocateComponent) => FinesApiProcessAllocateComponent;
+const originalComponentFactory = (
+  FinesApiProcessAllocateComponent as typeof FinesApiProcessAllocateComponent & { ɵfac: ComponentFactory }
+).ɵfac;
+
+@Component({
+  selector: 'app-fines-api-process',
+  template: `
+    <div id="fines-api-process-tab-content">
+      {{ tabData.tableData[0]?.['File name'] }} {{ tabData.tableData[0]?.Source }}
+    </div>
+    <button id="fines-api-process-refresh-stub" type="button" (click)="refreshRequested.emit()">Refresh</button>
+  `,
+})
+class FinesApiProcessStubComponent {
+  @Input({ required: true }) public tabData!: IFinesApiProcessData;
+  @Output() public readonly refreshRequested = new EventEmitter<void>();
+}
+
+const PROCESS_JOBS: IOpalFinesInterfaceJobSummary[] = [
+  {
+    business_unit_name: 'Camberwell Green',
+    completed_datetime: null,
+    created_datetime: '2026-09-03T08:15:00.000Z',
+    file_name: 'payments_natwest_001.dat',
+    interface_file_id: 1701,
+    interface_job_id: 701,
+    source: 'NATWEST',
+    status: 'FAILED',
+  },
+  {
+    business_unit_name: 'West London',
+    completed_datetime: null,
+    created_datetime: '2026-09-02T10:45:00.000Z',
+    file_name: 'payments_dwp_002.dat',
+    interface_file_id: 1702,
+    interface_job_id: 702,
+    source: 'DWP',
+    status: 'CREATED',
+  },
+];
+
+describe('FinesApiProcessAllocateComponent', () => {
+  let component: FinesApiProcessAllocateComponent;
+  let fixture: ComponentFixture<FinesApiProcessAllocateComponent>;
+  let finesApiStore: InstanceType<typeof FinesApiStore>;
+  let processJobs: IOpalFinesInterfaceJobSummary[];
+  let getInterfaceJobsSummary: ReturnType<
+    typeof vi.fn<(...args: unknown[]) => Observable<IOpalFinesInterfaceJobsSummaryResponse>>
+  >;
+  let getTills: ReturnType<typeof vi.fn>;
+  let getIgnoredJobs: ReturnType<
+    typeof vi.fn<(...args: unknown[]) => Observable<IOpalFinesInterfaceJobsSummaryResponse>>
+  >;
+  let routerCurrentNavigation: ReturnType<typeof vi.fn<() => Partial<ReturnType<Router['currentNavigation']>>>>;
+  let routerNavigate: ReturnType<typeof vi.fn<Router['navigate']>>;
+  const activatedRouteParent = { routeConfig: {} };
+  const activatedRoute = {
+    parent: activatedRouteParent,
+    snapshot: { fragment: 'process' as string | null, data: { sourceMappings: OPAL_FINES_SOURCE_MAPPINGS_MOCK } },
+    fragment: of('process'),
+  };
+
+  beforeEach(async () => {
+    activatedRoute.snapshot.data.sourceMappings = OPAL_FINES_SOURCE_MAPPINGS_MOCK;
+    processJobs = PROCESS_JOBS;
+    getIgnoredJobs = vi.fn(() => of({ interface_jobs: [] }));
+    getTills = vi.fn((): Observable<IOpalFinesTillsResponse> => of({ tills: [] }));
+    activatedRoute.snapshot.fragment = 'process';
+    activatedRoute.fragment = of('process');
+    routerCurrentNavigation = vi.fn<() => Partial<ReturnType<Router['currentNavigation']>>>().mockReturnValue(null);
+    routerNavigate = vi.fn<Router['navigate']>().mockResolvedValue(true);
+    getInterfaceJobsSummary = vi.fn(
+      (): Observable<IOpalFinesInterfaceJobsSummaryResponse> => of({ interface_jobs: processJobs }),
+    );
+
+    await TestBed.configureTestingModule({
+      imports: [FinesApiProcessAllocateComponent],
+      providers: [
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: activatedRoute,
+        },
+        {
+          provide: OpalFines,
+          useValue: {
+            getInterfaceJobsSummary: (params: { statuses?: string[] }) =>
+              params.statuses?.includes('IGNORED') ? getIgnoredJobs(params) : getInterfaceJobsSummary(params),
+            getTills,
+          },
+        },
+      ],
+    })
+      .overrideComponent(FinesApiProcessAllocateComponent, {
+        remove: { imports: [FinesApiProcessComponent] },
+        add: { imports: [FinesApiProcessStubComponent] },
+      })
+      .compileComponents();
+
+    vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation((...args) => routerNavigate(...args));
+    vi.spyOn(TestBed.inject(Router), 'currentNavigation').mockImplementation(
+      () => routerCurrentNavigation() as ReturnType<Router['currentNavigation']>,
+    );
+
+    finesApiStore = TestBed.inject(FinesApiStore);
+    finesApiStore.resetFinesApiState();
+    finesApiStore.setSelectedBusinessUnitIds([77, 80]);
+  });
+
+  const render = (): void => {
+    fixture = TestBed.createComponent(FinesApiProcessAllocateComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  };
+
+  const createComponentWithoutRender = (): void => {
+    fixture = TestBed.createComponent(FinesApiProcessAllocateComponent);
+    component = fixture.componentInstance;
+  };
+
+  const mockCurrentNavigationFinalUrl = (url: string): void => {
+    routerCurrentNavigation.mockReturnValue({
+      finalUrl: TestBed.inject(Router).parseUrl(url),
+    });
+  };
+
+  it('should render the shell and load the Process tab component by default', () => {
+    render();
+
+    const nativeElement = fixture.nativeElement as HTMLElement;
+    expect(component).toBeTruthy();
+    expect(nativeElement.querySelector('h1')?.textContent?.trim()).toBe('Automatic Cash Input');
+    expect(nativeElement.querySelector('app-fines-api-process')).toBeTruthy();
+    expect(nativeElement.querySelector('#fines-api-process-tab-content')).toBeTruthy();
+    expect(nativeElement.textContent).toContain('payments_natwest_001.dat');
+    expect(getInterfaceJobsSummary).toHaveBeenCalledOnce();
+    expect(getInterfaceJobsSummary).toHaveBeenCalledWith({
+      business_unit_ids: [77, 80],
+      statuses: ['CREATED', 'FAILED'],
+      interface_name: 'payments_in',
+    });
+    expect(finesApiStore.processInterfaceJobs()).toEqual(PROCESS_JOBS);
+
+    const processTabContent = nativeElement.querySelector('#fines-api-process-tab-content');
+    const sectionBreakContainer = nativeElement.querySelector('#fines-api-process-allocate-section-break-container');
+    const sectionBreak = nativeElement.querySelector('#fines-api-process-allocate-section-break');
+    const cancelContainer = nativeElement.querySelector('#fines-api-process-allocate-cancel');
+    expect(processTabContent?.parentElement?.nextElementSibling).toBe(sectionBreakContainer);
+    expect(sectionBreakContainer?.querySelector('hr')).toBe(sectionBreak);
+    expect(sectionBreak?.classList.contains('govuk-section-break--l')).toBe(true);
+    expect(sectionBreak?.classList.contains('govuk-section-break--visible')).toBe(true);
+    expect(sectionBreakContainer?.nextElementSibling).toBe(cancelContainer);
+    expect(cancelContainer?.querySelector('a')?.textContent?.trim()).toBe('Cancel');
+  });
+
+  it('should fetch current Process data on initial entry instead of rendering retained data', () => {
+    finesApiStore.setProcessInterfaceJobs([{ ...PROCESS_JOBS[0], file_name: 'payments_stale.dat' }]);
+    processJobs = [{ ...PROCESS_JOBS[0], file_name: 'payments_current.dat' }];
+
+    render();
+
+    const textContent = (fixture.nativeElement as HTMLElement).textContent;
+    expect(getInterfaceJobsSummary).toHaveBeenCalledOnce();
+    expect(finesApiStore.processInterfaceJobs()).toEqual(processJobs);
+    expect(textContent).toContain('payments_current.dat');
+    expect(textContent).not.toContain('payments_stale.dat');
+  });
+
+  it('should switch tabs, clear Process selections, and load Process again when selected', () => {
+    render();
+    finesApiStore.setSelectedFileIds(['1701']);
+
+    component['handleTabSwitch']('allocate');
+    fixture.detectChanges();
+
+    expect(finesApiStore.activeTab()).toBe('allocate');
+    expect(finesApiStore.selectedFileIds()).toEqual([]);
+    expect((fixture.nativeElement as HTMLElement).querySelector('app-fines-api-process')).toBeNull();
+    expect(routerNavigate).toHaveBeenCalledWith([], {
+      relativeTo: activatedRoute,
+      fragment: 'allocate',
+      queryParamsHandling: 'preserve',
+      replaceUrl: true,
+    });
+
+    activatedRoute.snapshot.fragment = 'allocate';
+    processJobs = [{ ...PROCESS_JOBS[0], file_name: 'payments_after_return.dat' }];
+    component['handleTabSwitch']('process');
+    fixture.detectChanges();
+
+    expect(finesApiStore.activeTab()).toBe('process');
+    expect((fixture.nativeElement as HTMLElement).querySelector('app-fines-api-process')).toBeTruthy();
+    expect(getInterfaceJobsSummary).toHaveBeenCalledTimes(3);
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('payments_after_return.dat');
+  });
+
+  it('should reload Process data when the child emits Refresh', () => {
+    render();
+    processJobs = [
+      {
+        ...PROCESS_JOBS[0],
+        file_name: 'payments_refreshed_003.dat',
+        interface_file_id: 1703,
+        interface_job_id: 703,
+      },
+    ];
+
+    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('#fines-api-process-refresh-stub')!.click();
+    fixture.detectChanges();
+
+    expect(getInterfaceJobsSummary).toHaveBeenCalledTimes(2);
+    expect(finesApiStore.processInterfaceJobs()).toEqual(processJobs);
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('payments_refreshed_003.dat');
+    expect((fixture.nativeElement as HTMLElement).textContent).not.toContain('payments_natwest_001.dat');
+  });
+
+  it('should ignore an older Refresh response after a newer Refresh completes', () => {
+    render();
+    const olderProcessResponse = new Subject<IOpalFinesInterfaceJobsSummaryResponse>();
+    const newerJob = { ...PROCESS_JOBS[0], file_name: 'payments_latest.dat', interface_job_id: 799 };
+
+    getInterfaceJobsSummary
+      .mockImplementationOnce(() => olderProcessResponse.asObservable())
+      .mockImplementationOnce(() => of({ interface_jobs: [newerJob] }));
+
+    component['refreshProcessData']();
+    component['refreshProcessData']();
+    fixture.detectChanges();
+
+    olderProcessResponse.next({ interface_jobs: PROCESS_JOBS });
+    olderProcessResponse.complete();
+    fixture.detectChanges();
+
+    expect(finesApiStore.processInterfaceJobs()).toEqual([newerJob]);
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('payments_latest.dat');
+  });
+
+  it('should not present an initial API failure as valid empty Process data', () => {
+    getInterfaceJobsSummary.mockImplementation(() => throwError(() => new Error('summary unavailable')));
+
+    render();
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('app-fines-api-process')).toBeNull();
+    expect(finesApiStore.processInterfaceJobs()).toBeNull();
+  });
+
+  it('should retain the last rendered Process data if Refresh fails', () => {
+    render();
+    getInterfaceJobsSummary.mockImplementation(() => throwError(() => new Error('summary unavailable')));
+
+    component['refreshProcessData']();
+    fixture.detectChanges();
+
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('payments_natwest_001.dat');
+    expect(finesApiStore.processInterfaceJobs()).toEqual(PROCESS_JOBS);
+  });
+
+  it('should switch to the Ignored files tab without loading Process content', () => {
+    render();
+
+    component['handleTabSwitch']('ignored');
+    fixture.detectChanges();
+
+    expect(finesApiStore.activeTab()).toBe('ignored');
+    expect((fixture.nativeElement as HTMLElement).querySelector('app-fines-api-process')).toBeNull();
+  });
+
+  it('should ignore an unsupported tab fragment', () => {
+    render();
+
+    component['handleTabSwitch']('unsupported');
+
+    expect(finesApiStore.activeTab()).toBe('process');
+  });
+
+  it('should clear the flow only after Back navigation succeeds', async () => {
+    render();
+    finesApiStore.setSelectedFileIds(['1701']);
+
+    component['navigateBack']();
+    await fixture.whenStable();
+
+    expect(routerNavigate).toHaveBeenCalledWith([FINES_API_ROUTING_PATHS.children.selectBusinessUnits], {
+      relativeTo: activatedRouteParent,
+      state: { resetFinesApiState: true },
+    });
+    expect(finesApiStore.selectedBusinessUnitIds()).toEqual([]);
+    expect(finesApiStore.selectedFileIds()).toEqual([]);
+  });
+
+  it('should retain flow state when Back navigation is rejected by the route guard', async () => {
+    routerNavigate.mockResolvedValue(false);
+    render();
+    finesApiStore.setSelectedFileIds(['1701']);
+
+    component['navigateBack']();
+    await fixture.whenStable();
+
+    expect(finesApiStore.selectedBusinessUnitIds()).toEqual([77, 80]);
+    expect(finesApiStore.selectedFileIds()).toEqual(['1701']);
+  });
+
+  it('should identify navigation back to Select Business Units without query params or fragment', () => {
+    mockCurrentNavigationFinalUrl('/fines/auto-payment-in/select-business-units?source=back#process');
+    createComponentWithoutRender();
+
+    expect(component['isNavigatingToSelectBusinessUnits']()).toBe(true);
+  });
+
+  it('should not identify other navigation targets as Select Business Units navigation', () => {
+    mockCurrentNavigationFinalUrl('/fines/auto-payment-in/confirm-process');
+    createComponentWithoutRender();
+
+    expect(component['isNavigatingToSelectBusinessUnits']()).toBe(false);
+  });
+
+  it('should not identify a missing current navigation as Select Business Units navigation', () => {
+    routerCurrentNavigation.mockReturnValue(null);
+    createComponentWithoutRender();
+
+    expect(component['isNavigatingToSelectBusinessUnits']()).toBe(false);
+  });
+
+  it('should prevent deactivation when selected files would be lost by returning to Select Business Units', () => {
+    mockCurrentNavigationFinalUrl('/fines/auto-payment-in/select-business-units');
+    finesApiStore.setSelectedFileIds(['1701']);
+    createComponentWithoutRender();
+
+    expect(component.canDeactivate()).toBe(false);
+  });
+
+  it('should allow deactivation back to Select Business Units when no files are selected', () => {
+    mockCurrentNavigationFinalUrl('/fines/auto-payment-in/select-business-units');
+    createComponentWithoutRender();
+
+    expect(component.canDeactivate()).toBe(true);
+  });
+
+  it('should allow deactivation with selected files when the next route is not Select Business Units', () => {
+    mockCurrentNavigationFinalUrl('/fines/auto-payment-in/confirm-process');
+    finesApiStore.setSelectedFileIds(['1701']);
+    createComponentWithoutRender();
+
+    expect(component.canDeactivate()).toBe(true);
+  });
+
+  it('should allow deactivation with selected files when there is no current navigation target', () => {
+    routerCurrentNavigation.mockReturnValue(null);
+    finesApiStore.setSelectedFileIds(['1701']);
+    createComponentWithoutRender();
+
+    expect(component.canDeactivate()).toBe(true);
+  });
+
+  it('should navigate to the Finance dashboard and clear flow state when Cancel navigation succeeds', async () => {
+    render();
+    finesApiStore.setSelectedFileIds(['1701']);
+
+    (fixture.nativeElement as HTMLElement)
+      .querySelector<HTMLAnchorElement>('#fines-api-process-allocate-cancel a')!
+      .click();
+    await fixture.whenStable();
+
+    expect(routerNavigate).toHaveBeenCalledWith(['/', 'fines', 'dashboard', 'finance']);
+    expect(finesApiStore.selectedBusinessUnitIds()).toEqual([]);
+    expect(finesApiStore.selectedFileIds()).toEqual([]);
+    expect(finesApiStore.processInterfaceJobs()).toBeNull();
+  });
+
+  it('should retain flow state when Cancel navigation is rejected by the route guard', async () => {
+    routerNavigate.mockResolvedValue(false);
+    render();
+    finesApiStore.setSelectedFileIds(['1701']);
+
+    (fixture.nativeElement as HTMLElement)
+      .querySelector<HTMLAnchorElement>('#fines-api-process-allocate-cancel a')!
+      .click();
+    await fixture.whenStable();
+
+    expect(routerNavigate).toHaveBeenCalledWith(['/', 'fines', 'dashboard', 'finance']);
+    expect(finesApiStore.selectedBusinessUnitIds()).toEqual([77, 80]);
+    expect(finesApiStore.selectedFileIds()).toEqual(['1701']);
+  });
+
+  it('should baseline unsaved changes against file selection rather than selected business units', () => {
+    expect(finesApiStore.unsavedChanges()).toBe(true);
+
+    render();
+
+    expect(finesApiStore.unsavedChanges()).toBe(false);
+  });
+
+  describe('Allocate integration', () => {
+    const tillResponse = (fileName = 'available.dat'): IOpalFinesTillsResponse => ({
+      tills: [
+        {
+          till_id: 123,
+          till_number: 7,
+          amount: '12.50',
+          errors: 0,
+          file_name: fileName,
+          source: 'NATWEST',
+          business_unit_name: 'BU Alpha',
+          processed_by: 'test.operator',
+        },
+      ],
+    });
+    const native = (): HTMLElement => fixture.nativeElement;
+    const refresh = (): void => {
+      native().querySelector<HTMLButtonElement>('#fines-api-allocate-refresh')!.click();
+      fixture.detectChanges();
+    };
+    const switchTab = (tab: string): void => {
+      component['handleTabSwitch'](tab);
+      fixture.detectChanges();
+    };
+    const startAllocate = (): void => {
+      finesApiStore.setActiveTab('allocate');
+      activatedRoute.snapshot.fragment = 'allocate';
+      activatedRoute.fragment = of('allocate');
+      render();
+    };
+
+    beforeEach(() => {
+      processJobs = [{ ...PROCESS_JOBS[0], status: 'PROCESSING', business_unit_name: 'BU Alpha' }];
+      getTills.mockReturnValue(of(tillResponse()));
+    });
+
+    it('uses the resolved mapping in both tabs and after refresh', () => {
+      activatedRoute.snapshot.data.sourceMappings = [{ code: 'NATWEST', display_name: 'Resolved bank name' }];
+      startAllocate();
+      expect(native().textContent).toContain('Resolved bank name');
+      refresh();
+      expect(native().textContent).toContain('Resolved bank name');
+      switchTab('process');
+      expect(native().querySelector('#fines-api-process-tab-content')?.textContent).toContain('Resolved bank name');
+    });
+
+    it('loads the post-confirm Allocate state with the selected BU and eligibility filters', () => {
+      startAllocate();
+      expect(getInterfaceJobsSummary).toHaveBeenCalledExactlyOnceWith({
+        business_unit_ids: [77, 80],
+        statuses: ['PROCESSING'],
+        interface_name: 'payments_in',
+      });
+      expect(getTills).toHaveBeenCalledExactlyOnceWith({
+        business_unit_ids: [77, 80],
+        statuses: ['Created', 'Failed'],
+        auto_payments: true,
+      });
+      expect(native().textContent).toContain('available.dat');
+      expect(native().textContent).toContain('1 file is still being processed:');
+      expect(finesApiStore.processInterfaceJobs()).toBeNull();
+      expect(native().querySelector('app-fines-api-process')).toBeNull();
+    });
+
+    it('does not load tills while Process or Ignored is active', () => {
+      render();
+      expect(getTills).not.toHaveBeenCalled();
+      switchTab('ignored');
+      expect(getTills).not.toHaveBeenCalled();
+      switchTab('allocate');
+      expect(getTills).toHaveBeenCalledOnce();
+    });
+
+    it('does not issue unfiltered reads when no BUs are selected', () => {
+      finesApiStore.setSelectedBusinessUnitIds([]);
+      startAllocate();
+      expect(getTills).not.toHaveBeenCalled();
+      expect(getInterfaceJobsSummary).not.toHaveBeenCalled();
+      expect(native().querySelector('#fines-api-allocate-empty')).toBeNull();
+    });
+
+    it('waits for both responses before displaying data or an empty result', () => {
+      const jobs = new Subject<IOpalFinesInterfaceJobsSummaryResponse>();
+      const tills = new Subject<IOpalFinesTillsResponse>();
+      getInterfaceJobsSummary.mockReturnValue(jobs);
+      getTills.mockReturnValue(tills);
+      startAllocate();
+      jobs.next({ interface_jobs: [] });
+      jobs.complete();
+      fixture.detectChanges();
+      expect(native().querySelector('app-fines-api-allocate')).toBeNull();
+      tills.next({ tills: [] });
+      tills.complete();
+      fixture.detectChanges();
+      expect(native().textContent).toContain('There are no outstanding tills to allocate');
+    });
+
+    it('keeps till checkbox selection local without marking the shared journey as dirty', () => {
+      startAllocate();
+      finesApiStore.setStateChanges(false);
+
+      native().querySelector<HTMLInputElement>('#fines-api-allocate-till-123')!.click();
+      fixture.detectChanges();
+
+      expect(native().textContent).toContain('1 of 1 tills selected.');
+      expect(finesApiStore.selectedBusinessUnitIds()).toEqual([77, 80]);
+      expect(finesApiStore.selectedFileIds()).toEqual([]);
+      expect(finesApiStore.stateChanges()).toBe(false);
+      expect(finesApiStore.unsavedChanges()).toBe(false);
+    });
+
+    it('allows Back to Select Business Units when only tills are selected', async () => {
+      startAllocate();
+      native().querySelector<HTMLInputElement>('#fines-api-allocate-till-123')!.click();
+      fixture.detectChanges();
+      mockCurrentNavigationFinalUrl('/fines/auto-payment-in/select-business-units');
+
+      expect(native().textContent).toContain('1 of 1 tills selected.');
+      expect(component.canDeactivate()).toBe(true);
+
+      component['navigateBack']();
+      await fixture.whenStable();
+
+      expect(routerNavigate).toHaveBeenCalledWith([FINES_API_ROUTING_PATHS.children.selectBusinessUnits], {
+        relativeTo: activatedRouteParent,
+        state: { resetFinesApiState: true },
+      });
+      expect(finesApiStore.selectedBusinessUnitIds()).toEqual([]);
+      expect(finesApiStore.selectedFileIds()).toEqual([]);
+      expect(finesApiStore.unsavedChanges()).toBe(false);
+    });
+
+    it('refreshes both areas together and clears selection even when till IDs are unchanged', () => {
+      startAllocate();
+      native().querySelector<HTMLInputElement>('#fines-api-allocate-till-123')!.click();
+      fixture.detectChanges();
+      expect(native().textContent).toContain('1 of 1 tills selected.');
+      getInterfaceJobsSummary.mockReturnValue(of({ interface_jobs: [] }));
+      getTills.mockReturnValue(of(tillResponse('refreshed.dat')));
+      refresh();
+      expect(getInterfaceJobsSummary).toHaveBeenCalledTimes(2);
+      expect(getTills).toHaveBeenCalledTimes(2);
+      expect(native().textContent).toContain('refreshed.dat');
+      expect(native().querySelector('#fines-api-allocate-processing')).toBeNull();
+      expect(native().textContent).toContain('0 of 1 tills selected.');
+    });
+
+    it('reads fresh data and clears local selection after leaving and returning', () => {
+      startAllocate();
+      native().querySelector<HTMLInputElement>('#fines-api-allocate-till-123')!.click();
+      fixture.detectChanges();
+      switchTab('ignored');
+      getTills.mockReturnValue(of(tillResponse('returned.dat')));
+      switchTab('allocate');
+      expect(getTills).toHaveBeenCalledTimes(2);
+      expect(native().textContent).toContain('returned.dat');
+      expect(native().textContent).toContain('0 of 1 tills selected.');
+    });
+
+    it('cancels both in-flight reads when Refresh supersedes them', () => {
+      const jobs = new Subject<IOpalFinesInterfaceJobsSummaryResponse>();
+      const tills = new Subject<IOpalFinesTillsResponse>();
+      getInterfaceJobsSummary.mockReturnValueOnce(jobs);
+      getTills.mockReturnValueOnce(tills);
+      startAllocate();
+      expect(jobs.observed).toBe(true);
+      expect(tills.observed).toBe(true);
+      refresh();
+      expect(jobs.observed).toBe(false);
+      expect(tills.observed).toBe(false);
+      tills.next(tillResponse('stale.dat'));
+      jobs.next({ interface_jobs: [] });
+      jobs.complete();
+      tills.complete();
+      fixture.detectChanges();
+      expect(native().textContent).toContain('available.dat');
+      expect(native().textContent).not.toContain('stale.dat');
+    });
+
+    it('unsubscribes pending Allocate reads on tab exit and component destruction', () => {
+      const jobs = new Subject<IOpalFinesInterfaceJobsSummaryResponse>();
+      const tills = new Subject<IOpalFinesTillsResponse>();
+      getInterfaceJobsSummary.mockReturnValue(jobs);
+      getTills.mockReturnValue(tills);
+      startAllocate();
+      switchTab('ignored');
+      expect(jobs.observed).toBe(false);
+      expect(tills.observed).toBe(false);
+      switchTab('allocate');
+      expect(jobs.observed).toBe(true);
+      fixture.destroy();
+      expect(jobs.observed).toBe(false);
+      expect(tills.observed).toBe(false);
+    });
+
+    it.each(['jobs', 'tills'])('keeps initial failure retryable when %s fails', (endpoint) => {
+      const failing = endpoint === 'jobs' ? getInterfaceJobsSummary : getTills;
+      failing.mockReturnValueOnce(throwError(() => new Error('unavailable')));
+      startAllocate();
+      expect(native().querySelector('app-fines-api-allocate')).toBeNull();
+      expect(native().querySelector('#fines-api-allocate-empty')).toBeNull();
+      refresh();
+      expect(native().textContent).toContain('available.dat');
+    });
+
+    it.each(['jobs', 'tills'])(
+      'retains both previous datasets when refreshed %s fails and recovers later',
+      (endpoint) => {
+        startAllocate();
+        const failing = endpoint === 'jobs' ? getInterfaceJobsSummary : getTills;
+        failing.mockReturnValueOnce(throwError(() => new Error('unavailable')));
+        refresh();
+        expect(native().textContent).toContain('available.dat');
+        expect(native().textContent).toContain('1 file is still being processed:');
+        getInterfaceJobsSummary.mockReturnValue(of({ interface_jobs: [] }));
+        getTills.mockReturnValue(of({ tills: [] }));
+        refresh();
+        expect(native().textContent).toContain('There are no outstanding tills to allocate');
+        expect(native().querySelector('#fines-api-allocate-processing')).toBeNull();
+      },
+    );
+  });
+
+  describe('Ignored files integration', () => {
+    const ignoredJob = { ...PROCESS_JOBS[0], status: 'IGNORED', completed_datetime: '2026-10-11T12:17:04.323177' };
+    const native = (): HTMLElement => fixture.nativeElement;
+    const count = (): string | undefined => native().querySelector('#fines-api-ignored-count')?.textContent?.trim();
+    const switchTab = (tab: string): void => {
+      component['handleTabSwitch'](tab);
+      fixture.detectChanges();
+    };
+    const refresh = (): void => {
+      native().querySelector<HTMLButtonElement>('#fines-api-ignored-refresh')!.click();
+      fixture.detectChanges();
+    };
+
+    it('loads only selected BUs on entry and keeps the count across all tabs without duplicate reads', () => {
+      getIgnoredJobs.mockReturnValue(of({ interface_jobs: [ignoredJob] }));
+      render();
+      expect(getIgnoredJobs).toHaveBeenCalledExactlyOnceWith(
+        expect.objectContaining({
+          business_unit_ids: [77, 80],
+          statuses: ['IGNORED'],
+          interface_name: 'payments_in',
+          completed_date_from: expect.any(String),
+          completed_date_to: expect.any(String),
+        }),
+      );
+      expect(count()).toBe('1');
+      switchTab('allocate');
+      expect(count()).toBe('1');
+      switchTab('ignored');
+      expect(count()).toBe('1');
+      expect(native().querySelector('#fines-api-ignored-files')?.textContent).toContain('NatWest');
+      expect(native().querySelector('#fines-api-ignored-files')?.textContent).toContain('11 October 2026 at 12:17');
+      expect(native().querySelector('#fines-api-ignored-files a')?.getAttribute('href')).toBe(
+        '/fines/auto-payment-in/file-summary/701',
+      );
+      expect(getIgnoredJobs).toHaveBeenCalledOnce();
+    });
+
+    it('recomputes a single pair of UK fourteen-day bounds on every refresh', () => {
+      const now = vi
+        .spyOn(DateTime, 'now')
+        .mockReturnValue(DateTime.fromISO('2026-10-16T22:54:12', { zone: 'Europe/London' }) as DateTime<true>);
+      try {
+        render();
+        expect(getIgnoredJobs).toHaveBeenLastCalledWith(
+          expect.objectContaining({
+            completed_date_from: '2026-10-02T22:54:12',
+            completed_date_to: '2026-10-16T22:54:12',
+          }),
+        );
+        switchTab('ignored');
+        now.mockReturnValue(DateTime.fromISO('2026-10-17T09:00:00', { zone: 'Europe/London' }) as DateTime<true>);
+        refresh();
+        expect(getIgnoredJobs).toHaveBeenLastCalledWith(
+          expect.objectContaining({
+            completed_date_from: '2026-10-03T09:00:00',
+            completed_date_to: '2026-10-17T09:00:00',
+          }),
+        );
+      } finally {
+        now.mockRestore();
+      }
+    });
+
+    it('hides a zero count and updates rows/count together in both directions on refresh', () => {
+      render();
+      switchTab('ignored');
+      expect(count()).toBeUndefined();
+      expect(native().querySelector('#fines-api-ignored-files')).toBeNull();
+      expect(native().querySelector('#fines-api-ignored-refresh')).toBeTruthy();
+      getIgnoredJobs.mockReturnValue(of({ interface_jobs: [ignoredJob] }));
+      refresh();
+      expect(count()).toBe('1');
+      getIgnoredJobs.mockReturnValue(of({ interface_jobs: [] }));
+      refresh();
+      expect(count()).toBeUndefined();
+      expect(native().querySelector('#fines-api-ignored-files')).toBeNull();
+    });
+
+    it('allows retry after initial failure and keeps successful rows/count when refresh fails', () => {
+      getIgnoredJobs.mockReturnValueOnce(throwError(() => new Error('unavailable')));
+      render();
+      switchTab('ignored');
+      expect(native().querySelector('#fines-api-ignored-files')).toBeNull();
+      expect(count()).toBeUndefined();
+      getIgnoredJobs.mockReturnValue(of({ interface_jobs: [ignoredJob] }));
+      refresh();
+      getIgnoredJobs.mockReturnValueOnce(throwError(() => new Error('unavailable')));
+      refresh();
+      expect(count()).toBe('1');
+      expect(native().querySelector('#fines-api-ignored-files')).toBeTruthy();
+      getIgnoredJobs.mockReturnValue(of({ interface_jobs: [] }));
+      refresh();
+      expect(count()).toBeUndefined();
+    });
+
+    it('cancels superseded reads and unsubscribes when destroyed', () => {
+      const pending = new Subject<IOpalFinesInterfaceJobsSummaryResponse>();
+      getIgnoredJobs.mockReturnValueOnce(pending);
+      render();
+      switchTab('ignored');
+      getIgnoredJobs.mockReturnValue(of({ interface_jobs: [ignoredJob] }));
+      refresh();
+      expect(pending.observed).toBe(false);
+      pending.next({ interface_jobs: [] });
+      fixture.detectChanges();
+      expect(count()).toBe('1');
+      getIgnoredJobs.mockReturnValue(pending);
+      refresh();
+      expect(pending.observed).toBe(true);
+      fixture.destroy();
+      expect(pending.observed).toBe(false);
+    });
+
+    it('clears the old BU count before replacement data and never requests all BUs on reset', () => {
+      getIgnoredJobs.mockReturnValue(of({ interface_jobs: [ignoredJob] }));
+      render();
+      const pending = new Subject<IOpalFinesInterfaceJobsSummaryResponse>();
+      getIgnoredJobs.mockReturnValue(pending);
+      finesApiStore.setSelectedBusinessUnitIds([65]);
+      fixture.detectChanges();
+      expect(count()).toBeUndefined();
+      expect(getIgnoredJobs).toHaveBeenLastCalledWith(expect.objectContaining({ business_unit_ids: [65] }));
+      finesApiStore.setSelectedBusinessUnitIds([]);
+      fixture.detectChanges();
+      expect(pending.observed).toBe(false);
+      expect(getIgnoredJobs).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  it('should create and update through the compiled Angular definition', async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      imports: [FinesApiProcessAllocateComponent],
+      providers: [
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: activatedRoute },
+        {
+          provide: OpalFines,
+          useValue: {
+            getInterfaceJobsSummary: (params: { statuses?: string[] }) =>
+              params.statuses?.includes('IGNORED') ? getIgnoredJobs(params) : getInterfaceJobsSummary(params),
+            getTills,
+          },
+        },
+      ],
+    }).compileComponents();
+
+    vi.spyOn(TestBed.inject(Router), 'navigate').mockImplementation((...args) => routerNavigate(...args));
+    vi.spyOn(TestBed.inject(Router), 'currentNavigation').mockImplementation(
+      () => routerCurrentNavigation() as ReturnType<Router['currentNavigation']>,
+    );
+
+    finesApiStore = TestBed.inject(FinesApiStore);
+    finesApiStore.resetFinesApiState();
+    finesApiStore.setSelectedBusinessUnitIds([77, 80]);
+
+    const defaultFactoryInstance = TestBed.runInInjectionContext(() => originalComponentFactory());
+    const explicitFactoryInstance = TestBed.runInInjectionContext(() =>
+      originalComponentFactory(FinesApiProcessAllocateComponent),
+    );
+
+    expect(defaultFactoryInstance).toBeInstanceOf(FinesApiProcessAllocateComponent);
+    expect(explicitFactoryInstance).toBeInstanceOf(FinesApiProcessAllocateComponent);
+    defaultFactoryInstance.ngOnDestroy();
+    explicitFactoryInstance.ngOnDestroy();
+
+    fixture = TestBed.createComponent(FinesApiProcessAllocateComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('app-fines-api-process')).toBeTruthy();
+
+    finesApiStore.setActiveTab('allocate');
+    fixture.detectChanges();
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('app-fines-api-process')).toBeNull();
+  });
+});

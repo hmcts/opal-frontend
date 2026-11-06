@@ -26,6 +26,16 @@ export const FINES_SA_SEARCH_ACCOUNT_FIELD_ERRORS: IFinesSaSearchAccountFieldErr
       priority: 2,
     },
   },
+  fsa_search_account_individuals_national_insurance_number: {
+    alphanumericTextPattern: {
+      message: 'National Insurance number must only contain letters or numbers',
+      priority: 1,
+    },
+    maxlength: {
+      message: 'National Insurance number must be 9 characters or fewer',
+      priority: 2,
+    },
+  },
   fsa_search_account_individuals_search_criteria: {},
   fsa_search_account_companies_search_criteria: {},
   fsa_search_account_minor_creditors_search_criteria: {},

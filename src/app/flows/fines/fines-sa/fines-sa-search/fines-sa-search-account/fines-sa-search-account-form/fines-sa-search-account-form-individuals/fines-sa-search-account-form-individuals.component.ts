@@ -7,10 +7,11 @@ import {
   GovukCheckboxesItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-checkboxes';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
-import { ALPHANUMERIC_WITH_SPACES_PATTERN, LETTERS_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
+import { ALPHANUMERIC_WITH_SPACES_PATTERN, SINGLE_ASCII_CHARACTERS } from '@hmcts/opal-frontend-common/constants';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { dateOfBirthValidator } from '@hmcts/opal-frontend-common/validators/date-of-birth';
 import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validators/optional-valid-date';
+import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 import { FinesSaStore } from '../../../../stores/fines-sa.store';
 import { AbstractNestedFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-nested-form-base';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
@@ -20,7 +21,8 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
 );
-const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPACES_PATTERN, 'lettersWithSpacesPattern');
+
+const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_CHARACTERS, 'singleAsciiCharacters');
 
 /**
  * Nested Individuals sub-form for Search Account.
@@ -36,7 +38,13 @@ const LETTERS_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(LETTERS_WITH_SPAC
  */
 @Component({
   selector: 'app-fines-sa-search-account-form-individuals',
-  imports: [GovukTextInputComponent, GovukCheckboxesComponent, GovukCheckboxesItemComponent, MojDatePickerComponent],
+  imports: [
+    GovukTextInputComponent,
+    GovukCheckboxesComponent,
+    GovukCheckboxesItemComponent,
+    MojDatePickerComponent,
+    TrimLeadingTrailingWhitespaceDirective,
+  ],
   templateUrl: './fines-sa-search-account-form-individuals.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -55,12 +63,12 @@ export class FinesSaSearchAccountFormIndividualsComponent extends AbstractNested
   private buildIndividualFormControls(): FormGroup {
     return new FormGroup({
       fsa_search_account_individuals_last_name: new FormControl<string | null>(null, [
-        LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
         Validators.maxLength(30),
       ]),
       fsa_search_account_individuals_last_name_exact_match: new FormControl<boolean | null>(null),
       fsa_search_account_individuals_first_names: new FormControl<string | null>(null, [
-        LETTERS_WITH_SPACES_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
         Validators.maxLength(20),
       ]),
       fsa_search_account_individuals_first_names_exact_match: new FormControl<boolean | null>(null),
@@ -69,12 +77,8 @@ export class FinesSaSearchAccountFormIndividualsComponent extends AbstractNested
         optionalValidDateValidator(),
         dateOfBirthValidator(),
       ]),
-      fsa_search_account_individuals_national_insurance_number: new FormControl<string | null>(null, [
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
-        Validators.maxLength(9),
-      ]),
       fsa_search_account_individuals_address_line_1: new FormControl<string | null>(null, [
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
         Validators.maxLength(30),
       ]),
       fsa_search_account_individuals_post_code: new FormControl<string | null>(null, [

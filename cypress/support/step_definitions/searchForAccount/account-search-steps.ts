@@ -14,9 +14,8 @@ import { AccountSearchCompanyActions } from '../../..//e2e/functional/opal/actio
 import { AccountSearchMinorCreditorsActions } from '../../..//e2e/functional/opal/actions/search/search.minor-creditors.actions';
 import { AccountSearchCommonActions } from '../../..//e2e/functional/opal/actions/search/search.common.actions';
 import { AccountSearchProblemActions } from '../../..//e2e/functional/opal/actions/search/search.problem.actions';
+import { AccountSearchNavActions } from '../../..//e2e/functional/opal/actions/search/search.nav.actions';
 import { ResultsActions } from '../../..//e2e/functional/opal/actions/search/search.results.actions';
-import { CommonActions } from '../../..//e2e/functional/opal/actions/common/common.actions';
-import { PrimaryNavigationActions } from '../../..//e2e/functional/opal/actions/primary-navigation.actions';
 import { MinorCreditorType } from '../../utils/macFieldResolvers';
 import { applyUniqPlaceholder } from '../../utils/stringUtils';
 
@@ -29,8 +28,7 @@ const searchCompanyActions = () => new AccountSearchCompanyActions();
 const searchMinorCreditorsActions = () => new AccountSearchMinorCreditorsActions();
 const searchCommonActions = () => new AccountSearchCommonActions();
 const searchProblemActions = () => new AccountSearchProblemActions();
-const commonActions = () => new CommonActions();
-const primaryNavigationActions = () => new PrimaryNavigationActions();
+const searchNavActions = () => new AccountSearchNavActions();
 const resultsActions = () => new ResultsActions();
 const applyUniqToDataTable = (table: DataTable): DataTable => {
   const rawWithUniq = table.raw().map(([key, value]) => [key, applyUniqPlaceholder(value ?? '')]);
@@ -146,11 +144,6 @@ When('I view the Individuals search form and enter the following:', function (ta
   searchFlow().enterIndividualsFormWithoutSubmit(table);
 });
 
-When('I navigate the Individuals search form and enter the following:', function (table: DataTable) {
-  log('step', 'Navigating and entering Individuals form without submit');
-  searchFlow().navigateAndEnterIndividualsFormWithoutSubmit(table);
-});
-
 /**
  * @step Switches to the Minor Creditors search form (tab).
  * @details Delegates to `AccountSearchFlow.viewSearchMinorCreditorsForm()`.
@@ -174,13 +167,26 @@ When('I view the Major Creditors search form', () => {
 });
 
 /**
+ * @step Searches for a major creditor from the Major Creditors tab.
+ * @param majorCreditor The visible autocomplete value to search for.
+ * @details Delegates to `AccountSearchFlow.searchForMajorCreditor()`.
+ * @example
+ *  When I search for the major creditor "Arriva Rail North (ARVA)"
+ */
+When('I search for the major creditor {string}', (majorCreditor: string) => {
+  const resolvedMajorCreditor = applyUniqPlaceholder(majorCreditor);
+  log('step', 'Searching for major creditor', { majorCreditor: resolvedMajorCreditor });
+  searchFlow().searchForMajorCreditor(resolvedMajorCreditor);
+});
+
+/**
  * @step Verifies the Major Creditors tab is not visible.
  * @example
  *  Then I should not see the Major Creditors search form
  */
 Then('I should not see the Major Creditors search form', () => {
   log('assert', 'Major Creditors search form is not visible');
-  cy.get('#tab-major-creditors').should('not.exist');
+  searchNavActions().assertMajorCreditorsTabNotVisible();
 });
 
 /**
@@ -555,19 +561,6 @@ Then(
 );
 
 /**
- * @step Verifies a validation message is visible for a given search type (company/individual/minor/etc).
- * @param expectedText The exact text expected (quoted in the feature).
- * @param searchType The search type (e.g. Company, individual). Can be quoted or unquoted in the feature.
- * @example
- *   And I see "Reference or case number must only contain letters or numbers" validation message for a "Company"
- *   And I see "Enter minor creditor first name, last name, address or postcode" validation message for an individual
- */
-Then(/^I see "([^"]+)" validation message for (?:a|an) "?([^"]+)"?$/, (expectedText: string, searchType: string) => {
-  log('step', `Verifying validation message for ${searchType}: "${expectedText}"`);
-  searchCommonActions().assertValidationMessageContains(expectedText);
-});
-
-/**
  * @step Verifies a validation message for Minor Creditor searches (explicit wording).
  *
  * Alias to handle feature wording like:
@@ -578,29 +571,6 @@ Then(/^I see "([^"]+)" validation message for (?:a|an) "?([^"]+)"?$/, (expectedT
 Then('I see {string} validation message for a minor creditor {string}', (expectedText: string, searchType: string) => {
   log('step', `Verifying minor creditor validation for ${searchType}: "${expectedText}"`);
   searchCommonActions().assertValidationMessageContains(expectedText);
-});
-
-/**
- * @step Select back → confirm navigation → assert we returned to the Search page.
- * @description
- * Uses the shared CommonActions.navigateBrowserBackWithConfirmation() helper
- * to simulate a browser Back action and confirm the unsaved-changes dialog.
- *
- * After confirming, this step explicitly asserts that the user is returned to
- * the Dashboard
- *
- * @example
- *  When I select back and confirm I navigate to the Dashboard
- */
-When('I select back with confirmation and verify I navigate to the Dashboard', () => {
-  log('step', 'Back → expect navigation to Dashboard');
-
-  // Accept/prepare confirm handler if the page might show an unsaved-changes dialog
-  commonActions().navigateBrowserBackWithChoice('ok');
-
-  // Assert we reached Dashboard
-  log('step', 'Verify dashboard landing is ready');
-  primaryNavigationActions().assertDashboardLandingReady();
 });
 
 /**

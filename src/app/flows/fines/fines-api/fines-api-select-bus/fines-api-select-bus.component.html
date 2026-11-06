@@ -1,0 +1,157 @@
+<div class="govuk-grid-column-full">
+  <h1 class="govuk-heading-l">{{ content.heading }}</h1>
+  <opal-lib-govuk-error-summary
+    [errors]="formErrorSummaryMessage"
+    (errorClick)="scrollTo($event)"
+  ></opal-lib-govuk-error-summary>
+
+  <div class="govuk-form-group" [class.govuk-form-group--error]="hasBusinessUnitSelectionError">
+    <fieldset
+      class="govuk-fieldset"
+      [attr.aria-describedby]="hasBusinessUnitSelectionError ? 'fines-api-select-business-units-error' : null"
+    >
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">{{ content.legend }}</legend>
+
+      @if (hasBusinessUnitSelectionError) {
+        <p id="fines-api-select-business-units-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">{{ content.errorPrefix }}</span>
+          {{ formErrorSummaryMessage[0].message }}
+        </p>
+      }
+
+      <opal-lib-govuk-table [caption]="content.tableCaption" captionClasses="govuk-visually-hidden">
+        <ng-container head>
+          <th opal-lib-govuk-table-heading id="fines-api-select-business-units-header-select" class="govuk-!-padding-0">
+            <span class="govuk-visually-hidden">{{ content.selectColumn }}</span>
+            @if (hasBusinessUnits) {
+              <opal-lib-govuk-checkboxes
+                fieldSetId="fines-api-select-business-units-group"
+                checkboxClasses=""
+                legendText=""
+                legendClasses="govuk-!-margin-0"
+              >
+                <div
+                  class="govuk-checkboxes--small"
+                  opal-lib-govuk-checkboxes-item
+                  opalLibMojMultiSelectHead
+                  [control]="selectAllControl"
+                  inputId="fines-api-select-business-units"
+                  inputName="fines-api-select-business-units"
+                  labelText=""
+                  labelClasses="govuk-!-padding-0"
+                  [ariaLabel]="content.selectAll"
+                  [selectAllIndeterminate]="someBusinessUnitsSelected"
+                  (toggleAll)="toggleAllBusinessUnits($event)"
+                ></div>
+              </opal-lib-govuk-checkboxes>
+            }
+          </th>
+          <th
+            opal-lib-govuk-table-heading
+            id="fines-api-select-business-units-header"
+            class="govuk-!-padding-top-2 govuk-!-padding-bottom-0"
+          >
+            {{ content.columns.businessUnit }}
+          </th>
+          <th
+            opal-lib-govuk-table-heading
+            class="govuk-table__header--numeric govuk-!-padding-top-2 govuk-!-padding-bottom-0"
+          >
+            {{ content.columns.filesToProcess }}
+          </th>
+          <th
+            opal-lib-govuk-table-heading
+            class="govuk-table__header--numeric govuk-!-padding-top-2 govuk-!-padding-bottom-0"
+          >
+            {{ content.columns.tillsToAllocate }}
+          </th>
+        </ng-container>
+
+        <ng-container body>
+          @for (businessUnit of businessUnits; track businessUnit.business_unit_id) {
+            <tr
+              opal-lib-govuk-table-body-row
+              [bodyRowClasses]="
+                isBusinessUnitSelected(businessUnit.business_unit_id) ? 'govuk-table__row--selected' : ''
+              "
+            >
+              <td
+                opal-lib-govuk-table-body-row-data
+                [id]="'fines-api-business-unit-select-' + businessUnit.business_unit_id"
+                class="govuk-!-padding-top-1 govuk-!-padding-bottom-0"
+              >
+                <opal-lib-govuk-checkboxes
+                  [fieldSetId]="'fines-api-business-unit-' + businessUnit.business_unit_id + '-group'"
+                  checkboxClasses="govuk-!-padding-0"
+                  [legendText]="content.selectBusinessUnit(businessUnit.business_unit_name)"
+                  legendClasses="govuk-visually-hidden"
+                  labelClasses="govuk-!-padding-0"
+                >
+                  <div
+                    class="govuk-checkboxes--small"
+                    opal-lib-govuk-checkboxes-item
+                    opalLibMojMultiSelectBody
+                    [control]="businessUnitControls.get(businessUnit.business_unit_id)!"
+                    [inputId]="'fines-api-business-unit-' + businessUnit.business_unit_id"
+                    [inputName]="'fines-api-business-unit-' + businessUnit.business_unit_id"
+                    labelText=""
+                    labelClasses="govuk-!-padding-0"
+                    [rowId]="businessUnit.business_unit_id"
+                    [ariaLabel]="content.selectBusinessUnit(businessUnit.business_unit_name)"
+                    (selectionChange)="toggleBusinessUnit($event)"
+                  ></div>
+                </opal-lib-govuk-checkboxes>
+              </td>
+              <td
+                opal-lib-govuk-table-body-row-data
+                [id]="'fines-api-business-unit-name-' + businessUnit.business_unit_id"
+                class="govuk-!-padding-top-3"
+              >
+                {{ businessUnit.business_unit_name }}
+              </td>
+              <td
+                opal-lib-govuk-table-body-row-data
+                [id]="'fines-api-business-unit-file-count-' + businessUnit.business_unit_id"
+                class="govuk-table__cell--numeric govuk-!-padding-top-3"
+              >
+                {{ businessUnit.file_count }}
+              </td>
+              <td
+                opal-lib-govuk-table-body-row-data
+                [id]="'fines-api-business-unit-till-count-' + businessUnit.business_unit_id"
+                class="govuk-table__cell--numeric govuk-!-padding-top-3"
+              >
+                {{ businessUnit.till_count }}
+              </td>
+            </tr>
+          } @empty {
+            <tr opal-lib-govuk-table-body-row>
+              <td
+                opal-lib-govuk-table-body-row-data
+                id="fines-api-business-unit-empty"
+                colspan="4"
+                class="govuk-!-padding-top-3"
+              >
+                {{ content.emptyState }}
+              </td>
+            </tr>
+          }
+        </ng-container>
+      </opal-lib-govuk-table>
+    </fieldset>
+  </div>
+</div>
+
+<div class="govuk-grid-column-two-thirds">
+  <div class="govuk-button-group">
+    <button
+      class="govuk-button govuk-!-margin-right-4"
+      (click)="continue()"
+      id="fines-api-select-business-units-continue"
+      [disabled]="!hasBusinessUnits"
+    >
+      {{ content.continueButton }}
+    </button>
+    <opal-lib-govuk-cancel-link (linkClickEvent)="cancel()"></opal-lib-govuk-cancel-link>
+  </div>
+</div>

@@ -26,6 +26,10 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: `First name(s) must only contain letters`,
       priority: 3,
     },
+    singleAsciiCharacters: {
+      message: `First name(s) must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
+      priority: 3,
+    },
   },
   fm_offence_details_minor_creditor_surname: {
     required: {
@@ -40,6 +44,10 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: `Last name must only contain letters`,
       priority: 3,
     },
+    singleAsciiCharacters: {
+      message: `Last name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
+      priority: 3,
+    },
   },
   fm_offence_details_minor_creditor_company_name: {
     required: {
@@ -50,8 +58,8 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: `Company name must be 50 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithHyphensSpacesApostrophesDotPattern: {
-      message: `Company name must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+    singleAsciiCharacters: {
+      message: `Company name must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)`,
       priority: 3,
     },
   },
@@ -60,8 +68,9 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: 'Address line 1 must be 30 characters or fewer',
       priority: 2,
     },
-    alphanumericTextPattern: {
-      message: 'Address line 1 must only contain letters or numbers',
+    singleAsciiCharacters: {
+      message:
+        'Address line 1 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 3,
     },
   },
@@ -70,8 +79,9 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: 'Address line 2 must be 30 characters or fewer',
       priority: 1,
     },
-    alphanumericTextPattern: {
-      message: 'Address line 2 must only contain letters or numbers',
+    singleAsciiCharacters: {
+      message:
+        'Address line 2 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 2,
     },
   },
@@ -80,8 +90,9 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: `Address line 3 must be 16 characters or fewer`,
       priority: 1,
     },
-    alphanumericTextPattern: {
-      message: 'Address line 3 must only contain letters or numbers',
+    singleAsciiCharacters: {
+      message:
+        'Address line 3 must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 2,
     },
   },
@@ -89,6 +100,10 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
     maxlength: {
       message: `Postcode must be 8 characters or fewer`,
       priority: 1,
+    },
+    alphanumericTextPattern: {
+      message: 'Postcode must only contain letters or numbers',
+      priority: 2,
     },
   },
   fm_offence_details_minor_creditor_bank_account_name: {
@@ -100,7 +115,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: 'Name on the account must be 18 characters or fewer',
       priority: 2,
     },
-    singleAsciiChatacters: {
+    singleAsciiCharacters: {
       message:
         'Name on account must only include letters a to z, numbers 0-9 and certain special characters (such as hyphens, spaces, apostrophes and commas)',
       priority: 3,
@@ -110,6 +125,10 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
     required: {
       message: 'Enter sort code',
       priority: 1,
+    },
+    invalidSortCode: {
+      message: 'Sort code must be 6 numbers',
+      priority: 2,
     },
     maxlength: {
       message: 'Sort code must be 6 characters or fewer',
@@ -125,13 +144,17 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       message: 'Enter account number',
       priority: 1,
     },
+    minlength: {
+      message: 'Account number must be between 6 and 8 digits long',
+      priority: 2,
+    },
     maxlength: {
       message: 'Account number must be 8 characters or fewer',
-      priority: 2,
+      priority: 3,
     },
     numericalTextPattern: {
       message: 'Account number must only contain numbers',
-      priority: 3,
+      priority: 4,
     },
   },
   fm_offence_details_minor_creditor_bank_account_ref: {
@@ -144,7 +167,7 @@ export const FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FIELD_ERRORS: IAbstractFor
       priority: 2,
     },
     alphanumericTextPattern: {
-      message: 'Payment reference must only contain letters',
+      message: 'Payment reference must only contain letters and numbers',
       priority: 3,
     },
   },

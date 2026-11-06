@@ -1,4 +1,6 @@
+import { IOpalFinesSourceMapping } from './opal-fines-source-mapping.interface';
 import { Observable } from 'rxjs';
+import { IOpalFinesAccountDefendantDetailsConsolidatedAccounts } from './opal-fines-account-defendant-account-consolidated-accounts.interface';
 import { IOpalFinesCourtRefData } from './opal-fines-court-ref-data.interface';
 import { IOpalFinesBusinessUnitRefData } from './opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesLocalJusticeAreaRefData } from './opal-fines-local-justice-area-ref-data.interface';
@@ -18,8 +20,13 @@ import { IOpalFinesResultRefData } from './opal-fines-result-ref-data.interface'
 import { IOpalFinesAccountMinorCreditorAtAGlance } from './opal-fines-account-minor-creditor-at-a-glance.interface';
 import { IOpalFinesEnforcersRefData } from './opal-fines-enforcers-ref-data.interface';
 import { IOpalFinesAccountMinorCreditorCreditor } from './opal-fines-account-minor-creditor-creditor.interface';
+import { IOpalFinesAccountMajorCreditorAtAGlance } from './opal-fines-account-major-creditor-at-a-glance.interface';
+import { IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData } from './opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.interface';
+import { IOpalFinesReport } from './opal-fines-report.interface';
+import { IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData } from './opal-fines-account-major-creditor-details-history-and-notes-tab-ref-data.interface';
 
 export interface IOpalFinesCache {
+  sourceMappingsCache$: Observable<IOpalFinesSourceMapping[]> | null;
   courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> };
   businessUnitsCache$: Observable<IOpalFinesBusinessUnitRefData> | null;
   businessUnitsPermissionCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> };
@@ -36,10 +43,15 @@ export interface IOpalFinesCache {
   defendantAccountParentOrGuardianAccountPartyCache$: Observable<IOpalFinesAccountDefendantAccountParty> | null;
   defendantAccountEnforcementCache$: Observable<IOpalFinesAccountDefendantDetailsEnforcementTabRefData> | null;
   defendantAccountImpositionsCache$: Observable<IOpalFinesAccountDefendantDetailsImpositionsTabRefData> | null;
+  defendantAccountConsolidatedAccountsCache$: Observable<IOpalFinesAccountDefendantDetailsConsolidatedAccounts> | null;
   defendantAccountHistoryAndNotesCache$: Observable<IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData> | null;
   defendantAccountPaymentTermsLatestCache$: Observable<IOpalFinesAccountDefendantDetailsPaymentTermsLatest> | null;
   defendantAccountFixedPenaltyCache$: Observable<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData> | null;
   minorCreditorAccountAtAGlanceCache$: Observable<IOpalFinesAccountMinorCreditorAtAGlance> | null;
   minorCreditorAccountCreditorCache$: Observable<IOpalFinesAccountMinorCreditorCreditor> | null;
+  majorCreditorAccountAtAGlanceCache$: Observable<IOpalFinesAccountMajorCreditorAtAGlance> | null;
+  majorCreditorAccountHistoryAndNotesCache$: Observable<IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData> | null;
+  minorCreditorAccountHistoryAndNotesCache$: Observable<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData> | null;
   enforcersCache$: Observable<IOpalFinesEnforcersRefData> | null;
+  reportsCache$: { [key: string]: Observable<IOpalFinesReport> };
 }

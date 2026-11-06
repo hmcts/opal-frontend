@@ -40,6 +40,7 @@ export function getRoutesConfig(): {
     ...DEFAULT_PROXY_CONFIG,
     opalFinesServiceUrl: config.get('opal-api.opal-fines-service'),
     opalUserServiceUrl: config.get('opal-api.opal-user-service'),
+    timeoutInMilliseconds: config.get('opal-api.timeoutInMilliseconds'),
   };
 
   const routesConfiguration: RoutesConfiguration = {
@@ -57,6 +58,9 @@ export function getRoutesConfig(): {
     userStateUrl: config.get('opal-user-service-urls.userStateUrl'),
     addUserUrl: config.get('opal-user-service-urls.addUserUrl'),
     updateUserUrl: config.get('opal-user-service-urls.updateUserUrl'),
+    timeoutInMilliseconds: config.get('opal-user-service.timeoutInMilliseconds'),
+    retryAttempts: config.get('opal-user-service.retryAttempts'),
+    retryDelayInMilliseconds: config.get('opal-user-service.retryDelayInMilliseconds'),
   };
 
   const userStateConfiguration: UserStateConfiguration = {
@@ -76,13 +80,29 @@ export function getRoutesConfig(): {
 
 export function configureApiProxyRoutes(app: Express, proxyConfiguration: ProxyConfiguration): void {
   const ipLoggingEnabled = config.get('features.ip-logging.enabled') as boolean;
+  const opalUserServiceProxyTimeoutInMilliseconds = config.get<number>('opal-user-service.timeoutInMilliseconds');
+  const opalFinesServiceProxyTimeoutInMilliseconds = config.get<number>('opal-fines-service.timeoutInMilliseconds');
+
+  if (proxyConfiguration.timeoutInMilliseconds === null) {
+    throw new Error('Missing opal-api.timeoutInMilliseconds configuration.');
+  }
 
   if (proxyConfiguration.opalFinesServiceUrl) {
-    app.use('/opal-fines-service', OpalApiProxy(proxyConfiguration.opalFinesServiceUrl, ipLoggingEnabled));
+    app.use(
+      '/opal-fines-service',
+      OpalApiProxy(
+        proxyConfiguration.opalFinesServiceUrl,
+        ipLoggingEnabled,
+        opalFinesServiceProxyTimeoutInMilliseconds,
+      ),
+    );
   }
 
   if (proxyConfiguration.opalUserServiceUrl) {
-    app.use('/opal-user-service', OpalApiProxy(proxyConfiguration.opalUserServiceUrl, ipLoggingEnabled));
+    app.use(
+      '/opal-user-service',
+      OpalApiProxy(proxyConfiguration.opalUserServiceUrl, ipLoggingEnabled, opalUserServiceProxyTimeoutInMilliseconds),
+    );
   }
 }
 
@@ -95,7 +115,7 @@ export function configureSession(server: Express): void {
     secure: config.get('session.secure'),
     domain: config.get('session.domain'),
     redisEnabled: config.get('features.redis.enabled'),
-    redisConnectionString: config.get('secrets.opal.redis-connection-string'),
+    redisConnectionString: config.get('secrets.opal.managed-redis-connection-string'),
   };
 
   new SessionStorage().enableFor(server, sessionStorageConfig);

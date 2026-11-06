@@ -1,0 +1,58 @@
+@JIRA-LABEL:account-enquiry
+@JIRA-NFR:PO-2322
+Feature: Search And Matches Accessibility
+
+  Background:
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
+
+  @R1BDrop1 @JIRA-STORY:PO-705 @JIRA-STORY:PO-712 @JIRA-STORY:PO-715 @JIRA-EPIC:PO-2472 @JIRA-TEST-KEY:PO-5296
+  Scenario: Search and Matches journey is accessible
+    Given I am on the Account Search page - Individuals form displayed by default
+    ## Check Accessibility on Individuals Tab
+    When I search using the following inputs:
+      | individual last name | * |
+      | first names          | * |
+      | Date of birth        | * |
+      | Address line 1       | * |
+      | Postcode             | * |
+    Then I check the page for accessibility
+
+    ## Check Accessibility on Companies Tab
+    When I view the Companies search form
+    Then I check the page for accessibility
+
+    ## Check Accessibility on Minor Creditors Tab
+    And I view the Minor Creditors search form
+    Then I check the page for accessibility
+
+    # Check Accessibility on Major Creditors Tab
+    And I view the Major Creditors search form
+    Then I check the page for accessibility
+
+    # Check Accessibility on Search Results
+    # this is verifying accessibility on no results returned
+    And I view the Individuals search form
+    When I search using the following inputs:
+      | individual last name | Smith |
+      | first names          | John  |
+    Then I see the Search results page
+    And I check the page for accessibility
+
+  @JIRA-STORY:PO-2953 @JIRA-EPIC:PO-2630 @R1BDrop1 @JIRA-TEST-KEY:PO-10019
+  Scenario: National Insurance quick search is accessible
+    Given I am on the Account Search page - Individuals form displayed by default
+    ## Check Accessibility on National Insurance quick search
+    When I search using the following inputs:
+      | National Insurance number | * |
+    Then I check the page for accessibility
+
+  @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-3721 @R1BDrop2
+  Scenario: Major Creditors search form is available when release 1b is enabled
+    Given I am on the Account Search page - Individuals form displayed by default
+    When I view the Major Creditors search form
+    Then I check the page for accessibility
+
+  @JIRA-STORY:PO-3720 @JIRA-EPIC:PO-3685 @JIRA-TEST-KEY:PO-3722 @R1BOff
+  Scenario: Search and Matches (Accessible) is hidden when release 1b is disabled
+    Then I am taken to the "Accounts" Fines landing page
+    And I should not see the Fines primary navigation item "Search"

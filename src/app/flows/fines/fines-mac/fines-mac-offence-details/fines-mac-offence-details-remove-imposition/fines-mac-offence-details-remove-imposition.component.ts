@@ -7,6 +7,7 @@ import { FINES_MAC_OFFENCE_DETAILS_REMOVE_IMPOSITION_DEFAULTS } from './constant
 
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
+import { FinesMacStore } from '../../stores/fines-mac.store';
 import { IFinesMacOffenceDetailsImpositionsState } from '../interfaces/fines-mac-offence-details-impositions-state.interface';
 import { FinesMacOffenceDetailsService } from '../services/fines-mac-offence-details.service';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
@@ -18,6 +19,7 @@ import {
   GovukTableHeadingComponent,
   GovukTableComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-table';
+import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
 
 @Component({
   selector: 'app-fines-mac-offence-details-remove-imposition',
@@ -28,6 +30,7 @@ import {
     GovukTableHeadingComponent,
     GovukTableBodyRowComponent,
     GovukTableBodyRowDataComponent,
+    CustomAccessibleMonetaryComponent,
   ],
   templateUrl: './fines-mac-offence-details-remove-imposition.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,6 +40,7 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
   implements OnInit
 {
   private readonly finesMacOffenceDetailsStore = inject(FinesMacOffenceDetailsStore);
+  private readonly finesMacStore = inject(FinesMacStore);
   private readonly finesMacOffenceDetailsService = inject(FinesMacOffenceDetailsService);
   private readonly opalFinesService = inject(OpalFines);
   private readonly utilsService = inject(UtilsService);
@@ -213,6 +217,8 @@ export class FinesMacOffenceDetailsRemoveImpositionComponent
     );
 
     this.finesMacOffenceDetailsStore.setOffenceDetailsDraft(removalOffenceDetailsDraft);
+    this.finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(true);
+    this.finesMacStore.setUnsavedChanges(true);
     this.handleRoute(this.fineMacOffenceDetailsRoutingPaths.children.addOffence);
   }
 

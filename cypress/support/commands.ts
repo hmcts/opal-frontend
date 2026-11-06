@@ -35,6 +35,7 @@
 //     }
 //   }
 // }
+console.log('*** commands.ts loaded ***');
 
 type RequestHeaders = Record<string, unknown>;
 type RequestOptions = Partial<Cypress.RequestOptions> & {
@@ -123,26 +124,43 @@ const serializeJsonRequestBody = (body: Cypress.RequestBody): string => {
   return JSON.stringify(body);
 };
 
-Cypress.Commands.overwrite('request', (originalFn, ...args: unknown[]) => {
-  const originalRequest = originalFn as RequestOriginalFn;
-  const options = normalizeRequestOptions(args);
-
-  if (!options || !shouldDigestRequest(options)) {
-    return originalRequest(...args);
+const requestThenTimeout = (options: RequestOptions): number => {
+  if (typeof options.timeout === 'number') {
+    return options.timeout;
   }
 
-  const body = serializeJsonRequestBody(options.body as Cypress.RequestBody);
+  const responseTimeout = Cypress.config('responseTimeout');
+  if (typeof responseTimeout === 'number') {
+    return responseTimeout;
+  }
 
-  return cy.task<string>('contentDigest:sha512Base64', body, { log: false }).then((digest) =>
-    originalRequest({
-      ...options,
-      body,
-      headers: {
-        ...options.headers,
-        'Content-Digest': `sha-512=:${digest}:`,
-        'Want-Content-Digest': 'sha-512',
-        ...(hasHeader(options.headers, 'Content-Type') ? {} : { 'Content-Type': 'application/json' }),
-      },
-    }),
-  );
-});
+  return Cypress.config('defaultCommandTimeout');
+};
+
+export function registerRequestDigestCommand(): void {
+  Cypress.Commands.overwrite('request', (originalFn, ...args: unknown[]) => {
+    const originalRequest = originalFn as RequestOriginalFn;
+    const options = normalizeRequestOptions(args);
+
+    if (!options || !shouldDigestRequest(options)) {
+      return originalRequest(...args);
+    }
+
+    const body = serializeJsonRequestBody(options.body as Cypress.RequestBody);
+
+    return cy
+      .task<string>('contentDigest:sha512Base64', body, { log: false })
+      .then({ timeout: requestThenTimeout(options) }, (digest) =>
+        originalRequest({
+          ...options,
+          body,
+          headers: {
+            ...options.headers,
+            'Content-Digest': `sha-512=:${digest}:`,
+            'Want-Content-Digest': 'sha-512',
+            ...(hasHeader(options.headers, 'Content-Type') ? {} : { 'Content-Type': 'application/json' }),
+          },
+        }),
+      );
+  });
+}

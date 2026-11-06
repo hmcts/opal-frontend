@@ -202,36 +202,16 @@ export class FinesAccEnfActionAddFormComponent extends AbstractFormBaseComponent
         break;
       case FIELD_TYPES.decimal:
         validators.push(DECIMAL_NUMERIC_PATTERN_VALIDATOR, TWO_DECIMAL_PLACES_PATTERN_VALIDATOR);
-        if (typeof field.max === 'number') {
-          validators.push(Validators.max(field.max));
-        }
+        this.addMaxValidator(validators, field);
         break;
       case FIELD_TYPES.integer:
         validators.push(NUMERIC_PATTERN_VALIDATOR);
-        if (typeof field.min === 'number') {
-          validators.push(Validators.min(field.min));
-        }
-        if (typeof field.max === 'number') {
-          validators.push(Validators.max(field.max));
-        }
+        this.addMinValidator(validators, field);
+        this.addMaxValidator(validators, field);
         break;
       case FIELD_TYPES.text:
-        validators.push(SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR);
-        if (typeof field.min === 'number' && field.min > 0) {
-          validators.push(Validators.minLength(field.min));
-        }
-        if (typeof field.max === 'number') {
-          validators.push(Validators.maxLength(field.max));
-        }
-        break;
       case FIELD_TYPES.textarea:
-        validators.push(SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR);
-        if (typeof field.min === 'number' && field.min > 0) {
-          validators.push(Validators.minLength(field.min));
-        }
-        if (typeof field.max === 'number') {
-          validators.push(Validators.maxLength(field.max));
-        }
+        this.addTextValidators(validators, field);
         break;
       case FIELD_TYPES.menuCheckbox:
         validators.push(this.checkboxSelectionCountValidator(field));
@@ -239,6 +219,39 @@ export class FinesAccEnfActionAddFormComponent extends AbstractFormBaseComponent
     }
 
     return validators;
+  }
+
+  /**
+   * Adds a minimum numeric validator when supplied by reference data.
+   */
+  private addMinValidator(validators: ValidatorFn[], field: IFinesAccEnfActionAddFormField): void {
+    if (typeof field.min === 'number') {
+      validators.push(Validators.min(field.min));
+    }
+  }
+
+  /**
+   * Adds a maximum numeric validator when supplied by reference data.
+   */
+  private addMaxValidator(validators: ValidatorFn[], field: IFinesAccEnfActionAddFormField): void {
+    if (typeof field.max === 'number') {
+      validators.push(Validators.max(field.max));
+    }
+  }
+
+  /**
+   * Adds validators shared by dynamic text input and textarea controls.
+   */
+  private addTextValidators(validators: ValidatorFn[], field: IFinesAccEnfActionAddFormField): void {
+    validators.push(SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR);
+
+    if (typeof field.min === 'number' && field.min > 0) {
+      validators.push(Validators.minLength(field.min));
+    }
+
+    if (typeof field.max === 'number') {
+      validators.push(Validators.maxLength(field.max));
+    }
   }
 
   /**
@@ -276,7 +289,8 @@ export class FinesAccEnfActionAddFormComponent extends AbstractFormBaseComponent
   private checkboxSelectionCountValidator(field: IFinesAccEnfActionAddFormField): ValidatorFn {
     return () => {
       const selectedCount = this.selectedCheckboxOptions(field).length;
-      const min = typeof field.min === 'number' ? field.min : field.required ? 1 : 0;
+      const requiredMinimum = field.required ? 1 : 0;
+      const min = typeof field.min === 'number' ? field.min : requiredMinimum;
       const max = typeof field.max === 'number' ? field.max : undefined;
 
       if (selectedCount < min) return { required: true };

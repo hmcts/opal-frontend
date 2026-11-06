@@ -58,13 +58,16 @@ export const AccountParentOrGuardianDetailsLocators = {
   /** Root element for content rendered when the Parent or guardian tab is active. */
   parentOrGuardianTabRoot: 'app-fines-acc-defendant-details-parent-or-guardian-tab',
 
+  /** All Change links rendered in summary cards within the Parent or guardian tab. */
+  sectionChangeLinks:
+    'app-fines-acc-defendant-details-parent-or-guardian-tab .govuk-summary-card__actions a.govuk-link',
+
   /** Heading and in-tab action area at the top of the Parent or guardian tab. */
   parentOrGuardianTabHeader: {
     /** “Parent or guardian details” section heading within the tab. */
     title: 'app-fines-acc-defendant-details-parent-or-guardian-tab h2.govuk-heading-s',
-    /** Right-aligned “Change” link for the Parent or guardian details section. */
-    changeLink:
-      'app-fines-acc-defendant-details-parent-or-guardian-tab .govuk-grid-row > .govuk-grid-column-one-third .govuk-link',
+    /** Primary “Change” link in the Parent or guardian details summary card header. */
+    changeLink: '#parent-or-guardian-details-summary-card-list .govuk-summary-card__actions a',
     /** Expected label for the header action link. */
     changeLinkLabel: 'Change',
   },
@@ -142,6 +145,21 @@ export const AccountParentOrGuardianDetailsLocators = {
     /** Actions area inside the employer card header (reserved). */
     cardActions:
       '#employer-summary-card-list .govuk-summary-card__actions a, #employer-summary-card-list .govuk-summary-card__actions button',
+  },
+
+  // ──────────────────────────────
+  // Language preferences (summary card inside Parent or guardian tab)
+  // ──────────────────────────────
+  languagePreferences: {
+    /** Language preferences summary card and list. */
+    card: '#language-summary-card-list',
+    list: '#languagePreferences',
+
+    /** Language preference fields (stable by ID). */
+    fields: {
+      documentLanguage: '#languagePreferencesDocument_languageValue',
+      courtHearingLanguage: '#languagePreferencesHearing_languageValue',
+    },
   },
 
   // ──────────────────────────────

@@ -290,7 +290,6 @@
                         inputId="fm_payment_terms_earliest_release_date"
                         inputName="fm_payment_terms_earliest_release_date"
                         inputClasses="govuk-input--width-10"
-                        [minDate]="today"
                         [control]="form.get('fm_payment_terms_earliest_release_date')!"
                         [errors]="formControlErrorMessages['fm_payment_terms_earliest_release_date']"
                         (dateChange)="setInputValue($event, 'fm_payment_terms_earliest_release_date')"

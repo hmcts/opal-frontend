@@ -8,7 +8,11 @@
 ></opal-lib-govuk-error-summary>
 <form (submit)="handleFormSubmit($event)" [formGroup]="form">
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+    <legend
+      class="govuk-fieldset__legend govuk-fieldset__legend--m"
+      [attr.id]="release1a1_2Enabled() ? fineMacRoutingPaths.children.courtDetails : null"
+      [attr.tabindex]="release1a1_2Enabled() ? -1 : null"
+    >
       <h2 class="govuk-heading-m">Issuing Authority and Court Details</h2>
     </legend>
     <opal-lib-alphagov-accessible-autocomplete
@@ -39,7 +43,11 @@
 
   @if (defendantType === defendantTypesKeys.company) {
     <fieldset class="govuk-fieldset">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+      <legend
+        class="govuk-fieldset__legend govuk-fieldset__legend--m"
+        [attr.id]="release1a1_2Enabled() ? fineMacRoutingPaths.children.companyDetails : null"
+        [attr.tabindex]="release1a1_2Enabled() ? -1 : null"
+      >
         <h2 class="govuk-heading-m govuk-!-margin-0">Company Details</h2>
       </legend>
       <opal-lib-govuk-text-input
@@ -81,11 +89,16 @@
         [control]="form.controls['fm_fp_company_details_postcode']"
         [errors]="formControlErrorMessages['fm_fp_company_details_postcode']"
         [opalLibCapitaliseAllCharacters]="form.controls['fm_fp_company_details_postcode']"
+        [opalLibTrimLeadingTrailingWhitespace]="form.controls['fm_fp_company_details_postcode']"
       ></opal-lib-govuk-text-input>
     </fieldset>
   } @else {
     <fieldset class="govuk-fieldset">
-      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+      <legend
+        class="govuk-fieldset__legend govuk-fieldset__legend--m"
+        [attr.id]="release1a1_2Enabled() ? fineMacRoutingPaths.children.personalDetails : null"
+        [attr.tabindex]="release1a1_2Enabled() ? -1 : null"
+      >
         <h2 class="govuk-heading-m govuk-!-margin-0">Personal Details</h2>
       </legend>
       <opal-lib-govuk-select
@@ -178,6 +191,7 @@
         [control]="form.controls['fm_fp_personal_details_post_code']"
         [errors]="formControlErrorMessages['fm_fp_personal_details_post_code']"
         [opalLibCapitaliseAllCharacters]="form.controls['fm_fp_personal_details_post_code']"
+        [opalLibTrimLeadingTrailingWhitespace]="form.controls['fm_fp_personal_details_post_code']"
       ></opal-lib-govuk-text-input>
     </fieldset>
   }
@@ -185,7 +199,11 @@
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
 
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+    <legend
+      class="govuk-fieldset__legend govuk-fieldset__legend--m"
+      [attr.id]="release1a1_2Enabled() ? fineMacRoutingPaths.children.offenceDetails : null"
+      [attr.tabindex]="release1a1_2Enabled() ? -1 : null"
+    >
       <h2 class="govuk-heading-m govuk-!-margin-0">Offence Details</h2>
     </legend>
     <opal-lib-govuk-text-input
@@ -248,20 +266,22 @@
       inputId="fm_fp_offence_details_offence_cjs_code"
       inputName="fm_fp_offence_details_offence_cjs_code"
       inputClasses="govuk-input--width-10"
-      [hintHtml]="true"
+      hintText="For example, HY35014."
       [errors]="formControlErrorMessages['fm_fp_offence_details_offence_cjs_code']"
       [control]="form.controls['fm_fp_offence_details_offence_cjs_code']"
-    >
-      For example, HY35014. If you don't know the offence code, you can
+    ></opal-lib-govuk-text-input>
+    <div class="govuk-hint" id="fm_fp_offence_details_offence_cjs_code-guidance">
+      If you don't know the offence code, you can
       <a
         class="govuk-link govuk-link--no-visited-state"
         [href]="searchOffenceUrl"
         target="_blank"
         rel="noopener noreferrer"
       >
-        search the offence list
-      </a></opal-lib-govuk-text-input
-    >
+        <span class="govuk-visually-hidden">If you don't know the offence code, you can </span>
+        search the offence list (opens in a new tab)
+      </a>
+    </div>
 
     @if (offenceCode$ | async; as offenceCode) {
       <app-fines-mac-offence-code-hint
@@ -354,7 +374,11 @@
   }
 
   <fieldset class="govuk-fieldset">
-    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+    <legend
+      class="govuk-fieldset__legend govuk-fieldset__legend--m"
+      [attr.id]="release1a1_2Enabled() ? fineMacRoutingPaths.children.accountCommentsNotes : null"
+      [attr.tabindex]="release1a1_2Enabled() ? -1 : null"
+    >
       <h2 class="govuk-heading-m govuk-!-margin-0">Comments and Notes</h2>
     </legend>
     <opal-lib-govuk-text-area

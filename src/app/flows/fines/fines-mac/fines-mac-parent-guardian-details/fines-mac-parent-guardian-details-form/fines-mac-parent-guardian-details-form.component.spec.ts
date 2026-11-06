@@ -71,6 +71,20 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it.each([
+    'fm_parent_guardian_details_address_line_1',
+    'fm_parent_guardian_details_address_line_2',
+    'fm_parent_guardian_details_address_line_3',
+  ])('should validate %s with the single ASCII characters pattern', (controlName) => {
+    const control = component.form.get(controlName);
+
+    control?.setValue('Flat @ 2');
+    expect(control?.hasError('singleAsciiCharacters')).toBe(false);
+
+    control?.setValue('Café');
+    expect(control?.hasError('singleAsciiCharacters')).toBe(true);
+  });
+
   it('should enforce remove alias link template semantics', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const templateConsts = ((FinesMacParentGuardianDetailsFormComponent as any).ɵcmp?.consts ?? []).filter(
@@ -126,7 +140,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     expect(removeAliasSpy).toHaveBeenCalledWith(expectedIndex, 'fm_parent_guardian_details_aliases', event);
   });
 
-  it('should emit form submit event with form value', () => {
+  it('should emit nested flow form submit event with form value', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component['formSubmit'], 'emit');
     const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
@@ -144,7 +158,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     );
   });
 
-  it('should emit form submit event with form value', () => {
+  it('should emit standard flow form submit event with form value', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component['formSubmit'], 'emit');
     const event = {} as SubmitEvent;
@@ -160,5 +174,41 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
         nestedFlow: false,
       }),
     );
+  });
+
+  it('should validate postcode format using alphanumericTextPattern', () => {
+    const postcodeControl = component.form.get('fm_parent_guardian_details_post_code');
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(false);
+
+    postcodeControl?.setValue('SW1A-1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(true);
+  });
+
+  it('should validate postcode max length', () => {
+    const postcodeControl = component.form.get('fm_parent_guardian_details_post_code');
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
+
+    postcodeControl?.setValue('SW1A 1AAA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(true);
+  });
+
+  it('should trim surrounding whitespace from the postcode input on focusout', () => {
+    const postcodeInput = fixture.nativeElement.querySelector(
+      'input[name="fm_parent_guardian_details_post_code"]',
+    ) as HTMLInputElement | null;
+    if (!postcodeInput) throw new Error('Postcode input not found');
+
+    const postcodeControl = component.form.get('fm_parent_guardian_details_post_code');
+
+    postcodeControl?.setValue('  AB1  3CD ');
+    postcodeInput.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(postcodeControl?.value).toBe('AB1  3CD');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
   });
 });

@@ -1,3 +1,4 @@
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { FinesAccDefendantDetailsEnforcementTab } from './fines-acc-defendant-details-enforcement-tab.component';
@@ -12,6 +13,12 @@ import { FINES_ACC_ENF_COURT_CHANGE_ROUTING_PATHS } from '../../fines-acc-enf-co
 describe('FinesAccDefendantDetailsEnforcementTab', () => {
   let component: FinesAccDefendantDetailsEnforcementTab;
   let fixture: ComponentFixture<FinesAccDefendantDetailsEnforcementTab>;
+  const restrictedAccountStatusCodes = ['CS', 'WO', 'TA', 'TS', 'TO'];
+
+  const actionLinks = (): HTMLAnchorElement[] =>
+    Array.from(fixture.nativeElement.querySelectorAll('div.govuk-grid-column-one-third p > a.govuk-link'));
+
+  const actionLinkTexts = (): string[] => actionLinks().map((link) => link.textContent?.trim() ?? '');
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -23,11 +30,113 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     component = fixture.componentInstance;
     component.tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
     component.accountStatusCode = 'L';
-    fixture.detectChanges();
+    component.accountBalance = 500.58;
+  });
+
+  it.each([true, false, undefined])(
+    'renders Details labels with release-1b-1-1 set to %s and retains unmatched responses',
+    (enabled) => {
+      TestBed.inject(GlobalStore).setFeatureFlags(enabled === undefined ? {} : { 'release-1b-1-1': enabled });
+      const preview = TestBed.createComponent(FinesAccDefendantDetailsEnforcementTab);
+      const data = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      data.last_enforcement_action!.result_responses = [
+        { parameter_name: 'daysindefault', response: '14' },
+        { parameter_name: 'reason', response: 'Order made by the court' },
+        { parameter_name: 'unknown', response: 'Retained value' },
+      ];
+      preview.componentRef.setInput('tabData', data);
+      preview.componentRef.setInput('accountStatusCode', 'L');
+      preview.componentRef.setInput('accountBalance', 500);
+      preview.componentRef.setInput(
+        'parameterLabels',
+        new Map([
+          ['daysindefault', 'Days in default'],
+          ['reason', 'Reason'],
+        ]),
+      );
+      preview.detectChanges();
+      const summary = preview.nativeElement.querySelector('[summaryListId="lastEnforcementActionDetails"]');
+      const details = preview.nativeElement.querySelector('opal-lib-govuk-details');
+      expect(summary.textContent).toContain('Days in default');
+      expect(summary.textContent).toContain('14 days');
+      expect(details.textContent).toContain(enabled ? 'Days in default' : 'Daysindefault');
+      if (!enabled) expect(details.textContent).not.toContain('Days in default');
+      expect(details.textContent).toContain('14 days');
+      expect(details.textContent).toContain('Reason');
+      expect(details.textContent).toContain('Order made by the court');
+      expect(details.textContent).toContain('Unknown');
+      expect(details.textContent).toContain('Retained value');
+    },
+  );
+
+  describe.each([true, false, undefined])('response formatting with release-1b-1-1=%s', (enabled) => {
+    it.each([
+      { hearingName: 'hearingdate', daysName: 'daysindefault' },
+      { hearingName: 'hearing_date', daysName: 'days_in_default' },
+    ])('formats $hearingName and $daysName in the summary and Details', ({ hearingName, daysName }) => {
+      TestBed.inject(GlobalStore).setFeatureFlags(enabled === undefined ? {} : { 'release-1b-1-1': enabled });
+      const preview = TestBed.createComponent(FinesAccDefendantDetailsEnforcementTab);
+      const data = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      data.last_enforcement_action!.result_responses = [
+        { parameter_name: hearingName, response: '2026-10-07' },
+        { parameter_name: daysName, response: '1' },
+      ];
+      preview.componentRef.setInput('tabData', data);
+      preview.componentRef.setInput('accountStatusCode', 'L');
+      preview.componentRef.setInput('accountBalance', 500);
+      preview.componentRef.setInput(
+        'parameterLabels',
+        new Map([
+          ['hearingdate', 'Hearing date'],
+          ['daysindefault', 'Days in default'],
+        ]),
+      );
+      preview.detectChanges();
+
+      const summary = preview.nativeElement.querySelector('[summaryListId="lastEnforcementActionDetails"]');
+      const details = preview.nativeElement.querySelector('opal-lib-govuk-details');
+      expect(summary.textContent).toContain('Hearing date');
+      expect(summary.textContent).toContain('Days in default');
+      for (const panel of [summary, details]) {
+        expect(panel.textContent).toContain('07 October 2026');
+        expect(panel.textContent).toContain('1 day');
+        expect(panel.textContent).not.toContain('1 days');
+        expect(panel.textContent).not.toContain('2026-10-07');
+      }
+      if (hearingName === 'hearing_date') {
+        expect(details.textContent).toContain('Hearing_date');
+        expect(details.textContent).toContain('Days_in_default');
+      } else {
+        expect(details.textContent).toContain(enabled ? 'Hearing date' : 'Hearingdate');
+        expect(details.textContent).toContain(enabled ? 'Days in default' : 'Daysindefault');
+      }
+    });
   });
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
+  });
+
+  it('renders hearingdate as a formatted Hearing date row', () => {
+    component.tabData.last_enforcement_action!.result_responses = [
+      { parameter_name: 'hearingdate', response: '2026-10-20' },
+    ];
+
+    fixture.detectChanges();
+
+    const row = fixture.nativeElement.querySelector('[summaryListRowId="hearing_date"]') as HTMLElement;
+    expect(row).not.toBeNull();
+    expect(row.querySelector('.govuk-summary-list__key')?.textContent?.trim()).toBe('Hearing date');
+    expect(row.querySelector('.govuk-summary-list__value')?.textContent?.trim()).toBe('20 October 2026');
+  });
+
+  it('omits the Hearing date row when hearingdate is empty', () => {
+    component.tabData.last_enforcement_action!.result_responses = [{ parameter_name: 'hearingdate', response: '' }];
+
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('[summaryListRowId="hearing_date"]')).toBeNull();
   });
 
   it('should enforce action link template semantics', () => {
@@ -91,24 +200,6 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     );
   });
 
-  it('should route add enforcement action to account-status denied when blocked by account status', () => {
-    component.hasEnterEnforcementPermission = true;
-    component.accountStatusCode = 'CS';
-
-    expect(component.addEnforcementActionRoute).toBe(
-      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.denied}/${FINES_ACC_ENF_ACTION_DENIED_TYPES.accountStatus}`,
-    );
-  });
-
-  it('should route add enforcement action to account-status denied when account status is transferred out', () => {
-    component.hasEnterEnforcementPermission = true;
-    component.accountStatusCode = 'TO';
-
-    expect(component.addEnforcementActionRoute).toBe(
-      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.root}/${FINES_ACC_ENF_ACTION_ROUTING_PATHS.children.denied}/${FINES_ACC_ENF_ACTION_DENIED_TYPES.accountStatus}`,
-    );
-  });
-
   it('should route add enforcement action to enforcement-hold denied when last enforcement is NOENF', () => {
     component.hasEnterEnforcementPermission = true;
     component.tabData.last_enforcement_action = {
@@ -152,11 +243,109 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     );
   });
 
+  it.each(restrictedAccountStatusCodes)(
+    'should not render add enforcement action when account status is restricted: %s',
+    (accountStatusCode) => {
+      fixture.componentRef.setInput('hasEnterEnforcementPermission', true);
+      fixture.componentRef.setInput('accountStatusCode', accountStatusCode);
+      fixture.detectChanges();
+
+      expect(actionLinkTexts()).not.toContain('Add enforcement action');
+    },
+  );
+
+  it('should not render add enforcement action when the account balance is zero', () => {
+    fixture.componentRef.setInput('hasEnterEnforcementPermission', true);
+    fixture.componentRef.setInput('accountBalance', 0);
+    fixture.detectChanges();
+
+    expect(actionLinkTexts()).not.toContain('Add enforcement action');
+  });
+
+  it.each(['CS', 'WO', 'TA', 'TO'])(
+    'should not render request HMRC check when account status is restricted: %s',
+    (accountStatusCode) => {
+      fixture.componentRef.setInput('hasEnterEnforcementPermission', true);
+      fixture.componentRef.setInput('accountStatusCode', accountStatusCode);
+      fixture.detectChanges();
+
+      expect(actionLinkTexts()).not.toContain('Request an HMRC check');
+    },
+  );
+
+  it('should render request HMRC check when account status is TFO Out S/NI', () => {
+    fixture.componentRef.setInput('hasEnterEnforcementPermission', true);
+    fixture.componentRef.setInput('accountStatusCode', 'TS');
+    fixture.detectChanges();
+
+    expect(actionLinkTexts()).toContain('Request an HMRC check');
+  });
+
+  it('should not render request HMRC check when the account balance is zero', () => {
+    fixture.componentRef.setInput('hasEnterEnforcementPermission', true);
+    fixture.componentRef.setInput('accountBalance', 0);
+    fixture.detectChanges();
+
+    expect(actionLinkTexts()).not.toContain('Request an HMRC check');
+  });
+
   it('should return the add enforcement override route', () => {
     expect(component.addEnforcementOverrideLink()).toBe(
       `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.add}`,
     );
   });
+
+  it.each(restrictedAccountStatusCodes)(
+    'should not render add enforcement override when account status is restricted: %s',
+    (accountStatusCode) => {
+      const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      tabData.enforcement_override = null;
+
+      fixture.componentRef.setInput('tabData', tabData);
+      fixture.componentRef.setInput('hasAccountMaintenancePermission', true);
+      fixture.componentRef.setInput('accountStatusCode', accountStatusCode);
+      fixture.detectChanges();
+
+      expect(actionLinkTexts()).not.toContain('Add enforcement override');
+    },
+  );
+
+  it.each(restrictedAccountStatusCodes)(
+    'should not render account maintenance summary actions when account status is restricted: %s',
+    (accountStatusCode) => {
+      fixture.componentRef.setInput('hasAccountMaintenancePermission', true);
+      fixture.componentRef.setInput('accountStatusCode', accountStatusCode);
+      fixture.detectChanges();
+
+      expect(
+        fixture.nativeElement.querySelector('#enforcementOverviewDetailsCollection_order_statusActions a'),
+      ).toBeNull();
+      expect(fixture.nativeElement.querySelector('#enforcementOverviewDetailsEnforcement_courtActions a')).toBeNull();
+      expect(
+        fixture.nativeElement.querySelector('#enforcementOverrideDetailsEnforcement_overrideActions a'),
+      ).toBeNull();
+      expect(
+        fixture.nativeElement.querySelector('#enforcement-override-summary-card-list .govuk-summary-card__action a'),
+      ).toBeNull();
+    },
+  );
+
+  it.each(restrictedAccountStatusCodes)(
+    'should not render remove NOENF when account status is restricted: %s',
+    (accountStatusCode) => {
+      const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
+      tabData.last_enforcement_action!.enforcement_action.result_id = 'NOENF';
+
+      fixture.componentRef.setInput('tabData', tabData);
+      fixture.componentRef.setInput('hasEnterEnforcementPermission', true);
+      fixture.componentRef.setInput('accountStatusCode', accountStatusCode);
+      fixture.detectChanges();
+
+      expect(
+        fixture.nativeElement.querySelector('#lastEnforcementActionDetailsEnforcement_actionActions a'),
+      ).toBeNull();
+    },
+  );
 
   it('should navigate to the change enforcement override route', () => {
     const router = TestBed.inject(Router);
@@ -190,19 +379,18 @@ describe('FinesAccDefendantDetailsEnforcementTab', () => {
     );
   });
 
-  it('should navigate to the remove enforcement override route', () => {
-    const router = TestBed.inject(Router);
-    const routerNavigateSpy = vi.spyOn(router, 'navigate');
+  it('should render the remove enforcement override summary card action as a link', () => {
+    fixture.componentRef.setInput('hasAccountMaintenancePermission', true);
+    fixture.detectChanges();
 
-    component.handleRemoveEnforcementOverride(component.removeEnforcementOverrideLink());
+    const removeLink = fixture.nativeElement.querySelector(
+      '#enforcement-override-summary-card-list .govuk-summary-card__action a',
+    ) as HTMLAnchorElement;
 
-    expect(routerNavigateSpy).toHaveBeenCalledWith(
-      [
-        `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.remove}`,
-      ],
-      {
-        relativeTo: component['activatedRoute'],
-      },
+    expect(removeLink.textContent?.trim()).toBe('Remove');
+    expect(removeLink.classList.contains('govuk-link--no-visited-state')).toBe(true);
+    expect(removeLink.getAttribute('href')).toBe(
+      `/${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.root}/${FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_PATHS.children.remove}`,
     );
   });
 

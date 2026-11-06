@@ -14,6 +14,44 @@ Use this guide when writing or updating Cypress E2E tests and Cucumber feature f
 - Tag scenarios with `@functional`, `@smoke`, and Jira IDs so suites can target subsets.
 - Keep legacy suites in `cypress/e2e/Old_functional_E2E_Tests`; new scenarios should follow the `opal` layout.
 
+### Release Folder Rules
+
+- Keep release-specific feature files under the matching release folder.
+- `features/release1a/**` should contain only `@R1A`, `@R1AOff`, `@R1A1_1`, `@R1A1_1Off`, `@R1A1_2`, or `@R1A1_2Off` scenarios and examples.
+- `features/release1b/**` should contain only `@R1BDrop1`, `@R1BDrop2`, `@R1BDrop1UatTechJCDE`, `@R1BDrop1UatTechPreprod`, `@R1BDrop2UatTechJCDE`, `@R1BDrop2UatTechPreprod`, or `@R1BOff` scenarios and examples.
+- `features/release1c/**` should contain only `@R1C...` scenarios and examples.
+- When a feature file mixes release tags, split the scenarios into separate release-specific files rather than keeping cross-release examples in one file.
+
+### Journey-Based Organisation
+
+- Keep each feature file focused on one user journey or closely related behaviour. Do not combine unrelated account types or user journeys solely because they use the same screen.
+- For account enquiry coverage, group scenarios by the account journey where practical, such as adult/youth defendant, parent/guardian-to-pay defendant, company defendant, minor creditor, and major creditor.
+- Keep scenarios that intentionally exercise more than one journey in a clearly named shared feature rather than assigning them to one journey arbitrarily.
+- Keep search-form validation, shared state behaviour, business-unit filters, and feature-toggle coverage separate from end-to-end journey features unless the scenario is specifically proving that journey.
+
+For example, Release 1B Search and Matches journeys are organised as:
+
+```
+cypress/e2e/functional/opal/features/release1b/searchAndMatches/
+  defendant/adult-youth/
+  defendant/company/
+  defendant/shared/
+  minor-creditor/
+  legacy-data/
+```
+
+### Legacy Data Scenarios
+
+- Keep scenarios tagged `@LegacyData` together in a dedicated `legacy-data` feature file within the relevant capability.
+- Retain the `@skip` and `@LegacyData` tags until the required seeded data is available.
+- `@LegacyData` scenarios are distinct from the legacy suite under `cypress/e2e/Old_functional_E2E_Tests`; new or reorganised scenarios remain under `functional/opal`.
+
+### Feature File Size and Execution
+
+- Cypress executes and schedules work at the feature-file level. Split large, mixed feature files into focused journey files when doing so preserves clear behaviour boundaries.
+- Focused feature files make test intent easier to locate and allow the execution environment to distribute independent journeys across workers more effectively.
+- Do not split a feature merely by scenario count. Keep setup, assertions, and business intent coherent, and preserve scenario content when performing a structural reorganisation.
+
 ## Accessibility Coverage
 
 - Accessibility specs live alongside features and should navigate to each page, inject `axe-core`, run scans, and assert no violations.
@@ -43,3 +81,7 @@ yarn cypress run --browser chrome --spec 'cypress/e2e/functional/opal/features/m
 
 - When a feature fails because of a real product bug, do not patch application behavior just to green the test.
 - Skip or xfail the test if unavoidable and report the underlying issue in the task update.
+
+## Extended Tests
+
+Use `@extendedTest` for tests excluded from PR/master runs by default and included in manual and nightly runs. Add the GitHub label `extendedTests` to a PR to include them in that PR pipeline. Direct Cypress runs include extended tests even when the pipeline exclusion flag is set. See [Extended test runs](EXTENDED_TEST_RUNS.md) for tagging, pipeline behaviour and execution commands.

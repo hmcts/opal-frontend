@@ -1,0 +1,49 @@
+{
+  "header": {
+    "accountNumber": "26000060B",
+    "name": "Mr Steve Consolidate-sub",
+    "metrics": {
+      "imposed": "£123.45",
+      "arrears": "£0.00",
+      "paid/written off": "£123.45",
+      "account balance": "£0.00"
+    }
+  },
+  "atAGlance": {
+    "defendant": {
+      "name": "Mr Steve Consolidate-sub",
+      "date of birth": "01 February 2002",
+      "address": "123 asdf\nasdf\nasdf\nEN5 1RL"
+    },
+    "paymentTerms": {
+      "payment terms": "Pay in full",
+      "pay by date": "01 February 2029"
+    },
+    "enforcementStatus": {
+      "days in default": "0 days",
+      "date of last movement": "23 September 2026"
+    },
+    "comments": {
+      "comment": "TEST SUB CONSOLIDATE"
+    }
+  },
+  "defendantTab": {
+    "defendant": {
+      "name": "Mr Steve Consolidate-sub",
+      "date of birth": "01 February 2002",
+      "address": "123 asdf\nasdf\nasdf\nEN5 1RL"
+    }
+  },
+  "paymentTermsTab": {
+    "pay by date": "01 February 2029",
+    "days in default": "0"
+  },
+  "enforcementTab": {
+    "overview": {
+      "days in default": "0 days",
+      "enforcement court": "West London VPFPO (101)"
+    }
+  },
+  "impositionsTab": {},
+  "historyAndNotesTab": {}
+}

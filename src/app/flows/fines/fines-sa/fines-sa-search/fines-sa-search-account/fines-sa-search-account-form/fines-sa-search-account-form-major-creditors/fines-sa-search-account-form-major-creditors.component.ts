@@ -65,6 +65,9 @@ export class FinesSaSearchAccountFormMajorCreditorsComponent extends AbstractNes
     this.filterBusinessUnitClicked.emit();
   }
 
+  /**
+   * Sets up the major creditor nested form before running shared nested-form initialization.
+   */
   public override ngOnInit(): void {
     this.setupMajorCreditorForm();
     super.ngOnInit();

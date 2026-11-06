@@ -12,6 +12,8 @@ import { AbstractSortableTablePaginationComponent } from '@hmcts/opal-frontend-c
 import { DaysAgoPipe } from '@hmcts/opal-frontend-common/pipes/days-ago';
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { MojPaginationComponent } from '@hmcts/opal-frontend-common/components/moj/moj-pagination';
+import { FINES_DRAFT_TAB_FRAGMENT } from '../constants/fines-draft-tab-fragments.constant';
+import { FinesNotProvidedComponent } from '../../components/fines-not-provided/fines-not-provided.component';
 
 @Component({
   selector: 'app-fines-draft-table-wrapper',
@@ -24,6 +26,7 @@ import { MojPaginationComponent } from '@hmcts/opal-frontend-common/components/m
     MojSortableTableStatusComponent,
     DaysAgoPipe,
     DateFormatPipe,
+    FinesNotProvidedComponent,
     MojPaginationComponent,
   ],
   templateUrl: './fines-draft-table-wrapper.component.html',
@@ -32,6 +35,7 @@ import { MojPaginationComponent } from '@hmcts/opal-frontend-common/components/m
 export class FinesDraftTableWrapperComponent extends AbstractSortableTablePaginationComponent {
   protected readonly DATE_INPUT_FORMAT = 'yyyy-MM-dd';
   protected readonly DATE_OUTPUT_FORMAT = 'dd MMM yyyy';
+  protected readonly finesDraftTabFragment = FINES_DRAFT_TAB_FRAGMENT;
 
   @Input({ required: true }) set tableData(tableData: IFinesDraftTableWrapperTableData[]) {
     this.setTableData(tableData);
@@ -39,7 +43,7 @@ export class FinesDraftTableWrapperComponent extends AbstractSortableTablePagina
   @Input({ required: true }) set existingSortState(existingSortState: IFinesDraftTableWrapperTableSort | null) {
     this.abstractExistingSortState = existingSortState;
   }
-  @Input({ required: false }) public activeTab: string = 'review';
+  @Input({ required: false }) public activeTab: string = FINES_DRAFT_TAB_FRAGMENT.review;
   @Input({ required: false }) public isApprovedTab: boolean = false;
   @Input({ required: false }) public approvedAccountLinkEnabled: boolean = false;
   @Input({ required: false }) public isChecker: boolean = false;

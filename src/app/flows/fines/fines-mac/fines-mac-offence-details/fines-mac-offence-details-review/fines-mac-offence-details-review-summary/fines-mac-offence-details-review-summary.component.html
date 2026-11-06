@@ -7,7 +7,7 @@
         finesMacOffenceDetailsStore.offenceCodeMessage() && finesMacOffenceDetailsStore.offenceCodeMessage().length > 0
       ) {
         <div class="govuk-grid-column-full">
-          <opal-lib-moj-alert type="success" ariaLabel="offenceCodeMessage">
+          <opal-lib-moj-alert type="success" [ariaLabel]="finesMacOffenceDetailsStore.offenceCodeMessage()">
             <opal-lib-moj-alert-icon icon type="success"></opal-lib-moj-alert-icon>
             <opal-lib-moj-alert-content content>
               <opal-lib-moj-alert-content-text>{{
@@ -36,7 +36,7 @@
   </div>
   <hr />
   <div class="govuk-grid-row">
-    <ng-container *ngTemplateOutlet="offenceTemplate"></ng-container>
+    <ng-container *ngTemplateOutlet="offenceTemplate; context: { $implicit: true }"></ng-container>
   </div>
   <div class="govuk-grid-row">
     <ng-container *ngTemplateOutlet="returnToAccountDetails; context: { $implicit: false }"></ng-container>
@@ -57,8 +57,8 @@
           [offence]="offence"
           [impositionRefData]="impositionRefData"
           [majorCreditorRefData]="majorCreditorRefData"
+          [headingLevel]="isReadOnly ? 3 : 2"
           [showActions]="true"
-          [showDetails]="offencesHidden[offence.formData.fm_offence_details_id]"
           [isReadOnly]="isReadOnly"
           (actionClicked)="offenceAction($event)"
         ></app-fines-mac-offence-details-review-offence>
@@ -69,7 +69,7 @@
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible govuk-!-margin-top-2" />
       </div>
 
-      <ng-container *ngTemplateOutlet="offenceTemplate"></ng-container>
+      <ng-container *ngTemplateOutlet="offenceTemplate; context: { $implicit: false }"></ng-container>
     }
     <div class="govuk-grid-column-full">
       <div class="border-bottom">
@@ -92,14 +92,18 @@
   </div>
 </ng-template>
 
-<ng-template #offenceTemplate>
+<ng-template #offenceTemplate let-emptyOffences>
   <div class="govuk-grid-column-full">
     <opal-lib-govuk-button
       buttonId="addAnOffence"
       buttonClasses="govuk-button--secondary"
       (buttonClickEvent)="addAnotherOffence()"
     >
-      Add another offence
+      @if (emptyOffences) {
+        Add an offence
+      } @else {
+        Add another offence
+      }
     </opal-lib-govuk-button>
   </div>
 </ng-template>

@@ -220,6 +220,11 @@
       ) {
         <h3 [class]="style.key">Comment</h3>
         <p [class]="style.value">{{ tabData.comments_and_notes?.account_comment ?? '-' }}</p>
+        @if (hasAccountMaintenencePermission) {
+          <p [class]="style.value">
+            <a class="govuk-link govuk-link--no-visited-state" [routerLink]="navigateToAddCommentsPage()">Change</a>
+          </p>
+        }
         <h3 [class]="style.key">Free text notes</h3>
         @if (
           tabData.comments_and_notes?.free_text_note_1 ||

@@ -19,13 +19,25 @@ export type DraftPayloadType =
   | 'opalE2ECompany'
   | 'opalE2EFixedPenaltyAdult'
   | 'opalE2EFixedPenaltyYouth'
-  | 'opalE2EFixedPenaltyCompany';
+  | 'opalE2EFixedPenaltyCompany'
+  | 'ayMultiOffenceMultiImposition';
 
 /** Defendant type options used by account creation/setup steps. */
 export type DefendantTypes = 'company' | 'adultOrYouthOnly' | 'pgToPay';
 
 export type AccountType = 'Fine' | 'Fixed penalty' | 'Fixed Penalty' | 'Conditional caution' | 'Conditional Caution';
 export type ApprovedAccountType = DefendantTypes | 'fixedPenalty' | 'fixedPenaltyCompany';
+
+const jcdeDraftPayloadTypes = new Set<DraftPayloadType>([
+  'company',
+  'adultOrYouthOnly',
+  'pgToPay',
+  'failedAdultOrYouthOnly',
+  'failedCompany',
+  'fixedPenalty',
+  'fixedPenaltyCompany',
+  'ayMultiOffenceMultiImposition',
+]);
 
 /**
  * Resolve draft fixture file name for POST /draft-accounts. Adjust names if yours differ.
@@ -51,7 +63,11 @@ export function getDraftPayloadFile(type: DraftPayloadType): string {
     opalE2EFixedPenaltyAdult: 'opalE2EFixedPenaltyAdultPayload.json',
     opalE2EFixedPenaltyYouth: 'opalE2EFixedPenaltyYouthPayload.json',
     opalE2EFixedPenaltyCompany: 'opalE2EFixedPenaltyCompanyPayload.json',
+    ayMultiOffenceMultiImposition: 'ayMultiOffenceMultiImpositionPayload.json',
   };
+  if (Cypress.env('JCDE_OVERRIDE') === 'true' && jcdeDraftPayloadTypes.has(type)) {
+    return `jcde/` + map[type];
+  }
   return map[type];
 }
 

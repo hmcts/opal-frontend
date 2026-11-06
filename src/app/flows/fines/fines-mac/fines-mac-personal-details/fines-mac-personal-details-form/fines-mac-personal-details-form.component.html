@@ -182,6 +182,7 @@
       [control]="form.get('fm_personal_details_post_code')"
       [errors]="formControlErrorMessages['fm_personal_details_post_code']"
       [opalLibCapitaliseAllCharacters]="form.get('fm_personal_details_post_code')!"
+      [opalLibTrimLeadingTrailingWhitespace]="form.get('fm_personal_details_post_code')!"
     ></opal-lib-govuk-text-input>
   </fieldset>
   @if (defendantType === defendantTypesKeys.adultOrYouthOnly) {

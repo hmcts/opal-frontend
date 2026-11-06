@@ -155,7 +155,7 @@ describe('DashboardPage integration', () => {
 
     expect(renderedText).toContain(DASHBOARD_CONFIG.title);
     expect(renderedText).not.toContain('Integration Group');
-    expect(sectionHeadings.length).toBe(0);
-    expect(links.length).toBe(0);
+    expect(sectionHeadings).toHaveLength(0);
+    expect(links).toHaveLength(0);
   });
 });

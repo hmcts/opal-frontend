@@ -1,4 +1,4 @@
 <app-fines-account-history-table
-  [rows]="getHistoryRows(tabData)"
-  (historyLinkClicked)="handleHistoryLinkClicked($event)"
+  [rows]="historyTableAdapter.getRows(tabData)"
+  (historyLinkClicked)="historyTableAdapter.openHistoryLink($event)"
 ></app-fines-account-history-table>

@@ -75,7 +75,7 @@ describe('FinesMacSubmitConfirmationComponent', () => {
       (entry) => entry.includes('govuk-link') && entry.includes('href') && entry.includes('click'),
     );
 
-    expect(actionLinkConsts.length).toBe(2);
+    expect(actionLinkConsts).toHaveLength(2);
     actionLinkConsts.forEach((entry) => {
       expect(entry).toContain('govuk-link--no-visited-state');
       expect(entry).toContain('href');

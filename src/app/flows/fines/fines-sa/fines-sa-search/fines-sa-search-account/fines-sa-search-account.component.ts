@@ -10,6 +10,7 @@ import { FINES_SA_SEARCH_ACCOUNT_STATE } from './constants/fines-sa-search-accou
 import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { IOpalFinesMajorCreditor } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor.interface';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
+import { FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-major-creditor-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-sa-search-account',
@@ -45,7 +46,7 @@ export class FinesSaSearchAccountComponent extends AbstractFormParentBaseCompone
    * @returns The constructed URL string for the account enquiry.
    */
   private getAccountEnquiryUrl(accountId: number): string {
-    return `${this.finesRoutingPaths.root}/${this.finesAccRoutingPaths.root}/${accountId}/${this.finesAccRoutingPaths.children.defendant}`;
+    return `${this.finesRoutingPaths.root}/${this.finesAccRoutingPaths.root}/${FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS.root}/${accountId}/${FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS.children.details}`;
   }
 
   /**
@@ -109,10 +110,11 @@ export class FinesSaSearchAccountComponent extends AbstractFormParentBaseCompone
    * 1. Updates the search account state in the store with the provided form data.
    * 2. Navigates to the appropriate page based on the active tab in the store:
    *    - If the active tab is 'majorCreditors', it navigates to the major creditor's page
-   *      using the provided major creditor ID from the form data.
+   *      using the selected creditor account ID.
    *    - Otherwise, it navigates to the search results page.
    *
    * @param form - The form data of type `IFinesSaSearchAccountForm` containing the search account details.
+   * @throws Error when a major-creditor search is submitted with a code that cannot be mapped to an account ID.
    */
   public handleSearchAccountSubmit(form: IFinesSaSearchAccountForm): void {
     // Set the search account state in the store
@@ -120,10 +122,11 @@ export class FinesSaSearchAccountComponent extends AbstractFormParentBaseCompone
 
     // Navigate to the search results page
     if (this.finesSaStore.activeTab() === 'majorCreditors') {
-      this.navigateToMajorCreditor(
+      const creditorAccountId =
         form.formData.fsa_search_account_major_creditors_search_criteria!
-          .fsa_search_account_major_creditors_major_creditor_id!,
-      );
+          .fsa_search_account_major_creditors_major_creditor_id!;
+
+      this.navigateToMajorCreditor(creditorAccountId);
     } else {
       this.routerNavigate(this.getResultsUrl(), true);
     }
@@ -138,6 +141,9 @@ export class FinesSaSearchAccountComponent extends AbstractFormParentBaseCompone
     this.stateUnsavedChanges = unsavedChanges;
   }
 
+  /**
+   * Loads the resolver-provided search reference data required by the account search page.
+   */
   public ngOnInit(): void {
     this.getBusinessUnits();
     this.getMajorCreditors();

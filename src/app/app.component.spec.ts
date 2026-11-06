@@ -23,6 +23,7 @@ import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-s
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { MojAlertComponent } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch-darkly-service';
+import { CustomDeferredLiveRegionAnnouncement } from '@hmcts/opal-frontend-common/components/custom/custom-deferred-live-region-announcement';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createSpyObj } from './testing/create-spy-obj.helper';
 import { FINES_DASHBOARD_ROUTING_PATHS } from './flows/fines/constants/fines-dashboard-routing-paths.constant';
@@ -33,6 +34,7 @@ import { REPORTS_PERMISSIONS } from './flows/fines/constants/reports-permissions
 import { SEARCH_PERMISSIONS } from './flows/fines/constants/search-permissions.constant';
 import {
   RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1A_1_2_FEATURE_FLAG,
   RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
   RELEASE_1B_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
@@ -43,6 +45,7 @@ import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from './constants/route-data.constant
 import { FINES_ACC_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-minor-creditor-routing-paths.constant';
+import { FinesApiStore } from './flows/fines/fines-api/stores/fines-api.store';
 import { FINES_CON_ROUTING_PATHS } from './flows/fines/fines-con/routing/constants/fines-con-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from './flows/fines/fines-mac/routing/constants/fines-mac-routing-paths.constant';
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
@@ -180,6 +183,30 @@ describe('AppComponent - browser', () => {
     expect(app).toBeTruthy();
   });
 
+  it('should render a GOV.UK skip link before the page content', () => {
+    globalStore.setFeatureFlags({ ...DEFAULT_RELEASE_FEATURE_FLAGS, [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    const skipLinkComponent = fixture.nativeElement.querySelector('opal-lib-govuk-skip-link') as HTMLElement;
+    const skipLink = fixture.nativeElement.querySelector('.govuk-skip-link') as HTMLAnchorElement;
+
+    expect(skipLinkComponent).toBe(fixture.nativeElement.firstElementChild);
+    expect(skipLink).toBe(skipLinkComponent.firstElementChild);
+    expect(skipLink.textContent?.trim()).toBe('Skip to main content');
+    expect(skipLink.getAttribute('href')).toBe(`${window.location.pathname}#main-content`);
+    expect(skipLink.dataset['module']).toBe('govuk-skip-link');
+    expect(fixture.nativeElement.querySelector(skipLink.hash)?.id).toBe('main-content');
+  });
+
+  it('should not render a GOV.UK skip link when release-1a-1-2 is disabled', () => {
+    globalStore.setFeatureFlags({ ...DEFAULT_RELEASE_FEATURE_FLAGS, [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('opal-lib-govuk-skip-link')).toBeNull();
+  });
+
   it('should initialize launchDarklyFlags and subscribe to launchDarklyFlags$', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
@@ -204,7 +231,7 @@ describe('AppComponent - browser', () => {
 
     component.handleAuthentication();
 
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledExactlyOnceWith(SSO_ENDPOINTS.login);
     expect(mockDocumentLocation.location.href).toBe(SSO_ENDPOINTS.login);
   });
 
@@ -220,9 +247,33 @@ describe('AppComponent - browser', () => {
 
     component.handleAuthentication();
 
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledExactlyOnceWith(SSO_ENDPOINTS.logout);
     expect(mockDocumentLocation.location.href).toBe(SSO_ENDPOINTS.logout);
   });
+
+  it.each(['business units', 'files'] as const)(
+    'should request logout without application confirmation when ACI has selected %s',
+    (selection) => {
+      globalStore.setAuthenticated(true);
+      const finesApiStore = TestBed.inject(FinesApiStore);
+      finesApiStore.setSelectedBusinessUnitIds([77]);
+      if (selection === 'files') {
+        finesApiStore.setSelectedFileIds(['123']);
+      }
+      expect(finesApiStore.unsavedChanges()).toBe(true);
+
+      const fixture = TestBed.createComponent(AppComponent);
+      const component = fixture.componentInstance;
+      const redirectSpy = vi.spyOn(component, 'handleRedirect').mockImplementation(() => {});
+      const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+
+      component.handleAuthentication();
+
+      expect(redirectSpy).toHaveBeenCalledExactlyOnceWith(SSO_ENDPOINTS.logout);
+      expect(confirmSpy).not.toHaveBeenCalled();
+      confirmSpy.mockRestore();
+    },
+  );
 
   it('should unsubscribe from the timeout interval subscription', () => {
     const fixture = TestBed.createComponent(AppComponent);
@@ -338,6 +389,94 @@ describe('AppComponent - browser', () => {
     expect(component['sessionService'].getTokenExpiry).toHaveBeenCalled();
   });
 
+  it('should use a dedicated live announcement for the session expiry warning', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+
+    component.thresholdInMinutes = 10;
+    component.minutesRemaining$ = of(10);
+
+    fixture.detectChanges();
+
+    const liveRegionDebugElement = fixture.debugElement.query(By.directive(CustomDeferredLiveRegionAnnouncement));
+    const alertDebugElement = fixture.debugElement.query(By.directive(MojAlertComponent));
+
+    expect(liveRegionDebugElement).toBeTruthy();
+    expect(alertDebugElement).toBeTruthy();
+
+    const liveRegion = liveRegionDebugElement.componentInstance as CustomDeferredLiveRegionAnnouncement;
+    const alert = alertDebugElement.componentInstance as MojAlertComponent;
+
+    expect(liveRegion.message).toBe(
+      'Warning: Your session will expire soon. Please save your work and log out, then log back in to continue.',
+    );
+    expect(liveRegion.role).toBe('alert');
+    expect(alert.enableLiveAnnouncement).toBe(false);
+  });
+
+  it('should keep the same live announcement when the session expiry countdown changes', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+    const minutesRemaining = new Subject<number>();
+
+    component.thresholdInMinutes = 10;
+    component.minutesRemaining$ = minutesRemaining.asObservable();
+
+    fixture.detectChanges();
+
+    minutesRemaining.next(10);
+    fixture.detectChanges();
+
+    const initialLiveRegion = fixture.debugElement.query(By.directive(CustomDeferredLiveRegionAnnouncement));
+
+    expect(initialLiveRegion).toBeTruthy();
+
+    const initialLiveRegionInstance = initialLiveRegion.componentInstance;
+
+    minutesRemaining.next(9);
+    fixture.detectChanges();
+
+    const updatedLiveRegion = fixture.debugElement.query(By.directive(CustomDeferredLiveRegionAnnouncement));
+
+    expect(updatedLiveRegion).toBeTruthy();
+    expect(updatedLiveRegion.componentInstance).toBe(initialLiveRegionInstance);
+  });
+
+  it('should not render the session expiry live announcement outside the warning threshold', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const component = fixture.componentInstance;
+
+    component.thresholdInMinutes = 10;
+    component.minutesRemaining$ = of(11);
+
+    fixture.detectChanges();
+
+    const liveRegion = fixture.debugElement.query(By.directive(CustomDeferredLiveRegionAnnouncement));
+
+    expect(liveRegion).toBeNull();
+  });
+
+  it('should include the banner error title and message in the alert aria-label', () => {
+    globalStore.setAuthenticated(true);
+    globalStore.setBannerError({
+      error: true,
+      title: 'Something went wrong',
+      message: 'Unable to load case details',
+      operationId: '123456',
+    });
+
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    const alertDebugElement = fixture.debugElement.query(By.directive(MojAlertComponent));
+
+    expect(alertDebugElement).toBeTruthy();
+
+    const alert = alertDebugElement.componentInstance as MojAlertComponent;
+
+    expect(alert.ariaLabel).toBe('Something went wrong. Unable to load case details');
+  });
+
   it('should track page views on navigation end', () => {
     globalStore.setAuthenticated(true);
 
@@ -427,38 +566,41 @@ describe('AppComponent - browser', () => {
     expect(primaryNavigation.useFragmentNavigation).toBe(false);
   });
 
-  it('should hide Reports in primary navigation when the user lacks all report permissions', () => {
+  it.each([
+    {
+      description: 'hide Reports in primary navigation when the user lacks all report permissions',
+      permissions: [],
+      featureFlags: DEFAULT_RELEASE_FEATURE_FLAGS,
+      expectedReportsVisible: false,
+    },
+    {
+      description: 'show Reports in primary navigation when the user has a report permission in any business unit',
+      permissions: [REPORTS_PERMISSIONS[0]],
+      featureFlags: DEFAULT_RELEASE_FEATURE_FLAGS,
+      expectedReportsVisible: true,
+    },
+    {
+      description: 'hide Reports in primary navigation when release-1c enforcement operational reporting is disabled',
+      permissions: [REPORTS_PERMISSIONS[0]],
+      featureFlags: {
+        ...DEFAULT_RELEASE_FEATURE_FLAGS,
+        [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
+      },
+      expectedReportsVisible: false,
+    },
+  ])('should $description', ({ permissions, featureFlags, expectedReportsVisible }) => {
     globalStore.setAuthenticated(true);
-    globalStore.setUserState(createUserStateWithPermissions([]));
+    globalStore.setFeatureFlags(featureFlags);
+    globalStore.setUserState(createUserStateWithPermissions(permissions));
 
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
 
-    expect(getPrimaryNavigationTexts(fixture)).not.toContain('Reports');
-  });
-
-  it('should show Reports in primary navigation when the user has a report permission in any business unit', () => {
-    globalStore.setAuthenticated(true);
-    globalStore.setUserState(createUserStateWithPermissions([REPORTS_PERMISSIONS[0]]));
-
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-
-    expect(getPrimaryNavigationTexts(fixture)).toContain('Reports');
-  });
-
-  it('should hide Reports in primary navigation when release-1c enforcement operational reporting is disabled', () => {
-    globalStore.setAuthenticated(true);
-    globalStore.setFeatureFlags({
-      ...DEFAULT_RELEASE_FEATURE_FLAGS,
-      [RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG]: false,
-    });
-    globalStore.setUserState(createUserStateWithPermissions([REPORTS_PERMISSIONS[0]]));
-
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-
-    expect(getPrimaryNavigationTexts(fixture)).not.toContain('Reports');
+    if (expectedReportsVisible) {
+      expect(getPrimaryNavigationTexts(fixture)).toContain('Reports');
+    } else {
+      expect(getPrimaryNavigationTexts(fixture)).not.toContain('Reports');
+    }
   });
 
   it('should hide Search in primary navigation when the user lacks all search permissions', () => {

@@ -10,6 +10,7 @@ import { FINES_DRAFT_TAB_STATUSES } from '../../../constants/fines-draft-tab-sta
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 
 describe('finesDraftCreateAndManageViewAllRejectedResolver', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -58,7 +59,7 @@ describe('finesDraftCreateAndManageViewAllRejectedResolver', () => {
 
     expect(opalFinesServiceMock.getDraftAccounts).toHaveBeenCalledWith({
       businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_id),
-      statuses: ['Rejected'],
+      statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
       notSubmittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((u) => u.business_unit_user_id),
     });
     expect(result).toEqual(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);

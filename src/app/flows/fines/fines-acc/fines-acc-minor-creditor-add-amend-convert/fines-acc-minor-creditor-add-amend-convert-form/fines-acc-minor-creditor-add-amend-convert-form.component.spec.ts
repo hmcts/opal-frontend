@@ -9,6 +9,8 @@ import { IFinesAccMinorCreditorAddAmendConvertForm } from '../interfaces/fines-a
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_FORM } from '../mocks/fines-acc-minor-creditor-add-amend-convert-company-form.mock';
 import { MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_FORM } from '../mocks/fines-acc-minor-creditor-add-amend-convert-individual-form.mock';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 
 describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
   let component: FinesAccMinorCreditorAddAmendConvertFormComponent;
@@ -53,6 +55,8 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
         },
       ],
     }).compileComponents();
+
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
   });
 
   const createComponent = (initialFormData: IFinesAccMinorCreditorAddAmendConvertForm = companyFormData): void => {
@@ -63,6 +67,25 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
   };
 
   const getControl = (controlName: string) => component.form.get(controlName)!;
+
+  it.each([
+    [true, '12345', 'Account number must be between 6 and 8 numbers'],
+    [true, '123456789', 'Account number must be between 6 and 8 numbers'],
+    [true, '12345A', 'Account number must be between 6 and 8 numbers'],
+    [true, '', 'Enter account number'],
+    [false, '123456789', 'Account number must be between 6 and 8 digits long'],
+    [false, '12345A', 'Enter a valid account number like 00733445'],
+    [false, '', 'Enter account number'],
+    [false, '12345', 'Account number must be between 6 and 8 digits long'],
+  ])('should show account-number error with release flag %s for %s', (enabled, value, message) => {
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: enabled });
+    createComponent();
+    component.form.controls['facc_minor_creditor_bank_account_number'].setValue(value);
+
+    component['handleErrorMessages']();
+
+    expect(component.formControlErrorMessages['facc_minor_creditor_bank_account_number']).toBe(message);
+  });
 
   it('should create', () => {
     createComponent();
@@ -78,6 +101,22 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
     expect(component.form.get(component.controls.addressLine1)?.value).toBe('123 Main Street');
     expect(component.form.get(component.controls.payByBacs)?.value).toBe(true);
     expect(component.form.get(component.controls.bankAccountNumber)?.value).toBe('12345678');
+  });
+
+  it('should not add BACS controls when the initial BACS selection is null', () => {
+    createComponent({
+      formData: {
+        ...companyFormData.formData,
+        facc_minor_creditor_pay_by_bacs: null,
+      },
+      nestedFlow: false,
+    });
+
+    expect(getControl(component.controls.payByBacs).value).toBeNull();
+    expect(component.form.get(component.controls.bankAccountName)).toBeNull();
+    expect(component.form.get(component.controls.bankSortCode)).toBeNull();
+    expect(component.form.get(component.controls.bankAccountNumber)).toBeNull();
+    expect(component.form.get(component.controls.bankAccountReference)).toBeNull();
   });
 
   it('should render the header and BACS controls when BACS details are provided', () => {
@@ -234,10 +273,16 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
     expect(getControl(component.controls.bankAccountName).hasError('required')).toBe(true);
 
     getControl(component.controls.bankSortCode).setValue('12345');
-    expect(getControl(component.controls.bankSortCode).hasError('minlength')).toBe(true);
+    expect(getControl(component.controls.bankSortCode).hasError('invalidSortCode')).toBe(true);
+
+    getControl(component.controls.bankSortCode).setValue('1234567');
+    expect(getControl(component.controls.bankSortCode).hasError('invalidSortCode')).toBe(true);
 
     getControl(component.controls.bankSortCode).setValue('12345A');
-    expect(getControl(component.controls.bankSortCode).hasError('numericalTextPattern')).toBe(true);
+    expect(getControl(component.controls.bankSortCode).hasError('invalidSortCode')).toBe(true);
+
+    getControl(component.controls.bankSortCode).setValue('12-34-56');
+    expect(getControl(component.controls.bankSortCode).valid).toBe(true);
 
     getControl(component.controls.bankAccountNumber).setValue('12345');
     expect(getControl(component.controls.bankAccountNumber).hasError('minlength')).toBe(true);
@@ -295,7 +340,27 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
     getControl(component.controls.addressLine1).setValue('A'.repeat(31));
     expect(getControl(component.controls.addressLine1).hasError('maxlength')).toBe(true);
 
+    getControl(component.controls.postCode).setValue('AB12 3CD');
+    expect(getControl(component.controls.postCode).hasError('alphanumericTextPattern')).toBe(false);
+
+    getControl(component.controls.postCode).setValue('');
+    expect(getControl(component.controls.postCode).hasError('alphanumericTextPattern')).toBe(false);
+
     getControl(component.controls.postCode).setValue('AB12-3CD');
     expect(getControl(component.controls.postCode).hasError('alphanumericTextPattern')).toBe(true);
+
+    const postcodeInput = fixture.nativeElement.querySelector(
+      `input[name="${component.controls.postCode}"]`,
+    ) as HTMLInputElement | null;
+    if (!postcodeInput) throw new Error('Postcode input not found');
+
+    getControl(component.controls.postCode).setValue('  AB1  3CD ');
+    postcodeInput.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+    fixture.detectChanges();
+    expect(getControl(component.controls.postCode).value).toBe('AB1  3CD');
+    expect(getControl(component.controls.postCode).hasError('maxlength')).toBe(false);
+
+    getControl(component.controls.postCode).setValue('AB12 3CDA');
+    expect(getControl(component.controls.postCode).hasError('maxlength')).toBe(true);
   });
 });

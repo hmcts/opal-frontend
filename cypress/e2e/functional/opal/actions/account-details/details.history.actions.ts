@@ -1,3 +1,7 @@
+/**
+ * @file details.history.actions.ts
+ * @description Actions for asserting and stubbing the Account Details "History and notes" tab.
+ */
 import { ACCOUNT_ENQUIRY_HISTORY_AND_NOTES_ELEMENTS as L } from '../../../../../shared/selectors/account-enquiry/account.enquiry.history-and-notes.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
 
@@ -15,13 +19,60 @@ export class AccountDetailsHistoryActions {
   private static readonly DEFAULT_TIMEOUT = 15_000;
 
   /**
+   * Normalizes visible text for stable whitespace-insensitive assertions.
+   *
+   * @param value - Raw text content read from the page.
+   * @returns Text with non-breaking spaces replaced and whitespace collapsed.
+   */
+  private normalize(value: string): string {
+    return value
+      .replace(/\u00a0/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  /**
+   * Reads the `itemTypes` query parameter from a History and notes request URL.
+   *
+   * @param requestUrl - Intercepted request URL.
+   * @returns The `itemTypes` value when present.
+   */
+  private getItemTypesFromUrl(requestUrl: string): string | null {
+    return new URL(requestUrl, 'http://localhost').searchParams.get('itemTypes');
+  }
+
+  /**
+   * Waits for the Notes filter request, allowing for an earlier tab-load request
+   * that may still be queued against the same intercept alias.
+   */
+  private waitForNotesFilterRequest(): void {
+    cy.wait('@historyAndNotes', { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).then(
+      ({ request, response }) => {
+        const itemTypes = this.getItemTypesFromUrl(request.url);
+
+        if (itemTypes !== 'note') {
+          cy.wait('@historyAndNotes', { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).then(
+            ({ request: filteredRequest, response: filteredResponse }) => {
+              expect(this.getItemTypesFromUrl(filteredRequest.url)).to.equal('note');
+              expect(filteredResponse?.statusCode).to.equal(200);
+            },
+          );
+          return;
+        }
+
+        expect(response?.statusCode).to.equal(200);
+      },
+    );
+  }
+
+  /**
    * Builds the deterministic History and notes API payload used by E2E tests.
    *
    * @param accountId - Defendant account id to emit in linked history items.
    * @param accountNumber - Defendant account number to render in linked details fragments.
    * @returns Synthetic History and notes API response.
    */
-  private buildHistoryAndNotesResponse(accountId: number, accountNumber: string): HistoryAndNotesResponse {
+  private buildDefendantHistoryAndNotesResponse(accountId: number, accountNumber: string): HistoryAndNotesResponse {
     return {
       version: 'e2e-history-and-notes',
       history_items: [
@@ -55,6 +106,44 @@ export class AccountDetailsHistoryActions {
   }
 
   /**
+   * Builds the deterministic Minor creditor History and notes API payload used by E2E tests.
+   *
+   * @param accountId - Associated defendant account id emitted by the synthetic transaction.
+   * @param accountNumber - Associated defendant account number displayed in transaction details.
+   * @returns Synthetic Minor creditor History and notes API response.
+   */
+  private buildMinorCreditorHistoryAndNotesResponse(accountId: number, accountNumber: string): HistoryAndNotesResponse {
+    return {
+      version: 'e2e-minor-creditor-history-and-notes',
+      history_items: [
+        {
+          type: 'Financial',
+          amount: '50',
+          postedDetails: {
+            posted_by_name: 'Finance officer',
+            posted_date: '2025-03-12T08:30:00.124Z',
+          },
+          details: {
+            transaction_type: 'PAYMNT',
+            defendant_account_number: accountNumber,
+            defendant_account_id: String(accountId),
+          },
+        },
+        {
+          type: 'Notes',
+          postedDetails: {
+            posted_by_name: 'History note user',
+            posted_date: '2025-03-11T09:15:00.000Z',
+          },
+          details: {
+            note_text: 'History note for E2E filter coverage.',
+          },
+        },
+      ],
+    };
+  }
+
+  /**
    * Stubs the History and notes endpoint for the current account, returning either
    * the full dataset or the note-only filtered dataset based on the request query.
    *
@@ -62,34 +151,133 @@ export class AccountDetailsHistoryActions {
    * @param accountNumber - Defendant account number to render in linked details fragments.
    */
   public stubHistoryAndNotesForCurrentAccount(accountId: number, accountNumber: string): void {
-    const fullResponse = this.buildHistoryAndNotesResponse(accountId, accountNumber);
-    const noteOnlyResponse: HistoryAndNotesResponse = {
-      ...fullResponse,
-      history_items: fullResponse.history_items.filter((item) => item.type === 'Note'),
-    };
+    const defendantResponse = this.buildDefendantHistoryAndNotesResponse(accountId, accountNumber);
+    const minorCreditorResponse = this.buildMinorCreditorHistoryAndNotesResponse(accountId, accountNumber);
+    const buildFilteredResponse = (response: HistoryAndNotesResponse): HistoryAndNotesResponse => ({
+      ...response,
+      history_items: response.history_items.filter((item) => String(item.type).toLowerCase().startsWith('note')),
+    });
 
     log('intercept', 'Stubbing History and notes API response', { accountId, accountNumber });
 
-    cy.intercept('GET', '**/defendant-accounts/*/history*', (req) => {
-      const itemTypes = String(req.query['itemTypes'] ?? '').toLowerCase();
-      req.reply({
-        statusCode: 200,
-        body: itemTypes === 'note' ? noteOnlyResponse : fullResponse,
-      });
-    }).as('historyAndNotes');
+    cy.intercept(
+      'GET',
+      /\/opal-fines-service\/(?:defendant-accounts|minor-creditor-accounts)\/[^/]+\/history(?:\?.*)?$/,
+      (req) => {
+        const fullResponse = req.url.includes('/minor-creditor-accounts/') ? minorCreditorResponse : defendantResponse;
+        const noteOnlyResponse = buildFilteredResponse(fullResponse);
+
+        const itemTypes = String(req.query['itemTypes'] ?? this.getItemTypesFromUrl(req.url) ?? '').toLowerCase();
+        req.reply({
+          statusCode: 200,
+          body: itemTypes === 'note' ? noteOnlyResponse : fullResponse,
+        });
+      },
+    ).as('historyAndNotes');
   }
 
   /**
-   * Waits for the History and notes endpoint and asserts the tab shell is rendered.
+   * Asserts the shared History and notes table columns are visible.
+   */
+  private assertHistoryAndNotesColumnsVisible(): void {
+    cy.get(L.tableHeadings, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT })
+      .find('th')
+      .then(($headers) => {
+        const headers = [...$headers].map((header) => header.textContent?.replace(/\s+/g, ' ').trim() ?? '');
+        expect(headers).to.deep.equal(['Date', 'User', 'Type', 'Details', 'Amount']);
+      });
+  }
+
+  /**
+   * Asserts the History and notes tab shell is visible without relying on a stub alias.
+   */
+  public assertHistoryAndNotesTabVisible(): void {
+    log('assert', 'Asserting History and notes tab is visible');
+
+    cy.get(L.tabRoot, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).should('be.visible');
+    cy.get('body', { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).should(($body) => {
+      const tableCount = $body.find(L.table).length;
+      const noResultsCount = $body.find(L.noResultsMessage).length;
+
+      expect(tableCount + noResultsCount).to.be.greaterThan(0);
+    });
+  }
+
+  /**
+   * Asserts the History and notes table column headers.
+   *
+   * @param expectedColumns - Expected column headings in rendered order.
+   */
+  public assertHistoryAndNotesColumns(expectedColumns: string[]): void {
+    log('assert', 'Asserting History and notes columns', { expectedColumns });
+
+    cy.get(L.table, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).should('be.visible');
+    cy.get(L.tableHeadings, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT })
+      .find('th')
+      .then(($headers) => {
+        const headers = [...$headers].map((header) => this.normalize(header.textContent ?? ''));
+        expect(headers).to.deep.equal(expectedColumns.map((column) => this.normalize(column)));
+      });
+  }
+
+  /**
+   * Asserts History and notes table rows using the rendered cell text.
+   *
+   * @param expectedRows - Expected row objects keyed by Date, User, Type, Details, Amount.
+   */
+  public assertHistoryAndNotesRows(expectedRows: Array<Record<string, string>>): void {
+    log('assert', 'Asserting History and notes row values', { expectedRows });
+
+    const columnSelectors: Record<string, (rowIndex: number) => string> = {
+      date: (rowIndex: number) => `#history-and-notes-date-${rowIndex}`,
+      user: (rowIndex: number) => `#history-and-notes-user-${rowIndex}`,
+      type: (rowIndex: number) => `#history-and-notes-type-${rowIndex}`,
+      details: (rowIndex: number) => `#history-and-notes-details-${rowIndex}`,
+      amount: (rowIndex: number) => `#history-and-notes-amount-${rowIndex}`,
+    };
+
+    cy.get(L.tableRows, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).should(
+      'have.length',
+      expectedRows.length,
+    );
+
+    expectedRows.forEach((row, rowIndex) => {
+      Object.entries(row).forEach(([label, value]) => {
+        const selector = columnSelectors[label.trim().toLowerCase()];
+
+        if (!selector) {
+          throw new Error(
+            `Unsupported History and notes label "${label}". Supported labels: ${Object.keys(columnSelectors).join(', ')}`,
+          );
+        }
+
+        cy.get(selector(rowIndex), { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT })
+          .should('be.visible')
+          .invoke('text')
+          .then((text) => expect(this.normalize(text)).to.contain(this.normalize(value)));
+      });
+    });
+  }
+
+  /**
+   * Asserts the History and notes empty-state message.
+   *
+   * @param expected - Expected message shown when there are no results.
+   */
+  public assertHistoryAndNotesNoResultsMessage(expected: string): void {
+    log('assert', 'Asserting History and notes empty-state message', { expected });
+    cy.get(L.noResultsMessage, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .and('contain.text', expected);
+  }
+
+  /**
+   * Asserts the History and notes tab shell is rendered.
    */
   public assertHistoryAndNotesTabLoaded(): void {
     log('assert', 'Asserting History and notes tab is loaded');
 
-    cy.wait('@historyAndNotes', { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT })
-      .its('response.statusCode')
-      .should('eq', 200);
-    cy.get(L.tabRoot, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).should('be.visible');
-    cy.get(L.table, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).should('be.visible');
+    this.assertHistoryAndNotesTabVisible();
   }
 
   /**
@@ -100,6 +288,7 @@ export class AccountDetailsHistoryActions {
   public assertHistoryAndNotesRowsLoaded(expectedRows: number): void {
     log('assert', 'Asserting History and notes rows loaded', { expectedRows });
 
+    this.assertHistoryAndNotesColumnsVisible();
     cy.get(L.tableRows, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).should('have.length', expectedRows);
   }
 
@@ -114,12 +303,7 @@ export class AccountDetailsHistoryActions {
     cy.get(L.notesCheckbox, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).check({ force: true });
     cy.get(L.filterButton, { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).click();
 
-    cy.wait('@historyAndNotes', { timeout: AccountDetailsHistoryActions.DEFAULT_TIMEOUT }).then(
-      ({ request, response }) => {
-        expect(request.query['itemTypes']).to.equal('note');
-        expect(response?.statusCode).to.equal(200);
-      },
-    );
+    this.waitForNotesFilterRequest();
   }
 
   /**

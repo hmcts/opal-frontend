@@ -153,7 +153,7 @@ describe('FinesConSearchResultComponent', () => {
     expect(opalFines.getDefendantAccounts).toHaveBeenCalledWith(
       expect.objectContaining({ consolidation_search: true }),
     );
-    expect(component.tableData.length).toBe(1);
+    expect(component.tableData).toHaveLength(1);
     expect(updateResultsSpy).toHaveBeenCalledWith(defendantAccounts, []);
   });
 

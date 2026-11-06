@@ -28,6 +28,7 @@ describe('FinesDraftStore', () => {
     expect(store.created_at()).toEqual('');
     expect(store.account_snapshot()).toEqual({} as IFinesMacPayloadAccountSnapshot);
     expect(store.account_status_date()).toEqual('');
+    expect(store.getFinesDraftState().source).toBeNull();
     expect(store.fragment()).toEqual('');
   });
 
@@ -103,6 +104,23 @@ describe('FinesDraftStore', () => {
     expect(store.created_at()).toEqual(finesDraftState.created_at);
     expect(store.account_snapshot()).toEqual(finesDraftState.account_snapshot);
     expect(store.account_status_date()).toEqual(finesDraftState.account_status_date);
+  });
+
+  it.each(['MAC', 'CPP', 'VPFPO'] as const)('should preserve source %s in draft state', (source) => {
+    const finesDraftState = { ...structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT), source };
+
+    store.setFinesDraftState(finesDraftState);
+
+    expect(store.getFinesDraftState().source).toBe(source);
+  });
+
+  it('should use null when a draft response omits source', () => {
+    const finesDraftState = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    Reflect.deleteProperty(finesDraftState, 'source');
+
+    store.setFinesDraftState(finesDraftState);
+
+    expect(store.getFinesDraftState().source).toBeNull();
   });
 
   it('should get finesDraftState', () => {
@@ -191,24 +209,14 @@ describe('FinesDraftStore', () => {
     expect(store.checker()).toEqual(false);
   });
 
-  it('should set banner message by type - submitted', () => {
-    store.setBannerMessageByType('submitted', 'Test Name');
-    expect(store.bannerMessage()).toEqual("You have submitted Test Name's account for review.");
-  });
-
-  it('should set banner message by type - deleted', () => {
-    store.setBannerMessageByType('deleted', 'Test Name');
-    expect(store.bannerMessage()).toEqual("You have deleted Test Name's account.");
-  });
-
-  it('should set banner message by type - rejected', () => {
-    store.setBannerMessageByType('rejected', 'Test Name');
-    expect(store.bannerMessage()).toEqual("You have rejected Test Name's account.");
-  });
-
-  it('should set banner message by type - approved', () => {
-    store.setBannerMessageByType('approved', 'Test Name');
-    expect(store.bannerMessage()).toEqual("You have approved Test Name's account.");
+  it.each([
+    { type: 'submitted', expectedMessage: "You have submitted Test Name's account for review." },
+    { type: 'deleted', expectedMessage: "You have deleted Test Name's account." },
+    { type: 'rejected', expectedMessage: "You have rejected Test Name's account." },
+    { type: 'approved', expectedMessage: "You have approved Test Name's account." },
+  ] as const)('should set banner message by type - $type', ({ type, expectedMessage }) => {
+    store.setBannerMessageByType(type, 'Test Name');
+    expect(store.bannerMessage()).toEqual(expectedMessage);
   });
 
   it('should not set banner message if type does not exist', () => {
@@ -217,14 +225,14 @@ describe('FinesDraftStore', () => {
     expect(store.bannerMessage()).toEqual('');
   });
 
-  it('should get defendant name from account', () => {
+  it('should get individual defendant name from account', () => {
     const account = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT.account);
     store.setAccount(account);
     const defendantName = store.getDefendantName();
     expect(defendantName).toEqual('Alice Williams');
   });
 
-  it('should get defendant name from account', () => {
+  it('should get company defendant name from account', () => {
     const account = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT.account);
     account.defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
     account.defendant.company_name = 'Tech Innovations Ltd.';

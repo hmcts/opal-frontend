@@ -65,6 +65,24 @@ export class AccountDetailsNotesActions {
   }
 
   /**
+   * Watches the Add Note API contract without stubbing the backend response.
+   * This ensures the E2E journey exercises the production endpoint.
+   */
+  public watchAddNoteRequest(): void {
+    cy.intercept('POST', '/opal-fines-service/notes').as('addNoteRequest');
+  }
+
+  /**
+   * Confirms the note was created through the documented Add Note endpoint.
+   */
+  public assertAddNoteRequest(): void {
+    cy.wait('@addNoteRequest').then((interception) => {
+      expect(interception.request.method).to.equal('POST');
+      expect(interception.request.url).to.match(/\/opal-fines-service\/notes$/);
+    });
+  }
+
+  /**
    * Asserts the note textarea currently equals the provided text.
    * Keeps DOM access inside Actions (flows remain locator-free).
    * @param text - Expected textarea value.

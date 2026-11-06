@@ -34,9 +34,9 @@ export class FinesMacOffenceDetailsAddAnOffenceComponent
   public defendantType = this.finesMacStore.getDefendantType();
   public results!: IOpalFinesResultsRefData;
   public majorCreditors!: IOpalFinesMajorCreditorRefData;
-  public resultsCodeData!: IAlphagovAccessibleAutocompleteItem[];
-  public fcompMajorCreditorData!: IAlphagovAccessibleAutocompleteItem[];
-  public fcostMajorCreditorData!: IAlphagovAccessibleAutocompleteItem[];
+  public resultsCodeData: IAlphagovAccessibleAutocompleteItem[] = [];
+  public fcompMajorCreditorData: IAlphagovAccessibleAutocompleteItem[] = [];
+  public fcostMajorCreditorData: IAlphagovAccessibleAutocompleteItem[] = [];
   public offenceIndex!: number;
   public showOffenceDetailsForm: boolean = true;
 

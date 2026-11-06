@@ -1456,6 +1456,35 @@ export class ManualAccountCreationFlow {
   }
 
   /**
+   * Starts intercepting prosecutor lookup requests.
+   */
+  monitorProsecutorRequests(): void {
+    log('flow', 'Monitor prosecutor requests');
+    this.requestMonitor.monitorProsecutorRequests();
+  }
+
+  /**
+   * Asserts that a prosecutor lookup request was made.
+   */
+  assertProsecutorRequestMade(): void {
+    this.requestMonitor.assertProsecutorRequestMade();
+  }
+
+  /**
+   * Asserts that no prosecutor lookup request was made.
+   */
+  assertNoProsecutorRequestsMade(): void {
+    this.requestMonitor.assertNoProsecutorRequestsMade();
+  }
+
+  /**
+   * Asserts that no local justice area lookup request was made.
+   */
+  assertNoLocalJusticeAreasRequestsMade(): void {
+    this.requestMonitor.assertNoLocalJusticeAreasRequestsMade();
+  }
+
+  /**
    * Asserts that the latest local justice area request includes exactly the expected lja_types.
    * @param expectedLjaTypes - Expected lja_type values (order-insensitive).
    */
@@ -1994,6 +2023,16 @@ export class ManualAccountCreationFlow {
     log('flow', 'Reviewing offence and asserting review page');
     this.offenceDetails.clickReviewOffence();
     this.offenceReview.assertOnReviewPage();
+  }
+
+  /**
+   * Returns to Account details from offence review and asserts no unsaved-changes warning appears.
+   */
+  returnToAccountDetailsFromReviewWithoutWarning(): void {
+    log('flow', 'Returning to Account details from offence review without unsaved-changes warning');
+    this.offenceReview.assertOnReviewPage();
+    this.offenceReview.returnToAccountDetailsWithoutUnsavedChangesWarning();
+    this.accountDetails.assertOnAccountDetailsPage();
   }
 
   /**

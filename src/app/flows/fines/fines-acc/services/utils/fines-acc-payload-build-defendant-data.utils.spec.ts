@@ -11,12 +11,12 @@ import { describe, expect, it } from 'vitest';
 
 describe('fines-acc-payload-build-defendant-data.utils', () => {
   describe('buildIndividualAliases', () => {
-    it('should return null for empty aliases array', () => {
+    it('should return null for empty individual aliases array', () => {
       const result = buildIndividualAliases([]);
       expect(result).toBeNull();
     });
 
-    it('should return null for null aliases', () => {
+    it('should return null for null individual aliases', () => {
       const result = buildIndividualAliases(null);
       expect(result).toBeNull();
     });
@@ -158,12 +158,12 @@ describe('fines-acc-payload-build-defendant-data.utils', () => {
   });
 
   describe('buildOrganisationAliases', () => {
-    it('should return null for empty aliases array', () => {
+    it('should return null for empty organisation aliases array', () => {
       const result = buildOrganisationAliases([]);
       expect(result).toBeNull();
     });
 
-    it('should return null for null aliases', () => {
+    it('should return null for null organisation aliases', () => {
       const result = buildOrganisationAliases(null);
       expect(result).toBeNull();
     });

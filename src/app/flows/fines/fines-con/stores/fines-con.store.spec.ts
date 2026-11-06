@@ -41,7 +41,8 @@ describe('FinesConStore', () => {
 
     // Verify form is complete with both business unit and defendant type set
     const formData = store.selectBuForm().formData;
-    expect(!!formData.fcon_select_bu_business_unit_id && !!formData.fcon_select_bu_defendant_type).toBeTruthy();
+    expect(formData.fcon_select_bu_business_unit_id).toBeTruthy();
+    expect(formData.fcon_select_bu_defendant_type).toBeTruthy();
   });
 
   it('should update entire select BU form with nested flow flag', () => {
@@ -55,7 +56,8 @@ describe('FinesConStore', () => {
 
     // Verify form is complete with both business unit and defendant type set
     const formData = store.selectBuForm().formData;
-    expect(!!formData.fcon_select_bu_business_unit_id && !!formData.fcon_select_bu_defendant_type).toBeTruthy();
+    expect(formData.fcon_select_bu_business_unit_id).toBeTruthy();
+    expect(formData.fcon_select_bu_defendant_type).toBeTruthy();
   });
 
   it('should reset entire consolidation state', () => {

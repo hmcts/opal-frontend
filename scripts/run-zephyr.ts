@@ -25,5 +25,7 @@ zephyrOptions.executionBuild = process.env['EXECUTION_BUILD'] ?? undefined;
 zephyrOptions.executionTestCycleName = process.env['EXECUTION_TEST_CYCLE_NAME'] ?? undefined;
 zephyrOptions.executionTestCycleDescription = process.env['EXECUTION_TEST_CYCLE_DESCRIPTION'] ?? undefined;
 zephyrOptions.executionTestCycleVersion = process.env['EXECUTION_TEST_CYCLE_VERSION'] ?? undefined;
+zephyrOptions.successStatusId = process.env['SUCCESS_STATUS_ID'] ?? undefined;
+zephyrOptions.failedStatusId = process.env['FAILED_STATUS_ID'] ?? undefined;
 zephyrOptions.executionAttachEvidence = true;
 runZephyr(zephyrOptions);

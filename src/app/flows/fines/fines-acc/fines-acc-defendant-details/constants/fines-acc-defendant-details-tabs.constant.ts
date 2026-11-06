@@ -9,4 +9,5 @@ export const FINES_ACC_DEFENDANT_DETAILS_TABS: IFinesAccountDefendantDetailsTabs
   enforcement: 'Enforcement',
   impositions: 'Impositions',
   'history-and-notes': 'History and notes',
+  'consolidated-accounts': 'Consolidated accounts',
 };

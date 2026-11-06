@@ -196,7 +196,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     expect(routerSpy).toHaveBeenCalledWith([routePath], { relativeTo: component['activatedRoute'].parent });
   });
 
-  it('should navigate back on navigateBack', () => {
+  it('should navigate back to draft tabs on navigateBack for an amended rejected account', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
@@ -359,7 +359,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     expect(component['routerListener']).toHaveBeenCalled();
   });
 
-  it('should navigate back on navigateBack', () => {
+  it('should navigate back to create account on navigateBack after page navigation', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     component.pageNavigation = true;
@@ -498,7 +498,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     expect(component.mandatorySectionsCompleted).toBe(false);
   });
 
-  it('should test accountDetailsFetchedMappedPayload', () => {
+  it('should set account details from mapped payload for a rejected draft', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'setAccountDetailsStatus');
     const snapshotData: IFetchMapFinesMacPayload = {
@@ -524,7 +524,7 @@ describe('FinesMacAccountDetailsComponent', () => {
     expect(component['setAccountDetailsStatus']).toHaveBeenCalled();
   });
 
-  it('should test accountDetailsFetchedMappedPayload', () => {
+  it('should set account details from mapped payload for an add account draft', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'setAccountDetailsStatus');
     finesMacStore.setFinesMacStore(structuredClone(FINES_MAC_STATE));

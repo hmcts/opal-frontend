@@ -1,5 +1,7 @@
+import { FinesDraftTabFragment } from '../types/fines-draft-tab-fragment.type';
+
 export interface IFinesDraftTabStatuses {
-  tab: string;
+  tab: FinesDraftTabFragment;
   statuses: string[];
   prettyName: string;
   historicWindowInDays?: number;

@@ -6,13 +6,14 @@ import { futureDateValidator } from '@hmcts/opal-frontend-common/validators/futu
 import { amountValidator } from '@hmcts/opal-frontend-common/validators/amount';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import {
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN,
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   DRIVING_LICENCE_NUMBER_PATTERN,
   SINGLE_ASCII_CHARACTERS,
   SINGLE_ASCII_CHARACTERS_WITH_POUND,
   TIME_FORMAT_PATTERN,
 } from '@hmcts/opal-frontend-common/constants';
+import { finesMacOffenceDetailsPositiveAmountValidator } from '../../fines-mac-offence-details/validators/fines-mac-offence-details-positive-amount.validator';
 import { IFinesMacFixedPenaltyDetailsState } from '../interfaces/fines-mac-fixed-penalty-details-state.interface';
 
 type IFinesMacFixedPenaltyDetailsFormValidators = {
@@ -20,25 +21,18 @@ type IFinesMacFixedPenaltyDetailsFormValidators = {
 };
 
 // regex pattern validators for the form controls
-const SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(
-  SINGLE_ASCII_CHARACTERS,
-  'singleAsciiChatacters',
-);
+const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_CHARACTERS, 'singleAsciiCharacters');
 const SINGLE_ASCII_CHARACTERS_WITH_POUND_PATTERN_VALIDATOR = patternValidator(
   SINGLE_ASCII_CHARACTERS_WITH_POUND,
-  'singleAsciiChatacters',
-);
-const SINGLE_ASCII_CHARACTERS_PERSON_NAME_PATTERN_VALIDATOR = patternValidator(
-  SINGLE_ASCII_CHARACTERS,
-  'singleAsciiChatacters',
+  'singleAsciiCharacters',
 );
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
 );
-const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-  'alphanumericWithHyphensSpacesApostrophesDotPattern',
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN,
+  'alphanumericWithHyphensSpacesApostrophesCommasDotPattern',
 );
 const TIME_FORMAT_PATTERN_VALIDATOR = patternValidator(TIME_FORMAT_PATTERN, 'invalidTimeFormat');
 const DRIVING_LICENCE_NUMBER_PATTERN_VALIDATOR = patternValidator(
@@ -51,21 +45,21 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
   fm_fp_personal_details_forenames: [
     Validators.required,
     Validators.maxLength(20),
-    SINGLE_ASCII_CHARACTERS_PERSON_NAME_PATTERN_VALIDATOR,
+    SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
   ],
   fm_fp_personal_details_surname: [
     Validators.required,
     Validators.maxLength(30),
-    SINGLE_ASCII_CHARACTERS_PERSON_NAME_PATTERN_VALIDATOR,
+    SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
   ],
   fm_fp_personal_details_dob: [optionalValidDateValidator(), dateOfBirthValidator()],
   fm_fp_personal_details_address_line_1: [
     Validators.required,
     Validators.maxLength(30),
-    ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+    SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
   ],
-  fm_fp_personal_details_address_line_2: [optionalMaxLengthValidator(30), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR],
-  fm_fp_personal_details_address_line_3: [optionalMaxLengthValidator(16), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR],
+  fm_fp_personal_details_address_line_2: [optionalMaxLengthValidator(30), SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR],
+  fm_fp_personal_details_address_line_3: [optionalMaxLengthValidator(16), SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR],
   fm_fp_personal_details_post_code: [optionalMaxLengthValidator(8), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR],
   fm_fp_court_details_imposing_court_id: [Validators.required],
   fm_fp_court_details_originator_id: [
@@ -97,9 +91,13 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
   fm_fp_offence_details_place_of_offence: [
     Validators.required,
     Validators.maxLength(30),
-    ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+    ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN_VALIDATOR,
   ],
-  fm_fp_offence_details_amount_imposed: [Validators.required, amountValidator(18, 2)],
+  fm_fp_offence_details_amount_imposed: [
+    Validators.required,
+    amountValidator(18, 2),
+    finesMacOffenceDetailsPositiveAmountValidator({ allowZero: false }),
+  ],
   fm_fp_offence_details_vehicle_registration_number: [
     Validators.required,
     Validators.maxLength(7),
@@ -115,14 +113,14 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS: IFinesMacFixedPena
   fm_fp_company_details_company_name: [
     Validators.required,
     Validators.maxLength(30),
-    SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
+    SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
   ],
   fm_fp_company_details_address_line_1: [
     Validators.required,
     Validators.maxLength(30),
-    ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+    SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
   ],
-  fm_fp_company_details_address_line_2: [optionalMaxLengthValidator(30), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR],
-  fm_fp_company_details_address_line_3: [optionalMaxLengthValidator(16), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR],
+  fm_fp_company_details_address_line_2: [optionalMaxLengthValidator(30), SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR],
+  fm_fp_company_details_address_line_3: [optionalMaxLengthValidator(16), SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR],
   fm_fp_company_details_postcode: [optionalMaxLengthValidator(8), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR],
 };

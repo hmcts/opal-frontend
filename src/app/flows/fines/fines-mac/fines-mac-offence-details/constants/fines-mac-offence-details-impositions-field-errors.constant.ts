@@ -45,6 +45,10 @@ export const FINES_MAC_OFFENCE_DETAILS_IMPOSITIONS_FIELD_ERRORS = (index: number
         message: 'Enter an amount with no more than 18 digits before the decimal and 2 or fewer after',
         priority: 3,
       },
+      amountPaidExceedsAmountImposed: {
+        message: 'Amount paid cannot be greater than amount imposed',
+        priority: 4,
+      },
     },
     [`fm_offence_details_creditor${indexSuffix}`]: {
       required: {

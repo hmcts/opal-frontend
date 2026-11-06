@@ -24,6 +24,7 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
+import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from '../../../services/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
 
 describe('FinesMacOffenceDetailsReviewComponent', () => {
   let component: FinesMacOffenceDetailsReviewComponent;
@@ -40,6 +41,7 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
       getMajorCreditors: vi.fn().mockReturnValue(of(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK)),
       getMajorCreditorPrettyName: vi.fn().mockReturnValue(OPAL_FINES_MAJOR_CREDITOR_PRETTY_NAME_MOCK),
       getOffenceByCjsCode: vi.fn().mockReturnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
+      getResultPrettyName: vi.fn().mockReturnValue(OPAL_FINES_RESULT_PRETTY_NAME_MOCK),
     };
     mockDateService = createSpyObj(DateService, ['getFromFormat']);
 
@@ -147,12 +149,14 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
     finesMacOffenceDetailsStore.setRowIndex(0);
     finesMacOffenceDetailsStore.setAddedOffenceCode('Testing');
     finesMacOffenceDetailsStore.setMinorCreditorAdded(true);
+    finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(true);
     finesMacOffenceDetailsStore.setOffenceRemoved(true);
 
     component.ngOnDestroy();
 
     expect(finesMacOffenceDetailsStore.addedOffenceCode()).toEqual('');
     expect(finesMacOffenceDetailsStore.minorCreditorAdded()).toBe(false);
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraftDirty()).toBe(false);
     expect(finesMacOffenceDetailsStore.offenceRemoved()).toBe(false);
     expect(finesMacOffenceDetailsStore.offenceDetailsDraft()).toEqual([]);
   });
@@ -167,6 +171,7 @@ describe('FinesMacOffenceDetailsReviewComponent', () => {
 
     expect(finesMacOffenceDetailsStore.addedOffenceCode()).toEqual('');
     expect(finesMacOffenceDetailsStore.minorCreditorAdded()).toBe(false);
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraftDirty()).toBe(false);
     expect(finesMacOffenceDetailsStore.offenceRemoved()).toBe(false);
     expect(setOffenceDetailsDraftSpy).not.toHaveBeenCalled();
   });

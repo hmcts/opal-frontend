@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { Title } from '@angular/platform-browser';
 import { ResolveFn, Router } from '@angular/router';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
@@ -7,6 +8,7 @@ import { OPAL_FINES_SEARCH_OFFENCES_MOCK } from '@services/fines/opal-fines-serv
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { finesMacOffenceDetailsSearchOffencesResolver } from './fines-mac-offence-details-search-offences.resolver';
 import { IOpalFinesSearchOffencesData } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-offences.interface';
+import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_TITLES } from '../constants/fines-mac-offence-details-search-offences-routing-titles.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
@@ -22,6 +24,8 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
   let mockDateService: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockUtilsService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockTitleService: any;
 
   beforeEach(() => {
     mockRouter = {
@@ -38,6 +42,9 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
       scrollToTop: vi.fn().mockName('UtilsService.scrollToTop'),
       filterNullOrUndefined: vi.fn().mockName('UtilsService.filterNullOrUndefined'),
     };
+    mockTitleService = {
+      setTitle: vi.fn().mockName('Title.setTitle'),
+    };
 
     TestBed.configureTestingModule({
       providers: [
@@ -45,6 +52,7 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
         { provide: OpalFines, useValue: mockOpalFinesService },
         { provide: DateService, useValue: mockDateService },
         { provide: UtilsService, useValue: mockUtilsService },
+        { provide: Title, useValue: mockTitleService },
       ],
     });
   });
@@ -83,6 +91,10 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
         searchData: [structuredClone(OPAL_FINES_SEARCH_OFFENCES_MOCK.searchData[0])],
       });
     });
+
+    expect(mockTitleService.setTitle).toHaveBeenCalledWith(
+      `OPAL - ${FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_TITLES.children.searchOffencesResults}`,
+    );
   });
 
   it('should resolve and return offence data when state.payload is provided with active true', async () => {
@@ -119,6 +131,10 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
         searchData: [structuredClone(OPAL_FINES_SEARCH_OFFENCES_MOCK.searchData[0])],
       });
     });
+
+    expect(mockTitleService.setTitle).toHaveBeenCalledWith(
+      `OPAL - ${FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_TITLES.children.searchOffencesResults}`,
+    );
   });
 
   it('should return empty array if no state.payload is available', async () => {
@@ -129,6 +145,10 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
     executeResolver({} as any, {} as any).subscribe((result: IOpalFinesSearchOffencesData) => {
       expect(result).toEqual({ searchData: [], count: 0 });
     });
+
+    expect(mockTitleService.setTitle).toHaveBeenCalledWith(
+      `OPAL - ${FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_TITLES.children.noResultsFound}`,
+    );
   });
 
   it('should return empty array if API call fails', () => {
@@ -162,5 +182,8 @@ describe('finesMacOffenceDetailsSearchOffencesResolver', () => {
 
     expect(result).toEqual({ searchData: [], count: 0 });
     expect(mockUtilsService.scrollToTop).toHaveBeenCalled();
+    expect(mockTitleService.setTitle).toHaveBeenCalledWith(
+      `OPAL - ${FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_TITLES.children.noResultsFound}`,
+    );
   });
 });

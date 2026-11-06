@@ -4,8 +4,8 @@ Use this guide when writing or updating Cypress component specs in opal-frontend
 
 ## Structure and Setup
 
-- Component specs live in `cypress/component/**` and are grouped by capability (for example, `manualAccountCreation`, `fineAccountEnquiry`, shared `pages/`).
-- Prefer the shared router-outlet setup in `cypress/component/fineAccountEnquiry/accountEnquiry/setup` so specs can register routes, provide shared services, intercept APIs, and navigate to the component under test.
+- Component specs live in `cypress/component/release1a`, `cypress/component/release1b`, and `cypress/component/release1c`, grouped by release and then capability. Shared setup and intercept helpers remain directly under `cypress/component`.
+- Prefer the shared router-outlet setup in `cypress/component/release1b/fineAccountEnquiry/accountEnquiry/setup` so specs can register routes, provide shared services, intercept APIs, and navigate to the component under test.
 - Extend the shared setup rather than creating a new mount helper, unless it causes regressions.
 
 ## Page Object Model Usage
@@ -30,10 +30,14 @@ Use this guide when writing or updating Cypress component specs in opal-frontend
 Run a single component spec with:
 
 ```
-yarn cypress run --browser chrome --component --spec 'cypress/component/fineAccountEnquiry/accountEnquiry/AccountEnquiry.cy.ts'
+yarn test:component:r1b --browser=chrome
 ```
 
 ## Handling Real Product Bugs
 
 - If a component spec fails due to a real product bug, do not change application code to force a pass.
 - Skip or mark the test pending and explain the failure in the task update.
+
+## Extended Tests
+
+Use `@extendedTest` for tests excluded from PR/master runs by default and included in manual and nightly runs. Add the GitHub label `extendedTests` to a PR to include them in that PR pipeline. Direct Cypress runs include extended tests even when the pipeline exclusion flag is set. See [Extended test runs](EXTENDED_TEST_RUNS.md) for tagging, pipeline behaviour and execution commands.

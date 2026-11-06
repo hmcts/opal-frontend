@@ -21,6 +21,8 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../../constants/fines-mac-def
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
+import { By } from '@angular/platform-browser';
+import { FinesMacOffenceDetailsReviewOffenceComponent } from '../../fines-mac-offence-details-review-offence/fines-mac-offence-details-review-offence.component';
 
 describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
   let component: FinesMacOffenceDetailsReviewSummaryComponent;
@@ -84,6 +86,21 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it.each([
+    { isReadOnly: false, expectedHeadingLevel: 2 },
+    { isReadOnly: true, expectedHeadingLevel: 3 },
+  ])(
+    'should pass heading level $expectedHeadingLevel when read-only is $isReadOnly',
+    ({ isReadOnly, expectedHeadingLevel }) => {
+      fixture.componentRef.setInput('isReadOnly', isReadOnly);
+      fixture.detectChanges();
+
+      const offence = fixture.debugElement.query(By.directive(FinesMacOffenceDetailsReviewOffenceComponent));
+
+      expect(offence.componentInstance.headingLevel).toBe(expectedHeadingLevel);
+    },
+  );
+
   it('should return the maximum offence ID', () => {
     const result = component['getMaxOffenceId']();
 
@@ -98,20 +115,30 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
     expect(result).toBe(0);
   });
 
-  it('should ignore offences with a null offence id when building the hidden map', () => {
-    component.offencesImpositions = [
-      {
-        ...structuredClone(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK[0]),
-        formData: {
-          ...structuredClone(FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK[0].formData),
-          fm_offence_details_id: null,
-        } as unknown as (typeof FINES_MAC_OFFENCE_DETAILS_REVIEW_SUMMARY_FORM_MOCK)[number]['formData'],
-      },
-    ];
+  it('should show Add an offence when there are no offences', () => {
+    finesMacOffenceDetailsStore.setOffenceRemoved(true);
 
-    component['offenceDetailsHidden']();
+    fixture = TestBed.createComponent(FinesMacOffenceDetailsReviewSummaryComponent);
+    component = fixture.componentInstance;
 
-    expect(component.offencesHidden).toEqual({});
+    component.impositionRefData = OPAL_FINES_RESULTS_REF_DATA_MOCK;
+    component.majorCreditorRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK;
+    component.offencesImpositions = [];
+
+    finesMacStore.setFinesMacStore(structuredClone(FINES_MAC_STATE_MOCK));
+    mockUtilsService.getFormStatus.mockReturnValue(FINES_MAC_STATUS.PROVIDED);
+
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Add an offence');
+    expect(fixture.nativeElement.textContent).not.toContain('Add another offence');
+  });
+
+  it('should show Add another offence when there is an existing offence', () => {
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Add another offence');
+    expect(fixture.nativeElement.textContent).not.toContain('Add an offence');
   });
 
   it('should set the offenceIndex and navigate to addOffence route when actionName is "Change"', () => {
@@ -140,18 +167,15 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
     });
   });
 
-  it('should toggle the offencesHidden value when the action name is not "Change" or "Remove"', () => {
+  it('should set the offenceIndex and not navigate when actionName is not "Change" or "Remove"', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     const action = { actionName: 'hide', offenceId: 1 };
 
     component.offenceAction(action);
 
-    expect(component.offencesHidden[action.offenceId]).toBe(false);
-
-    action.actionName = 'show';
-
-    component.offenceAction(action);
-
-    expect(component.offencesHidden[action.offenceId]).toBe(true);
+    expect(finesMacOffenceDetailsStore.offenceIndex()).toBe(action.offenceId);
+    expect(routerSpy).not.toHaveBeenCalled();
   });
 
   it('should set the offenceIndex and navigate to addOffence route when addAnotherOffence is called', () => {
@@ -192,7 +216,7 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
     expect(addAnotherOffenceSpy).toHaveBeenCalled();
   });
 
-  it('should return the value of finesService.finesMacState.personalDetails.status when isAdultOrYouthOnly returns true', () => {
+  it('should return the personal details status when defendant type is adult or youth only', () => {
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.accountDetails = {
       ...structuredClone(FINES_MAC_STATE_MOCK.accountDetails),
@@ -211,7 +235,7 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
     expect(result).toBe(true);
   });
 
-  it('should return the value of finesService.finesMacState.personalDetails.status when isAdultOrYouthOnly returns true', () => {
+  it('should return the sub-navigation status when defendant type is parent or guardian to pay', () => {
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.accountDetails = {
       ...structuredClone(FINES_MAC_STATE_MOCK.accountDetails),
@@ -226,5 +250,17 @@ describe('FinesMacOffenceDetailsReviewSummaryComponent', () => {
     const result = component.checkSubNavigationButton();
 
     expect(result).toBe(true);
+  });
+
+  it('should announce the offence code message in the success alert', () => {
+    finesMacOffenceDetailsStore.setOffenceCodeMessage('Offence HY35014 added');
+
+    fixture.detectChanges();
+
+    const alert = fixture.debugElement.query(By.css('opal-lib-moj-alert'));
+
+    expect(alert).toBeTruthy();
+    expect(alert.componentInstance.ariaLabel).toBe('Offence HY35014 added');
+    expect(alert.componentInstance.announcementMessage).toBe('success: Offence HY35014 added');
   });
 });

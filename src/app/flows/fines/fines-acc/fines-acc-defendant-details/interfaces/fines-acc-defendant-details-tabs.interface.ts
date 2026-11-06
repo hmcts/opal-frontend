@@ -7,4 +7,5 @@ export interface IFinesAccountDefendantDetailsTabs {
   enforcement: string;
   impositions: string;
   'history-and-notes': string;
+  'consolidated-accounts': string;
 }

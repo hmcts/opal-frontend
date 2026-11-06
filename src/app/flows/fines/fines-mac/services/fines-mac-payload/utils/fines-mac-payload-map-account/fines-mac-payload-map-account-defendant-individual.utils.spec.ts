@@ -83,21 +83,21 @@ describe('finesMacPayloadMapAccountDefendantIndividualPayload', () => {
 
     const result = finesMacPayloadMapAccountDefendantIndividualPayload(initialState, payload);
 
-    expect(result.personalDetails.formData.fm_personal_details_add_alias).toBe(null);
+    expect(result.personalDetails.formData.fm_personal_details_add_alias).toBeNull();
     expect(result.personalDetails.formData.fm_personal_details_aliases).toEqual([]);
-    expect(result.personalDetails.formData.fm_personal_details_vehicle_make).toBe(null);
-    expect(result.personalDetails.formData.fm_personal_details_vehicle_registration_mark).toBe(null);
+    expect(result.personalDetails.formData.fm_personal_details_vehicle_make).toBeNull();
+    expect(result.personalDetails.formData.fm_personal_details_vehicle_registration_mark).toBeNull();
 
-    expect(result.employerDetails.formData.fm_employer_details_employer_reference).toBe(null);
-    expect(result.employerDetails.formData.fm_employer_details_employer_company_name).toBe(null);
-    expect(result.employerDetails.formData.fm_employer_details_employer_address_line_1).toBe(null);
-    expect(result.employerDetails.formData.fm_employer_details_employer_address_line_2).toBe(null);
-    expect(result.employerDetails.formData.fm_employer_details_employer_address_line_3).toBe(null);
-    expect(result.employerDetails.formData.fm_employer_details_employer_address_line_4).toBe(null);
-    expect(result.employerDetails.formData.fm_employer_details_employer_address_line_5).toBe(null);
-    expect(result.employerDetails.formData.fm_employer_details_employer_post_code).toBe(null);
-    expect(result.employerDetails.formData.fm_employer_details_employer_telephone_number).toBe(null);
-    expect(result.employerDetails.formData.fm_employer_details_employer_email_address).toBe(null);
+    expect(result.employerDetails.formData.fm_employer_details_employer_reference).toBeNull();
+    expect(result.employerDetails.formData.fm_employer_details_employer_company_name).toBeNull();
+    expect(result.employerDetails.formData.fm_employer_details_employer_address_line_1).toBeNull();
+    expect(result.employerDetails.formData.fm_employer_details_employer_address_line_2).toBeNull();
+    expect(result.employerDetails.formData.fm_employer_details_employer_address_line_3).toBeNull();
+    expect(result.employerDetails.formData.fm_employer_details_employer_address_line_4).toBeNull();
+    expect(result.employerDetails.formData.fm_employer_details_employer_address_line_5).toBeNull();
+    expect(result.employerDetails.formData.fm_employer_details_employer_post_code).toBeNull();
+    expect(result.employerDetails.formData.fm_employer_details_employer_telephone_number).toBeNull();
+    expect(result.employerDetails.formData.fm_employer_details_employer_email_address).toBeNull();
 
     expect(result.languagePreferences.formData).toEqual({
       fm_language_preferences_document_language: null,

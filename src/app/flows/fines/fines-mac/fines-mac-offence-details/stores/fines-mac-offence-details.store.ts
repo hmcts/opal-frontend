@@ -13,6 +13,7 @@ export const FinesMacOffenceDetailsStore = signalStore(
     emptyOffences: false,
     addedOffenceCode: '',
     minorCreditorAdded: false,
+    offenceDetailsDraftDirty: false,
     offenceRemoved: false,
     offenceCodeMessage: '',
   })),
@@ -25,6 +26,9 @@ export const FinesMacOffenceDetailsStore = signalStore(
     },
     setMinorCreditorAdded: (minorCreditorAdded: boolean) => {
       patchState(store, { minorCreditorAdded });
+    },
+    setOffenceDetailsDraftDirty: (offenceDetailsDraftDirty: boolean) => {
+      patchState(store, { offenceDetailsDraftDirty });
     },
     setAddedOffenceCode: (addedOffenceCode: string) => {
       patchState(store, { addedOffenceCode });
@@ -53,6 +57,7 @@ export const FinesMacOffenceDetailsStore = signalStore(
         rowIndex: null,
         formArrayControls: [],
         removeMinorCreditor: null,
+        offenceDetailsDraftDirty: false,
       });
     },
     resetOffenceCodeMessage: () => {
@@ -68,6 +73,7 @@ export const FinesMacOffenceDetailsStore = signalStore(
         emptyOffences: false,
         addedOffenceCode: '',
         minorCreditorAdded: false,
+        offenceDetailsDraftDirty: false,
         offenceRemoved: false,
         offenceCodeMessage: '',
       });

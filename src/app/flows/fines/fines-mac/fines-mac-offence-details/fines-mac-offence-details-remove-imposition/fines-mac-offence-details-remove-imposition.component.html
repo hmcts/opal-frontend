@@ -23,13 +23,13 @@
           }
         </td>
         <td opal-lib-govuk-table-body-row-data id="amountImposed">
-          {{ amountImposedString }}
+          <opal-lib-custom-accessible-monetary [value]="amountImposedString" />
         </td>
         <td opal-lib-govuk-table-body-row-data id="amountPaid">
-          {{ amountPaidString }}
+          <opal-lib-custom-accessible-monetary [value]="amountPaidString" />
         </td>
         <td opal-lib-govuk-table-body-row-data id="balanceRemaining">
-          {{ balanceString }}
+          <opal-lib-custom-accessible-monetary [value]="balanceString" />
         </td>
       </tr>
     </ng-container>

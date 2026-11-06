@@ -18,7 +18,12 @@
  */
 
 import { Given, Then } from '@badeball/cypress-cucumber-preprocessor';
-import { loginAndAuthenticate, loginAndVerifyDashboardLanding } from '../..//e2e/functional/opal/flows/auth.flow';
+import {
+  assertAuthenticatedEndpointReturnedStatus,
+  loginAndAuthenticate,
+  loginAndVerifyDashboardLanding,
+  loginWithoutShellAssertions,
+} from '../..//e2e/functional/opal/flows/auth.flow';
 import { assertSignOutLinkVisible } from '../..//e2e/functional/opal/actions/login.actions';
 import { log } from '../utils/log.helper';
 
@@ -49,6 +54,37 @@ Given('I am logged in with email {string}', (email: string) => {
 Given('I am authenticated with email {string}', (email: string) => {
   log('step', 'Authenticating without asserting a specific landing page', { email });
   loginAndAuthenticate(email);
+});
+
+/**
+ * @step Attempts to sign in without asserting that the authenticated shell is available.
+ *
+ * @param email - The email address of the user attempting to sign in.
+ */
+Given('I attempt to authenticate with email {string}', (email: string) => {
+  log('step', 'Attempting authentication without assuming success', { email });
+  loginWithoutShellAssertions(email);
+});
+
+/**
+ * @step Attempts to sign in for a specific protected path without asserting that the authenticated shell is available.
+ *
+ * @param email - The email address of the user attempting to sign in.
+ * @param landingPath - The protected path opened before starting sign-in.
+ */
+Given('I attempt to authenticate with email {string} on path {string}', (email: string, landingPath: string) => {
+  log('step', 'Attempting authentication for a protected path without assuming success', { email, landingPath });
+  loginWithoutShellAssertions(email, landingPath);
+});
+
+/**
+ * @step Verifies the frontend authenticated endpoint returned the expected status code.
+ *
+ * @param expectedStatus - Expected HTTP status code from `/sso/authenticated`.
+ */
+Then('the authenticated endpoint responds with status {int}', (expectedStatus: number) => {
+  log('assert', 'Verifying authenticated endpoint response status', { expectedStatus });
+  assertAuthenticatedEndpointReturnedStatus(expectedStatus);
 });
 
 /**

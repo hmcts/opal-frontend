@@ -11,12 +11,12 @@ export const OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK: IOpalFinesMinorCreditor
       postcode: 'CORP1 AB',
       business_unit_name: 'Corporate Unit',
       business_unit_id: 'BU_ORG_1',
-      defendant_account_id: 1,
       account_balance: 1000.0,
       organisation_name: 'Global Corp Ltd.',
       firstnames: null,
       surname: null,
       defendant: {
+        defendant_account_id: 1,
         organisation_name: 'Global Corp Ltd.',
         firstnames: null,
         surname: null,
@@ -30,12 +30,12 @@ export const OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK: IOpalFinesMinorCreditor
       postcode: 'RES2 XY',
       business_unit_name: 'Individual Unit',
       business_unit_id: 'BU_IND_2',
-      defendant_account_id: 2,
       account_balance: 200.5,
       organisation_name: null,
       firstnames: 'Jane',
       surname: 'DOE',
       defendant: {
+        defendant_account_id: 2,
         organisation_name: null,
         firstnames: 'Jane',
         surname: 'DOE',
@@ -52,18 +52,19 @@ export const OPAL_FINES_CREDITOR_ACCOUNTS_RESPONSE_MOCK: IOpalFinesMinorCreditor
         postcode: `AB${idx} 1CD`,
         business_unit_name: `Unit ${idx}`,
         business_unit_id: `BU${idx}`,
-        defendant_account_id: idx,
         account_balance: 100.0 + idx * 10,
         firstnames: isOrganisation ? null : `First${idx}`,
         surname: isOrganisation ? null : `LAST_${idx}`,
         organisation_name: isOrganisation ? `ORG_${idx}` : null,
         defendant: isOrganisation
           ? {
+              defendant_account_id: idx,
               organisation_name: `ORG_${idx}`,
               firstnames: null,
               surname: null,
             }
           : {
+              defendant_account_id: idx,
               organisation_name: null,
               firstnames: `First${idx}`,
               surname: `LAST_${idx}`,

@@ -87,9 +87,13 @@
 
         <h3 [class]="style.key">Defendant name</h3>
         <p [class]="style.value">
-          {{ tabData.defendant.title }}
-          {{ tabData.defendant.forenames }}
-          {{ tabData.defendant.surname | uppercase }}
+          @if (tabData.defendant.organisation) {
+            {{ tabData.defendant.organisation_name }}
+          } @else {
+            {{ tabData.defendant.title }}
+            {{ tabData.defendant.forenames }}
+            {{ tabData.defendant.surname | uppercase }}
+          }
         </p>
       </div>
     }

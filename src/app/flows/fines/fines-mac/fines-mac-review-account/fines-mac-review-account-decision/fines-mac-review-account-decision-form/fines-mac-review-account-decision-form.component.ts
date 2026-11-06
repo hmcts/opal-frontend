@@ -16,12 +16,12 @@ import { FINES_MAC_ROUTING_PATHS } from '../../../routing/constants/fines-mac-ro
 import { IFinesMacReviewAccountDecisionFieldErrors } from '../interfaces/fines-mac-review-account-decision-field-errors.interface';
 import { FINES_MAC_REVIEW_ACCOUNT_DECISION_FIELD_ERRORS } from '../constants/fines-mac-review-account-decision-field-errors.constant';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN } from '@hmcts/opal-frontend-common/constants';
+import { ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN } from '@hmcts/opal-frontend-common/constants';
 
 // regex pattern validators for the form controls
-const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-  'alphanumericWithHyphensSpacesApostrophesDotPattern',
+const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN,
+  'alphanumericWithHyphensSpacesApostrophesCommasDotPattern',
 );
 
 @Component({
@@ -63,7 +63,7 @@ export class FinesMacReviewAccountDecisionFormComponent extends AbstractFormBase
     this.form = new FormGroup({
       fm_review_account_decision: new FormControl(null, [Validators.required]),
       fm_review_account_decision_reason: new FormControl({ value: null, disabled: true }, [
-        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_COMMAS_DOT_PATTERN_VALIDATOR,
       ]),
     });
   }

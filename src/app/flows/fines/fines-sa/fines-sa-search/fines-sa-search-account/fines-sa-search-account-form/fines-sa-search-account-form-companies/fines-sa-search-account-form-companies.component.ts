@@ -7,21 +7,16 @@ import {
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { AbstractNestedFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-nested-form-base';
 import { FinesSaStore } from '../../../../stores/fines-sa.store';
-import {
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-  LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
-} from '@hmcts/opal-frontend-common/constants';
+import { ALPHANUMERIC_WITH_SPACES_PATTERN, SINGLE_ASCII_CHARACTERS } from '@hmcts/opal-frontend-common/constants';
+import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { finesSaSearchAccountFormCompaniesValidator } from './validators/fines-sa-search-account-form-companies.validator';
 
-const ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
-  ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN,
-  'alphanumericWithHyphensSpacesApostrophesDotPattern',
-);
-const LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidator(
-  LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN,
-  'lettersSpacesHyphensApostrophesDotPattern',
+const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_CHARACTERS, 'singleAsciiCharacters');
+const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  'alphanumericTextPattern',
 );
 
 /**
@@ -38,7 +33,12 @@ const LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR = patternValidato
  */
 @Component({
   selector: 'app-fines-sa-search-account-form-companies',
-  imports: [GovukTextInputComponent, GovukCheckboxesComponent, GovukCheckboxesItemComponent],
+  imports: [
+    GovukTextInputComponent,
+    GovukCheckboxesComponent,
+    GovukCheckboxesItemComponent,
+    TrimLeadingTrailingWhitespaceDirective,
+  ],
   templateUrl: './fines-sa-search-account-form-companies.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -55,17 +55,17 @@ export class FinesSaSearchAccountFormCompaniesComponent extends AbstractNestedFo
   private buildCompanyFormControls(): FormGroup {
     return new FormGroup({
       fsa_search_account_companies_company_name: new FormControl<string | null>(null, [
-        LETTERS_SPACES_HYPHENS_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
         Validators.maxLength(50),
       ]),
       fsa_search_account_companies_company_name_exact_match: new FormControl<boolean | null>(null),
       fsa_search_account_companies_include_aliases: new FormControl<boolean | null>(null),
       fsa_search_account_companies_address_line_1: new FormControl<string | null>(null, [
-        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
         Validators.maxLength(30),
       ]),
       fsa_search_account_companies_post_code: new FormControl<string | null>(null, [
-        ALPHANUMERIC_WITH_HYPHENS_SPACES_APOSTROPHES_DOT_PATTERN_VALIDATOR,
+        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
         Validators.maxLength(8),
       ]),
     });

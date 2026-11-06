@@ -42,7 +42,7 @@ export const AccountAtAGlanceLocators = {
 
   accountSummary: {
     /** Visible row that contains the account header summary values below the page title. */
-    root: 'opal-lib-custom-account-information > .govuk-grid-row',
+    root: 'opal-lib-custom-account-information',
 
     /** Account type value shown in the summary strip. */
     accountTypeValue: '#defendant-account-type',
@@ -86,6 +86,15 @@ export const AccountAtAGlanceLocators = {
       'app-fines-acc-defendant-details-at-a-glance-tab h2.govuk-heading-s:contains("Language preferences")',
   },
 
+  layout: {
+    defendantColumn:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2.govuk-heading-s:contains("Defendant"))',
+    paymentTermsColumn:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2.govuk-heading-s:contains("Payment terms"))',
+    enforcementStatusColumn:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2.govuk-heading-s:contains("Enforcement status"))',
+  },
+
   // ──────────────────────────────
   // At a glance — Fields
   // ──────────────────────────────
@@ -94,6 +103,26 @@ export const AccountAtAGlanceLocators = {
     // Defendant column
     /** Defendant name value. */
     name: 'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Defendant")) h3:contains("Name") + p',
+
+    /** Parent or guardian name value. */
+    parentGuardianName:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Parent or Guardian")) h3:contains("Name") + p, app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Parent or guardian")) h3:contains("Name") + p',
+
+    /** Parent or guardian aliases value. */
+    parentGuardianAliases:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Parent or Guardian")) h3:contains("Aliases") + p, app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Parent or guardian")) h3:contains("Aliases") + p',
+
+    /** Parent or guardian address value. */
+    parentGuardianAddress:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Parent or Guardian")) h3:contains("Address") + p, app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Parent or guardian")) h3:contains("Address") + p',
+
+    /** Parent or guardian National Insurance Number value. */
+    parentGuardianNationalInsuranceNumber:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Parent or Guardian")) h3:contains("National Insurance Number") + p, app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Parent or guardian")) h3:contains("National Insurance Number") + p',
+
+    /** Company name value. */
+    companyName:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Defendant")) h3:contains("Company Name") + p',
 
     /** Defendant aliases value. */
     aliases:
@@ -124,9 +153,21 @@ export const AccountAtAGlanceLocators = {
     paymentTermsType:
       'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Payment terms")) h3:contains("Payment terms") + p',
 
-    /** By date value. */
+    /** Payment frequency value. */
+    paymentFrequency:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Payment terms")) h3:contains("Frequency") + p',
+
+    /** Instalments value. */
+    paymentInstalments:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Payment terms")) h3:contains("Instalments") + p',
+
+    /** Pay by date value. */
     paymentByDate:
-      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Payment terms")) h3:contains("By date") + p',
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Payment terms")) h3:contains("Pay by date") + p',
+
+    /** Start date value. */
+    paymentStartDate:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Payment terms")) h3:contains("Start date") + p',
 
     // Enforcement status column
     /** Enforcement status tag text. */
@@ -134,6 +175,14 @@ export const AccountAtAGlanceLocators = {
 
     /** Enforcement status badge text. */
     enforcementStatusBadge: 'app-fines-acc-defendant-details-at-a-glance-tab span#badge1',
+
+    /** Days in default value. */
+    daysInDefault:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Enforcement status")) h3:contains("Days in default") + p',
+
+    /** Enforcement override value. */
+    enforcementOverride:
+      'app-fines-acc-defendant-details-at-a-glance-tab .govuk-grid-column-one-third:has(h2:contains("Enforcement status")) h3:contains("Enforcement override") + p',
 
     /** Date of last movement value. */
     dateOfLastMovement:

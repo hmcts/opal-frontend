@@ -155,14 +155,6 @@ export class ManualCreateAccountActions {
   }
 
   /**
-   * Clicks the back link to return to the previous page.
-   */
-  selectBackLink(): void {
-    log('navigate', 'Clicking back link');
-    cy.get(L.backLink, this.common.getTimeoutOptions()).should('be.visible').click();
-  }
-
-  /**
    * Confirms the Manual Account Creation Transfer In landing page is visible.
    *
    * @param expectedHeader Optional header text to assert.

@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { FinesMacPayloadService } from '../../fines-mac/services/fines-mac-payload/fines-mac-payload.service';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IFinesAccAddNoteForm } from '../fines-acc-note-add/interfaces/fines-acc-note-add-form.interface';
 import { IOpalFinesAddNotePayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-add-note.interface';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
@@ -34,7 +34,11 @@ import { IFinesAccEnfColloChangeFormState } from '../fines-acc-enf-collo-change/
 import { FINES_ACC_COLLECTION_ORDER_PAYLOAD_DEFAULTS } from './constants/fines-acc-collection-order-payload-defaults.constant';
 import { IOpalFinesUpdateMinorCreditorAccountPayload } from '../../services/opal-fines-service/interfaces/opal-fines-update-minor-creditor-account-payload.interface';
 import { IOpalFinesAccountMinorCreditorAtAGlance } from '../../services/opal-fines-service/interfaces/opal-fines-account-minor-creditor-at-a-glance.interface';
+import { normalizeSortCode } from '../../validators/sort-code.validator';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../utils/fines-section-permissions.utils';
 import { FINES_ACC_PARTY_TYPES } from '../constants/fines-acc-party-types.constant';
+import { IOpalFinesAccountMajorCreditorDetailsHeader } from '../fines-acc-major-creditor-details/interfaces/fines-acc-major-creditor-details-header.interface';
 import { IFinesAccEnfActionAddFormState } from '../fines-acc-enf-action-add/interfaces/fines-acc-enf-action-add-form-state.interface';
 import { IFinesAccEnfActionAddFormField } from '../fines-acc-enf-action-add/interfaces/fines-acc-enf-action-add-form-field.interface';
 import { IOpalFinesAddEnforcementActionPayload } from '../../services/opal-fines-service/interfaces/opal-fines-add-enforcement-action-payload.interface';
@@ -45,37 +49,75 @@ import { transformMinorCreditorAccountPayload } from './utils/fines-acc-payload-
 import { IFinesAccDefendantDetailsHistoryAndNotesFilterForm } from '../fines-acc-defendant-details/fines-acc-defendant-details-history-and-notes-tab/interfaces/fines-acc-defendant-details-history-and-notes-filter-form.interface';
 import { IOpalFinesDefendantAccountHistoryParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-defendant-account-history-params.interface';
 import { buildHistoryFilterPayload } from './utils/fines-acc-payload-build-history-filter.utils';
+import { IFinesAccMinorCreditorDetailsHistoryAndNotesFilterForm } from '../fines-acc-minor-creditor-details/fines-acc-minor-creditor-details-history-and-notes-tab/interfaces/fines-acc-minor-creditor-details-history-and-notes-filter-form.interface';
+import { IOpalFinesMinorCreditorAccountHistoryParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-minor-creditor-account-history-params.interface';
+import { buildMinorCreditorHistoryFilterPayload } from './utils/fines-acc-payload-build-minor-creditor-history-filter.utils';
+import { IFinesAccHistoryAndNotesFilterForm } from '../fines-acc-history-and-notes/interfaces/fines-acc-history-and-notes-filter-form.interface';
+import { IOpalFinesMajorCreditorAccountHistoryParams } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-account-history-params.interface';
+import { buildMajorCreditorHistoryFilterPayload } from './utils/fines-acc-payload-build-major-creditor-history-filter.utils';
 import {
   HistoryTransformationService,
   IHistoryDetails as IFinesAccHistoryAndNotesDetails,
+  IHistoryTransformationConfig,
   THistoryDetailsRawItem as TFinesAccHistoryAndNotesRawItem,
 } from '@hmcts/opal-frontend-common/services/history-transformation-service';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from './constants/fines-acc-history-and-notes-details-transformation-config.constant';
+import { OPAL_FINES_NOTE_RECORD_TYPES } from '@services/fines/opal-fines-service/constants/opal-fines-note-record-types.constant';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FinesAccPayloadService {
   private readonly transformationService = inject(TransformationService);
-  private readonly payloadService = inject(FinesMacPayloadService);
   private readonly globalStore = inject(GlobalStore);
   private readonly finesAccStore = inject(FinesAccountStore);
   private readonly historyDetailsTransformationService = inject(HistoryTransformationService);
+  private readonly dateService = inject(DateService);
+
+  private get newSortCodeFunctionalityEnabled(): boolean {
+    return getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true;
+  }
 
   /**
-   * Constructs the payload for adding a note.
+   * Returns the current local datetime without a timezone suffix.
+   */
+  private getCurrentLocalDateTime(): string {
+    return this.dateService.toFormat(this.dateService.getDateNow(), "yyyy-MM-dd'T'HH:mm:ss");
+  }
+
+  /**
+   * Retrieves the current user's business unit user ID for a business unit.
+   *
+   * @param businessUnitId - Business unit ID to find.
+   * @returns The matching business unit user ID, or null when none exists.
+   */
+  private getBusinessUnitBusinessUserId(businessUnitId: number): string | null {
+    return (
+      this.globalStore
+        .userState()
+        .business_unit_users.find((businessUnitUser) => businessUnitUser.business_unit_id === businessUnitId)
+        ?.business_unit_user_id ?? null
+    );
+  }
+
+  /**
+   * Constructs the payload for adding a note against the requested account record type.
    *
    * This method collects necessary data from the finesAccStore as well as the form input to build the
-   * payload required for adding a new note to the account. It gathers the account version, the associated
-   * record's type and ID, the note type (hardcoded as 'AA'), and the note text from the form data.
+   * payload required for adding a new note to the account. It gathers the associated record's type and ID,
+   * the note type (hardcoded as 'AA'), and the note text from the form data.
    *
    * @param form - The form containing note data for the fines account.
+   * @param recordType - The associated account record type for the note.
    * @returns The payload object conforming to the IOpalFinesAddNotePayload interface.
    */
-  public buildAddNotePayload(form: IFinesAccAddNoteForm): IOpalFinesAddNotePayload {
+  public buildAddNotePayload(
+    form: IFinesAccAddNoteForm,
+    recordType: IOpalFinesAddNotePayload['activity_note']['record_type'] = OPAL_FINES_NOTE_RECORD_TYPES.defendantAccounts,
+  ): IOpalFinesAddNotePayload {
     return {
       activity_note: {
-        record_type: 'defendant_accounts',
+        record_type: recordType,
         record_id: this.finesAccStore.account_id()!,
         note_text: form.formData.facc_add_notes!,
         note_type: 'AA',
@@ -99,16 +141,46 @@ export class FinesAccPayloadService {
   }
 
   /**
+   * Builds query parameters for filtering minor creditor account history.
+   *
+   * @param form - The submitted history and notes filter form.
+   * @returns The query parameters expected by the minor creditor account history API.
+   */
+  public buildMinorCreditorHistoryFilterPayload(
+    form: IFinesAccMinorCreditorDetailsHistoryAndNotesFilterForm,
+  ): IOpalFinesMinorCreditorAccountHistoryParams {
+    return this.transformPayload(
+      buildMinorCreditorHistoryFilterPayload(form),
+      FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG,
+    ) as IOpalFinesMinorCreditorAccountHistoryParams;
+  }
+
+  /**
+   * Builds query parameters for filtering major creditor account history.
+   *
+   * @param form - The submitted history and notes filter form.
+   * @returns The query parameters expected by the major creditor account history API.
+   */
+  public buildMajorCreditorHistoryFilterPayload(
+    form: IFinesAccHistoryAndNotesFilterForm,
+  ): IOpalFinesMajorCreditorAccountHistoryParams {
+    return this.transformPayload(
+      buildMajorCreditorHistoryFilterPayload(form),
+      FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG,
+    ) as IOpalFinesMajorCreditorAccountHistoryParams;
+  }
+
+  /**
    * Transforms a raw history item into the structured details model consumed by the History and notes UI.
    *
    * @param item - A raw history item returned by the defendant account history API.
    * @returns The fragment-based details model for the item.
    */
-  public transformHistoryAndNotesDetails(item: TFinesAccHistoryAndNotesRawItem): IFinesAccHistoryAndNotesDetails {
-    return this.historyDetailsTransformationService.transformDetails(
-      item,
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
-    );
+  public transformHistoryAndNotesDetails(
+    item: TFinesAccHistoryAndNotesRawItem,
+    config: IHistoryTransformationConfig = FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
+  ): IFinesAccHistoryAndNotesDetails {
+    return this.historyDetailsTransformationService.transformDetails(item, config);
   }
 
   /**
@@ -119,11 +191,9 @@ export class FinesAccPayloadService {
    */
   public transformHistoryAndNotesItems<T extends TFinesAccHistoryAndNotesRawItem>(
     items: T[],
+    config: IHistoryTransformationConfig = FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
   ): Array<Omit<T, 'details'> & { details: IFinesAccHistoryAndNotesDetails }> {
-    return this.historyDetailsTransformationService.transformItems(
-      items,
-      FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG,
-    );
+    return this.historyDetailsTransformationService.transformItems(items, config);
   }
 
   /**
@@ -148,9 +218,8 @@ export class FinesAccPayloadService {
           .filter(Boolean)
           .join(' ');
 
-    const business_unit_user_id = this.payloadService.getBusinessUnitBusinessUserId(
+    const business_unit_user_id = this.getBusinessUnitBusinessUserId(
       Number(headingData.business_unit_summary.business_unit_id),
-      this.globalStore.userState(),
     );
 
     return {
@@ -164,6 +233,7 @@ export class FinesAccPayloadService {
       business_unit_id: headingData.business_unit_summary.business_unit_id,
       business_unit_user_id,
       welsh_speaking: headingData.business_unit_summary.welsh_speaking,
+      originator_type: headingData.originator_type,
     };
   }
 
@@ -189,9 +259,8 @@ export class FinesAccPayloadService {
           .filter(Boolean)
           .join(' ');
 
-    const business_unit_user_id = this.payloadService.getBusinessUnitBusinessUserId(
+    const business_unit_user_id = this.getBusinessUnitBusinessUserId(
       Number(headingData.business_unit.business_unit_id),
-      this.globalStore.userState(),
     );
 
     return {
@@ -205,6 +274,7 @@ export class FinesAccPayloadService {
       business_unit_id: headingData.business_unit.business_unit_id,
       business_unit_user_id,
       welsh_speaking: headingData.business_unit.welsh_speaking,
+      originator_type: null,
     };
   }
 
@@ -395,6 +465,13 @@ export class FinesAccPayloadService {
   ): IOpalFinesUpdateMinorCreditorAccountPayload {
     const isCompany = formState.facc_minor_creditor_creditor_type === 'company';
     const hasBacsDetails = formState.facc_minor_creditor_pay_by_bacs === true;
+    let sortCode: string | null = null;
+
+    if (hasBacsDetails) {
+      sortCode = this.newSortCodeFunctionalityEnabled
+        ? normalizeSortCode(formState.facc_minor_creditor_bank_sort_code)
+        : formState.facc_minor_creditor_bank_sort_code;
+    }
 
     return {
       creditor_account_id: currentData.creditor_account_id,
@@ -433,7 +510,7 @@ export class FinesAccPayloadService {
         pay_by_bacs: hasBacsDetails,
         hold_payment: currentData.payment.hold_payment,
         account_name: hasBacsDetails ? formState.facc_minor_creditor_bank_account_name : null,
-        sort_code: hasBacsDetails ? formState.facc_minor_creditor_bank_sort_code : null,
+        sort_code: sortCode,
         account_number: hasBacsDetails ? formState.facc_minor_creditor_bank_account_number : null,
         account_reference: hasBacsDetails ? formState.facc_minor_creditor_bank_account_reference : null,
       },
@@ -448,7 +525,10 @@ export class FinesAccPayloadService {
    * @returns The payload object conforming to the IOpalFinesAmendPaymentTermsPayload interface
    */
   public buildPaymentTermsAmendPayload(formData: IFinesAccPaymentTermsAmendState): IOpalFinesAmendPaymentTermsPayload {
-    return this.transformPayload(buildPaymentTermsAmendPayloadUtil(formData), FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG);
+    return this.transformPayload(
+      buildPaymentTermsAmendPayloadUtil(formData, this.getCurrentLocalDateTime()),
+      FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG,
+    );
   }
 
   /**
@@ -464,7 +544,15 @@ export class FinesAccPayloadService {
     fields: IFinesAccEnfActionAddFormField[],
     formState: IFinesAccEnfActionAddFormState,
   ): IOpalFinesAddEnforcementActionPayload {
-    return buildEnforcementActionAddPayload(result, fields, formState);
+    const preserveParameterNames =
+      (this.globalStore.featureFlags() as Record<string, unknown>)['release-1b-1-1'] === true;
+    return buildEnforcementActionAddPayload(
+      result,
+      fields,
+      formState,
+      this.getCurrentLocalDateTime(),
+      preserveParameterNames,
+    );
   }
 
   /**
@@ -536,6 +624,35 @@ export class FinesAccPayloadService {
         pay_by_bacs: data.payment.is_bacs,
         hold_payment: data.payment.hold_payment,
       },
+    };
+  }
+
+  /**
+   * Transforms the given IOpalFinesAccountMajorCreditorDetailsHeader into IFinesAccountState for the store
+   * @param account_id The account ID for which the header data was fetched. This is needed to set the account_id in the store state, as the header data does not contain the account_id field.
+   * @param headingData The heading data as either IOpalFinesAccountMajorCreditorDetailsHeader
+   * @returns The transformed account state to be set in the store.
+   */
+  public transformMajorCreditorAccountHeaderForStore(
+    account_id: number,
+    headingData: IOpalFinesAccountMajorCreditorDetailsHeader,
+  ): IFinesAccountState {
+    const business_unit_user_id = this.getBusinessUnitBusinessUserId(
+      Number(headingData.business_unit_details.business_unit_id),
+    );
+
+    return {
+      account_number: headingData.major_creditor.account_number,
+      account_id: Number(account_id),
+      pg_party_id: null,
+      party_id: headingData.major_creditor.creditor_account_id.toString(),
+      party_type: headingData.major_creditor.account_reference.display_name,
+      party_name: headingData.major_creditor.name,
+      base_version: headingData.version,
+      business_unit_id: headingData.business_unit_details.business_unit_id,
+      business_unit_user_id,
+      welsh_speaking: headingData.business_unit_details.welsh_speaking,
+      originator_type: null,
     };
   }
 }

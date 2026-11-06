@@ -1,15 +1,19 @@
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { By } from '@angular/platform-browser';
 import { FinesSaSearchAccountFormMinorCreditorsComponent } from './fines-sa-search-account-form-minor-creditors.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
+import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
   let component: FinesSaSearchAccountFormMinorCreditorsComponent;
   let fixture: ComponentFixture<FinesSaSearchAccountFormMinorCreditorsComponent>;
   let originalInitOuterRadios: () => void;
+  const printableAsciiCharacters = Array.from({ length: 95 }, (_, index) => String.fromCharCode(index + 32));
+  const nonPrintableAsciiCharacters = [String.fromCharCode(31), String.fromCharCode(127)];
 
   const buildForm = () =>
     new FormGroup({
@@ -110,6 +114,145 @@ describe('FinesSaSearchAccountFormMinorCreditorsComponent', () => {
       'fsa_search_account_minor_creditors_company',
     ];
     names.forEach((n) => expect(component.form.get(n), n).toBeTruthy());
+  });
+
+  it.each([
+    'fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_last_name',
+    'fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_first_names',
+    'fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_address_line_1',
+    'fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_post_code',
+    'fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_name',
+    'fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_address_line_1',
+  ])('should accept every printable ASCII character in %s', (controlName) => {
+    component.form
+      .get('fsa_search_account_minor_creditors_minor_creditor_type')
+      ?.setValue(controlName.includes('individual') ? 'individual' : 'company');
+    const control = component.form.get(controlName);
+
+    printableAsciiCharacters.forEach((character) => {
+      control?.setValue(character);
+      expect(control?.hasError('singleAsciiCharacters'), `character ${character.charCodeAt(0)}`).toBe(false);
+    });
+  });
+
+  it.each([
+    'fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_last_name',
+    'fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_first_names',
+    'fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_address_line_1',
+    'fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_post_code',
+    'fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_name',
+    'fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_address_line_1',
+  ])('should reject characters outside printable ASCII in %s', (controlName) => {
+    component.form
+      .get('fsa_search_account_minor_creditors_minor_creditor_type')
+      ?.setValue(controlName.includes('individual') ? 'individual' : 'company');
+    const control = component.form.get(controlName);
+
+    nonPrintableAsciiCharacters.forEach((character) => {
+      control?.setValue(character);
+      expect(control?.hasError('singleAsciiCharacters'), `character ${character.charCodeAt(0)}`).toBe(true);
+    });
+  });
+
+  it.each([
+    {
+      controlName:
+        'fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_post_code',
+      validValue: 'SW1A 1AA',
+      patternError: 'singleAsciiCharacters',
+      invalidPatternValue: 'Café',
+      invalidLengthValue: 'SW1A1AAAA',
+    },
+    {
+      controlName: 'fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_post_code',
+      validValue: 'B12 3CD',
+      patternError: 'alphanumericTextPattern',
+      invalidPatternValue: 'B12-3CD',
+      invalidLengthValue: 'B12 3CDEF',
+    },
+  ] as const)(
+    'should validate postcode control $controlName',
+    ({ controlName, validValue, patternError, invalidPatternValue, invalidLengthValue }) => {
+      component.form
+        .get('fsa_search_account_minor_creditors_minor_creditor_type')
+        ?.setValue(controlName.includes('individual') ? 'individual' : 'company');
+
+      const postcodeControl = component.form.get(controlName);
+
+      postcodeControl?.setValue(validValue);
+      expect(postcodeControl?.hasError(patternError)).toBe(false);
+      expect(postcodeControl?.hasError('maxlength')).toBe(false);
+
+      postcodeControl?.setValue(invalidPatternValue);
+      expect(postcodeControl?.hasError(patternError)).toBe(true);
+
+      postcodeControl?.setValue(invalidLengthValue);
+      expect(postcodeControl?.hasError('maxlength')).toBe(true);
+    },
+  );
+
+  it.each([
+    ['fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_last_name', 30],
+    ['fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_first_names', 20],
+    ['fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_address_line_1', 30],
+    ['fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_name', 50],
+    ['fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_address_line_1', 30],
+  ] as const)('should enforce the maximum length for %s', (controlName, maxLength) => {
+    component.form
+      .get('fsa_search_account_minor_creditors_minor_creditor_type')
+      ?.setValue(controlName.includes('individual') ? 'individual' : 'company');
+    const control = component.form.get(controlName);
+
+    control?.setValue('A'.repeat(maxLength));
+    expect(control?.hasError('maxlength')).toBe(false);
+
+    control?.setValue('A'.repeat(maxLength + 1));
+    expect(control?.hasError('maxlength')).toBe(true);
+  });
+  it('should trim surrounding whitespace from the individual postcode input on focusout', () => {
+    component.form.get('fsa_search_account_minor_creditors_minor_creditor_type')?.setValue('individual');
+    fixture.detectChanges();
+
+    const postcodeControl = component.form.get(
+      'fsa_search_account_minor_creditors_individual.fsa_search_account_minor_creditors_individual_post_code',
+    );
+    const postcodeDirectiveDebugElement = fixture.debugElement
+      .queryAll(By.directive(TrimLeadingTrailingWhitespaceDirective))
+      .find(
+        (debugElement) => debugElement.injector.get(TrimLeadingTrailingWhitespaceDirective).control === postcodeControl,
+      );
+    if (!postcodeDirectiveDebugElement) throw new Error('Postcode input not found');
+
+    postcodeControl?.setValue('  AB12 3CD ');
+    const postcodeDirective = postcodeDirectiveDebugElement.injector.get(TrimLeadingTrailingWhitespaceDirective);
+    postcodeDirective.onFocusOut();
+    fixture.detectChanges();
+
+    expect(postcodeControl?.value).toBe('AB12 3CD');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
+  });
+
+  it('should trim surrounding whitespace from the company postcode input on focusout', () => {
+    component.form.get('fsa_search_account_minor_creditors_minor_creditor_type')?.setValue('company');
+    fixture.detectChanges();
+
+    const postcodeControl = component.form.get(
+      'fsa_search_account_minor_creditors_company.fsa_search_account_minor_creditors_company_post_code',
+    );
+    const postcodeDirectiveDebugElement = fixture.debugElement
+      .queryAll(By.directive(TrimLeadingTrailingWhitespaceDirective))
+      .find(
+        (debugElement) => debugElement.injector.get(TrimLeadingTrailingWhitespaceDirective).control === postcodeControl,
+      );
+    if (!postcodeDirectiveDebugElement) throw new Error('Postcode input not found');
+
+    postcodeControl?.setValue('  AB12 3CD ');
+    const postcodeDirective = postcodeDirectiveDebugElement.injector.get(TrimLeadingTrailingWhitespaceDirective);
+    postcodeDirective.onFocusOut();
+    fixture.detectChanges();
+
+    expect(postcodeControl?.value).toBe('AB12 3CD');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
   });
 
   it('should toggle conditional panels and enable the correct group', async () => {

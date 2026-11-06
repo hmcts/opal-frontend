@@ -11,6 +11,8 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
   let component: FinesSaSearchAccountFormIndividualsComponent;
   let fixture: ComponentFixture<FinesSaSearchAccountFormIndividualsComponent>;
   let originalConfigureDatePicker: () => void;
+  const printableAsciiCharacters = Array.from({ length: 95 }, (_, index) => String.fromCharCode(index + 32));
+  const nonPrintableAsciiCharacters = [String.fromCharCode(31), String.fromCharCode(127)];
 
   beforeAll(() => {
     originalConfigureDatePicker = MojDatePickerComponent.prototype.configureDatePicker;
@@ -68,20 +70,12 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     );
   });
 
-  it('should require last name if first name is populated', () => {
-    component.form.get('fsa_search_account_individuals_first_names')?.setValue('John');
-    component.form.get('fsa_search_account_individuals_date_of_birth')?.setValue('');
-    component.form.get('fsa_search_account_individuals_last_name')?.setValue('');
-    component.form.get('fsa_search_account_individuals_last_name')?.updateValueAndValidity();
-
-    expect(component.form.get('fsa_search_account_individuals_last_name')?.hasValidator(Validators.required)).toBe(
-      true,
-    );
-  });
-
-  it('should require last name if date of birth is populated', () => {
-    component.form.get('fsa_search_account_individuals_first_names')?.setValue('');
-    component.form.get('fsa_search_account_individuals_date_of_birth')?.setValue('2000-01-01');
+  it.each([
+    { caseName: 'first name is populated', firstNames: 'John', dateOfBirth: '' },
+    { caseName: 'date of birth is populated', firstNames: '', dateOfBirth: '2000-01-01' },
+  ] as const)('should require last name if $caseName', ({ firstNames, dateOfBirth }) => {
+    component.form.get('fsa_search_account_individuals_first_names')?.setValue(firstNames);
+    component.form.get('fsa_search_account_individuals_date_of_birth')?.setValue(dateOfBirth);
     component.form.get('fsa_search_account_individuals_last_name')?.setValue('');
     component.form.get('fsa_search_account_individuals_last_name')?.updateValueAndValidity();
 
@@ -103,34 +97,28 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     );
   });
 
-  it('should require first name if firstNamesExactMatch is set and first name is empty', () => {
-    component.form.get('fsa_search_account_individuals_first_names_exact_match')?.setValue(true);
-    component.form.get('fsa_search_account_individuals_first_names')?.setValue('');
-    component.form.get('fsa_search_account_individuals_first_names')?.updateValueAndValidity();
+  it.each([
+    {
+      caseName: 'first name if firstNamesExactMatch is set and first name is empty',
+      flagControlName: 'fsa_search_account_individuals_first_names_exact_match',
+      requiredControlName: 'fsa_search_account_individuals_first_names',
+    },
+    {
+      caseName: 'last name if lastNameExactMatch is set and last name is empty',
+      flagControlName: 'fsa_search_account_individuals_last_name_exact_match',
+      requiredControlName: 'fsa_search_account_individuals_last_name',
+    },
+    {
+      caseName: 'last name if includeAliases is set and last name is empty',
+      flagControlName: 'fsa_search_account_individuals_include_aliases',
+      requiredControlName: 'fsa_search_account_individuals_last_name',
+    },
+  ] as const)('should require $caseName', ({ flagControlName, requiredControlName }) => {
+    component.form.get(flagControlName)?.setValue(true);
+    component.form.get(requiredControlName)?.setValue('');
+    component.form.get(requiredControlName)?.updateValueAndValidity();
 
-    expect(component.form.get('fsa_search_account_individuals_first_names')?.hasValidator(Validators.required)).toBe(
-      true,
-    );
-  });
-
-  it('should require last name if lastNameExactMatch is set and last name is empty', () => {
-    component.form.get('fsa_search_account_individuals_last_name_exact_match')?.setValue(true);
-    component.form.get('fsa_search_account_individuals_last_name')?.setValue('');
-    component.form.get('fsa_search_account_individuals_last_name')?.updateValueAndValidity();
-
-    expect(component.form.get('fsa_search_account_individuals_last_name')?.hasValidator(Validators.required)).toBe(
-      true,
-    );
-  });
-
-  it('should require last name if includeAliases is set and last name is empty', () => {
-    component.form.get('fsa_search_account_individuals_include_aliases')?.setValue(true);
-    component.form.get('fsa_search_account_individuals_last_name')?.setValue('');
-    component.form.get('fsa_search_account_individuals_last_name')?.updateValueAndValidity();
-
-    expect(component.form.get('fsa_search_account_individuals_last_name')?.hasValidator(Validators.required)).toBe(
-      true,
-    );
+    expect(component.form.get(requiredControlName)?.hasValidator(Validators.required)).toBe(true);
   });
 
   it('should require last name when first name is a non-string value', () => {
@@ -176,11 +164,50 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
       'fsa_search_account_individuals_first_names_exact_match',
       'fsa_search_account_individuals_include_aliases',
       'fsa_search_account_individuals_date_of_birth',
-      'fsa_search_account_individuals_national_insurance_number',
       'fsa_search_account_individuals_address_line_1',
       'fsa_search_account_individuals_post_code',
     ];
     names.forEach((n) => expect(component.form.get(n), n).toBeTruthy());
+  });
+
+  it.each([
+    'fsa_search_account_individuals_last_name',
+    'fsa_search_account_individuals_first_names',
+    'fsa_search_account_individuals_address_line_1',
+  ])('should accept every printable ASCII character in %s', (controlName) => {
+    const control = component.form.get(controlName);
+
+    printableAsciiCharacters.forEach((character) => {
+      control?.setValue(character);
+      expect(control?.hasError('singleAsciiCharacters'), `character ${character.charCodeAt(0)}`).toBe(false);
+    });
+  });
+
+  it.each([
+    'fsa_search_account_individuals_last_name',
+    'fsa_search_account_individuals_first_names',
+    'fsa_search_account_individuals_address_line_1',
+  ])('should reject characters outside printable ASCII in %s', (controlName) => {
+    const control = component.form.get(controlName);
+
+    nonPrintableAsciiCharacters.forEach((character) => {
+      control?.setValue(character);
+      expect(control?.hasError('singleAsciiCharacters'), `character ${character.charCodeAt(0)}`).toBe(true);
+    });
+  });
+
+  it.each([
+    ['fsa_search_account_individuals_last_name', 30],
+    ['fsa_search_account_individuals_first_names', 20],
+    ['fsa_search_account_individuals_address_line_1', 30],
+  ] as const)('should enforce the maximum length for %s', (controlName, maxLength) => {
+    const control = component.form.get(controlName);
+
+    control?.setValue('A'.repeat(maxLength));
+    expect(control?.hasError('maxlength')).toBe(false);
+
+    control?.setValue('A'.repeat(maxLength + 1));
+    expect(control?.hasError('maxlength')).toBe(true);
   });
 
   it('should remove its installed controls on destroy when nested in a parent group', () => {
@@ -203,5 +230,41 @@ describe('FinesSaSearchAccountFormIndividualsComponent', () => {
     expect(names, 'expected no controls after destroy').toEqual([]);
     // parent still has the child group placeholder
     expect(parent.get('fsa_search_account_individuals_search_criteria')).toBe(child);
+  });
+
+  it('should validate postcode pattern with alphanumericTextPattern', () => {
+    const postcodeControl = component.form.get('fsa_search_account_individuals_post_code');
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(false);
+
+    postcodeControl?.setValue('SW1A@1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(true);
+  });
+
+  it('should validate postcode max length', () => {
+    const postcodeControl = component.form.get('fsa_search_account_individuals_post_code');
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
+
+    postcodeControl?.setValue('SW1A 1AAA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(true);
+  });
+
+  it('should trim surrounding whitespace from the postcode input on focusout', () => {
+    const postcodeInput = fixture.nativeElement.querySelector(
+      'input[name="fsa_search_account_individuals_post_code"]',
+    ) as HTMLInputElement | null;
+    if (!postcodeInput) throw new Error('Postcode input not found');
+
+    const postcodeControl = component.form.get('fsa_search_account_individuals_post_code');
+
+    postcodeControl?.setValue('  AB1  3CD ');
+    postcodeInput.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(postcodeControl?.value).toBe('AB1  3CD');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
   });
 });

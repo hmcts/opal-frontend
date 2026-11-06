@@ -33,6 +33,7 @@ import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govu
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
+import { By } from '@angular/platform-browser';
 
 describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   let component: FinesMacOffenceDetailsAddAnOffenceFormComponent;
@@ -46,6 +47,39 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
   let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
   let originalConfigureDatePicker: () => void;
   let originalInitOuterRadios: () => void;
+
+  const createInitializedComponent = (
+    configureStore?: (store: FinesMacOffenceDetailsStoreType, macStore: FinesMacStoreType) => void,
+  ) => {
+    const freshFixture = TestBed.createComponent(FinesMacOffenceDetailsAddAnOffenceFormComponent);
+    const freshComponent = freshFixture.componentInstance;
+    const freshFinesMacStore = TestBed.inject(FinesMacStore);
+    const freshFinesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
+
+    freshFinesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
+    freshFinesMacOffenceDetailsStore.setOffenceDetailsDraft(
+      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.offenceDetailsDraft,
+    );
+    freshFinesMacOffenceDetailsStore.setRowIndex(0);
+    freshFinesMacOffenceDetailsStore.setRemoveMinorCreditor(
+      FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK.removeMinorCreditor,
+    );
+
+    configureStore?.(freshFinesMacOffenceDetailsStore, freshFinesMacStore);
+
+    freshComponent.resultCodeItems = OPAL_FINES_RESULTS_AUTOCOMPLETE_ITEMS_MOCK;
+    freshComponent.fcompMajorCreditorItems = OPAL_FINES_MAJOR_CREDITOR_AUTOCOMPLETE_ITEMS_MOCK;
+    freshComponent.fcostMajorCreditorItems = OPAL_FINES_MAJOR_CREDITOR_AUTOCOMPLETE_ITEMS_MOCK;
+
+    freshFixture.detectChanges();
+
+    return {
+      fixture: freshFixture,
+      component: freshComponent,
+      finesMacStore: freshFinesMacStore,
+      finesMacOffenceDetailsStore: freshFinesMacOffenceDetailsStore,
+    };
+  };
 
   beforeAll(() => {
     originalConfigureDatePicker = MojDatePickerComponent.prototype.configureDatePicker;
@@ -144,6 +178,12 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     const searchLink = Array.from(
       fixture.nativeElement.querySelectorAll('a.govuk-link') as NodeListOf<HTMLAnchorElement>,
     ).find((link) => link.textContent?.includes('search the offence list'));
+    const guidance = fixture.nativeElement.querySelector(
+      '#fm_offence_details_offence_cjs_code-guidance',
+    ) as HTMLElement | null;
+    const offenceCodeInput = fixture.nativeElement.querySelector(
+      '#fm_offence_details_offence_cjs_code',
+    ) as HTMLInputElement | null;
 
     expect(actionLinkConsts.length).toBeGreaterThanOrEqual(1);
     actionLinkConsts.forEach((entry) => {
@@ -153,11 +193,41 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     });
 
     expect(searchLink).toBeTruthy();
+    expect(guidance).toBeTruthy();
+    expect(offenceCodeInput).toBeTruthy();
+    expect(guidance?.textContent).toContain("If you don't know the offence code, you can");
+    expect(searchLink?.textContent?.replace(/\s+/g, ' ').trim()).toBe(
+      "If you don't know the offence code, you can search the offence list (opens in a new tab)",
+    );
+    expect(searchLink?.querySelector('span.govuk-visually-hidden')?.textContent?.trim()).toBe(
+      "If you don't know the offence code, you can",
+    );
     expect(searchLink?.classList.contains('govuk-link--no-visited-state')).toBe(true);
     expect(searchLink?.getAttribute('href')).toBe(component.searchOffenceUrl);
+    expect(searchLink?.getAttribute('target')).toBe('_blank');
+    expect(searchLink?.getAttribute('rel')).toBe('noopener noreferrer');
     expect(searchLink?.getAttribute('tabindex')).toBeNull();
+    expect(
+      offenceCodeInput && guidance
+        ? offenceCodeInput.compareDocumentPosition(guidance) & Node.DOCUMENT_POSITION_FOLLOWING
+        : 0,
+    ).toBeTruthy();
     expect(templateFunction).not.toContain('keydown.enter');
     expect(templateFunction).not.toContain('keyup.enter');
+  });
+
+  it('should render legends as direct children of their fieldsets', () => {
+    const { fixture: freshFixture } = createInitializedComponent();
+    const element = freshFixture.nativeElement as HTMLElement;
+    const legends = Array.from(element.querySelectorAll('fieldset > legend'));
+    const legendText = legends.map((legend) => legend.textContent?.trim());
+
+    expect(legendText).toContain('Offence details');
+    expect(element.querySelector('h2')?.textContent?.trim()).toBe('Offence details');
+    expect(element.querySelectorAll('h2')[1]?.textContent?.trim()).toBe('Impositions');
+    expect(
+      Array.from(element.querySelectorAll('legend')).every((legend) => legend.parentElement?.tagName === 'FIELDSET'),
+    ).toBe(true);
   });
 
   it('should set needsCreditorControl value to true when result_code is compensation', () => {
@@ -480,7 +550,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     const creditorControl = impositionsFormGroup.controls[`fm_offence_details_creditor_${index}`] as FormControl;
 
     component.minorCreditors = {};
-    component.minorCreditorsHidden = {};
     needsCreditorControl.setValue(true);
     creditorControl.setValue('major');
     component['changeDetector'].detectChanges();
@@ -680,6 +749,228 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(component.today).toBe('01/01/2022');
   });
 
+  it('should focus the new imposition result-code input after adding another imposition', async () => {
+    const newRowIndex = component.formArrayControls.length;
+    const expectedInputId = `fm_offence_details_result_id_${newRowIndex}-autocomplete`;
+    const addImpositionButton = fixture.nativeElement.querySelector('#addImposition') as HTMLButtonElement;
+
+    addImpositionButton.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(component.formArrayControls).toHaveLength(newRowIndex + 1);
+    await vi.waitFor(() => {
+      expect(document.getElementById(expectedInputId)).toBeTruthy();
+      expect(document.activeElement?.id).toBe(expectedInputId);
+    });
+  });
+
+  it('should focus the imposition result-code autocomplete when an input ID exists', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const focusElementWhenAvailableSpy = vi.spyOn<any, any>(component, 'focusElementWhenAvailable');
+
+    component['focusImpositionResultCode'](0);
+
+    expect(focusElementWhenAvailableSpy).toHaveBeenCalledWith('fm_offence_details_result_id_0-autocomplete');
+  });
+
+  it('should not focus an imposition result-code autocomplete when the row does not exist', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const focusElementWhenAvailableSpy = vi.spyOn<any, any>(component, 'focusElementWhenAvailable');
+
+    component['focusImpositionResultCode'](component.formArrayControls.length);
+
+    expect(focusElementWhenAvailableSpy).not.toHaveBeenCalled();
+  });
+
+  it('should not focus an imposition result-code autocomplete when the result-code input ID does not exist', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const focusElementWhenAvailableSpy = vi.spyOn<any, any>(component, 'focusElementWhenAvailable');
+
+    component.formArrayControls[0]['fm_offence_details_result_id'].inputId = '';
+
+    component['focusImpositionResultCode'](0);
+
+    expect(focusElementWhenAvailableSpy).not.toHaveBeenCalled();
+  });
+
+  it('should focus an element immediately when it is already available', () => {
+    const elementId = 'already-available-autocomplete';
+    const focusElement = document.createElement('button');
+    const disconnectFocusObserverSpy = vi.spyOn(component as never, 'disconnectFocusObserver');
+    focusElement.id = elementId;
+    document.body.appendChild(focusElement);
+
+    component['focusElementWhenAvailable'](elementId);
+
+    expect(document.activeElement).toBe(focusElement);
+    expect(disconnectFocusObserverSpy).not.toHaveBeenCalled();
+
+    focusElement.remove();
+  });
+
+  it('should not observe when MutationObserver is unavailable', () => {
+    const originalMutationObserver = globalThis.MutationObserver;
+    const disconnectFocusObserverSpy = vi.spyOn(component as never, 'disconnectFocusObserver');
+    vi.stubGlobal('MutationObserver', undefined);
+
+    try {
+      component['focusElementWhenAvailable']('missing-autocomplete');
+
+      expect(disconnectFocusObserverSpy).not.toHaveBeenCalled();
+    } finally {
+      vi.stubGlobal('MutationObserver', originalMutationObserver);
+    }
+  });
+
+  it('should not observe when the document body is unavailable', () => {
+    const mockDocument = {
+      body: null,
+      getElementById: vi.fn().mockReturnValue(null),
+    };
+    Object.defineProperty(component, 'document', { value: mockDocument });
+    const disconnectFocusObserverSpy = vi.spyOn(component as never, 'disconnectFocusObserver');
+
+    component['focusElementWhenAvailable']('missing-autocomplete');
+
+    expect(mockDocument.getElementById).toHaveBeenCalledWith('missing-autocomplete');
+    expect(disconnectFocusObserverSpy).not.toHaveBeenCalled();
+  });
+
+  it('should observe the document until the element is available and then disconnect', () => {
+    const originalMutationObserver = globalThis.MutationObserver;
+    const observeSpy = vi.fn();
+    const mutationObserverConstructorSpy = vi.fn();
+    let mutationObserverCallback: MutationCallback = () => undefined;
+    const mockBody = document.createElement('section');
+    const focusElement = document.createElement('button');
+    focusElement.id = 'deferred-autocomplete';
+    document.body.appendChild(focusElement);
+    const mockDocument = {
+      body: mockBody,
+      getElementById: vi.fn().mockReturnValueOnce(null).mockReturnValue(focusElement),
+    };
+    class MockMutationObserver {
+      public disconnect = vi.fn();
+      public observe = observeSpy;
+      public takeRecords = vi.fn();
+
+      public constructor(callback: MutationCallback) {
+        mutationObserverConstructorSpy(callback);
+        mutationObserverCallback = callback;
+      }
+    }
+    Object.defineProperty(component, 'document', { value: mockDocument });
+    vi.stubGlobal('MutationObserver', MockMutationObserver);
+    const disconnectFocusObserverSpy = vi.spyOn(component as never, 'disconnectFocusObserver');
+
+    try {
+      component['focusElementWhenAvailable']('deferred-autocomplete');
+      mutationObserverCallback([], component['focusObserver'] as MutationObserver);
+
+      expect(disconnectFocusObserverSpy).toHaveBeenCalledTimes(2);
+      expect(mutationObserverConstructorSpy).toHaveBeenCalled();
+      expect(observeSpy).toHaveBeenCalledWith(mockBody, { childList: true, subtree: true });
+      expect(document.activeElement).toBe(focusElement);
+    } finally {
+      focusElement.remove();
+      vi.stubGlobal('MutationObserver', originalMutationObserver);
+    }
+  });
+
+  it('should keep observing when the element is still unavailable after a DOM mutation', () => {
+    const originalMutationObserver = globalThis.MutationObserver;
+    const mockBody = document.createElement('section');
+    const observerInstances: {
+      callback: MutationCallback;
+      disconnect: ReturnType<typeof vi.fn>;
+      observe: ReturnType<typeof vi.fn>;
+      takeRecords: ReturnType<typeof vi.fn>;
+    }[] = [];
+    const mockDocument = {
+      body: mockBody,
+      getElementById: vi.fn().mockReturnValue(null),
+    };
+    class MockMutationObserver {
+      public callback: MutationCallback;
+      public disconnect = vi.fn();
+      public observe = vi.fn();
+      public takeRecords = vi.fn();
+
+      public constructor(callback: MutationCallback) {
+        this.callback = callback;
+        observerInstances.push(this);
+      }
+    }
+    Object.defineProperty(component, 'document', { value: mockDocument });
+    vi.stubGlobal('MutationObserver', MockMutationObserver);
+    const disconnectFocusObserverSpy = vi.spyOn(component as never, 'disconnectFocusObserver');
+
+    try {
+      component['focusElementWhenAvailable']('missing-autocomplete');
+      const focusObserver = observerInstances.find((observer) =>
+        observer.observe.mock.calls.some(([target]) => target === mockBody),
+      );
+
+      focusObserver?.callback([], focusObserver as MutationObserver);
+
+      expect(focusObserver).toBeTruthy();
+      expect(disconnectFocusObserverSpy).toHaveBeenCalledOnce();
+      expect(focusObserver?.disconnect).not.toHaveBeenCalled();
+    } finally {
+      vi.stubGlobal('MutationObserver', originalMutationObserver);
+    }
+  });
+
+  it('should keep the add offence form dirty when returning from a saved minor creditor', () => {
+    fixture.destroy();
+    const { component: freshComponent, finesMacStore: freshFinesMacStore } = createInitializedComponent((store) => {
+      store.setOffenceDetailsDraftDirty(true);
+    });
+
+    expect(freshComponent.form.dirty).toBe(true);
+    expect(freshComponent['hasUnsavedChanges']()).toBe(true);
+    expect(freshFinesMacStore.unsavedChanges()).toBe(true);
+  });
+
+  it('should emit unsaved changes on cancel when returning from a saved minor creditor', () => {
+    fixture.destroy();
+    const { component: freshComponent } = createInitializedComponent((store) => {
+      store.setOffenceDetailsDraftDirty(true);
+      store.setEmptyOffences(true);
+    });
+    const unsavedChangesEmitSpy = vi.spyOn(freshComponent['unsavedChanges'], 'emit');
+
+    freshComponent.cancelLink();
+
+    expect(unsavedChangesEmitSpy).toHaveBeenCalledWith(true);
+  });
+
+  it('should clear offence draft dirty when the offence form is submitted successfully', () => {
+    finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(true);
+    component.form = new FormGroup({});
+    component.form.setErrors(null);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'checkImpositionMinorCreditors').mockImplementation(() => {});
+    vi.spyOn(component['offenceDetailsService'], 'enforceOffenceCodeValidationBeforeSubmit').mockImplementation(
+      () => {},
+    );
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraftDirty()).toBe(false);
+  });
+
+  it('should announce the offence code message when offence is successfully added', () => {
+    finesMacOffenceDetailsStore.setOffenceCodeMessage('Offence HY35014 added');
+    fixture.detectChanges();
+
+    const alert = fixture.debugElement.query(By.css('opal-lib-moj-alert'));
+
+    expect(alert.componentInstance.ariaLabel).toBe('Offence HY35014 added');
+    expect(alert.componentInstance.announcementMessage).toBe('success: Offence HY35014 added');
+  });
+
   it('should update removeMinorCreditor in finesMacOffenceDetailsDraftState and call updateOffenceDetailsDraft and handleRoute', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
@@ -708,6 +999,15 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     });
   });
 
+  it('should persist offence draft dirty state when a dirty parent offence form enters the minor creditor route', () => {
+    finesMacOffenceDetailsStore.setOffenceDetailsDraftDirty(false);
+    component.form.markAsDirty();
+
+    component.goToMinorCreditor(0);
+
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraftDirty()).toBe(true);
+  });
+
   it('should refresh rendered errors when offence validation state changes after submit', () => {
     let confirmChangeCallback: (confirmed: boolean) => void = () => undefined;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -726,14 +1026,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
     expect(component.selectedOffenceConfirmation).toBe(false);
     expect(handleErrorMessagesSpy).toHaveBeenCalled();
-  });
-
-  it('should update minorCreditorsHidden based on hidden imposition minor creditor', () => {
-    component.minorCreditorsHidden = { 0: false };
-
-    component.minorCreditorActions({ action: 'showHideDetails', index: 0 });
-
-    expect(component.minorCreditorsHidden).toEqual({ 0: true });
   });
 
   it('should return the correct minor creditor form data for the specified row index', () => {
@@ -779,7 +1071,7 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
 
     component['removeMinorCreditorData'](0);
 
-    expect(finesMacOffenceDetailsStore.offenceDetailsDraft()[0].childFormData!.length).toBe(1);
+    expect(finesMacOffenceDetailsStore.offenceDetailsDraft()[0].childFormData).toHaveLength(1);
   });
 
   it('should remove the minor creditor at the specified index', () => {
@@ -841,10 +1133,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
         fm_offence_details_imposition_position: 1,
       },
     });
-    expect(component.minorCreditorsHidden).toEqual({
-      0: true,
-      1: true,
-    });
   });
 
   it('should retrieve minor creditors from draft offence details', () => {
@@ -870,10 +1158,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
         fm_offence_details_imposition_position: 1,
       },
     });
-    expect(component.minorCreditorsHidden).toEqual({
-      0: true,
-      1: true,
-    });
   });
 
   it('should ignore draft minor creditors without an imposition position when building lookup maps', () => {
@@ -895,12 +1179,9 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(component.minorCreditors).toEqual({
       0: FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK.formData,
     });
-    expect(component.minorCreditorsHidden).toEqual({
-      0: true,
-    });
   });
 
-  it('should set minorCreditors and minorCreditorsHidden to empty objects if no minor creditors are found', () => {
+  it('should set minorCreditors to an empty object if no minor creditors are found', () => {
     finesMacStore.setFinesMacStore({
       ...FINES_MAC_STATE_MOCK,
       offenceDetails: [structuredClone(FINES_MAC_OFFENCE_DETAILS_FORM_MOCK)],
@@ -910,7 +1191,6 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     component.getMinorCreditors();
 
     expect(component.minorCreditors).toEqual({});
-    expect(component.minorCreditorsHidden).toEqual({});
   });
 
   it('should set minorCreditorMissing error when needsCreditor is true, selectedCreditor is minor, and no minor creditor exists', () => {
@@ -1015,6 +1295,76 @@ describe('FinesMacOffenceDetailsAddAnOffenceFormComponent', () => {
     expect(amountPaidControl.errors).toEqual(expect.objectContaining({ invalidNegativeAmount: true }));
     expect(component.form.invalid).toBe(true);
     expect(formSubmitSpy).not.toHaveBeenCalled();
+  });
+
+  it('should not emit form submission when amount paid is greater than amount imposed', () => {
+    const formSubmitSpy = vi.spyOn(component['formSubmit'], 'emit');
+    const amountImposedControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_imposed_0',
+    ]) as FormControl;
+    const amountPaidControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_paid_0',
+    ]) as FormControl;
+
+    amountImposedControl.setValue(100);
+    amountPaidControl.setValue(100.01);
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(amountPaidControl.errors).toEqual(expect.objectContaining({ amountPaidExceedsAmountImposed: true }));
+    expect(component.formControlErrorMessages['fm_offence_details_amount_paid_0']).toBe(
+      'Amount paid cannot be greater than amount imposed',
+    );
+    expect(component.form.invalid).toBe(true);
+    expect(formSubmitSpy).not.toHaveBeenCalled();
+  });
+
+  it('should revalidate amount paid when amount imposed changes', () => {
+    const amountImposedControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_imposed_0',
+    ]) as FormControl;
+    const amountPaidControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_paid_0',
+    ]) as FormControl;
+
+    amountImposedControl.setValue(100);
+    amountPaidControl.setValue(101);
+    expect(amountPaidControl.hasError('amountPaidExceedsAmountImposed')).toBe(true);
+
+    amountImposedControl.setValue(101);
+
+    expect(amountPaidControl.hasError('amountPaidExceedsAmountImposed')).toBe(false);
+  });
+
+  it('should not register duplicate amount imposed listeners for the same control', () => {
+    const amountImposedControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_imposed_0',
+    ]) as FormControl;
+    const amountPaidControl = component.form.get([
+      'fm_offence_details_impositions',
+      0,
+      'fm_offence_details_amount_paid_0',
+    ]) as FormControl;
+    const updateValueAndValiditySpy = vi.spyOn(amountPaidControl, 'updateValueAndValidity');
+
+    component['amountImposedListener'](0);
+    component['amountImposedListener'](0);
+    updateValueAndValiditySpy.mockClear();
+
+    amountImposedControl.setValue(100);
+
+    expect(updateValueAndValiditySpy).toHaveBeenCalledOnce();
+    expect(updateValueAndValiditySpy).toHaveBeenCalledWith({ onlySelf: true, emitEvent: false });
   });
 
   it('should set offenceCodeValidationPending on submit when offence code length is valid and offence id is unresolved', () => {

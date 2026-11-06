@@ -3,6 +3,7 @@
     id="fines-acc-enf-action-add-new-banners"
     [hasVersionMismatch]="false"
     [hasPaymentHold]="false"
+    [isTransferredIn]="finesAccStore.isTransferredIn()"
     [successMessage]="finesAccStore.successMessage()"
     (clearSuccessMessage)="finesAccStore.clearSuccessMessage()"
   ></app-fines-acc-banner-messages>
@@ -12,6 +13,7 @@
       [accountNumber]="accountNumber"
       [partyName]="partyName"
       (formSubmit)="handleSubmit($event)"
+      (unsavedChanges)="handleUnsavedChanges($event)"
     ></app-fines-acc-enf-action-add-new-form>
   </div>
 </div>

@@ -8,6 +8,8 @@ import { beforeEach, describe, expect, it } from 'vitest';
 describe('FinesSaSearchAccountFormCompaniesComponent', () => {
   let component: FinesSaSearchAccountFormCompaniesComponent;
   let fixture: ComponentFixture<FinesSaSearchAccountFormCompaniesComponent>;
+  const printableAsciiCharacters = Array.from({ length: 95 }, (_, index) => String.fromCharCode(index + 32));
+  const nonPrintableAsciiCharacters = [String.fromCharCode(31), String.fromCharCode(127)];
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -42,20 +44,15 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
     );
   });
 
-  it('should require company name if exact match is set to true and company name is empty', () => {
+  it.each([
+    {
+      caseName: 'exact match is set to true',
+      flagControlName: 'fsa_search_account_companies_company_name_exact_match',
+    },
+    { caseName: 'include aliases is set to true', flagControlName: 'fsa_search_account_companies_include_aliases' },
+  ] as const)('should require company name if $caseName and company name is empty', ({ flagControlName }) => {
     component.form.get('fsa_search_account_companies_company_name')?.setValue('');
-    component.form.get('fsa_search_account_companies_company_name_exact_match')?.setValue(true);
-    component.form.get('fsa_search_account_companies_company_name')?.setValue('');
-    component.form.get('fsa_search_account_companies_company_name')?.updateValueAndValidity();
-
-    expect(component.form.get('fsa_search_account_companies_company_name')?.hasValidator(Validators.required)).toBe(
-      true,
-    );
-  });
-
-  it('should require company name if add aliases is set to true', () => {
-    component.form.get('fsa_search_account_companies_company_name')?.setValue('');
-    component.form.get('fsa_search_account_companies_include_aliases')?.setValue(true);
+    component.form.get(flagControlName)?.setValue(true);
     component.form.get('fsa_search_account_companies_company_name')?.setValue('');
     component.form.get('fsa_search_account_companies_company_name')?.updateValueAndValidity();
 
@@ -115,6 +112,79 @@ describe('FinesSaSearchAccountFormCompaniesComponent', () => {
     ctrl.updateValueAndValidity();
 
     expect(component.form.get('fsa_search_account_companies_company_name')?.hasError('required')).toBe(false);
+  });
+
+  it('should validate postcode pattern with alphanumericTextPattern', () => {
+    const postcodeControl = component.form.get('fsa_search_account_companies_post_code');
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(false);
+
+    postcodeControl?.setValue('SW1A@1AA');
+    expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(true);
+  });
+
+  it.each(['fsa_search_account_companies_company_name', 'fsa_search_account_companies_address_line_1'])(
+    'should accept every printable ASCII character in %s',
+    (controlName) => {
+      const control = component.form.get(controlName);
+
+      printableAsciiCharacters.forEach((character) => {
+        control?.setValue(character);
+        expect(control?.hasError('singleAsciiCharacters'), `character ${character.charCodeAt(0)}`).toBe(false);
+      });
+    },
+  );
+
+  it.each(['fsa_search_account_companies_company_name', 'fsa_search_account_companies_address_line_1'])(
+    'should reject characters outside printable ASCII in %s',
+    (controlName) => {
+      const control = component.form.get(controlName);
+
+      nonPrintableAsciiCharacters.forEach((character) => {
+        control?.setValue(character);
+        expect(control?.hasError('singleAsciiCharacters'), `character ${character.charCodeAt(0)}`).toBe(true);
+      });
+    },
+  );
+
+  it.each([
+    ['fsa_search_account_companies_company_name', 50],
+    ['fsa_search_account_companies_address_line_1', 30],
+  ] as const)('should enforce the maximum length for %s', (controlName, maxLength) => {
+    const control = component.form.get(controlName);
+
+    control?.setValue('A'.repeat(maxLength));
+    expect(control?.hasError('maxlength')).toBe(false);
+
+    control?.setValue('A'.repeat(maxLength + 1));
+    expect(control?.hasError('maxlength')).toBe(true);
+  });
+
+  it('should validate postcode max length', () => {
+    const postcodeControl = component.form.get('fsa_search_account_companies_post_code');
+
+    postcodeControl?.setValue('SW1A 1AA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
+
+    postcodeControl?.setValue('SW1A 1AAA');
+    expect(postcodeControl?.hasError('maxlength')).toBe(true);
+  });
+
+  it('should trim surrounding whitespace from the postcode input on focusout', () => {
+    const postcodeInput = fixture.nativeElement.querySelector(
+      'input[name="fsa_search_account_companies_post_code"]',
+    ) as HTMLInputElement | null;
+    if (!postcodeInput) throw new Error('Postcode input not found');
+
+    const postcodeControl = component.form.get('fsa_search_account_companies_post_code');
+
+    postcodeControl?.setValue('  AB1  3CD ');
+    postcodeInput.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(postcodeControl?.value).toBe('AB1  3CD');
+    expect(postcodeControl?.hasError('maxlength')).toBe(false);
   });
 
   it('should install its controls into the provided FormGroup on init', () => {

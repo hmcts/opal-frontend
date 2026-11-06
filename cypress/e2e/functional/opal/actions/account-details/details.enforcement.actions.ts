@@ -6,17 +6,25 @@ import { ACCOUNT_ENQUIRY_ENFORCEMENT_STATUS_ELEMENTS as ENF } from '../../../../
 import { DOM_ELEMENTS as ENF_COURT_CHANGE } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-court-change.locators';
 import { DOM_ELEMENTS as ENF_OVR } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-override-add.locators';
 import { DOM_ELEMENTS as ENF_ACT } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-action-select.locators';
-import { DOM_ELEMENTS as ENF_ACTION_ADD } from '../../../../../component/fineAccountEnquiry/accountEnquiry/locators/account.enquiry.enforcement-action-add.locators';
+import { REMOVE_ENFORCEMENT_HOLD_ELEMENTS as ENF_REMOVE_HOLD } from '../../../../../shared/selectors/account-enquiry/account.enquiry.enforcement-hold-remove.locators';
+import { DOM_ELEMENTS as ENF_ACTION_ADD } from '../../../../../component/release1b/fineAccountEnquiry/accountEnquiry/locators/account.enquiry.enforcement-action-add.locators';
 import { COLLECTION_ORDER_CHANGE_ELEMENTS as COLLO } from '../../../../../shared/selectors/account-enquiry/account.enquiry.collection-order-change.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
+import { CommonActions } from '../common/common.actions';
 
 const log = createScopedLogger('AccountDetailsEnforcementActions');
+
+const ENFORCEMENT_OVERRIDE_SUMMARY_TEXT_ALIASES: Record<string, string[]> = {
+  'Application made for Benefit Deductions (ABDC)': ['Application made for Benefit Deduction (ABDC)'],
+};
 
 /**
  * Actions for the Account Details enforcement tab and add override form.
  */
 export class AccountDetailsEnforcementActions {
   private static readonly DEFAULT_TIMEOUT = 30_000;
+
+  private readonly common = new CommonActions();
 
   /**
    * Normalizes visible text for reliable equality assertions.
@@ -29,6 +37,20 @@ export class AccountDetailsEnforcementActions {
   }
 
   /**
+   * Asserts an element contains expected text after normalizing whitespace and casing.
+   *
+   * @param selector - Element selector.
+   * @param expected - Expected text.
+   */
+  private assertContainsNormalizedText(selector: string, expected: string): void {
+    this.common.assertElementContainsNormalizedText(
+      selector,
+      expected,
+      AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    );
+  }
+
+  /**
    * Selects an option from an accessible autocomplete control.
    *
    * @param selector - Input selector for the autocomplete.
@@ -38,14 +60,47 @@ export class AccountDetailsEnforcementActions {
   private selectAutocompleteOption(selector: string, query: string, optionText: string): void {
     cy.get(selector, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
       .should('be.visible')
+      .and('not.be.disabled')
       .click()
-      .type('{selectall}{backspace}', { force: true })
+      .type('{selectall}{backspace}')
       .type(query, { delay: 0 });
 
     cy.contains(ENF_OVR.dropdownOptions, optionText, {
       timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
     }).click();
     cy.get(selector, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should('contain.value', optionText);
+  }
+
+  /**
+   * Asserts a map of label/value pairs within a specific Enforcement tab card.
+   *
+   * @param expected - Expected values keyed by visible label text.
+   * @param fieldSelectors - Mapping of normalized labels to locators.
+   * @param scope - Root selector that must be visible before assertions run.
+   */
+  private assertMappedValues(
+    expected: Record<string, string>,
+    fieldSelectors: Record<string, string>,
+    scope: string,
+  ): void {
+    cy.get(scope, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should('be.visible');
+
+    Object.entries(expected).forEach(([label, value]) => {
+      const normalizedLabel = label.trim().toLowerCase();
+      const selector = fieldSelectors[normalizedLabel];
+
+      if (!selector) {
+        throw new Error(
+          `Unsupported Enforcement tab label "${label}". Supported labels: ${Object.keys(fieldSelectors).join(', ')}`,
+        );
+      }
+
+      log('assert', 'Asserting Enforcement tab value', { label, value });
+      cy.get(selector, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+        .should('be.visible')
+        .invoke('text')
+        .then((text) => expect(this.normalize(text).toLowerCase()).to.contain(this.normalize(value).toLowerCase()));
+    });
   }
 
   /**
@@ -56,6 +111,53 @@ export class AccountDetailsEnforcementActions {
     cy.contains(ENF.tableTitle, 'Enforcement overview', {
       timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
     }).should('be.visible');
+  }
+
+  /**
+   * Asserts the Enforcement overview card values.
+   *
+   * @param expected - Map of visible labels to expected values.
+   */
+  public assertEnforcementOverview(expected: Record<string, string>): void {
+    const fieldSelectors: Record<string, string> = {
+      'collection order status': ENF.collectionOrderStatusValue,
+      'days in default': ENF.daysInDefaultValue,
+      'enforcement court': ENF.enforcementCourtValue,
+    };
+
+    this.assertMappedValues(expected, fieldSelectors, ENF.enforcementOverviewList);
+  }
+
+  /**
+   * Asserts the last enforcement action card values.
+   *
+   * @param expected - Map of visible labels to expected values.
+   */
+  public assertLastEnforcementActionDetails(expected: Record<string, string>): void {
+    const fieldSelectors: Record<string, string> = {
+      'enforcement action': ENF.enforcementActionValue,
+      reason: ENF.reasonValue,
+      enforcer: ENF.lastEnfEnforcerValue,
+      'days in default': ENF.lastEnforcementActionDaysInDefaultValue,
+      'warrant number': ENF.warrantNumberValue,
+      'hearing date': ENF.hearingDateValue,
+      court: ENF.courtValue,
+      'date added': ENF.dateAddedValue,
+    };
+
+    this.assertMappedValues(expected, fieldSelectors, ENF.lastEnforcementActionCard);
+  }
+
+  /**
+   * Asserts the last enforcement action empty-state message.
+   *
+   * @param expected - Expected empty-state message.
+   */
+  public assertNoOutstandingEnforcementActionMessage(expected: string): void {
+    log('assert', 'No outstanding enforcement action message', { expected });
+    cy.get(ENF.lastEnforcementActionCard, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .and('contain.text', expected);
   }
 
   /**
@@ -202,9 +304,9 @@ export class AccountDetailsEnforcementActions {
     cy.get(ENF_OVR.title, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
       .should('be.visible')
       .and('contain.text', 'Add enforcement override');
-    cy.get(ENF_OVR.enfOverrideDropdown, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
-      'be.visible',
-    );
+    cy.get(ENF_OVR.enfOverrideDropdown, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .and('not.be.disabled');
   }
 
   /**
@@ -216,6 +318,123 @@ export class AccountDetailsEnforcementActions {
       .should('be.visible')
       .and('contain.text', 'Add enforcement action');
     cy.get(ENF_ACT.actionDropdown, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should('be.visible');
+  }
+
+  /**
+   * Asserts that the Court code autocomplete has populated options.
+   */
+  public assertCourtCodeAutocompleteDisplayed(): void {
+    log('assert', 'Court code autocomplete has populated options');
+
+    cy.get(ENF_ACTION_ADD.courtCodeAutocomplete, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    })
+      .should('be.visible')
+      .and('not.be.disabled')
+      .click();
+
+    cy.get(ENF_ACTION_ADD.courtCodeOptions, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    }).should('have.length.greaterThan', 0);
+  }
+
+  /**
+   * Asserts that court autocomplete options use the Court name (court code) format.
+   */
+  public assertCourtCodeOptionLabelsUseNameAndCodeFormat(): void {
+    cy.get(ENF_ACTION_ADD.courtCodeOptions, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    }).then(($options) => {
+      const optionLabels = [...$options].map((option) => option.textContent?.trim() ?? '');
+
+      cy.log(`Court option labels: ${JSON.stringify(optionLabels)}`);
+
+      expect(optionLabels).to.have.length.greaterThan(0);
+      optionLabels.forEach((label) => {
+        expect(label).to.match(/^.+ \(\d+\)$/);
+      });
+    });
+  }
+
+  /**
+   * Searches for court options using the autocomplete input.
+   *
+   * @param searchText - Court name or code fragment to search for.
+   */
+  public searchCourtCodeOptions(searchText: string): void {
+    log('action', 'Searching Court code options', { searchText });
+
+    cy.get(ENF_ACTION_ADD.courtCodeAutocomplete, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    })
+      .should('be.visible')
+      .click()
+      .clear()
+      .type(searchText, { delay: 0 });
+
+    cy.get(ENF_ACTION_ADD.courtCodeOptions, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    })
+      .should('be.visible')
+      .and('have.length.greaterThan', 0);
+  }
+
+  /**
+   * Selects the first filtered Court code option and verifies its displayed value.
+   */
+  public selectFirstCourtCodeOption(): void {
+    log('action', 'Selecting the first Court code option');
+
+    cy.get(ENF_ACTION_ADD.courtCodeOptions, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    })
+      .first()
+      .invoke('text')
+      .then((optionText) => {
+        const expectedLabel = this.normalize(optionText);
+
+        cy.get(ENF_ACTION_ADD.courtCodeOptions, {
+          timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+        })
+          .first()
+          .click();
+
+        cy.get(ENF_ACTION_ADD.courtCodeAutocomplete, {
+          timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+        }).should('have.value', expectedLabel);
+
+        const courtCode = expectedLabel.match(/\((\d+)\)$/)?.[1];
+        expect(courtCode, 'selected court code').to.not.be.undefined;
+        cy.wrap(courtCode, { log: false }).as('selectedCourtCode');
+      });
+  }
+
+  /**
+   * Selects a radio option for a dynamic enforcement action parameter.
+   *
+   * @param fieldsetSelector - Fieldset selector for the parameter.
+   * @param option - Visible radio option label.
+   */
+  public selectDynamicEnforcementActionRadio(fieldsetSelector: string, option: string): void {
+    log('action', 'Selecting dynamic enforcement action radio option', { option });
+    cy.get(fieldsetSelector, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .contains('label', option)
+      .click();
+  }
+
+  /**
+   * Asserts that the selected Court code is displayed in the autocomplete.
+   */
+  public assertSelectedCourtCodeIsDisplayed(): void {
+    log('assert', 'Selected Court code is displayed');
+
+    cy.get(ENF_ACTION_ADD.courtCodeAutocomplete, {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    })
+      .should('be.visible')
+      .invoke('val')
+      .should('match', /^.+ \(\d+\)$/);
   }
 
   /**
@@ -236,13 +455,13 @@ export class AccountDetailsEnforcementActions {
    */
   public assertRemoveEnforcementHoldFormVisible(): void {
     log('assert', 'Remove enforcement hold form is visible');
-    cy.get('h1.govuk-heading-l', { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+    cy.get(ENF_REMOVE_HOLD.pageHeading, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
       .should('be.visible')
       .and('contain.text', 'Remove enforcement hold');
-    cy.get('opal-lib-govuk-heading-with-caption', { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+    cy.get(ENF_REMOVE_HOLD.headingWithCaption, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
       .should('be.visible')
       .and('contain.text', '–');
-    cy.get('#facc_enf_action_remove_reason', { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
+    cy.get(ENF_REMOVE_HOLD.reasonInput, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
       'be.visible',
     );
   }
@@ -254,7 +473,7 @@ export class AccountDetailsEnforcementActions {
    */
   public assertRemoveEnforcementHoldAccountIdentifier(expected: string): void {
     log('assert', 'Remove enforcement hold account identifier', { expected });
-    cy.get('opal-lib-govuk-heading-with-caption', { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+    cy.get(ENF_REMOVE_HOLD.headingWithCaption, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
       .should('be.visible')
       .invoke('text')
       .then((text) => {
@@ -267,6 +486,34 @@ export class AccountDetailsEnforcementActions {
         expect(actualBody, 'remove enforcement hold caption').to.contain(expectedBody);
         expect(actual, 'remove enforcement hold caption').to.contain('Remove enforcement hold');
       });
+  }
+
+  /**
+   * Enters a reason on the remove enforcement hold form.
+   *
+   * @param reason - Text to enter into the reason field.
+   */
+  public enterRemoveEnforcementHoldReason(reason: string): void {
+    log('action', 'Entering remove enforcement hold reason', { reason });
+    cy.get(ENF_REMOVE_HOLD.reasonInput, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
+      .should('be.visible')
+      .clear()
+      .type(reason, { delay: 0 });
+  }
+
+  /**
+   * Clicks a button on the remove enforcement hold form by visible text.
+   *
+   * @param buttonText - Exact button label to click.
+   */
+  public clickRemoveEnforcementHoldButton(buttonText: string): void {
+    log('action', 'Clicking remove enforcement hold button', { buttonText });
+    cy.contains(ENF_REMOVE_HOLD.actionButtons, new RegExp(`^${Cypress._.escapeRegExp(buttonText)}$`), {
+      timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
+    })
+      .should('be.visible')
+      .and('not.be.disabled')
+      .click();
   }
 
   /**
@@ -289,7 +536,9 @@ export class AccountDetailsEnforcementActions {
       .and('contain.text', 'Change enforcement court');
     cy.get(ENF_COURT_CHANGE.enforcementCourtInput, {
       timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
-    }).should('be.visible');
+    })
+      .should('be.visible')
+      .and('not.be.disabled');
   }
 
   /**
@@ -348,13 +597,27 @@ export class AccountDetailsEnforcementActions {
   }
 
   /**
+   * Chooses the collection type on the add enforcement action details form.
+   *
+   * @param option - The collection type option to select.
+   */
+  public chooseCollectionType(option: string): void {
+    log('action', 'Choosing collection type option', { option });
+
+    cy.contains('legend', 'Collection type').parent().contains('label', option).click();
+  }
+
+  /**
    * Chooses whether to change existing payment terms on the add enforcement action details form.
    *
    * @param option - Visible option text, usually "Yes" or "No".
    */
   public chooseChangeExistingPaymentTerms(option: string): void {
     log('action', 'Choosing change existing payment terms option', { option });
-    cy.contains('label', option, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).click();
+    cy.contains('legend', 'Do you want to change the existing payment terms?')
+      .parent()
+      .contains('label', option)
+      .click();
   }
 
   /**
@@ -417,7 +680,10 @@ export class AccountDetailsEnforcementActions {
       }).then(($options) => {
         const selectedValue = [...$options]
           .map((option) => this.normalize(option.textContent ?? ''))
-          .find((option) => option && option !== normalizedCurrentValue);
+          .find(
+            (option) =>
+              option && option !== normalizedCurrentValue && !/^select\b/i.test(option) && !/^choose\b/i.test(option),
+          );
 
         expect(selectedValue, 'different enforcement court option').to.be.a('string').and.not.be.empty;
 
@@ -527,24 +793,19 @@ export class AccountDetailsEnforcementActions {
     log('assert', 'Enforcement override summary', expected);
 
     if (expected.override) {
-      cy.get(ENF.enforcementOverrideValue, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
-        'contain.text',
-        expected.override,
+      this.common.assertElementContainsAnyNormalizedText(
+        ENF.enforcementOverrideValue,
+        [expected.override, ...(ENFORCEMENT_OVERRIDE_SUMMARY_TEXT_ALIASES[expected.override] ?? [])],
+        AccountDetailsEnforcementActions.DEFAULT_TIMEOUT,
       );
     }
 
     if (expected.lja) {
-      cy.get(ENF.localJusticeAreaValue, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
-        'contain.text',
-        expected.lja,
-      );
+      this.assertContainsNormalizedText(ENF.localJusticeAreaValue, expected.lja);
     }
 
     if (expected.enforcer) {
-      cy.get(ENF.enfOverrideEnforcer, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT }).should(
-        'contain.text',
-        expected.enforcer,
-      );
+      this.assertContainsNormalizedText(ENF.enfOverrideEnforcer, expected.enforcer);
     }
   }
 
@@ -557,6 +818,8 @@ export class AccountDetailsEnforcementActions {
     log('assert', 'Enforcement action summary', { expected });
     cy.get(ENF.enforcementAction, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
       .parent()
-      .should('contain.text', expected);
+      .should(($row) => {
+        expect(this.normalize($row.text()).toLowerCase()).to.contain(this.normalize(expected).toLowerCase());
+      });
   }
 }

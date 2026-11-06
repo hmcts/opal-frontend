@@ -1,4 +1,5 @@
 import { IFinesMacParentGuardianDetailsAliasState } from '../../../../fines-mac-parent-guardian-details/interfaces/fines-mac-parent-guardian-details-alias-state.interface';
+import { IFinesMacPersonalDetailsAliasState } from '../../../../fines-mac-personal-details/interfaces/fines-mac-personal-details-alias-state.interface';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 import { IFinesMacPayloadAccountDefendantComplete } from '../interfaces/fines-mac-payload-account-defendant-complete.interface';
 import { IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete } from '../interfaces/fines-mac-payload-account-defendant-debtor-detail-alias-complete.interface';
@@ -152,6 +153,25 @@ const mapAccountDefendantParentGuardianDetailsPayloadToFinesMacState = (
 };
 
 /**
+ * Maps youth defendant aliases from the account payload to personal details state.
+ *
+ * @param payloadAliases - The youth defendant aliases from the account payload.
+ * @returns The mapped alias form values, or an empty array when no aliases are provided.
+ */
+const mapYouthDefendantAliases = (
+  payloadAliases: IFinesMacPayloadAccountDefendantDebtorDetailAliasComplete[] | null,
+): IFinesMacPersonalDetailsAliasState[] => {
+  if (!payloadAliases?.length) {
+    return [];
+  }
+
+  return payloadAliases.map((alias, index) => ({
+    [`fm_personal_details_alias_forenames_${index}`]: alias.alias_forenames,
+    [`fm_personal_details_alias_surname_${index}`]: alias.alias_surname,
+  }));
+};
+
+/**
  * Maps the account defendant parent/guardian payload to the fines MAC state.
  *
  * @param mappedFinesMacState - The current state of the fines MAC.
@@ -172,8 +192,11 @@ export const finesMacPayloadMapAccountDefendantParentGuardianPayload = (
     address_line_3,
     post_code,
     national_insurance_number,
+    debtor_detail,
     parent_guardian,
   } = payload;
+
+  const youthAliases = mapYouthDefendantAliases(debtor_detail?.aliases ?? null);
 
   mappedFinesMacState.personalDetails.formData = {
     ...mappedFinesMacState.personalDetails.formData,
@@ -186,7 +209,8 @@ export const finesMacPayloadMapAccountDefendantParentGuardianPayload = (
     fm_personal_details_address_line_3: address_line_3,
     fm_personal_details_post_code: post_code,
     fm_personal_details_national_insurance_number: national_insurance_number,
-    fm_personal_details_add_alias: false,
+    fm_personal_details_add_alias: youthAliases.length > 0,
+    fm_personal_details_aliases: youthAliases,
   };
 
   if (parent_guardian) {

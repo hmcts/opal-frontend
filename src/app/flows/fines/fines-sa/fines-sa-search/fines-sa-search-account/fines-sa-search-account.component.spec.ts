@@ -15,6 +15,8 @@ import { FINES_ACC_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fi
 import { OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-major-creditor-ref-data.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
+import { FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS } from '../../../fines-acc/routing/constants/fines-acc-major-creditor-routing-paths.constant';
+import { OPAL_FINES_CENTRAL_FUND_RESPONSE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-central-funds-response.mock';
 
 describe('FinesSaSearchAccountComponent', () => {
   let component: FinesSaSearchAccountComponent;
@@ -34,6 +36,7 @@ describe('FinesSaSearchAccountComponent', () => {
             snapshot: {
               data: {
                 businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+                majorCreditors: OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK,
               },
             },
             parent: 'search',
@@ -75,25 +78,25 @@ describe('FinesSaSearchAccountComponent', () => {
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'navigateToMajorCreditor');
+    const selectedMajorCreditor = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData[0];
+    const creditorAccountId = selectedMajorCreditor.creditor_account_id!;
     const mockForm = {
       ...FINES_SA_SEARCH_ACCOUNT_FORM_MOCK,
       formData: {
         ...FINES_SA_SEARCH_ACCOUNT_FORM_MOCK.formData,
         fsa_search_account_major_creditors_search_criteria: {
-          fsa_search_account_major_creditors_major_creditor_id: 1,
+          fsa_search_account_major_creditors_major_creditor_id: creditorAccountId,
         },
       },
     };
+    component.majorCreditorsRefData = OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData;
     mockFinesSaStore.setActiveTab('majorCreditors');
 
     component.handleSearchAccountSubmit(mockForm);
     expect(mockFinesSaStore.searchAccount()).toEqual(mockForm.formData);
     expect(routerSpy).not.toHaveBeenCalled();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    expect((component as any).navigateToMajorCreditor).toHaveBeenCalledWith(
-      mockForm.formData.fsa_search_account_major_creditors_search_criteria!
-        .fsa_search_account_major_creditors_major_creditor_id!,
-    );
+    expect((component as any).navigateToMajorCreditor).toHaveBeenCalledWith(creditorAccountId);
   });
 
   it('should handle unsaved changes flag', () => {
@@ -102,7 +105,7 @@ describe('FinesSaSearchAccountComponent', () => {
     expect(component.stateUnsavedChanges).toBe(true);
   });
 
-  it('ngOnInit should populate businessUnitRefData (filtering by opal_domain) and set default ids in store when missing', () => {
+  it('ngOnInit should populate businessUnitRefData and set default ids in store when missing', () => {
     // Ensure store starts clean
     mockFinesSaStore.setSearchAccount({
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
@@ -112,10 +115,10 @@ describe('FinesSaSearchAccountComponent', () => {
 
     component.ngOnInit();
 
-    expect(component.businessUnitRefData.map((b) => b.business_unit_id).length).toEqual(7);
+    expect(component.businessUnitRefData.map((b) => b.business_unit_id)).toHaveLength(7);
 
     // Store should be initialised with those ids when missing
-    expect(mockFinesSaStore.searchAccount().fsa_search_account_business_unit_ids?.length).toEqual(7);
+    expect(mockFinesSaStore.searchAccount().fsa_search_account_business_unit_ids).toHaveLength(7);
   });
 
   it('ngOnInit should NOT overwrite store ids if already present', () => {
@@ -161,7 +164,7 @@ describe('FinesSaSearchAccountComponent', () => {
     expect(setSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('ngOnInit should filter out business units with falsy opal_domain', () => {
+  it('ngOnInit should filter out business units without an Accounting Division type', () => {
     // Ensure store starts clean and missing ids
     mockFinesSaStore.setSearchAccount({
       ...FINES_SA_SEARCH_ACCOUNT_STATE,
@@ -191,10 +194,35 @@ describe('FinesSaSearchAccountComponent', () => {
 
     component.ngOnInit();
 
-    // Only ids 1 and 4 remain (truthy opal_domain)
+    // Only ids 1 and 4 remain because they are Accounting Division business units.
     expect(component.businessUnitRefData.map((b) => b.business_unit_id)).toEqual([1, 4]);
     expect(mockFinesSaStore.searchAccount().fsa_search_account_business_unit_ids).toEqual([1, 4]);
     expect(setSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('ngOnInit should populate majorCreditorsRefData from resolver data', () => {
+    component.ngOnInit();
+
+    expect(component.majorCreditorsRefData).toEqual(OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData);
+  });
+
+  it('ngOnInit should default majorCreditorsRefData to an empty array when resolver data is not an array', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (component as any)['activatedRoute'] = {
+      snapshot: {
+        data: {
+          businessUnits: OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
+          majorCreditors: { refData: null },
+        },
+      },
+      parent: 'search',
+      fragment: of('individuals'),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
+
+    component.ngOnInit();
+
+    expect(component.majorCreditorsRefData).toEqual([]);
   });
 
   it('ngOnInit should not call setSearchAccount when ids already exist in store', () => {
@@ -215,10 +243,31 @@ describe('FinesSaSearchAccountComponent', () => {
 
   it('getAccountEnquiryUrl should return the correct URL for account enquiry', () => {
     const accountId = 123;
-    const expectedUrl = `${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${accountId}/${FINES_ACC_ROUTING_PATHS.children.defendant}`;
+    const expectedUrl = `${FINES_ROUTING_PATHS.root}/${FINES_ACC_ROUTING_PATHS.root}/${FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS.root}/${accountId}/${FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS.children.details}`;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = (component as any).getAccountEnquiryUrl(accountId);
     expect(result).toEqual(expectedUrl);
+  });
+
+  it('should handle form submit when central fund is selected as a major creditor', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component, 'navigateToMajorCreditor');
+    const creditorAccountId = OPAL_FINES_CENTRAL_FUND_RESPONSE_MOCK.major_creditor.creditor_account_id;
+    const mockForm = {
+      ...FINES_SA_SEARCH_ACCOUNT_FORM_MOCK,
+      formData: {
+        ...FINES_SA_SEARCH_ACCOUNT_FORM_MOCK.formData,
+        fsa_search_account_major_creditors_search_criteria: {
+          fsa_search_account_major_creditors_major_creditor_id: creditorAccountId,
+        },
+      },
+    };
+    mockFinesSaStore.setActiveTab('majorCreditors');
+
+    component.handleSearchAccountSubmit(mockForm);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    expect((component as any).navigateToMajorCreditor).toHaveBeenCalledWith(creditorAccountId);
   });
 
   it('navigateToMajorCreditor should open a new tab with the correct URL', () => {

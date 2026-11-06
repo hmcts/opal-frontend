@@ -121,29 +121,84 @@ describe('FinesMacDeleteAccountConfirmationFormComponent', () => {
     expect(component['router'].navigate).toHaveBeenCalled();
   });
 
-  it('should return true from hasUnsavedChanges if form is dirty, reason has value, and form is not submitted', () => {
-    component.form.controls['fm_delete_account_confirmation_reason'].setValue('Valid reason');
-    component.form.markAsDirty();
-    component['formSubmitted'] = false;
+  it('should route back to account details with the accountId when the referrer is account details', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['router'], 'navigate');
+    component.referrer = component['fineMacRoutingPaths'].children.accountDetails;
+    component.accountId = 123;
 
-    expect(component['hasUnsavedChanges']()).toBe(true);
+    component.handleRoute(component.referrer);
+
+    expect(component['router'].navigate).toHaveBeenCalledWith(
+      [component['fineMacRoutingPaths'].children.accountDetails + '/123'],
+      { relativeTo: component['activatedRoute'].parent },
+    );
   });
 
-  it('should return false from hasUnsavedChanges if form is pristine', () => {
-    component.form.controls['fm_delete_account_confirmation_reason'].setValue('Valid reason');
-    component.form.markAsPristine();
-    component['formSubmitted'] = false;
+  it('should route back to check account without an accountId when the referrer is check account', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['router'], 'navigate');
+    component.referrer = component['fineMacRoutingPaths'].children.reviewAccount;
+    component.accountId = null;
 
-    expect(component['hasUnsavedChanges']()).toBe(false);
+    component.handleRoute(component.referrer);
+
+    expect(component['router'].navigate).toHaveBeenCalledWith(
+      [component['fineMacRoutingPaths'].children.reviewAccount],
+      { relativeTo: component['activatedRoute'].parent },
+    );
   });
 
-  it('should return false from hasUnsavedChanges if reason is empty', () => {
-    component.form.controls['fm_delete_account_confirmation_reason'].setValue('');
-    component.form.markAsDirty();
-    component['formSubmitted'] = false;
+  it('should route back to check account with the accountId when the referrer is check account', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['router'], 'navigate');
+    component.referrer = component['fineMacRoutingPaths'].children.reviewAccount;
+    component.accountId = 123;
 
-    expect(component['hasUnsavedChanges']()).toBe(false);
+    component.handleRoute(component.referrer);
+
+    expect(component['router'].navigate).toHaveBeenCalledWith(
+      [component['fineMacRoutingPaths'].children.reviewAccount + '/123'],
+      { relativeTo: component['activatedRoute'].parent },
+    );
   });
+
+  it.each([
+    {
+      description: 'form is dirty, reason has value, and form is not submitted',
+      reason: 'Valid reason',
+      isDirty: true,
+      isSubmitted: false,
+      expectedHasUnsavedChanges: true,
+    },
+    {
+      description: 'form is pristine',
+      reason: 'Valid reason',
+      isDirty: false,
+      isSubmitted: false,
+      expectedHasUnsavedChanges: false,
+    },
+    {
+      description: 'reason is empty',
+      reason: '',
+      isDirty: true,
+      isSubmitted: false,
+      expectedHasUnsavedChanges: false,
+    },
+  ])(
+    'should return $expectedHasUnsavedChanges from hasUnsavedChanges if $description',
+    ({ reason, isDirty, isSubmitted, expectedHasUnsavedChanges }) => {
+      component.form.controls['fm_delete_account_confirmation_reason'].setValue(reason);
+      if (isDirty) {
+        component.form.markAsDirty();
+      } else {
+        component.form.markAsPristine();
+      }
+      component['formSubmitted'] = isSubmitted;
+
+      expect(component['hasUnsavedChanges']()).toBe(expectedHasUnsavedChanges);
+    },
+  );
 
   it('should return false from hasUnsavedChanges if form is submitted', () => {
     component.form.controls['fm_delete_account_confirmation_reason'].setValue('Some reason');

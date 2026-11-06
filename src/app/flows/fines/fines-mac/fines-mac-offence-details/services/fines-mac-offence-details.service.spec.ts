@@ -173,29 +173,6 @@ describe('FinesMacOffenceDetailsService', () => {
     expect(result).toEqual(OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK.refData[1]);
   });
 
-  it('findExactOffenceMatch - should match legacy cjs_code values when get_cjs_code is absent', () => {
-    const legacyCodeResponse = {
-      count: 1,
-      refData: [
-        {
-          offence_id: 41799,
-          cjs_code: 'AB12345',
-          business_unit_id: 52,
-          offence_title: 'Legacy offence title',
-          offence_title_cy: null,
-          date_used_from: '1971-01-01T00:00:00Z',
-          date_used_to: null,
-          offence_oas: 'Legacy offence',
-          offence_oas_cy: null,
-        },
-      ],
-    } as unknown as IOpalFinesOffencesRefData;
-
-    const result = service.findExactOffenceMatch(legacyCodeResponse, 'ab12345');
-
-    expect(result).toEqual(legacyCodeResponse.refData[0]);
-  });
-
   describe('initOffenceListener', () => {
     let form: FormGroup;
     let destroy$: Subject<void>;
@@ -382,11 +359,11 @@ describe('FinesMacOffenceDetailsService', () => {
 
       const staleResponse: IOpalFinesOffencesRefData = {
         ...offenceMockResponse,
-        refData: [{ ...offenceMockResponse.refData[0], offence_id: 111111, get_cjs_code: 'AB12345' }],
+        refData: [{ ...offenceMockResponse.refData[0], offence_id: 111111, cjs_code: 'AB12345' }],
       };
       const latestResponse: IOpalFinesOffencesRefData = {
         ...offenceMockResponse,
-        refData: [{ ...offenceMockResponse.refData[0], offence_id: 222222, get_cjs_code: 'CD12345' }],
+        refData: [{ ...offenceMockResponse.refData[0], offence_id: 222222, cjs_code: 'CD12345' }],
       };
 
       service.initOffenceCodeListener(
@@ -493,7 +470,7 @@ describe('FinesMacOffenceDetailsService', () => {
             refData: [
               {
                 offence_id: 99999,
-                get_cjs_code: 'UNIQUE01',
+                cjs_code: 'UNIQUE01',
                 business_unit_id: 52,
                 offence_title: 'Unique offence title',
                 offence_title_cy: null,
@@ -540,7 +517,7 @@ describe('FinesMacOffenceDetailsService', () => {
         refData: [
           {
             offence_id: 1,
-            get_cjs_code: 'TEST123A',
+            cjs_code: 'TEST123A',
             business_unit_id: 52,
             offence_title: 'Test A',
             offence_title_cy: null,
@@ -551,7 +528,7 @@ describe('FinesMacOffenceDetailsService', () => {
           },
           {
             offence_id: 2,
-            get_cjs_code: 'TEST123B',
+            cjs_code: 'TEST123B',
             business_unit_id: 52,
             offence_title: 'Test B',
             offence_title_cy: null,
@@ -672,7 +649,7 @@ describe('FinesMacOffenceDetailsService', () => {
       const secondLookup$ = new Subject<IOpalFinesOffencesRefData>();
       const secondResponse = {
         ...offenceMockResponse,
-        refData: [{ ...offenceMockResponse.refData[0], get_cjs_code: 'CD12345' }],
+        refData: [{ ...offenceMockResponse.refData[0], cjs_code: 'CD12345' }],
       };
       getOffenceByCjsCode = vi.fn((code: string) => {
         return code === 'AB12345' ? firstLookup$.asObservable() : secondLookup$.asObservable();

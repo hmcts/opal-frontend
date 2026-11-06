@@ -8,6 +8,7 @@
 
 import { AccountEnquiryResultsLocators as R } from '../../../../../shared/selectors/account-enquiry/account.enquiry.results.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
+import { captureUatTechnicalEvidenceScreenshot } from '../../../../../support/utils/screenshot';
 
 const log = createScopedLogger('ResultsActions');
 
@@ -78,6 +79,17 @@ export class ResultsActions {
     Balance: `${R.cols.balance}, ${R.cols.minorCreditorBalance}`,
     // Column header "Ref" → reference column cell
     Ref: R.cols.ref,
+    // Column header "Enf"/"ENF" → enforcement column cell
+    Enf: R.cols.enf,
+    ENF: R.cols.enf,
+    // Column header "Aliases" → aliases column cell
+    Aliases: R.cols.aliases,
+    // Column header "Date of birth" → date of birth cell
+    'Date of birth': R.cols.dob,
+    // Column header "NI number" → national insurance number cell
+    'NI number': R.cols.ni,
+    // Column header "Parent or guardian" → parent/guardian column cell
+    'Parent or guardian': R.cols.parentGuard,
   };
 
   /**
@@ -98,6 +110,7 @@ export class ResultsActions {
       .should('be.visible')
       .and('contain.text', 'Search results');
     cy.get(R.table.root, { timeout: ResultsActions.WAIT_MS }).should('be.visible');
+    captureUatTechnicalEvidenceScreenshot('search-results-page');
   }
 
   /**
@@ -107,6 +120,40 @@ export class ResultsActions {
    */
   private static normalizeHeader(text: string): string {
     return text.replace(/\s+/g, ' ').trim();
+  }
+
+  /**
+   * Normalises visible cell text to make row matching whitespace-safe and case-insensitive.
+   *
+   * @param text - Raw visible cell text from the DOM or feature data.
+   * @returns Cell text with placeholder empties normalized, whitespace removed, and normalized casing.
+   */
+  private static normalizeCellText(text: string): string {
+    const normalizedText = text
+      .replace(/\u00a0/g, ' ')
+      .replace(/\s+/g, '')
+      .trim()
+      .toLowerCase();
+
+    if (['—', '–', '-'].includes(normalizedText)) {
+      return '';
+    }
+
+    return normalizedText;
+  }
+
+  /**
+   * Extracts comparable text from a result cell while ignoring visually hidden
+   * accessibility text that is appended to some rendered values.
+   *
+   * @param row - jQuery-wrapped result row.
+   * @param selector - Row-scoped selector for the target cell.
+   * @returns Normalized visible cell text used for matching.
+   */
+  private static getComparableCellText(row: JQuery<HTMLElement>, selector: string): string {
+    const $cell = row.find(selector).first().clone();
+    $cell.find('.govuk-visually-hidden').remove();
+    return ResultsActions.normalizeCellText($cell.text());
   }
 
   /**
@@ -171,18 +218,14 @@ export class ResultsActions {
   }
 
   /**
-   * Asserts we are on the results route and the table contains at least one row.
+   * Asserts the search results view is rendered and the table contains at least one row.
    *
-   * Steps:
-   *  - Wait for `/fines/dashboard/search/results` in the pathname
-   *  - Assert heading contains "Search results"
-   *  - Assert results table is visible and has at least 1 row
+   * The UI may keep users on the search pathname while rendering the results table in place,
+   * and the page header can remain the search landing page title, so we assert against the
+   * visible results affordances instead of a fixed route or heading.
    */
   public assertOnResults(): void {
-    log('assert', 'Asserting on results route and non-empty table');
-    cy.location('pathname', { timeout: ResultsActions.WAIT_MS }).should('include', '/fines/dashboard/search/results');
-    cy.get(R.page.heading, { timeout: ResultsActions.WAIT_MS }).should('contain.text', 'Search results');
-    cy.get(R.table.root, { timeout: ResultsActions.WAIT_MS }).should('be.visible');
+    log('assert', 'Asserting results view is rendered and table is non-empty');
     cy.get(R.table.rows, { timeout: ResultsActions.WAIT_MS }).should('have.length.greaterThan', 0);
   }
 
@@ -192,11 +235,24 @@ export class ResultsActions {
    * @remarks
    * Uses a text-based lookup for the tab label. Once tab-specific selectors
    * are available in the locators file, this should be updated to use those.
+   * Mixed-result searches render a selectable Companies tab; single-type
+   * company searches do not, so this becomes a no-op in that state.
    */
   public selectCompaniesTab(): void {
     log('click', 'Selecting "Companies" tab');
 
-    cy.contains('button, a', 'Companies', { matchCase: false }).should('be.visible').click({ force: true });
+    cy.get('body', { timeout: ResultsActions.WAIT_MS }).then(($body) => {
+      const $tab = $body.find('button, a').filter((_, element) => {
+        return ResultsActions.normalizeHeader(element.textContent ?? '').toLowerCase() === 'companies';
+      });
+
+      if ($tab.length === 0) {
+        log('info', 'No selectable "Companies" tab rendered; results are already scoped to Companies');
+        return;
+      }
+
+      cy.wrap($tab.first()).should('be.visible').click({ force: true });
+    });
   }
 
   /**
@@ -275,6 +331,26 @@ export class ResultsActions {
     this.assertNavigatedToDetails();
   }
 
+  /**
+   * Opens the associated defendant from the first minor creditor result row.
+   *
+   * This deliberately targets the Defendant-column link rather than the minor
+   * creditor account-number link.
+   */
+  public openLatestMinorCreditorDefendant(): void {
+    log('open', 'Opening associated defendant from latest minor creditor result');
+
+    cy.get(R.table.rows, { timeout: ResultsActions.WAIT_MS })
+      .should('have.length.greaterThan', 0)
+      .first()
+      .find(R.cols.minorCreditorDefendantLink, { timeout: ResultsActions.WAIT_MS })
+      .should('be.visible')
+      .scrollIntoView()
+      .click({ force: true });
+
+    this.assertNavigatedToDetails();
+  }
+
   /********this should be in flow ******** */
   /**
    * Opens a specific account **by account number** from the results table.
@@ -287,6 +363,51 @@ export class ResultsActions {
 
     // Dynamic locator is defined in the locators file
     cy.get(R.linkByAccountNumber(accountNumber), { timeout: ResultsActions.WAIT_MS })
+      .scrollIntoView()
+      .should('be.visible')
+      .click({ force: true });
+
+    this.assertNavigatedToDetails();
+  }
+
+  /**
+   * Opens the single result matching all supplied column/value expectations.
+   * Matching is case-insensitive and whitespace-tolerant so formatted values
+   * such as NI numbers remain reliable.
+   * @param expectations Map of results-table column labels to expected values.
+   */
+  public openByColumnValues(expectations: Record<string, string>): void {
+    if (Object.keys(expectations).length === 0) {
+      throw new Error('At least one results-table column/value is required to open a matching result');
+    }
+
+    const normalizedExpectations = Object.entries(expectations).map(([columnLabel, expectedValue]) => {
+      const selector = ResultsActions.COLUMN_LOCATORS[columnLabel];
+
+      if (!selector) {
+        throw new Error(
+          `No column locator mapping defined for header "${columnLabel}". ` +
+            'Supported columns are Account, Name, Aliases, Date of birth, Address line 1, Postcode, NI number, Parent or guardian, and Business unit.',
+        );
+      }
+
+      return [selector, ResultsActions.normalizeCellText(expectedValue)] as const;
+    });
+
+    log('open', 'Opening result matching supplied column values', { expectations });
+
+    cy.get(R.table.rows, { timeout: ResultsActions.WAIT_MS })
+      .filter((_, row) => {
+        const $row = Cypress.$(row);
+
+        return normalizedExpectations.every(([selector, expectedValue]) => {
+          const actualValue = ResultsActions.getComparableCellText($row, selector);
+          return actualValue === expectedValue;
+        });
+      })
+      .should('have.length', 1)
+      .first()
+      .find(R.cols.accountLink, { timeout: ResultsActions.WAIT_MS })
       .scrollIntoView()
       .should('be.visible')
       .click({ force: true });
@@ -329,8 +450,8 @@ export class ResultsActions {
   }
 
   /**
-   * Asserts that at least one row in the results table matches all of the
-   * provided column/value expectations.
+   * Asserts that at least one row across the remaining results pages matches all
+   * provided column/value expectations, leaving the matching page displayed.
    *
    * @param expectations - Map of column label → expected cell text.
    *                       Column labels must match keys in COLUMN_LOCATORS
@@ -352,46 +473,67 @@ export class ResultsActions {
     // Ensure the table is present before we start inspecting rows.
     this.waitForResultsTable();
 
-    cy.get(R.table.rows, { timeout: ResultsActions.WAIT_MS }).then(($rows) => {
-      if ($rows.length === 0) {
-        throw new Error('No rows present in results table while asserting column values');
-      }
+    const tryPage = (): void => {
+      cy.get(R.table.rows, { timeout: ResultsActions.WAIT_MS }).then(($rows) => {
+        if ($rows.length === 0) {
+          throw new Error('No rows present in results table while asserting column values');
+        }
 
-      let matchFound = false;
+        let matchFound = false;
 
-      // Iterate in plain JS/jQuery space (no nested Cypress commands)
-      for (const row of Array.from($rows)) {
-        const $row = Cypress.$(row);
-        let allMatch = true;
+        // Iterate in plain JS/jQuery space (no nested Cypress commands)
+        for (const row of Array.from($rows)) {
+          const $row = Cypress.$(row);
+          let allMatch = true;
 
-        for (const [columnLabel, expectedValueRaw] of Object.entries(expectations)) {
-          const selector = ResultsActions.COLUMN_LOCATORS[columnLabel];
+          for (const [columnLabel, expectedValueRaw] of Object.entries(expectations)) {
+            const selector = ResultsActions.COLUMN_LOCATORS[columnLabel];
 
-          if (!selector) {
-            throw new Error(
-              `No column locator mapping defined for header "${columnLabel}". ` +
-                'Extend ResultsActions.COLUMN_LOCATORS to support this column.',
-            );
+            if (!selector) {
+              throw new Error(
+                `No column locator mapping defined for header "${columnLabel}". ` +
+                  'Extend ResultsActions.COLUMN_LOCATORS to support this column.',
+              );
+            }
+
+            const cellText = ResultsActions.getComparableCellText($row, selector);
+            const expectedValue = ResultsActions.normalizeCellText(expectedValueRaw);
+
+            if (cellText !== expectedValue) {
+              allMatch = false;
+              break;
+            }
           }
 
-          const cellText = $row.find(selector).text().trim();
-          const expectedValue = expectedValueRaw.trim();
-
-          if (cellText !== expectedValue) {
-            allMatch = false;
+          if (allMatch) {
+            matchFound = true;
             break;
           }
         }
 
-        if (allMatch) {
-          matchFound = true;
-          break;
+        if (matchFound) {
+          return;
         }
-      }
 
-      expect(matchFound, `No results row matched all expected column values: ${JSON.stringify(expectations)}`).to.be
-        .true;
-    });
+        const firstRowText = $rows.first().text();
+        cy.get('body', { timeout: ResultsActions.WAIT_MS }).then(($body) => {
+          const nextLink = $body.find(R.pagination.next);
+          expect(
+            nextLink.length,
+            `No results row matched all expected column values across results pages: ${JSON.stringify(expectations)}`,
+          ).to.be.greaterThan(0);
+
+          cy.wrap(nextLink).scrollIntoView().click();
+          // Wait for the rows to change before inspecting the next page.
+          cy.get(R.table.rows, { timeout: ResultsActions.WAIT_MS }).should(($nextRows) => {
+            expect($nextRows.first().text(), 'next results page has rendered').not.to.equal(firstRowText);
+          });
+          tryPage();
+        });
+      });
+    };
+
+    tryPage();
   }
 
   /**
@@ -438,8 +580,8 @@ export class ResultsActions {
             );
           }
 
-          const cellText = $row.find(selector).text().trim();
-          const expectedValue = expectedValueRaw.trim();
+          const cellText = ResultsActions.getComparableCellText($row, selector);
+          const expectedValue = ResultsActions.normalizeCellText(expectedValueRaw);
 
           if (cellText !== expectedValue) {
             allMatch = false;

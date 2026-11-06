@@ -1,0 +1,32 @@
+import { IFinesAccMinorCreditorDetailsHistoryAndNotesFilterFieldErrors } from '../interfaces/fines-acc-minor-creditor-details-history-and-notes-filter-field-errors.interface';
+
+/**
+ * Validation messages and display priority for the history and notes date filter fields.
+ */
+export const FINES_ACC_MINOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_FIELD_ERRORS: IFinesAccMinorCreditorDetailsHistoryAndNotesFilterFieldErrors =
+  {
+    dateFrom: {
+      invalidDateFormat: {
+        message: 'Date from must be in the format DD/MM/YYYY',
+        priority: 1,
+      },
+      invalidDate: {
+        message: 'Enter a valid date from',
+        priority: 2,
+      },
+    },
+    dateTo: {
+      invalidDateFormat: {
+        message: 'Date to must be in the format DD/MM/YYYY',
+        priority: 1,
+      },
+      invalidDate: {
+        message: 'Enter a valid date to',
+        priority: 2,
+      },
+      dateNotBefore: {
+        message: 'Date from must be the same as or earlier than Date to',
+        priority: 3,
+      },
+    },
+  };

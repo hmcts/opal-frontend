@@ -103,52 +103,6 @@ describe('FinesAccDefendantDetailsDefendantTabComponent', () => {
     );
   });
 
-  it('should show the change link when the user has account maintenance permission', () => {
-    fixture.componentRef.setInput('hasAccountMaintenencePermission', true);
-    fixture.detectChanges();
-
-    const changeLink = (Array.from(fixture.nativeElement.querySelectorAll('a')) as HTMLAnchorElement[]).find(
-      (anchor) => anchor.textContent?.trim() === 'Change',
-    );
-
-    expect(changeLink).toBeTruthy();
-  });
-
-  it('should not show the change link when the user does not have account maintenance permission', () => {
-    fixture.componentRef.setInput('hasAccountMaintenencePermission', false);
-    fixture.detectChanges();
-
-    const changeLink = (Array.from(fixture.nativeElement.querySelectorAll('a')) as HTMLAnchorElement[]).find(
-      (anchor) => anchor.textContent?.trim() === 'Change',
-    );
-
-    expect(changeLink).toBeFalsy();
-  });
-
-  it('should return the amend route for an individual defendant when the user has account maintenance permission in the BU', () => {
-    component.hasAccountMaintenancePermissionInBU = true;
-    component.tabData.defendant_account_party.party_details.organisation_flag = false;
-
-    expect(component.changeDefendantDetailsLink()).toBe(
-      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.party}/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL}/amend`,
-    );
-  });
-
-  it('should return the amend route for a company defendant when the user has account maintenance permission in the BU', () => {
-    component.hasAccountMaintenancePermissionInBU = true;
-    component.tabData.defendant_account_party.party_details.organisation_flag = true;
-
-    expect(component.changeDefendantDetailsLink()).toBe(
-      `../${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.party}/${FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY}/amend`,
-    );
-  });
-
-  it('should return the access denied route when the user lacks account maintenance permission in the BU', () => {
-    component.hasAccountMaintenancePermissionInBU = false;
-
-    expect(component.changeDefendantDetailsLink()).toBe('/access-denied');
-  });
-
   it('should return the convert route for an individual defendant when the user has account maintenance permission in the BU', () => {
     component.hasAccountMaintenencePermission = true;
     component.hasAccountMaintenancePermissionInBU = true;

@@ -68,6 +68,12 @@ export const FinesSaStore = signalStore(
       }
 
       if (
+        searchAccount.fsa_search_account_individuals_search_criteria?.fsa_search_account_individuals_national_insurance_number?.trim()
+      ) {
+        return 'nationalInsuranceNumber';
+      }
+
+      if (
         searchAccount.fsa_search_account_individuals_search_criteria &&
         hasPopulatedValues(searchAccount.fsa_search_account_individuals_search_criteria)
       ) {

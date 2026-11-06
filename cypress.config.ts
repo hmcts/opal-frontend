@@ -3,6 +3,7 @@
  * @description Cypress configuration, plugin wiring, and reporting setup for Opal.
  */
 import { defineConfig } from 'cypress';
+import { applyExtendedTestSelection } from '@hmcts/opal-frontend-common-cypress';
 import { mergeZephyrReports, cleanZephyrReports } from '@hmcts/zephyr-automation-nodejs';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -24,6 +25,29 @@ import {
   releaseEvidenceResetLock,
 } from './cypress/support/tasks/accountCaptureTask';
 import { cleanupEmptyScreenshotDirs, registerScreenshotTasks } from './cypress/support/tasks/screenshotTask';
+
+type InstallLogsPrinter = (
+  on: Cypress.PluginEvents,
+  options: {
+    printLogsToFile: string;
+    outputRoot: string;
+    specRoot: string;
+    outputTarget: Record<string, string>;
+  },
+) => void;
+
+let installLogsPrinter: InstallLogsPrinter | null = null;
+
+try {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  installLogsPrinter = require('cypress-terminal-report/src/installLogsPrinter') as InstallLogsPrinter;
+} catch (error) {
+  // eslint-disable-next-line no-console
+  console.warn(
+    'cypress-terminal-report is unavailable; continuing without terminal log file output.',
+    error instanceof Error ? error.message : error,
+  );
+}
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const webpackPreprocessor = require('@cypress/webpack-preprocessor');
@@ -126,6 +150,7 @@ async function setupNodeEvents(
   on: Cypress.PluginEvents,
   config: Cypress.PluginConfigOptions,
 ): Promise<Cypress.PluginConfigOptions> {
+  applyExtendedTestSelection(config);
   const e2eTsconfigPath = path.resolve(__dirname, 'e2e.tsconfig.json');
 
   await addCucumberPreprocessorPlugin(on, config, {
@@ -277,6 +302,17 @@ async function setupNodeEvents(
       `${process.env.TEST_MODE}-report-${process.env.CYPRESS_THREAD}.ndjson`;
   }
 
+  if (installLogsPrinter) {
+    installLogsPrinter(on, {
+      printLogsToFile: 'onFail',
+      outputRoot: `functional-output/logs/${resolvedBrowserToRun}`,
+      specRoot: 'cypress/e2e',
+      outputTarget: {
+        'cypress-terminal|txt': 'txt',
+      },
+    });
+  }
+
   return config;
 }
 
@@ -312,6 +348,7 @@ export default defineConfig({
     DEV_DEFAULT_APP_MODE: process.env.DEV_DEFAULT_APP_MODE || '',
     DEFAULT_APP_MODE: process.env.DEFAULT_APP_MODE || '',
     LEGACY_ENABLED: process.env.LEGACY_ENABLED || false,
+    JCDE_OVERRIDE: process.env.JCDE_OVERRIDE || 'false',
     omitFiltered: true,
     filterSpecs: true,
   },
@@ -360,6 +397,7 @@ export default defineConfig({
      * @returns Cypress plugin configuration after setup.
      */
     setupNodeEvents(on, config) {
+      applyExtendedTestSelection(config);
       setupBrowserLaunch(on);
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const { plugin: cypressGrepPlugin } = require('@cypress/grep/plugin');

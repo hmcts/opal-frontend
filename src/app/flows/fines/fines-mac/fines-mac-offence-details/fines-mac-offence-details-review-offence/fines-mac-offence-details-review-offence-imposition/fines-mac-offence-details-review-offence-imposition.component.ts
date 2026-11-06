@@ -1,4 +1,17 @@
-import { ChangeDetectionStrategy, Component, inject, Input, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  inject,
+  Input,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  Renderer2,
+  ViewChildren,
+} from '@angular/core';
 import { IOpalFinesMajorCreditorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-major-creditor-ref-data.interface';
 import { IOpalFinesResultsRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-results-ref-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -21,6 +34,9 @@ import { FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES } fr
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { FinesNotProvidedComponent } from '../../../../components/fines-not-provided/fines-not-provided.component';
+import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
+import { GovukDetailsComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-details';
+import { FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DETAILS_SUMMARY_TEXT } from './constants/fines-mac-offence-details-review-offence-imposition-details-summary-text.constant';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-offence-imposition',
@@ -33,23 +49,33 @@ import { FinesNotProvidedComponent } from '../../../../components/fines-not-prov
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     FinesNotProvidedComponent,
+    CustomAccessibleMonetaryComponent,
+    GovukDetailsComponent,
   ],
   templateUrl: './fines-mac-offence-details-review-offence-imposition.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements OnInit {
+export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements OnInit, AfterViewInit, OnDestroy {
+  @ViewChildren('minorCreditorDetails', { read: ElementRef })
+  private readonly minorCreditorDetails!: QueryList<ElementRef<HTMLElement>>;
+
   private readonly opalFinesService = inject(OpalFines);
   private readonly finesMacStore = inject(FinesMacStore);
+  private readonly renderer = inject(Renderer2);
+  private readonly changeDetectorRef = inject(ChangeDetectorRef);
   private totalAmountImposed: number = 0;
   private totalAmountPaid: number = 0;
   private totalBalanceRemaining: number = 0;
+  private detailsToggleUnlisteners: Array<() => void> = [];
 
   protected readonly defaultValues = FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DEFAULT_VALUES;
+  protected readonly detailsSummaryText = FINES_MAC_OFFENCE_DETAILS_REVIEW_OFFENCE_IMPOSITION_DETAILS_SUMMARY_TEXT;
 
   @Input({ required: true }) public impositionRefData!: IOpalFinesResultsRefData;
   @Input({ required: true }) public majorCreditorRefData!: IOpalFinesMajorCreditorRefData;
   @Input({ required: true }) public impositions!: IFinesMacOffenceDetailsImpositionsState[];
   @Input({ required: true }) public offenceIndex!: number;
+  @Input({ required: true }) public offenceCaption!: string;
   @Input({ required: false }) public isReadOnly!: boolean;
   public readonly utilsService = inject(UtilsService);
   public impositionTableData!: IFinesMacOffenceDetailsReviewSummaryImpositionTableData[];
@@ -236,7 +262,7 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
 
       return {
         impositionId: imposition.fm_offence_details_imposition_id!,
-        impositionDescription: resultCodeImposition.result_title,
+        impositionDescription: this.opalFinesService.getResultPrettyName(resultCodeImposition),
         creditor: this.getCreditorInformation(
           imposition.fm_offence_details_creditor,
           imposition.fm_offence_details_major_creditor_id,
@@ -244,7 +270,7 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
           imposition.fm_offence_details_imposition_id!,
         ),
         minorCreditor: this.getMinorCreditorData(imposition.fm_offence_details_imposition_id!),
-        showMinorCreditorData: this.isReadOnly,
+        minorCreditorDetailsSummaryText: this.detailsSummaryText.show,
         amountImposed: this.utilsService.convertToMonetaryString(amountImposed),
         amountPaid: this.utilsService.convertToMonetaryString(amountPaid),
         balanceRemaining: this.utilsService.convertToMonetaryString(balanceRemaining),
@@ -267,19 +293,48 @@ export class FinesMacOffenceDetailsReviewOffenceImpositionComponent implements O
   }
 
   /**
-   * Toggles the visibility of minor creditor details for the selected imposition.
-   *
-   * @param impositionId - The unique identifier of the imposition to update.
-   * @param event - The optional DOM event that triggered the toggle.
+   * Removes native details toggle listeners.
    */
-  public invertShowMinorCreditorData(impositionId: number, event?: Event): void {
-    event?.preventDefault();
-    const imposition = this.impositionTableData.find((imposition) => imposition.impositionId === impositionId)!;
-    imposition.showMinorCreditorData = !imposition.showMinorCreditorData;
+  private clearDetailsToggleListeners(): void {
+    this.detailsToggleUnlisteners.forEach((unlisten) => unlisten());
+    this.detailsToggleUnlisteners = [];
+  }
+
+  /**
+   * Sets up GOV.UK details summary text listeners for each minor creditor details control.
+   */
+  private setupDetailsToggleListeners(): void {
+    this.clearDetailsToggleListeners();
+
+    this.minorCreditorDetails.forEach((detailsComponent, index) => {
+      const detailsElement = detailsComponent.nativeElement.querySelector('details');
+      const imposition = this.impositionTableData.filter((item) => item.minorCreditor)[index];
+
+      if (!detailsElement || !imposition) {
+        return;
+      }
+
+      this.detailsToggleUnlisteners.push(
+        this.renderer.listen(detailsElement, 'toggle', () => {
+          imposition.minorCreditorDetailsSummaryText = detailsElement.open
+            ? this.detailsSummaryText.hide
+            : this.detailsSummaryText.show;
+          this.changeDetectorRef.detectChanges();
+        }),
+      );
+    });
   }
 
   public ngOnInit(): void {
     this.sortImpositionsByAllocationOrder();
     this.getImpositionData();
+  }
+
+  public ngAfterViewInit(): void {
+    this.setupDetailsToggleListeners();
+  }
+
+  public ngOnDestroy(): void {
+    this.clearDetailsToggleListeners();
   }
 }

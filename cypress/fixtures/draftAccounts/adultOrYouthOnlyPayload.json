@@ -1,4 +1,5 @@
 {
+  "source": "MAC",
   "draft_account_id": null,
   "created_at": null,
   "account_snapshot": null,
@@ -10,8 +11,8 @@
     "originator_type": "TFO",
     "account_type": "Fine",
     "defendant_type": "adultOrYouthOnly",
-    "originator_name": "Aberdeen JP Court",
-    "originator_id": 9251,
+    "originator_name": "Bedfordshire Magistrates' Court",
+    "originator_id": 1080,
     "prosecutor_case_reference": "AADS",
     "enforcement_court_id": 770000000001,
     "collection_order_made": null,
@@ -80,7 +81,7 @@
             "result_id": "FCOST",
             "amount_imposed": 125,
             "amount_paid": 10,
-            "major_creditor_id": 770000000041,
+            "major_creditor_id": 770000000061,
             "minor_creditor": null
           }
         ]

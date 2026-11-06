@@ -2,7 +2,11 @@
   "node-env": "NODE_ENV",
   "opal-api": {
     "opal-fines-service": "OPAL_FINES_SERVICE_API_URL",
-    "opal-user-service": "OPAL_USER_SERVICE_API_URL"
+    "opal-user-service": "OPAL_USER_SERVICE_API_URL",
+    "timeoutInMilliseconds": {
+      "__name": "OPAL_API_PROXY_TIMEOUT_IN_MILLISECONDS",
+      "__format": "number"
+    }
   },
   "frontend-hostname": {
     "prod": "FRONTEND_HOSTNAME"
@@ -43,6 +47,8 @@
       },
       "releases": {
         "release-1a": { "__name": "RELEASE_1A_ENABLED", "__format": "json" },
+        "release-1a-1-1": { "__name": "RELEASE_1A_1_1_ENABLED", "__format": "json" },
+        "release-1a-1-2": { "__name": "RELEASE_1A_1_2_ENABLED", "__format": "json" },
         "release-1b": { "__name": "RELEASE_1B_ENABLED", "__format": "json" },
         "release-1c-administration": { "__name": "RELEASE_1C_ADMINISTRATION_ENABLED", "__format": "json" },
         "release-1c-write-off": { "__name": "RELEASE_1C_WRITE_OFF_ENABLED", "__format": "json" },
@@ -120,10 +126,30 @@
   "user-state": {
     "domain": "USER_STATE_DOMAIN"
   },
+  "opal-user-service": {
+    "timeoutInMilliseconds": {
+      "__name": "OPAL_USER_SERVICE_TIMEOUT_IN_MILLISECONDS",
+      "__format": "json"
+    },
+    "retryAttempts": {
+      "__name": "OPAL_USER_SERVICE_RETRY_ATTEMPTS",
+      "__format": "json"
+    },
+    "retryDelayInMilliseconds": {
+      "__name": "OPAL_USER_SERVICE_RETRY_DELAY_IN_MILLISECONDS",
+      "__format": "json"
+    }
+  },
+  "opal-fines-service": {
+    "timeoutInMilliseconds": {
+      "__name": "OPAL_FINES_SERVICE_TIMEOUT_IN_MILLISECONDS",
+      "__format": "json"
+    }
+  },
   "secrets": {
     "opal": {
       "app-insights-connection-string": "APP_INSIGHTS_CONNECTION_STRING",
-      "redis-connection-string": "REDIS_CONNECTION_STRING",
+      "managed-redis-connection-string": "REDIS_CONNECTION_STRING",
       "launch-darkly-client-id": "LAUNCH_DARKLY_CLIENT_ID",
       "opal-frontend-session-secret": "FRONTEND_SESSION_SECRET",
       "opal-frontend-cookie-secret": "FRONTEND_COOKIE_SECRET",

@@ -1,9 +1,11 @@
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS } from '../../fines-mac-account-comments-notes/constants/fines-mac-account-comments-notes-field-errors.constant';
-import { FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS } from '../../fines-mac-company-details/constants/fines-mac-company-details-field-errors';
+import { FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS } from '../../fines-mac-company-details/constants/fines-mac-company-details-field-errors.constant';
 import { FINES_MAC_COURT_DETAILS_FIELD_ERRORS } from '../../fines-mac-court-details/constants/fines-mac-court-details-field-errors';
 import { FINES_MAC_OFFENCE_DETAILS_OFFENCES_FIELD_ERRORS } from '../../fines-mac-offence-details/constants/fines-mac-offence-details-offences-field-errors.constant';
-import { FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../../fines-mac-personal-details/constants/fines-mac-personal-details-field-errors';
+import { FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS } from '../../fines-mac-personal-details/constants/fines-mac-personal-details-field-errors.constant';
 import { IFinesMacFixedPenaltyDetailsFieldErrors } from '../interfaces/fines-mac-fixed-penalty-details-field-errors.interface';
+
+const AMOUNT_IMPOSED_POSITIVE_MESSAGE = `Amount imposed must be greater than zero`;
 
 export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenaltyDetailsFieldErrors = {
   fm_fp_personal_details_title: FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS.fm_personal_details_title,
@@ -85,8 +87,8 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       message: `Place of offence must be 30 characters or fewer`,
       priority: 2,
     },
-    alphanumericWithHyphensSpacesApostrophesDotPattern: {
-      message: `Place of offence must only include letters a to z, numbers 0-9 and certain special characters (hyphens, spaces, apostrophes)`,
+    alphanumericWithHyphensSpacesApostrophesCommasDotPattern: {
+      message: `Place of offence must only include letters a to z, numbers 0-9 and certain special characters (commas, full stops, hyphens, spaces, apostrophes)`,
       priority: 3,
     },
   },
@@ -99,9 +101,17 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       message: `Enter valid amount`,
       priority: 2,
     },
+    invalidNegativeAmount: {
+      message: AMOUNT_IMPOSED_POSITIVE_MESSAGE,
+      priority: 3,
+    },
+    invalidZeroAmount: {
+      message: AMOUNT_IMPOSED_POSITIVE_MESSAGE,
+      priority: 4,
+    },
     invalidAmount: {
       message: `Enter an amount with no more than 18 digits before the decimal and 2 or fewer after`,
-      priority: 3,
+      priority: 5,
     },
   },
   fm_fp_offence_details_vehicle_registration_number: {

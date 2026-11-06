@@ -1,10 +1,12 @@
 export interface IOpalFinesPaths {
   businessUnitRefData: string;
+  businessUnitOutstandingAutoPaymentCount: string;
   localJusticeAreaRefData: string;
   courtRefData: string;
   offencesRefData: string;
   resultsRefData: string;
   majorCreditorRefData: string;
+  majorCreditorAccounts: string;
   draftAccounts: string;
   searchOffences: string;
   prosecutorRefData: string;
@@ -15,4 +17,11 @@ export interface IOpalFinesPaths {
   searchMinorCreditorAccounts: string;
   minorCreditorAccounts: string;
   enforcersRefData: string;
+  centralFunds: string;
+  reports: string;
+  reportInstances: string;
+  interfaceJobsSummary: string;
+  tills: string;
+  sourceMappings: string;
+  processInterfaceJobs: string;
 }

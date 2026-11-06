@@ -60,6 +60,7 @@ import { FinesAccPartyAddAmendConvertVd } from './components/fines-acc-party-add
 import { FinesAccPartyAddAmendConvertDobNi } from './components/fines-acc-party-add-amend-convert-dob-ni/fines-acc-party-add-amend-convert-dob-ni.component';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../constants/fines-acc-party-add-amend-convert-modes.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS } from '../constants/fines-acc-party-add-amend-convert-fragments.constant';
 import {
   MojAlertComponent,
   MojAlertContentComponent,
@@ -68,10 +69,7 @@ import {
 } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 
 //regex pattern validators for the form controls
-const SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR = patternValidator(
-  SINGLE_ASCII_CHARACTERS,
-  'singleAsciiCharacters',
-);
+const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_CHARACTERS, 'singleAsciiCharacters');
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   ALPHANUMERIC_WITH_SPACES_PATTERN,
   'alphanumericTextPattern',
@@ -136,9 +134,11 @@ export class FinesAccPartyAddAmendConvertFormComponent
     FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS,
   ).map(([key, value]) => ({ key, value }));
   public readonly FINES_ACC_SECTION_BREAK = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES.hr2;
+  public readonly sectionFragments = FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS;
 
   /**
    * Creates the base form group with fields shared by all party types.
+   * @returns The shared form group with the address limit for the current party type.
    */
   private createBaseFormGroup(): FormGroup {
     return new FormGroup({
@@ -146,15 +146,15 @@ export class FinesAccPartyAddAmendConvertFormComponent
       facc_party_add_amend_convert_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
-        SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_address_line_2: new FormControl(null, [
         optionalMaxLengthValidator(30),
-        SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_address_line_3: new FormControl(null, [
-        optionalMaxLengthValidator(16),
-        SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
+        optionalMaxLengthValidator(this.isParentGuardianPartyType ? 13 : 16),
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_post_code: new FormControl(null, [
         optionalMaxLengthValidator(8),
@@ -201,19 +201,11 @@ export class FinesAccPartyAddAmendConvertFormComponent
     formGroup.addControl('facc_party_add_amend_convert_title', new FormControl(null, titleValidator));
     formGroup.addControl(
       'facc_party_add_amend_convert_forenames',
-      new FormControl(null, [
-        Validators.required,
-        Validators.maxLength(20),
-        SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
-      ]),
+      new FormControl(null, [Validators.required, Validators.maxLength(20), SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR]),
     );
     formGroup.addControl(
       'facc_party_add_amend_convert_surname',
-      new FormControl(null, [
-        Validators.required,
-        Validators.maxLength(30),
-        SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
-      ]),
+      new FormControl(null, [Validators.required, Validators.maxLength(30), SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR]),
     );
     formGroup.addControl(
       'facc_party_add_amend_convert_dob',
@@ -253,25 +245,25 @@ export class FinesAccPartyAddAmendConvertFormComponent
       'facc_party_add_amend_convert_employer_address_line_1',
       new FormControl(null, [
         optionalMaxLengthValidator(30),
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+        SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
         employerFieldsValidator,
       ]),
     );
     formGroup.addControl(
       'facc_party_add_amend_convert_employer_address_line_2',
-      new FormControl(null, [optionalMaxLengthValidator(30), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR]),
+      new FormControl(null, [optionalMaxLengthValidator(30), SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR]),
     );
     formGroup.addControl(
       'facc_party_add_amend_convert_employer_address_line_3',
-      new FormControl(null, [optionalMaxLengthValidator(30), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR]),
+      new FormControl(null, [optionalMaxLengthValidator(30), SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR]),
     );
     formGroup.addControl(
       'facc_party_add_amend_convert_employer_address_line_4',
-      new FormControl(null, [optionalMaxLengthValidator(30), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR]),
+      new FormControl(null, [optionalMaxLengthValidator(30), SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR]),
     );
     formGroup.addControl(
       'facc_party_add_amend_convert_employer_address_line_5',
-      new FormControl(null, [optionalMaxLengthValidator(30), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR]),
+      new FormControl(null, [optionalMaxLengthValidator(30), SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR]),
     );
     formGroup.addControl(
       'facc_party_add_amend_convert_employer_post_code',
@@ -285,11 +277,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
   private addCompanyFormControls(formGroup: FormGroup): void {
     formGroup.addControl(
       'facc_party_add_amend_convert_organisation_name',
-      new FormControl(null, [
-        Validators.required,
-        Validators.maxLength(50),
-        SINGLE_ASCII_CHARACTERS_ALPHANUMERIC_WITH_SPECIAL_CHARACTERS_PATTERN_VALIDATOR,
-      ]),
+      new FormControl(null, [Validators.required, Validators.maxLength(50), SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR]),
     );
     formGroup.addControl('facc_party_add_amend_convert_organisation_aliases', this.createFormAlias([]));
   }
@@ -441,6 +429,8 @@ export class FinesAccPartyAddAmendConvertFormComponent
         this.fieldErrors['facc_party_add_amend_convert_forenames_parent_guardian'];
       this.fieldErrors['facc_party_add_amend_convert_surname'] =
         this.fieldErrors['facc_party_add_amend_convert_surname_parent_guardian'];
+      this.fieldErrors['facc_party_add_amend_convert_address_line_3'] =
+        this.fieldErrors['facc_party_add_amend_convert_address_line_3_parent_guardian'];
     }
     this.yesterday = this.dateService.getPreviousDate({ days: 1 });
     this.dateOfBirthListener();

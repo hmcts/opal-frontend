@@ -1,10 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent } from './fines-mac-offence-details-review-offence-heading-title.component';
-import { OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-duplicate-code.mock';
-import { OPAL_FINES_OFFENCES_REF_DATA_EXACT_MATCH_MULTI_RESULT_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-multi-result.mock';
-import { OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-offences-ref-data-singular.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { By } from '@angular/platform-browser';
+import {
+  GovukSummaryListRowActionItemComponent,
+  GovukSummaryListRowActionsComponent,
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 
 describe('FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent', () => {
   let component: FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent;
@@ -18,14 +20,26 @@ describe('FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent', () => {
     fixture = TestBed.createComponent(FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent);
     component = fixture.componentInstance;
 
-    component.offenceCode = OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK.refData[0].get_cjs_code;
-    component.offenceRefData = OPAL_FINES_OFFENCES_REF_DATA_SINGULAR_MOCK;
+    component.offenceCode = 'AK123456';
+    component.offenceTitle = 'ak test';
+    component.headingLevel = 2;
 
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it.each([
+    { headingLevel: 2, expectedHeading: 'h2' },
+    { headingLevel: 3, expectedHeading: 'h3' },
+  ] as const)('should render the offence title as an h$headingLevel heading', ({ headingLevel, expectedHeading }) => {
+    fixture.componentRef.setInput('headingLevel', headingLevel);
+    fixture.detectChanges();
+
+    expect(fixture.debugElement.query(By.css(expectedHeading))?.nativeElement.textContent).toContain('ak test');
+    expect(fixture.debugElement.query(By.css(expectedHeading === 'h2' ? 'h3' : 'h2'))).toBeNull();
   });
 
   it('should emit action when onActionClick is called', () => {
@@ -38,51 +52,29 @@ describe('FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent', () => {
     expect(emitSpy).toHaveBeenCalledWith(action);
   });
 
-  it('should set offenceTitle when getOffenceTitle is called', () => {
-    component.getOffenceTitle();
+  it('should not render actions when read only', () => {
+    fixture.componentRef.setInput('showActions', true);
+    fixture.componentRef.setInput('isReadOnly', true);
 
-    expect(component.offenceTitle).toEqual(component.offenceRefData.refData[0].offence_title);
+    fixture.detectChanges();
+
+    const actions = fixture.debugElement.query(By.directive(GovukSummaryListRowActionsComponent));
+
+    expect(actions).toBeNull();
   });
 
-  it('should use the exact code match when multiple offences are returned', () => {
-    component.offenceCode = 'CD71039';
-    component.offenceRefData = OPAL_FINES_OFFENCES_REF_DATA_EXACT_MATCH_MULTI_RESULT_MOCK;
+  it('should render only change and remove actions when editable', () => {
+    fixture.componentRef.setInput('showActions', true);
+    fixture.componentRef.setInput('isReadOnly', false);
 
-    component.getOffenceTitle();
+    fixture.detectChanges();
 
-    expect(component.offenceTitle).toEqual('Criminal damage to property valued under £5000');
-  });
+    const actions = fixture.debugElement.query(By.directive(GovukSummaryListRowActionsComponent));
+    const actionNames = fixture.debugElement
+      .queryAll(By.directive(GovukSummaryListRowActionItemComponent))
+      .map((action) => action.componentInstance.actionName);
 
-  it('should use the saved offence id when duplicate code matches are returned', () => {
-    component.offenceCode = 'GMMET001';
-    component.offenceId = 41800;
-    component.offenceRefData = OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK;
-
-    component.getOffenceTitle();
-
-    expect(component.offenceTitle).toEqual('Duplicate offence title B');
-  });
-
-  it('should fall back to the first offence title when duplicate code matches are returned without a saved offence id', () => {
-    component.offenceCode = 'GMMET001';
-    component.offenceId = null;
-    component.offenceRefData = OPAL_FINES_OFFENCES_REF_DATA_DUPLICATE_CODE_MOCK;
-
-    component.getOffenceTitle();
-
-    expect(component.offenceTitle).toEqual('Duplicate offence title A');
-  });
-
-  it('should fall back to an empty title when there is no exact match and no reference data', () => {
-    component.offenceCode = 'UNKNOWN';
-    component.offenceId = null;
-    component.offenceRefData = {
-      count: 0,
-      refData: [],
-    };
-
-    component.getOffenceTitle();
-
-    expect(component.offenceTitle).toEqual('');
+    expect(actions).toBeTruthy();
+    expect(actionNames).toEqual(['Change', 'Remove']);
   });
 });

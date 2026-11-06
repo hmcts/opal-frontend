@@ -1,17 +1,28 @@
 import { inject } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ResolveFn, Router } from '@angular/router';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { map, of, catchError } from 'rxjs';
 import { IOpalFinesSearchOffencesData } from '@services/fines/opal-fines-service/interfaces/opal-fines-search-offences.interface';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_TITLES } from '../constants/fines-mac-offence-details-search-offences-routing-titles.constant';
 
 export const finesMacOffenceDetailsSearchOffencesResolver: ResolveFn<IOpalFinesSearchOffencesData> = () => {
   const router = inject(Router);
   const opalFinesService = inject(OpalFines);
   const dateService = inject(DateService);
   const utilsService = inject(UtilsService);
+  const title = inject(Title);
   const emptyResult = { searchData: [], count: 0 };
+
+  const setPageTitle = (hasResults: boolean): void => {
+    const pageTitle = hasResults
+      ? FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_TITLES.children.searchOffencesResults
+      : FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_TITLES.children.noResultsFound;
+
+    title.setTitle(`OPAL - ${pageTitle}`);
+  };
 
   // Access the router state to retrieve navigation extras passed from the previous component
   const nav = router.currentNavigation();
@@ -21,6 +32,7 @@ export const finesMacOffenceDetailsSearchOffencesResolver: ResolveFn<IOpalFinesS
 
   // If no form data was passed through navigation state, return an empty result
   if (!state?.payload) {
+    setPageTitle(false);
     return of(emptyResult);
   }
 
@@ -39,9 +51,13 @@ export const finesMacOffenceDetailsSearchOffencesResolver: ResolveFn<IOpalFinesS
 
   // Call the offence search API and map the response to a simplified table structure
   return opalFinesService.searchOffences(filteredBody).pipe(
-    map((response: IOpalFinesSearchOffencesData) => response),
+    map((response: IOpalFinesSearchOffencesData) => {
+      setPageTitle(response.searchData.length > 0);
+      return response;
+    }),
     catchError(() => {
       utilsService.scrollToTop();
+      setPageTitle(false);
       return of(emptyResult);
     }),
   );

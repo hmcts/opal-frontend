@@ -8,16 +8,18 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FINES_MAC_STATE_MOCK } from '../mocks/fines-mac-state.mock';
 import { OPAL_FINES_COURT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-ref-data.mock';
-import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 import { FINES_MAC_COURT_DETAILS_FORM_MOCK } from './mocks/fines-mac-court-details-form.mock';
 import { FINES_MAC_ROUTING_PATHS } from '../routing/constants/fines-mac-routing-paths.constant';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../routing/constants/fines-mac-routing-nested-routes.constant';
-import { OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-pretty-name.mock';
 import { OPAL_FINES_COURT_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-court-pretty-name.mock';
 import { FinesMacStoreType } from '../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../stores/fines-mac.store';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  FINES_MAC_LJA_ORIGINATOR_REF_DATA_MOCK,
+  FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK,
+} from '../routing/resolvers/fetch-originators-resolver/mocks/fines-mac-originator-ref-data.mock';
 
 describe('FinesMacCourtDetailsComponent', () => {
   let component: FinesMacCourtDetailsComponent;
@@ -28,7 +30,6 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   beforeEach(async () => {
     mockOpalFinesService = {
-      getLocalJusticeAreaPrettyName: vi.fn().mockReturnValue(OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK),
       getCourtPrettyName: vi.fn().mockReturnValue(OPAL_FINES_COURT_PRETTY_NAME_MOCK),
     };
     formSubmit = structuredClone(FINES_MAC_COURT_DETAILS_FORM_MOCK);
@@ -47,7 +48,7 @@ describe('FinesMacCourtDetailsComponent', () => {
             snapshot: {
               data: {
                 courts: OPAL_FINES_COURT_REF_DATA_MOCK,
-                localJusticeAreas: OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK,
+                originators: FINES_MAC_LJA_ORIGINATOR_REF_DATA_MOCK,
               },
             },
           },
@@ -68,6 +69,15 @@ describe('FinesMacCourtDetailsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should create sending police force autocomplete items from prosecutors', () => {
+    const autocompleteItems = component['createAutoCompleteItemsOriginators'](
+      FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK,
+    );
+
+    expect(autocompleteItems).toHaveLength(FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK.refData.length);
+    expect(autocompleteItems[0]).toEqual({ value: 1865, name: 'Central ticket office (998)' });
   });
 
   it('should handle form submission and navigate to account details', () => {

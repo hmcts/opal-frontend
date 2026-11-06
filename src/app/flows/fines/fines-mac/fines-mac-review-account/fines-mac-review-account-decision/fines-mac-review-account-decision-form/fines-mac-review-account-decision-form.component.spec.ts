@@ -112,6 +112,17 @@ describe('FinesMacReviewAccountDecisionFormComponent', () => {
     expect(rejectionReasonControl?.valid).toBe(true);
   });
 
+  it('should accept commas and full stops in the rejection reason', () => {
+    const rejectionReasonControl = component.form.get('fm_review_account_decision_reason');
+    const decisionControl = component.form.get('fm_review_account_decision');
+
+    decisionControl?.setValue('reject');
+    rejectionReasonControl?.setValue("Reason, account-1. O'Neil");
+
+    expect(rejectionReasonControl?.errors).toBeNull();
+    expect(rejectionReasonControl?.valid).toBe(true);
+  });
+
   it('should remove required validator from rejection reason when decision is not reject', () => {
     const rejectionReasonControl = component.form.get('fm_review_account_decision_reason');
     const decisionControl = component.form.get('fm_review_account_decision');

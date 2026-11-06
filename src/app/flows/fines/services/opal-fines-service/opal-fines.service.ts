@@ -1,9 +1,12 @@
+import { IOpalFinesSourceMapping } from './interfaces/opal-fines-source-mapping.interface';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
+import { withHttpRetry } from '@hmcts/opal-frontend-common/interceptors/http-retry';
 
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { IOpalFinesBusinessUnitNonSnakeCase } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-non-snake-case.interface';
+import { IOpalFinesBusinessUnitOutstandingAutoPaymentCounts } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-outstanding-auto-payment-counts.interface';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesCourt } from '@services/fines/opal-fines-service/interfaces/opal-fines-court.interface';
 import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
@@ -19,10 +22,9 @@ import { IOpalFinesResults } from './interfaces/opal-fines-results.interface';
 import { IOpalFinesResultsRefData } from './interfaces/opal-fines-results-ref-data.interface';
 import { IOpalFinesMajorCreditor } from './interfaces/opal-fines-major-creditor.interface';
 import { IOpalFinesMajorCreditorRefData } from './interfaces/opal-fines-major-creditor-ref-data.interface';
-import {
-  IFinesMacAddAccountPayload,
-  IFinesMacAddAccountRequestPayload,
-} from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
+import { IFinesMacAddAccountRequestPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account-request.interface';
+import { IFinesMacReplaceAccountRequestPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-replace-account-request.interface';
 import { IOpalFinesDraftAccountsResponse } from './interfaces/opal-fines-draft-account-data.interface';
 import { IOpalFinesDraftAccountParams } from './interfaces/opal-fines-draft-account-params.interface';
 import { IOpalFinesSearchOffencesParams } from './interfaces/opal-fines-search-offences-params.interface';
@@ -37,6 +39,10 @@ import { IOpalFinesAccountPartyDetails } from './interfaces/opal-fines-account-p
 import { IOpalFinesAccountDefendantDetailsEnforcementTabRefData } from './interfaces/opal-fines-account-defendant-details-enforcement-tab-ref-data.interface';
 import { IOpalFinesAccountDefendantDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-defendant-details-history-and-notes-tab-ref-data.interface';
 import { IOpalFinesDefendantAccountHistoryParams } from './interfaces/opal-fines-defendant-account-history-params.interface';
+import { IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.interface';
+import { IOpalFinesMinorCreditorAccountHistoryParams } from './interfaces/opal-fines-minor-creditor-account-history-params.interface';
+import { IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData } from './interfaces/opal-fines-account-major-creditor-details-history-and-notes-tab-ref-data.interface';
+import { IOpalFinesMajorCreditorAccountHistoryParams } from './interfaces/opal-fines-major-creditor-account-history-params.interface';
 import { IOpalFinesAmendPaymentTermsPayload } from './interfaces/opal-fines-amend-payment-terms-payload.interface';
 import { IOpalFinesAccountDefendantDetailsImpositionsTabRefData } from './interfaces/opal-fines-account-defendant-details-impositions-tab-ref-data.interface';
 import { IOpalFinesAddNotePayload } from './interfaces/opal-fines-add-note.interface';
@@ -60,14 +66,33 @@ import { IOpalFinesUpdateMinorCreditorAccountPayload } from './interfaces/opal-f
 import { IOpalFinesAddEnforcementActionPayload } from './interfaces/opal-fines-add-enforcement-action-payload.interface';
 import { IOpalFinesRemoveEnforcementHoldPayload } from './interfaces/opal-fines-remove-enforcement-hold-payload.interface';
 import { IOpalFinesAccountMinorCreditorCreditor } from './interfaces/opal-fines-account-minor-creditor-creditor.interface';
-import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/types/opal-fines-draft-account-patch-request-payload.type';
+import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-patch-request-payload.interface';
 import { IOpalFinesDeleteDefendantAccountPartyPayload } from './interfaces/opal-fines-delete-defendant-account-party-payload.interface';
+import { IOpalFinesCentralFund } from './interfaces/opal-fines-account-central-fund.interface';
+import { IOpalFinesAccountMajorCreditorDetailsHeader } from '../../fines-acc/fines-acc-major-creditor-details/interfaces/fines-acc-major-creditor-details-header.interface';
+import { IOpalFinesAccountMajorCreditorAtAGlance } from './interfaces/opal-fines-account-major-creditor-at-a-glance.interface';
+import { IOpalFinesAccountDefendantDetailsConsolidatedAccount } from './interfaces/opal-fines-account-defendant-account-consolidated-account.interface';
+import { IOpalFinesAccountDefendantDetailsConsolidatedAccounts } from './interfaces/opal-fines-account-defendant-account-consolidated-accounts.interface';
+import { IOpalFinesReport } from './interfaces/opal-fines-report.interface';
+import { IOpalFinesReportInstancesParams } from './interfaces/opal-fines-report-instances-params.interface';
+import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
+import { IOpalFinesTillsParams } from './interfaces/opal-fines-tills-params.interface';
+import { IOpalFinesTillsResponse } from './interfaces/opal-fines-tills-response.interface';
+import { IOpalFinesInterfaceJobsSummaryParams } from './interfaces/opal-fines-interface-jobs-summary-params.interface';
+import { IOpalFinesInterfaceJobsSummaryResponse } from './interfaces/opal-fines-interface-jobs-summary-response.interface';
+import { IOpalFinesProcessInterfaceJobsPayload } from './interfaces/opal-fines-process-interface-jobs-payload.interface';
+
+const SAFE_READ_RETRY_POLICY = {
+  retryCount: 1,
+  delayMs: 0,
+} as const;
 
 @Injectable({
   providedIn: 'root',
 })
 export class OpalFines {
   private readonly http = inject(HttpClient);
+
   private cache = structuredClone(OPAL_FINES_CACHE_DEFAULTS);
 
   private readonly PARAM_BUSINESS_UNIT = 'business_unit';
@@ -76,6 +101,30 @@ export class OpalFines {
   private readonly PARAM_NOT_SUBMITTED_BY = 'not_submitted_by';
   private readonly PARAM_ACCOUNT_STATUS_DATE_FROM = 'account_status_date_from';
   private readonly PARAM_ACCOUNT_STATUS_DATE_TO = 'account_status_date_to';
+  private readonly PARAM_FROM_DATE = 'from_date';
+  private readonly PARAM_TO_DATE = 'to_date';
+  private readonly PARAM_BUSINESS_UNITS = 'business_units';
+  private readonly PARAM_USER_ID = 'user_id';
+  private readonly PARAM_REPORT_ID = 'report_id';
+  private readonly PARAM_BUSINESS_UNIT_IDS = 'business_unit_ids';
+  private readonly PARAM_STATUSES = 'statuses';
+  private readonly PARAM_AUTO_PAYMENTS = 'auto_payments';
+  private readonly PARAM_COMPLETED_DATE_FROM = 'completed_date_from';
+  private readonly PARAM_COMPLETED_DATE_TO = 'completed_date_to';
+  private readonly PARAM_INTERFACE_NAME = 'interface_name';
+
+  private retrySafeReadOptions() {
+    return { context: withHttpRetry(SAFE_READ_RETRY_POLICY) };
+  }
+
+  private withRetrySafeReadOptions<TOptions extends object>(
+    options: TOptions,
+  ): TOptions & ReturnType<typeof this.retrySafeReadOptions> {
+    return {
+      ...options,
+      ...this.retrySafeReadOptions(),
+    };
+  }
 
   /**
    * Appends an array of values to the given HttpParams object under the specified key.
@@ -92,6 +141,30 @@ export class OpalFines {
       }
     }
     return params;
+  }
+
+  /**
+   * Builds retry-safe HTTP response options for history reads and appends any defined query params.
+   *
+   * @param params - Optional history query params to add to the request.
+   * @returns HTTP options configured for safe-read retries.
+   */
+  private buildHistoryReadOptions(params?: Record<string, string>): {
+    observe: 'response';
+    params?: Record<string, string>;
+    context: ReturnType<typeof withHttpRetry>;
+  } {
+    const options: {
+      observe: 'response';
+      params?: Record<string, string>;
+      context: ReturnType<typeof withHttpRetry>;
+    } = this.withRetrySafeReadOptions({ observe: 'response' as const });
+
+    if (params) {
+      options.params = params;
+    }
+
+    return options;
   }
 
   /**
@@ -157,6 +230,7 @@ export class OpalFines {
    */
   private clearReferenceDataCaches(): void {
     const referenceCaches: (keyof IOpalFinesCache)[] = [
+      'sourceMappingsCache$',
       'courtRefDataCache$',
       'businessUnitsCache$',
       'businessUnitsPermissionCache$',
@@ -167,9 +241,70 @@ export class OpalFines {
       'offenceCodesCache$',
       'majorCreditorsCache$',
       'prosecutorDataCache$',
+      'reportsCache$',
     ];
 
     this.clearCaches(referenceCaches);
+  }
+
+  /**
+   * Builds HTTP query parameters for retrieving report instances.
+   *
+   * @param params - Report instance query parameters.
+   * @returns The HTTP query parameters for the request.
+   */
+  private getReportInstancesParams(params: IOpalFinesReportInstancesParams): HttpParams {
+    let httpParams = new HttpParams();
+
+    if (params.from_date) {
+      httpParams = httpParams.set(this.PARAM_FROM_DATE, params.from_date);
+    }
+
+    if (params.to_date) {
+      httpParams = httpParams.set(this.PARAM_TO_DATE, params.to_date);
+    }
+
+    if (params.report_id !== undefined && params.report_id !== null) {
+      httpParams = httpParams.set(this.PARAM_REPORT_ID, params.report_id.toString());
+    }
+
+    if (params.user_id !== undefined && params.user_id !== null) {
+      httpParams = httpParams.set(this.PARAM_USER_ID, params.user_id.toString());
+    }
+
+    httpParams = this.appendArrayParams(httpParams, this.PARAM_BUSINESS_UNITS, params.business_units);
+
+    return httpParams;
+  }
+
+  /**
+   * Builds HTTP query parameters for retrieving interface job summaries.
+   *
+   * Array filters are serialized as comma-separated values to match the endpoint contract.
+   *
+   * @param params - Interface job summary query parameters.
+   * @returns The HTTP query parameters for the request.
+   */
+  private getInterfaceJobsSummaryParams(params: IOpalFinesInterfaceJobsSummaryParams): HttpParams {
+    let httpParams = new HttpParams().set(this.PARAM_BUSINESS_UNIT_IDS, params.business_unit_ids.join(','));
+
+    if (params.statuses?.length) {
+      httpParams = httpParams.set(this.PARAM_STATUSES, params.statuses.join(','));
+    }
+
+    if (params.completed_date_from) {
+      httpParams = httpParams.set(this.PARAM_COMPLETED_DATE_FROM, params.completed_date_from);
+    }
+
+    if (params.completed_date_to) {
+      httpParams = httpParams.set(this.PARAM_COMPLETED_DATE_TO, params.completed_date_to);
+    }
+
+    if (params.interface_name) {
+      httpParams = httpParams.set(this.PARAM_INTERFACE_NAME, params.interface_name);
+    }
+
+    return httpParams;
   }
 
   /**
@@ -181,7 +316,10 @@ export class OpalFines {
   public getCourts(business_unit: number): Observable<IOpalFinesCourtRefData> {
     if (!this.cache.courtRefDataCache$[business_unit]) {
       this.cache.courtRefDataCache$[business_unit] = this.http
-        .get<IOpalFinesCourtRefData>(OPAL_FINES_PATHS.courtRefData, { params: { business_unit } })
+        .get<IOpalFinesCourtRefData>(
+          OPAL_FINES_PATHS.courtRefData,
+          this.withRetrySafeReadOptions({ params: { business_unit } }),
+        )
         .pipe(shareReplay(1));
     }
 
@@ -203,7 +341,7 @@ export class OpalFines {
    * @returns The pretty name of the prosecutor.
    */
   public getProsecutorPrettyName(prosecutor: IOpalFinesProsecutor): string {
-    return `${prosecutor.prosecutor_name} (${prosecutor.prosecutor_code})`;
+    return `${prosecutor.name} (${prosecutor.prosecutor_code})`;
   }
 
   /**
@@ -223,7 +361,10 @@ export class OpalFines {
     // e.g. ACCOUNT_ENQUIRY, ACCOUNT_ENQUIRY_NOTES, CREATE_MANAGE_DRAFT_ACCOUNTS
     if (!this.cache.businessUnitsPermissionCache$[permission]) {
       this.cache.businessUnitsPermissionCache$[permission] = this.http
-        .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData, { params: { permission } })
+        .get<IOpalFinesBusinessUnitRefData>(
+          OPAL_FINES_PATHS.businessUnitRefData,
+          this.withRetrySafeReadOptions({ params: { permission } }),
+        )
         .pipe(shareReplay(1));
     }
 
@@ -243,10 +384,102 @@ export class OpalFines {
    */
   public getBusinessUnits(): Observable<IOpalFinesBusinessUnitRefData> {
     this.cache.businessUnitsCache$ ??= this.http
-      .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData)
+      .get<IOpalFinesBusinessUnitRefData>(OPAL_FINES_PATHS.businessUnitRefData, this.retrySafeReadOptions())
       .pipe(shareReplay(1));
 
     return this.cache.businessUnitsCache$;
+  }
+
+  /**
+   * Retrieves outstanding auto payment counts by business unit.
+   *
+   * Counts are operational data, so this response is not cached.
+   *
+   * @returns An observable of business units with file and till counts for Automatic Cash Input.
+   */
+  public getBusinessUnitOutstandingAutoPaymentCounts(): Observable<IOpalFinesBusinessUnitOutstandingAutoPaymentCounts> {
+    return this.http.get<IOpalFinesBusinessUnitOutstandingAutoPaymentCounts>(
+      OPAL_FINES_PATHS.businessUnitOutstandingAutoPaymentCount,
+      this.retrySafeReadOptions(),
+    );
+  }
+
+  /**
+   * Retrieves interface job summaries using the supplied business unit and optional filters.
+   *
+   * Interface job state is operational data, so this response is not cached.
+   *
+   * @param params - Business unit, status, completion date, and interface name filters.
+   * @returns An observable of matching interface job summaries.
+   */
+  public getInterfaceJobsSummary(
+    params: IOpalFinesInterfaceJobsSummaryParams,
+  ): Observable<IOpalFinesInterfaceJobsSummaryResponse> {
+    return this.http.get<IOpalFinesInterfaceJobsSummaryResponse>(
+      OPAL_FINES_PATHS.interfaceJobsSummary,
+      this.withRetrySafeReadOptions({ params: this.getInterfaceJobsSummaryParams(params) }),
+    );
+  }
+
+  /**
+   * Retrieves source display names, sharing one request and caching a successful response for the session.
+   * Eligible transient failures receive one automatic retry through the safe-read policy.
+   * Failed requests can be retried by a later subscriber. Clearing reference caches resets this response.
+   *
+   * @returns The source mapping array supplied by the backend.
+   */
+  public getSourceMappings(): Observable<IOpalFinesSourceMapping[]> {
+    this.cache.sourceMappingsCache$ ??= this.http
+      .get<IOpalFinesSourceMapping[]>(OPAL_FINES_PATHS.sourceMappings, this.retrySafeReadOptions())
+      .pipe(shareReplay({ bufferSize: 1, refCount: false }));
+
+    return this.cache.sourceMappingsCache$;
+  }
+
+  /**
+   * Starts asynchronous processing for the selected interface jobs.
+   *
+   * This write request is intentionally not retried because repeating it could queue the same jobs twice.
+   *
+   * @param payload - Interface jobs and their override-inhibits values.
+   * @returns An observable that completes when the jobs have been accepted for processing.
+   */
+  public processInterfaceJobs(payload: IOpalFinesProcessInterfaceJobsPayload): Observable<void> {
+    return this.http.post<void>(OPAL_FINES_PATHS.processInterfaceJobs, payload);
+  }
+
+  /**
+   * Retrieves report metadata for a report type.
+   * Metadata is cached because report configuration is reference-like data.
+   *
+   * @param reportId - The report type identifier.
+   * @returns An observable of report metadata.
+   */
+  public getReport(reportId: string | number): Observable<IOpalFinesReport> {
+    const cacheKey = reportId.toString();
+
+    if (!this.cache.reportsCache$[cacheKey]) {
+      this.cache.reportsCache$[cacheKey] = this.http
+        .get<IOpalFinesReport>(`${OPAL_FINES_PATHS.reports}/${reportId}`)
+        .pipe(shareReplay(1));
+    }
+
+    return this.cache.reportsCache$[cacheKey];
+  }
+
+  /**
+   * Retrieves report instances for a report type, user, and optional filters.
+   * This call is intentionally not cached because report generation state changes frequently.
+   *
+   * @param params - Report instance query parameters.
+   * @returns An observable of report instances.
+   */
+  public getReportInstances(
+    params: IOpalFinesReportInstancesParams = {},
+  ): Observable<IOpalFinesReportInstancesResponse> {
+    return this.http.get<IOpalFinesReportInstancesResponse>(OPAL_FINES_PATHS.reportInstances, {
+      params: this.getReportInstancesParams(params),
+    });
   }
 
   /**
@@ -283,6 +516,7 @@ export class OpalFines {
         this.cache.localJusticeAreasLjaTypeCache$[cacheKey] = this.http
           .get<IOpalFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData, {
             params: { lja_type: ljaTypes },
+            ...this.retrySafeReadOptions(),
           })
           .pipe(shareReplay(1));
       }
@@ -291,7 +525,7 @@ export class OpalFines {
     }
 
     this.cache.localJusticeAreasCache$ ??= this.http
-      .get<IOpalFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData)
+      .get<IOpalFinesLocalJusticeAreaRefData>(OPAL_FINES_PATHS.localJusticeAreaRefData, this.retrySafeReadOptions())
       .pipe(shareReplay(1));
 
     return this.cache.localJusticeAreasCache$;
@@ -341,6 +575,7 @@ export class OpalFines {
       this.cache.resultsCache$[cacheKey] = this.http
         .get<IOpalFinesResultsRefData>(OPAL_FINES_PATHS.resultsRefData, {
           params: { result_ids, ...params },
+          ...this.retrySafeReadOptions(),
         })
         .pipe(shareReplay(1));
     }
@@ -360,7 +595,7 @@ export class OpalFines {
     }
     if (!this.cache.resultCache$[result_id]) {
       this.cache.resultCache$[result_id] = this.http
-        .get<IOpalFinesResultRefData>(`${OPAL_FINES_PATHS.resultsRefData}/${result_id}`)
+        .get<IOpalFinesResultRefData>(`${OPAL_FINES_PATHS.resultsRefData}/${result_id}`, this.retrySafeReadOptions())
         .pipe(shareReplay(1));
     }
 
@@ -384,7 +619,7 @@ export class OpalFines {
   public getOffenceByCjsCode(cjsCode: string): Observable<IOpalFinesOffencesRefData> {
     if (!this.cache.offenceCodesCache$[cjsCode]) {
       this.cache.offenceCodesCache$[cjsCode] = this.http
-        .get<IOpalFinesOffencesRefData>(`${OPAL_FINES_PATHS.offencesRefData}?q=${cjsCode}`)
+        .get<IOpalFinesOffencesRefData>(`${OPAL_FINES_PATHS.offencesRefData}?q=${cjsCode}`, this.retrySafeReadOptions())
         .pipe(shareReplay(1));
     }
     return this.cache.offenceCodesCache$[cjsCode];
@@ -402,7 +637,10 @@ export class OpalFines {
   public getMajorCreditors(businessUnit: number): Observable<IOpalFinesMajorCreditorRefData> {
     if (!this.cache.majorCreditorsCache$[businessUnit]) {
       this.cache.majorCreditorsCache$[businessUnit] = this.http
-        .get<IOpalFinesMajorCreditorRefData>(OPAL_FINES_PATHS.majorCreditorRefData, { params: { businessUnit } })
+        .get<IOpalFinesMajorCreditorRefData>(
+          OPAL_FINES_PATHS.majorCreditorRefData,
+          this.withRetrySafeReadOptions({ params: { businessUnit } }),
+        )
         .pipe(shareReplay(1));
     }
 
@@ -415,7 +653,9 @@ export class OpalFines {
    * @returns The pretty name of the major creditor.
    */
   public getMajorCreditorPrettyName(majorCreditor: IOpalFinesMajorCreditor): string {
-    return `${majorCreditor.name} (${majorCreditor.major_creditor_code})`;
+    return majorCreditor.major_creditor_code
+      ? `${majorCreditor.name} (${majorCreditor.major_creditor_code})`
+      : (majorCreditor.name ?? '');
   }
 
   /**
@@ -463,7 +703,7 @@ export class OpalFines {
       }
 
       this.cache.draftAccountsCache$[cacheKey] = this.http
-        .get<IOpalFinesDraftAccountsResponse>(OPAL_FINES_PATHS.draftAccounts, { params })
+        .get<IOpalFinesDraftAccountsResponse>(OPAL_FINES_PATHS.draftAccounts, this.withRetrySafeReadOptions({ params }))
         .pipe(shareReplay(1));
     }
 
@@ -502,8 +742,12 @@ export class OpalFines {
       'defendantAccountHistoryAndNotesCache$',
       'defendantAccountPaymentTermsLatestCache$',
       'defendantAccountFixedPenaltyCache$',
+      'defendantAccountConsolidatedAccountsCache$',
       'minorCreditorAccountAtAGlanceCache$',
       'minorCreditorAccountCreditorCache$',
+      'minorCreditorAccountHistoryAndNotesCache$',
+      'majorCreditorAccountAtAGlanceCache$',
+      'majorCreditorAccountHistoryAndNotesCache$',
     ];
 
     this.clearCaches(accountCaches);
@@ -535,6 +779,7 @@ export class OpalFines {
     return this.http
       .get<IFinesMacAddAccountPayload>(`${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`, {
         observe: 'response',
+        ...this.retrySafeReadOptions(),
       })
       .pipe(
         map((response: HttpResponse<IFinesMacAddAccountPayload>) => {
@@ -557,6 +802,7 @@ export class OpalFines {
   public getBusinessUnitById(businessUnitId: number): Observable<IOpalFinesBusinessUnitNonSnakeCase> {
     return this.http.get<IOpalFinesBusinessUnitNonSnakeCase>(
       `${OPAL_FINES_PATHS.businessUnitRefData}/${businessUnitId}`,
+      this.retrySafeReadOptions(),
     );
   }
 
@@ -567,20 +813,29 @@ export class OpalFines {
    * @returns {Observable<IOpalFinesOffencesNonSnakeCase>} An observable containing the offence data.
    */
   public getOffenceById(offenceId: number): Observable<IOpalFinesOffencesNonSnakeCase> {
-    return this.http.get<IOpalFinesOffencesNonSnakeCase>(`${OPAL_FINES_PATHS.offencesRefData}/${offenceId}`);
+    return this.http.get<IOpalFinesOffencesNonSnakeCase>(
+      `${OPAL_FINES_PATHS.offencesRefData}/${offenceId}`,
+      this.retrySafeReadOptions(),
+    );
   }
 
   /**
    * Sends a PUT request to update the draft account payload.
    *
-   * @param body - The payload containing the account information to be added.
+   * @param draftAccountId - ID of the draft account to replace.
+   * @param body - Replacement account request body.
+   * @param version - Version supplied through the If-Match header.
    * @returns An Observable of the updated account payload.
    */
-  public putDraftAddAccountPayload(body: IFinesMacAddAccountRequestPayload): Observable<IFinesMacAddAccountPayload> {
+  public putDraftAddAccountPayload(
+    draftAccountId: number,
+    body: IFinesMacReplaceAccountRequestPayload,
+    version: string,
+  ): Observable<IFinesMacAddAccountPayload> {
     return this.http.put<IFinesMacAddAccountPayload>(
-      `${OPAL_FINES_PATHS.draftAccounts}/${body.draft_account_id}`,
+      `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`,
       body,
-      this.buildIfMatchHeader(body.version!),
+      this.buildIfMatchHeader(version),
     );
   }
 
@@ -600,16 +855,18 @@ export class OpalFines {
    *
    * @param draftAccountId - The unique identifier of the draft account to update.
    * @param payload - The partial payload containing the fields to update in the draft account.
+   * @param version - Version supplied through the If-Match header.
    * @returns An Observable emitting the updated account payload as an `IFinesMacAddAccountPayload`.
    */
   public patchDraftAccountPayload(
     draftAccountId: number,
     payload: IOpalFinesDraftAccountPatchRequestPayload,
+    version: string,
   ): Observable<IFinesMacAddAccountPayload> {
     return this.http.patch<IFinesMacAddAccountPayload>(
       `${OPAL_FINES_PATHS.draftAccounts}/${draftAccountId}`,
       payload,
-      this.buildIfMatchHeader(payload.version!),
+      this.buildIfMatchHeader(version),
     );
   }
 
@@ -622,7 +879,10 @@ export class OpalFines {
   public getProsecutors(business_unit: number): Observable<IOpalFinesProsecutorRefData> {
     if (!this.cache.prosecutorDataCache$[business_unit]) {
       this.cache.prosecutorDataCache$[business_unit] = this.http
-        .get<IOpalFinesProsecutorRefData>(OPAL_FINES_PATHS.prosecutorRefData, { params: { business_unit } })
+        .get<IOpalFinesProsecutorRefData>(
+          OPAL_FINES_PATHS.prosecutorRefData,
+          this.withRetrySafeReadOptions({ params: { business_unit } }),
+        )
         .pipe(shareReplay(1));
     }
 
@@ -637,7 +897,7 @@ export class OpalFines {
    */
   public getEnforcers(): Observable<IOpalFinesEnforcersRefData> {
     this.cache.enforcersCache$ ??= this.http
-      .get<IOpalFinesEnforcersRefData>(OPAL_FINES_PATHS.enforcersRefData)
+      .get<IOpalFinesEnforcersRefData>(OPAL_FINES_PATHS.enforcersRefData, this.retrySafeReadOptions())
       .pipe(shareReplay(1));
 
     return this.cache.enforcersCache$;
@@ -663,7 +923,7 @@ export class OpalFines {
     if (!this.cache.defendantAccountAtAGlanceCache$) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/at-a-glance`;
       this.cache.defendantAccountAtAGlanceCache$ = this.http
-        .get<IOpalFinesAccountDefendantAtAGlance>(url, { observe: 'response' })
+        .get<IOpalFinesAccountDefendantAtAGlance>(url, this.withRetrySafeReadOptions({ observe: 'response' as const }))
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantAtAGlance>) => {
             const version = this.extractEtagVersion(response.headers);
@@ -695,7 +955,10 @@ export class OpalFines {
     if (!this.cache.defendantAccountPartyCache$) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/${OPAL_FINES_PATHS.defendantAccountParties}/${defendant_party_id}`;
       this.cache.defendantAccountPartyCache$ = this.http
-        .get<IOpalFinesAccountDefendantAccountParty>(url, { observe: 'response' })
+        .get<IOpalFinesAccountDefendantAccountParty>(
+          url,
+          this.withRetrySafeReadOptions({ observe: 'response' as const }),
+        )
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantAccountParty>) => {
             const version = this.extractEtagVersion(response.headers);
@@ -726,7 +989,10 @@ export class OpalFines {
     if (!this.cache.defendantAccountParentOrGuardianAccountPartyCache$) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/${OPAL_FINES_PATHS.defendantAccountParties}/${party_account_id}`;
       this.cache.defendantAccountParentOrGuardianAccountPartyCache$ = this.http
-        .get<IOpalFinesAccountDefendantAccountParty>(url, { observe: 'response' })
+        .get<IOpalFinesAccountDefendantAccountParty>(
+          url,
+          this.withRetrySafeReadOptions({ observe: 'response' as const }),
+        )
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantAccountParty>) => {
             const version = this.extractEtagVersion(response.headers);
@@ -755,7 +1021,10 @@ export class OpalFines {
     if (!this.cache.defendantAccountFixedPenaltyCache$) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/fixed-penalty`;
       this.cache.defendantAccountFixedPenaltyCache$ = this.http
-        .get<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData>(url, { observe: 'response' })
+        .get<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData>(
+          url,
+          this.withRetrySafeReadOptions({ observe: 'response' as const }),
+        )
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantDetailsFixedPenaltyTabRefData>) => {
             const version = this.extractEtagVersion(response.headers);
@@ -784,7 +1053,10 @@ export class OpalFines {
     if (!this.cache.defendantAccountEnforcementCache$) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/enforcement-status`;
       this.cache.defendantAccountEnforcementCache$ = this.http
-        .get<IOpalFinesAccountDefendantDetailsEnforcementTabRefData>(url, { observe: 'response' })
+        .get<IOpalFinesAccountDefendantDetailsEnforcementTabRefData>(
+          url,
+          this.withRetrySafeReadOptions({ observe: 'response' as const }),
+        )
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantDetailsEnforcementTabRefData>) => {
             const version = this.extractEtagVersion(response.headers);
@@ -813,7 +1085,10 @@ export class OpalFines {
     if (!this.cache.defendantAccountImpositionsCache$) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/impositions`;
       this.cache.defendantAccountImpositionsCache$ = this.http
-        .get<IOpalFinesAccountDefendantDetailsImpositionsTabRefData>(url, { observe: 'response' })
+        .get<IOpalFinesAccountDefendantDetailsImpositionsTabRefData>(
+          url,
+          this.withRetrySafeReadOptions({ observe: 'response' as const }),
+        )
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantDetailsImpositionsTabRefData>) => {
             const version = this.extractEtagVersion(response.headers);
@@ -846,7 +1121,7 @@ export class OpalFines {
     const options: {
       observe: 'response';
       params?: Record<string, string>;
-    } = { observe: 'response' };
+    } = this.withRetrySafeReadOptions({ observe: 'response' as const });
 
     if (filterParams) {
       options.params = Object.fromEntries(
@@ -892,7 +1167,10 @@ export class OpalFines {
     if (!this.cache.defendantAccountPaymentTermsLatestCache$) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/payment-terms/latest`;
       this.cache.defendantAccountPaymentTermsLatestCache$ = this.http
-        .get<IOpalFinesAccountDefendantDetailsPaymentTermsLatest>(url, { observe: 'response' })
+        .get<IOpalFinesAccountDefendantDetailsPaymentTermsLatest>(
+          url,
+          this.withRetrySafeReadOptions({ observe: 'response' as const }),
+        )
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountDefendantDetailsPaymentTermsLatest>) => {
             const version = this.extractEtagVersion(response.headers);
@@ -945,16 +1223,21 @@ export class OpalFines {
    */
   public getDefendantAccountHeadingData(accountId: number): Observable<IOpalFinesAccountDefendantDetailsHeader> {
     const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
-    return this.http.get<IOpalFinesAccountDefendantDetailsHeader>(url, { observe: 'response' }).pipe(
-      map((response: HttpResponse<IOpalFinesAccountDefendantDetailsHeader>) => {
-        const payload = response.body as IOpalFinesAccountDefendantDetailsHeader;
-        const version = this.extractEtagVersion(response.headers);
-        return {
-          ...payload,
-          version,
-        };
-      }),
-    );
+    return this.http
+      .get<IOpalFinesAccountDefendantDetailsHeader>(
+        url,
+        this.withRetrySafeReadOptions({ observe: 'response' as const }),
+      )
+      .pipe(
+        map((response: HttpResponse<IOpalFinesAccountDefendantDetailsHeader>) => {
+          const payload = response.body as IOpalFinesAccountDefendantDetailsHeader;
+          const version = this.extractEtagVersion(response.headers);
+          return {
+            ...payload,
+            version,
+          };
+        }),
+      );
   }
 
   /**
@@ -966,10 +1249,20 @@ export class OpalFines {
    * @param payload - The payload containing note details including associated record information,
    *                  note type, note text, and defendant account version for concurrency.
    * @param version - The version string to be used as the value for the `If-Match` header.
+   * @param businessUnitId - The business unit identifier to be sent for permission checks.
    * @returns An Observable that emits the created note data.
    */
-  public addNote(payload: IOpalFinesAddNotePayload, version: string): Observable<IOpalFinesAddNoteResponse> {
-    return this.http.post<IOpalFinesAddNoteResponse>(OPAL_FINES_PATHS.notes, payload, this.buildIfMatchHeader(version));
+  public addNote(
+    payload: IOpalFinesAddNotePayload,
+    version: string,
+    businessUnitId: string,
+  ): Observable<IOpalFinesAddNoteResponse> {
+    return this.http.post<IOpalFinesAddNoteResponse>(OPAL_FINES_PATHS.notes, payload, {
+      headers: {
+        'If-Match': version,
+        'Business-Unit-Id': businessUnitId,
+      },
+    });
   }
 
   /**
@@ -1127,16 +1420,21 @@ export class OpalFines {
     accountId: number,
   ): Observable<IOpalFinesAccountMinorCreditorDetailsHeader> {
     const url = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${accountId}/header-summary`;
-    return this.http.get<IOpalFinesAccountMinorCreditorDetailsHeader>(url, { observe: 'response' }).pipe(
-      map((response: HttpResponse<IOpalFinesAccountMinorCreditorDetailsHeader>) => {
-        const payload = response.body as IOpalFinesAccountMinorCreditorDetailsHeader;
-        const version = this.extractEtagVersion(response.headers);
-        return {
-          ...payload,
-          version,
-        };
-      }),
-    );
+    return this.http
+      .get<IOpalFinesAccountMinorCreditorDetailsHeader>(
+        url,
+        this.withRetrySafeReadOptions({ observe: 'response' as const }),
+      )
+      .pipe(
+        map((response: HttpResponse<IOpalFinesAccountMinorCreditorDetailsHeader>) => {
+          const payload = response.body as IOpalFinesAccountMinorCreditorDetailsHeader;
+          const version = this.extractEtagVersion(response.headers);
+          return {
+            ...payload,
+            version,
+          };
+        }),
+      );
   }
 
   /**
@@ -1237,7 +1535,10 @@ export class OpalFines {
     if (!this.cache.minorCreditorAccountAtAGlanceCache$) {
       const url = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}/at-a-glance`;
       this.cache.minorCreditorAccountAtAGlanceCache$ = this.http
-        .get<IOpalFinesAccountMinorCreditorAtAGlance>(url, { observe: 'response' })
+        .get<IOpalFinesAccountMinorCreditorAtAGlance>(
+          url,
+          this.withRetrySafeReadOptions({ observe: 'response' as const }),
+        )
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountMinorCreditorAtAGlance>) => {
             const version = this.extractEtagVersion(response.headers);
@@ -1289,7 +1590,10 @@ export class OpalFines {
     if (!this.cache.minorCreditorAccountCreditorCache$) {
       const url = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}`;
       this.cache.minorCreditorAccountCreditorCache$ = this.http
-        .get<IOpalFinesAccountMinorCreditorCreditor>(url, { observe: 'response' })
+        .get<IOpalFinesAccountMinorCreditorCreditor>(
+          url,
+          this.withRetrySafeReadOptions({ observe: 'response' as const }),
+        )
         .pipe(
           map((response: HttpResponse<IOpalFinesAccountMinorCreditorCreditor>) => {
             const version = this.extractEtagVersion(response.headers);
@@ -1303,5 +1607,211 @@ export class OpalFines {
         );
     }
     return this.cache.minorCreditorAccountCreditorCache$;
+  }
+
+  /**
+   * Retrieves the central fund details for a specific business unit.
+   *
+   * @param busunessUnitId - The ID of the business unit.
+   * @returns An Observable that emits the central fund details.
+   */
+  public getCentralFund(busunessUnitId: number): Observable<IOpalFinesCentralFund> {
+    const url = `${OPAL_FINES_PATHS.centralFunds}/${busunessUnitId}`;
+    return this.http.get<IOpalFinesCentralFund>(url);
+  }
+
+  /**
+   * Retrieves the minor creditor account details history and notes tab data.
+   * Unfiltered history uses the tab cache. Filtered history always makes a new request with the submitted query params.
+   *
+   * @param account_id - The ID of the minor creditor account.
+   * @param filterParams - Optional query parameters for filtering account history.
+   * @returns An Observable that emits the account history data.
+   */
+  public getMinorCreditorAccountHistoryAndNotesTabData(
+    account_id: number | null,
+    filterParams?: IOpalFinesMinorCreditorAccountHistoryParams,
+  ): Observable<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData> {
+    const url = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${account_id}/history`;
+    const options = this.buildHistoryReadOptions(
+      filterParams
+        ? (Object.fromEntries(Object.entries(filterParams).filter(([, value]) => value !== undefined)) as Record<
+            string,
+            string
+          >)
+        : undefined,
+    );
+
+    const request$ = this.http.get<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData>(url, options).pipe(
+      map((response: HttpResponse<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData>) => {
+        const version = this.extractEtagVersion(response.headers);
+        const payload = response.body as IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData;
+        return {
+          ...payload,
+          version,
+        };
+      }),
+      shareReplay(1),
+    );
+
+    if (filterParams) {
+      return request$;
+    }
+
+    this.cache.minorCreditorAccountHistoryAndNotesCache$ ??= request$;
+    return this.cache.minorCreditorAccountHistoryAndNotesCache$;
+  }
+
+  /**
+   * Retrieves the major creditor account header data for a specific account ID.
+   * This method makes an HTTP GET request to fetch the header summary for the specified major creditor account.
+   *
+   * @param accountId - The unique identifier of the major creditor account.
+   * @returns An Observable that emits the major creditor account header data.
+   */
+  public getMajorCreditorAccountHeadingData(
+    accountId: number,
+  ): Observable<IOpalFinesAccountMajorCreditorDetailsHeader> {
+    const url = `${OPAL_FINES_PATHS.majorCreditorAccounts}/${accountId}/header-summary`;
+    return this.http
+      .get<IOpalFinesAccountMajorCreditorDetailsHeader>(
+        url,
+        this.withRetrySafeReadOptions({ observe: 'response' as const }),
+      )
+      .pipe(
+        map((response: HttpResponse<IOpalFinesAccountMajorCreditorDetailsHeader>) => {
+          const payload = response.body as IOpalFinesAccountMajorCreditorDetailsHeader;
+          const version = this.extractEtagVersion(response.headers);
+          return {
+            ...payload,
+            version,
+          };
+        }),
+      );
+  }
+
+  /**
+   * Retrieves the major creditor account details at a glance for a specific tab.
+   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   *
+   * @param account_id - The ID of the major creditor account.
+   * @returns An Observable that emits the account details for the at a glance tab.
+   */
+  public getMajorCreditorAccountAtAGlance(
+    account_id: number | null,
+  ): Observable<IOpalFinesAccountMajorCreditorAtAGlance> {
+    if (!this.cache.majorCreditorAccountAtAGlanceCache$) {
+      const url = `${OPAL_FINES_PATHS.majorCreditorAccounts}/${account_id}/at-a-glance`;
+      this.cache.majorCreditorAccountAtAGlanceCache$ = this.http
+        .get<IOpalFinesAccountMajorCreditorAtAGlance>(
+          url,
+          this.withRetrySafeReadOptions({ observe: 'response' as const }),
+        )
+        .pipe(
+          map((response: HttpResponse<IOpalFinesAccountMajorCreditorAtAGlance>) => {
+            const version = this.extractEtagVersion(response.headers);
+            const payload = response.body as IOpalFinesAccountMajorCreditorAtAGlance;
+            return {
+              ...payload,
+              version,
+            };
+          }),
+          shareReplay(1),
+        );
+    }
+    return this.cache.majorCreditorAccountAtAGlanceCache$;
+  }
+
+  /**
+   * Retrieves the defendant account consolidated accounts data.
+   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   *
+   * @param account_id - The ID of the defendant account.
+   * @returns An Observable that emits the account details for the consolidated accounts tab.
+   */
+  public getDefendantAccountConsolidatedAccounts(
+    account_id: number | null,
+  ): Observable<IOpalFinesAccountDefendantDetailsConsolidatedAccounts> {
+    if (!this.cache.defendantAccountConsolidatedAccountsCache$) {
+      const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/consolidated-accounts`;
+      this.cache.defendantAccountConsolidatedAccountsCache$ = this.http
+        .get<IOpalFinesAccountDefendantDetailsConsolidatedAccount[]>(url, { observe: 'response' })
+        .pipe(
+          map((response: HttpResponse<IOpalFinesAccountDefendantDetailsConsolidatedAccount[]>) => {
+            const version = this.extractEtagVersion(response.headers);
+            return {
+              consolidated_accounts: response.body ?? [],
+              version,
+            };
+          }),
+          shareReplay(1),
+        );
+    }
+    return this.cache.defendantAccountConsolidatedAccountsCache$;
+  }
+
+  /**
+   * Retrieves the major creditor account history and notes tab data.
+   * Unfiltered history uses the tab cache. Filtered history always makes a new request with the submitted query params.
+   *
+   * @param account_id - The ID of the major creditor account.
+   * @param filterParams - Optional query parameters for filtering account history.
+   * @returns An Observable that emits the account history data.
+   */
+  public getMajorCreditorAccountHistoryAndNotesTabData(
+    account_id: number | null,
+    filterParams?: IOpalFinesMajorCreditorAccountHistoryParams,
+  ): Observable<IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData> {
+    const url = `${OPAL_FINES_PATHS.majorCreditorAccounts}/${account_id}/history`;
+    const options = this.buildHistoryReadOptions(
+      filterParams
+        ? (Object.fromEntries(Object.entries(filterParams).filter(([, value]) => value !== undefined)) as Record<
+            string,
+            string
+          >)
+        : undefined,
+    );
+
+    const request$ = this.http.get<IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData>(url, options).pipe(
+      map((response: HttpResponse<IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData>) => {
+        const version = this.extractEtagVersion(response.headers);
+        const payload = response.body as IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData;
+        return {
+          ...payload,
+          version,
+        };
+      }),
+      shareReplay(1),
+    );
+
+    if (filterParams) {
+      return request$;
+    }
+
+    this.cache.majorCreditorAccountHistoryAndNotesCache$ ??= request$;
+    return this.cache.majorCreditorAccountHistoryAndNotesCache$;
+  }
+
+  /**
+   * Retrieves matching tills without caching operational allocation state.
+   * Array filters use the endpoint's comma-separated query convention.
+   */
+  public getTills(params: IOpalFinesTillsParams): Observable<IOpalFinesTillsResponse> {
+    let httpParams = new HttpParams();
+
+    if (params.statuses?.length) {
+      httpParams = httpParams.set(this.PARAM_STATUSES, params.statuses.join(','));
+    }
+    if (params.auto_payments !== undefined) {
+      httpParams = httpParams.set(this.PARAM_AUTO_PAYMENTS, params.auto_payments);
+    }
+    if (params.business_unit_ids?.length) {
+      httpParams = httpParams.set(this.PARAM_BUSINESS_UNIT_IDS, params.business_unit_ids.join(','));
+    }
+
+    return this.http.get<IOpalFinesTillsResponse>(
+      OPAL_FINES_PATHS.tills,
+      this.withRetrySafeReadOptions({ params: httpParams }),
+    );
   }
 }

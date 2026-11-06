@@ -9,6 +9,9 @@ import { OPAL_FINES_DRAFT_ACCOUNTS_MOCK } from '@services/fines/opal-fines-servi
 import { FinesDraftService } from '../../services/fines-draft.service';
 import { FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK } from '../../fines-draft-table-wrapper/mocks/fines-draft-table-wrapper-table-data.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FINES_DRAFT_ROUTE_DATA_KEYS } from '../../constants/fines-draft-route-data-keys.constant';
+import { FINES_DRAFT_TAB_FRAGMENT } from '../../constants/fines-draft-tab-fragments.constant';
+import { FINES_DRAFT_RESOLVER_EMPTY_RESPONSE } from '../../routing/resolvers/constants/fines-draft-resolver-empty-response.constant';
 
 describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
   let component: FinesDraftCreateAndManageViewAllRejectedComponent;
@@ -18,6 +21,13 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
   let finesDraftStore: FinesDraftStoreType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let finesDraftService: any;
+  let activatedRouteMock: {
+    snapshot: {
+      url: string[];
+      data: Record<string, unknown>;
+      fragment: string;
+    };
+  };
 
   beforeEach(async () => {
     mockRouter = {
@@ -27,26 +37,27 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
     finesDraftService = {
       onDefendantClick: vi.fn().mockName('FinesDraftService.onDefendantClick'),
       populateTableData: vi.fn().mockName('FinesDraftService.populateTableData'),
+      PATH_AMEND_ACCOUNT: '/fines/manual-account-creation/account-details',
+      PATH_REVIEW_ACCOUNT: '/fines/manual-account-creation/review-account',
     };
     finesDraftService.populateTableData.mockReturnValue(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
+
+    activatedRouteMock = {
+      snapshot: {
+        url: ['check-and-manage'],
+        data: {
+          [FINES_DRAFT_ROUTE_DATA_KEYS.allRejectedAccounts]: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
+        },
+        fragment: FINES_DRAFT_TAB_FRAGMENT.rejected,
+      },
+    };
 
     await TestBed.configureTestingModule({
       imports: [FinesDraftCreateAndManageViewAllRejectedComponent, GovukBackLinkComponent],
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: FinesDraftService, useValue: finesDraftService },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              url: ['check-and-manage'],
-              data: {
-                allRejectedAccounts: OPAL_FINES_DRAFT_ACCOUNTS_MOCK,
-              },
-              fragment: 'rejected',
-            },
-          },
-        },
+        { provide: ActivatedRoute, useValue: activatedRouteMock },
       ],
     }).compileComponents();
 
@@ -54,13 +65,27 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
     component = fixture.componentInstance;
 
     finesDraftStore = TestBed.inject(FinesDraftStore);
-    finesDraftStore.setFragment('rejected');
-
-    fixture.detectChanges();
+    finesDraftStore.setFragment(FINES_DRAFT_TAB_FRAGMENT.rejected);
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should populate rejected accounts from resolved route data', () => {
+    fixture.detectChanges();
+
+    expect(finesDraftService.populateTableData).toHaveBeenCalledWith(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+    expect(component.rejectedAccounts).toEqual(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
+  });
+
+  it('should populate rejected accounts from the empty response when resolved route data is unavailable', () => {
+    activatedRouteMock.snapshot.data = {};
+
+    fixture.detectChanges();
+
+    expect(finesDraftService.populateTableData).toHaveBeenCalledWith(FINES_DRAFT_RESOLVER_EMPTY_RESPONSE);
+    expect(component.rejectedAccounts).toEqual(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK);
   });
 
   it('should navigate back on navigateBack', () => {
@@ -72,13 +97,35 @@ describe('FinesDraftCreateAndManageViewAllRejectedComponent', () => {
     });
   });
 
-  it('should call viewAllAccounts and amend then call onDefendantClick with PATH_REVIEW_ACCOUNT', () => {
-    component.onDefendantClick(FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]);
+  it('should route a Fine row to PATH_AMEND_ACCOUNT and keep amend true', () => {
+    const fineRow = {
+      ...FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0],
+      'Account type': 'Fine',
+    };
+
+    component.onDefendantClick(fineRow);
+
     expect(finesDraftStore.viewAllAccounts()).toBeTruthy();
-    expect(finesDraftStore.amend()).toBeFalsy();
+    expect(finesDraftStore.amend()).toBeTruthy();
     expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(
-      FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0]['Defendant id'],
-      component.PATH_REVIEW_ACCOUNT,
+      fineRow['Defendant id'],
+      finesDraftService.PATH_AMEND_ACCOUNT,
+    );
+  });
+
+  it('should route a Fixed Penalty row to PATH_REVIEW_ACCOUNT and keep amend true', () => {
+    const fixedPenaltyRow = {
+      ...FINES_DRAFT_TABLE_WRAPPER_TABLE_DATA_MOCK[0],
+      'Account type': 'Fixed Penalty',
+    };
+
+    component.onDefendantClick(fixedPenaltyRow);
+
+    expect(finesDraftStore.viewAllAccounts()).toBeTruthy();
+    expect(finesDraftStore.amend()).toBeTruthy();
+    expect(finesDraftService.onDefendantClick).toHaveBeenCalledWith(
+      fixedPenaltyRow['Defendant id'],
+      finesDraftService.PATH_REVIEW_ACCOUNT,
     );
   });
 });

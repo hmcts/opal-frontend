@@ -27,6 +27,25 @@ describe('FinesSaResultsMinorCreditorTableWrapperComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should announce the new page and focus its first account cell after rendering', async () => {
+    component.tableData = GENERATE_FINES_SA_MINOR_CREDITOR_TABLE_WRAPPER_TABLE_DATA_MOCKS(2);
+    component.onApplyFilters();
+    fixture.componentRef.setInput('paginationPageTitle', 'Search results');
+    component.itemsPerPageSignal.set(1);
+    fixture.detectChanges();
+
+    component.onPageChange(2);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const firstCell = fixture.nativeElement.querySelector('td#minorCreditorAccountNumber') as HTMLTableCellElement;
+    const status = fixture.nativeElement.querySelector('output') as HTMLOutputElement;
+    expect(firstCell.textContent).toContain('account-0');
+    expect(firstCell.getAttribute('tabindex')).toBe('-1');
+    expect(document.activeElement).toBe(firstCell);
+    expect(status.textContent?.trim()).toBe('Search results, page 2 of 2');
+  });
+
   it('should enforce current template link semantics', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const templateConsts = ((FinesSaResultsMinorCreditorTableWrapperComponent as any).ɵcmp?.consts ?? []).filter(
@@ -69,29 +88,41 @@ describe('FinesSaResultsMinorCreditorTableWrapperComponent', () => {
     expect(component['abstractExistingSortState']).toEqual(sortState);
   });
 
-  it('should emit account number when goToAccount is called', () => {
+  it('should emit minor creditor account id when goToMinorCreditorAccount is called', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.spyOn<any, any>(component.accountIdClicked, 'emit');
+    vi.spyOn<any, any>(component.minorCreditorAccountIdClicked, 'emit');
 
-    component.goToAccount(123);
+    component.goToMinorCreditorAccount(123);
 
-    expect(component.accountIdClicked.emit).toHaveBeenCalledWith(123);
+    expect(component.minorCreditorAccountIdClicked.emit).toHaveBeenCalledWith(123);
   });
 
-  it('should prevent default and emit account id when goToAccount is called with an event', () => {
+  it('should prevent default and emit minor creditor account id when goToMinorCreditorAccount is called with an event', () => {
     const event = new Event('click');
     const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const emitSpy = vi.spyOn<any, any>(component.accountIdClicked, 'emit');
+    const emitSpy = vi.spyOn<any, any>(component.minorCreditorAccountIdClicked, 'emit');
 
-    component.goToAccount(123, event);
+    component.goToMinorCreditorAccount(123, event);
 
     expect(preventDefaultSpy).toHaveBeenCalled();
     expect(emitSpy).toHaveBeenCalledWith(123);
   });
 
+  it('should prevent default and emit defendant account id when goToDefendantAccount is called with an event', () => {
+    const event = new Event('click');
+    const preventDefaultSpy = vi.spyOn(event, 'preventDefault');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const emitSpy = vi.spyOn<any, any>(component.defendantAccountIdClicked, 'emit');
+
+    component.goToDefendantAccount(456, event);
+
+    expect(preventDefaultSpy).toHaveBeenCalled();
+    expect(emitSpy).toHaveBeenCalledWith(456);
+  });
+
   it('should click minor creditor account link and preserve current template click behaviour', () => {
-    const link = fixture.nativeElement.querySelector('a.govuk-link') as HTMLAnchorElement | null;
+    const link = fixture.nativeElement.querySelectorAll('a.govuk-link')[0] as HTMLAnchorElement | null;
     expect(link).toBeTruthy();
     if (!link) throw new Error('Minor creditor account link not found');
 
@@ -101,14 +132,36 @@ describe('FinesSaResultsMinorCreditorTableWrapperComponent', () => {
 
     const event = new MouseEvent('click', { bubbles: true, cancelable: true });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handlerSpy = vi.spyOn<any, any>(component, 'goToAccount');
+    const handlerSpy = vi.spyOn<any, any>(component, 'goToMinorCreditorAccount');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const emitSpy = vi.spyOn<any, any>(component.accountIdClicked, 'emit');
+    const emitSpy = vi.spyOn<any, any>(component.minorCreditorAccountIdClicked, 'emit');
 
     link.dispatchEvent(event);
 
     expect(handlerSpy).toHaveBeenCalledWith(0, event);
     expect(event.defaultPrevented).toBe(true);
     expect(emitSpy).toHaveBeenCalledWith(0);
+  });
+
+  it('should click associated defendant link and emit a defendant account id', () => {
+    const link = fixture.nativeElement.querySelectorAll('a.govuk-link')[1] as HTMLAnchorElement | null;
+    expect(link).toBeTruthy();
+    if (!link) throw new Error('Associated defendant link not found');
+
+    expect(link.classList.contains('govuk-link--no-visited-state')).toBe(true);
+    expect(link.getAttribute('href')).toBe('');
+    expect(link.getAttribute('tabindex')).toBeNull();
+
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true });
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handlerSpy = vi.spyOn<any, any>(component, 'goToDefendantAccount');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const emitSpy = vi.spyOn<any, any>(component.defendantAccountIdClicked, 'emit');
+
+    link.dispatchEvent(event);
+
+    expect(handlerSpy).toHaveBeenCalledWith(100, event);
+    expect(event.defaultPrevented).toBe(true);
+    expect(emitSpy).toHaveBeenCalledWith(100);
   });
 });

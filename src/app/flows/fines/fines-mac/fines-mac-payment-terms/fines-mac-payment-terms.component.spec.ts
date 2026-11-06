@@ -72,7 +72,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     });
   });
 
-  it('should handle form submission and navigate to next route with number data', () => {
+  it('should handle nested form submission and navigate to next route with number data', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 
@@ -89,7 +89,7 @@ describe('FinesMacPaymentTermsComponent', () => {
     });
   });
 
-  it('should handle form submission and navigate to next route with number data', () => {
+  it('should handle nested form submission and navigate to next route with null number data', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const routerSpy = vi.spyOn<any, any>(component['router'], 'navigate');
 

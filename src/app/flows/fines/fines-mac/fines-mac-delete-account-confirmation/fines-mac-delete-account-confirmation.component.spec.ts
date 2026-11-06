@@ -87,11 +87,13 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
     expect(finesMacStore.setDeleteAccountConfirmation).toHaveBeenCalledWith(form);
     expect(mockOpalFinesService.patchDraftAccountPayload).toHaveBeenCalledWith(
       42,
-      expect.objectContaining({
+      {
         account_status: 'Deleted',
-      }),
+        business_unit_id: finesMacStore.getBusinessUnitId(),
+        reason_text: form.formData.fm_delete_account_confirmation_reason,
+      },
+      finesDraftStore.version(),
     );
-    expect(mockOpalFinesService.patchDraftAccountPayload.mock.calls[0][1]).not.toHaveProperty('timeline_data');
   });
 
   it('should handle patch response and navigate', () => {
@@ -170,6 +172,30 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
     expect(component.referrer).toBe(component['accountDetailsRoute']);
   });
 
+  it('should set referrer to accountDetailsRoute when the account comes from account creation with an accountId', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesDraftStore, 'checker').mockReturnValue(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesMacStore, 'deleteFromCheckAccount').mockReturnValue(false);
+
+    component.accountId = 42;
+    component.referrer = component['setReferrer']();
+
+    expect(component.referrer).toBe(component['accountDetailsRoute']);
+  });
+
+  it('should set referrer to reviewAccountRoute when the checker deletes an account without an accountId', () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesDraftStore, 'checker').mockReturnValue(true);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(finesMacStore, 'deleteFromCheckAccount').mockReturnValue(false);
+
+    component.accountId = null;
+    component.referrer = component['setReferrer']();
+
+    expect(component.referrer).toBe(component['reviewAccountRoute']);
+  });
+
   it('should create a patch payload', () => {
     const form = {
       ...FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM,
@@ -177,14 +203,10 @@ describe('FinesMacDeleteAccountConfirmationComponent', () => {
     form.formData = { fm_delete_account_confirmation_reason: 'Test reason' };
     const payload = component['createPatchPayload'](form);
     expect(payload).toEqual({
-      validated_by: null,
       account_status: 'Deleted',
-      validated_by_name: null,
       business_unit_id: finesMacStore.getBusinessUnitId(),
-      version: finesDraftStore.getFinesDraftState().version || '0',
       reason_text: 'Test reason',
     });
-    expect(payload).not.toHaveProperty('timeline_data');
   });
 
   it('should setReferrer to reviewAccountRoute when deleteFromCheckAccount is true', () => {

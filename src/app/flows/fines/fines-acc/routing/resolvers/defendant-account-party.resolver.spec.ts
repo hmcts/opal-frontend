@@ -206,7 +206,7 @@ describe('defendantAccountPartyResolver', () => {
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details]);
   });
 
-  it('should return a RedirectCommand when no valid party ID is found', async () => {
+  it('should return a RedirectCommand when no valid defendant party ID is found', async () => {
     const route = {
       paramMap: {
         get: vi.fn().mockImplementation((key: string) => {
@@ -296,7 +296,7 @@ describe('defendantAccountPartyResolver', () => {
     expect(emittedValue).toEqual(mockDefendantData);
   });
 
-  it('should return a RedirectCommand when no valid party ID is found', async () => {
+  it('should return a RedirectCommand when no valid parent or guardian party ID is found', async () => {
     const route = {
       paramMap: {
         get: vi.fn().mockImplementation((key: string) => {

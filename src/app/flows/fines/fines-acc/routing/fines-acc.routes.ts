@@ -1,6 +1,10 @@
 import { Routes } from '@angular/router';
 import { FINES_ACC_ROUTING_PATHS } from './constants/fines-acc-routing-paths.constant';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
+import {
+  BUSINESS_UNIT_ID_RESOLVER,
+  businessUnitRoutePermissionsGuard,
+} from '@hmcts/opal-frontend-common/guards/business-unit-route-permissions';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
@@ -38,9 +42,18 @@ import { FINES_ACC_PAYMENT_HOLD_ROUTING_PATHS } from '../fines-acc-payment-hold-
 import { enforcementActionResultResolver } from './resolvers/fines-acc-enf-action-add/enforcement-action-result.resolver';
 import { minorCreditorAccountCreditorResolver } from './resolvers/defendant-minor-creditor-creditor.resolver';
 import { FINES_ACC_REMOVE_NON_PAYING_PG_ROUTING_PATHS } from '../fines-acc-remove-non-paying-pg/constants/fines-acc-remove-non-paying-pg-routing-paths.constant';
+import { majorCreditorAccountHeadingResolver } from './resolvers/major-creditor-heading.resolver';
 import { FINES_ACC_ENF_ACTION_DENIED_TYPES } from '../fines-acc-enf-action-denied/constants/fines-acc-enf-action-denied-types.constant';
+import { FINES_ACC_MAJOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS } from '../fines-acc-major-creditor-details/constants/fines-acc-major-creditor-details-route-data-keys.constant';
+import { FINES_ACC_MINOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS } from '../fines-acc-minor-creditor-details/constants/fines-acc-minor-creditor-details-route-data-keys.constant';
+import { FinesAccBusinessUnitResolver } from './resolvers/fines-acc-business-unit.resolver';
+import { FINES_ACCOUNT_ROUTE_TYPES } from './constants/fines-acc-route-types.constant';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
+const finesAccountBusinessUnitResolverProvider = {
+  provide: BUSINESS_UNIT_ID_RESOLVER,
+  useExisting: FinesAccBusinessUnitResolver,
+};
 
 export const routing: Routes = [
   {
@@ -54,8 +67,10 @@ export const routing: Routes = [
   },
   {
     path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`,
+    providers: [finesAccountBusinessUnitResolverProvider],
     canActivateChild: [authGuard, routePermissionsGuard],
     data: {
+      accountType: FINES_ACCOUNT_ROUTE_TYPES.defendant,
       routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
     },
     children: [
@@ -85,7 +100,7 @@ export const routing: Routes = [
 
             loadComponent: () =>
               import('../fines-acc-convert/fines-acc-convert.component').then((c) => c.FinesAccConvertComponent),
-            canActivate: [authGuard, routePermissionsGuard, finesAccStateGuard],
+            canActivate: [authGuard, businessUnitRoutePermissionsGuard, finesAccStateGuard],
             data: {
               routePermissionId: [accRootPermissionIds['account-maintenance']],
               title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.convert,
@@ -97,7 +112,7 @@ export const routing: Routes = [
 
             loadComponent: () =>
               import('../fines-acc-note-add/fines-acc-note-add.component').then((c) => c.FinesAccNoteAddComponent),
-            canActivate: [authGuard, routePermissionsGuard, finesAccStateGuard],
+            canActivate: [authGuard, businessUnitRoutePermissionsGuard, finesAccStateGuard],
             canDeactivate: [canDeactivateGuard],
             data: {
               routePermissionId: [accRootPermissionIds['add-account-activity-notes']],
@@ -112,7 +127,7 @@ export const routing: Routes = [
               import('../fines-acc-comments-add/fines-acc-comments-add.component').then(
                 (c) => c.FinesAccCommentsAddComponent,
               ),
-            canActivate: [routePermissionsGuard, finesAccStateGuard],
+            canActivate: [businessUnitRoutePermissionsGuard, finesAccStateGuard],
             canDeactivate: [canDeactivateGuard],
             data: {
               routePermissionId: [accRootPermissionIds['account-maintenance']],
@@ -131,7 +146,7 @@ export const routing: Routes = [
               import('../fines-acc-payment-terms-amend/fines-acc-payment-terms-amend.component').then(
                 (c) => c.FinesAccPaymentTermsAmendComponent,
               ),
-            canActivate: [routePermissionsGuard, finesAccStateGuard],
+            canActivate: [businessUnitRoutePermissionsGuard, finesAccStateGuard],
             canDeactivate: [canDeactivateGuard],
             data: {
               routePermissionId: [accRootPermissionIds['amend-payment-terms']],
@@ -168,7 +183,7 @@ export const routing: Routes = [
               import('../fines-acc-party-add-amend-convert/fines-acc-party-add-amend-convert.component').then(
                 (c) => c.FinesAccPartyAddAmendConvert,
               ),
-            canActivate: [routePermissionsGuard, finesAccStateGuard],
+            canActivate: [businessUnitRoutePermissionsGuard, finesAccStateGuard],
             canDeactivate: [canDeactivateGuard],
             data: {
               routePermissionId: [accRootPermissionIds['account-maintenance']],
@@ -186,7 +201,7 @@ export const routing: Routes = [
               import('../fines-acc-remove-non-paying-pg/fines-acc-remove-non-paying-pg.component').then(
                 (c) => c.FinesAccRemoveNonPayingPgComponent,
               ),
-            canActivate: [routePermissionsGuard, finesAccStateGuard],
+            canActivate: [businessUnitRoutePermissionsGuard, finesAccStateGuard],
             data: {
               routePermissionId: [accRootPermissionIds['account-maintenance']],
               title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.remove,
@@ -202,7 +217,7 @@ export const routing: Routes = [
               import('../fines-acc-request-payment-card-submit/fines-acc-request-payment-card-submit.component').then(
                 (c) => c.FinesAccRequestPaymentCardSubmitComponent,
               ),
-            canActivate: [routePermissionsGuard],
+            canActivate: [businessUnitRoutePermissionsGuard],
             data: {
               routePermissionId: [accRootPermissionIds['amend-payment-terms']],
               title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children['payment-card'],
@@ -233,7 +248,7 @@ export const routing: Routes = [
               import('../fines-acc-enf-override-add-change/fines-acc-enf-override-add-change.component').then(
                 (c) => c.FinesAccEnfOverrideAddChangeComponent,
               ),
-            canActivate: [routePermissionsGuard, finesAccStateGuard],
+            canActivate: [businessUnitRoutePermissionsGuard, finesAccStateGuard],
             canDeactivate: [canDeactivateGuard],
             data: {
               resultsParams: { enforcement_override: true } as IOpalFinesResultsParams,
@@ -253,7 +268,7 @@ export const routing: Routes = [
               import('../fines-acc-enf-override-add-change/fines-acc-enf-override-add-change.component').then(
                 (c) => c.FinesAccEnfOverrideAddChangeComponent,
               ),
-            canActivate: [routePermissionsGuard, finesAccStateGuard],
+            canActivate: [businessUnitRoutePermissionsGuard, finesAccStateGuard],
             canDeactivate: [canDeactivateGuard],
             data: {
               resultsParams: { enforcement_override: true } as IOpalFinesResultsParams,
@@ -274,7 +289,7 @@ export const routing: Routes = [
               import('../fines-acc-enf-override-remove/fines-acc-enf-override-remove.component').then(
                 (c) => c.FinesAccEnfOverrideRemoveComponent,
               ),
-            canActivate: [routePermissionsGuard, finesAccStateGuard],
+            canActivate: [businessUnitRoutePermissionsGuard, finesAccStateGuard],
             data: {
               title: FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_ROUTING_TITLES.children.remove,
               routePermissionId: [accRootPermissionIds['account-maintenance']],
@@ -290,7 +305,7 @@ export const routing: Routes = [
               import('../fines-acc-enf-action-select/fines-acc-enf-action-select.component').then(
                 (c) => c.FinesAccEnfActionSelectComponent,
               ),
-            canActivate: [routePermissionsGuard, finesAccStateGuard],
+            canActivate: [businessUnitRoutePermissionsGuard, finesAccStateGuard],
             canDeactivate: [canDeactivateGuard],
             data: {
               title: FINES_ACC_ENF_ACTION_ROUTING_TITLES.children.select,
@@ -309,7 +324,7 @@ export const routing: Routes = [
               import('../fines-acc-enf-action-add/fines-acc-enf-action-add.component').then(
                 (c) => c.FinesAccEnfActionAddComponent,
               ),
-            canActivate: [routePermissionsGuard, finesAccStateGuard],
+            canActivate: [businessUnitRoutePermissionsGuard, finesAccStateGuard],
             canDeactivate: [canDeactivateGuard],
             data: {
               title: FINES_ACC_ENF_ACTION_ROUTING_TITLES.children.add,
@@ -320,6 +335,7 @@ export const routing: Routes = [
               defendantAccountHeadingData: defendantAccountHeadingResolver,
               enforcementActionResult: enforcementActionResultResolver,
               enforcersRefData: fetchEnforcersResolver,
+              courtsRefData: fetchAccCourtsResolver,
             },
           },
           {
@@ -395,7 +411,7 @@ export const routing: Routes = [
               import('../fines-acc-enf-court-change/fines-acc-enf-court-change.component').then(
                 (c) => c.FinesAccEnfCourtChangeComponent,
               ),
-            canActivate: [routePermissionsGuard, finesAccStateGuard],
+            canActivate: [businessUnitRoutePermissionsGuard, finesAccStateGuard],
             canDeactivate: [canDeactivateGuard],
             data: {
               title: FINES_ACC_ENF_COURT_CHANGE_ROUTING_TITLES.children.change,
@@ -412,7 +428,7 @@ export const routing: Routes = [
               import('../fines-acc-enf-collo-change/fines-acc-enf-collo-change.component').then(
                 (c) => c.FinesAccEnfColloChangeComponent,
               ),
-            canActivate: [routePermissionsGuard, finesAccStateGuard],
+            canActivate: [businessUnitRoutePermissionsGuard, finesAccStateGuard],
             canDeactivate: [canDeactivateGuard],
             data: {
               routePermissionId: [accRootPermissionIds['account-maintenance']],
@@ -443,14 +459,19 @@ export const routing: Routes = [
         data: {
           title: FINES_ACC_MAJOR_CREDITOR_ROUTING_TITLES.children.details,
         },
-        resolve: { title: TitleResolver },
+        resolve: {
+          title: TitleResolver,
+          [FINES_ACC_MAJOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS.headingData]: majorCreditorAccountHeadingResolver,
+        },
       },
     ],
   },
   {
     path: `${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.root}/:accountId`,
+    providers: [finesAccountBusinessUnitResolverProvider],
     canActivateChild: [authGuard, routePermissionsGuard],
     data: {
+      accountType: FINES_ACCOUNT_ROUTE_TYPES.minorCreditor,
       routePermissionId: [accRootPermissionIds['search-and-view-accounts']],
     },
     children: [
@@ -464,7 +485,10 @@ export const routing: Routes = [
         data: {
           title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children.details,
         },
-        resolve: { title: TitleResolver, minorCreditorAccountHeadingData: minorCreditorAccountHeadingResolver },
+        resolve: {
+          title: TitleResolver,
+          [FINES_ACC_MINOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS.headingData]: minorCreditorAccountHeadingResolver,
+        },
       },
       {
         path: '',
@@ -477,7 +501,7 @@ export const routing: Routes = [
 
             loadComponent: () =>
               import('../fines-acc-note-add/fines-acc-note-add.component').then((c) => c.FinesAccNoteAddComponent),
-            canActivate: [authGuard, routePermissionsGuard, finesAccStateGuard],
+            canActivate: [authGuard, businessUnitRoutePermissionsGuard, finesAccStateGuard],
             canDeactivate: [canDeactivateGuard],
             data: {
               routePermissionId: [accRootPermissionIds['add-account-activity-notes']],
@@ -494,7 +518,7 @@ export const routing: Routes = [
           import('../fines-acc-payment-hold-add-remove/fines-acc-payment-hold-add-remove.component').then(
             (c) => c.FinesAccPaymentHoldAddRemoveComponent,
           ),
-        canActivate: [authGuard, finesAccStateGuard],
+        canActivate: [authGuard, businessUnitRoutePermissionsGuard, finesAccStateGuard],
         data: {
           title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children['payment-hold'],
           routePermissionId: [accRootPermissionIds['add-remove-payment-hold']],
@@ -510,7 +534,7 @@ export const routing: Routes = [
           import('../fines-acc-payment-hold-add-remove/fines-acc-payment-hold-add-remove.component').then(
             (c) => c.FinesAccPaymentHoldAddRemoveComponent,
           ),
-        canActivate: [authGuard, finesAccStateGuard],
+        canActivate: [authGuard, businessUnitRoutePermissionsGuard, finesAccStateGuard],
         data: {
           title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children['payment-hold'],
           routePermissionId: [accRootPermissionIds['add-remove-payment-hold']],
@@ -539,10 +563,10 @@ export const routing: Routes = [
           import('../fines-acc-minor-creditor-add-amend-convert/fines-acc-minor-creditor-add-amend-convert.component').then(
             (c) => c.FinesAccMinorCreditorAddAmendConvertComponent,
           ),
-        canActivate: [authGuard, finesAccStateGuard, routePermissionsGuard],
+        canActivate: [authGuard, businessUnitRoutePermissionsGuard, finesAccStateGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
-          routePermissionId: [accRootPermissionIds['account-maintenance']],
+          routePermissionId: [accRootPermissionIds['account-maintenance-minor-creditor']],
           title: FINES_ACC_MINOR_CREDITOR_ROUTING_TITLES.children.amend,
         },
         resolve: {

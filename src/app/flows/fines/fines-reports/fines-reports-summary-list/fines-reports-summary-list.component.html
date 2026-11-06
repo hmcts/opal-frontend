@@ -1,3 +1,94 @@
 <div class="govuk-grid-column-full">
-  <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+  <div #errorSummary>
+    <opal-lib-govuk-error-summary
+      [errors]="errorSummaryMessages()"
+      (errorClick)="onErrorClick($event)"
+    ></opal-lib-govuk-error-summary>
+  </div>
+
+  <opal-lib-custom-page-header>
+    <ng-container pageHeaderHeading>
+      <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
+    </ng-container>
+    <ng-container pageHeaderButtons>
+      @if (showCreateReportButton) {
+        <a
+          class="govuk-button"
+          id="create-report-button"
+          [routerLink]="createReportRoutingPath"
+          data-module="govuk-button"
+        >
+          Create report
+        </a>
+      }
+    </ng-container>
+  </opal-lib-custom-page-header>
+
+  <form [formGroup]="filtersForm" (ngSubmit)="onRefresh()" autocomplete="off" novalidate>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-one-third">
+        @for (optionSet of businessUnitAutocompleteOptionSets(); track optionSet.key) {
+          <opal-lib-alphagov-accessible-autocomplete
+            [control]="filtersForm.controls.businessUnit"
+            labelText="Filter by business unit"
+            labelClasses="govuk-label--s"
+            inputId="reports-summary-list-business-unit"
+            inputName="reports-summary-list-business-unit"
+            [autoCompleteItems]="optionSet.items"
+            [tabIndex]="0"
+            [showAllValues]="true"
+          ></opal-lib-alphagov-accessible-autocomplete>
+        }
+
+        <opal-lib-custom-date-filter
+          idPrefix="reports-summary-list"
+          [controls]="filtersForm.controls"
+          [errors]="fieldErrors()"
+        ></opal-lib-custom-date-filter>
+
+        <button
+          class="govuk-button govuk-button--secondary reports-summary-list-refresh-button"
+          id="refresh-reports-button"
+          type="submit"
+          aria-label="Apply filters and refresh"
+          data-module="govuk-button"
+        >
+          Refresh
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
+
+  @if (loading()) {
+    <output class="govuk-body">Loading reports</output>
+  } @else if (loadError()) {
+    <div
+      class="govuk-error-summary"
+      id="reports-summary-list-load-error"
+      role="alert"
+      aria-labelledby="reports-summary-list-load-error-title"
+      tabindex="-1"
+    >
+      <h2 class="govuk-error-summary__title" id="reports-summary-list-load-error-title">There is a problem</h2>
+      <div class="govuk-error-summary__body">
+        <p class="govuk-body">Reports could not be loaded. Try again.</p>
+      </div>
+    </div>
+  } @else if (overLimit() && resultLimit() !== null) {
+    <h2 class="govuk-heading-m">There are more than {{ resultLimit() }} reports</h2>
+    <p class="govuk-body">Use the filters to reduce the number of results.</p>
+  } @else if (overLimit()) {
+    <h2 class="govuk-heading-m">There are more reports than can be shown</h2>
+    <p class="govuk-body">Use the filters to reduce the number of results.</p>
+  } @else if (tableData().length === 0) {
+    <p class="govuk-body">No reports found</p>
+  } @else {
+    <app-fines-reports-summary-list-table-wrapper
+      [tableData]="tableData()"
+      [existingSortState]="tableSort"
+      [paginationPageTitle]="pageHeading"
+    ></app-fines-reports-summary-list-table-wrapper>
+  }
 </div>

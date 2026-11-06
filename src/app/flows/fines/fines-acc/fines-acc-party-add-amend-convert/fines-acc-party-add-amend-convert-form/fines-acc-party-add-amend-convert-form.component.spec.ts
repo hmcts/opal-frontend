@@ -11,6 +11,8 @@ import { MOCK_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA_WITH_ALIASES } from '.
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM } from '../constants/fines-acc-party-add-amend-convert-form.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS } from '../../fines-acc-defendant-details/constants/fines-acc-defendant-details-tabs-keys.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../constants/fines-acc-party-add-amend-convert-modes.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../constants/fines-acc-party-add-amend-convert-party-types.constant';
+import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS } from '../constants/fines-acc-party-add-amend-convert-fragments.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccPartyAddAmendConvertFormComponent', () => {
@@ -41,6 +43,9 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     };
     mockActivatedRoute = {
       data: of({}),
+      snapshot: {
+        fragment: null,
+      },
     };
 
     mockFinesAccountStore = {
@@ -72,6 +77,24 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     component.partyType = 'individual';
     fixture.detectChanges();
     expect(component).toBeTruthy();
+  });
+
+  it.each([
+    'facc_party_add_amend_convert_employer_address_line_1',
+    'facc_party_add_amend_convert_employer_address_line_2',
+    'facc_party_add_amend_convert_employer_address_line_3',
+    'facc_party_add_amend_convert_employer_address_line_4',
+    'facc_party_add_amend_convert_employer_address_line_5',
+  ])('should validate %s with the single ASCII characters pattern', (controlName) => {
+    component.partyType = 'individual';
+    fixture.detectChanges();
+    const control = component.form.get(controlName);
+
+    control?.setValue('Flat @ 2');
+    expect(control?.hasError('singleAsciiCharacters')).toBe(false);
+
+    control?.setValue('Café');
+    expect(control?.hasError('singleAsciiCharacters')).toBe(true);
   });
 
   it('should enforce remove link template semantics', () => {
@@ -289,6 +312,22 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
     expect(component.isAddParentGuardianMode).toBe(true);
     expect(component.routeFragment).toBe(FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS.defendant);
+  });
+
+  it('should render matching section ids for fragment navigation', () => {
+    component.partyType = 'individual';
+    component.isDebtor = true;
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement.querySelector(`#${FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS.partyDetails}`),
+    ).toBeTruthy();
+    expect(
+      fixture.nativeElement.querySelector(`#${FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS.contactDetails}`),
+    ).toBeTruthy();
+    expect(
+      fixture.nativeElement.querySelector(`#${FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS.employmentDetails}`),
+    ).toBeTruthy();
   });
 
   it('should show contact details for reduced parent guardian mode', () => {
@@ -512,6 +551,59 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(addressControl?.hasError('required')).toBe(false);
   });
 
+  it.each([
+    [
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.ADD,
+      false,
+      13,
+    ],
+    [
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.AMEND,
+      false,
+      13,
+    ],
+    [
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.PARENT_GUARDIAN,
+      FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.AMEND,
+      true,
+      13,
+    ],
+    [FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.INDIVIDUAL, FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.AMEND, true, 16],
+    [FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES.COMPANY, FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES.AMEND, true, 16],
+  ] as const)(
+    'should validate address line 3 for %s in %s mode (debtor: %s) with a %i-character limit',
+    (partyType, mode, isDebtor, maxLength) => {
+      component.partyType = partyType;
+      component.mode = mode;
+      component.isDebtor = isDebtor;
+      fixture.detectChanges();
+
+      const controlName = 'facc_party_add_amend_convert_address_line_3';
+      const addressControl = component.form.get(controlName)!;
+
+      addressControl.setValue(null);
+      expect(addressControl.valid).toBe(true);
+      addressControl.setValue('');
+      expect(addressControl.valid).toBe(true);
+
+      addressControl.setValue('A'.repeat(maxLength));
+      expect(addressControl.valid).toBe(true);
+
+      addressControl.setValue('A'.repeat(maxLength + 1));
+      expect(addressControl.getError('maxlength')).toEqual({ requiredLength: maxLength, actualLength: maxLength + 1 });
+
+      component['handleErrorMessages']();
+      expect(component['formControlErrorMessages'][controlName]).toBe(
+        `Address line 3 must be ${maxLength} characters or fewer`,
+      );
+
+      addressControl.setValue('Café');
+      expect(addressControl.hasError('singleAsciiCharacters')).toBe(true);
+    },
+  );
+
   it('should validate email addresses', () => {
     component.partyType = 'individual';
     fixture.detectChanges();
@@ -523,6 +615,56 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
     emailControl?.setValue('valid@email.com');
     expect(emailControl?.hasError('emailPattern')).toBe(false);
+  });
+
+  it.each([
+    {
+      controlName: 'facc_party_add_amend_convert_post_code',
+      validValue: 'SW1A 1AA',
+      invalidPatternValue: 'SW1A@1AA',
+      invalidLengthValue: 'SW1A 1AAAA',
+    },
+    {
+      controlName: 'facc_party_add_amend_convert_employer_post_code',
+      validValue: 'B12 3CD',
+      invalidPatternValue: 'B12@3CD',
+      invalidLengthValue: 'BQ12 3CDE',
+    },
+  ] as const)(
+    'should validate postcode control $controlName',
+    ({ controlName, validValue, invalidPatternValue, invalidLengthValue }) => {
+      component.partyType = 'individual';
+      fixture.detectChanges();
+
+      const postcodeControl = component.form.get(controlName);
+
+      postcodeControl?.setValue(validValue);
+      expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(false);
+      expect(postcodeControl?.hasError('maxlength')).toBe(false);
+
+      postcodeControl?.setValue(invalidPatternValue);
+      expect(postcodeControl?.hasError('alphanumericTextPattern')).toBe(true);
+
+      postcodeControl?.setValue(invalidLengthValue);
+      expect(postcodeControl?.hasError('maxlength')).toBe(true);
+    },
+  );
+
+  it('should trim only surrounding whitespace from the individual postcode input on focusout', () => {
+    component.partyType = 'individual';
+    fixture.detectChanges();
+
+    const postcodeInput = fixture.nativeElement.querySelector(
+      'input[name="facc_party_add_amend_convert_post_code"]',
+    ) as HTMLInputElement | null;
+    if (!postcodeInput) throw new Error('Postcode input not found');
+
+    component.form.get('facc_party_add_amend_convert_post_code')?.setValue('  AB1  3CD ');
+    postcodeInput.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+    fixture.detectChanges();
+
+    expect(component.form.get('facc_party_add_amend_convert_post_code')?.value).toBe('AB1  3CD');
+    expect(component.form.get('facc_party_add_amend_convert_post_code')?.hasError('maxlength')).toBe(false);
   });
 
   it('should populate existing aliases on initialization', () => {
@@ -722,6 +864,24 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
       expect(referenceControl?.hasError('required')).toBe(true);
     });
 
+    it('should trim surrounding whitespace from the employer postcode input on focusout', () => {
+      component.partyType = 'individual';
+      component.isDebtor = true;
+      fixture.detectChanges();
+
+      const postcodeInput = fixture.nativeElement.querySelector(
+        'input[name="facc_party_add_amend_convert_employer_post_code"]',
+      ) as HTMLInputElement | null;
+      if (!postcodeInput) throw new Error('Postcode input not found');
+
+      component.form.get('facc_party_add_amend_convert_employer_post_code')?.setValue('  AB1  3CD ');
+      postcodeInput.dispatchEvent(new FocusEvent('focusout', { bubbles: true }));
+      fixture.detectChanges();
+
+      expect(component.form.get('facc_party_add_amend_convert_employer_post_code')?.value).toBe('AB1  3CD');
+      expect(component.form.get('facc_party_add_amend_convert_employer_post_code')?.hasError('maxlength')).toBe(false);
+    });
+
     it('should require employer address line 1 when other employer fields are provided but address line 1 is empty', () => {
       component.partyType = 'individual';
       fixture.detectChanges();
@@ -778,7 +938,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
       ) as FormArray;
 
       expect(organisationAliasesFormArray).toBeDefined();
-      expect(organisationAliasesFormArray.length).toBe(0);
+      expect(organisationAliasesFormArray).toHaveLength(0);
     });
 
     it('should not have individual aliases form array for company party type', () => {
@@ -1029,7 +1189,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
     const aliasesControl = baseForm.get('facc_party_add_amend_convert_individual_aliases') as FormArray;
     expect(aliasesControl).toBeDefined();
-    expect(aliasesControl.length).toBe(0);
+    expect(aliasesControl).toHaveLength(0);
   });
 
   it('should add company-specific form controls to base form', () => {
@@ -1065,7 +1225,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
 
     const aliasesControl = baseForm.get('facc_party_add_amend_convert_organisation_aliases') as FormArray;
     expect(aliasesControl).toBeDefined();
-    expect(aliasesControl.length).toBe(0);
+    expect(aliasesControl).toHaveLength(0);
   });
 
   it('should create form with individual controls for individual party type', () => {

@@ -1,5 +1,6 @@
 import { AccountNavDetailsLocators as N } from '../../../../../shared/selectors/account-details/account.nav.details.locators';
 import { createScopedLogger } from '../../../../../support/utils/log.helper';
+import { captureUatTechnicalEvidenceScreenshot } from '../../../../../support/utils/screenshot';
 
 const log = createScopedLogger('AccountDetailsNavActions');
 
@@ -80,6 +81,11 @@ export class AccountDetailsNavActions {
     log('navigate', 'Navigating to "Parent or guardian" tab');
 
     cy.get(N.subNav.parentOrGuardianTab, { timeout: 10_000 }).should('be.visible').click();
+    cy.get(N.subNav.currentTab, { timeout: 10_000 })
+      .should('be.visible')
+      .and('have.attr', 'aria-current', 'page')
+      .and('contain.text', 'Parent or guardian');
+    captureUatTechnicalEvidenceScreenshot('parent-or-guardian-tab');
   }
 
   /**
@@ -130,6 +136,11 @@ export class AccountDetailsNavActions {
     log('navigate', 'Navigating to "Payment terms" tab');
 
     cy.get(N.subNav.paymentTermsTab, { timeout: 10_000 }).should('be.visible').click();
+    cy.get(N.subNav.currentTab, { timeout: 10_000 })
+      .should('be.visible')
+      .and('have.attr', 'aria-current', 'page')
+      .and('contain.text', 'Payment terms');
+    captureUatTechnicalEvidenceScreenshot('payment-terms-tab');
   }
 
   /**
@@ -156,6 +167,11 @@ export class AccountDetailsNavActions {
     log('navigate', 'Navigating to "Enforcement" tab');
 
     cy.get(N.subNav.enforcementTab, { timeout: 10_000 }).should('be.visible').click();
+    cy.get(N.subNav.currentTab, { timeout: 10_000 })
+      .should('be.visible')
+      .and('have.attr', 'aria-current', 'page')
+      .and('contain.text', 'Enforcement');
+    captureUatTechnicalEvidenceScreenshot('enforcement-tab');
   }
 
   /**
@@ -165,6 +181,11 @@ export class AccountDetailsNavActions {
     log('navigate', 'Navigating to "Impositions" tab');
 
     cy.get(N.subNav.impositionsTab, { timeout: 10_000 }).should('be.visible').click();
+    cy.get(N.subNav.currentTab, { timeout: 10_000 })
+      .should('be.visible')
+      .and('have.attr', 'aria-current', 'page')
+      .and('contain.text', 'Impositions');
+    captureUatTechnicalEvidenceScreenshot('impositions-tab');
   }
 
   /**
@@ -174,6 +195,11 @@ export class AccountDetailsNavActions {
     log('navigate', 'Navigating to "History and notes" tab');
 
     cy.get(N.subNav.historyAndNotesTab, { timeout: 10_000 }).should('be.visible').click();
+    cy.get(N.subNav.currentTab, { timeout: 10_000 })
+      .should('be.visible')
+      .and('have.attr', 'aria-current', 'page')
+      .and('contain.text', 'History and notes');
+    captureUatTechnicalEvidenceScreenshot('history-and-notes-tab');
   }
 
   /**
@@ -194,6 +220,7 @@ export class AccountDetailsNavActions {
       .should('be.visible')
       .and('have.attr', 'aria-current', 'page')
       .and('contain.text', 'Parent or guardian');
+    captureUatTechnicalEvidenceScreenshot('parent-or-guardian-tab');
   }
 
   /**
@@ -234,6 +261,7 @@ export class AccountDetailsNavActions {
       .should('be.visible')
       .and('have.attr', 'aria-current', 'page')
       .and('contain.text', 'At a glance');
+    captureUatTechnicalEvidenceScreenshot('at-a-glance-tab');
   }
 
   /**
@@ -253,6 +281,7 @@ export class AccountDetailsNavActions {
       .should('be.visible')
       .and('have.attr', 'aria-current', 'page')
       .and('contain.text', 'Payment terms');
+    captureUatTechnicalEvidenceScreenshot('payment-terms-tab');
   }
 
   /**
@@ -305,6 +334,7 @@ export class AccountDetailsNavActions {
       .should('be.visible')
       .and('have.attr', 'aria-current', 'page')
       .and('contain.text', 'Enforcement');
+    captureUatTechnicalEvidenceScreenshot('enforcement-tab');
   }
 
   /**
@@ -317,6 +347,7 @@ export class AccountDetailsNavActions {
       .should('be.visible')
       .and('have.attr', 'aria-current', 'page')
       .and('contain.text', 'Impositions');
+    captureUatTechnicalEvidenceScreenshot('impositions-tab');
   }
 
   /**
@@ -329,6 +360,7 @@ export class AccountDetailsNavActions {
       .should('be.visible')
       .and('have.attr', 'aria-current', 'page')
       .and('contain.text', 'History and notes');
+    captureUatTechnicalEvidenceScreenshot('history-and-notes-tab');
   }
 
   /**

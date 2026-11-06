@@ -1,0 +1,14 @@
+<app-fines-api-selectable-table
+  [rows]="rows()"
+  [getRowId]="getRowId"
+  [getRowDomId]="getRowDomId"
+  [getCellId]="getCellId"
+  [rowLabel]="rowLabel"
+  [content]="content"
+  [columns]="columns"
+  [pageSize]="25"
+  [defaultSort]="existingSortState ?? {}"
+  [selectionErrorId]="selectionErrorId"
+  [selectedIds]="selectedIds()"
+  (selectedIdsChange)="selectionChanged($event)"
+/>

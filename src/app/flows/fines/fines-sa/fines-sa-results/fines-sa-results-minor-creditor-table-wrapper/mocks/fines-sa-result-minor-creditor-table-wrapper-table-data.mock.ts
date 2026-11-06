@@ -10,7 +10,7 @@ export const GENERATE_FINES_SA_MINOR_CREDITOR_TABLE_WRAPPER_TABLE_DATA_MOCKS = (
     'Address line 1': `address-line-1-${i}`,
     Postcode: `postcode-${i}`,
     'Business unit': `business-unit-${i}`,
-    'Defendant account id': i,
+    'Defendant account id': i + 100,
     Defendant: `defendant-${i}`,
     Balance: i * 10,
   }));
