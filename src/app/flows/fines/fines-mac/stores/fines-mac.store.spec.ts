@@ -149,6 +149,7 @@ describe('FinesMacStore', () => {
     store.setPaymentTerms(FINES_MAC_PAYMENT_TERMS_FORM_MOCK);
     expect(store.paymentTerms()).toEqual(FINES_MAC_PAYMENT_TERMS_FORM_MOCK);
 
+    // reset days in default
     const paymentTermsWithoutDaysInDefault = structuredClone(FINES_MAC_PAYMENT_TERMS_FORM_MOCK);
     paymentTermsWithoutDaysInDefault.formData = {
       ...paymentTermsWithoutDaysInDefault.formData,
