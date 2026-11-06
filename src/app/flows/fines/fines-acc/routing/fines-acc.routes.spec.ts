@@ -7,7 +7,6 @@ import {
   BUSINESS_UNIT_ID_RESOLVER,
   businessUnitRoutePermissionsGuard,
 } from '@hmcts/opal-frontend-common/guards/business-unit-route-permissions';
-import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from './constants/fines-acc-minor-creditor-routing-paths.constant';
 import { FINES_ACC_MAJOR_CREDITOR_ROUTING_PATHS } from './constants/fines-acc-major-creditor-routing-paths.constant';
@@ -145,7 +144,7 @@ describe('fines acc routes', () => {
       (route) => route.path === FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.amend,
     );
 
-    expect(amendRoute?.canActivate).toEqual([authGuard, businessUnitRoutePermissionsGuard, finesAccStateGuard]);
+    expect(amendRoute?.canActivate).toEqual([businessUnitRoutePermissionsGuard, finesAccStateGuard]);
     expect(amendRoute?.data?.['routePermissionId']).toEqual([FINES_PERMISSIONS['account-maintenance-minor-creditor']]);
     expect(amendRoute?.resolve?.['minorCreditorAccountCreditor']).toBe(minorCreditorAccountCreditorResolver);
   });

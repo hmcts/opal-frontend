@@ -20,6 +20,8 @@ import { existsSync } from 'node:fs';
 import { Logger } from '@hmcts/nodejs-logging';
 import config from 'config';
 import bootstrap from './src/main.server';
+import { SERVER_SSO_REDIRECT } from '@hmcts/opal-frontend-common/guards/auth';
+import { sendSsrResponse } from './src/app/server/ssr-response';
 
 import {
   getRoutesConfig,
@@ -127,21 +129,22 @@ function app(): Express {
     try {
       const { protocol, originalUrl, baseUrl, headers } = req;
 
-      const html = await commonEngine.render({
-        bootstrap,
-        documentFilePath: indexHtml,
-        url: `${protocol}://${headers.host}${originalUrl}`,
-        publicPath: distFolder,
-        providers: [
-          { provide: APP_BASE_HREF, useValue: baseUrl },
-          {
-            provide: 'serverTransferState',
-            useValue: serverTransferState,
-          },
-        ],
-      });
-
-      res.send(html);
+      await sendSsrResponse(
+        (recordRedirect) =>
+          commonEngine.render({
+            bootstrap,
+            documentFilePath: indexHtml,
+            url: `${protocol}://${headers.host}${originalUrl}`,
+            publicPath: distFolder,
+            providers: [
+              { provide: APP_BASE_HREF, useValue: baseUrl },
+              { provide: 'serverTransferState', useValue: serverTransferState },
+              { provide: SERVER_SSO_REDIRECT, useValue: recordRedirect },
+            ],
+          }),
+        res,
+        ssoConfiguration,
+      );
     } catch (err) {
       ssrLogger.error('SSR render failed', err);
       next(err);

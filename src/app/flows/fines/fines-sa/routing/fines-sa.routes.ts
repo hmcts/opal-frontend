@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { FINES_SA_ROUTING_PATHS } from './constants/fines-sa-routing-paths.constant';
-import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { FINES_SA_ROUTING_TITLES } from './constants/fines-sa-routing-titles.constant';
 import { finesSaFlowStateGuard } from '../guards/fines-sa-flow-state/fines-sa-flow-state.guard';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
@@ -22,7 +21,7 @@ export const routing: Routes = [
     path: FINES_SA_ROUTING_PATHS.children.results,
     loadComponent: () =>
       import('../fines-sa-results/fines-sa-results.component').then((c) => c.FinesSaResultsComponent),
-    canActivate: [authGuard, finesSaFlowStateGuard],
+    canActivate: [finesSaFlowStateGuard],
     data: {
       title: FINES_SA_ROUTING_TITLES.children.results,
     },
