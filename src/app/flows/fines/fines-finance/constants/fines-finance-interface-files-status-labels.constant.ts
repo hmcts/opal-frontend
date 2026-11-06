@@ -1,6 +1,6 @@
 import { InterfaceFileViewerFileStatus } from './fines-finance-interface-file-status.constant';
 
-export const FINES_FINANCE_INBOUND_FILES_STATUS_LABELS: Record<string, string> = {
+export const FINES_FINANCE_INTERFACE_FILES_STATUS_LABELS: Record<string, string> = {
   [InterfaceFileViewerFileStatus.Success]: 'Ready',
   [InterfaceFileViewerFileStatus.SuccessNoTransactions]: 'Ready',
   [InterfaceFileViewerFileStatus.Duplicate]: 'Ready',

@@ -77,7 +77,7 @@ describe('Inbound interface files', () => {
       cy.get('#refresh-reports-button').click();
 
       cy.wait('@filteredInboundFiles').then(({ request }) => {
-        expect(request.query.business_unit_code).to.equal('0046');
+        expect(request.query.business_unit_id).to.equal('77');
         expect(request.query.source).to.equal('ALLPAY');
         expect(request.query.type).to.equal('SOURCE');
         expect(request.query.from_date).to.be.a('string').and.not.be.empty;

@@ -11,9 +11,8 @@ import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors/h
 import { contentDigestInterceptor } from '@hmcts/opal-frontend-common/interceptors/content-digest';
 import { AppInsightsService } from '@hmcts/opal-frontend-common/services/app-insights-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { FinesFinancePayloadService } from '../services/fines-finance-payload.service';
 import { FinesFinanceInboundFilesComponent } from './fines-finance-inbound-files.component';
-import { FINES_FINANCE_BUSINESS_UNIT_REF_DATA_MOCK } from './mocks/fines-finance-business-unit-ref-data.mock';
+import { FINES_FINANCE_BUSINESS_UNIT_REF_DATA_MOCK } from '../mocks/fines-finance-business-unit-ref-data.mock';
 import { FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK } from './mocks/fines-finance-inbound-files-response.mock';
 
 describe('FinesFinanceInboundFilesComponent', () => {
@@ -96,7 +95,6 @@ describe('FinesFinanceInboundFilesComponent', () => {
   });
 
   it('requests files on entry with blank optional filters and Last 7 days selected', async () => {
-    const buildParams = vi.spyOn(TestBed.inject(FinesFinancePayloadService), 'buildInboundFilesSearchParams');
     fixture.detectChanges();
     const request = httpMock.expectOne((req) => req.url === '/opal-file-handling-service/interface-files');
     expect(request.request.method).toBe('GET');
@@ -128,7 +126,6 @@ describe('FinesFinanceInboundFilesComponent', () => {
       dateFrom: '',
       dateTo: '',
     });
-    expect(buildParams).toHaveBeenCalledExactlyOnceWith(filters.filtersForm.getRawValue());
     expect(filters.filtersForm.pristine).toBe(true);
     expect((fixture.nativeElement.querySelector('#refresh-reports-button') as HTMLButtonElement).disabled).toBe(false);
     expect(
@@ -149,8 +146,91 @@ describe('FinesFinanceInboundFilesComponent', () => {
     httpMock.expectNone((req) => req.url === '/opal-file-handling-service/interface-files');
   });
 
-  it('offers only permitted business units using codes rather than IDs', () => {
-    expect(component.businessUnits).toEqual([{ name: 'Camberwell Green', value: '0046' }]);
+  it('submits a historic range through the date inputs and displays the returned inbound files', async () => {
+    vi.setSystemTime(new Date('2026-11-04T12:00:00Z'));
+    fixture.detectChanges();
+    httpMock
+      .expectOne((req) => req.url === '/opal-file-handling-service/interface-files')
+      .flush({ number_of_results: 0, interface_files: [] });
+    const element = fixture.nativeElement as HTMLElement;
+    element.querySelector<HTMLInputElement>('input[type="radio"][value="dateRange"]')!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    await vi.dynamicImportSettled();
+
+    for (const [boundary, value] of [
+      ['from', '23/06/2025'],
+      ['to', '04/11/2026'],
+    ]) {
+      const input = element.querySelector<HTMLInputElement>(`#custom-file-interface-viewer-date-${boundary}`)!;
+      input.value = value;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    fixture.detectChanges();
+    element.querySelector<HTMLButtonElement>('#refresh-reports-button')!.click();
+
+    const request = httpMock.expectOne((req) => req.url === '/opal-file-handling-service/interface-files');
+    expect(request.cancelled).toBe(false);
+    expect(
+      Object.fromEntries(request.request.params.keys().map((key) => [key, request.request.params.get(key)])),
+    ).toEqual({
+      domain: 'FINES',
+      target: 'OPAL',
+      not_status: 'FAILED_SUPERSEDED',
+      type: 'SOURCE,TRANSFORMED_JSON',
+      from_date: '2025-06-22T23:00:00',
+      to_date: '2026-11-04T23:59:59.999999',
+    });
+    request.flush({
+      number_of_results: 1,
+      interface_files: [
+        {
+          ...FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files![0],
+          created_datetime: '2025-06-23T12:00:00',
+          file_name: 'historic-inbound.xml',
+        },
+      ],
+    });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(element.querySelector('tbody')?.textContent).toContain('historic-inbound.xml');
+    expect(element.querySelector('tbody')?.textContent).toContain('23 Jun 2025');
+    expect(element.querySelector<HTMLInputElement>('#custom-file-interface-viewer-date-from')?.value).toBe(
+      '23/06/2025',
+    );
+    expect(element.querySelector<HTMLInputElement>('#custom-file-interface-viewer-date-to')?.value).toBe('04/11/2026');
+    expect(TestBed.inject(GlobalStore).setBannerError).not.toHaveBeenCalled();
+    httpMock.expectNone((req) => req.url === '/opal-file-handling-service/interface-files');
+  });
+
+  it('resolves every returned business-unit ID into a separate GOV.UK list item', async () => {
+    fixture.detectChanges();
+    httpMock
+      .expectOne((req) => req.url === '/opal-file-handling-service/interface-files')
+      .flush({
+        number_of_results: 1,
+        interface_files: [
+          { ...FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files![0], business_unit_ids: [78, 77, 999, 65] },
+        ],
+      });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const cell = fixture.nativeElement.querySelector('td#business-unit-0') as HTMLTableCellElement;
+    expect(cell.classList).toContain('govuk-table__cell');
+    expect(cell.querySelectorAll('ul.govuk-list')).toHaveLength(1);
+    expect(Array.from(cell.querySelectorAll('li'), (item) => item.textContent?.trim())).toEqual([
+      'N E Region',
+      'Camberwell Green',
+      '999',
+      'Camden and Islington',
+    ]);
+  });
+
+  it('offers only permitted business units using IDs rather than codes', () => {
+    expect(component.businessUnits).toEqual([{ name: 'Camberwell Green', value: '77' }]);
   });
 
   it('offers no business units when reference data is absent', () => {
@@ -180,18 +260,74 @@ describe('FinesFinanceInboundFilesComponent', () => {
       dateTimeDisplay: '20 Oct 2026 at 13:00',
       Title: 'allpay_1001.xml',
       Type: 'RAW',
-      'Business unit': 'Camberwell Green',
+      'Business unit': ['Camberwell Green'],
       Source: 'Allpay',
       Status: 'Ready',
-      Actions: null,
+      Actions: 'Download',
     });
     expect(fixture.nativeElement.querySelector('tbody').textContent).toContain('Camberwell Green');
     expect(fixture.nativeElement.querySelector('tbody').textContent).toContain('N E Region');
     expect(fixture.nativeElement.querySelector('tbody').textContent).toContain('In-Progress');
+    expect(
+      Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('thead th')).map((cell) =>
+        cell.textContent?.trim(),
+      ),
+    ).toEqual(['Date and time', 'Title', 'Type', 'Business unit', 'Source', 'Status', 'Actions']);
     const rows = component.tableData();
     fixture.detectChanges();
     expect(component.tableData()).toBe(rows);
   });
+
+  it.each([
+    {
+      heading: 'Type',
+      cellIndex: 2,
+      ascending: ['RAW', 'RAW', 'RAW', 'TRANSFORMED'],
+      descending: ['TRANSFORMED', 'RAW', 'RAW', 'RAW'],
+    },
+    {
+      heading: 'Source',
+      cellIndex: 4,
+      ascending: ['Allpay', 'Allpay', 'Allpay DD', 'NatWest'],
+      descending: ['NatWest', 'Allpay DD', 'Allpay', 'Allpay'],
+    },
+    {
+      heading: 'Actions',
+      cellIndex: 6,
+      ascending: ['', 'Download', 'Download', 'Download'],
+      descending: ['Download', 'Download', 'Download', ''],
+    },
+  ])(
+    'sorts the $heading column in both directions through its heading button',
+    async ({ heading, cellIndex, ascending, descending }) => {
+      fixture.detectChanges();
+      httpMock
+        .expectOne((req) => req.url === '/opal-file-handling-service/interface-files')
+        .flush(FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK);
+      await fixture.whenStable();
+      fixture.detectChanges();
+      const element = fixture.nativeElement as HTMLElement;
+      const header = Array.from(element.querySelectorAll('thead th')).find(
+        (cell) => cell.textContent?.trim() === heading,
+      )!;
+      const button = header.querySelector('button')!;
+      const values = () =>
+        Array.from(element.querySelectorAll('tbody tr')).map((row) =>
+          row.querySelectorAll('td')[cellIndex].textContent?.trim(),
+        );
+
+      button.click();
+      fixture.detectChanges();
+      expect(header.getAttribute('aria-sort')).toBe('ascending');
+      expect(values()).toEqual(ascending);
+
+      button.click();
+      fixture.detectChanges();
+      expect(header.getAttribute('aria-sort')).toBe('descending');
+      expect(values()).toEqual(descending);
+      httpMock.expectNone((req) => req.url.endsWith('/content'));
+    },
+  );
 
   it('shows the empty state when the API file list is null', async () => {
     fixture.detectChanges();
@@ -211,12 +347,12 @@ describe('FinesFinanceInboundFilesComponent', () => {
       .flush(FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK);
     const filters = fixture.debugElement.query(By.directive(CustomFileInterfaceViewerFiltersComponent))
       .componentInstance as CustomFileInterfaceViewerFiltersComponent;
-    filters.filtersForm.patchValue({ businessUnit: '0046', source: 'ALLPAY', fileType: 'TRANSFORMED_JSON' });
+    filters.filtersForm.patchValue({ businessUnit: '77', source: 'ALLPAY', fileType: 'TRANSFORMED_JSON' });
     filters.filtersForm.markAsDirty();
     fixture.detectChanges();
     (fixture.nativeElement.querySelector('#refresh-reports-button') as HTMLButtonElement).click();
     const request = httpMock.expectOne((req) => req.url === '/opal-file-handling-service/interface-files');
-    expect(request.request.params.get('business_unit_code')).toBe('0046');
+    expect(request.request.params.get('business_unit_id')).toBe('77');
     expect(request.request.params.get('source')).toBe('ALLPAY');
     expect(request.request.params.get('type')).toBe('TRANSFORMED_JSON');
     request.flush({ number_of_results: 0, interface_files: [] });
@@ -374,10 +510,10 @@ describe('FinesFinanceInboundFilesComponent', () => {
     await selectFilterOption('business-unit', 'Camberwell Green');
     await selectFilterOption('source', 'Allpay');
     await selectFilterOption('type', 'RAW');
-    expect(filters.filtersForm.controls.businessUnit.value).toBe('0046');
+    expect(filters.filtersForm.controls.businessUnit.value).toBe('77');
     (fixture.nativeElement.querySelector('#refresh-reports-button') as HTMLButtonElement).click();
     const selected = httpMock.expectOne((req) => req.url === '/opal-file-handling-service/interface-files');
-    expect(selected.request.params.get('business_unit_code')).toBe('0046');
+    expect(selected.request.params.get('business_unit_id')).toBe('77');
     expect(selected.request.params.get('source')).toBe('ALLPAY');
     expect(selected.request.params.get('type')).toBe('SOURCE');
     selected.flush({
@@ -385,7 +521,11 @@ describe('FinesFinanceInboundFilesComponent', () => {
       interface_files: [FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files![0]],
     });
     fixture.detectChanges();
-    expect(component.tableData()?.every((row) => row['Business unit'] === 'Camberwell Green')).toBe(true);
+    expect(
+      component
+        .tableData()
+        ?.every((row) => row['Business unit']?.length === 1 && row['Business unit'][0] === 'Camberwell Green'),
+    ).toBe(true);
 
     await selectFilterOption('business-unit', 'All business units');
     await selectFilterOption('source', 'All sources');
@@ -396,7 +536,7 @@ describe('FinesFinanceInboundFilesComponent', () => {
     expect(filters.filtersForm.controls.dateFilter.value).toBe('last7Days');
     (fixture.nativeElement.querySelector('#refresh-reports-button') as HTMLButtonElement).click();
     const all = httpMock.expectOne((req) => req.url === '/opal-file-handling-service/interface-files');
-    expect(all.request.params.has('business_unit_code')).toBe(false);
+    expect(all.request.params.has('business_unit_id')).toBe(false);
     expect(all.request.params.has('source')).toBe(false);
     expect(all.request.params.get('type')).toBe('SOURCE,TRANSFORMED_JSON');
     expect(all.request.params.get('from_date')).toBe('2026-10-13T23:00:00');
@@ -448,7 +588,6 @@ describe('FinesFinanceInboundFilesComponent', () => {
       .expectOne((req) => req.url === '/opal-file-handling-service/interface-files')
       .flush(FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK);
     fixture.detectChanges();
-    const oldAction = fixture.nativeElement.querySelector('#interface-file-download-1001') as HTMLAnchorElement;
     (fixture.nativeElement.querySelector('#refresh-reports-button') as HTMLButtonElement).click();
     httpMock
       .expectOne((req) => req.url === '/opal-file-handling-service/interface-files')
@@ -456,10 +595,13 @@ describe('FinesFinanceInboundFilesComponent', () => {
         number_of_results: 1,
         interface_files: [{ ...FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files![0], status: 'INGESTED' }],
       });
+    fixture.detectChanges();
 
-    oldAction.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+    const staleClick = new MouseEvent('click', { cancelable: true });
+    component.onDownloadFile(1001, staleClick);
     component.onDownloadFile(9999, new MouseEvent('click', { cancelable: true }));
 
+    expect(staleClick.defaultPrevented).toBe(true);
     httpMock.expectNone((req) => req.url.endsWith('/content'));
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('#interface-file-download-1001')).toBeNull();

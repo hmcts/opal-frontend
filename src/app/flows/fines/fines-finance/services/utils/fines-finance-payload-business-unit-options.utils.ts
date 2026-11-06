@@ -1,18 +1,18 @@
 import type { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import type { IOpalUserBusinessUnitUser } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
-import type { IOpalFinesBusinessUnit } from '../../../services/opal-fines-service/interfaces/opal-fines-business-unit.interface';
+import type { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 
 /**
- * Maps business-unit reference data to alphabetic name/code options without mutating it.
+ * Maps business-unit reference data to alphabetic name/ID options without mutating it.
  * @param businessUnits - Business units used for filter choices or display labels.
- * @returns Name/code options preserving leading zeros in the API codes.
+ * @returns Name/ID options using string IDs for the autocomplete.
  */
 export function mapBusinessUnitsToOptions(
   businessUnits: IOpalFinesBusinessUnit[],
 ): IAlphagovAccessibleAutocompleteItem[] {
   return businessUnits
-    .map((item) => ({ value: item.business_unit_code, name: item.business_unit_name }))
+    .map((item) => ({ value: String(item.business_unit_id), name: item.business_unit_name }))
     .sort((first, second) => first.name.localeCompare(second.name));
 }
 
@@ -20,7 +20,7 @@ export function mapBusinessUnitsToOptions(
  * Resolves filter choices only for business units where the user may view interface files.
  * @param businessUnits - All resolved business units.
  * @param businessUnitUsers - Current business-unit memberships and their permissions.
- * @returns Permitted business units as alphabetic name/code choices.
+ * @returns Permitted business units as alphabetic name/ID choices.
  */
 export function getPermittedBusinessUnitOptions(
   businessUnits: IOpalFinesBusinessUnit[],
