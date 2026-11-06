@@ -97,7 +97,8 @@ export const finesMacPayloadBuildAccountBase = (
     originator_type,
     prosecutor_case_reference,
     enforcement_court_id,
-    collection_order_made: collection_order_made ?? null,
+    collection_order_made: collection_order_made === true || collection_order_made_today === true
+        ? true : (collection_order_made ?? null),
     collection_order_made_today: collection_order_made_today ?? null,
     collection_order_date: collection_order_date ?? null,
     suspended_committal_date: suspended_committal_date ?? null,

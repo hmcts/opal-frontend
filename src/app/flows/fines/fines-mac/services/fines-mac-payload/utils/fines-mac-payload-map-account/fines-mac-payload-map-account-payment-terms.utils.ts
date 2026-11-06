@@ -131,7 +131,8 @@ const buildPaymentTermsFormData = (
     fm_payment_terms_default_days_in_jail: paymentTerms.default_days_in_jail ?? null,
     fm_payment_terms_payment_card_request: convertNullableBooleanToBoolean(paymentCardRequest),
     fm_payment_terms_suspended_committal_date: suspendedCommittalDate ?? null,
-    fm_payment_terms_collection_order_made: convertNullableBooleanToBoolean(collectionOrderMade),
+    fm_payment_terms_collection_order_made: convertNullableBooleanToBoolean(
+      collectionOrderMadeToday ? false : collectionOrderMade),
     fm_payment_terms_collection_order_made_today: convertNullableBooleanToBoolean(collectionOrderMadeToday),
   };
 };
