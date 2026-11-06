@@ -145,20 +145,9 @@ describe('FinesMacStore', () => {
     expect(store.deleteAccountConfirmation()).toEqual(FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM_MOCK);
   });
 
-  it('should reset payment terms and put status to incomplete', () => {
+  it('should put payment terms status to incomplete', () => {
     store.setPaymentTerms(FINES_MAC_PAYMENT_TERMS_FORM_MOCK);
     expect(store.paymentTerms()).toEqual(FINES_MAC_PAYMENT_TERMS_FORM_MOCK);
-
-    // reset days in default
-    const paymentTermsWithoutDaysInDefault = structuredClone(FINES_MAC_PAYMENT_TERMS_FORM_MOCK);
-    paymentTermsWithoutDaysInDefault.formData = {
-      ...paymentTermsWithoutDaysInDefault.formData,
-      fm_payment_terms_has_days_in_default: false,
-      fm_payment_terms_default_days_in_jail: null,
-      fm_payment_terms_suspended_committal_date: null,
-    };
-    store.resetPaymentTermsDaysInDefault();
-    expect(store.paymentTerms()).toEqual(paymentTermsWithoutDaysInDefault);
 
     // change status
     store.setPaymentTermsStatus(FINES_MAC_STATUS.INCOMPLETE);

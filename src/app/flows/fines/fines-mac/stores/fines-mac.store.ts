@@ -292,19 +292,6 @@ export const FinesMacStore = signalStore(
     setPaymentTermsStatus: (status: string) => {
       patchState(store, { paymentTerms: { ...store.paymentTerms(), status } });
     },
-    resetPaymentTermsDaysInDefault: () => {
-      patchState(store, {
-        paymentTerms: {
-          ...store.paymentTerms(),
-          formData: {
-            ...store.paymentTerms().formData,
-            fm_payment_terms_has_days_in_default: false,
-            fm_payment_terms_default_days_in_jail: null,
-            fm_payment_terms_suspended_committal_date: null,
-          },
-        },
-      });
-    },
     setFinesMacStore: (finesMacState: IFinesMacState) => {
       patchState(store, finesMacState);
     },
