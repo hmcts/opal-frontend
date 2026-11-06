@@ -7,7 +7,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { mount } from 'cypress/angular';
 import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant';
 import { FinesFinanceInboundFilesComponent } from 'src/app/flows/fines/fines-finance/fines-finance-inbound-files/fines-finance-inbound-files.component';
-import { FINES_FINANCE_BUSINESS_UNIT_REF_DATA_MOCK } from 'src/app/flows/fines/fines-finance/fines-finance-inbound-files/mocks/fines-finance-business-unit-ref-data.mock';
+import { FINES_FINANCE_BUSINESS_UNIT_REF_DATA_MOCK } from 'src/app/flows/fines/fines-finance/mocks/fines-finance-business-unit-ref-data.mock';
 
 /** Mounts the inbound-file page with permission-scoped reference data and live HTTP behavior. */
 export const setupInboundFilesComponent = () => {
