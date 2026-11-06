@@ -1,6 +1,13 @@
 <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
 
 @if (isMatchesResults()) {
+  <div #errorSummary>
+    <opal-lib-govuk-error-summary
+      [errors]="selectionErrorSummary()"
+      (errorClick)="scrollTo($event)"
+    ></opal-lib-govuk-error-summary>
+  </div>
+
   <span class="govuk-caption-m">{{ finesMciStore.businessUnit()?.business_unit_name }}</span>
   <h1 class="govuk-heading-l">Search results</h1>
 

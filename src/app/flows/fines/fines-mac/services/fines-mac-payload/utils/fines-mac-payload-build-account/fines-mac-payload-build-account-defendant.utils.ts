@@ -77,10 +77,23 @@ const applyBasePayloadsToParentGuardianDefendant = (
     aliases: parentGuardianDebtorAliases,
   };
 
+  const { aliases: youthDefendantAliases, ...defendantWithoutAliases } = defendant;
+
+  const youthAliases =
+    youthDefendantAliases?.map((alias) => ({
+      ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_DEBTOR_DETAILS_ALIAS,
+      ...alias,
+    })) ?? null;
+
   return {
     ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT,
-    ...defendant,
-    debtor_detail: null,
+    ...defendantWithoutAliases,
+    debtor_detail: youthAliases?.length
+      ? {
+          ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_DEBTOR_DETAILS,
+          aliases: youthAliases,
+        }
+      : null,
     parent_guardian: {
       ...FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN,
       ...defendant.parent_guardian,

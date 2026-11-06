@@ -139,4 +139,34 @@ describe('finesMacPayloadBuildAccountDefendantParentGuardian', () => {
       },
     ]);
   });
+
+  it('should return null for youth alias fields when dynamic keys are missing', () => {
+    if (
+      !personalDetailsState ||
+      !contactDetailsState ||
+      !employerDetailsState ||
+      !parentGuardianDetailsState ||
+      !languagePreferencesState
+    ) {
+      throw new Error('Required mock states are not properly initialised');
+    }
+
+    personalDetailsState.fm_personal_details_add_alias = true;
+    personalDetailsState.fm_personal_details_aliases = [{}];
+
+    const result = finesMacPayloadBuildAccountDefendantParentGuardian(
+      personalDetailsState,
+      contactDetailsState,
+      employerDetailsState,
+      parentGuardianDetailsState,
+      languagePreferencesState,
+    );
+
+    expect(result.aliases).toEqual([
+      {
+        alias_forenames: null,
+        alias_surname: null,
+      },
+    ]);
+  });
 });

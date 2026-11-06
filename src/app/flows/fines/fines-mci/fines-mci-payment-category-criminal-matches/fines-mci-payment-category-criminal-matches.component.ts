@@ -1,7 +1,21 @@
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  ElementRef,
+  inject,
+  signal,
+  ViewChild,
+} from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
+import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import {
   FinesMciCriminalAccountId,
@@ -25,13 +39,20 @@ import { finesMciPaymentCategoryCriminalMatchesSelectionValidator } from './vali
 
 @Component({
   selector: 'app-fines-mci-payment-category-criminal-matches',
-  imports: [FinesMciPaymentCategoryCriminalMatchesTableWrapperComponent, GovukBackLinkComponent, RouterLink],
+  imports: [
+    FinesMciPaymentCategoryCriminalMatchesTableWrapperComponent,
+    GovukBackLinkComponent,
+    GovukErrorSummaryComponent,
+    RouterLink,
+  ],
   templateUrl: './fines-mci-payment-category-criminal-matches.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMciPaymentCategoryCriminalMatchesComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly document = inject(DOCUMENT);
+  private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly utilsService = inject(UtilsService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly criminalAccountService = inject(FinesMciCriminalAccountService);
@@ -43,6 +64,7 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
     { requireSync: true },
   );
   private readonly results = computed(() => this.accountsResult().results);
+  @ViewChild('errorSummary', { read: ElementRef }) private readonly errorSummary?: ElementRef<HTMLElement>;
 
   protected readonly finesMciStore = inject(FinesMciStore);
   protected readonly isLoadingAccountDetails = signal(false);
@@ -54,6 +76,10 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
   protected readonly selectedAccountIds = computed(() => [...this.selectedAccountIdsSignal()]);
   protected readonly selectionValidationMessage = computed(() => this.selectionValidationMessageSignal());
   protected readonly hasSelectionValidationError = computed(() => !!this.selectionValidationMessageSignal());
+  protected readonly selectionErrorSummary = computed<IAbstractFormBaseFormErrorSummaryMessage[]>(() => {
+    const message = this.selectionValidationMessageSignal();
+    return message ? [{ fieldId: this.selectionErrorFieldId, message }] : [];
+  });
   protected readonly tableData = computed(() => this.mapAccountsToTableData(this.searchResults()));
   protected readonly sortState = FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_MATCHES_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
   protected readonly isMatchesResults = computed(() => this.results() === FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches);
@@ -158,6 +184,18 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
     }));
   }
 
+  /** Renders and focuses the validation summary, then scrolls it into view using the shared form pattern. */
+  private focusErrorSummary(): void {
+    this.changeDetector.detectChanges();
+    this.errorSummary?.nativeElement.querySelector<HTMLElement>('.govuk-error-summary')?.focus({ preventScroll: true });
+    this.utilsService.scrollToTop();
+  }
+
+  /** Focuses the account selection legend when its error summary link is activated. */
+  protected scrollTo(fieldId: string): void {
+    this.document.getElementById(fieldId)?.focus();
+  }
+
   /** Returns to the search form, where stored criteria and the submitted tab are restored. */
   protected navigateBack(): void {
     this.router.navigate(this.criminalSearchRoute);
@@ -194,6 +232,7 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
 
   /**
    * Requires exactly one selected account, then loads and stores its details before navigating.
+   * Invalid selections focus the shared error summary and retain inline feedback beside the checkboxes.
    * Ignores duplicate submissions while loading. Failed or empty responses keep the user here
    * and scroll to the top, where shared HTTP error handling displays any applicable feedback.
    */
@@ -207,6 +246,7 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
 
     if (validationMessage) {
       this.selectionValidationMessageSignal.set(validationMessage);
+      this.focusErrorSummary();
       return;
     }
 

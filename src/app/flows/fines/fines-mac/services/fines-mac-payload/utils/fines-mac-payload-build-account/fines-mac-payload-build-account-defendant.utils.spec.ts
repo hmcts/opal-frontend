@@ -245,4 +245,46 @@ describe('finesMacPayloadBuildAccountDefendant', () => {
 
     expect(result).toEqual(FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_COMPLETE_MOCK);
   });
+
+  it('should preserve youth defendant aliases when parent or guardian is to pay', () => {
+    if (
+      !accountDetailsState ||
+      !personalDetailsState ||
+      !contactDetailsState ||
+      !employerDetailsState ||
+      !languagePreferencesState ||
+      !companyDetailsState ||
+      !parentGuardianDetailsState
+    ) {
+      throw new Error('Required mock states are not properly initialised');
+    }
+
+    accountDetailsState.fm_create_account_defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
+
+    personalDetailsState.fm_personal_details_add_alias = true;
+    personalDetailsState.fm_personal_details_aliases = [
+      {
+        fm_personal_details_alias_forenames_0: 'James',
+        fm_personal_details_alias_surname_0: 'Smith',
+      },
+    ];
+
+    const result = finesMacPayloadBuildAccountDefendant(
+      accountDetailsState,
+      personalDetailsState,
+      contactDetailsState,
+      employerDetailsState,
+      languagePreferencesState,
+      companyDetailsState,
+      parentGuardianDetailsState,
+    );
+
+    expect(result.debtor_detail?.aliases).toEqual([
+      {
+        alias_forenames: 'James',
+        alias_surname: 'Smith',
+        alias_company_name: null,
+      },
+    ]);
+  });
 });

@@ -1583,6 +1583,25 @@ describe('OpalFines', () => {
     httpMock.expectNone(apiUrl);
   });
 
+  it('should cancel an unobserved at-a-glance request and fetch again on a later subscription', () => {
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/77/at-a-glance`;
+    const atAGlance = service.getDefendantAccountAtAGlance(77);
+    const firstSubscription = atAGlance.subscribe();
+    const secondSubscription = atAGlance.subscribe();
+    const pendingRequest = httpMock.expectOne(apiUrl);
+
+    firstSubscription.unsubscribe();
+    expect(pendingRequest.cancelled).toBe(false);
+
+    secondSubscription.unsubscribe();
+    expect(pendingRequest.cancelled).toBe(true);
+
+    const next = vi.fn();
+    atAGlance.subscribe(next);
+    httpMock.expectOne(apiUrl).flush(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+    expect(next).toHaveBeenCalledExactlyOnceWith(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+  });
+
   it('should getDefendantAccountParty', () => {
     const account_id: number = 77;
     const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/${OPAL_FINES_PATHS.defendantAccountParties}/${FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.defendant_account_party_id}`;
