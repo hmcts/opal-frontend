@@ -26,7 +26,7 @@ import { existsSync } from 'node:fs';
 import { Logger } from '@hmcts/nodejs-logging';
 import config from 'config';
 import bootstrap from './src/main.server';
-import { addDynatraceScriptUrl } from './src/dynatrace-config';
+import { addDynatraceScriptUrl } from './src/app/dynatrace-config';
 
 import {
   getRoutesConfig,

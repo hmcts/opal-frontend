@@ -9,5 +9,10 @@
   script.type = 'text/javascript';
   script.src = scriptUrl;
   script.crossOrigin = 'anonymous';
+  script.addEventListener('load', function enableDynatrace() {
+    if (window.dtrum && !window.dtrum.isEnabled()) {
+      window.dtrum.enable();
+    }
+  });
   document.head.appendChild(script);
 })();
