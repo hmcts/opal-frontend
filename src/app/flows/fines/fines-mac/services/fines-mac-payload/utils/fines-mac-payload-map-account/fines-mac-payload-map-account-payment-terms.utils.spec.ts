@@ -40,7 +40,6 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
   it('should map payment terms type correctly', () => {
     if (!payload || !mappedFinesMacState) {
       throw new Error('Payload is not properly initialised');
-      return;
     }
 
     payload.payment_terms.payment_terms_type_code = 'B';
@@ -50,10 +49,23 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
     );
   });
 
+  it('should preserve the made today choice when the account CO status is true', () => {
+    if (!payload || !mappedFinesMacState) {
+      throw new Error('Payload is not properly initialised');
+    }
+
+    payload.collection_order_made = true;
+    payload.collection_order_made_today = true;
+
+    const result = finesMacPayloadMapAccountPaymentTerms(mappedFinesMacState, payload);
+
+    expect(result.paymentTerms.formData.fm_payment_terms_collection_order_made).toBe(false);
+    expect(result.paymentTerms.formData.fm_payment_terms_collection_order_made_today).toBe(true);
+  });
+
   it('should map lump sum amount correctly', () => {
     if (!payload || !mappedFinesMacState) {
       throw new Error('Payload is not properly initialised');
-      return;
     }
 
     payload.payment_terms.lump_sum_amount = 1000;
@@ -64,7 +76,6 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
   it('should map instalment amount correctly', () => {
     if (!payload || !mappedFinesMacState) {
       throw new Error('Payload is not properly initialised');
-      return;
     }
 
     payload.payment_terms.instalment_amount = 100;
@@ -75,7 +86,6 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
   it('should map effective date correctly for pay in full', () => {
     if (!payload || !mappedFinesMacState) {
       throw new Error('Payload is not properly initialised');
-      return;
     }
 
     payload.payment_terms.payment_terms_type_code = 'B';
@@ -88,7 +98,6 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
   it('should map effective date correctly for instalment', () => {
     if (!payload || !mappedFinesMacState) {
       throw new Error('Payload is not properly initialised');
-      return;
     }
 
     payload.payment_terms.instalment_amount = 100;
@@ -101,7 +110,6 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
   it('should map enforcement actions correctly', () => {
     if (!payload || !mappedFinesMacState) {
       throw new Error('Payload is not properly initialised');
-      return;
     }
 
     payload.payment_terms.enforcements = [
@@ -123,7 +131,6 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
   it('should ignore unknown enforcement response parameters', () => {
     if (!payload || !mappedFinesMacState) {
       throw new Error('Payload is not properly initialised');
-      return;
     }
 
     payload.payment_terms.enforcements = [
@@ -146,7 +153,6 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
   it('should keep enforcement-response fields untouched when an action has no responses', () => {
     if (!payload || !mappedFinesMacState) {
       throw new Error('Payload is not properly initialised');
-      return;
     }
 
     payload.payment_terms.enforcements = [
