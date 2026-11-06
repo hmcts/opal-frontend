@@ -1,11 +1,11 @@
-import { IDashboardPageConfigurationLink } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
+import { type IFinesDashboardConfigurationLink } from '@app/interfaces/fines-dashboard-configuration.interface';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from '../../fines-draft/fines-draft-create-and-manage/routing/constants/fines-draft-create-and-manage-routing-paths.constant';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS } from '../../fines-draft/fines-draft-check-and-validate/routing/constants/fines-draft-check-and-validate-routing-paths.constant';
 import { FINES_DRAFT_TAB_FRAGMENT } from './fines-draft-tab-fragments.constant';
 
-export const FINES_DRAFT_LINKS: IDashboardPageConfigurationLink[] = [
+export const FINES_DRAFT_LINKS: IFinesDashboardConfigurationLink[] = [
   {
     id: 'finesCavInputterLink',
     text: 'Create and Manage Draft Accounts',
@@ -17,7 +17,7 @@ export const FINES_DRAFT_LINKS: IDashboardPageConfigurationLink[] = [
       FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS.children.tabs,
     ],
     fragment: FINES_DRAFT_TAB_FRAGMENT.review,
-    permissionIds: [FINES_PERMISSIONS['create-and-manage-draft-accounts']],
+    permissionCodes: [FINES_PERMISSIONS['create-and-manage-draft-accounts']],
     newTab: false,
     style: null,
   },
@@ -32,7 +32,7 @@ export const FINES_DRAFT_LINKS: IDashboardPageConfigurationLink[] = [
       FINES_DRAFT_CHECK_AND_VALIDATE_ROUTING_PATHS.children.tabs,
     ],
     fragment: FINES_DRAFT_TAB_FRAGMENT.toReview,
-    permissionIds: [FINES_PERMISSIONS['check-and-validate-draft-accounts']],
+    permissionCodes: [FINES_PERMISSIONS['check-and-validate-draft-accounts']],
     newTab: false,
     style: null,
   },

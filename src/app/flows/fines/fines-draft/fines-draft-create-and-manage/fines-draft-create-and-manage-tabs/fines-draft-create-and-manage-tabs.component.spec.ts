@@ -1,3 +1,4 @@
+import { type FinesPermissionCode } from '@app/constants/fines-permissions.constant';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FinesDraftCreateAndManageTabsComponent } from './fines-draft-create-and-manage-tabs.component';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -32,14 +33,14 @@ import { FINES_DRAFT_ROUTE_DATA_KEYS } from '../../constants/fines-draft-route-d
 import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 import { FINES_DRAFT_RESOLVER_EMPTY_RESPONSE } from '../../routing/resolvers/constants/fines-draft-resolver-empty-response.constant';
 
-const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpalUserState => {
+const createUserStateWithPermissions = (permissionCodes: readonly FinesPermissionCode[]): IOpalUserState => {
   const userState = structuredClone(OPAL_USER_STATE_MOCK);
 
   userState.business_unit_users = userState.business_unit_users.map((businessUnitUser) => ({
     ...businessUnitUser,
-    permissions: permissionIds.map((permissionId) => ({
-      permission_id: permissionId,
-      permission_name: `Permission ${permissionId}`,
+    permissions: permissionCodes.map((permissionCode) => ({
+      permission_code: permissionCode,
+      permission_name: `Permission ${permissionCode}`,
     })),
   }));
 

@@ -1,3 +1,4 @@
+import { type FinesPermissionCode } from '@app/constants/fines-permissions.constant';
 import { provideHttpClient } from '@angular/common/http';
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
 import { mount } from 'cypress/angular';
@@ -38,7 +39,7 @@ const createUserState = () => {
     ...businessUnitUser,
     permissions: [
       {
-        permission_id: FINES_PERMISSIONS['operational-report-by-enforcement'],
+        permission_code: FINES_PERMISSIONS['operational-report-by-enforcement'],
         permission_name: 'Permission',
       },
     ],
@@ -88,7 +89,7 @@ const setupAppComponent = (featureFlags: FeatureFlags) =>
 const setupDashboardComponent = (
   dashboardType: string,
   featureFlags: FeatureFlags,
-  permissionIds = [FINES_PERMISSIONS['operational-report-by-enforcement']],
+  permissionCodes: FinesPermissionCode[] = [FINES_PERMISSIONS['operational-report-by-enforcement']],
 ) => {
   const dashboardTypeParamMapSubject = new BehaviorSubject(convertToParamMap({ dashboardType }));
 
@@ -104,7 +105,7 @@ const setupDashboardComponent = (
       {
         provide: PermissionsService,
         useValue: {
-          getUniquePermissions: () => permissionIds,
+          getUniquePermissions: () => permissionCodes,
         },
       },
       {

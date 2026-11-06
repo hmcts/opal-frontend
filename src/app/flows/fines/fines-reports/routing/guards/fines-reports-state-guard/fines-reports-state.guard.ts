@@ -25,17 +25,17 @@ export const finesReportsStateGuard: CanActivateFn = (route) => {
     ]);
   }
 
-  const routePermissionIds = report.permissionIds;
+  const routePermissionCodes = report.permissionCodes;
 
-  if (routePermissionIds.length === 0) {
+  if (routePermissionCodes.length === 0) {
     return true;
   }
 
   return opalUserService.getLoggedInUserState().pipe(
     map((resp) => {
-      const uniquePermissionIds = permissionsService.getUniquePermissions(resp);
+      const uniquePermissionCodes = permissionsService.getUniquePermissions(resp);
 
-      if (uniquePermissionIds.some((id) => routePermissionIds.includes(id))) {
+      if (routePermissionCodes.some((code) => uniquePermissionCodes.includes(code))) {
         return true;
       }
 

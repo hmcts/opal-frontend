@@ -1,3 +1,4 @@
+import { type IFinesRoutePermissionData } from '@app/interfaces/fines-route-permission-data.interface';
 import { Routes } from '@angular/router';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_FINANCE_ROUTING_PATHS } from './fines-finance-routing-paths.constant';
@@ -9,7 +10,7 @@ import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { featureFlagRedirectGuard } from '@hmcts/opal-frontend-common/guards/feature-flag';
 import { RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG } from '../../constants/release-feature-flags.constant';
 
-const financeRootPermissionIds = FINES_PERMISSIONS;
+const financeRootPermissionCodes = FINES_PERMISSIONS;
 
 export const release1cBankingInterfacesFeatureFlagGuard = featureFlagRedirectGuard(
   RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
@@ -30,9 +31,9 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, routePermissionsGuard, release1cBankingInterfacesFeatureFlagGuard],
     data: {
-      routePermissionId: [financeRootPermissionIds['view-interface-files']],
+      routePermissionCodes: [financeRootPermissionCodes['view-interface-files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.inbound,
-    },
+    } satisfies IFinesRoutePermissionData,
     resolve: { title: TitleResolver },
   },
   {
@@ -44,9 +45,9 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, routePermissionsGuard, release1cBankingInterfacesFeatureFlagGuard],
     data: {
-      routePermissionId: [financeRootPermissionIds['view-interface-files']],
+      routePermissionCodes: [financeRootPermissionCodes['view-interface-files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.outbound,
-    },
+    } satisfies IFinesRoutePermissionData,
     resolve: { title: TitleResolver },
   },
   {
@@ -58,9 +59,9 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, routePermissionsGuard, release1cBankingInterfacesFeatureFlagGuard],
     data: {
-      routePermissionId: [financeRootPermissionIds['create-interface-files']],
+      routePermissionCodes: [financeRootPermissionCodes['create-interface-files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.upload,
-    },
+    } satisfies IFinesRoutePermissionData,
     resolve: { title: TitleResolver },
   },
 ];

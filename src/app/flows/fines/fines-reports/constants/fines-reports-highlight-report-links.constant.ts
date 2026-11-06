@@ -1,9 +1,9 @@
-import { IDashboardPageConfigurationLink } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
+import { type IFinesDashboardConfigurationLink } from '@app/interfaces/fines-dashboard-configuration.interface';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
 
-export const FINES_REPORTS_HIGHLIGHT_REPORT_LINKS: IDashboardPageConfigurationLink[] = [
+export const FINES_REPORTS_HIGHLIGHT_REPORT_LINKS: IFinesDashboardConfigurationLink[] = [
   {
     id: 'user-reports',
     text: 'View all your reports',
@@ -15,7 +15,7 @@ export const FINES_REPORTS_HIGHLIGHT_REPORT_LINKS: IDashboardPageConfigurationLi
       FINES_REPORTS_ROUTING_PATHS.children.summaryList,
     ],
     fragment: null,
-    permissionIds: [],
+    permissionCodes: [],
     newTab: false,
     style: 'guidance-panel-blue',
   },

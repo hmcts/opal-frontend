@@ -145,7 +145,7 @@ describe('FinesAccConvertComponent', () => {
     expect(convertRoute?.path).toBe(`${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.convert}/:partyType`);
     expect(convertRoute?.canActivate).toEqual([authGuard, businessUnitRoutePermissionsGuard, finesAccStateGuard]);
     expect(convertRoute?.data).toEqual({
-      routePermissionId: [FINES_PERMISSIONS['account-maintenance']],
+      routePermissionCodes: [FINES_PERMISSIONS['account-maintenance']],
       title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.convert,
     });
     expect(convertRoute?.resolve).toEqual({

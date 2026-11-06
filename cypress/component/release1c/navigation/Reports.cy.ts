@@ -1,3 +1,4 @@
+import { type FinesPermissionCode } from '@app/constants/fines-permissions.constant';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { mount } from 'cypress/angular';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
@@ -39,7 +40,7 @@ const DEFAULT_RELEASE_FEATURE_FLAGS = {
 };
 
 interface IComponentProperties {
-  permissionIds: number[];
+  permissionCodes: FinesPermissionCode[];
   dashboardType: string;
   featureFlags: Record<string, boolean>;
 }
@@ -69,7 +70,7 @@ const operationalReportPermissions = [
 ];
 
 const componentProperties: IComponentProperties = {
-  permissionIds: operationalReportPermissions,
+  permissionCodes: operationalReportPermissions,
   dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.reports,
   featureFlags: DEFAULT_RELEASE_FEATURE_FLAGS,
 };
@@ -119,7 +120,7 @@ describe(
           {
             provide: PermissionsService,
             useValue: {
-              getUniquePermissions: cy.stub().returns(props.permissionIds),
+              getUniquePermissions: cy.stub().returns(props.permissionCodes),
             },
           },
           {
@@ -182,10 +183,10 @@ describe(
 
     const commonSetup = () => setupDashboardComponent();
 
-    const setupDashboardWithPermissions = (permissionIds: number[]) =>
+    const setupDashboardWithPermissions = (permissionCodes: FinesPermissionCode[]) =>
       setupDashboardComponent({
         ...componentProperties,
-        permissionIds,
+        permissionCodes,
       });
 
     const featureFlagDisabledSetup = () =>

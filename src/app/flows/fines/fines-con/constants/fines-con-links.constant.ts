@@ -1,8 +1,8 @@
-import { IDashboardPageConfigurationLink } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
+import { type IFinesDashboardConfigurationLink } from '@app/interfaces/fines-dashboard-configuration.interface';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 
-export const FINES_CON_LINKS: IDashboardPageConfigurationLink[] = [
+export const FINES_CON_LINKS: IFinesDashboardConfigurationLink[] = [
   {
     id: 'finesConsolidationLink',
     text: 'Consolidate accounts',
@@ -13,7 +13,7 @@ export const FINES_CON_LINKS: IDashboardPageConfigurationLink[] = [
       FINES_ROUTING_PATHS.children.con.children['selectBusinessUnit'],
     ],
     fragment: null,
-    permissionIds: [FINES_PERMISSIONS['consolidate']],
+    permissionCodes: [FINES_PERMISSIONS['consolidate']],
     newTab: false,
     style: null,
   },

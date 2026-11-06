@@ -1,3 +1,4 @@
+import { type FinesPermissionCode } from '@app/constants/fines-permissions.constant';
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { AppInsightsService } from '@hmcts/opal-frontend-common/services/app-insights-service';
@@ -32,16 +33,16 @@ type FeatureFlags = Record<string, boolean>;
 
 const buildTags = (...tags: string[]) => [...tags, MANUAL_ACCOUNT_CREATION_JIRA_LABEL];
 
-const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpalUserState => {
+const createUserStateWithPermissions = (permissionCodes: readonly FinesPermissionCode[]): IOpalUserState => {
   const userState = structuredClone(OPAL_USER_STATE_MOCK);
   const [firstBusinessUnit] = userState.business_unit_users;
 
   userState.business_unit_users = [
     {
       ...firstBusinessUnit,
-      permissions: permissionIds.map((permissionId) => ({
-        permission_id: permissionId,
-        permission_name: `Permission ${permissionId}`,
+      permissions: permissionCodes.map((permissionCode) => ({
+        permission_code: permissionCode,
+        permission_name: `Permission ${permissionCode}`,
       })),
     },
   ];
@@ -58,9 +59,9 @@ const createGlobalStore = (userState: IOpalUserState, featureFlags: FeatureFlags
 };
 
 describe('FinesRelease1bFeatureToggles', () => {
-  const searchPermissionIds = [FINES_PERMISSIONS['search-and-view-accounts']];
+  const searchPermissionCodes = [FINES_PERMISSIONS['search-and-view-accounts']];
 
-  const setupAppComponent = (permissionIds: readonly number[], featureFlags: FeatureFlags) => {
+  const setupAppComponent = (permissionCodes: readonly FinesPermissionCode[], featureFlags: FeatureFlags) => {
     cy.then(() => {
       mount(AppComponent, {
         providers: [
@@ -68,7 +69,7 @@ describe('FinesRelease1bFeatureToggles', () => {
           provideRouter([]),
           {
             provide: GlobalStore,
-            useFactory: () => createGlobalStore(createUserStateWithPermissions(permissionIds), featureFlags),
+            useFactory: () => createGlobalStore(createUserStateWithPermissions(permissionCodes), featureFlags),
           },
           {
             provide: SessionService,
@@ -106,7 +107,7 @@ describe('FinesRelease1bFeatureToggles', () => {
         permissions: [
           ...businessUnitUser.permissions,
           {
-            permission_id: FINES_PERMISSIONS['search-and-view-accounts'],
+            permission_code: FINES_PERMISSIONS['search-and-view-accounts'],
             permission_name: 'Search and View Accounts',
           },
         ],
@@ -138,7 +139,7 @@ describe('FinesRelease1bFeatureToggles', () => {
     'should show Search in primary navigation when release-1b is enabled',
     { tags: [...buildTags(RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1B', '@JIRA-TEST-KEY:PO-8676'] },
     () => {
-      setupAppComponent(searchPermissionIds, { 'release-1b': true });
+      setupAppComponent(searchPermissionCodes, { 'release-1b': true });
 
       cy.get(PrimaryNav.container).should('be.visible');
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.search)).should('be.visible');
@@ -149,7 +150,7 @@ describe('FinesRelease1bFeatureToggles', () => {
     'should hide Search in primary navigation when release-1b is disabled',
     { tags: [...buildTags(RELEASE_1B_STORY_TAG), RELEASE_EPIC_TAG, '@R1BOff', '@JIRA-TEST-KEY:PO-8677'] },
     () => {
-      setupAppComponent(searchPermissionIds, { 'release-1b': false });
+      setupAppComponent(searchPermissionCodes, { 'release-1b': false });
 
       cy.get(PrimaryNav.container).should('not.be.visible');
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.search)).should('not.exist');

@@ -1,3 +1,4 @@
+import { type IFinesRoutePermissionData } from '@app/interfaces/fines-route-permission-data.interface';
 import { Routes } from '@angular/router';
 import { FINES_MAC_ROUTING_PATHS } from './constants/fines-mac-routing-paths.constant';
 import { finesMacFlowStateGuard } from '../guards/fines-mac-flow-state/fines-mac-flow-state.guard';
@@ -18,7 +19,7 @@ import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.const
 import { fetchProsecutorsResolver } from './resolvers/fetch-prosecutors-resolver/fetch-prosecutors.resolver';
 import { fetchOriginatorsResolver } from './resolvers/fetch-originators-resolver/fetch-originators.resolver';
 
-const draftRootPermissionIds = FINES_PERMISSIONS;
+const draftRootPermissionCodes = FINES_PERMISSIONS;
 
 export const routing: Routes = [
   {
@@ -36,8 +37,8 @@ export const routing: Routes = [
     canDeactivate: [canDeactivateGuard],
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.originatorType,
-      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
-    },
+      routePermissionCodes: [draftRootPermissionCodes['create-and-manage-draft-accounts']],
+    } satisfies IFinesRoutePermissionData,
     resolve: { title: TitleResolver },
   },
   {
@@ -51,8 +52,8 @@ export const routing: Routes = [
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.createAccount,
       permission: 'CREATE_MANAGE_DRAFT_ACCOUNTS',
-      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
-    },
+      routePermissionCodes: [draftRootPermissionCodes['create-and-manage-draft-accounts']],
+    } satisfies IFinesRoutePermissionData,
     resolve: {
       title: TitleResolver,
       businessUnits: fetchBusinessUnitsResolver,
@@ -68,8 +69,8 @@ export const routing: Routes = [
     canDeactivate: [canDeactivateGuard],
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.accountDetails,
-      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
-    },
+      routePermissionCodes: [draftRootPermissionCodes['create-and-manage-draft-accounts']],
+    } satisfies IFinesRoutePermissionData,
     resolve: { title: TitleResolver },
   },
   {
@@ -82,8 +83,8 @@ export const routing: Routes = [
     canDeactivate: [canDeactivateGuard],
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.employerDetails,
-      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
-    },
+      routePermissionCodes: [draftRootPermissionCodes['create-and-manage-draft-accounts']],
+    } satisfies IFinesRoutePermissionData,
     resolve: { title: TitleResolver },
   },
   {
@@ -96,8 +97,8 @@ export const routing: Routes = [
     canDeactivate: [canDeactivateGuard],
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.contactDetails,
-      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
-    },
+      routePermissionCodes: [draftRootPermissionCodes['create-and-manage-draft-accounts']],
+    } satisfies IFinesRoutePermissionData,
     resolve: { title: TitleResolver },
   },
   {
@@ -110,8 +111,8 @@ export const routing: Routes = [
     canDeactivate: [canDeactivateGuard],
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.parentGuardianDetails,
-      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
-    },
+      routePermissionCodes: [draftRootPermissionCodes['create-and-manage-draft-accounts']],
+    } satisfies IFinesRoutePermissionData,
     resolve: { title: TitleResolver },
   },
   {
@@ -124,8 +125,8 @@ export const routing: Routes = [
     canDeactivate: [canDeactivateGuard],
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.personalDetails,
-      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
-    },
+      routePermissionCodes: [draftRootPermissionCodes['create-and-manage-draft-accounts']],
+    } satisfies IFinesRoutePermissionData,
     resolve: { title: TitleResolver },
   },
 
@@ -139,8 +140,8 @@ export const routing: Routes = [
     canDeactivate: [canDeactivateGuard],
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.companyDetails,
-      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
-    },
+      routePermissionCodes: [draftRootPermissionCodes['create-and-manage-draft-accounts']],
+    } satisfies IFinesRoutePermissionData,
     resolve: { title: TitleResolver },
   },
   {
@@ -153,8 +154,8 @@ export const routing: Routes = [
     canDeactivate: [canDeactivateGuard],
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.courtDetails,
-      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
-    },
+      routePermissionCodes: [draftRootPermissionCodes['create-and-manage-draft-accounts']],
+    } satisfies IFinesRoutePermissionData,
     resolve: {
       title: TitleResolver,
       courts: fetchEnforcementCourtsResolver,
@@ -171,8 +172,8 @@ export const routing: Routes = [
     canDeactivate: [canDeactivateGuard],
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.accountCommentsNotes,
-      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
-    },
+      routePermissionCodes: [draftRootPermissionCodes['create-and-manage-draft-accounts']],
+    } satisfies IFinesRoutePermissionData,
     resolve: { title: TitleResolver },
   },
   {
@@ -185,8 +186,8 @@ export const routing: Routes = [
     canDeactivate: [canDeactivateGuard],
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.paymentTerms,
-      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
-    },
+      routePermissionCodes: [draftRootPermissionCodes['create-and-manage-draft-accounts']],
+    } satisfies IFinesRoutePermissionData,
     resolve: { title: TitleResolver },
   },
   {
@@ -199,11 +200,11 @@ export const routing: Routes = [
     canDeactivate: [canDeactivateGuard],
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.deleteAccountConfirmation,
-      routePermissionId: [
-        draftRootPermissionIds['create-and-manage-draft-accounts'],
-        draftRootPermissionIds['check-and-validate-draft-accounts'],
+      routePermissionCodes: [
+        draftRootPermissionCodes['create-and-manage-draft-accounts'],
+        draftRootPermissionCodes['check-and-validate-draft-accounts'],
       ],
-    },
+    } satisfies IFinesRoutePermissionData,
     resolve: { title: TitleResolver },
   },
   {
@@ -215,11 +216,11 @@ export const routing: Routes = [
     canActivate: [authGuard, routePermissionsGuard, finesMacFlowStateGuard],
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.deleteAccountConfirmation,
-      routePermissionId: [
-        draftRootPermissionIds['create-and-manage-draft-accounts'],
-        draftRootPermissionIds['check-and-validate-draft-accounts'],
+      routePermissionCodes: [
+        draftRootPermissionCodes['create-and-manage-draft-accounts'],
+        draftRootPermissionCodes['check-and-validate-draft-accounts'],
       ],
-    },
+    } satisfies IFinesRoutePermissionData,
     resolve: { title: TitleResolver },
   },
   {
@@ -232,8 +233,8 @@ export const routing: Routes = [
     canDeactivate: [canDeactivateGuard],
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.languagePreferences,
-      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
-    },
+      routePermissionCodes: [draftRootPermissionCodes['create-and-manage-draft-accounts']],
+    } satisfies IFinesRoutePermissionData,
     resolve: { title: TitleResolver },
   },
   {
@@ -247,8 +248,8 @@ export const routing: Routes = [
     canDeactivate: [canDeactivateGuard],
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.offenceDetails,
-      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
-    },
+      routePermissionCodes: [draftRootPermissionCodes['create-and-manage-draft-accounts']],
+    } satisfies IFinesRoutePermissionData,
     resolve: {
       title: TitleResolver,
     },
@@ -262,8 +263,8 @@ export const routing: Routes = [
     canActivate: [authGuard, routePermissionsGuard, finesMacFlowStateGuard],
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.reviewAccount,
-      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
-    },
+      routePermissionCodes: [draftRootPermissionCodes['create-and-manage-draft-accounts']],
+    } satisfies IFinesRoutePermissionData,
     resolve: {
       title: TitleResolver,
       courts: fetchEnforcementCourtsResolver,
@@ -282,8 +283,8 @@ export const routing: Routes = [
     canActivate: [authGuard, routePermissionsGuard],
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.submitConfirmation,
-      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
-    },
+      routePermissionCodes: [draftRootPermissionCodes['create-and-manage-draft-accounts']],
+    } satisfies IFinesRoutePermissionData,
     resolve: {
       title: TitleResolver,
       courts: fetchEnforcementCourtsResolver,
@@ -305,11 +306,11 @@ export const routing: Routes = [
     },
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.reviewAccount,
-      routePermissionId: [
-        draftRootPermissionIds['create-and-manage-draft-accounts'],
-        draftRootPermissionIds['check-and-validate-draft-accounts'],
+      routePermissionCodes: [
+        draftRootPermissionCodes['create-and-manage-draft-accounts'],
+        draftRootPermissionCodes['check-and-validate-draft-accounts'],
       ],
-    },
+    } satisfies IFinesRoutePermissionData,
   },
   {
     path: `${FINES_MAC_ROUTING_PATHS.children.accountDetails}/:draftAccountId`,
@@ -322,8 +323,8 @@ export const routing: Routes = [
     resolve: { accountDetailsFetchMap: fetchMapFinesMacPayloadResolver },
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.accountDetails,
-      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
-    },
+      routePermissionCodes: [draftRootPermissionCodes['create-and-manage-draft-accounts']],
+    } satisfies IFinesRoutePermissionData,
   },
   {
     path: FINES_MAC_ROUTING_PATHS.children.fixedPenaltyDetails,
@@ -340,7 +341,7 @@ export const routing: Routes = [
     },
     data: {
       title: FINES_MAC_ROUTING_TITLES.children.fixedPenaltyDetails,
-      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
-    },
+      routePermissionCodes: [draftRootPermissionCodes['create-and-manage-draft-accounts']],
+    } satisfies IFinesRoutePermissionData,
   },
 ];

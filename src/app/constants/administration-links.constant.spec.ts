@@ -19,7 +19,7 @@ describe('ADMINISTRATION_LINKS', () => {
         FINES_ROUTING_PATHS.children.aec.children['config'],
       ],
       fragment: null,
-      permissionIds: [FINES_PERMISSIONS['auto-enforcement']],
+      permissionCodes: [FINES_PERMISSIONS['auto-enforcement']],
       newTab: false,
       style: null,
     });

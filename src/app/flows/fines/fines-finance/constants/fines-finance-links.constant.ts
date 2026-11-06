@@ -1,4 +1,5 @@
-import { IDashboardPageConfigurationLink } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
+import { type IFinesDashboardConfigurationLink } from '@app/interfaces/fines-dashboard-configuration.interface';
+import { type FinesPermissionCode } from '@app/constants/fines-permissions.constant';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 
@@ -14,16 +15,16 @@ const createFinesFinanceLink = (
   id: string,
   text: string,
   route: readonly string[],
-  permissionId: number,
-): IDashboardPageConfigurationLink => ({
+  permissionCode: FinesPermissionCode,
+): IFinesDashboardConfigurationLink => ({
   id,
   text,
   routerLink: [...FINES_FINANCE_ROUTE_PREFIX, ...route],
   ...FINES_FINANCE_LINK_DEFAULTS,
-  permissionIds: [permissionId],
+  permissionCodes: [permissionCode],
 });
 
-export const FINES_FINANCE_LINKS: IDashboardPageConfigurationLink[] = [
+export const FINES_FINANCE_LINKS: IFinesDashboardConfigurationLink[] = [
   createFinesFinanceLink(
     'finesFinanceInboundFilesLink',
     'Inbound files',

@@ -38,7 +38,7 @@ describe('fines API routes', () => {
         path: FINES_API_ROUTING_PATHS.children.selectBusinessUnits,
         canActivate: [authGuard, routePermissionsGuard],
         data: {
-          routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+          routePermissionCodes: [FINES_PERMISSIONS['process-and-allocate-payments']],
           title: FINES_API_ROUTING_TITLES.children.selectBusinessUnits,
         },
         resolve: {
@@ -61,7 +61,7 @@ describe('fines API routes', () => {
         canActivate: [authGuard, routePermissionsGuard, finesApiFlowStateGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
-          routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+          routePermissionCodes: [FINES_PERMISSIONS['process-and-allocate-payments']],
           title: FINES_API_ROUTING_TITLES.children.processAllocate,
         },
         resolve: {
@@ -82,7 +82,7 @@ describe('fines API routes', () => {
         canActivate: [authGuard, routePermissionsGuard, finesApiFlowStateGuard, finesApiFileSelectionGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
-          routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+          routePermissionCodes: [FINES_PERMISSIONS['process-and-allocate-payments']],
           title: FINES_API_ROUTING_TITLES.children.confirmProcess,
         },
         resolve: {
@@ -102,7 +102,7 @@ describe('fines API routes', () => {
     it('protects the summary route and loads the shared placeholder', async () => {
       expect(summaryRoute.canActivate).toEqual([authGuard, routePermissionsGuard]);
       expect(summaryRoute.data).toEqual({
-        routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+        routePermissionCodes: [FINES_PERMISSIONS['process-and-allocate-payments']],
         title: FINES_API_ROUTING_TITLES.children[routeKey],
       });
       expect(summaryRoute.resolve).toEqual({ title: TitleResolver });

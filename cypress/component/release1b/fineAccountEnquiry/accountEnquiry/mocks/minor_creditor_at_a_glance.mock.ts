@@ -14,7 +14,7 @@ export const createUserStateWithPaymentHoldPermission = () => {
   const userState = structuredClone(USER_STATE_MOCK_PERMISSION_BU77);
 
   userState.business_unit_users[0].permissions.push({
-    permission_id: 12,
+    permission_code: 'ADD_AND_REMOVE_PAYMENT_HOLD',
     permission_name: 'Add and Remove Payment Hold',
   });
 
@@ -25,7 +25,7 @@ export const createUserStateWithPaymentHoldPermissionInDifferentBusinessUnit = (
   const userState = structuredClone(USER_STATE_MOCK_PERMISSION_BU17);
 
   userState.business_unit_users[0].permissions.push({
-    permission_id: 12,
+    permission_code: 'ADD_AND_REMOVE_PAYMENT_HOLD',
     permission_name: 'Add and Remove Payment Hold',
   });
 
@@ -93,7 +93,7 @@ export const createUserStateWithViewCreditorBacsPermission = () => {
   const userState = structuredClone(USER_STATE_MOCK_NO_PERMISSION);
 
   userState.business_unit_users[0].permissions.push({
-    permission_id: 11,
+    permission_code: 'VIEW_CREDITOR_BACS',
     permission_name: 'View Creditor BACS',
   });
 

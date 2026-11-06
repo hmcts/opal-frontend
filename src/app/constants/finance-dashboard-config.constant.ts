@@ -1,8 +1,8 @@
-import { IDashboardPageConfiguration } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
+import { type IFinesDashboardConfiguration } from '@app/interfaces/fines-dashboard-configuration.interface';
 import { FINES_FINANCE_LINKS } from '@app/flows/fines/fines-finance/constants/fines-finance-links.constant';
 import { FINANCE_LINKS } from './finance-links.constant';
 
-export const FINANCE_DASHBOARD_CONFIG: IDashboardPageConfiguration = {
+export const FINANCE_DASHBOARD_CONFIG: IFinesDashboardConfiguration = {
   title: 'Finance',
   highlights: [],
   groups: [

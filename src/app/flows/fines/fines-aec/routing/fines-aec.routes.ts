@@ -1,3 +1,4 @@
+import { type IFinesRoutePermissionData } from '@app/interfaces/fines-route-permission-data.interface';
 import { Routes } from '@angular/router';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
@@ -19,9 +20,9 @@ export const routing: Routes = [
       import('../fines-aec-config/fines-aec-config.component').then((c) => c.FinesAecConfigComponent),
     canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [FINES_PERMISSIONS['auto-enforcement']],
+      routePermissionCodes: [FINES_PERMISSIONS['auto-enforcement']],
       title: FINES_AEC_ROUTING_TITLES.children.config,
-    },
+    } satisfies IFinesRoutePermissionData,
     resolve: { title: TitleResolver },
   },
 ];

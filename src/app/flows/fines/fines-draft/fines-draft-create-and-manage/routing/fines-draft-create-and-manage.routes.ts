@@ -1,3 +1,4 @@
+import { type IFinesRoutePermissionData } from '@app/interfaces/fines-route-permission-data.interface';
 import { Routes } from '@angular/router';
 import { FINES_DRAFT_ROUTING_PATHS } from '../../routing/constants/fines-draft-routing-paths.constant';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
@@ -13,7 +14,7 @@ import { FINES_DRAFT_ROUTE_DATA_KEYS } from '../../constants/fines-draft-route-d
 import { finesDraftCountResolver } from '../../routing/resolvers/fines-draft-count.resolver';
 import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 
-const draftRootPermissionIds = FINES_PERMISSIONS;
+const draftRootPermissionCodes = FINES_PERMISSIONS;
 
 export const routing: Routes = [
   {
@@ -29,9 +30,9 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
+      routePermissionCodes: [draftRootPermissionCodes['create-and-manage-draft-accounts']],
       title: FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_TITLES.children.tabs,
-    },
+    } satisfies IFinesRoutePermissionData,
     resolve: {
       title: TitleResolver,
       [FINES_DRAFT_ROUTE_DATA_KEYS.draftAccounts]: finesDraftTabResolver({
@@ -54,9 +55,9 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
+      routePermissionCodes: [draftRootPermissionCodes['create-and-manage-draft-accounts']],
       title: FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_TITLES.children.viewAllRejected,
-    },
+    } satisfies IFinesRoutePermissionData,
     resolve: {
       title: TitleResolver,
       [FINES_DRAFT_ROUTE_DATA_KEYS.allRejectedAccounts]: finesDraftCreateAndManageViewAllRejectedResolver,
