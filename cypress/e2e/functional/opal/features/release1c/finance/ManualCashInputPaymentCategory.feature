@@ -28,9 +28,7 @@ Feature: Manual Cash Input - Payment Category
     And I continue with payment category "criminal"
     Then I see Search for an Account
 
-  # Update this test to assert the completed screen when PO-3669 is in QA.
-  @JIRA-STORY:PO-3486
-  @JIRA-STORY:PO-3679
+  @JIRA-STORY:PO-3486 @JIRA-STORY:PO-3679 @JIRA-STORY:PO-3669
   Scenario: AC1, AC4a - Court Fee continues to Court Fee Details
     When I select the Fines primary navigation item "Finance"
     And I am taken to the "Finance" Fines landing page
