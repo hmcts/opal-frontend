@@ -57,7 +57,7 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
     payload.collection_order_made = true;
     payload.collection_order_made_today = true;
 
-    const result = finesMacPayloadMapAccountPaymentTerms(mappedFinesMacState, payload);
+    const result = finesMacPayloadMapAccountPaymentTerms(mappedFinesMacState, payload, true);
 
     expect(result.paymentTerms.formData.fm_payment_terms_collection_order_made).toBe(false);
     expect(result.paymentTerms.formData.fm_payment_terms_collection_order_made_today).toBe(true);

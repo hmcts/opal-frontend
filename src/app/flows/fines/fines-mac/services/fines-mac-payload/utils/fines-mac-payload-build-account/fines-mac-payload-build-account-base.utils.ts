@@ -47,9 +47,13 @@ const sortOffenceDetailsByDate = (
 /**
  * Builds the initial payload for fines MAC based on the provided state objects.
  *
+ * @param originatorTypeState
  * @param accountDetailsState - The state object containing account details.
  * @param courtDetailsState - The state object containing court details.
  * @param paymentTermsState - The state object containing payment terms.
+ * @param offenceDetailsState
+ * @param fixedPenaltyDetails
+ * @param isR1A12Enabled - Is feature flag R1A12 enabled
  * @returns The initial payload for fines MAC.
  */
 export const finesMacPayloadBuildAccountBase = (
@@ -59,6 +63,7 @@ export const finesMacPayloadBuildAccountBase = (
   paymentTermsState: IFinesMacPaymentTermsState,
   offenceDetailsState: IFinesMacOffenceDetailsState[],
   fixedPenaltyDetails: IFinesMacFixedPenaltyDetailsStoreState,
+  isR1A12Enabled = false,
 ): IFinesMacPayloadAccountAccountInitial => {
   let earliestDateOfSentence = null;
   let originator_type = null;
@@ -89,6 +94,14 @@ export const finesMacPayloadBuildAccountBase = (
     fm_payment_terms_payment_card_request: payment_card_request,
   } = paymentTermsState;
 
+  let collectionOrderMade: boolean | null;
+  if (isR1A12Enabled) {
+    collectionOrderMade =
+      collection_order_made === true || collection_order_made_today === true ? true : (collection_order_made ?? null);
+  } else {
+    collectionOrderMade = collection_order_made ?? null;
+  }
+
   return {
     account_type,
     defendant_type,
@@ -97,8 +110,7 @@ export const finesMacPayloadBuildAccountBase = (
     originator_type,
     prosecutor_case_reference,
     enforcement_court_id,
-    collection_order_made:
-      collection_order_made === true || collection_order_made_today === true ? true : (collection_order_made ?? null),
+    collection_order_made: collectionOrderMade,
     collection_order_made_today: collection_order_made_today ?? null,
     collection_order_date: collection_order_date ?? null,
     suspended_committal_date: suspended_committal_date ?? null,

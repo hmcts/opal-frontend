@@ -325,6 +325,7 @@ describe('finesMacPayloadBuildAccountBase', () => {
       paymentTermsState,
       offenceDetailsState,
       fixedPenaltyDetailsState,
+      true,
     );
 
     expect(result.collection_order_made).toBe(true);
