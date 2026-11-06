@@ -10,6 +10,7 @@ import { FINES_MCI_ROUTING_PATHS } from '../../fines-mci/routing/constants/fines
 import { FINES_AEC_ROUTING_PATHS } from '../../fines-aec/routing/fines-aec-routing-paths.constant';
 import { FINES_API_ROUTING_PATHS } from '../../fines-api/routing/constants/fines-api-routing-paths.constant';
 import { FINES_FINANCE_ROUTING_PATHS } from '../../fines-finance/routing/fines-finance-routing-paths.constant';
+import { FINES_SUSPENSE_ITEM_ROUTING_PATHS } from '../../fines-suspense-item/routing/constants/fines-suspense-item-routing-paths.constant';
 
 export const FINES_ROUTING_PATHS: IFinesRoutingPaths = {
   root: 'fines',
@@ -25,5 +26,6 @@ export const FINES_ROUTING_PATHS: IFinesRoutingPaths = {
     reports: FINES_REPORTS_ROUTING_PATHS,
     aec: FINES_AEC_ROUTING_PATHS,
     finance: FINES_FINANCE_ROUTING_PATHS,
+    suspenseItem: FINES_SUSPENSE_ITEM_ROUTING_PATHS,
   },
 };

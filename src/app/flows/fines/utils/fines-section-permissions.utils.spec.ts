@@ -1,3 +1,4 @@
+import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { describe, expect, it } from 'vitest';
 import { type INavigationBarConfiguration } from '@app/interfaces/navigation-bar-configuration.interface';
 import { DASHBOARD_PAGE_CONFIGURATION_MAP } from '@app/pages/dashboard/constants/dashboard-config.constant';
@@ -18,6 +19,7 @@ import {
   RELEASE_1C_PAYMENT_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
+  RELEASE_1C_SUSPENSE_FEATURE_FLAG,
 } from '../constants/release-feature-flags.constant';
 import { FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS } from '../constants/feature-flag-section-permission-exclusions.constant';
 import {
@@ -58,6 +60,24 @@ const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpal
 };
 
 describe('fines-section-permissions.utils', () => {
+  it.each([
+    { permissions: [24], enabled: true, expected: true },
+    { permissions: [25], enabled: true, expected: true },
+    { permissions: [24, 25], enabled: true, expected: true },
+    { permissions: [16], enabled: true, expected: false },
+    { permissions: [24], enabled: false, expected: false },
+    { permissions: [25], enabled: false, expected: false },
+    { permissions: [24, 25], enabled: false, expected: false },
+  ])(
+    'checks Suspense-only Finance access for $permissions with flag $enabled',
+    ({ permissions, enabled, expected }) => {
+      const flags = getFeatureFlagReleaseState({ [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: enabled });
+      expect(
+        canAccessFinesPrimaryNavigationSection('finance', createUserStateWithPermissions(permissions), flags),
+      ).toBe(expected);
+    },
+  );
+
   const navigationItems: readonly INavigationBarConfiguration[] = [
     { key: 'search', value: 'Search' },
     { key: 'accounts', value: 'Accounts' },
@@ -84,6 +104,7 @@ describe('fines-section-permissions.utils', () => {
     [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
     [RELEASE_1C_PAYMENT_FEATURE_FLAG]: true,
     [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true,
+    [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: true,
   };
   const release1aEnabled = { [RELEASE_1A_FEATURE_FLAG]: true };
   const release1bEnabled = { [RELEASE_1B_FEATURE_FLAG]: true };
@@ -147,6 +168,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
         [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
         [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
+        [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState(release1cWriteOffEnabled)).toEqual({
@@ -160,6 +182,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
         [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
         [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
+        [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState(release1cReportingEnabled)).toEqual({
@@ -173,6 +196,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
         [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
         [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
+        [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState(release1cAdministrationEnabled)).toEqual({
@@ -186,6 +210,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
         [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
         [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
+        [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState(release1cFinancialMovementsEnabled)).toEqual({
@@ -199,6 +224,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
         [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
         [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
+        [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState(release1cBankingInterfacesEnabled)).toEqual({
@@ -212,6 +238,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
         [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
         [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true,
+        [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: false,
       });
 
       expect(getFeatureFlagReleaseState({})).toEqual({
@@ -225,6 +252,7 @@ describe('fines-section-permissions.utils', () => {
         [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
         [RELEASE_1C_PAYMENT_FEATURE_FLAG]: false,
         [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
+        [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: false,
       });
     });
   });
@@ -303,14 +331,14 @@ describe('fines-section-permissions.utils', () => {
       expect(isFinesPrimaryNavigationSectionEnabled('finance', release1cFinancialMovementsEnabled)).toBe(true);
     });
 
-    it('should deny Finance navigation visibility when release-1c financial movements is disabled', () => {
-      expect(isFinesPrimaryNavigationSectionEnabled('finance', release1cFinancialMovementsDisabled)).toBe(false);
+    it('should not apply a whole-section flag restriction to Finance', () => {
+      expect(isFinesPrimaryNavigationSectionEnabled('finance', release1cFinancialMovementsDisabled)).toBe(true);
     });
   });
 
   describe('canAccessFinesPrimaryNavigationSection', () => {
-    it('should allow unrestricted dashboard sections when their availability flags are enabled', () => {
-      expect(canAccessFinesPrimaryNavigationSection('finance', null, release1cFinancialMovementsEnabled)).toBe(true);
+    it('should deny Finance when no user permissions are available', () => {
+      expect(canAccessFinesPrimaryNavigationSection('finance', null, release1cFinancialMovementsEnabled)).toBe(false);
     });
 
     it('should deny restricted sections when the user lacks permissions', () => {
@@ -413,8 +441,8 @@ describe('fines-section-permissions.utils', () => {
       ).toBe(false);
     });
 
-    it('should allow Finance without permissions when release-1c financial movements is enabled', () => {
-      expect(canAccessFinesPrimaryNavigationSection('finance', null, release1cFinancialMovementsEnabled)).toBe(true);
+    it('should require Finance permissions even when financial movements is enabled', () => {
+      expect(canAccessFinesPrimaryNavigationSection('finance', null, release1cFinancialMovementsEnabled)).toBe(false);
     });
 
     it('should deny Finance access when release-1c financial movements is disabled', () => {
@@ -426,6 +454,68 @@ describe('fines-section-permissions.utils', () => {
         ),
       ).toBe(false);
     });
+  });
+
+  it.each([
+    {
+      name: 'Cash enabled',
+      permission: FINES_PERMISSIONS['process-and-allocate-payments'],
+      cash: true,
+      banking: false,
+      allowed: true,
+    },
+    {
+      name: 'Cash disabled',
+      permission: FINES_PERMISSIONS['process-and-allocate-payments'],
+      cash: false,
+      banking: true,
+      allowed: false,
+    },
+    {
+      name: 'view banking without Cash',
+      permission: FINES_PERMISSIONS['view-interface-files'],
+      cash: false,
+      banking: true,
+      allowed: true,
+    },
+    {
+      name: 'create banking without Cash',
+      permission: FINES_PERMISSIONS['create-interface-files'],
+      cash: false,
+      banking: true,
+      allowed: true,
+    },
+    {
+      name: 'banking disabled',
+      permission: FINES_PERMISSIONS['view-interface-files'],
+      cash: true,
+      banking: false,
+      allowed: false,
+    },
+    {
+      name: 'no enabled features',
+      permission: FINES_PERMISSIONS['process-and-allocate-payments'],
+      cash: false,
+      banking: false,
+      allowed: false,
+    },
+    {
+      name: 'unrelated permission',
+      permission: FINES_PERMISSIONS['search-and-view-accounts'],
+      cash: true,
+      banking: true,
+      allowed: false,
+    },
+  ])('filters Finance access and navigation for $name', ({ permission, cash, banking, allowed }) => {
+    const user = createUserStateWithPermissions([permission]);
+    const flags = {
+      [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: cash,
+      [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: banking,
+    };
+    expect(canAccessFinesPrimaryNavigationSection('finance', user, flags)).toBe(allowed);
+    expect(getAccessiblePrimaryNavigationItems([{ key: 'finance', value: 'Finance' }], user, flags)).toEqual(
+      allowed ? [{ key: 'finance', value: 'Finance' }] : [],
+    );
   });
 
   describe('getAccessiblePrimaryNavigationItems', () => {
@@ -486,9 +576,13 @@ describe('fines-section-permissions.utils', () => {
     });
 
     it('should keep Finance when release-1c financial movements is enabled', () => {
-      expect(getAccessiblePrimaryNavigationItems(navigationItemsWithFinance, null, allReleaseFlagsEnabled)).toEqual([
-        { key: 'finance', value: 'Finance' },
-      ]);
+      expect(
+        getAccessiblePrimaryNavigationItems(
+          navigationItemsWithFinance,
+          createUserStateWithPermissions([FINES_PERMISSIONS['process-and-allocate-payments']]),
+          allReleaseFlagsEnabled,
+        ),
+      ).toEqual([{ key: 'finance', value: 'Finance' }]);
     });
 
     it('should remove Finance when release-1c financial movements is disabled', () => {
@@ -513,7 +607,13 @@ describe('fines-section-permissions.utils', () => {
     it('should fall back to the first accessible navigation item when no priority section is available', () => {
       const financeItems: readonly INavigationBarConfiguration[] = [{ key: 'finance', value: 'Finance' }];
 
-      expect(getDashboardLandingType(financeItems, null, release1cFinancialMovementsEnabled)).toBe('finance');
+      expect(
+        getDashboardLandingType(
+          financeItems,
+          createUserStateWithPermissions([FINES_PERMISSIONS['process-and-allocate-payments']]),
+          release1cFinancialMovementsEnabled,
+        ),
+      ).toBe('finance');
     });
 
     it('should fall back to the default dashboard tab when there are no accessible items', () => {
@@ -527,10 +627,14 @@ describe('fines-section-permissions.utils', () => {
       ];
 
       expect(
-        getDashboardLandingType(navigationItemsWithFinance, createUserStateWithPermissions([REPORTS_PERMISSIONS[0]]), {
-          ...release1cReportingDisabled,
-          ...release1cFinancialMovementsEnabled,
-        }),
+        getDashboardLandingType(
+          navigationItemsWithFinance,
+          createUserStateWithPermissions([REPORTS_PERMISSIONS[0], FINES_PERMISSIONS['process-and-allocate-payments']]),
+          {
+            ...release1cReportingDisabled,
+            ...release1cFinancialMovementsEnabled,
+          },
+        ),
       ).toBe('finance');
     });
 
@@ -541,10 +645,14 @@ describe('fines-section-permissions.utils', () => {
       ];
 
       expect(
-        getDashboardLandingType(navigationItemsWithFinance, createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0]]), {
-          ...release1aDisabledWithWriteOffEnabled,
-          ...release1cFinancialMovementsEnabled,
-        }),
+        getDashboardLandingType(
+          navigationItemsWithFinance,
+          createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[0], FINES_PERMISSIONS['process-and-allocate-payments']]),
+          {
+            ...release1aDisabledWithWriteOffEnabled,
+            ...release1cFinancialMovementsEnabled,
+          },
+        ),
       ).toBe('finance');
     });
 
@@ -555,10 +663,14 @@ describe('fines-section-permissions.utils', () => {
       ];
 
       expect(
-        getDashboardLandingType(navigationItemsWithFinance, createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2]]), {
-          ...release1aEnabledWithWriteOffDisabled,
-          ...release1cFinancialMovementsEnabled,
-        }),
+        getDashboardLandingType(
+          navigationItemsWithFinance,
+          createUserStateWithPermissions([ACCOUNTS_PERMISSIONS[2], FINES_PERMISSIONS['process-and-allocate-payments']]),
+          {
+            ...release1aEnabledWithWriteOffDisabled,
+            ...release1cFinancialMovementsEnabled,
+          },
+        ),
       ).toBe('finance');
     });
 
@@ -641,20 +753,19 @@ describe('fines-section-permissions.utils', () => {
         filterDashboardConfigByFeatureFlags(DASHBOARD_PAGE_CONFIGURATION_MAP.finance, {
           ...release1cFinancialMovementsEnabled,
           ...release1cBankingInterfacesEnabled,
+          [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: true,
         }),
       ).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.finance);
     });
 
-    it('should remove Finance dashboard content when release-1c financial movements is disabled', () => {
-      expect(
-        filterDashboardConfigByFeatureFlags(
-          DASHBOARD_PAGE_CONFIGURATION_MAP.finance,
-          release1cFinancialMovementsDisabled,
-        ),
-      ).toEqual({
-        ...DASHBOARD_PAGE_CONFIGURATION_MAP.finance,
-        groups: [],
+    it('should remove Cash and Banking Interfaces while retaining Suspense when their release flags are disabled', () => {
+      const config = filterDashboardConfigByFeatureFlags(DASHBOARD_PAGE_CONFIGURATION_MAP.finance, {
+        ...release1cFinancialMovementsDisabled,
+        [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: false,
+        [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: true,
       });
+
+      expect(config.groups.map((group) => group.id)).toEqual(['suspense']);
     });
   });
 });

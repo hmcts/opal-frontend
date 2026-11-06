@@ -1,3 +1,4 @@
+import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree, convertToParamMap } from '@angular/router';
 import { createSpyObj } from '@app/testing/create-spy-obj.helper';
@@ -18,6 +19,7 @@ import {
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
   RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
+  RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
 } from '@app/flows/fines/constants/release-feature-flags.constant';
 
 const resolveFeatureFlagGuardMock = vi.fn();
@@ -409,42 +411,61 @@ describe('finesSectionPermissionsGuard', () => {
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
   });
 
-  it('should allow unrestricted dashboard sections without looking up user permissions', async () => {
-    const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance });
-
-    expect(result).toBe(true);
-    expect(mockOpalUserService.getLoggedInUserState).not.toHaveBeenCalled();
-  });
-
-  it('should allow Finance when release-1c-financial-movements is enabled without looking up user permissions', async () => {
-    const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance });
-
-    expect(result).toBe(true);
-    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
-      RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
-      expect.any(Object),
-      expect.any(Object),
-    );
-    expect(mockOpalUserService.getLoggedInUserState).not.toHaveBeenCalled();
-  });
-
-  it('should redirect Finance when release-1c-financial-movements is disabled', async () => {
-    const expectedUrlTree = new UrlTree();
+  it.each([
+    {
+      name: 'Cash permission with Cash enabled',
+      permission: FINES_PERMISSIONS['process-and-allocate-payments'],
+      cash: true,
+      banking: false,
+      allowed: true,
+    },
+    {
+      name: 'view banking permission with Cash disabled',
+      permission: FINES_PERMISSIONS['view-interface-files'],
+      cash: false,
+      banking: true,
+      allowed: true,
+    },
+    {
+      name: 'create banking permission with Cash disabled',
+      permission: FINES_PERMISSIONS['create-interface-files'],
+      cash: false,
+      banking: true,
+      allowed: true,
+    },
+    {
+      name: 'Cash permission with Cash disabled',
+      permission: FINES_PERMISSIONS['process-and-allocate-payments'],
+      cash: false,
+      banking: true,
+      allowed: false,
+    },
+    {
+      name: 'no enabled features',
+      permission: FINES_PERMISSIONS['view-interface-files'],
+      cash: false,
+      banking: false,
+      allowed: false,
+    },
+    {
+      name: 'unrelated permission',
+      permission: FINES_PERMISSIONS['search-and-view-accounts'],
+      cash: true,
+      banking: true,
+      allowed: false,
+    },
+  ])('checks direct Finance access for $name', async ({ permission, cash, banking, allowed }) => {
     mockFeatureFlags({
-      ...DEFAULT_RELEASE_FEATURE_FLAGS,
-      [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false,
+      [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: cash,
+      [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: banking,
     });
-    mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
+    mockOpalUserService.getLoggedInUserState.mockReturnValue(of(createUserStateWithPermissions([permission])));
+    const denied = new UrlTree();
+    mockRouter.createUrlTree.mockReturnValue(denied);
 
-    const result = await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance });
-    expect(result).toBe(expectedUrlTree);
-    expect(resolveFeatureFlagGuardMock).toHaveBeenCalledWith(
-      RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
-      expect.any(Object),
-      expect.any(Object),
+    expect(await runGuard({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance })).toBe(
+      allowed ? true : denied,
     );
-    expect(mockOpalUserService.getLoggedInUserState).not.toHaveBeenCalled();
-    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
   });
 
   it('should allow unknown dashboard types without looking up user permissions', async () => {
