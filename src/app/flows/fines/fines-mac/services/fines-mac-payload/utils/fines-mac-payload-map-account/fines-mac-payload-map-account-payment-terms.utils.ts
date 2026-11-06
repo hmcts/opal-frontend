@@ -109,6 +109,7 @@ const buildPaymentTermsFormData = (
   suspendedCommittalDate: string | null,
   collectionOrderMade: boolean | null,
   collectionOrderMadeToday: boolean | null,
+  isR1A12Enabled: boolean,
 ): IFinesMacPaymentTermsState => {
   const paymentTermOptions = Object.keys(FINES_PAYMENT_TERMS_OPTIONS);
   const paymentTermsType = getPaymentTermsType(
@@ -118,6 +119,12 @@ const buildPaymentTermsFormData = (
   );
 
   const isPayInFull = paymentTermsType === paymentTermOptions[0];
+  let collectionOrderMadeForForm: boolean | null;
+  if (isR1A12Enabled) {
+    collectionOrderMadeForForm = collectionOrderMadeToday ? false : collectionOrderMade;
+  } else {
+    collectionOrderMadeForForm = collectionOrderMade;
+  }
 
   return {
     ...currentFormData,
@@ -131,9 +138,7 @@ const buildPaymentTermsFormData = (
     fm_payment_terms_default_days_in_jail: paymentTerms.default_days_in_jail ?? null,
     fm_payment_terms_payment_card_request: convertNullableBooleanToBoolean(paymentCardRequest),
     fm_payment_terms_suspended_committal_date: suspendedCommittalDate ?? null,
-    fm_payment_terms_collection_order_made: convertNullableBooleanToBoolean(
-      collectionOrderMadeToday ? false : collectionOrderMade,
-    ),
+    fm_payment_terms_collection_order_made: convertNullableBooleanToBoolean(collectionOrderMadeForForm),
     fm_payment_terms_collection_order_made_today: convertNullableBooleanToBoolean(collectionOrderMadeToday),
   };
 };
@@ -172,11 +177,13 @@ const getPaymentTermsType = (
  *
  * @param mappedFinesMacState - The current state of the fines MAC.
  * @param payload - The payload containing the account payment terms data.
+ * @param isR1A12Enabled - Is feature flag R1A12 enabled
  * @returns The updated fines MAC state with the mapped payment terms data.
  */
 export const finesMacPayloadMapAccountPaymentTerms = (
   mappedFinesMacState: IFinesMacState,
   payload: IFinesMacPayloadAccount,
+  isR1A12Enabled = false,
 ): IFinesMacState => {
   const {
     payment_terms: paymentTerms,
@@ -193,6 +200,7 @@ export const finesMacPayloadMapAccountPaymentTerms = (
     suspendedCommittalDate,
     collectionOrderMade,
     collectionOrderMadeToday,
+    isR1A12Enabled,
   );
 
   return mapEnforcementActions(mappedFinesMacState, paymentTerms.enforcements);
