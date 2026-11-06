@@ -10,7 +10,9 @@ import { of } from 'rxjs';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -65,6 +67,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
     finesMacStore = TestBed.inject(FinesMacStore);
     finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
 
     fixture.detectChanges();
   });
@@ -76,6 +79,19 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   afterEach(() => {
     component.ngOnDestroy();
   });
+
+  const setPaymentTermsWithDaysInDefault = () => {
+    const paymentTerms = finesMacStore.paymentTerms();
+    finesMacStore.setPaymentTerms({
+      ...paymentTerms,
+      formData: {
+        ...paymentTerms.formData,
+        fm_payment_terms_has_days_in_default: true,
+        fm_payment_terms_default_days_in_jail: 15,
+        fm_payment_terms_suspended_committal_date: '01/01/2020',
+      },
+    });
+  };
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -212,6 +228,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
   it('should call dateOfBirthListener on DOB value changes for an adult form update', () => {
     const dateOfBirth = '01/01/1990';
+    setPaymentTermsWithDaysInDefault();
     mockDateService.isValidDate.mockReturnValue(true);
     mockDateService.calculateAge.mockReturnValue(34);
 
@@ -222,13 +239,14 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component.age).toEqual(34);
     expect(component.ageLabel).toEqual('Adult');
     const { formData: paymentTermsFormData } = finesMacStore.paymentTerms();
-    expect(paymentTermsFormData.fm_payment_terms_has_days_in_default).toBeFalsy();
-    expect(paymentTermsFormData.fm_payment_terms_default_days_in_jail).toBeNull();
-    expect(paymentTermsFormData.fm_payment_terms_suspended_committal_date).toBeNull();
+    expect(paymentTermsFormData.fm_payment_terms_has_days_in_default).toBe(true);
+    expect(paymentTermsFormData.fm_payment_terms_default_days_in_jail).toBe(15);
+    expect(paymentTermsFormData.fm_payment_terms_suspended_committal_date).toBe('01/01/2020');
   });
 
   it('should call dateOfBirthListener on DOB value changes Youth', () => {
     const dateOfBirth = '01/01/2014';
+    setPaymentTermsWithDaysInDefault();
     mockDateService.isValidDate.mockReturnValue(true);
     mockDateService.calculateAge.mockReturnValue(10);
 
@@ -238,13 +256,14 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component.age).toEqual(10);
     expect(component.ageLabel).toEqual('Youth');
     const { formData: paymentTermsFormData } = finesMacStore.paymentTerms();
-    expect(paymentTermsFormData.fm_payment_terms_has_days_in_default).toBeFalsy();
-    expect(paymentTermsFormData.fm_payment_terms_default_days_in_jail).toBeNull();
-    expect(paymentTermsFormData.fm_payment_terms_suspended_committal_date).toBeNull();
+    expect(paymentTermsFormData.fm_payment_terms_has_days_in_default).toBe(true);
+    expect(paymentTermsFormData.fm_payment_terms_default_days_in_jail).toBe(15);
+    expect(paymentTermsFormData.fm_payment_terms_suspended_committal_date).toBe('01/01/2020');
   });
 
   it('should call dateOfBirthListener on DOB value changes for an adult explicit listener run', () => {
     const dateOfBirth = '01/01/1990';
+    setPaymentTermsWithDaysInDefault();
     component.form.controls['fm_personal_details_dob'].setValue(dateOfBirth);
     mockDateService.isValidDate.mockReturnValue(true);
     mockDateService.calculateAge.mockReturnValue(34);
@@ -254,7 +273,21 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component.age).toEqual(34);
     expect(component.ageLabel).toEqual('Adult');
     const { formData: paymentTermsFormData } = finesMacStore.paymentTerms();
-    expect(paymentTermsFormData.fm_payment_terms_has_days_in_default).toBeFalsy();
+    expect(paymentTermsFormData.fm_payment_terms_has_days_in_default).toBe(true);
+    expect(paymentTermsFormData.fm_payment_terms_default_days_in_jail).toBe(15);
+    expect(paymentTermsFormData.fm_payment_terms_suspended_committal_date).toBe('01/01/2020');
+  });
+
+  it('should keep the existing behaviour of clearing days in default when R1A-1-2 is disabled', () => {
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+    setPaymentTermsWithDaysInDefault();
+    mockDateService.isValidDate.mockReturnValue(true);
+    mockDateService.calculateAge.mockReturnValue(34);
+
+    component.form.controls['fm_personal_details_dob'].setValue('01/01/1990');
+
+    const { formData: paymentTermsFormData } = finesMacStore.paymentTerms();
+    expect(paymentTermsFormData.fm_payment_terms_has_days_in_default).toBe(false);
     expect(paymentTermsFormData.fm_payment_terms_default_days_in_jail).toBeNull();
     expect(paymentTermsFormData.fm_payment_terms_suspended_committal_date).toBeNull();
   });
