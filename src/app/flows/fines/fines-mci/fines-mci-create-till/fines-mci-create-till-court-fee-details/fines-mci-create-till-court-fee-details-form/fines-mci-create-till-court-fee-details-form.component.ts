@@ -87,6 +87,18 @@ export class FinesMciCreateTillCourtFeeDetailsFormComponent extends AbstractForm
     }
   }
 
+  protected override hasUnsavedChanges(): boolean {
+    const { courtFeeId, amountPaid, numberOfItems } = this.form.getRawValue();
+    return (
+      !this.formSubmitted &&
+      (this.form.dirty ||
+        courtFeeId !== null ||
+        !!amountPaid?.trim() ||
+        !!numberOfItems?.trim() ||
+        !!this.courtFeeSearchText?.trim())
+    );
+  }
+
   public override ngOnInit(): void {
     this.form = new FormGroup({
       courtFeeId: new FormControl<number | null>(this.initialDraft?.courtFeeId ?? null, [
@@ -115,17 +127,5 @@ export class FinesMciCreateTillCourtFeeDetailsFormComponent extends AbstractForm
   public override handleFormSubmit(event: SubmitEvent): void {
     this.form.controls['courtFeeId'].updateValueAndValidity({ emitEvent: false });
     super.handleFormSubmit(event);
-  }
-
-  protected override hasUnsavedChanges(): boolean {
-    const { courtFeeId, amountPaid, numberOfItems } = this.form.getRawValue();
-    return (
-      !this.formSubmitted &&
-      (this.form.dirty ||
-        courtFeeId !== null ||
-        !!amountPaid?.trim() ||
-        !!numberOfItems?.trim() ||
-        !!this.courtFeeSearchText?.trim())
-    );
   }
 }

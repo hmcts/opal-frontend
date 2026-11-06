@@ -110,6 +110,22 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     expect(courtFeeForm().form.controls['courtFeeId'].invalid).toBe(true);
   });
 
+  it('ignores input events from other fields inside the autocomplete', () => {
+    const component = render();
+    const unrelatedInput = document.createElement('input');
+    unrelatedInput.value = 'unknown fee';
+    (fixture.nativeElement as HTMLElement)
+      .querySelector('opal-lib-alphagov-accessible-autocomplete')!
+      .appendChild(unrelatedInput);
+    unrelatedInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+    expect(component.handleBeforeUnload()).toBe(true);
+    submitForm();
+    expect((fixture.nativeElement as HTMLElement).querySelector('.govuk-error-summary')?.textContent).toContain(
+      'Enter court fee code',
+    );
+  });
+
   it('keeps the invalid error when the autocomplete clears typed text on blur', () => {
     render();
     const input = enterCourtFeeText('NOT_A_FEE');
@@ -309,6 +325,7 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     ['25.00', '2', 'court-fee-payment-details'],
     ['25.01', '2', 'over-underpayment-confirmation'],
     ['24.99', '2', 'over-underpayment-confirmation'],
+    ['25.001', '2', 'over-underpayment-confirmation'],
   ])('routes a £%s payment for %s items to %s', (amount, numberOfItems, destination) => {
     render();
     enterCourtFeeText('CF001 - Application (£12.50)');
@@ -437,6 +454,28 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     render();
 
     expect((fixture.nativeElement as HTMLElement).textContent).toContain('Court fees could not be loaded');
+  });
+
+  it('does not request court fees when no business unit is selected', () => {
+    store.reset();
+    render();
+
+    const element = fixture.nativeElement as HTMLElement;
+    expect(getCourtFees).not.toHaveBeenCalled();
+    expect(element.textContent).toContain('Court fees could not be loaded');
+    expect(element.querySelector('form')).toBeNull();
+  });
+
+  it('does not save or navigate when a fee is no longer available', () => {
+    const component = render();
+
+    component.handleSubmit({
+      formData: { courtFeeId: 999, amountPaid: '12.50', numberOfItems: '1' },
+      nestedFlow: false,
+    });
+
+    expect(store.courtFeeDraft()).toBeNull();
+    expect(router.navigate).not.toHaveBeenCalled();
   });
 
   it('explains when the selected business unit has no court fees', () => {
