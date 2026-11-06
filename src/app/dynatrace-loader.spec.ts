@@ -1,10 +1,10 @@
-import dynatraceLoader from './dynatrace-loader.js?raw';
+import { loadDynatraceScript, type DynatraceWindow } from './dynatrace-loader';
 
 describe('Dynatrace loader', () => {
   afterEach(() => {
     document.head.querySelector('meta[name="dynatrace-script-url"]')?.remove();
     document.head.querySelectorAll('script').forEach((script) => script.remove());
-    delete (window as Window & { dtrum?: unknown }).dtrum;
+    delete (window as DynatraceWindow).dtrum;
   });
 
   it('loads and enables Dynatrace when a script URL is configured', () => {
@@ -16,12 +16,9 @@ describe('Dynatrace loader', () => {
 
     const enable = vi.fn();
     const isEnabled = vi.fn().mockReturnValue(false);
-    Object.defineProperty(window, 'dtrum', {
-      configurable: true,
-      value: { enable, isEnabled },
-    });
+    (window as DynatraceWindow).dtrum = { enable, isEnabled };
 
-    new Function('document', 'window', dynatraceLoader)(document, window);
+    loadDynatraceScript(document, window as DynatraceWindow);
 
     const script = document.head.querySelector('script');
     expect(script?.src).toBe(scriptUrl);
@@ -41,12 +38,9 @@ describe('Dynatrace loader', () => {
     document.head.appendChild(meta);
 
     const enable = vi.fn();
-    Object.defineProperty(window, 'dtrum', {
-      configurable: true,
-      value: { enable, isEnabled: vi.fn().mockReturnValue(true) },
-    });
+    (window as DynatraceWindow).dtrum = { enable, isEnabled: vi.fn().mockReturnValue(true) };
 
-    new Function('document', 'window', dynatraceLoader)(document, window);
+    loadDynatraceScript(document, window as DynatraceWindow);
     document.head.querySelector('script')?.dispatchEvent(new Event('load'));
 
     expect(enable).not.toHaveBeenCalled();
@@ -54,12 +48,9 @@ describe('Dynatrace loader', () => {
 
   it('does not add or enable the script when no URL is configured', () => {
     const enable = vi.fn();
-    Object.defineProperty(window, 'dtrum', {
-      configurable: true,
-      value: { enable, isEnabled: vi.fn().mockReturnValue(false) },
-    });
+    (window as DynatraceWindow).dtrum = { enable, isEnabled: vi.fn().mockReturnValue(false) };
 
-    new Function('document', 'window', dynatraceLoader)(document, window);
+    loadDynatraceScript(document, window as DynatraceWindow);
 
     expect(document.head.querySelector('script')).toBeNull();
     expect(enable).not.toHaveBeenCalled();
