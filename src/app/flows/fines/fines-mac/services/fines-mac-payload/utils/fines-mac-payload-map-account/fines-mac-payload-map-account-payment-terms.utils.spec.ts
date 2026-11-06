@@ -49,7 +49,7 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
     );
   });
 
-  it('should preserve the made today choice when the account CO status is true ', () => {
+  it('should preserve the made today choice when R1A-1-2 is enabled and the account CO status is true', () => {
     if (!payload || !mappedFinesMacState) {
       throw new Error('Payload is not properly initialised');
     }
@@ -61,6 +61,34 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
 
     expect(result.paymentTerms.formData.fm_payment_terms_collection_order_made).toBe(false);
     expect(result.paymentTerms.formData.fm_payment_terms_collection_order_made_today).toBe(true);
+  });
+
+  it('should use the master collection order value when R1A-1-2 is disabled', () => {
+    if (!payload || !mappedFinesMacState) {
+      throw new Error('Payload is not properly initialised');
+    }
+
+    payload.collection_order_made = true;
+    payload.collection_order_made_today = true;
+
+    const result = finesMacPayloadMapAccountPaymentTerms(mappedFinesMacState, payload, false);
+
+    expect(result.paymentTerms.formData.fm_payment_terms_collection_order_made).toBe(true);
+    expect(result.paymentTerms.formData.fm_payment_terms_collection_order_made_today).toBe(true);
+  });
+
+  it('should preserve an existing collection order when R1A-1-2 is enabled and it was not made today', () => {
+    if (!payload || !mappedFinesMacState) {
+      throw new Error('Payload is not properly initialised');
+    }
+
+    payload.collection_order_made = true;
+    payload.collection_order_made_today = false;
+
+    const result = finesMacPayloadMapAccountPaymentTerms(mappedFinesMacState, payload, true);
+
+    expect(result.paymentTerms.formData.fm_payment_terms_collection_order_made).toBe(true);
+    expect(result.paymentTerms.formData.fm_payment_terms_collection_order_made_today).toBe(false);
   });
 
   it('should map lump sum amount correctly', () => {
