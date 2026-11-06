@@ -5,7 +5,6 @@ import {
   HostListener,
   OnDestroy,
   OnInit,
-  ViewChild,
   inject,
   signal,
 } from '@angular/core';
@@ -15,7 +14,6 @@ import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/ab
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
-import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
 import { IOpalFinesCourtFee } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-fees.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
@@ -44,15 +42,13 @@ export class FinesMciCreateTillCourtFeeDetailsComponent
   extends AbstractFormParentBaseComponent
   implements OnInit, OnDestroy
 {
-  @ViewChild(FinesMciCreateTillCourtFeeDetailsFormComponent)
-  private readonly courtFeeForm?: FinesMciCreateTillCourtFeeDetailsFormComponent;
-
   private readonly opalFines = inject(OpalFines);
   private readonly navigationRouter = inject(Router);
   private readonly currentRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
   private readonly courtFees = signal<IOpalFinesCourtFee[]>([]);
   private isContinuing = false;
+  private navigationFailed = false;
 
   protected readonly finesMciStore = inject(FinesMciStore);
   protected readonly courtFeeItems = signal<IAlphagovAccessibleAutocompleteItem[]>([]);
@@ -97,9 +93,15 @@ export class FinesMciCreateTillCourtFeeDetailsComponent
       destination = FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails;
     }
 
+    this.navigationFailed = false;
+    this.stateUnsavedChanges = false;
     this.isContinuing = true;
     void this.navigationRouter.navigate([`../${destination}`], { relativeTo: this.currentRoute }).then((navigated) => {
-      if (!navigated) this.isContinuing = false;
+      if (!navigated) {
+        this.isContinuing = false;
+        this.navigationFailed = true;
+        this.stateUnsavedChanges = true;
+      }
     });
   }
 
@@ -115,11 +117,7 @@ export class FinesMciCreateTillCourtFeeDetailsComponent
   }
 
   public handleUnsavedChanges(unsavedChanges: boolean): void {
-    this.stateUnsavedChanges = unsavedChanges;
-  }
-
-  public override canDeactivate(): CanDeactivateTypes {
-    return this.isContinuing || !(this.stateUnsavedChanges || this.courtFeeForm?.hasEnteredData());
+    this.stateUnsavedChanges = this.navigationFailed || unsavedChanges;
   }
 
   @HostListener('window:beforeunload')

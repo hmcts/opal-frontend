@@ -139,6 +139,21 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     expect(router.navigate).not.toHaveBeenCalled();
   });
 
+  it('rejects a cleared autocomplete label while its previous fee ID remains selected', () => {
+    render();
+    const input = enterCourtFeeText('CF001 - Application (£12.50)');
+    courtFeeForm().form.controls['courtFeeId'].setValue(1);
+    courtFeeForm().form.controls['amountPaid'].setValue('12.50');
+    courtFeeForm().form.controls['numberOfItems'].setValue('1');
+
+    input.value = '';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    submitForm();
+
+    expect(courtFeeForm().form.controls['courtFeeId'].invalid).toBe(true);
+    expect(router.navigate).not.toHaveBeenCalled();
+  });
+
   it('clears the court fee error while retaining an amount error', () => {
     render();
     courtFeeForm().form.controls['numberOfItems'].setValue('1');
@@ -155,6 +170,22 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     expect(element.querySelector('.govuk-error-summary')?.textContent).toContain('Enter an amount');
     expect(element.querySelector('.govuk-error-summary')?.textContent).not.toContain('Enter court fee code');
     expect(element.querySelector('#courtFeeId-autocomplete-error-message')).toBeNull();
+  });
+
+  it('clears the court fee error as soon as a suggestion is selected, before its label appears', () => {
+    render();
+    const input = enterCourtFeeText('CF001');
+    submitForm();
+    expect(courtFeeForm().form.controls['courtFeeId'].invalid).toBe(true);
+
+    courtFeeForm().form.controls['courtFeeId'].setValue(1);
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+    expect(input.value).toBe('CF001');
+    expect(courtFeeForm().form.controls['courtFeeId'].valid).toBe(true);
+    expect(element.querySelector('#courtFeeId-autocomplete-error-message')).toBeNull();
+    expect(element.querySelector('.govuk-error-summary')?.textContent).not.toContain('Enter a valid court fee');
   });
 
   it('shows the required amount error when a fee is selected but Amount is blank', () => {
@@ -338,13 +369,12 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     const component = render();
 
     expect(courtFeeForm().form.getRawValue()).toEqual(draft);
-    expect(component.canDeactivate()).toBe(false);
+    expect(component.handleBeforeUnload()).toBe(false);
   });
 
   it('allows leaving without a warning when no Court Fee Details have been entered', () => {
     const component = render();
 
-    expect(component.canDeactivate()).toBe(true);
     expect(component.handleBeforeUnload()).toBe(true);
   });
 
@@ -356,7 +386,6 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     const component = render();
     courtFeeForm().form.setValue(values);
 
-    expect(component.canDeactivate()).toBe(false);
     expect(component.handleBeforeUnload()).toBe(false);
   });
 
@@ -364,7 +393,7 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     const component = render();
     enterCourtFeeText('unknown fee');
 
-    expect(component.canDeactivate()).toBe(false);
+    expect(component.handleBeforeUnload()).toBe(false);
   });
 
   it('prevents browser exit or refresh while Court Fee Details are entered', () => {
@@ -385,7 +414,6 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     submitForm();
     fixture.destroy();
 
-    expect(component.canDeactivate()).toBe(true);
     expect(component.handleBeforeUnload()).toBe(true);
     expect(store.courtFeeDraft()).toEqual({ courtFeeId: 1, amountPaid: '12.50', numberOfItems: '1' });
   });
@@ -399,7 +427,9 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     submitForm();
     await Promise.resolve();
 
-    expect(component.canDeactivate()).toBe(false);
+    expect(component.handleBeforeUnload()).toBe(false);
+    courtFeeForm().form.controls['amountPaid'].setValue('13.00');
+    expect(component.handleBeforeUnload()).toBe(false);
   });
 
   it('shows an error when court fee reference data cannot load', () => {
@@ -439,7 +469,7 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     component.handleCancel();
     await Promise.resolve();
 
-    expect(component.canDeactivate()).toBe(false);
+    expect(component.handleBeforeUnload()).toBe(false);
     expect(courtFeeForm().form.getRawValue()).toEqual(draft);
     expect(store.courtFeeDraft()).toEqual(draft);
     expect(store.draftJourney()).toBe('courtFee');

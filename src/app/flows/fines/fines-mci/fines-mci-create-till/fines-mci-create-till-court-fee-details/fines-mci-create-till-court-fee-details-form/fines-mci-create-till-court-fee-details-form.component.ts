@@ -1,13 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -65,9 +56,7 @@ function numberOfItemsValidator(control: AbstractControl): ValidationErrors | nu
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMciCreateTillCourtFeeDetailsFormComponent extends AbstractFormBaseComponent implements OnInit {
-  @ViewChild('courtFeeAutocomplete', { read: ElementRef })
-  private readonly courtFeeAutocomplete?: ElementRef<HTMLElement>;
-  private courtFeeSearchText = '';
+  private courtFeeSearchText: string | null = null;
 
   @Output() protected override formSubmit = new EventEmitter<IAbstractFormBaseForm<IFinesMciCourtFeeDraft>>();
   @Output() protected cancelRequested = new EventEmitter<void>();
@@ -80,11 +69,10 @@ export class FinesMciCreateTillCourtFeeDetailsFormComponent extends AbstractForm
 
   private readonly courtFeeSelectionValidator: ValidatorFn = (control) => {
     const selectedFeeItem = this.courtFeeItems.find(({ value }) => value === control.value);
-    const input = this.courtFeeAutocomplete?.nativeElement.querySelector<HTMLInputElement>('#courtFeeId-autocomplete');
-    const enteredText = input?.value.trim() || this.courtFeeSearchText.trim();
+    const enteredText = this.courtFeeSearchText?.trim();
 
-    if (!selectedFeeItem) return enteredText ? { invalidCourtFee: true } : null;
-    if (input && enteredText !== selectedFeeItem.name) return { invalidCourtFee: true };
+    if (!selectedFeeItem) return control.value == null && !enteredText ? null : { invalidCourtFee: true };
+    if (enteredText !== undefined && enteredText !== selectedFeeItem.name) return { invalidCourtFee: true };
     return null;
   };
 
@@ -95,6 +83,7 @@ export class FinesMciCreateTillCourtFeeDetailsFormComponent extends AbstractForm
       this.courtFeeSearchText = target.value;
       this.form.controls['courtFeeId'].updateValueAndValidity({ emitEvent: false });
       if (this.formErrorSummaryMessage.length) this.handleErrorMessages();
+      this.unsavedChanges.emit(this.hasUnsavedChanges());
     }
   }
 
@@ -108,6 +97,14 @@ export class FinesMciCreateTillCourtFeeDetailsFormComponent extends AbstractForm
       numberOfItems: new FormControl<string | null>(this.initialDraft?.numberOfItems ?? null, numberOfItemsValidator),
     });
     this.setInitialErrorMessages();
+    this.form.controls['courtFeeId'].valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((courtFeeId) => {
+      const selectedFeeItem = this.courtFeeItems.find(({ value }) => value === courtFeeId);
+      if (selectedFeeItem) {
+        // The autocomplete updates its control before replacing the search text with the selected label.
+        this.courtFeeSearchText = selectedFeeItem.name;
+        this.form.controls['courtFeeId'].updateValueAndValidity({ emitEvent: false });
+      }
+    });
     this.form.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
       if (this.formErrorSummaryMessage.length) this.handleErrorMessages();
     });
@@ -120,14 +117,15 @@ export class FinesMciCreateTillCourtFeeDetailsFormComponent extends AbstractForm
     super.handleFormSubmit(event);
   }
 
-  public hasEnteredData(): boolean {
+  protected override hasUnsavedChanges(): boolean {
     const { courtFeeId, amountPaid, numberOfItems } = this.form.getRawValue();
     return (
-      this.form.dirty ||
-      courtFeeId !== null ||
-      !!amountPaid?.trim() ||
-      !!numberOfItems?.trim() ||
-      !!this.courtFeeSearchText.trim()
+      !this.formSubmitted &&
+      (this.form.dirty ||
+        courtFeeId !== null ||
+        !!amountPaid?.trim() ||
+        !!numberOfItems?.trim() ||
+        !!this.courtFeeSearchText?.trim())
     );
   }
 }

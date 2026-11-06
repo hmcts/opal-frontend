@@ -5,7 +5,6 @@
 
 <form [formGroup]="form" (submit)="handleFormSubmit($event)" autocomplete="off" novalidate>
   <opal-lib-alphagov-accessible-autocomplete
-    #courtFeeAutocomplete
     (input)="handleCourtFeeInput($event)"
     [control]="form.controls['courtFeeId']"
     labelText="Court fee"
