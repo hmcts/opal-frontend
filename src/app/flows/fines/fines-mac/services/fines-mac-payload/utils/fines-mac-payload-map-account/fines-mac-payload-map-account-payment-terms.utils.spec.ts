@@ -49,7 +49,7 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
     );
   });
 
-  it('should preserve the made today choice when the account CO status is true ', () => {
+  it('should preserve the made today choice when the account CO status is true', () => {
     if (!payload || !mappedFinesMacState) {
       throw new Error('Payload is not properly initialised');
     }
