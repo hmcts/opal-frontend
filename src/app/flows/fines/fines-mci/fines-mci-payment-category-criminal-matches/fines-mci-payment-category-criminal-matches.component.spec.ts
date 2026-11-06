@@ -684,6 +684,7 @@ describe('Criminal matches Continue navigation', () => {
         ]),
       ],
     });
+    TestBed.inject(FinesMciStore).setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl(`/${routeRoot}/matches`, FinesMciPaymentCategoryCriminalMatchesComponent);
     (harness.routeNativeElement!.querySelector(`#fines-mci-criminal-account-${accountId}`) as HTMLInputElement).click();
