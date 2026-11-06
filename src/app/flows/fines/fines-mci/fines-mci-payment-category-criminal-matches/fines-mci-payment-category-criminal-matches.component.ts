@@ -14,6 +14,7 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
@@ -77,6 +78,7 @@ const FINES_MCI_CRIMINAL_MATCHES_CONTENT: Record<
   imports: [
     FinesMciPaymentCategoryCriminalMatchesTableWrapperComponent,
     GovukBackLinkComponent,
+    GovukCancelLinkComponent,
     GovukErrorSummaryComponent,
     RouterLink,
   ],
@@ -236,6 +238,20 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
   protected handleSearchAgain(): void {
     this.cancelAccountDetailsRequest.next();
     this.finesMciStore.setSelectedCriminalAccount(null);
+  }
+
+  /**
+   * Stops pending account loading and returns to Till Details.
+   * Clears the payment draft and criminal search state only after successful navigation.
+   */
+  protected handleCancel(): void {
+    this.cancelAccountDetailsRequest.next();
+    void this.router.navigate(this.tillDetailsRoute).then((navigated) => {
+      if (navigated) {
+        this.finesMciStore.setDraftJourney(null);
+        this.finesMciStore.resetCriminalSearch();
+      }
+    });
   }
 
   /**

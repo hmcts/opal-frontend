@@ -49,7 +49,7 @@
   </div>
 
   <p class="govuk-body">
-    <a class="govuk-link govuk-link--no-visited-state" [routerLink]="tillDetailsRoute">Cancel</a>
+    <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
   </p>
 } @else {
   <div class="govuk-grid-column-two-thirds">

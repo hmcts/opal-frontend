@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { getState } from '@ngrx/signals';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-defendant-account-response-individual.mock';
 import { BehaviorSubject, EMPTY, of, Subject, throwError } from 'rxjs';
@@ -269,6 +270,98 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
       'criminal',
       'search',
     ]);
+  });
+
+  it.each([true, false])(
+    'should clear the cancelled draft and search only when Till Details navigation succeeds: %s',
+    async (navigated) => {
+      const tillId = finesMciStore.ensureTill();
+      finesMciStore.addPayment(tillId, 'courtFee');
+      finesMciStore.setDraftJourney('criminal');
+      finesMciStore.setCriminalSearch({
+        activeTab: 'individuals',
+        searchCriteriaCannotBeCombined: false,
+        formData: {
+          fsa_search_account_number: '12345678',
+          fsa_search_account_individuals_search_criteria: {
+            fsa_search_account_individuals_last_name: null,
+            fsa_search_account_individuals_first_names: null,
+            fsa_search_account_individuals_last_name_exact_match: false,
+            fsa_search_account_individuals_first_names_exact_match: false,
+            fsa_search_account_individuals_include_aliases: false,
+          },
+          fsa_search_account_companies_search_criteria: {
+            fsa_search_account_companies_company_name: null,
+            fsa_search_account_companies_company_name_exact_match: false,
+            fsa_search_account_companies_include_aliases: false,
+          },
+        },
+      });
+      finesMciStore.setCriminalSearchResults(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK);
+      finesMciStore.setSelectedCriminalAccount(
+        OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0],
+      );
+      finesMciStore.setSelectedCriminalAccountAtAGlance(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      finesMciStore.setSelectedCriminalAccountHeader(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
+      fixture.detectChanges();
+      const previousState = getState(finesMciStore);
+      let completeNavigation!: (result: boolean) => void;
+      navigateSpy.mockReturnValueOnce(new Promise<boolean>((resolve) => (completeNavigation = resolve)));
+
+      (fixture.nativeElement.querySelector('opal-lib-govuk-cancel-link a') as HTMLAnchorElement).click();
+
+      expect(navigateSpy).toHaveBeenCalledExactlyOnceWith([
+        '/',
+        'fines',
+        'manual-cash-input',
+        'create',
+        'till',
+        'details',
+      ]);
+      expect(getState(finesMciStore)).toEqual(previousState);
+
+      completeNavigation(navigated);
+      await fixture.whenStable();
+
+      expect(getState(finesMciStore)).toEqual(
+        navigated
+          ? {
+              ...previousState,
+              draftJourney: null,
+              criminalSearch: null,
+              criminalSearchResults: null,
+              selectedCriminalAccount: null,
+              selectedCriminalAccountAtAGlance: null,
+              selectedCriminalAccountHeader: null,
+            }
+          : previousState,
+      );
+    },
+  );
+
+  it('should prevent an in-flight account response from redirecting after Cancel is clicked', async () => {
+    const response = new Subject<IOpalFinesAccountDefendantAtAGlance>();
+    opalFines.getDefendantAccountAtAGlance.mockReturnValue(response);
+    (fixture.nativeElement.querySelector('#fines-mci-criminal-account-1') as HTMLInputElement).click();
+    fixture.detectChanges();
+    (fixture.nativeElement.querySelector('button.govuk-button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    (fixture.nativeElement.querySelector('opal-lib-govuk-cancel-link a') as HTMLAnchorElement).click();
+    response.next(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+    response.complete();
+    await fixture.whenStable();
+
+    expect(navigateSpy).toHaveBeenCalledExactlyOnceWith([
+      '/',
+      'fines',
+      'manual-cash-input',
+      'create',
+      'till',
+      'details',
+    ]);
+    expect(finesMciStore.selectedCriminalAccountAtAGlance()).toBeNull();
+    expect(fixture.componentInstance['isLoadingAccountDetails']()).toBe(false);
   });
 
   it('should display every account when exactly 100 results are returned', () => {
