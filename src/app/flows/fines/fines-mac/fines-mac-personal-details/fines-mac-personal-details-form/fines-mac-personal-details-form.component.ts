@@ -177,8 +177,6 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
     if (this.dateService.isValidDate(dateOfBirth)) {
       this.age = this.dateService.calculateAge(dateOfBirth);
       this.ageLabel = this.age >= 18 ? 'Adult' : 'Youth';
-
-      this.finesMacStore.resetPaymentTermsDaysInDefault();
     }
   }
 
