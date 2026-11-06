@@ -1,19 +1,12 @@
 import { Routes } from '@angular/router';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
-import { FINES_FINANCE_ROUTING_PATHS } from './fines-finance-routing-paths.constant';
+import { FINES_FINANCE_ROUTING_PATHS } from './constants/fines-finance-routing-paths.constant';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
 import { FINES_FINANCE_ROUTING_TITLES } from './constants/fines-finance-routing-titles.constant';
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
-import { featureFlagRedirectGuard } from '@hmcts/opal-frontend-common/guards/feature-flag';
-import { RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG } from '../../constants/release-feature-flags.constant';
-
-const financeRootPermissionIds = FINES_PERMISSIONS;
-
-export const release1cBankingInterfacesFeatureFlagGuard = featureFlagRedirectGuard(
-  RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
-);
+import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
 
 export const routing: Routes = [
   {
@@ -28,12 +21,12 @@ export const routing: Routes = [
       import('../fines-finance-inbound-files/fines-finance-inbound-files.component').then(
         (c) => c.FinesFinanceInboundFilesComponent,
       ),
-    canActivate: [authGuard, routePermissionsGuard, release1cBankingInterfacesFeatureFlagGuard],
+    canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [financeRootPermissionIds['view-interface-files']],
+      routePermissionId: [FINES_PERMISSIONS['view-interface-files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.inbound,
     },
-    resolve: { title: TitleResolver },
+    resolve: { title: TitleResolver, businessUnits: fetchBusinessUnitsResolver },
   },
   {
     path: `${FINES_FINANCE_ROUTING_PATHS.children.outbound}/${FINES_FINANCE_ROUTING_PATHS.children.search}`,
@@ -42,9 +35,9 @@ export const routing: Routes = [
       import('../fines-finance-outbound-files/fines-finance-outbound-files.component').then(
         (c) => c.FinesFinanceOutboundFilesComponent,
       ),
-    canActivate: [authGuard, routePermissionsGuard, release1cBankingInterfacesFeatureFlagGuard],
+    canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [financeRootPermissionIds['view-interface-files']],
+      routePermissionId: [FINES_PERMISSIONS['view-interface-files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.outbound,
     },
     resolve: { title: TitleResolver },
@@ -56,9 +49,9 @@ export const routing: Routes = [
       import('../fines-finance-upload-variant-banking-files/fines-finance-upload-variant-banking-files.component').then(
         (c) => c.FinesFinanceUploadVariantBankingFilesComponent,
       ),
-    canActivate: [authGuard, routePermissionsGuard, release1cBankingInterfacesFeatureFlagGuard],
+    canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [financeRootPermissionIds['create-interface-files']],
+      routePermissionId: [FINES_PERMISSIONS['create-interface-files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.upload,
     },
     resolve: { title: TitleResolver },
