@@ -14,20 +14,20 @@ Feature: Minor Creditor Account Enquiries View Details
         | prosecutor case reference | PCRMINAMEND{uniqUpper} |
         | title                     | Mr                     |
         | first name                | John                   |
-        | last name                 | AmendMinor{uniq}       |
+        | last name                 | Amend{uniq}            |
         | address line 1            | 1 Test Street          |
         | postcode                  | AB1 2CD                |
       And I am on the Account Search page - Individuals form displayed by default
       When I view the Minor creditors search form
       And I search using the following inputs:
-        | minor creditor type  | Individual       |
-        | individual last name | AmendMinor{uniq} |
-        | first names          | John             |
-        | address line 1       | 1 Test Street    |
-        | postcode             | AB1 2CD          |
+        | minor creditor type  | Individual    |
+        | individual last name | Amend{uniq}   |
+        | first names          | John          |
+        | address line 1       | 1 Test Street |
+        | postcode             | AB1 2CD       |
       Then I see the Search results page
       When I open the latest matching result from the search results
-      Then I should see the account header contains "Mr John AMENDMINOR{uniqUpper}"
+      Then I should see the account header contains "Mr John AMEND{uniqUpper}"
       When I go to the Creditor tab
 
     @R1BDrop2 @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285 @JIRA-TEST-KEY:PO-7549
@@ -35,14 +35,14 @@ Feature: Minor Creditor Account Enquiries View Details
       # AC2a – Cancel with unsaved changes shows a warning and confirming discard returns to Creditor with no save
       When I amend the minor creditor first name to "Updated" and discard the changes
       Then I should return to the account details page Creditor tab
-      And I should see the minor creditor name contains "Mr John AMENDMINOR{uniqUpper}"
+      And I should see the minor creditor name contains "Mr John AMEND{uniqUpper}"
 
     @R1BDrop2 @JIRA-STORY:PO-1984 @JIRA-STORY:PO-9700 @JIRA-EPIC:PO-1285 @JIRA-TEST-KEY:PO-7550
     Scenario: Amend minor creditor's first name and save, return to the Creditor tab and see the updated name
       # AC2b – Save valid changes returns to Creditor and persists updates
       When I amend the minor creditor first name to "Updated" and save
       Then I should return to the account details page Creditor tab
-      And I should see the minor creditor name contains "Mr Updated AMENDMINOR{uniqUpper}"
+      And I should see the minor creditor name contains "Mr Updated AMEND{uniqUpper}"
       And I verify minor creditor amendments via API for first name "Updated"
 
     @R1BDrop2 @JIRA-STORY:PO-1984 @JIRA-EPIC:PO-1285 @JIRA-TEST-KEY:PO-7551 @JIRA-NFR:PO-2323
@@ -58,21 +58,21 @@ Feature: Minor Creditor Account Enquiries View Details
         | prosecutor case reference | PCRMINHIST{uniqUpper} |
         | title                     | Mr                    |
         | first name                | Harper                |
-        | last name                 | HistMinor{uniq}       |
+        | last name                 | Hist{uniq}            |
         | address line 1            | 1 Test Street         |
         | postcode                  | AB1 2CD               |
       And the History and notes API is stubbed with standard tab data
       And I am on the Account Search page - Individuals form displayed by default
       When I view the Minor creditors search form
       And I search using the following inputs:
-        | minor creditor type  | Individual      |
-        | individual last name | HistMinor{uniq} |
-        | first names          | Harper          |
-        | address line 1       | 1 Test Street   |
-        | postcode             | AB1 2CD         |
+        | minor creditor type  | Individual    |
+        | individual last name | Hist{uniq}    |
+        | first names          | Harper        |
+        | address line 1       | 1 Test Street |
+        | postcode             | AB1 2CD       |
       Then I see the Search results page
       When I open the latest matching result from the search results
-      Then I should see the account header contains "Mr Harper HISTMINOR{uniqUpper}"
+      Then I should see the account header contains "Mr Harper HIST{uniqUpper}"
 
     @R1BDrop2 @JIRA-STORY:PO-2640 @JIRA-EPIC:PO-2653 @JIRA-STORY:PO-2657 @JIRA-EPIC:PO-2655 @JIRA-TEST-KEY:PO-10039
     Scenario: Minor creditor History and notes items load and can be filtered
