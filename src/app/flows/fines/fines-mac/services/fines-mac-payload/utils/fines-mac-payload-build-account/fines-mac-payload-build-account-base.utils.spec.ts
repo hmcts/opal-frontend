@@ -331,4 +331,60 @@ describe('finesMacPayloadBuildAccountBase', () => {
     expect(result.collection_order_made).toBe(true);
     expect(result.collection_order_made_today).toBe(true);
   });
+
+  it('should preserve the master collection order value when R1A-1-2 is disabled', () => {
+    if (
+      !offenceDetailsState ||
+      !accountDetailsState ||
+      !courtDetailsState ||
+      !paymentTermsState ||
+      !originatorTypeState
+    ) {
+      throw new Error('Required mock states are not properly initialised');
+    }
+
+    paymentTermsState.fm_payment_terms_collection_order_made = false;
+    paymentTermsState.fm_payment_terms_collection_order_made_today = true;
+
+    const result = finesMacPayloadBuildAccountBase(
+      originatorTypeState,
+      accountDetailsState,
+      courtDetailsState,
+      paymentTermsState,
+      offenceDetailsState,
+      fixedPenaltyDetailsState,
+      false,
+    );
+
+    expect(result.collection_order_made).toBe(false);
+    expect(result.collection_order_made_today).toBe(true);
+  });
+
+  it('should preserve an existing collection order when R1A-1-2 is enabled and it was not made today', () => {
+    if (
+      !offenceDetailsState ||
+      !accountDetailsState ||
+      !courtDetailsState ||
+      !paymentTermsState ||
+      !originatorTypeState
+    ) {
+      throw new Error('Required mock states are not properly initialised');
+    }
+
+    paymentTermsState.fm_payment_terms_collection_order_made = true;
+    paymentTermsState.fm_payment_terms_collection_order_made_today = false;
+
+    const result = finesMacPayloadBuildAccountBase(
+      originatorTypeState,
+      accountDetailsState,
+      courtDetailsState,
+      paymentTermsState,
+      offenceDetailsState,
+      fixedPenaltyDetailsState,
+      true,
+    );
+
+    expect(result.collection_order_made).toBe(true);
+    expect(result.collection_order_made_today).toBe(false);
+  });
 });
