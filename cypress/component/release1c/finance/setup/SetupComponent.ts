@@ -31,6 +31,7 @@ import { FinesMciCreateAllocateComponent } from 'src/app/flows/fines/fines-mci/f
 import { FinesMciCreateTillSelectBuComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-select-bu/fines-mci-create-till-select-bu.component';
 import { FinesMciCreateTillDetailsComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-details/fines-mci-create-till-details.component';
 import { FinesMciCreateTillPaymentCategoryComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-payment-category/fines-mci-create-till-payment-category.component';
+import { FinesMciCreateTillSuspenseDetailsComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-suspense-details/fines-mci-create-till-suspense-details.component';
 import { FinesMciPlaceholderComponent } from 'src/app/flows/fines/fines-mci/fines-mci-placeholder/fines-mci-placeholder.component';
 import { FinesMciStore } from 'src/app/flows/fines/fines-mci/stores/fines-mci.store';
 import { FinesApiStore } from 'src/app/flows/fines/fines-api/stores/fines-api.store';
@@ -138,13 +139,28 @@ const FINANCE_COMPONENT_ROUTES: Routes = [
         canDeactivate: [canDeactivateGuard],
       },
       {
-        path: [
-          FINES_MCI_ROUTING_PATHS.children.create,
-          FINES_MCI_ROUTING_PATHS.children.till,
-          FINES_MCI_ROUTING_PATHS.children.paymentCategory,
-        ].join('/'),
-        component: FinesMciCreateTillPaymentCategoryComponent,
-        canDeactivate: [canDeactivateGuard],
+        // These forms navigate relative to their Till parent, matching the application routes.
+        path: [FINES_MCI_ROUTING_PATHS.children.create, FINES_MCI_ROUTING_PATHS.children.till].join('/'),
+        children: [
+          {
+            path: FINES_MCI_ROUTING_PATHS.children.paymentCategory,
+            component: FinesMciCreateTillPaymentCategoryComponent,
+            canDeactivate: [canDeactivateGuard],
+          },
+          {
+            path: FINES_MCI_ROUTING_PATHS.children.suspenseDetails,
+            component: FinesMciCreateTillSuspenseDetailsComponent,
+            canDeactivate: [canDeactivateGuard],
+          },
+          ...[
+            [FINES_MCI_ROUTING_PATHS.children.checkSuspensePayment, 'Check suspense payment'],
+            [FINES_MCI_ROUTING_PATHS.children.payerDetails, 'Payer details'],
+          ].map(([path, heading]) => ({
+            path,
+            component: FinesMciPlaceholderComponent,
+            data: { heading },
+          })),
+        ],
       },
       {
         path: [

@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, HostListener, inject, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { FinesMciCreateTillPaymentCategoryFormComponent } from './fines-mci-create-till-payment-category-form/fines-mci-create-till-payment-category-form.component';
@@ -13,6 +14,8 @@ import { IFinesMciCreateTillPaymentCategoryFormState } from './interfaces/fines-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormParentBaseComponent implements OnInit {
+  private readonly navigationRouter = inject(Router);
+  private readonly navigationRoute = inject(ActivatedRoute);
   protected readonly finesMciStore = inject(FinesMciStore);
 
   /** Restores leave protection for a category draft restored into the child form. */
@@ -40,10 +43,16 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
     this.routerNavigate(journeyRoute);
   }
 
-  /** Returns to Till Details when the user cancels. */
+  /** Returns to Till Details and discards the draft only after navigation succeeds. */
   public handleCancel(): void {
-    this.finesMciStore.setDraftJourney(null);
-    this.routerNavigate(FINES_MCI_ROUTING_PATHS.children.details);
+    void this.navigationRouter
+      .navigate([FINES_MCI_ROUTING_PATHS.children.details], { relativeTo: this.navigationRoute.parent })
+      .then((navigated) => {
+        if (navigated) {
+          this.finesMciStore.setDraftJourney(null);
+          this.finesMciStore.setSuspensePayment(null);
+        }
+      });
   }
 
   /** Updates the route guard state when the child form changes. */
