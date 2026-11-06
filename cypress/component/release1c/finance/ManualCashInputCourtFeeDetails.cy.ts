@@ -189,36 +189,40 @@ describe('Manual Cash Input - Court Fee Details', () => {
     cy.get('@leavePageConfirm').should('not.have.been.called');
   });
 
-  it('(AC6a, AC6ai, AC6aii) retains data when Cancel is declined and discards it when confirmed', { tags: TAGS }, () => {
-    openCourtFeeDetails(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
-    selectCourtFeeAndEnterNumberOfItems();
-    cy.get(Mci.courtFeeAmountInput).type('12.50');
-    cy.window().then((window) => {
-      const confirm = cy.stub(window, 'confirm');
+  it(
+    '(AC6a, AC6ai, AC6aii) retains data when Cancel is declined and discards it when confirmed',
+    { tags: TAGS },
+    () => {
+      openCourtFeeDetails(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+      selectCourtFeeAndEnterNumberOfItems();
+      cy.get(Mci.courtFeeAmountInput).type('12.50');
+      cy.window().then((window) => {
+        const confirm = cy.stub(window, 'confirm');
 
-      confirm.onFirstCall().returns(false);
-      confirm.onSecondCall().returns(true);
-      cy.wrap(confirm).as('leavePageConfirm');
-    });
+        confirm.onFirstCall().returns(false);
+        confirm.onSecondCall().returns(true);
+        cy.wrap(confirm).as('leavePageConfirm');
+      });
 
-    cy.get(Mci.cancelLink).click();
-    cy.get('@leavePageConfirm')
-      .should('have.been.calledOnce')
-      .and('have.been.calledWithExactly', UNSAVED_CHANGES_WARNING);
-    assertRouterUrl(COURT_FEE_DETAILS_URL);
-    cy.get(Mci.courtFeeCodeInput).should('have.value', COURT_FEE_OPTION);
-    cy.get(Mci.courtFeeAmountInput).should('have.value', '12.50');
-    cy.get(Mci.courtFeeNumberOfItemsInput).should('have.value', '1');
+      cy.get(Mci.cancelLink).click();
+      cy.get('@leavePageConfirm')
+        .should('have.been.calledOnce')
+        .and('have.been.calledWithExactly', UNSAVED_CHANGES_WARNING);
+      assertRouterUrl(COURT_FEE_DETAILS_URL);
+      cy.get(Mci.courtFeeCodeInput).should('have.value', COURT_FEE_OPTION);
+      cy.get(Mci.courtFeeAmountInput).should('have.value', '12.50');
+      cy.get(Mci.courtFeeNumberOfItemsInput).should('have.value', '1');
 
-    cy.get(Mci.cancelLink).click();
-    cy.get('@leavePageConfirm').should('have.been.calledTwice');
-    assertRouterUrl(TILL_DETAILS_URL);
+      cy.get(Mci.cancelLink).click();
+      cy.get('@leavePageConfirm').should('have.been.calledTwice');
+      assertRouterUrl(TILL_DETAILS_URL);
 
-    navigateToCourtFeeDetails();
-    cy.get(Mci.courtFeeCodeInput).should('have.value', '');
-    cy.get(Mci.courtFeeAmountInput).should('have.value', '');
-    cy.get(Mci.courtFeeNumberOfItemsInput).should('have.value', '');
-  });
+      navigateToCourtFeeDetails();
+      cy.get(Mci.courtFeeCodeInput).should('have.value', '');
+      cy.get(Mci.courtFeeAmountInput).should('have.value', '');
+      cy.get(Mci.courtFeeNumberOfItemsInput).should('have.value', '');
+    },
+  );
 
   it('(AC7a EMAC1) shows linked field errors in the error summary', { tags: TAGS }, () => {
     openCourtFeeDetails(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
@@ -249,9 +253,7 @@ describe('Manual Cash Input - Court Fee Details', () => {
     });
 
     cy.get('@financeRouter')
-      .then((router) =>
-        (router as { navigate: (commands: string[]) => Promise<boolean> }).navigate(TILL_DETAILS_ROUTE),
-      )
+      .then((router) => (router as { navigate: (commands: string[]) => Promise<boolean> }).navigate(TILL_DETAILS_ROUTE))
       .should('be.false');
     cy.get('@leavePageConfirm')
       .should('have.been.calledOnce')
@@ -261,9 +263,7 @@ describe('Manual Cash Input - Court Fee Details', () => {
     cy.get(Mci.courtFeeNumberOfItemsInput).should('have.value', '1');
 
     cy.get('@financeRouter')
-      .then((router) =>
-        (router as { navigate: (commands: string[]) => Promise<boolean> }).navigate(TILL_DETAILS_ROUTE),
-      )
+      .then((router) => (router as { navigate: (commands: string[]) => Promise<boolean> }).navigate(TILL_DETAILS_ROUTE))
       .should('be.true');
     cy.get('@leavePageConfirm').should('have.been.calledTwice');
     assertRouterUrl(TILL_DETAILS_URL);
