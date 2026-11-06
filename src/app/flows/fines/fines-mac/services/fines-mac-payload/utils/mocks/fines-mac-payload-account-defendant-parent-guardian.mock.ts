@@ -3,6 +3,7 @@ import { IFinesMacPayloadAccountDefendantParentGuardian } from '../interfaces/fi
 export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_MOCK: IFinesMacPayloadAccountDefendantParentGuardian =
   {
     company_flag: false,
+    aliases: null,
     title: 'Dr',
     surname: 'Williams',
     forenames: 'Alice',

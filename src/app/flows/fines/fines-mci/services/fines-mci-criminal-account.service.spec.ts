@@ -1,6 +1,13 @@
 import { TestBed } from '@angular/core/testing';
-import { firstValueFrom, of, Subject, throwError } from 'rxjs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { signal } from '@angular/core';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { Router } from '@angular/router';
+import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-error';
+import { AppInsightsService } from '@hmcts/opal-frontend-common/services/app-insights-service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { catchError, defaultIfEmpty, firstValueFrom, of, Subject, throwError } from 'rxjs';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-defendant-account-response-individual.mock';
@@ -8,6 +15,7 @@ import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { FinesMciStore } from '../stores/fines-mci.store';
 import { FinesMciCriminalAccountService } from './fines-mci-criminal-account.service';
+import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
 
 describe('FinesMciCriminalAccountService', () => {
   let service: FinesMciCriminalAccountService;
@@ -89,4 +97,65 @@ describe('FinesMciCriminalAccountService', () => {
     expect(store.selectedCriminalAccountHeader()).toBeNull();
     expect(store.selectedCriminalAccountAtAGlance()).toBeNull();
   });
+});
+
+describe('FinesMciCriminalAccountService HTTP error handling', () => {
+  let service: FinesMciCriminalAccountService;
+  let httpMock: HttpTestingController;
+  const isErrorBannerVisible = signal(false);
+  const account = OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0];
+
+  beforeEach(() => {
+    isErrorBannerVisible.set(false);
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(withInterceptors([httpErrorInterceptor])),
+        provideHttpClientTesting(),
+        {
+          provide: GlobalStore,
+          useValue: {
+            setBannerError: () => isErrorBannerVisible.set(true),
+            resetBannerError: () => isErrorBannerVisible.set(false),
+          },
+        },
+        { provide: AppInsightsService, useValue: { logException: vi.fn() } },
+        { provide: Router, useValue: { navigate: vi.fn() } },
+      ],
+    });
+    service = TestBed.inject(FinesMciCriminalAccountService);
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    httpMock.verify();
+  });
+
+  it.each([409, 500])(
+    'should cancel pending at-a-glance loading and preserve the error banner when header-summary returns %s',
+    (status) => {
+      const next = vi.fn();
+      service
+        .loadSelectedAccountDetails(account)
+        .pipe(
+          catchError(() => of(null)),
+          defaultIfEmpty(null),
+        )
+        .subscribe(next);
+
+      const atAGlance = httpMock.expectOne(
+        `${OPAL_FINES_PATHS.defendantAccounts}/${account.defendant_account_id}/at-a-glance`,
+      );
+      const header = httpMock.expectOne(
+        `${OPAL_FINES_PATHS.defendantAccounts}/${account.defendant_account_id}/header-summary`,
+      );
+      header.flush({ retriable: true, detail: 'Try again.' }, { status, statusText: 'Request failed' });
+
+      expect(next).toHaveBeenCalledExactlyOnceWith(null);
+      expect(atAGlance.cancelled).toBe(true);
+      expect(isErrorBannerVisible()).toBe(true);
+      const store = TestBed.inject(FinesMciStore);
+      expect(store.selectedCriminalAccountAtAGlance()).toBeNull();
+      expect(store.selectedCriminalAccountHeader()).toBeNull();
+    },
+  );
 });
