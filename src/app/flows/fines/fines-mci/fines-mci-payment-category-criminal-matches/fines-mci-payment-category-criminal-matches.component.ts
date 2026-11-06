@@ -229,9 +229,13 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
     this.document.getElementById(fieldId)?.focus();
   }
 
-  /** Returns to the search form, where stored criteria and the submitted tab are restored. */
+  /**
+   * Cancels pending detail loading and clears the selected account before returning to search.
+   * Preserves submitted criteria and the selected tab for restoration on the search form.
+   */
   protected navigateBack(): void {
-    this.router.navigate(this.criminalSearchRoute);
+    this.handleSearchAgain();
+    void this.router.navigate(this.criminalSearchRoute);
   }
 
   /** Cancels pending detail loading and clears the selected account while retaining search criteria. */

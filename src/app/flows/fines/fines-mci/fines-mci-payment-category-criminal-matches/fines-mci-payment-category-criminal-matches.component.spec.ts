@@ -12,6 +12,7 @@ import { IFinesMciCriminalAccountsResult } from '../interfaces/fines-mci-crimina
 import { FinesMciCriminalSearchResults } from '../constants/fines-mci-criminal-search-results.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { FinesMciStore } from '../stores/fines-mci.store';
+import { IFinesMciCriminalSearch } from '../stores/interfaces/fines-mci-criminal-search.interface';
 import { FinesMciPaymentCategoryCriminalMatchesComponent } from './fines-mci-payment-category-criminal-matches.component';
 import { IFinesMciCriminalAccount } from '../interfaces/fines-mci-criminal-account.interface';
 import { RouterTestingHarness } from '@angular/router/testing';
@@ -29,6 +30,25 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
   };
   let navigateSpy: MockInstance<Router['navigate']>;
   let scrollToTopSpy: MockInstance<UtilsService['scrollToTop']>;
+  const submittedSearch: IFinesMciCriminalSearch = {
+    activeTab: 'individuals',
+    searchCriteriaCannotBeCombined: false,
+    formData: {
+      fsa_search_account_number: '12345678',
+      fsa_search_account_individuals_search_criteria: {
+        fsa_search_account_individuals_last_name: null,
+        fsa_search_account_individuals_first_names: null,
+        fsa_search_account_individuals_last_name_exact_match: false,
+        fsa_search_account_individuals_first_names_exact_match: false,
+        fsa_search_account_individuals_include_aliases: false,
+      },
+      fsa_search_account_companies_search_criteria: {
+        fsa_search_account_companies_company_name: null,
+        fsa_search_account_companies_company_name_exact_match: false,
+        fsa_search_account_companies_include_aliases: false,
+      },
+    },
+  };
 
   beforeEach(async () => {
     opalFines = {
@@ -272,31 +292,75 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
     ]);
   });
 
+  it.each(['at-a-glance', 'header-summary'] as const)(
+    'should preserve Back navigation when %s finishes while navigation to search is pending',
+    async (pendingRequest) => {
+      finesMciStore.setDraftJourney('criminal');
+      finesMciStore.setCriminalSearch(submittedSearch);
+      finesMciStore.setCriminalSearchResults(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK);
+      const atAGlance = new Subject<IOpalFinesAccountDefendantAtAGlance>();
+      const header = new Subject<typeof FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK>();
+      opalFines.getDefendantAccountAtAGlance.mockReturnValue(atAGlance);
+      opalFines.getDefendantAccountHeadingData.mockReturnValue(header);
+      fixture.detectChanges();
+      (fixture.nativeElement.querySelector('#fines-mci-criminal-account-1') as HTMLInputElement).click();
+      fixture.detectChanges();
+      (fixture.nativeElement.querySelector('button.govuk-button') as HTMLButtonElement).click();
+
+      if (pendingRequest === 'at-a-glance') {
+        header.next(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
+        header.complete();
+      } else {
+        atAGlance.next(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+        atAGlance.complete();
+      }
+      const stateBeforeBack = getState(finesMciStore);
+      let completeBackNavigation!: (result: boolean) => void;
+      navigateSpy.mockReturnValueOnce(new Promise<boolean>((resolve) => (completeBackNavigation = resolve)));
+
+      (fixture.nativeElement.querySelector('.govuk-back-link') as HTMLAnchorElement).click();
+      if (pendingRequest === 'at-a-glance') {
+        atAGlance.next(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+        atAGlance.complete();
+      } else {
+        header.next(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
+        header.complete();
+      }
+      fixture.detectChanges();
+
+      expect(navigateSpy).toHaveBeenCalledExactlyOnceWith([
+        '/',
+        'fines',
+        'manual-cash-input',
+        'create',
+        'till',
+        'payment',
+        'category',
+        'criminal',
+        'search',
+      ]);
+      expect(getState(finesMciStore)).toEqual({
+        ...stateBeforeBack,
+        selectedCriminalAccount: null,
+        selectedCriminalAccountAtAGlance: null,
+        selectedCriminalAccountHeader: null,
+      });
+      expect(fixture.componentInstance['isLoadingAccountDetails']()).toBe(false);
+      expect(scrollToTopSpy).not.toHaveBeenCalled();
+
+      completeBackNavigation(true);
+      await fixture.whenStable();
+      expect(navigateSpy).toHaveBeenCalledTimes(1);
+    },
+  );
+
   it.each([true, false])(
     'should clear the cancelled draft and search only when Till Details navigation succeeds: %s',
     async (navigated) => {
       const tillId = finesMciStore.ensureTill();
       finesMciStore.addPayment(tillId, 'courtFee');
       finesMciStore.setDraftJourney('criminal');
-      finesMciStore.setCriminalSearch({
-        activeTab: 'individuals',
-        searchCriteriaCannotBeCombined: false,
-        formData: {
-          fsa_search_account_number: '12345678',
-          fsa_search_account_individuals_search_criteria: {
-            fsa_search_account_individuals_last_name: null,
-            fsa_search_account_individuals_first_names: null,
-            fsa_search_account_individuals_last_name_exact_match: false,
-            fsa_search_account_individuals_first_names_exact_match: false,
-            fsa_search_account_individuals_include_aliases: false,
-          },
-          fsa_search_account_companies_search_criteria: {
-            fsa_search_account_companies_company_name: null,
-            fsa_search_account_companies_company_name_exact_match: false,
-            fsa_search_account_companies_include_aliases: false,
-          },
-        },
-      });
+      finesMciStore.setCriminalSearch(submittedSearch);
       finesMciStore.setCriminalSearchResults(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK);
       finesMciStore.setSelectedCriminalAccount(
         OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0],
