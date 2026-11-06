@@ -18,6 +18,7 @@ describe('FinesMciCreateAllocateComponent', () => {
     tills: [
       {
         till_id: 99000000010005,
+        business_unit_id: 77,
         till_number: 9005,
         errors: 0,
         amount: '125.50',
