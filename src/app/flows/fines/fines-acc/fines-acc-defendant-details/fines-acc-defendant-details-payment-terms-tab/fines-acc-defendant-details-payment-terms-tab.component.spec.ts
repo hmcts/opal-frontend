@@ -7,7 +7,7 @@ import { FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS } from '../../fines-acc-payment
 import { provideRouter, Router } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-describe('FinesAccPaymentTermsAmendComponent', () => {
+describe('FinesAccDefendantDetailsPaymentTermsTabComponent', () => {
   let component: FinesAccDefendantDetailsPaymentTermsTabComponent;
   let fixture: ComponentFixture<FinesAccDefendantDetailsPaymentTermsTabComponent>;
 
@@ -64,6 +64,34 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
 
     fixture.detectChanges();
 
+    expect(getLinkByText('Change')).toBeUndefined();
+    expect(getLinkByText('Request payment card')).toBeUndefined();
+  });
+
+  it.each([
+    { enabled: false, permitted: false },
+    { enabled: false, permitted: true },
+    { enabled: true, permitted: false },
+  ])('should hide the APR action when enabled=$enabled and permitted=$permitted', ({ enabled, permitted }) => {
+    component.bankingInterfacesEnabled = enabled;
+    component.hasManageAprPermission = permitted;
+
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('#manage-alternate-payment-references')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.govuk-grid-column-one-third')).toBeNull();
+  });
+
+  it('should display the APR action to a user with permission in any BU and let the Manage route guard enforce access', () => {
+    component.bankingInterfacesEnabled = true;
+    component.hasManageAprPermission = true;
+
+    fixture.detectChanges();
+
+    const link = fixture.nativeElement.querySelector('#manage-alternate-payment-references') as HTMLAnchorElement;
+    expect(link.textContent?.trim()).toBe('Manage alternate payment references');
+    expect(link.getAttribute('href')).toBe('/alternate/payment/reference/manage');
+    expect(link.closest('.govuk-grid-column-one-third')).toBeTruthy();
     expect(getLinkByText('Change')).toBeUndefined();
     expect(getLinkByText('Request payment card')).toBeUndefined();
   });

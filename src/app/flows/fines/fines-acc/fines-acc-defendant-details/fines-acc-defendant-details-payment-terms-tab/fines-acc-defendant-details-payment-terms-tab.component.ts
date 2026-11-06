@@ -15,6 +15,7 @@ import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS } from '../../fines-acc-payment-terms-amend/constants/fines-acc-payment-terms-amend-fragments.constant';
+import { FINES_ACC_APR_ROUTING_PATHS } from '../../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';
 @Component({
   selector: 'app-fines-acc-defendant-details-payment-terms-tab',
   imports: [
@@ -41,6 +42,8 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
   @Input() amendPaymentTermsDeniedType: string = 'permission';
   @Input() canRequestPaymentCard: boolean = false;
   @Input() requestPaymentCardDeniedType: string = 'permission';
+  @Input() bankingInterfacesEnabled: boolean = false;
+  @Input() hasManageAprPermission: boolean = false;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
   public readonly selectPaymentTermsFragment = FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS.selectPaymentTerms;
@@ -76,6 +79,11 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
    */
   public changePaymentTermsFragment(): string | undefined {
     return this.canAmendPaymentTerms ? this.selectPaymentTermsFragment : undefined;
+  }
+
+  public manageAprLink(): string {
+    const { root, children } = FINES_ACC_APR_ROUTING_PATHS;
+    return `../${root}/${children.manage}`;
   }
 
   /**
