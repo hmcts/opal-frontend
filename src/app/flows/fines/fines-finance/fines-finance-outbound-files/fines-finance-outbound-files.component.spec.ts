@@ -309,6 +309,35 @@ describe('FinesFinanceOutboundFilesComponent', () => {
     expect(refreshButton().disabled).toBe(false);
   });
 
+  it.each([
+    {
+      name: 'from date only',
+      form: { dateFrom: '05/10/2026', dateTo: '' },
+      expectedFrom: '2026-10-04T23:00:00',
+      expectedTo: null,
+    },
+    {
+      name: 'to date only',
+      form: { dateFrom: '', dateTo: '05/10/2026' },
+      expectedFrom: null,
+      expectedTo: '2026-10-05T22:59:59.999999',
+    },
+  ])('uses the standard inclusive date filter for a $name', ({ form, expectedFrom, expectedTo }) => {
+    fixture.detectChanges();
+    httpMock.expectOne((req) => req.url === searchUrl).flush(FINES_FINANCE_OUTBOUND_FILES_RESPONSE_MOCK);
+    filters().filtersForm.patchValue({ dateFilter: 'dateRange', ...form });
+    filters().filtersForm.markAsDirty();
+
+    refreshButton().click();
+    const request = httpMock.expectOne((req) => req.url === searchUrl);
+
+    expect(request.request.params.get('from_date')).toBe(expectedFrom);
+    expect(request.request.params.get('to_date')).toBe(expectedTo);
+    expect(request.request.params.get('source')).toBe('OPAL');
+    expect(request.request.params.get('not_target')).toBe('OPAL');
+    request.flush({ number_of_results: 0, interface_files: [] });
+  });
+
   it('keeps the submitted business-unit selection while edits are made during a pending search', () => {
     fixture.detectChanges();
     httpMock.expectOne((req) => req.url === searchUrl).flush(FINES_FINANCE_OUTBOUND_FILES_RESPONSE_MOCK);
