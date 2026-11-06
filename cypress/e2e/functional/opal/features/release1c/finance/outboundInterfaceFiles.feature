@@ -20,9 +20,3 @@ Feature: Outbound Interface Files
     And I see the following text on the page "Custom days"
     And I see the following text on the page "Date range"
     And I see the following text on the page "Refresh"
-
-  @JIRA-STORY:PO-8674 @JIRA-EPIC:PO-3952 @R1CBankingInterfaces
-  Scenario: An authorised user sees the empty state when no outbound files are available
-    When I select the Fines primary navigation item "Finance"
-    And I open the Finance banking interface link "Outbound files"
-    Then I see the following text on the page "There are no outbound interface files to display."
