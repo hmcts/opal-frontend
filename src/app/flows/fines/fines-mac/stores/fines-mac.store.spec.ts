@@ -145,7 +145,7 @@ describe('FinesMacStore', () => {
     expect(store.deleteAccountConfirmation()).toEqual(FINES_MAC_DELETE_ACCOUNT_CONFIRMATION_FORM_MOCK);
   });
 
-  it('should put payment terms status to incomplete', () => {
+  it('should put payment terms status to incomplete ', () => {
     store.setPaymentTerms(FINES_MAC_PAYMENT_TERMS_FORM_MOCK);
     expect(store.paymentTerms()).toEqual(FINES_MAC_PAYMENT_TERMS_FORM_MOCK);
 
