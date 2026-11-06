@@ -8,6 +8,8 @@ import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { of } from 'rxjs';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacEmployerDetailsFormComponent', () => {
@@ -96,6 +98,65 @@ describe('FinesMacEmployerDetailsFormComponent', () => {
       expect.objectContaining({
         formData: formSubmit.formData,
         nestedFlow: false,
+      }),
+    );
+  });
+
+  it('should remove spaces from the employer telephone number before emitting the form value', () => {
+    const event = {} as SubmitEvent;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+
+    component['rePopulateForm'](formSubmit.formData);
+    component.form.get('fm_employer_details_employer_telephone_number')?.setValue('01234 567 890');
+
+    component.handleFormSubmit(event);
+
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formData: expect.objectContaining({
+          fm_employer_details_employer_telephone_number: '01234567890',
+        }),
+      }),
+    );
+  });
+
+  it('should preserve spaces in the employer telephone number when the release 1A 1.2 feature flag is disabled', () => {
+    const event = {} as SubmitEvent;
+    const telephoneNumber = '01234 567 890';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
+
+    component['rePopulateForm'](formSubmit.formData);
+    component.form.get('fm_employer_details_employer_telephone_number')?.setValue(telephoneNumber);
+
+    component.handleFormSubmit(event);
+
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formData: expect.objectContaining({
+          fm_employer_details_employer_telephone_number: telephoneNumber,
+        }),
+      }),
+    );
+  });
+
+  it('should submit when the employer telephone number is empty', () => {
+    const event = {} as SubmitEvent;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
+
+    component['rePopulateForm'](formSubmit.formData);
+    component.form.get('fm_employer_details_employer_telephone_number')?.setValue(null);
+
+    component.handleFormSubmit(event);
+
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formData: expect.objectContaining({
+          fm_employer_details_employer_telephone_number: null,
+        }),
       }),
     );
   });

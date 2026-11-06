@@ -48,9 +48,9 @@ Feature: Check And Validate
       | Company details            | Alias 2                                  | ALIAS 2 {uniq}            |
       | Contact details            | Primary email address                    | P@EMAIL.COM               |
       | Contact details            | Secondary email address                  | S@EMAIL.COM               |
-      | Contact details            | Mobile telephone number                  | 07123 456 789             |
-      | Contact details            | Home telephone number                    | 07123 456 789             |
-      | Contact details            | Work telephone number                    | 07123 456 789             |
+      | Contact details            | Mobile telephone number                  | 07123456789               |
+      | Contact details            | Home telephone number                    | 07123456789               |
+      | Contact details            | Work telephone number                    | 07123456789               |
       | Payment terms              | Payment term                             | Lump sum plus instalments |
       | Payment terms              | Lump sum amount                          | 150                       |
       | Payment terms              | Instalment amount                        | 50                        |
@@ -78,9 +78,9 @@ Feature: Check And Validate
     And I see the manual review "Contact details" summary:
       | Primary email address   | P@EMAIL.COM   |
       | Secondary email address | S@EMAIL.COM   |
-      | Mobile telephone number | 07123 456 789 |
-      | Home telephone number   | 07123 456 789 |
-      | Work telephone number   | 07123 456 789 |
+      | Mobile telephone number | 07123456789 |
+      | Home telephone number   | 07123456789 |
+      | Work telephone number   | 07123456789 |
     And the manual review offence table contains:
       | imposition | creditor    | amountImposed | amountPaid | balanceRemaining |
       | Costs      | DVLA (DVL2) | 122           | 10         | 112              |
@@ -122,9 +122,9 @@ Feature: Check And Validate
       | Personal details           | National insurance number                | qq123456c                           |
       | Contact details            | Primary email address                    | P@EMAIL.COM                         |
       | Contact details            | Secondary email address                  | S@EMAIL.COM                         |
-      | Contact details            | Mobile telephone number                  | 07123 456 789                       |
-      | Contact details            | Home telephone number                    | 07123 456 789                       |
-      | Contact details            | Work telephone number                    | 07123 456 789                       |
+      | Contact details            | Mobile telephone number                  | 07123456789                         |
+      | Contact details            | Home telephone number                    | 07123456789                         |
+      | Contact details            | Work telephone number                    | 07123456789                         |
       | Employer details           | Employer name                            | Test Corp                           |
       | Employer details           | Employee reference                       | ab123456c                           |
       | Employer details           | Employer email address                   | employer@example.com                |
@@ -167,9 +167,9 @@ Feature: Check And Validate
     And I see the manual review "Contact details" summary:
       | Primary email address   | P@EMAIL.COM   |
       | Secondary email address | S@EMAIL.COM   |
-      | Mobile telephone number | 07123 456 789 |
-      | Home telephone number   | 07123 456 789 |
-      | Work telephone number   | 07123 456 789 |
+      | Mobile telephone number | 07123456789 |
+      | Home telephone number   | 07123456789 |
+      | Work telephone number   | 07123456789 |
     And the manual review offence table contains:
       | imposition | creditor    | amountImposed | amountPaid | balanceRemaining |
       | Costs      | DVLA (DVL2) | 125           | 10         | 115              |
@@ -238,9 +238,9 @@ Feature: Check And Validate
       | Parent or guardian         | alias1.lastName                          | alias lname{uniq}               |
       | Contact details            | Primary email address                    | P@EMAIL.COM                     |
       | Contact details            | Secondary email address                  | S@EMAIL.COM                     |
-      | Contact details            | Mobile telephone number                  | 07123 456 789                   |
-      | Contact details            | Home telephone number                    | 07123 456 789                   |
-      | Contact details            | Work telephone number                    | 07123 456 789                   |
+      | Contact details            | Mobile telephone number                  | 07123456789                     |
+      | Contact details            | Home telephone number                    | 07123456789                     |
+      | Contact details            | Work telephone number                    | 07123456789                     |
       | Employer details           | Employer name                            | XYZ Company                     |
       | Employer details           | Employee reference                       | ab123456c                       |
       | Employer details           | Employer email address                   | employer@example.com            |
@@ -281,9 +281,9 @@ Feature: Check And Validate
     And I see the manual review "Contact details" summary:
       | Primary email address   | P@EMAIL.COM   |
       | Secondary email address | S@EMAIL.COM   |
-      | Mobile telephone number | 07123 456 789 |
-      | Home telephone number   | 07123 456 789 |
-      | Work telephone number   | 07123 456 789 |
+      | Mobile telephone number | 07123456789 |
+      | Home telephone number   | 07123456789 |
+      | Work telephone number   | 07123456789 |
     And the manual review offence table contains:
       | Imposition   | Creditor       | Amount imposed | Amount paid | Balance remaining |
       | Compensation | Mr FNAME LNAME | 300            | 100         | 200               |
