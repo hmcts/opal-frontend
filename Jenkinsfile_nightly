@@ -85,9 +85,9 @@ properties([
     choice(
       name: 'LEGACY_DEMO_SUITE',
       choices: [
+        legacyDemoSuiteR1abChoice,
         legacyDemoSuiteR1aR1bDrop1Choice,
         legacyDemoSuiteR1aChoice,
-        legacyDemoSuiteR1abChoice,
         legacyDemoSuiteR1bDrop1Choice,
         legacyDemoSuiteR1bOffChoice,
         legacyDemoSuiteR1aOffChoice,
@@ -104,12 +104,12 @@ properties([
     choice(
       name: 'UAT_TECHNICAL_SUITE',
       choices: [
+        uatTechnicalSuiteR1aAndR1bChoice,
+        uatTechnicalSuiteR1bDrop1AndR1bDrop2Choice,
         uatTechnicalSuiteR1aChoice,
         uatTechnicalSuiteR1bDrop1Choice,
         uatTechnicalSuiteR1bDrop2Choice,
-        uatTechnicalSuiteR1bDrop1AndR1bDrop2Choice,
         uatTechnicalSuiteR1aAndR1bDrop1Choice,
-        uatTechnicalSuiteR1aAndR1bChoice,
       ],
       description: 'Select which UAT-Technical suite to run when RunUatTech=true.'
     ),
@@ -333,7 +333,7 @@ INSTALL ${browser.toUpperCase()} OR DISABLE THE ${browser.toUpperCase()} RUN
 
 // Resolve the requested UAT-Technical suite for nightly legacy-mode checks.
 String selectedUatTechnicalSuite() {
-  String suite = (params.UAT_TECHNICAL_SUITE ?: uatTechnicalSuiteR1aChoice).trim()
+  String suite = (params.UAT_TECHNICAL_SUITE ?: uatTechnicalSuiteR1aAndR1bChoice).trim()
   List<String> supportedSuites = [
     uatTechnicalSuiteR1aChoice,
     uatTechnicalSuiteR1bDrop1Choice,
