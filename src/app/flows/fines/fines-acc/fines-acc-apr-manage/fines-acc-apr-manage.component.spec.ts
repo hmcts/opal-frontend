@@ -129,25 +129,23 @@ describe('FinesAccAprManageComponent', () => {
     expect(element.querySelector('#apr-add')).toBeNull();
   });
 
-  it('retains the selected reference ID and current account in each direct APR management link', async () => {
+  it('scopes Change to the selected account reference and hides Remove until the deletion journey is available', async () => {
     const { element } = await renderManage([currentReference]);
 
     expect(element.querySelector('#apr-change-11')?.getAttribute('href')).toBe(
       '/fines/account/defendant/141/alternate/payment/reference/change?alternatePaymentReferenceId=11',
     );
-    expect(element.querySelector('#apr-remove-11')?.getAttribute('href')).toBe(
-      '/fines/account/defendant/141/alternate/payment/reference/delete?alternatePaymentReferenceId=11',
-    );
+    expect(element.querySelector('#apr-remove-11')).toBeNull();
     expect(element.querySelector('#apr-add')).toBeNull();
   });
 
-  it('allows another reference to be added alongside removable inherited APRs', async () => {
+  it('allows Add alongside inherited APRs while keeping unavailable Remove actions hidden', async () => {
     const { element } = await renderManage([{ ...currentReference, relationship: 'CONSOLIDATED' }]);
 
     expect(element.querySelector('#apr-current-empty')).not.toBeNull();
     expect(element.querySelector('#apr-add')).not.toBeNull();
     expect(element.querySelector('#apr-change-11')).toBeNull();
-    expect(element.querySelector('#apr-remove-11')).not.toBeNull();
+    expect(element.querySelector('#apr-remove-11')).toBeNull();
   });
 
   it('displays empty APR sections when only inherited account-number references exist', async () => {
@@ -243,9 +241,7 @@ describe('FinesAccAprManageComponent', () => {
     expect(navigationDestination(element, '#apr-add')).toBe(
       '/fines/account/defendant/142/alternate/payment/reference/add',
     );
-    expect(element.querySelector('#apr-remove-22')?.getAttribute('href')).toBe(
-      '/fines/account/defendant/142/alternate/payment/reference/delete?alternatePaymentReferenceId=22',
-    );
+    expect(element.querySelector('#apr-remove-22')).toBeNull();
     expect(element.querySelector('#apr-change-22')).toBeNull();
   });
 });

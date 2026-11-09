@@ -203,7 +203,6 @@ describe('APR Manage navigation from Payment terms', () => {
   it.each([
     { action: 'add', selector: '#apr-add', heading: 'Add Alternate Payment Reference' },
     { action: 'change', selector: '#apr-change-11', heading: 'Change Alternate Payment Reference' },
-    { action: 'delete', selector: '#apr-remove-11', heading: 'Remove Alternate Payment Reference' },
   ])('opens the $action destination and returns without writing data', async ({ action, selector, heading }) => {
     references = action === 'add' ? [] : [reference];
     const harness = await RouterTestingHarness.create(manageUrl);
@@ -219,6 +218,19 @@ describe('APR Manage navigation from Payment terms', () => {
     expect(opalFines.updateApr).not.toHaveBeenCalled();
     expect(opalFines.deleteApr).not.toHaveBeenCalled();
   });
+
+  it.each(['APR', 'CONSOLIDATED', 'AMALGAMATED'] as const)(
+    'keeps Remove hidden for %s references while its route is a stub',
+    async (relationship) => {
+      references = [{ ...reference, relationship }];
+      const harness = await RouterTestingHarness.create(manageUrl);
+
+      expect(harness.routeNativeElement?.querySelector('[data-reference-id="11"]')).not.toBeNull();
+      expect(harness.routeNativeElement?.querySelector('[id^="apr-remove-"]')).toBeNull();
+      expect(harness.routeNativeElement?.querySelector('#apr-change-11') !== null).toBe(relationship === 'APR');
+      expect(opalFines.deleteApr).not.toHaveBeenCalled();
+    },
+  );
 
   it('preserves the previous destination and its query and fragment through an APR round trip', async () => {
     const previousUrl = '/previous-journey?filter=active#results';

@@ -63,6 +63,7 @@ describe('FinesAccAprManageTableComponent', () => {
   });
 
   it('gives direct references change and remove links with selected IDs and accessible reference context', () => {
+    fixture.componentRef.setInput('deleteJourneyAvailable', true);
     fixture.detectChanges();
 
     const change = fixture.nativeElement.querySelector('#apr-change-11') as HTMLAnchorElement;
@@ -77,10 +78,23 @@ describe('FinesAccAprManageTableComponent', () => {
     'offers removal without change for a user-entered %s reference',
     (relationship) => {
       fixture.componentRef.setInput('references', transformReferences([{ ...currentReference, relationship }]));
+      fixture.componentRef.setInput('deleteJourneyAvailable', true);
       fixture.detectChanges();
 
       expect(fixture.nativeElement.querySelector('#apr-change-11')).toBeNull();
       expect(fixture.nativeElement.querySelector('#apr-remove-11')).not.toBeNull();
+    },
+  );
+
+  it.each(['APR', 'CONSOLIDATED', 'AMALGAMATED'] as const)(
+    'hides Remove for an eligible %s reference until the deletion journey is available',
+    (relationship) => {
+      fixture.componentRef.setInput('references', transformReferences([{ ...currentReference, relationship }]));
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('#apr-reference-11')?.textContent).toContain('CURRENT-REFERENCE');
+      expect(fixture.nativeElement.querySelector('#apr-remove-11')).toBeNull();
+      expect(fixture.nativeElement.querySelector('#apr-change-11') !== null).toBe(relationship === 'APR');
     },
   );
 
