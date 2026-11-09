@@ -1,13 +1,15 @@
 <div class="govuk-grid-column-full">
   <opal-lib-govuk-back-link id="apr-back" (clickEvent)="navigateBack()" />
-  <app-fines-acc-banner-messages
-    [hasVersionMismatch]="false"
-    [hasPaymentHold]="false"
-    [isTransferredIn]="false"
-    [successMessage]="successMessage()"
-    (clearSuccessMessage)="successMessage.set(null)"
-    id="apr-banners"
-  />
+</div>
+<app-fines-acc-banner-messages
+  [hasVersionMismatch]="false"
+  [hasPaymentHold]="false"
+  [isTransferredIn]="false"
+  [successMessage]="successMessage()"
+  (clearSuccessMessage)="successMessage.set(null)"
+  id="apr-banners"
+/>
+<div class="govuk-grid-column-full">
   <opal-lib-govuk-heading-with-caption
     [captionText]="accountCaption()"
     headingText="Manage Alternate Payment References"
