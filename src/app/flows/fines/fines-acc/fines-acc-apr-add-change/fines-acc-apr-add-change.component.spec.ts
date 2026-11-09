@@ -434,7 +434,32 @@ describe('FinesAccAprAddChangeComponent change mode', () => {
                                 apr_text: 'Other-Account',
                               },
                               { ...reference, alternate_payment_reference_id: 31, category: 'ACC' },
-                              { ...reference, alternate_payment_reference_id: 32, relationship: 'CONSOLIDATED' },
+                              {
+                                ...reference,
+                                defendant_account_id: accountId,
+                                alternate_payment_reference_id: 32,
+                                relationship: 'CONSOLIDATED',
+                              },
+                              {
+                                ...reference,
+                                defendant_account_id: accountId,
+                                alternate_payment_reference_id: 33,
+                                relationship: 'AMALGAMATED',
+                              },
+                              {
+                                ...reference,
+                                defendant_account_id: accountId,
+                                alternate_payment_reference_id: 34,
+                                relationship: 'CONSOLIDATED',
+                                category: 'ACC',
+                              },
+                              {
+                                ...reference,
+                                defendant_account_id: accountId,
+                                alternate_payment_reference_id: 35,
+                                relationship: 'AMALGAMATED',
+                                category: 'ACC',
+                              },
                             ],
                       version,
                     };
@@ -549,6 +574,36 @@ describe('FinesAccAprAddChangeComponent change mode', () => {
     expect(TestBed.inject(Router).url).toBe(manageUrl);
     expect(api.updateApr).not.toHaveBeenCalled();
   });
+
+  it.each([
+    [32, 'CONSOLIDATED'],
+    [33, 'AMALGAMATED'],
+  ] as const)(
+    'changes inherited reference %s with relationship %s using the master account and captured ETag',
+    async (referenceId, relationship) => {
+      const enteredText = ' Inherited-Edit ';
+      api.updateApr.mockReturnValue(
+        of({
+          reference: { ...reference, alternate_payment_reference_id: referenceId, relationship, apr_text: enteredText },
+          version: '"10"',
+        }),
+      );
+      const { harness, input, enter, save } = await render(changeUrl.replace('Id=11', `Id=${referenceId}`));
+      expect(input().value).toBe('Original');
+      expect(harness.routeNativeElement?.textContent).toContain('141A - APR TEST 141');
+
+      enter(enteredText);
+      save();
+      await harness.fixture.whenStable();
+
+      expect(api.updateApr).toHaveBeenCalledExactlyOnceWith(141, referenceId, { apr_text: enteredText }, '"9"');
+      expect(api.createApr).not.toHaveBeenCalled();
+      expect(api.clearAccountDetailsCache).toHaveBeenCalledOnce();
+      expect(accountStore.base_version()).toBe('"10"');
+      expect(accountStore.successMessage()).toBe('Alternate payment reference updated');
+      expect(TestBed.inject(Router).url).toBe(manageUrl);
+    },
+  );
 
   it('keeps Save locked after PATCH completes while Manage is still resolving', async () => {
     const manageResult = new Subject<IOpalFinesAprsResponse>();
@@ -703,7 +758,7 @@ describe('FinesAccAprAddChangeComponent change mode', () => {
     expect(api.updateApr).not.toHaveBeenCalled();
   });
 
-  it.each(['invalid', '999', '31', '32'])(
+  it.each(['invalid', '999', '31', '34', '35'])(
     'returns query-only selection %s to Manage when it is missing or cannot be changed',
     async (selectedId) => {
       const { harness } = await render();

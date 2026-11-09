@@ -144,7 +144,9 @@ describe('FinesAccAprManageComponent', () => {
 
     expect(element.querySelector('#apr-current-empty')).not.toBeNull();
     expect(element.querySelector('#apr-add')).not.toBeNull();
-    expect(element.querySelector('#apr-change-11')).toBeNull();
+    expect(element.querySelector('#apr-change-11')?.getAttribute('href')).toBe(
+      '/fines/account/defendant/141/alternate/payment/reference/change?alternatePaymentReferenceId=11',
+    );
     expect(element.querySelector('#apr-remove-11')).toBeNull();
   });
 
@@ -242,6 +244,8 @@ describe('FinesAccAprManageComponent', () => {
       '/fines/account/defendant/142/alternate/payment/reference/add',
     );
     expect(element.querySelector('#apr-remove-22')).toBeNull();
-    expect(element.querySelector('#apr-change-22')).toBeNull();
+    expect(element.querySelector('#apr-change-22')?.getAttribute('href')).toBe(
+      '/fines/account/defendant/142/alternate/payment/reference/change?alternatePaymentReferenceId=22',
+    );
   });
 });

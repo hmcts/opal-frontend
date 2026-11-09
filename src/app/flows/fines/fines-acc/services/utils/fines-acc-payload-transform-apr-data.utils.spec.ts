@@ -64,8 +64,8 @@ describe('transformAprsPayload', () => {
     expect(result.consolidatedReferences.map((row) => row.alternate_payment_reference_id)).toEqual([15, 14]);
     expect(result.currentReferences[0]).toMatchObject({ ...reference, canChange: true, canRemove: true });
     expect(result.consolidatedReferences.map(({ canChange, canRemove }) => ({ canChange, canRemove }))).toEqual([
-      { canChange: false, canRemove: true },
-      { canChange: false, canRemove: true },
+      { canChange: true, canRemove: true },
+      { canChange: true, canRemove: true },
     ]);
     expect(result.canAdd).toBe(false);
     expect(result.version).toBe('"7"');
