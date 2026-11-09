@@ -24,4 +24,5 @@ export class FinesAccAprManageTableComponent {
   @Input({ required: true }) public references!: IFinesAccAprManageRow[];
   @Input({ required: true }) public tableId!: string;
   @Input() public showActions = true;
+  @Input() public deleteJourneyAvailable = false;
 }
