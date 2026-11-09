@@ -1554,7 +1554,11 @@ describe('OpalFines', () => {
   });
 
   it.each([77, '9007199254740993'])('should getDefendantAccountAtAGlance data for account %s', (account_id) => {
-    const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK;
+    const expectedResponse = {
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
+      account_status_code: 'L',
+      account_balance: 0,
+    };
     const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/at-a-glance`;
 
     service.getDefendantAccountAtAGlance(account_id).subscribe((response) => {

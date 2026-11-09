@@ -14,6 +14,7 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
@@ -42,6 +43,7 @@ import { finesMciPaymentCategoryCriminalMatchesSelectionValidator } from './vali
   imports: [
     FinesMciPaymentCategoryCriminalMatchesTableWrapperComponent,
     GovukBackLinkComponent,
+    GovukCancelLinkComponent,
     GovukErrorSummaryComponent,
     RouterLink,
   ],
@@ -196,15 +198,33 @@ export class FinesMciPaymentCategoryCriminalMatchesComponent {
     this.document.getElementById(fieldId)?.focus();
   }
 
-  /** Returns to the search form, where stored criteria and the submitted tab are restored. */
+  /**
+   * Cancels pending detail loading and clears the selected account before returning to search.
+   * Preserves submitted criteria and the selected tab for restoration on the search form.
+   */
   protected navigateBack(): void {
-    this.router.navigate(this.criminalSearchRoute);
+    this.handleSearchAgain();
+    void this.router.navigate(this.criminalSearchRoute);
   }
 
   /** Cancels pending detail loading and clears the selected account while retaining search criteria. */
   protected handleSearchAgain(): void {
     this.cancelAccountDetailsRequest.next();
     this.finesMciStore.setSelectedCriminalAccount(null);
+  }
+
+  /**
+   * Stops pending account loading and returns to Till Details.
+   * Clears the payment draft and criminal search state only after successful navigation.
+   */
+  protected handleCancel(): void {
+    this.cancelAccountDetailsRequest.next();
+    void this.router.navigate(this.tillDetailsRoute).then((navigated) => {
+      if (navigated) {
+        this.finesMciStore.setDraftJourney(null);
+        this.finesMciStore.resetCriminalSearch();
+      }
+    });
   }
 
   /**
