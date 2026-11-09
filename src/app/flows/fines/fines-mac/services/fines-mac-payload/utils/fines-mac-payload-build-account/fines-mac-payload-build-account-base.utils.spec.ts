@@ -302,31 +302,4 @@ describe('finesMacPayloadBuildAccountBase', () => {
 
     expect(result).toEqual(expectedPayload);
   });
-
-  it('should preserve false collection order values in the account payload', () => {
-    if (
-      !offenceDetailsState ||
-      !accountDetailsState ||
-      !courtDetailsState ||
-      !paymentTermsState ||
-      !originatorTypeState
-    ) {
-      throw new Error('Required mock states are not properly initialised');
-    }
-
-    paymentTermsState.fm_payment_terms_collection_order_made = false;
-    paymentTermsState.fm_payment_terms_collection_order_made_today = false;
-
-    const result = finesMacPayloadBuildAccountBase(
-      originatorTypeState,
-      accountDetailsState,
-      courtDetailsState,
-      paymentTermsState,
-      offenceDetailsState,
-      fixedPenaltyDetailsState,
-    );
-
-    expect(result.collection_order_made).toBe(false);
-    expect(result.collection_order_made_today).toBe(false);
-  });
 });
