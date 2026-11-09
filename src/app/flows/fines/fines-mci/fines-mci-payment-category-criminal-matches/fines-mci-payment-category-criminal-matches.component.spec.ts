@@ -498,10 +498,9 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
     expect(text).toContain(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name);
     expect(text).toContain('Search results');
     expect(text).toContain('There are more than 100 results');
-    expect(text).toContain('Try adding more information');
-    expect(text).toContain('to your search.');
+    expect(text).toContain('Try searching by account number or full name');
     expect(text).not.toContain('Placeholder for PO-3528');
-    expect(link.textContent?.trim()).toBe('Try adding more information');
+    expect(link.textContent?.trim()).toBe('Try searching by account number or full name');
     expect(link.getAttribute('href')).toBe(criminalSearchPath);
   });
 
