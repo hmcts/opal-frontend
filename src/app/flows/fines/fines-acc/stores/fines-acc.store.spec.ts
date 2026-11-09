@@ -134,6 +134,34 @@ describe('FinesAccountStore', () => {
     expect(store.successMessage()).toBeNull();
   });
 
+  it('retains the APR return destination while refreshing the same account', () => {
+    store.setAccountState(MOCK_FINES_ACCOUNT_STATE);
+    store.setAprManageReturnUrl('/fines/search?query=mock#results');
+
+    store.setAccountState({ ...MOCK_FINES_ACCOUNT_STATE, base_version: 'new-version' });
+
+    expect(store.aprManageReturnUrl()).toBe('/fines/search?query=mock#results');
+    expect(store.getAccountState()).not.toHaveProperty('aprManageReturnUrl');
+  });
+
+  it('clears the APR return destination when changing account', () => {
+    store.setAccountState(MOCK_FINES_ACCOUNT_STATE);
+    store.setAprManageReturnUrl('/fines/search');
+
+    store.setAccountState({ ...MOCK_FINES_ACCOUNT_STATE, account_id: 999 });
+
+    expect(store.aprManageReturnUrl()).toBeNull();
+  });
+
+  it.each(['clearAccountState', 'resetStore'] as const)('clears the APR return destination on %s', (method) => {
+    store.setAccountState(MOCK_FINES_ACCOUNT_STATE);
+    store.setAprManageReturnUrl('/fines/search');
+
+    store[method]();
+
+    expect(store.aprManageReturnUrl()).toBeNull();
+  });
+
   it('should set hasVersionMismatch to true if versions do not match', () => {
     store.setAccountState(MOCK_FINES_ACCOUNT_STATE);
     store.compareVersion('different-version');

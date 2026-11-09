@@ -20,6 +20,7 @@ export const FinesAccountStore = signalStore(
     hasVersionMismatch: false,
     hasPaymentHold: false,
     successMessage: null as string | null,
+    aprManageReturnUrl: null as string | null,
   })),
   withHooks((store) => {
     return {
@@ -39,7 +40,13 @@ export const FinesAccountStore = signalStore(
   withMethods((store) => {
     return {
       setAccountState: (accountState: IFinesAccountState) => {
-        patchState(store, accountState);
+        patchState(store, {
+          ...accountState,
+          ...(store.account_id() !== accountState.account_id ? { aprManageReturnUrl: null } : {}),
+        });
+      },
+      setAprManageReturnUrl: (url: string) => {
+        patchState(store, { aprManageReturnUrl: url });
       },
       setHasVersionMismatch: (value: boolean) => {
         patchState(store, { hasVersionMismatch: value });
@@ -71,6 +78,7 @@ export const FinesAccountStore = signalStore(
           hasVersionMismatch: false,
           hasPaymentHold: false,
           successMessage: null,
+          aprManageReturnUrl: null,
         });
       },
       clearSuccessMessage: () => {
@@ -87,6 +95,7 @@ export const FinesAccountStore = signalStore(
           hasVersionMismatch: false,
           hasPaymentHold: false,
           successMessage: null,
+          aprManageReturnUrl: null,
         });
       },
     };

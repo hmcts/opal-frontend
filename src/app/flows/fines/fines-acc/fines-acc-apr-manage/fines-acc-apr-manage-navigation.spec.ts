@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { NavigationEnd, provideRouter, Router } from '@angular/router';
+import { NavigationEnd, provideRouter, Router, RouterLink } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { Title } from '@angular/platform-browser';
 import { filter, firstValueFrom, of } from 'rxjs';
@@ -12,6 +12,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG } from '../../constants/release-feature-flags.constant';
 import { OpalFines } from '../../services/opal-fines-service/opal-fines.service';
+import { IOpalFinesApr } from '../../services/opal-fines-service/interfaces/opal-fines-apr.interface';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '../../services/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-latest.mock';
 import { FINES_ACCOUNT_STATE } from '../constants/fines-acc-state.constant';
 import { FinesAccDefendantDetailsPaymentTermsTabComponent } from '../fines-acc-defendant-details/fines-acc-defendant-details-payment-terms-tab/fines-acc-defendant-details-payment-terms-tab.component';
@@ -33,6 +34,14 @@ class PaymentTermsHostComponent {
   public readonly tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
 }
 
+@Component({
+  imports: [RouterLink],
+  template: `<a id="open-apr-manage" routerLink="/fines/account/defendant/123/alternate/payment/reference/manage"
+    >Manage alternate payment references</a
+  >`,
+})
+class PreviousJourneyHostComponent {}
+
 @Component({ template: '<h1>Access denied</h1>' })
 class AccessDeniedHostComponent {}
 
@@ -41,13 +50,27 @@ describe('APR Manage navigation from Payment terms', () => {
   const manageUrl = '/fines/account/defendant/123/alternate/payment/reference/manage';
   let bankingInterfacesEnabled: boolean;
   let permittedBusinessUnitId: number;
+  let references: IOpalFinesApr[];
+  const reference: IOpalFinesApr = {
+    alternate_payment_reference_id: 11,
+    defendant_account_id: 123,
+    business_unit_id: 77,
+    relationship: 'APR',
+    category: 'APR',
+    apr_text: 'MOCK-REFERENCE',
+    created_at: '2026-06-01T12:00:00Z',
+    updated_at: null,
+  };
   const opalFines = {
     getDefendantAccountHeadingData: vi.fn(() => of({})),
-    getAprs: vi.fn(() => of({ references: [], version: '1' })),
+    getAprs: vi.fn(() => of({ references, version: '1' })),
+    createApr: vi.fn(),
+    updateApr: vi.fn(),
+    deleteApr: vi.fn(),
   };
 
-  async function followLink(harness: RouterTestingHarness, selector: string): Promise<void> {
-    const link = harness.routeNativeElement?.querySelector<HTMLAnchorElement>(selector);
+  async function clickAndNavigate(harness: RouterTestingHarness, selector: string): Promise<void> {
+    const link = harness.routeNativeElement?.querySelector<HTMLElement>(selector);
     expect(link).toBeTruthy();
     const completed = firstValueFrom(
       TestBed.inject(Router).events.pipe(filter((event) => event instanceof NavigationEnd)),
@@ -60,6 +83,7 @@ describe('APR Manage navigation from Payment terms', () => {
   beforeEach(async () => {
     bankingInterfacesEnabled = true;
     permittedBusinessUnitId = 77;
+    references = [];
     vi.clearAllMocks();
     const accountRoute = routing.find(
       (route) => route.path === `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`,
@@ -82,6 +106,7 @@ describe('APR Manage navigation from Payment terms', () => {
             ],
           },
           { path: 'access-denied', component: AccessDeniedHostComponent },
+          { path: 'previous-journey', component: PreviousJourneyHostComponent },
         ]),
         { provide: AuthService, useValue: { checkAuthenticated: () => of(true) } },
         {
@@ -124,11 +149,11 @@ describe('APR Manage navigation from Payment terms', () => {
   });
 
   it('opens the registered Manage page by clicking the Payment terms link and returns to the same tab', async () => {
-    const harness = await RouterTestingHarness.create(detailsUrl);
+    const harness = await RouterTestingHarness.create(`${detailsUrl}#payment-terms`);
     const link = harness.routeNativeElement?.querySelector<HTMLAnchorElement>('#manage-alternate-payment-references');
     expect(link?.getAttribute('href')).toBe(manageUrl);
 
-    await followLink(harness, '#manage-alternate-payment-references');
+    await clickAndNavigate(harness, '#manage-alternate-payment-references');
 
     expect(TestBed.inject(Router).url).toBe(manageUrl);
     expect(harness.routeDebugElement?.componentInstance).toBeInstanceOf(FinesAccAprManageComponent);
@@ -140,7 +165,7 @@ describe('APR Manage navigation from Payment terms', () => {
     expect(opalFines.getDefendantAccountHeadingData).toHaveBeenCalledExactlyOnceWith(123);
     expect(opalFines.getAprs).toHaveBeenCalledExactlyOnceWith(123);
 
-    await followLink(harness, '#apr-back a');
+    await clickAndNavigate(harness, '#apr-back a');
 
     expect(TestBed.inject(Router).url).toBe(`${detailsUrl}#payment-terms`);
     expect(harness.routeDebugElement?.componentInstance).toBeInstanceOf(PaymentTermsHostComponent);
@@ -151,6 +176,8 @@ describe('APR Manage navigation from Payment terms', () => {
 
     expect(TestBed.inject(Router).url).toBe(manageUrl);
     expect(harness.routeDebugElement?.componentInstance).toBeInstanceOf(FinesAccAprManageComponent);
+    await clickAndNavigate(harness, '#apr-back a');
+    expect(TestBed.inject(Router).url).toBe(`${detailsUrl}#payment-terms`);
   });
 
   it('redirects direct entry to the shared denied page when banking interfaces is disabled', async () => {
@@ -164,12 +191,63 @@ describe('APR Manage navigation from Payment terms', () => {
 
   it('denies the visible link when permission 24 is granted only in another business unit', async () => {
     permittedBusinessUnitId = 78;
-    const harness = await RouterTestingHarness.create(detailsUrl);
+    const harness = await RouterTestingHarness.create(`${detailsUrl}#payment-terms`);
 
-    await followLink(harness, '#manage-alternate-payment-references');
+    await clickAndNavigate(harness, '#manage-alternate-payment-references');
 
     expect(TestBed.inject(Router).url).toBe('/access-denied');
     expect(harness.routeDebugElement?.componentInstance).toBeInstanceOf(AccessDeniedHostComponent);
     expect(opalFines.getAprs).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    { action: 'add', selector: '#apr-add', heading: 'Add Alternate Payment Reference' },
+    { action: 'change', selector: '#apr-change-11', heading: 'Change Alternate Payment Reference' },
+    {
+      action: 'delete',
+      selector: '#apr-remove-11',
+      heading: 'Are you sure you want to remove this alternate payment reference?',
+    },
+  ])('opens the $action destination and returns without writing data', async ({ action, selector, heading }) => {
+    references = action === 'add' ? [] : [reference];
+    const harness = await RouterTestingHarness.create(manageUrl);
+
+    await clickAndNavigate(harness, selector);
+
+    const query = action === 'add' ? '' : '?alternatePaymentReferenceId=11';
+    expect(TestBed.inject(Router).url).toBe(manageUrl.replace('/manage', `/${action}`) + query);
+    expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toContain(heading);
+    await clickAndNavigate(harness, '#apr-action-back a, opal-lib-govuk-cancel-link a');
+    expect(TestBed.inject(Router).url).toBe(manageUrl);
+    expect(opalFines.createApr).not.toHaveBeenCalled();
+    expect(opalFines.updateApr).not.toHaveBeenCalled();
+    expect(opalFines.deleteApr).not.toHaveBeenCalled();
+  });
+
+  it('preserves the previous destination and its query and fragment through an APR round trip', async () => {
+    const previousUrl = '/previous-journey?filter=active#results';
+    const harness = await RouterTestingHarness.create(previousUrl);
+
+    await clickAndNavigate(harness, '#open-apr-manage');
+    await clickAndNavigate(harness, '#apr-add');
+    await clickAndNavigate(harness, '#apr-action-back a, opal-lib-govuk-cancel-link a');
+    await clickAndNavigate(harness, '#apr-back a');
+
+    expect(TestBed.inject(Router).url).toBe(previousUrl);
+    expect(harness.routeDebugElement?.componentInstance).toBeInstanceOf(PreviousJourneyHostComponent);
+  });
+
+  it.each(['change', 'delete'])('redirects %s without a valid selected reference to Manage', async (action) => {
+    references = [reference];
+    await RouterTestingHarness.create(manageUrl.replace('/manage', `/${action}`));
+
+    expect(TestBed.inject(Router).url).toBe(manageUrl);
+  });
+
+  it('continues to reject Change for inherited references', async () => {
+    references = [{ ...reference, relationship: 'CONSOLIDATED' }];
+    await RouterTestingHarness.create(manageUrl.replace('/manage', '/change') + '?alternatePaymentReferenceId=11');
+
+    expect(TestBed.inject(Router).url).toBe(manageUrl);
   });
 });
