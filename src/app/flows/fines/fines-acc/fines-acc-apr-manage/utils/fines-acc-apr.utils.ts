@@ -1,8 +1,7 @@
 import { IOpalFinesApr } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
 import { FINES_ACC_APR_ROUTING_PATHS } from '../constants/fines-acc-apr-routing-paths.constant';
 
-export const canChangeApr = (reference: IOpalFinesApr): boolean =>
-  reference.category === 'APR' && reference.relationship === 'APR';
+export const canChangeApr = (reference: IOpalFinesApr): boolean => reference.category === 'APR';
 
 export const canRemoveApr = (reference: IOpalFinesApr): boolean => reference.category === 'APR';
 

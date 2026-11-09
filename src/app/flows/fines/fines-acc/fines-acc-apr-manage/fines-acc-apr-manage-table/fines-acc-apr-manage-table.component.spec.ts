@@ -75,13 +75,15 @@ describe('FinesAccAprManageTableComponent', () => {
   });
 
   it.each(['CONSOLIDATED', 'AMALGAMATED'] as const)(
-    'offers removal without change for a user-entered %s reference',
+    'offers Change and available Remove actions for a user-entered %s reference',
     (relationship) => {
       fixture.componentRef.setInput('references', transformReferences([{ ...currentReference, relationship }]));
       fixture.componentRef.setInput('deleteJourneyAvailable', true);
       fixture.detectChanges();
 
-      expect(fixture.nativeElement.querySelector('#apr-change-11')).toBeNull();
+      expect(fixture.nativeElement.querySelector('#apr-change-11')?.getAttribute('href')).toBe(
+        '/change?alternatePaymentReferenceId=11',
+      );
       expect(fixture.nativeElement.querySelector('#apr-remove-11')).not.toBeNull();
     },
   );
@@ -94,7 +96,7 @@ describe('FinesAccAprManageTableComponent', () => {
 
       expect(fixture.nativeElement.querySelector('#apr-reference-11')?.textContent).toContain('CURRENT-REFERENCE');
       expect(fixture.nativeElement.querySelector('#apr-remove-11')).toBeNull();
-      expect(fixture.nativeElement.querySelector('#apr-change-11') !== null).toBe(relationship === 'APR');
+      expect(fixture.nativeElement.querySelector('#apr-change-11')).not.toBeNull();
     },
   );
 

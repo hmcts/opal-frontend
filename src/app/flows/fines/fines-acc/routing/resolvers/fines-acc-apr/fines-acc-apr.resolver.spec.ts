@@ -177,12 +177,16 @@ describe('finesAccAprResolver', () => {
 
   it.each([
     ['change', 'APR', 'APR', true],
-    ['change', 'CONSOLIDATED', 'APR', false],
+    ['change', 'CONSOLIDATED', 'APR', true],
+    ['change', 'AMALGAMATED', 'APR', true],
+    ['change', 'CONSOLIDATED', 'ACC', false],
+    ['change', 'AMALGAMATED', 'ACC', false],
     ['change', 'APR', 'ACC', false],
     ['delete', 'APR', 'APR', true],
     ['delete', 'CONSOLIDATED', 'APR', true],
     ['delete', 'AMALGAMATED', 'APR', true],
     ['delete', 'CONSOLIDATED', 'ACC', false],
+    ['delete', 'AMALGAMATED', 'ACC', false],
   ] as const)(
     'allows %s for relationship %s/category %s only when eligible',
     async (path, relationship, category, eligible) => {

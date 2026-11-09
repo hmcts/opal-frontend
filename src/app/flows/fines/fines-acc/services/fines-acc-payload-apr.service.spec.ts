@@ -60,7 +60,7 @@ describe('FinesAccPayloadService APR payloads', () => {
     expect(result.consolidatedReferences).toHaveLength(1);
     expect(result.consolidatedReferences[0]).toMatchObject({
       alternate_payment_reference_id: 12,
-      canChange: false,
+      canChange: true,
       canRemove: true,
     });
     expect(result.canAdd).toBe(false);
