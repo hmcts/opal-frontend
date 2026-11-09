@@ -165,8 +165,8 @@ export const routing: Routes = [
           {
             path: FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation,
             loadComponent: () =>
-              import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
-                (c) => c.FinesMciPlaceholderComponent,
+              import('../fines-mci-create-till/fines-mci-create-till-over-underpayment-confirmation/fines-mci-create-till-over-underpayment-confirmation.component').then(
+                (c) => c.FinesMciCreateTillOverUnderpaymentConfirmationComponent,
               ),
             canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
             data: {
