@@ -1,9 +1,7 @@
 import { Settings } from 'luxon';
 import { afterEach, describe, expect, it } from 'vitest';
-import {
-  IOpalFinesApr,
-  IOpalFinesAprsResponse,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
+import { IOpalFinesApr } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
+import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-aprs-response.interface';
 import { transformAprsPayload } from './fines-acc-payload-transform-apr-data.utils';
 
 const reference: IOpalFinesApr = {

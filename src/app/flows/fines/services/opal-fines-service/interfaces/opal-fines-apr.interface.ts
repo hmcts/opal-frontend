@@ -8,13 +8,3 @@ export interface IOpalFinesApr {
   created_at: string;
   updated_at: string | null;
 }
-
-export interface IOpalFinesAprsResponse {
-  references: IOpalFinesApr[];
-  version: string | null;
-}
-
-export interface IOpalFinesAprResponse {
-  reference: IOpalFinesApr;
-  version: string | null;
-}
