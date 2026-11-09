@@ -83,7 +83,7 @@ describe('FinesAccAprManageComponent', () => {
     expect(element.querySelector('h1')?.textContent).toContain('Manage Alternate Payment References');
     expect(element.textContent).toContain('177A - APR TEST');
     expect(element.querySelector('#apr-current-empty')?.textContent).toContain(
-      'There are no alternative payment reference for this account',
+      'There are no alternate payment reference for this account',
     );
     expect(element.querySelector('#apr-consolidated-empty')?.textContent).toContain(
       'There are no alternate payment reference from consolidated accounts',
