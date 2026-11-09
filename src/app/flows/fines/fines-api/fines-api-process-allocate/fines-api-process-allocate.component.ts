@@ -1,5 +1,10 @@
+import { FinesApiIgnoredComponent } from './fines-api-ignored-tab/fines-api-ignored.component';
+import { IFinesApiIgnoredData } from './fines-api-ignored-tab/interfaces/fines-api-ignored-data.interface';
+import { getIgnoredDateBounds } from '../services/utils/fines-api-ignored-dates.utils';
+import { IOpalFinesSourceMapping } from '../../services/opal-fines-service/interfaces/opal-fines-source-mapping.interface';
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
@@ -8,7 +13,17 @@ import {
   MojSubNavigationComponent,
   MojSubNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
-import { EMPTY, Observable, Subject, catchError, map, startWith, switchMap } from 'rxjs';
+import {
+  EMPTY,
+  Observable,
+  Subject,
+  catchError,
+  distinctUntilChanged,
+  forkJoin,
+  map,
+  startWith,
+  switchMap,
+} from 'rxjs';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { IOpalFinesInterfaceJobSummary } from '../../services/opal-fines-service/interfaces/opal-fines-interface-job-summary.interface';
@@ -20,6 +35,9 @@ import { FinesApiStore } from '../stores/fines-api.store';
 import { FINES_API_PROCESS_ALLOCATE_CONTENT } from './constants/fines-api-process-allocate-content.constant';
 import { FINES_API_PROCESS_ALLOCATE_TABS_KEYS } from './constants/fines-api-process-allocate-tabs-keys.constant';
 import { FINES_API_PROCESS_ALLOCATE_TABS } from './constants/fines-api-process-allocate-tabs.constant';
+import { FinesApiAllocateComponent } from './fines-api-allocate-tab/fines-api-allocate.component';
+import { FINES_API_ALLOCATE_CONTENT } from './fines-api-allocate-tab/constants/fines-api-allocate-content.constant';
+import { IFinesApiAllocateData } from './fines-api-allocate-tab/interfaces/fines-api-allocate-data.interface';
 import { FinesApiProcessComponent } from './fines-api-process-tab/fines-api-process.component';
 import { IFinesApiProcessData } from './fines-api-process-tab/interfaces/fines-api-process-data.interface';
 import { IFinesApiProcessAllocateTabs } from './interfaces/fines-api-process-allocate-tabs.interface';
@@ -29,24 +47,36 @@ import { TFinesApiProcessAllocateTabKey } from './types/fines-api-process-alloca
   selector: 'app-fines-api-process-allocate',
   imports: [
     AsyncPipe,
+    FinesApiIgnoredComponent,
     FinesApiProcessComponent,
+    FinesApiAllocateComponent,
     GovukBackLinkComponent,
     GovukCancelLinkComponent,
     MojSubNavigationComponent,
     MojSubNavigationItemComponent,
   ],
   templateUrl: './fines-api-process-allocate.component.html',
+  styleUrl: './fines-api-process-allocate.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly sourceLabels: ReadonlyMap<string, string> = new Map(
+    (this.activatedRoute.snapshot.data['sourceMappings'] as IOpalFinesSourceMapping[]).map(({ code, display_name }) => [
+      code.trim().toUpperCase(),
+      display_name,
+    ]),
+  );
   private readonly finesApiPayloadService = inject(FinesApiPayloadService);
   private readonly opalFinesService = inject(OpalFines);
   private readonly router = inject(Router);
   private readonly processDataRefresh = new Subject<void>();
+  private readonly allocateDataRefresh = new Subject<void>();
+  private readonly ignoredDataRefresh = new Subject<void>();
 
   protected readonly finesApiStore = inject(FinesApiStore);
   protected readonly content = FINES_API_PROCESS_ALLOCATE_CONTENT;
+  protected readonly allocateContent = FINES_API_ALLOCATE_CONTENT;
   protected readonly tabs: IFinesApiProcessAllocateTabs = FINES_API_PROCESS_ALLOCATE_TABS;
   protected readonly tabKeys = FINES_API_PROCESS_ALLOCATE_TABS_KEYS;
   /** Fetches on every Process-tab subscription and explicit refresh without replaying a previous response. */
@@ -55,10 +85,84 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
     switchMap(() => this.fetchProcessData()),
   );
 
+  /** Each tab entry subscribes afresh; refresh replaces any in-flight pair of reads. */
+  protected readonly tabAllocate$: Observable<IFinesApiAllocateData> = this.allocateDataRefresh.pipe(
+    startWith(undefined),
+    switchMap(() => this.fetchAllocateData()),
+  );
+
+  /** One shell-level subscription keeps the counter and table in sync across tab switches. */
+  protected readonly tabIgnored$: Observable<IFinesApiIgnoredData | null> = toObservable(
+    this.finesApiStore.selectedBusinessUnitIds,
+  ).pipe(
+    // Start on subscription; suppress the same initial value subsequently emitted by toObservable.
+    startWith(this.finesApiStore.selectedBusinessUnitIds()),
+    distinctUntilChanged(),
+    switchMap((businessUnitIds) =>
+      this.ignoredDataRefresh.pipe(
+        startWith(undefined),
+        switchMap(() => this.fetchIgnoredData(businessUnitIds)),
+        // Clear the previous selection's count/rows while loading a different BU selection.
+        startWith(null),
+      ),
+    ),
+  );
+
+  /**
+   * Loads ignored payment files completed within the past fourteen UK calendar days.
+   *
+   * @param businessUnitIds Selected business units used to scope the request.
+   * @returns Mapped ignored-file data, or an empty stream when no units are selected or the read fails.
+   * Failed refreshes leave the last successful display intact; the interceptor handles API errors.
+   */
+  private fetchIgnoredData(businessUnitIds: number[]): Observable<IFinesApiIgnoredData> {
+    if (businessUnitIds.length === 0) {
+      return EMPTY;
+    }
+
+    return this.opalFinesService
+      .getInterfaceJobsSummary({
+        business_unit_ids: businessUnitIds,
+        statuses: ['IGNORED'],
+        interface_name: 'payments_in',
+        ...getIgnoredDateBounds(),
+      })
+      .pipe(
+        map((response) => this.finesApiPayloadService.mapIgnoredData(response, this.sourceLabels)),
+        // The interceptor owns API errors; an unsuccessful read is not a successful empty result.
+        catchError(() => EMPTY),
+      );
+  }
+
+  /** Publishes one consistent display only after both selected-BU reads complete. */
+  private fetchAllocateData(): Observable<IFinesApiAllocateData> {
+    const businessUnitIds = this.finesApiStore.selectedBusinessUnitIds();
+    if (businessUnitIds.length === 0) {
+      return EMPTY;
+    }
+
+    return forkJoin({
+      jobs: this.opalFinesService.getInterfaceJobsSummary({
+        business_unit_ids: businessUnitIds,
+        statuses: ['PROCESSING'],
+        interface_name: 'payments_in',
+      }),
+      tills: this.opalFinesService.getTills({
+        business_unit_ids: businessUnitIds,
+        statuses: ['Created', 'Failed'],
+        auto_payments: true,
+      }),
+    }).pipe(
+      map(({ jobs, tills }) => this.finesApiPayloadService.mapAllocateData(jobs, tills, this.sourceLabels)),
+      // The interceptor owns API errors. Retain the last complete display and keep Refresh usable.
+      catchError(() => EMPTY),
+    );
+  }
+
   /** Maps raw Process jobs into the Process tab view model. */
   private buildProcessData(processInterfaceJobs: IOpalFinesInterfaceJobSummary[]): IFinesApiProcessData {
     return {
-      tableData: this.finesApiPayloadService.mapInterfaceJobs(processInterfaceJobs),
+      tableData: this.finesApiPayloadService.mapInterfaceJobs(processInterfaceJobs, this.sourceLabels),
     };
   }
 
@@ -126,6 +230,15 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
     return Object.values(this.tabKeys).includes(tab as TFinesApiProcessAllocateTabKey);
   }
 
+  /**
+   * Requests fresh ignored-file rows and their matching tab count using the current business units.
+   *
+   * @returns Nothing; emits to the shared refresh stream regardless of the active tab.
+   */
+  protected refreshIgnoredData(): void {
+    this.ignoredDataRefresh.next();
+  }
+
   /** Loads the selected tab and clears Process-file selections when changing tabs. */
   protected handleTabSwitch(tab: string): void {
     if (!this.isFinesApiTab(tab)) {
@@ -144,6 +257,11 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
   /** Reloads the Process tab data in response to its Refresh action. */
   protected refreshProcessData(): void {
     this.processDataRefresh.next();
+  }
+
+  /** Reloads both Allocate datasets; the child clears local selection before emitting. */
+  protected refreshAllocateData(): void {
+    this.allocateDataRefresh.next();
   }
 
   /** Navigates back to Select Business Units and clears flow state only after navigation succeeds. */
@@ -180,6 +298,8 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
+    this.ignoredDataRefresh.complete();
     this.processDataRefresh.complete();
+    this.allocateDataRefresh.complete();
   }
 }

@@ -6,8 +6,12 @@ import {
   OnDestroy,
   OnInit,
   SimpleChanges,
+  computed,
   inject,
 } from '@angular/core';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
 import { FormGroup, FormControl } from '@angular/forms';
 import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-ticket-panel';
 import { GovukDetailsComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-details';
@@ -23,7 +27,12 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class FinesMacDefaultDaysComponent implements OnInit, OnDestroy, OnChanges {
   private readonly dateService = inject(DateService);
+  private readonly globalStore = inject(GlobalStore);
   private readonly ngUnsubscribe = new Subject<void>();
+
+  public readonly release1a1_2Enabled = computed(
+    () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
+  );
 
   @Input({ required: true }) date!: string;
 

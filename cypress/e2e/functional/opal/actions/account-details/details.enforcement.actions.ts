@@ -818,6 +818,8 @@ export class AccountDetailsEnforcementActions {
     log('assert', 'Enforcement action summary', { expected });
     cy.get(ENF.enforcementAction, { timeout: AccountDetailsEnforcementActions.DEFAULT_TIMEOUT })
       .parent()
-      .should('contain.text', expected);
+      .should(($row) => {
+        expect(this.normalize($row.text()).toLowerCase()).to.contain(this.normalize(expected).toLowerCase());
+      });
   }
 }

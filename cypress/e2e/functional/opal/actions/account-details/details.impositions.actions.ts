@@ -55,12 +55,16 @@ const CENTRAL_FUND_CREDITOR_ALIASES = [
 ];
 
 /**
- * Reads a rendered table cell as normalized text.
+ * Reads normalized table cell text without visually hidden accessibility labels.
  *
  * @param selector - Cell selector to read from the DOM.
- * @returns Normalized rendered cell text.
+ * @returns Normalized visible cell text.
  */
-const getTableCellText = (selector: string): string => normalizeTableText(Cypress.$(selector).text());
+const getTableCellText = (selector: string): string => {
+  const cell = Cypress.$(selector).clone();
+  cell.find('.govuk-visually-hidden').remove();
+  return normalizeTableText(cell.text());
+};
 
 /**
  * Normalizes known environment-specific rendered values before row matching.

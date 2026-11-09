@@ -17,6 +17,8 @@ import { FinesMacOffenceDetailsStoreType } from '../stores/types/fines-mac-offen
 import { FinesMacOffenceDetailsStore } from '../stores/fines-mac-offence-details.store';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OPAL_FINES_RESULT_PRETTY_NAME_MOCK } from '../../../services/opal-fines-service/mocks/opal-fines-result-pretty-name.mock';
+import { By } from '@angular/platform-browser';
+import { FinesMacOffenceDetailsReviewOffenceComponent } from '../fines-mac-offence-details-review-offence/fines-mac-offence-details-review-offence.component';
 
 describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
   let component: FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent;
@@ -70,6 +72,12 @@ describe('FinesMacOffenceDetailsRemoveOffenceAndImpositionsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should pass heading level 2 to the offence review', () => {
+    const offence = fixture.debugElement.query(By.directive(FinesMacOffenceDetailsReviewOffenceComponent));
+
+    expect(offence.componentInstance.headingLevel).toBe(2);
   });
 
   it('should remove the offence and set offenceRemoved to true', () => {

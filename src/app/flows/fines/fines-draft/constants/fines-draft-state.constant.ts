@@ -1,6 +1,7 @@
 import { IFinesMacAddAccountPayload } from '../../fines-mac/services/fines-mac-payload/interfaces/fines-mac-payload-add-account.interfaces';
 
 export const FINES_DRAFT_STATE: IFinesMacAddAccountPayload = {
+  source: null,
   draft_account_id: null,
   created_at: null,
   account_snapshot: null,

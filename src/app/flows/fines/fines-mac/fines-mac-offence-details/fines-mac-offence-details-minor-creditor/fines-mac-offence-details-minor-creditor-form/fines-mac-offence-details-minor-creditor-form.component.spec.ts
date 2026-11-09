@@ -6,6 +6,9 @@ import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from '../../mocks/fines-ma
 import { FINES_MAC_OFFENCE_DETAILS_MINOR_CREDITOR_FORM_MOCK } from '../mocks/fines-mac-offence-details-minor-creditor-form.mock';
 import { FinesMacOffenceDetailsStoreType } from '../../stores/types/fines-mac-offence-details.type';
 import { FinesMacOffenceDetailsStore } from '../../stores/fines-mac-offence-details.store';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../../constants/release-feature-flags.constant';
 import { GovukRadioComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -13,6 +16,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   let component: FinesMacOffenceDetailsMinorCreditorFormComponent;
   let fixture: ComponentFixture<FinesMacOffenceDetailsMinorCreditorFormComponent>;
   let finesMacOffenceDetailsStore: FinesMacOffenceDetailsStoreType;
+  let globalStore: GlobalStoreType;
   let originalInitOuterRadios: () => void;
 
   beforeAll(() => {
@@ -43,6 +47,8 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     component = fixture.componentInstance;
 
     finesMacOffenceDetailsStore = TestBed.inject(FinesMacOffenceDetailsStore);
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+    globalStore = TestBed.inject(GlobalStore);
 
     fixture.detectChanges();
   });
@@ -54,8 +60,57 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     fixture.destroy();
   });
 
+  it.each([
+    [true, '12345', 'Account number must be between 6 and 8 numbers'],
+    [true, '123456789', 'Account number must be between 6 and 8 numbers'],
+    [true, '12345A', 'Account number must be between 6 and 8 numbers'],
+    [true, '', 'Enter account number'],
+    [false, '123456789', 'Account number must be 8 characters or fewer'],
+    [false, '12345A', 'Account number must only contain numbers'],
+    [false, '', 'Enter account number'],
+  ])('should show account-number error with release flag %s for %s', (enabled, value, message) => {
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: enabled });
+    component['setPaymentDetailValidators']();
+    component.form.controls['fm_offence_details_minor_creditor_bank_account_number'].setValue(value);
+
+    component['handleErrorMessages']();
+
+    expect(component.formControlErrorMessages['fm_offence_details_minor_creditor_bank_account_number']).toBe(message);
+  });
+
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should expose the feature-flagged payment hints', () => {
+    expect(component.sortCodeHintText).toBe('Must be 6 digits long');
+    expect(component.accountNumberHintText).toBe('Must be between 6 and 8 digits long');
+
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+
+    expect(component.sortCodeHintText).toBe('');
+    expect(component.accountNumberHintText).toBe('');
+  });
+
+  it.each(['12-34-56', '123 456', '12  34  56', '12--34  56'])(
+    'should normalize sort code %s before submitting',
+    (value) => {
+      component['setPaymentDetailValidators']();
+      const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
+      sortCodeControl.setValue(value);
+
+      component.handleFormSubmit(new SubmitEvent('submit'));
+
+      expect(sortCodeControl.value).toBe('123456');
+    },
+  );
+
+  it('should not normalize an empty sort code on submit', () => {
+    const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
+
+    component.handleFormSubmit(new SubmitEvent('submit'));
+
+    expect(sortCodeControl.value).toBeNull();
   });
 
   it.each([
@@ -99,6 +154,7 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
   });
 
   it('should set individual validators for title, forenames and surname controls', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
     component.form.get('fm_offence_details_minor_creditor_creditor_type')?.setValue('individual');
     fixture.detectChanges();
 
@@ -122,9 +178,13 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     forenamesControl.setValue('A very long name exceeding twenty characters');
     expect(forenamesControl.errors?.['maxlength']).toBeTruthy();
 
-    // Test pattern invalid validator on forenames
-    forenamesControl.setValue('/$£');
-    expect(forenamesControl.errors?.['lettersWithSpacesPattern']).toBeTruthy();
+    // Valid ASCII special characters should not cause validation errors on forenames
+    forenamesControl.setValue(`A-B, C.D'E`);
+    expect(forenamesControl.errors).toBeNull();
+
+    // Non-ASCII special characters should cause validation errors on forenames
+    forenamesControl.setValue('Anne£Marie');
+    expect(forenamesControl.errors?.['singleAsciiCharacters']).toBeTruthy();
 
     // Test required validator on surname
     surnameControl.setValue('');
@@ -134,8 +194,33 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
     surnameControl.setValue('A very long surname exceeding thirty characters');
     expect(surnameControl.errors?.['maxlength']).toBeTruthy();
 
-    // Test pattern invalid validator on surname
-    surnameControl.setValue('/$£');
+    // Valid ASCII special characters should not cause validation errors on surname
+    surnameControl.setValue(`O'Connor-Smith, Jr.`);
+    expect(surnameControl.errors).toBeNull();
+
+    // Non-ASCII special characters should cause validation errors on surname
+    surnameControl.setValue('O£Connor');
+    expect(surnameControl.errors?.['singleAsciiCharacters']).toBeTruthy();
+  });
+
+  it('should use the letters with spaces pattern for forenames and surname when release-1a-1-2 is disabled', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+    component.form.controls['fm_offence_details_minor_creditor_creditor_type'].setValue('individual');
+    fixture.detectChanges();
+
+    const forenamesControl = component.form.controls['fm_offence_details_minor_creditor_forenames'];
+    const surnameControl = component.form.controls['fm_offence_details_minor_creditor_surname'];
+
+    forenamesControl.setValue('Anne Marie');
+    expect(forenamesControl.errors).toBeNull();
+
+    forenamesControl.setValue('Anne-Marie');
+    expect(forenamesControl.errors?.['lettersWithSpacesPattern']).toBeTruthy();
+
+    surnameControl.setValue('O Connor');
+    expect(surnameControl.errors).toBeNull();
+
+    surnameControl.setValue("O'Connor");
     expect(surnameControl.errors?.['lettersWithSpacesPattern']).toBeTruthy();
   });
 
@@ -193,10 +278,16 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     // Test validators for sort code
     sortCodeControl.setValue('1234567'); // Exceeds 6 characters
-    expect(sortCodeControl.errors?.['maxlength']).toBeTruthy();
+    expect(sortCodeControl.errors?.['invalidSortCode']).toBeTruthy();
 
     sortCodeControl.setValue('ABC123'); // Non-numeric input
-    expect(sortCodeControl.errors?.['numericalTextPattern']).toBeTruthy();
+    expect(sortCodeControl.errors?.['invalidSortCode']).toBeTruthy();
+
+    sortCodeControl.setValue('12-34-56');
+    expect(sortCodeControl.valid).toBeTruthy();
+
+    sortCodeControl.setValue('12 34 56');
+    expect(sortCodeControl.valid).toBeTruthy();
 
     sortCodeControl.setValue('123456'); // Valid input
     expect(sortCodeControl.valid).toBeTruthy();
@@ -220,6 +311,22 @@ describe('FinesMacOffenceDetailsMinorCreditorFormComponent', () => {
 
     paymentReferenceControl.setValue('Valid Reference'); // Valid input
     expect(paymentReferenceControl.valid).toBeTruthy();
+  });
+
+  it('should set the master payment validators when R1A-1-2 is disabled', () => {
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+
+    component['setPaymentDetailValidators']();
+
+    const sortCodeControl = component.form.controls['fm_offence_details_minor_creditor_bank_sort_code'];
+    const accountNumberControl = component.form.controls['fm_offence_details_minor_creditor_bank_account_number'];
+
+    sortCodeControl.setValue('12-34-56');
+    expect(sortCodeControl.hasError('numericalTextPattern')).toBe(true);
+
+    accountNumberControl.setValue('12345');
+    expect(accountNumberControl.valid).toBe(true);
+    expect(accountNumberControl.hasError('minlength')).toBe(false);
   });
 
   it('should reset and clear validators for name-related controls', () => {

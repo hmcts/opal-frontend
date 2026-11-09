@@ -1708,6 +1708,8 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.wait('@postDraftAccount')
         .its('request.body')
         .then((body) => {
+          expect(body).to.have.property('source', 'MAC');
+          expect(body).not.to.have.property('source_reference');
           expect(body.account).to.have.property('originator_type', 'NEW');
         });
     },
@@ -1728,6 +1730,8 @@ describe('FinesMacReviewAccountComponent', () => {
       cy.wait('@postDraftAccount')
         .its('request.body')
         .then((body) => {
+          expect(body).to.have.property('source', 'MAC');
+          expect(body).not.to.have.property('source_reference');
           expect(body.account).to.have.property('originator_type', 'TFO');
         });
     },

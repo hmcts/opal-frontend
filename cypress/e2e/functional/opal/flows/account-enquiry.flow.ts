@@ -1154,6 +1154,23 @@ export class AccountEnquiryFlow {
   }
 
   /**
+   * Asserts imposition rows using the expected court value for the active account mode.
+   * @param table - Expected rows with optional mode-specific imposed-by columns.
+   */
+  public assertDefendantAccountImpositionsLoaded(table: DataTable): void {
+    const [headings, ...rows] = table.raw();
+    const modeHeading = isLegacyAccountMode() ? 'Imposed by (Legacy)' : 'Imposed by (Opal)';
+    const columns = headings
+      .map((heading, index) => ({ heading, index }))
+      .filter(({ heading }) => !heading.startsWith('Imposed by (') || heading === modeHeading);
+
+    this.impositionsDetails.assertDefendantAccountImpositionsLoaded([
+      columns.map(({ heading }) => (heading === modeHeading ? 'Imposed by' : heading)),
+      ...rows.map((row) => columns.map(({ index }) => row[index])),
+    ]);
+  }
+
+  /**
    * Validates the Impositions tab data when fixture expectations are available.
    *
    * @param fixturePath - Cypress fixture path containing expected legacy account values.

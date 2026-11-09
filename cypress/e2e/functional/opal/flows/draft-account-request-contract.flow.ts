@@ -29,7 +29,10 @@ export class DraftAccountRequestContractFlow {
         'account_type',
         'account_status',
         'status_message',
+        'source',
       );
+      expect(request.body.source).to.equal('MAC');
+      expect(request.body).not.to.have.property('source_reference');
       expect(request.body.account_type).to.equal(accountType);
       expect(request.body.account_status).to.equal('Submitted');
       expect(request.body.status_message).to.equal(null);

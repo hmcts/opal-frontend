@@ -29,9 +29,9 @@ interface IOpalFinesAccountDefendantDetailsImpositionOffence {
 }
 
 interface IOpalFinesAccountDefendantDetailsImpositionCourt {
-  court_id: number;
+  court_id: number | null;
   court_code: number | null;
-  court_name: string;
+  court_name: string | null;
 }
 
 export interface IOpalFinesAccountDefendantDetailsImposition {
