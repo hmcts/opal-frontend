@@ -27,10 +27,15 @@ const manageUrl = '/fines/account/defendant/141/alternate/payment/reference/mana
 
 const renderManage = async (references: IOpalFinesApr[], initialMessage: string | null = null) => {
   let successMessage = initialMessage;
+  let returnUrl: string | null = null;
   const accountStore = {
     getAccountNumber: () => '177A',
     party_name: () => 'APR TEST',
     account_id: () => 141,
+    aprManageReturnUrl: () => returnUrl,
+    setAprManageReturnUrl: (url: string) => {
+      returnUrl = url;
+    },
     successMessage: () => successMessage,
     clearSuccessMessage: vi.fn(() => {
       successMessage = null;
@@ -57,10 +62,17 @@ const renderManage = async (references: IOpalFinesApr[], initialMessage: string 
 const navigationDestination = (element: Element, selector: string): string => {
   const router = TestBed.inject(Router);
   const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+  const navigateByUrl = vi.spyOn(router, 'navigateByUrl').mockResolvedValue(true);
   (element.querySelector(selector) as HTMLElement).click();
-  const [commands, extras] = navigate.mock.calls.at(-1)!;
-  const destination = router.serializeUrl(router.createUrlTree(commands, extras));
+  const directUrl = navigateByUrl.mock.calls.at(-1)?.[0];
+  const [commands, extras] = navigate.mock.calls.at(-1) ?? [[], undefined];
+  const destination = directUrl
+    ? typeof directUrl === 'string'
+      ? directUrl
+      : router.serializeUrl(directUrl)
+    : router.serializeUrl(router.createUrlTree(commands, extras));
   navigate.mockRestore();
+  navigateByUrl.mockRestore();
   return destination;
 };
 
