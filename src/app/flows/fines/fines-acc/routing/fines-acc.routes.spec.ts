@@ -126,6 +126,26 @@ describe('fines acc routes', () => {
     );
   });
 
+  it('registers the Manage APR destination with the standard account and feature guards', () => {
+    const manageRoutes = defendantJourneyGroup?.children?.filter(
+      (route) => route.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/${FINES_ACC_APR_ROUTING_PATHS.children.manage}`,
+    );
+    expect(manageRoutes).toHaveLength(1);
+    const manageRoute = manageRoutes?.[0];
+
+    expect(manageRoute?.loadComponent).toBeTypeOf('function');
+    expect(manageRoute?.canActivate).toEqual([
+      release1cBankingInterfacesFeatureFlagGuard,
+      businessUnitRoutePermissionsGuard,
+      finesAccStateGuard,
+    ]);
+    expect(manageRoute?.data?.['routePermissionId']).toEqual([
+      FINES_PERMISSIONS['manage-alternate-payment-references'],
+    ]);
+    expect(manageRoute?.resolve?.['title']).toBe(TitleResolver);
+    expect(manageRoute?.data?.['accessDeniedPath']).toBeUndefined();
+  });
+
   it('protects APR pages with the standard account guards and shared permission denial', () => {
     const aprRoutes = (defendantJourneyGroup?.children ?? []).filter((route) =>
       route.path?.startsWith(`${FINES_ACC_APR_ROUTING_PATHS.root}/`),

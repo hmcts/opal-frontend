@@ -108,6 +108,7 @@ describe('OpalFines', () => {
       account_type: payload.account_type!,
       account_status: payload.account_status,
       status_message: null,
+      source: 'MAC',
     };
   };
 
@@ -1280,6 +1281,7 @@ describe('OpalFines', () => {
       'account_type',
       'account_status',
       'status_message',
+      'source',
     ]);
 
     req.flush(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK);
