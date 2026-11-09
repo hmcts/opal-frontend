@@ -123,6 +123,40 @@ export const routing: Routes = [
             resolve: { title: TitleResolver, aprs: finesAccAprResolver },
           },
           {
+            path: `${FINES_ACC_APR_ROUTING_PATHS.root}/${FINES_ACC_APR_ROUTING_PATHS.children.change}`,
+            loadComponent: () =>
+              import('../fines-acc-apr-action/fines-acc-apr-action.component').then(
+                (c) => c.FinesAccAprActionComponent,
+              ),
+            canActivate: [
+              release1cBankingInterfacesFeatureFlagGuard,
+              businessUnitRoutePermissionsGuard,
+              finesAccStateGuard,
+            ],
+            data: {
+              title: 'Change Alternate Payment Reference',
+              routePermissionId: [FINES_PERMISSIONS['manage-alternate-payment-references']],
+            },
+            resolve: { title: TitleResolver, aprs: finesAccAprResolver },
+          },
+          {
+            path: `${FINES_ACC_APR_ROUTING_PATHS.root}/${FINES_ACC_APR_ROUTING_PATHS.children.delete}`,
+            loadComponent: () =>
+              import('../fines-acc-apr-action/fines-acc-apr-action.component').then(
+                (c) => c.FinesAccAprActionComponent,
+              ),
+            canActivate: [
+              release1cBankingInterfacesFeatureFlagGuard,
+              businessUnitRoutePermissionsGuard,
+              finesAccStateGuard,
+            ],
+            data: {
+              title: 'Remove Alternate Payment Reference',
+              routePermissionId: [FINES_PERMISSIONS['manage-alternate-payment-references']],
+            },
+            resolve: { title: TitleResolver, aprs: finesAccAprResolver },
+          },
+          {
             path: `${FINES_ACC_APR_ROUTING_PATHS.root}/:mode`,
             title: finesAccAprAddChangeTitleResolver,
             loadComponent: () =>

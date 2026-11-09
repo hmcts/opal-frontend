@@ -160,6 +160,18 @@ describe('fines acc routes', () => {
     expect(aprRoutes.some((route) => route.path?.endsWith('/denied'))).toBe(false);
   });
 
+  it.each(['add', 'change', 'delete'])('registers an APR %s destination with selection resolution', (action) => {
+    const routes = defendantJourneyGroup?.children ?? [];
+    const actionRoute =
+      routes.find((route) => route.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/${action}`) ??
+      routes.find((route) => route.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/:mode`);
+
+    expect(actionRoute?.loadComponent).toBeTypeOf('function');
+    expect(actionRoute?.resolve?.['aprs']).toBeTypeOf('function');
+    expect(actionRoute?.canActivate).toContain(release1cBankingInterfacesFeatureFlagGuard);
+    expect(actionRoute?.canActivate?.slice(-2)).toEqual([businessUnitRoutePermissionsGuard, finesAccStateGuard]);
+  });
+
   it('should load the add enforcement action component through the lazy route factory', async () => {
     vi.clearAllMocks();
     FINES_ACC_ENF_ACTION_ADD_PAYLOAD_SERVICE_MOCK.transformDefendantAccountHeaderForStore.mockReturnValue(
@@ -231,13 +243,7 @@ describe('APR Add/Change route', () => {
   it('uses one mode parameter after every static APR page', () => {
     expect(aprRouting.filter((entry) => entry.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/:mode`)).toHaveLength(1);
     expect(aprRouting.at(-1)).toBe(route);
-    expect(
-      aprRouting.some((entry) =>
-        [`${FINES_ACC_APR_ROUTING_PATHS.root}/add`, `${FINES_ACC_APR_ROUTING_PATHS.root}/change`].includes(
-          entry.path ?? '',
-        ),
-      ),
-    ).toBe(false);
+    expect(aprRouting.some((entry) => entry.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/add`)).toBe(false);
     expect(aprRouting.slice(0, -1).map((entry) => entry.path)).toEqual(
       expect.arrayContaining([`${FINES_ACC_APR_ROUTING_PATHS.root}/manage`]),
     );
