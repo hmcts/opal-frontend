@@ -51,6 +51,7 @@ import { FINES_ACC_MINOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS } from '../fines-acc-m
 import { FinesAccBusinessUnitResolver } from './resolvers/fines-acc-business-unit.resolver';
 import { FINES_ACCOUNT_ROUTE_TYPES } from './constants/fines-acc-route-types.constant';
 import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';
+import { FINES_ACC_APR_ROUTING_TITLES } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-titles.constant';
 import { finesAccAprResolver } from './resolvers/fines-acc-apr/fines-acc-apr.resolver';
 import { finesAccAprAddChangeModeGuard } from './guards/fines-acc-apr-add-change-mode.guard';
 import { finesAccAprAddChangeTitleResolver } from './resolvers/fines-acc-apr/fines-acc-apr-add-change-title.resolver';
@@ -117,7 +118,7 @@ export const routing: Routes = [
               finesAccStateGuard,
             ],
             data: {
-              title: 'Manage Alternate Payment References',
+              title: FINES_ACC_APR_ROUTING_TITLES.children.manage,
               routePermissionId: [FINES_PERMISSIONS['manage-alternate-payment-references']],
             },
             resolve: { title: TitleResolver, aprs: finesAccAprResolver },
@@ -134,7 +135,7 @@ export const routing: Routes = [
               finesAccStateGuard,
             ],
             data: {
-              title: 'Remove Alternate Payment Reference',
+              title: FINES_ACC_APR_ROUTING_TITLES.children.delete,
               routePermissionId: [FINES_PERMISSIONS['manage-alternate-payment-references']],
             },
             resolve: { title: TitleResolver, aprs: finesAccAprResolver },
