@@ -3,7 +3,7 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { catchError, EMPTY, filter, finalize, Subject, takeUntil } from 'rxjs';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
+import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-aprs-response.interface';
 import { FinesAccAprManageTableComponent } from '../fines-acc-apr-manage/fines-acc-apr-manage-table/fines-acc-apr-manage-table.component';
 import { IFinesAccAprManageRow } from '../fines-acc-apr-manage/interfaces/fines-acc-apr-manage-row.interface';
 import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';

@@ -8,11 +8,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { businessUnitRoutePermissionsGuard } from '@hmcts/opal-frontend-common/guards/business-unit-route-permissions';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import {
-  IOpalFinesApr,
-  IOpalFinesAprResponse,
-  IOpalFinesAprsResponse,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
+import { IOpalFinesApr } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
+import { IOpalFinesAprResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr-response.interface';
+import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-aprs-response.interface';
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
 import { finesAccAprResolver } from '../routing/resolvers/fines-acc-apr/fines-acc-apr.resolver';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';

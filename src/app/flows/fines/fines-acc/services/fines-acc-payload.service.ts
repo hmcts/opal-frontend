@@ -63,7 +63,7 @@ import {
 } from '@hmcts/opal-frontend-common/services/history-transformation-service';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from './constants/fines-acc-history-and-notes-details-transformation-config.constant';
 import { OPAL_FINES_NOTE_RECORD_TYPES } from '@services/fines/opal-fines-service/constants/opal-fines-note-record-types.constant';
-import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
+import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-aprs-response.interface';
 import { IFinesAccAprManageData } from '../fines-acc-apr-manage/interfaces/fines-acc-apr-manage-data.interface';
 import { transformAprsPayload } from './utils/fines-acc-payload-transform-apr-data.utils';
 
@@ -103,6 +103,12 @@ export class FinesAccPayloadService {
     );
   }
 
+  /**
+   * Prepares APR API data for the Manage page using the shared payload transformation utility.
+   *
+   * @param response - The account's APRs and defendant-account version returned by the API.
+   * @returns Grouped user-entered references with local display dates and action eligibility.
+   */
   public transformAprsPayload(response: IOpalFinesAprsResponse): IFinesAccAprManageData {
     return transformAprsPayload(response);
   }

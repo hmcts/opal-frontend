@@ -2,7 +2,7 @@ import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, createUrlTreeFromSnapshot, RedirectCommand, ResolveFn, Router } from '@angular/router';
 import { forkJoin, map } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
+import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-aprs-response.interface';
 import { FinesAccountStore } from '../../../stores/fines-acc.store';
 import { FinesAccPayloadService } from '../../../services/fines-acc-payload.service';
 import { FINES_ACC_APR_ROUTING_PATHS } from '../../../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';

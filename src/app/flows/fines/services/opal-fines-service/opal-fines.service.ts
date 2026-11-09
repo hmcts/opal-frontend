@@ -81,7 +81,9 @@ import { IOpalFinesTillsResponse } from './interfaces/opal-fines-tills-response.
 import { IOpalFinesInterfaceJobsSummaryParams } from './interfaces/opal-fines-interface-jobs-summary-params.interface';
 import { IOpalFinesInterfaceJobsSummaryResponse } from './interfaces/opal-fines-interface-jobs-summary-response.interface';
 import { IOpalFinesProcessInterfaceJobsPayload } from './interfaces/opal-fines-process-interface-jobs-payload.interface';
-import { IOpalFinesApr, IOpalFinesAprResponse, IOpalFinesAprsResponse } from './interfaces/opal-fines-apr.interface';
+import { IOpalFinesApr } from './interfaces/opal-fines-apr.interface';
+import { IOpalFinesAprResponse } from './interfaces/opal-fines-apr-response.interface';
+import { IOpalFinesAprsResponse } from './interfaces/opal-fines-aprs-response.interface';
 
 const SAFE_READ_RETRY_POLICY = {
   retryCount: 1,
