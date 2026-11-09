@@ -34,7 +34,7 @@
                 >change<span class="govuk-visually-hidden"> {{ reference.apr_text }}</span></a
               >
             }
-            @if (reference.canRemove) {
+            @if (deleteJourneyAvailable && reference.canRemove) {
               <a
                 class="govuk-link"
                 [id]="'apr-remove-' + reference.alternate_payment_reference_id"
