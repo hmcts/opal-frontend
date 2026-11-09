@@ -122,6 +122,7 @@ export class FinesAccAprAddChangeComponent extends AbstractFormParentBaseCompone
     const payload = this.payloadService.buildAprPayload(form.formData);
     const request$ = this.api.createApr(accountId, payload, version);
     this.pending.set(true);
+    let saveSucceeded = false;
     request$
       .pipe(
         catchError((error: unknown) => {
@@ -130,9 +131,12 @@ export class FinesAccAprAddChangeComponent extends AbstractFormParentBaseCompone
         }),
         takeUntil(this.contextChanged),
         takeUntil(this.ngUnsubscribe),
-        finalize(() => this.pending.set(false)),
+        finalize(() => {
+          if (!saveSucceeded) this.pending.set(false);
+        }),
       )
       .subscribe((response) => {
+        saveSucceeded = true;
         this.accountStore.setAccountState({ ...this.accountStore.getAccountState(), base_version: response.version });
         this.api.clearAccountDetailsCache();
         this.accountStore.setSuccessMessage(FINES_ACC_APR_ADD_CHANGE_TEXT[mode].successMessage);

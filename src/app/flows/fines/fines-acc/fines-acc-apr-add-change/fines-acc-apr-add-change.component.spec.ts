@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRouteSnapshot, provideRouter, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, provideRouter, ResolveStart, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { Subject, of, throwError } from 'rxjs';
+import { EMPTY, filter, firstValueFrom, Observable, Subject, of } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import {
@@ -48,6 +48,7 @@ describe('FinesAccAprAddChangeComponent add mode', () => {
   };
   let utils: { scrollToTop: ReturnType<typeof vi.fn> };
   let initialVersion: string | null;
+  let manageAprs$: Observable<IOpalFinesAprsResponse>;
 
   const render = async () => {
     const harness = await RouterTestingHarness.create();
@@ -68,6 +69,7 @@ describe('FinesAccAprAddChangeComponent add mode', () => {
 
   beforeEach(async () => {
     initialVersion = '"7"';
+    manageAprs$ = of({ references: [], version: '"8"' });
     const sharedResolvedData: IOpalFinesAprsResponse = { references: [], version: initialVersion };
     api = { createApr: vi.fn().mockReturnValue(of(response)), clearAccountDetailsCache: vi.fn() };
     utils = { scrollToTop: vi.fn() };
@@ -80,7 +82,11 @@ describe('FinesAccAprAddChangeComponent add mode', () => {
           {
             path: 'fines/account/defendant/:accountId',
             children: [
-              { path: `${FINES_ACC_APR_ROUTING_PATHS.root}/manage`, component: ManagePageComponent },
+              {
+                path: `${FINES_ACC_APR_ROUTING_PATHS.root}/manage`,
+                component: ManagePageComponent,
+                resolve: { aprs: () => manageAprs$ },
+              },
               {
                 ...formRoute,
                 canActivate: [],
@@ -127,14 +133,20 @@ describe('FinesAccAprAddChangeComponent add mode', () => {
     expect(confirm).not.toHaveBeenCalled();
   });
 
-  it('keeps entered text and the unsaved warning after an API failure, without success feedback', async () => {
+  it('releases Save after an API failure, retaining entered text for a manual retry', async () => {
     const failure = { status: 500 };
-    api.createApr.mockReturnValue(throwError(() => failure));
+    const result = new Subject<IOpalFinesAprResponse>();
+    api.createApr.mockReturnValue(result);
     const { harness, component, enter, save } = await render();
     enter('Retry-Reference');
     save();
+    harness.detectChanges();
+    expect((harness.routeNativeElement!.querySelector('#apr-save') as HTMLButtonElement).disabled).toBe(true);
+    result.error(failure);
+    harness.detectChanges();
 
     expect(component.pending()).toBe(false);
+    expect((harness.routeNativeElement!.querySelector('#apr-save') as HTMLButtonElement).disabled).toBe(false);
     expect(component.stateUnsavedChanges).toBe(true);
     expect((harness.routeNativeElement!.querySelector('#apr_text') as HTMLInputElement).value).toBe('Retry-Reference');
     expect(accountStore.base_version()).toBe('"7"');
@@ -142,6 +154,13 @@ describe('FinesAccAprAddChangeComponent add mode', () => {
     expect(api.clearAccountDetailsCache).not.toHaveBeenCalled();
     expect(utils.scrollToTop).toHaveBeenCalledOnce();
     expect(TestBed.inject(Router).url).toBe(addUrl);
+
+    api.createApr.mockReturnValue(of(response));
+    save();
+    await harness.fixture.whenStable();
+    expect(api.createApr).toHaveBeenCalledTimes(2);
+    expect(api.createApr).toHaveBeenLastCalledWith(141, { apr_text: 'Retry-Reference' }, '"7"');
+    expect(TestBed.inject(Router).url).toBe(manageUrl);
   });
 
   it('permits only one pending request and disables Save', async () => {
@@ -158,6 +177,49 @@ describe('FinesAccAprAddChangeComponent add mode', () => {
     expect((harness.routeNativeElement!.querySelector('#apr-save') as HTMLButtonElement).matches(':disabled')).toBe(
       true,
     );
+  });
+
+  it('keeps Save locked after POST completes while Manage is still resolving', async () => {
+    const manageResult = new Subject<IOpalFinesAprsResponse>();
+    manageAprs$ = manageResult;
+    const { harness, component, enter, save } = await render();
+    const router = TestBed.inject(Router);
+    const navigate = vi.spyOn(router, 'navigate');
+    const resolvingManage = firstValueFrom(
+      router.events.pipe(filter((event) => event instanceof ResolveStart && event.url === manageUrl)),
+    );
+    enter('Saved-Reference');
+    save();
+    await resolvingManage;
+    harness.detectChanges();
+
+    expect(manageResult.observed).toBe(true);
+    expect(router.url).toBe(addUrl);
+    expect(accountStore.base_version()).toBe('"8"');
+    expect(component.pending()).toBe(true);
+    expect((harness.routeNativeElement!.querySelector('#apr-save') as HTMLButtonElement).disabled).toBe(true);
+    save();
+    component.handleSubmit({ formData: { apr_text: 'Saved-Reference' }, nestedFlow: false });
+    expect(api.createApr).toHaveBeenCalledExactlyOnceWith(141, { apr_text: 'Saved-Reference' }, '"7"');
+
+    manageResult.next({ references: [], version: '"8"' });
+    manageResult.complete();
+    await navigate.mock.results[0].value;
+    expect(router.url).toBe(manageUrl);
+  });
+
+  it('releases Save when shared error handling completes the request without a response', async () => {
+    api.createApr.mockReturnValue(EMPTY);
+    const { harness, component, enter, save } = await render();
+    enter('Unchanged-Request');
+    save();
+    harness.detectChanges();
+
+    expect(component.pending()).toBe(false);
+    expect((harness.routeNativeElement!.querySelector('#apr-save') as HTMLButtonElement).disabled).toBe(false);
+    expect(accountStore.successMessage()).toBeNull();
+    expect(api.clearAccountDetailsCache).not.toHaveBeenCalled();
+    expect(TestBed.inject(Router).url).toBe(addUrl);
   });
 
   it('returns to manage on pristine Cancel without writing or confirming', async () => {
