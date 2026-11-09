@@ -227,7 +227,7 @@ describe('APR Manage navigation from Payment terms', () => {
 
       expect(harness.routeNativeElement?.querySelector('[data-reference-id="11"]')).not.toBeNull();
       expect(harness.routeNativeElement?.querySelector('[id^="apr-remove-"]')).toBeNull();
-      expect(harness.routeNativeElement?.querySelector('#apr-change-11') !== null).toBe(relationship === 'APR');
+      expect(harness.routeNativeElement?.querySelector('#apr-change-11')).not.toBeNull();
       expect(opalFines.deleteApr).not.toHaveBeenCalled();
     },
   );
@@ -252,10 +252,36 @@ describe('APR Manage navigation from Payment terms', () => {
     expect(TestBed.inject(Router).url).toBe(manageUrl);
   });
 
-  it('continues to reject Change for inherited references', async () => {
-    references = [{ ...reference, relationship: 'CONSOLIDATED' }];
-    await RouterTestingHarness.create(manageUrl.replace('/manage', '/change') + '?alternatePaymentReferenceId=11');
+  it.each(['CONSOLIDATED', 'AMALGAMATED'] as const)(
+    'opens Change for a user-entered %s reference from the consolidated section',
+    async (relationship) => {
+      references = [{ ...reference, relationship }];
+      const harness = await RouterTestingHarness.create(manageUrl);
+      expect(harness.routeNativeElement?.querySelector('#apr-consolidated-table #apr-change-11')).not.toBeNull();
 
-    expect(TestBed.inject(Router).url).toBe(manageUrl);
-  });
+      await clickAndNavigate(harness, '#apr-change-11');
+
+      expect(TestBed.inject(Router).url).toBe(manageUrl.replace('/manage', '/change?alternatePaymentReferenceId=11'));
+      expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toContain(
+        'Change Alternate Payment Reference',
+      );
+      await clickAndNavigate(harness, '#apr-action-back a, opal-lib-govuk-cancel-link a');
+      expect(TestBed.inject(Router).url).toBe(manageUrl);
+      expect(opalFines.updateApr).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each(['CONSOLIDATED', 'AMALGAMATED'] as const)(
+    'rejects direct Change navigation for a read-only %s account-number reference',
+    async (relationship) => {
+      references = [{ ...reference, relationship, category: 'ACC' }];
+      const harness = await RouterTestingHarness.create(
+        manageUrl.replace('/manage', '/change?alternatePaymentReferenceId=11'),
+      );
+
+      expect(TestBed.inject(Router).url).toBe(manageUrl);
+      expect(harness.routeNativeElement?.querySelector('[data-reference-id="11"]')).toBeNull();
+      expect(opalFines.updateApr).not.toHaveBeenCalled();
+    },
+  );
 });

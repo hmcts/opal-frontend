@@ -16,8 +16,8 @@ const reference: IOpalFinesApr = {
 describe('alternate payment reference actions', () => {
   it.each([
     ['APR', 'APR', true, true],
-    ['CONSOLIDATED', 'APR', false, true],
-    ['AMALGAMATED', 'APR', false, true],
+    ['CONSOLIDATED', 'APR', true, true],
+    ['AMALGAMATED', 'APR', true, true],
     ['APR', 'ACC', false, false],
     ['CONSOLIDATED', 'ACC', false, false],
     ['AMALGAMATED', 'ACC', false, false],
