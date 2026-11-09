@@ -224,6 +224,24 @@ describe('APR Manage navigation from Payment terms', () => {
     expect(opalFines.deleteApr).not.toHaveBeenCalled();
   });
 
+  it.each(['CONSOLIDATED', 'AMALGAMATED'] as const)(
+    'opens the implemented Remove confirmation for a user-entered %s reference',
+    async (relationship) => {
+      references = [{ ...reference, relationship }];
+      const harness = await RouterTestingHarness.create(manageUrl);
+
+      await clickAndNavigate(harness, '#apr-remove-11');
+
+      expect(TestBed.inject(Router).url).toBe(manageUrl.replace('/manage', '/delete?alternatePaymentReferenceId=11'));
+      expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toContain(
+        'Are you sure you want to remove this alternate payment reference?',
+      );
+      await clickAndNavigate(harness, '#apr-remove-cancel a');
+      expect(TestBed.inject(Router).url).toBe(manageUrl);
+      expect(opalFines.deleteApr).not.toHaveBeenCalled();
+    },
+  );
+
   it('preserves the previous destination and its query and fragment through an APR round trip', async () => {
     const previousUrl = '/previous-journey?filter=active#results';
     const harness = await RouterTestingHarness.create(previousUrl);

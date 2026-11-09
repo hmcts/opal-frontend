@@ -15,7 +15,11 @@
   />
   <h2 class="govuk-heading-m">Alternate Payment References for this Account</h2>
   @if (currentReferences().length) {
-    <app-fines-acc-apr-manage-table [references]="currentReferences()" tableId="apr-current-table" />
+    <app-fines-acc-apr-manage-table
+      [references]="currentReferences()"
+      [deleteJourneyAvailable]="true"
+      tableId="apr-current-table"
+    />
   } @else {
     <p id="apr-current-empty" class="govuk-hint govuk-!-margin-bottom-4">
       There are no alternative payment reference for this account
@@ -32,7 +36,11 @@
   }
   <h2 class="govuk-heading-m govuk-!-margin-top-6">Alternative Payment Reference from Consolidated Accounts</h2>
   @if (consolidatedReferences().length) {
-    <app-fines-acc-apr-manage-table [references]="consolidatedReferences()" tableId="apr-consolidated-table" />
+    <app-fines-acc-apr-manage-table
+      [references]="consolidatedReferences()"
+      [deleteJourneyAvailable]="true"
+      tableId="apr-consolidated-table"
+    />
   } @else {
     <p id="apr-consolidated-empty" class="govuk-hint govuk-!-margin-bottom-4">
       There are no alternative payment reference from consolidated accounts
