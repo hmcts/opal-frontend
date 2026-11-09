@@ -442,4 +442,32 @@ describe('finesMacPayloadBuildAccountBase', () => {
     expect(result.collection_order_made).toBe(false);
     expect(result.collection_order_made_today).toBe(false);
   });
+
+  it('should keep the collection order status null when R1A-1-2 is enabled and both values are null', () => {
+    if (
+      !offenceDetailsState ||
+      !accountDetailsState ||
+      !courtDetailsState ||
+      !paymentTermsState ||
+      !originatorTypeState
+    ) {
+      throw new Error('Required mock states are not properly initialised');
+    }
+
+    paymentTermsState.fm_payment_terms_collection_order_made = null;
+    paymentTermsState.fm_payment_terms_collection_order_made_today = null;
+
+    const result = finesMacPayloadBuildAccountBase(
+      originatorTypeState,
+      accountDetailsState,
+      courtDetailsState,
+      paymentTermsState,
+      offenceDetailsState,
+      fixedPenaltyDetailsState,
+      true,
+    );
+
+    expect(result.collection_order_made).toBeNull();
+    expect(result.collection_order_made_today).toBeNull();
+  });
 });
