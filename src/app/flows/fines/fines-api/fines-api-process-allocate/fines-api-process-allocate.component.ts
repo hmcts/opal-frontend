@@ -1,6 +1,10 @@
+import { FinesApiIgnoredComponent } from './fines-api-ignored-tab/fines-api-ignored.component';
+import { IFinesApiIgnoredData } from './fines-api-ignored-tab/interfaces/fines-api-ignored-data.interface';
+import { getIgnoredDateBounds } from '../services/utils/fines-api-ignored-dates.utils';
 import { IOpalFinesSourceMapping } from '../../services/opal-fines-service/interfaces/opal-fines-source-mapping.interface';
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
@@ -9,7 +13,17 @@ import {
   MojSubNavigationComponent,
   MojSubNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
-import { EMPTY, Observable, Subject, catchError, forkJoin, map, startWith, switchMap } from 'rxjs';
+import {
+  EMPTY,
+  Observable,
+  Subject,
+  catchError,
+  distinctUntilChanged,
+  forkJoin,
+  map,
+  startWith,
+  switchMap,
+} from 'rxjs';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { IOpalFinesInterfaceJobSummary } from '../../services/opal-fines-service/interfaces/opal-fines-interface-job-summary.interface';
@@ -33,6 +47,7 @@ import { TFinesApiProcessAllocateTabKey } from './types/fines-api-process-alloca
   selector: 'app-fines-api-process-allocate',
   imports: [
     AsyncPipe,
+    FinesApiIgnoredComponent,
     FinesApiProcessComponent,
     FinesApiAllocateComponent,
     GovukBackLinkComponent,
@@ -41,6 +56,7 @@ import { TFinesApiProcessAllocateTabKey } from './types/fines-api-process-alloca
     MojSubNavigationItemComponent,
   ],
   templateUrl: './fines-api-process-allocate.component.html',
+  styleUrl: './fines-api-process-allocate.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
@@ -56,6 +72,7 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly processDataRefresh = new Subject<void>();
   private readonly allocateDataRefresh = new Subject<void>();
+  private readonly ignoredDataRefresh = new Subject<void>();
 
   protected readonly finesApiStore = inject(FinesApiStore);
   protected readonly content = FINES_API_PROCESS_ALLOCATE_CONTENT;
@@ -73,6 +90,49 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
     startWith(undefined),
     switchMap(() => this.fetchAllocateData()),
   );
+
+  /** One shell-level subscription keeps the counter and table in sync across tab switches. */
+  protected readonly tabIgnored$: Observable<IFinesApiIgnoredData | null> = toObservable(
+    this.finesApiStore.selectedBusinessUnitIds,
+  ).pipe(
+    // Start on subscription; suppress the same initial value subsequently emitted by toObservable.
+    startWith(this.finesApiStore.selectedBusinessUnitIds()),
+    distinctUntilChanged(),
+    switchMap((businessUnitIds) =>
+      this.ignoredDataRefresh.pipe(
+        startWith(undefined),
+        switchMap(() => this.fetchIgnoredData(businessUnitIds)),
+        // Clear the previous selection's count/rows while loading a different BU selection.
+        startWith(null),
+      ),
+    ),
+  );
+
+  /**
+   * Loads ignored payment files completed within the past fourteen UK calendar days.
+   *
+   * @param businessUnitIds Selected business units used to scope the request.
+   * @returns Mapped ignored-file data, or an empty stream when no units are selected or the read fails.
+   * Failed refreshes leave the last successful display intact; the interceptor handles API errors.
+   */
+  private fetchIgnoredData(businessUnitIds: number[]): Observable<IFinesApiIgnoredData> {
+    if (businessUnitIds.length === 0) {
+      return EMPTY;
+    }
+
+    return this.opalFinesService
+      .getInterfaceJobsSummary({
+        business_unit_ids: businessUnitIds,
+        statuses: ['IGNORED'],
+        interface_name: 'payments_in',
+        ...getIgnoredDateBounds(),
+      })
+      .pipe(
+        map((response) => this.finesApiPayloadService.mapIgnoredData(response, this.sourceLabels)),
+        // The interceptor owns API errors; an unsuccessful read is not a successful empty result.
+        catchError(() => EMPTY),
+      );
+  }
 
   /** Publishes one consistent display only after both selected-BU reads complete. */
   private fetchAllocateData(): Observable<IFinesApiAllocateData> {
@@ -170,6 +230,15 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
     return Object.values(this.tabKeys).includes(tab as TFinesApiProcessAllocateTabKey);
   }
 
+  /**
+   * Requests fresh ignored-file rows and their matching tab count using the current business units.
+   *
+   * @returns Nothing; emits to the shared refresh stream regardless of the active tab.
+   */
+  protected refreshIgnoredData(): void {
+    this.ignoredDataRefresh.next();
+  }
+
   /** Loads the selected tab and clears Process-file selections when changing tabs. */
   protected handleTabSwitch(tab: string): void {
     if (!this.isFinesApiTab(tab)) {
@@ -179,9 +248,6 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
 
     if (tab !== this.finesApiStore.activeTab()) {
       this.finesApiStore.setSelectedFileIds([]);
-      if (tab !== this.tabKeys.allocate) {
-        this.finesApiStore.setSelectedTillIds([]);
-      }
       this.finesApiStore.setActiveTab(tab);
     }
 
@@ -222,21 +288,17 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.finesApiStore.setUnsavedChanges(
-      this.finesApiStore.hasSelectedFiles() || this.finesApiStore.hasSelectedTills(),
-    );
+    this.finesApiStore.setUnsavedChanges(this.finesApiStore.hasSelectedFiles());
   }
 
   public canDeactivate(): CanDeactivateTypes {
     // The parent journey guard owns external exits. This child guard fills the sibling-route
     // gap for Back while allowing Process -> Confirm to retain the selected file IDs.
-    return (
-      !this.isNavigatingToSelectBusinessUnits() ||
-      (!this.finesApiStore.hasSelectedFiles() && !this.finesApiStore.hasSelectedTills())
-    );
+    return !this.isNavigatingToSelectBusinessUnits() || !this.finesApiStore.hasSelectedFiles();
   }
 
   public ngOnDestroy(): void {
+    this.ignoredDataRefresh.complete();
     this.processDataRefresh.complete();
     this.allocateDataRefresh.complete();
   }

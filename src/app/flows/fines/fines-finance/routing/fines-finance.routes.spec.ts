@@ -303,4 +303,16 @@ describe('fines finance routes', () => {
       expect(xhrHandle).not.toHaveBeenCalled();
     });
   });
+    },
+  ])(
+    'should title and lazy-load the $title route',
+    async ({ path, title, routePermissionId, component, expectedResolvers }) => {
+      const route = routing.find((routeItem) => routeItem.path === path);
+
+      expect(route?.data).toEqual({ title, routePermissionId: [routePermissionId] });
+      expect(route?.resolve).toEqual(expectedResolvers);
+      expect(route?.canActivate).toEqual([authGuard, routePermissionsGuard]);
+      await expect(route?.loadComponent?.()).resolves.toBe(component);
+    },
+  );
 });
