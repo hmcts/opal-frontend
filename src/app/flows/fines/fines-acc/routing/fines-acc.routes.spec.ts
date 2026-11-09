@@ -46,6 +46,7 @@ import { FinesAccBusinessUnitResolver } from './resolvers/fines-acc-business-uni
 import { FINES_ACCOUNT_ROUTE_TYPES } from './constants/fines-acc-route-types.constant';
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 import { fetchAccCourtsResolver } from './resolvers/fetch-acc-courts-resolver/fetch-acc-courts.resolver';
+import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';
 
 describe('fines acc routes', () => {
   const defendantRoute = routing.find((route) => route.path === `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`);
@@ -119,6 +120,26 @@ describe('fines acc routes', () => {
     expect(minorCreditorJourneyPaths).toEqual(
       expect.arrayContaining([`${FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS.children.note}/add`]),
     );
+  });
+
+  it('registers the Manage APR destination with the standard account and feature guards', () => {
+    const manageRoutes = defendantJourneyGroup?.children?.filter(
+      (route) => route.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/${FINES_ACC_APR_ROUTING_PATHS.children.manage}`,
+    );
+    expect(manageRoutes).toHaveLength(1);
+    const manageRoute = manageRoutes?.[0];
+
+    expect(manageRoute?.loadComponent).toBeTypeOf('function');
+    expect(manageRoute?.canActivate).toEqual([
+      release1cBankingInterfacesFeatureFlagGuard,
+      businessUnitRoutePermissionsGuard,
+      finesAccStateGuard,
+    ]);
+    expect(manageRoute?.data?.['routePermissionId']).toEqual([
+      FINES_PERMISSIONS['manage-alternate-payment-references'],
+    ]);
+    expect(manageRoute?.resolve?.['title']).toBe(TitleResolver);
+    expect(manageRoute?.data?.['accessDeniedPath']).toBeUndefined();
   });
 
   it('should load the add enforcement action component through the lazy route factory', async () => {
