@@ -124,7 +124,7 @@ export class FinesFinanceUploadVariantBankingFilesComponent
     }
     const ingestionError = this.getIngestionError(response.errors);
     const status = this.utilsService.upperCaseAllLetters(response.status ?? '');
-    if (ingestionError || ['FAILED', 'FAILURE', 'DUPLICATE'].includes(status)) {
+    if (ingestionError || !['SUCCESS', 'SUCCESS_NO_TRANSACTIONS'].includes(status)) {
       this.failUpload(item, ingestionError);
       return;
     }

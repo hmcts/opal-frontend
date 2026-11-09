@@ -72,8 +72,8 @@ describe('FinesFinanceUploadVariantBankingFilesComponent', () => {
         target: 'OPAL',
         type: 'SOURCE',
         domain: 'FINES',
-        status: 'INGESTED',
-        business_unit_codes: null,
+        status: 'SUCCESS',
+        business_unit_ids: null,
         filestore_uuid: null,
         checksum: null,
         created_datetime: null,
@@ -377,12 +377,40 @@ describe('FinesFinanceUploadVariantBankingFilesComponent', () => {
     expect(component.fileUploads()[0]).toMatchObject({ status: 'success', progress: 100, errors: [] });
   });
 
-  it('accepts a successful interface-file response with a nullable ingestion status', () => {
+  it.each(['SUCCESS', 'SUCCESS_NO_TRANSACTIONS', 'success'])('accepts the confirmed %s upload status', (status) => {
     component.selectFiles([file()]);
 
-    finish(0, { status: null });
+    finish(0, { status });
 
     expect(component.fileUploads()[0]).toMatchObject({ status: 'success', progress: 100, errors: [] });
+    expect(component.canDeactivate()).toBe(true);
+  });
+
+  it.each(['INGESTED', 'SUPERSEDED', 'FAILED_SUPERSEDED', 'UNKNOWN', '', null])(
+    'does not treat an unconfirmed 201 %s status as a successful upload',
+    (status) => {
+      component.selectFiles([file(), file(2)]);
+
+      finish(0, { status });
+
+      expect(component.fileUploads()[0]).toMatchObject({
+        status: 'failed',
+        errors: ['The file could not be uploaded. Try again.'],
+      });
+      expect(component.fileUploads()[1].status).toBe('uploading');
+      expect(uploadInterfaceFile).toHaveBeenCalledTimes(2);
+    },
+  );
+
+  it('keeps an ingestion error on a response with a successful status as a failed row', () => {
+    component.selectFiles([file()]);
+
+    finish(0, { status: 'SUCCESS', errors: '{"message":"The file could not be preprocessed."}' });
+
+    expect(component.fileUploads()[0]).toMatchObject({
+      status: 'failed',
+      errors: ['The file could not be preprocessed.'],
+    });
     expect(component.canDeactivate()).toBe(true);
   });
 

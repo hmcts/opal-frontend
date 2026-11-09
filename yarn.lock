@@ -3807,12 +3807,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@file:/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.117.tgz::locator=opal-frontend%40workspace%3A.":
-  version: 0.0.117
-  resolution: "@hmcts/opal-frontend-common@file:/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.117.tgz#/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.117.tgz::hash=27b135&locator=opal-frontend%40workspace%3A."
+"@hmcts/opal-frontend-common@file:/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.121.tgz::locator=opal-frontend%40workspace%3A.":
+  version: 0.0.121
+  resolution: "@hmcts/opal-frontend-common@file:/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.121.tgz#/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.121.tgz::hash=5ffbc7&locator=opal-frontend%40workspace%3A."
   dependencies:
     "@microsoft/applicationinsights-web": "npm:^3.3.6"
-    "@ministryofjustice/frontend": "npm:^11.0.0"
+    "@ministryofjustice/frontend": "npm:^12.0.0"
     accessible-autocomplete: "npm:^3.0.1"
     fast-sort: "npm:^3.4.1"
     govuk-frontend: "npm:^6.0.0"
@@ -3831,7 +3831,7 @@ __metadata:
   peerDependenciesMeta:
     "@ngrx/signals":
       optional: true
-  checksum: 10/8caa0c0ce0800aab7f7ffe3eecb26dcc9cbdd81557275e1d1d01bccfe78993b5a83fb0a909fbb4ec14c3f41aca5050b60b736b48ac4b9d61cffd9b0673ce9aa6
+  checksum: 10/97030c7e57380e0c24c410479585c17479de802670d6ff0730881260431535dfa8f308c2a586230a2080df763d7ebd84debea08b87226d6b9fe058edb7b91b40
   languageName: node
   linkType: hard
 
@@ -4936,13 +4936,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ministryofjustice/frontend@npm:^11.0.0":
-  version: 11.1.0
-  resolution: "@ministryofjustice/frontend@npm:11.1.0"
+"@ministryofjustice/frontend@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "@ministryofjustice/frontend@npm:12.0.0"
   peerDependencies:
-    govuk-frontend: ^6.0.0
+    govuk-frontend: ^6.2.0
     moment: ^2.30.1
-  checksum: 10/bbb9d11339df08c5fe5ee8655ae3f19706179a23e6f2bdf7a1200ffc1c5f9d268fcf092307cb28c8e403f77afccff1565ebb8fd0b7a5dd41a46b5f8cb2958aa2
+  checksum: 10/ae4cc8645aacd9b0003f988ceaae6a6e419dd3e766bb7b9dd77d54fd0290dc47fd0d4363b9ef609394f0ce75bed75a83f722e5297ae111948da13103f0f255ce
   languageName: node
   linkType: hard
 
@@ -15671,7 +15671,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:0.0.116"
+    "@hmcts/opal-frontend-common": "file:/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.121.tgz"
     "@hmcts/opal-frontend-common-cypress": "npm:0.0.5"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.47"
     "@hmcts/properties-volume": "npm:^1.1.0"

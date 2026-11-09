@@ -53,7 +53,7 @@ describe('buildInboundFilesSearchParams', () => {
 
   it('combines business unit, source, type and an inclusive custom-day range', () => {
     const formData: IFinesFinanceInboundFilesForm = {
-      businessUnit: '077',
+      businessUnit: '77',
       dateFilter: 'customDays',
       days: '14',
       dateFrom: '',
@@ -65,7 +65,7 @@ describe('buildInboundFilesSearchParams', () => {
     const params = buildInboundFilesSearchParams(formData, dateService);
 
     expect(params).toEqual({
-      business_unit_code: '077',
+      business_unit_id: 77,
       domain: InterfaceFileViewerSupportedDomain.Fines,
       from_date: '2026-09-22T23:00:00',
       not_status: [InterfaceFileViewerFileStatus.FailedSuperseded],
@@ -75,6 +75,18 @@ describe('buildInboundFilesSearchParams', () => {
       type: [FinesFinanceInterfaceFileType.TransformedJson],
     });
   });
+
+  it.each(['Camberwell Green', '0x4d', '7.7', '1e2', 'Infinity', '-77', '0', '9007199254740993'])(
+    'omits an invalid business-unit ID %s instead of sending a coerced number',
+    (businessUnit) => {
+      const params = buildInboundFilesSearchParams(
+        { ...FINES_FINANCE_INBOUND_FILES_INITIAL_FILTER_STATE, businessUnit },
+        dateService,
+      );
+
+      expect(params).not.toHaveProperty('business_unit_id');
+    },
+  );
 
   it('converts explicit date boundaries to inclusive API timestamps', () => {
     const formData: IFinesFinanceInboundFilesForm = {

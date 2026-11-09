@@ -1,4 +1,4 @@
-import type { ICustomFileInterfaceViewerInboundTableWrapperTableData } from '@hmcts/opal-frontend-common/components/custom/custom-file-interface-viewer/custom-inbound-file-viewer';
+import type { ICustomFileInterfaceViewerInboundTableWrapperTableData } from '@hmcts/opal-frontend-common/components/custom/custom-file-interface-viewer/custom-inbound-file-viewer/interfaces';
 
 export type FinesFinanceInboundFileDateTime = Pick<
   ICustomFileInterfaceViewerInboundTableWrapperTableData,
