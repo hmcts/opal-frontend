@@ -10,6 +10,7 @@ import { FinesAccBannerMessagesComponent } from '../fines-acc-banner-messages/fi
 import { FinesAccAprManageTableComponent } from './fines-acc-apr-manage-table/fines-acc-apr-manage-table.component';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { IFinesAccAprManageData } from './interfaces/fines-acc-apr-manage-data.interface';
+import { FINES_ACC_APR_ROUTING_PATHS } from './constants/fines-acc-apr-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-acc-apr-manage',
@@ -39,8 +40,22 @@ export class FinesAccAprManageComponent implements OnInit, OnDestroy {
   );
   public readonly accountDetails = computed(() => `/fines/account/defendant/${this.accountStore.account_id()}/details`);
 
+  private preserveReturnDestination(): void {
+    const navigation = this.router.currentNavigation?.() ?? this.router.lastSuccessfulNavigation?.();
+    const previousUrl = navigation?.previousNavigation?.finalUrl?.toString();
+    const aprRoot = `/${FINES_ACC_APR_ROUTING_PATHS.root}/`;
+    if (previousUrl && !previousUrl.split(/[?#]/)[0].includes(aprRoot)) {
+      this.accountStore.setAprManageReturnUrl(previousUrl);
+    }
+  }
+
   public navigateBack(): void {
-    void this.router.navigate([this.accountDetails()], { fragment: 'payment-terms' });
+    const returnUrl = this.accountStore.aprManageReturnUrl();
+    if (returnUrl) {
+      void this.router.navigateByUrl(returnUrl);
+    } else {
+      void this.router.navigate([this.accountDetails()], { fragment: 'payment-terms' });
+    }
   }
 
   public navigateToAdd(): void {
@@ -54,6 +69,7 @@ export class FinesAccAprManageComponent implements OnInit, OnDestroy {
         takeUntil(this.ngUnsubscribe),
       )
       .subscribe((data) => {
+        this.preserveReturnDestination();
         this.data.set(data);
         this.successMessage.set(this.accountStore.successMessage());
         this.accountStore.clearSuccessMessage();

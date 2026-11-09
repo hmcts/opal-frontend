@@ -160,6 +160,18 @@ describe('fines acc routes', () => {
     expect(aprRoutes.some((route) => route.path?.endsWith('/denied'))).toBe(false);
   });
 
+  it.each(['add', 'change', 'delete'])('registers an APR %s destination with selection resolution', (action) => {
+    const routes = defendantJourneyGroup?.children ?? [];
+    const actionRoute =
+      routes.find((route) => route.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/${action}`) ??
+      routes.find((route) => route.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/:mode`);
+
+    expect(actionRoute?.loadComponent).toBeTypeOf('function');
+    expect(actionRoute?.resolve?.['aprs']).toBeTypeOf('function');
+    expect(actionRoute?.canActivate).toContain(release1cBankingInterfacesFeatureFlagGuard);
+    expect(actionRoute?.canActivate?.slice(-2)).toEqual([businessUnitRoutePermissionsGuard, finesAccStateGuard]);
+  });
+
   it('should load the add enforcement action component through the lazy route factory', async () => {
     vi.clearAllMocks();
     FINES_ACC_ENF_ACTION_ADD_PAYLOAD_SERVICE_MOCK.transformDefendantAccountHeaderForStore.mockReturnValue(
