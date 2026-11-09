@@ -5,7 +5,7 @@ import { catchError, EMPTY, filter, finalize, Subject, takeUntil } from 'rxjs';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
+import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-aprs-response.interface';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
 import { IFinesAccAprAddChangeFormState } from './interfaces/fines-acc-apr-add-change-form-state.interface';

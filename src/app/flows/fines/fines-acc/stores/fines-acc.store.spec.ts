@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
+import { getState } from '@ngrx/signals';
 import { FinesAccountStore } from './fines-acc.store';
 import { FINES_ACCOUNT_STATE } from '../constants/fines-acc-state.constant';
+import { FINES_ACC_STORE_STATE } from '../constants/fines-acc-store-state.constant';
 import { FinesAccountStoreType } from '../types/fines-account-store.type';
 import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
@@ -22,14 +24,8 @@ describe('FinesAccountStore', () => {
     expect(store).toBeTruthy();
   });
 
-  it('should initialize with empty strings', () => {
-    expect(store.account_number()).toBeNull();
-    expect(store.party_id()).toBeNull();
-    expect(store.party_name()).toBeNull();
-    expect(store.party_type()).toBeNull();
-    expect(store.base_version()).toBeNull();
-    expect(store.business_unit_user_id()).toBeNull();
-    expect(store.originator_type()).toBeNull();
+  it('initializes all account and UI state with the store defaults', () => {
+    expect(getState(store)).toEqual(FINES_ACC_STORE_STATE);
   });
 
   it('setAccountState should set all fields at once', () => {
@@ -50,6 +46,10 @@ describe('FinesAccountStore', () => {
     const payload: IFinesAccountState = MOCK_FINES_ACCOUNT_STATE;
 
     store.setAccountState(payload);
+    store.setAprManageReturnUrl('/fines/search');
+    store.setHasVersionMismatch(true);
+    store.setHasPaymentHold(true);
+    store.setSuccessMessage('Success');
 
     const snapshot = store.getAccountState();
 
@@ -153,13 +153,28 @@ describe('FinesAccountStore', () => {
     expect(store.aprManageReturnUrl()).toBeNull();
   });
 
-  it.each(['clearAccountState', 'resetStore'] as const)('clears the APR return destination on %s', (method) => {
+  it.each(['clearAccountState', 'resetStore'] as const)('resets all account and UI state on %s', (method) => {
     store.setAccountState(MOCK_FINES_ACCOUNT_STATE);
     store.setAprManageReturnUrl('/fines/search');
+    store.setHasVersionMismatch(true);
+    store.setHasPaymentHold(true);
+    store.setSuccessMessage('Success');
 
     store[method]();
 
-    expect(store.aprManageReturnUrl()).toBeNull();
+    expect(getState(store)).toEqual(FINES_ACC_STORE_STATE);
+  });
+
+  it('resets all account and UI state when the store is destroyed', () => {
+    store.setAccountState(MOCK_FINES_ACCOUNT_STATE);
+    store.setAprManageReturnUrl('/fines/search');
+    store.setHasVersionMismatch(true);
+    store.setHasPaymentHold(true);
+    store.setSuccessMessage('Success');
+
+    TestBed.resetTestingModule();
+
+    expect(getState(store)).toEqual(FINES_ACC_STORE_STATE);
   });
 
   it('should set hasVersionMismatch to true if versions do not match', () => {

@@ -1,31 +1,15 @@
 import { patchState, signalStore, withHooks, withState, withMethods, withComputed } from '@ngrx/signals';
 import { computed } from '@angular/core';
-import { FINES_ACCOUNT_STATE } from '../constants/fines-acc-state.constant';
+import { FINES_ACC_STORE_STATE } from '../constants/fines-acc-store-state.constant';
 import { IFinesAccountState } from '../interfaces/fines-acc-state-interface';
 
 export const FinesAccountStore = signalStore(
   { providedIn: 'root' },
-  withState(() => ({
-    account_number: null as string | null,
-    account_id: null as number | null,
-    pg_party_id: null as string | null,
-    party_id: null as string | null,
-    party_type: null as string | null,
-    party_name: null as string | null,
-    base_version: null as string | null,
-    business_unit_id: null as string | null,
-    business_unit_user_id: null as string | null,
-    welsh_speaking: null as string | null,
-    originator_type: null as string | null,
-    hasVersionMismatch: false,
-    hasPaymentHold: false,
-    successMessage: null as string | null,
-    aprManageReturnUrl: null as string | null,
-  })),
+  withState(() => ({ ...FINES_ACC_STORE_STATE })),
   withHooks((store) => {
     return {
       onDestroy() {
-        patchState(store, FINES_ACCOUNT_STATE);
+        patchState(store, FINES_ACC_STORE_STATE);
       },
     };
   }),
@@ -42,7 +26,9 @@ export const FinesAccountStore = signalStore(
       setAccountState: (accountState: IFinesAccountState) => {
         patchState(store, {
           ...accountState,
-          ...(store.account_id() !== accountState.account_id ? { aprManageReturnUrl: null } : {}),
+          ...(store.account_id() !== accountState.account_id
+            ? { aprManageReturnUrl: FINES_ACC_STORE_STATE.aprManageReturnUrl }
+            : {}),
         });
       },
       setAprManageReturnUrl: (url: string) => {
@@ -57,7 +43,7 @@ export const FinesAccountStore = signalStore(
       setHasPaymentHold: (hasPaymentHold: boolean) => {
         patchState(store, { hasPaymentHold });
       },
-      getAccountState: () => {
+      getAccountState: (): IFinesAccountState => {
         return {
           account_number: store.account_number(),
           account_id: store.account_id(),
@@ -73,16 +59,10 @@ export const FinesAccountStore = signalStore(
         };
       },
       clearAccountState: () => {
-        patchState(store, {
-          ...FINES_ACCOUNT_STATE,
-          hasVersionMismatch: false,
-          hasPaymentHold: false,
-          successMessage: null,
-          aprManageReturnUrl: null,
-        });
+        patchState(store, FINES_ACC_STORE_STATE);
       },
       clearSuccessMessage: () => {
-        patchState(store, { successMessage: null });
+        patchState(store, { successMessage: FINES_ACC_STORE_STATE.successMessage });
       },
       compareVersion: (version: string | null) => {
         if (store.base_version() !== version) {
@@ -90,13 +70,7 @@ export const FinesAccountStore = signalStore(
         }
       },
       resetStore: () => {
-        patchState(store, {
-          ...FINES_ACCOUNT_STATE,
-          hasVersionMismatch: false,
-          hasPaymentHold: false,
-          successMessage: null,
-          aprManageReturnUrl: null,
-        });
+        patchState(store, FINES_ACC_STORE_STATE);
       },
     };
   }),

@@ -6,10 +6,8 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { EMPTY, filter, firstValueFrom, Observable, Subject, of } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import {
-  IOpalFinesAprResponse,
-  IOpalFinesAprsResponse,
-} from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
+import { IOpalFinesAprResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr-response.interface';
+import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-aprs-response.interface';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { MOCK_FINES_ACCOUNT_STATE } from '../mocks/fines-acc-state.mock';
 import { routing as accountRouting } from '../routing/fines-acc.routes';
