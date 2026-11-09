@@ -86,7 +86,7 @@ describe('FinesAccAprManageComponent', () => {
       'There are no alternative payment reference for this account',
     );
     expect(element.querySelector('#apr-consolidated-empty')?.textContent).toContain(
-      'There are no alternative payment reference from consolidated accounts',
+      'There are no alternate payment reference from consolidated accounts',
     );
     expect(navigationDestination(element, '#apr-add')).toBe(
       '/fines/account/defendant/141/alternate/payment/reference/add',
