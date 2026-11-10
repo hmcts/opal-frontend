@@ -107,6 +107,16 @@ export class ManualCashInputFlow {
     this.actions.assertSearchForAccountIsDisplayed();
   }
 
+  /** Verifies the selected business unit is displayed. */
+  public assertSearchForAccountBusinessUnitIsDisplayed(): void {
+    this.actions.assertSearchForAccountBusinessUnitIsDisplayed();
+  }
+
+  /** Verifies the quick and advanced search fields are displayed. */
+  public assertSearchForAccountFieldsAreDisplayed(): void {
+    this.actions.assertSearchForAccountFieldsAreDisplayed();
+  }
+
   /** Verifies the details destination for the selected payment category.
    * @param category - Payment category whose details destination should be displayed.
    */
