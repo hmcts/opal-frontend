@@ -1,6 +1,7 @@
 @JIRA-LABEL:manual-account-creation
 @ManualAccountCreation @CourtDetails
-Feature: Court and prosecutor reference data requests
+Feature: Local Justice Areas Filtering
+  Court and prosecutor reference data requests.
   Verifies that each account journey requests the correct reference data.
 
   Background:
