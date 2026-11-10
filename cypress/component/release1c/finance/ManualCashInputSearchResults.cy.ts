@@ -67,10 +67,7 @@ const addAccountRouteToTestRouter = (router: Router): void => {
   router.resetConfig(routes);
 };
 
-const openCriminalSearch = (
-  searchResponse: IOpalFinesDefendantAccountResponse,
-  businessUnit = BUSINESS_UNIT,
-): void => {
+const openCriminalSearch = (searchResponse: IOpalFinesDefendantAccountResponse, businessUnit = BUSINESS_UNIT): void => {
   setupFinancePageComponent({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance });
   cy.get('@financeRouter').then((router) => addAccountRouteToTestRouter(router as Router));
   cy.get('@opalFines').then((opalFines) => {
@@ -88,19 +85,13 @@ const openCriminalSearch = (
     .should('be.true');
 };
 
-const searchForIndividuals = (
-  response: IOpalFinesDefendantAccountResponse,
-  businessUnit = BUSINESS_UNIT,
-): void => {
+const searchForIndividuals = (response: IOpalFinesDefendantAccountResponse, businessUnit = BUSINESS_UNIT): void => {
   openCriminalSearch(response, businessUnit);
   cy.get(Mci.searchAccount.lastName).type('Smith');
   cy.get(Mci.searchAccount.searchButton).click();
 };
 
-const searchForCompany = (
-  response: IOpalFinesDefendantAccountResponse,
-  businessUnit = BUSINESS_UNIT,
-): void => {
+const searchForCompany = (response: IOpalFinesDefendantAccountResponse, businessUnit = BUSINESS_UNIT): void => {
   openCriminalSearch(response, businessUnit);
   cy.get(Mci.searchAccount.companiesTab).click();
   cy.get(Mci.searchAccount.companyName).type('Example');
@@ -129,10 +120,7 @@ const INHIBITED_ACTION_BUSINESS_UNIT = {
   ],
 };
 
-const accountAtAGlance = (
-  accountStatusCode: string,
-  accountBalance = 100,
-): IOpalFinesAccountDefendantAtAGlance =>
+const accountAtAGlance = (accountStatusCode: string, accountBalance = 100): IOpalFinesAccountDefendantAtAGlance =>
   ({
     ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
     account_status_code: accountStatusCode,
@@ -164,10 +152,7 @@ const assertAccountNumberOrder = (expectedAccountNumbers: string[]): void => {
     .find('tbody tr')
     .then(($rows) => {
       const actualAccountNumbers = [...$rows].map((row) =>
-        row
-          .querySelector('td[id="criminalAccountNumber"] a')
-          ?.textContent?.replace('(opens in a new tab)', '')
-          .trim(),
+        row.querySelector('td[id="criminalAccountNumber"] a')?.textContent?.replace('(opens in a new tab)', '').trim(),
       );
 
       expect(actualAccountNumbers).to.deep.equal(expectedAccountNumbers);
@@ -359,16 +344,20 @@ describe('Manual Cash Input - Search Results', () => {
       .and('have.attr', 'rel', 'noopener noreferrer');
   });
 
-  it('(AC4, AC8a EMAC1) requires one account and links the error summary to the selection field', { tags: TAGS }, () => {
-    searchForIndividuals(oneAccountSearchResponse);
-    cy.contains('button.govuk-button', 'Continue').click();
+  it(
+    '(AC4, AC8a EMAC1) requires one account and links the error summary to the selection field',
+    { tags: TAGS },
+    () => {
+      searchForIndividuals(oneAccountSearchResponse);
+      cy.contains('button.govuk-button', 'Continue').click();
 
-    cy.get('.govuk-error-summary').should('be.visible').and('contain.text', 'Select 1 account');
-    cy.get('.govuk-error-summary__title').should('contain.text', 'There is a problem');
-    cy.get('.govuk-error-message').should('be.visible').and('contain.text', 'Select 1 account');
-    cy.get('.govuk-error-summary__list a').click();
-    cy.focused().should('have.attr', 'id', 'fines-mci-criminal-account-selection');
-  });
+      cy.get('.govuk-error-summary').should('be.visible').and('contain.text', 'Select 1 account');
+      cy.get('.govuk-error-summary__title').should('contain.text', 'There is a problem');
+      cy.get('.govuk-error-message').should('be.visible').and('contain.text', 'Select 1 account');
+      cy.get('.govuk-error-summary__list a').click();
+      cy.focused().should('have.attr', 'id', 'fines-mci-criminal-account-selection');
+    },
+  );
 
   it('(AC4a) requires only one selected account', { tags: TAGS }, () => {
     searchForIndividuals(twoAccountSearchResponse);
@@ -423,7 +412,8 @@ describe('Manual Cash Input - Search Results', () => {
       description: 'an account transferred to Scotland or Northern Ireland',
       status: 'TS',
       balance: 100,
-      heading: 'You cannot pay into this account \u2013 Account has been transferred out to Scotland or Northern Ireland',
+      heading:
+        'You cannot pay into this account \u2013 Account has been transferred out to Scotland or Northern Ireland',
       businessUnit: BUSINESS_UNIT,
     },
     {
