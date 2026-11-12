@@ -244,7 +244,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
   },
   fm_parent_guardian_details_vehicle_registration_mark: {
     maxlength: {
-      message: `Registration number must be 11 characters or fewer`,
+      message: `Registration number must be 7 characters or fewer`,
       priority: 1,
     },
   },

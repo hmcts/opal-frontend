@@ -250,7 +250,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
   },
   fm_personal_details_vehicle_registration_mark: {
     maxlength: {
-      message: `Registration number must be 11 characters or fewer`,
+      message: `Registration number must be 7 characters or fewer`,
       priority: 1,
     },
   },
