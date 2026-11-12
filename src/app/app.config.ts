@@ -13,6 +13,7 @@ import { provideOpalAppInitializer } from '@hmcts/opal-frontend-common/services/
 import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-error';
 import { contentDigestInterceptor } from '@hmcts/opal-frontend-common/interceptors/content-digest';
 import { httpRetryInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-retry';
+import { ssrSessionInterceptor } from './server/ssr-session.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -30,7 +31,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withFetch(),
       // Response errors unwind in reverse order, so retry handles transient failures before the error UI.
-      withInterceptors([httpErrorInterceptor, contentDigestInterceptor, httpRetryInterceptor]),
+      withInterceptors([httpErrorInterceptor, contentDigestInterceptor, httpRetryInterceptor, ssrSessionInterceptor]),
       withInterceptorsFromDi(),
       withXsrfConfiguration({
         headerName: 'X-XSRF-TOKEN',
