@@ -1,5 +1,8 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router } from '@angular/router';
+import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import {
   GovukSummaryListComponent,
   GovukSummaryListRowComponent,
@@ -12,6 +15,7 @@ import {
 } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { IOpalFinesCourtFee } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-fees.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
 import { FinesMciStore } from '../../stores/fines-mci.store';
 import { IFinesMciCourtFeeDraft } from '../../stores/interfaces/fines-mci.interface';
 
@@ -66,6 +70,8 @@ function comparePayment(draft: IFinesMciCourtFeeDraft, fee: IOpalFinesCourtFee):
 @Component({
   selector: 'app-fines-mci-create-till-over-underpayment-confirmation',
   imports: [
+    GovukBackLinkComponent,
+    GovukCancelLinkComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
     MojAlertComponent,
@@ -79,6 +85,8 @@ function comparePayment(draft: IFinesMciCourtFeeDraft, fee: IOpalFinesCourtFee):
 export class FinesMciCreateTillOverUnderpaymentConfirmationComponent implements OnInit {
   private readonly opalFines = inject(OpalFines);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
 
   protected readonly finesMciStore = inject(FinesMciStore);
   protected readonly payment = signal<ICourtFeePaymentComparison | null>(null);
@@ -102,6 +110,33 @@ export class FinesMciCreateTillOverUnderpaymentConfirmationComponent implements 
           this.loading.set(false);
         },
         error: () => this.loading.set(false),
+      });
+  }
+
+  /** Returns to the court fee form with the existing draft. */
+  public handleBack(): void {
+    void this.router.navigate([`../${FINES_MCI_ROUTING_PATHS.children.courtFeeDetails}`], {
+      relativeTo: this.activatedRoute,
+    });
+  }
+
+  /** Continues to payment details only when the payment is an overpayment. */
+  public handleConfirm(): void {
+    if (this.payment()?.type !== 'information') return;
+
+    void this.router.navigate([`../${FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails}`], {
+      relativeTo: this.activatedRoute,
+    });
+  }
+
+  /** Discards the payment draft after successfully returning to the till. */
+  public handleReturnToTill(): void {
+    if (this.payment()?.type !== 'warning') return;
+
+    void this.router
+      .navigate([`../${FINES_MCI_ROUTING_PATHS.children.details}`], { relativeTo: this.activatedRoute })
+      .then((navigated) => {
+        if (navigated) this.finesMciStore.setDraftJourney(null);
       });
   }
 }

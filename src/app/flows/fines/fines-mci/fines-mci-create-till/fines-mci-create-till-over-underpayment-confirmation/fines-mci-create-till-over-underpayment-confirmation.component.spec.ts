@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { of, Subject, throwError } from 'rxjs';
@@ -9,6 +10,7 @@ import { FinesMciCreateTillOverUnderpaymentConfirmationComponent } from './fines
 describe('FinesMciCreateTillOverUnderpaymentConfirmationComponent', () => {
   let fixture: ComponentFixture<FinesMciCreateTillOverUnderpaymentConfirmationComponent>;
   let store: InstanceType<typeof FinesMciStore>;
+  let router: Router;
   const courtFees = [
     { court_fee_id: 1, court_fee_code: 'CF001', description: 'Application', amount: 12.5 },
     { court_fee_id: 2, court_fee_code: 'CF002', description: 'Issue', amount: 0.1 },
@@ -20,11 +22,13 @@ describe('FinesMciCreateTillOverUnderpaymentConfirmationComponent', () => {
     getCourtFees.mockReturnValue(of({ court_fees: courtFees }));
     await TestBed.configureTestingModule({
       imports: [FinesMciCreateTillOverUnderpaymentConfirmationComponent],
-      providers: [FinesMciStore, { provide: OpalFines, useValue: { getCourtFees } }],
+      providers: [provideRouter([]), FinesMciStore, { provide: OpalFines, useValue: { getCourtFees } }],
     }).compileComponents();
     store = TestBed.inject(FinesMciStore);
     store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
     store.setDraftJourney('courtFee');
+    router = TestBed.inject(Router);
+    vi.spyOn(router, 'navigate').mockResolvedValue(true);
   });
 
   function render(): HTMLElement {
@@ -117,5 +121,93 @@ describe('FinesMciCreateTillOverUnderpaymentConfirmationComponent', () => {
     const element = render();
 
     expect(element.querySelector('[role="alert"]')?.textContent).toContain('could not be loaded');
+  });
+
+  it('shows Confirm and Cancel for an overpayment and continues with the draft', () => {
+    const draft = { courtFeeId: 1, amountPaid: '30', numberOfItems: '2' };
+    store.setCourtFeeDraft(draft);
+    const element = render();
+
+    expect(element.querySelector('#confirm-overpayment')?.textContent).toContain('Confirm');
+    expect(element.querySelector('#cancel-overpayment')?.textContent).toContain('Cancel');
+    expect(element.textContent).not.toContain('Cancel and return to till');
+
+    element.querySelector<HTMLButtonElement>('#confirm-overpayment')!.click();
+
+    expect(router.navigate).toHaveBeenCalledWith(['../court-fee-payment-details'], {
+      relativeTo: TestBed.inject(ActivatedRoute),
+    });
+    expect(store.courtFeeDraft()).toEqual(draft);
+    expect(store.draftJourney()).toBe('courtFee');
+  });
+
+  it('returns to court fee details with the draft when overpayment is cancelled', () => {
+    const draft = { courtFeeId: 1, amountPaid: '30', numberOfItems: '2' };
+    store.setCourtFeeDraft(draft);
+    const element = render();
+
+    element.querySelector<HTMLAnchorElement>('#cancel-overpayment')!.click();
+
+    expect(router.navigate).toHaveBeenCalledWith(['../court-fee-details'], {
+      relativeTo: TestBed.inject(ActivatedRoute),
+    });
+    expect(store.courtFeeDraft()).toEqual(draft);
+  });
+
+  it.each(['30', '24.99'])('returns to court fee details from the Back link for amount %s', (amount) => {
+    const draft = { courtFeeId: 1, amountPaid: amount, numberOfItems: '2' };
+    store.setCourtFeeDraft(draft);
+    const element = render();
+
+    const backLink = element.querySelector<HTMLAnchorElement>('opal-lib-govuk-back-link a')!;
+    expect(backLink.textContent?.trim()).toBe('Back');
+    backLink.click();
+
+    expect(router.navigate).toHaveBeenCalledWith(['../court-fee-details'], {
+      relativeTo: TestBed.inject(ActivatedRoute),
+    });
+    expect(store.courtFeeDraft()).toEqual(draft);
+  });
+
+  it('returns to the till and clears only the payment draft for an underpayment', async () => {
+    const tillId = store.ensureTill();
+    store.addPayment(tillId, 'criminal');
+    store.setDraftJourney('courtFee');
+    store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: '24.99', numberOfItems: '2' });
+    const element = render();
+
+    expect(element.querySelector('#confirm-overpayment')).toBeNull();
+    const returnLink = element.querySelector<HTMLAnchorElement>('opal-lib-govuk-cancel-link a')!;
+    expect(returnLink.textContent).toContain('Cancel and return to till');
+    returnLink.click();
+    await fixture.whenStable();
+
+    expect(router.navigate).toHaveBeenCalledWith(['../details'], { relativeTo: TestBed.inject(ActivatedRoute) });
+    expect(store.courtFeeDraft()).toBeNull();
+    expect(store.draftJourney()).toBeNull();
+    expect(store.businessUnit()).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    expect(store.tills()[0].payments).toHaveLength(1);
+  });
+
+  it('preserves the underpayment draft if navigation to the till is cancelled', async () => {
+    const draft = { courtFeeId: 1, amountPaid: '24.99', numberOfItems: '2' };
+    store.setCourtFeeDraft(draft);
+    vi.mocked(router.navigate).mockResolvedValue(false);
+    const element = render();
+
+    element.querySelector<HTMLAnchorElement>('opal-lib-govuk-cancel-link a')!.click();
+    await fixture.whenStable();
+
+    expect(store.courtFeeDraft()).toEqual(draft);
+    expect(store.draftJourney()).toBe('courtFee');
+  });
+
+  it('does not continue an underpayment to payment details', () => {
+    store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: '24.99', numberOfItems: '2' });
+    render();
+
+    fixture.componentInstance.handleConfirm();
+
+    expect(router.navigate).not.toHaveBeenCalled();
   });
 });

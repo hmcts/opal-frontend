@@ -1,3 +1,7 @@
+<div class="govuk-grid-column-full govuk-!-margin-bottom-4">
+  <opal-lib-govuk-back-link (clickEvent)="handleBack()"></opal-lib-govuk-back-link>
+</div>
+
 <div class="govuk-grid-column-two-thirds" id="fines-mci-create-till-over-underpayment-confirmation">
   <span class="govuk-caption-l">{{ finesMciStore.businessUnit()?.business_unit_name }}</span>
   <h1 class="govuk-heading-l">{{ payment()?.heading ?? 'Overpayment or underpayment' }}</h1>
@@ -41,6 +45,24 @@
         <ng-container value>{{ paymentDetails.numberOfItems }}</ng-container>
       </div>
     </opal-lib-govuk-summary-list>
+
+    @if (paymentDetails.type === 'information') {
+      <div class="govuk-button-group">
+        <button id="confirm-overpayment" type="button" class="govuk-button" (click)="handleConfirm()">Confirm</button>
+        <a
+          id="cancel-overpayment"
+          class="govuk-link govuk-link--no-visited-state"
+          href=""
+          (click)="$event.preventDefault(); handleBack()"
+          >Cancel</a
+        >
+      </div>
+    } @else {
+      <opal-lib-govuk-cancel-link
+        cancelLinkText="Cancel and return to till"
+        (linkClickEvent)="handleReturnToTill()"
+      ></opal-lib-govuk-cancel-link>
+    }
   } @else {
     <p class="govuk-error-message" role="alert">Court fee payment details could not be loaded. Try again later.</p>
   }
