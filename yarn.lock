@@ -3807,12 +3807,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:0.0.112":
-  version: 0.0.112
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.112"
+"@hmcts/opal-frontend-common@npm:0.0.122":
+  version: 0.0.122
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.122"
   dependencies:
     "@microsoft/applicationinsights-web": "npm:^3.3.6"
-    "@ministryofjustice/frontend": "npm:^11.0.0"
+    "@ministryofjustice/frontend": "npm:^12.0.0"
     accessible-autocomplete: "npm:^3.0.1"
     fast-sort: "npm:^3.4.1"
     govuk-frontend: "npm:^6.0.0"
@@ -3831,7 +3831,7 @@ __metadata:
   peerDependenciesMeta:
     "@ngrx/signals":
       optional: true
-  checksum: 10/8b89c0151bc553bbdd580b404163331438f4606c30ced8d2a9c01219d93fb26bca040dc3fc12233588744b13ffed0c5a51fb258533e6f8cd5dc3cacd62e9bc12
+  checksum: 10/4ad497eb50de2c9d8107e871cf98114347f29b1ca655ed97657a774d09e7b9fdcdb837a4ca888af489d27edf4d25ee5c9ed68c6e715f3cf7fa2a2e5a2b6809c5
   languageName: node
   linkType: hard
 
@@ -4936,13 +4936,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ministryofjustice/frontend@npm:^11.0.0":
-  version: 11.1.0
-  resolution: "@ministryofjustice/frontend@npm:11.1.0"
+"@ministryofjustice/frontend@npm:^12.0.0":
+  version: 12.0.0
+  resolution: "@ministryofjustice/frontend@npm:12.0.0"
   peerDependencies:
-    govuk-frontend: ^6.0.0
+    govuk-frontend: ^6.2.0
     moment: ^2.30.1
-  checksum: 10/bbb9d11339df08c5fe5ee8655ae3f19706179a23e6f2bdf7a1200ffc1c5f9d268fcf092307cb28c8e403f77afccff1565ebb8fd0b7a5dd41a46b5f8cb2958aa2
+  checksum: 10/ae4cc8645aacd9b0003f988ceaae6a6e419dd3e766bb7b9dd77d54fd0290dc47fd0d4363b9ef609394f0ce75bed75a83f722e5297ae111948da13103f0f255ce
   languageName: node
   linkType: hard
 
@@ -15671,7 +15671,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:0.0.112"
+    "@hmcts/opal-frontend-common": "npm:0.0.122"
     "@hmcts/opal-frontend-common-cypress": "npm:0.0.5"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.47"
     "@hmcts/properties-volume": "npm:^1.1.0"
