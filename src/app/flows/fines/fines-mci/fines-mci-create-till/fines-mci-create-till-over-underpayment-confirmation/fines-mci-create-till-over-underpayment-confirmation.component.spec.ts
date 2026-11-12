@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import * as axe from 'axe-core';
 import { of, Subject, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesMciStore } from '../../stores/fines-mci.store';
@@ -64,6 +65,23 @@ describe('FinesMciCreateTillOverUnderpaymentConfirmationComponent', () => {
       'This amount contains a £0.01 underpayment.',
     );
     expect(element.querySelector('.moj-alert--information')).toBeNull();
+  });
+
+  it.each([
+    ['overpayment', '30'],
+    ['underpayment', '24.99'],
+  ])('has no detectable WCAG violations in the %s view', async (_view, amount) => {
+    store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: amount, numberOfItems: '2' });
+    const element = render();
+
+    const results = await axe.run(element, {
+      runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] },
+      // JSDOM does not render colours, so contrast needs a browser-based check.
+      rules: { 'color-contrast': { enabled: false } },
+    });
+
+    expect(results.passes.length).toBeGreaterThan(0);
+    expect(results.violations).toEqual([]);
   });
 
   it('compares fractional fee amounts exactly', () => {
