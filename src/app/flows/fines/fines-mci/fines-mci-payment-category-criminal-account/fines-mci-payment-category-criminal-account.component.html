@@ -1,4 +1,43 @@
+<div class="govuk-grid-column-full govuk-!-margin-bottom-4">
+  <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
+</div>
 <div class="govuk-grid-column-two-thirds">
+  <span class="govuk-caption-m">{{ businessUnitName() }}</span>
   <h1 class="govuk-heading-l">{{ heading() }}</h1>
-  <p class="govuk-body">{{ content.placeholder }}</p>
+  @if (heading() === content.success) {
+    <opal-lib-govuk-summary-list summaryListId="fines-mci-confirm-account-summary">
+      @for (row of rows(); track row.label) {
+        <div
+          opal-lib-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="fines-mci-confirm-account-summary"
+          [summaryListRowId]="row.id"
+        >
+          <ng-container name>{{ row.label }}</ng-container>
+          <ng-container value>
+            @for (value of row.values; track $index) {
+              {{ value }}
+              @if (!$last) {
+                <br />
+              }
+            } @empty {
+              —
+            }
+          </ng-container>
+        </div>
+      }
+    </opal-lib-govuk-summary-list>
+    <p class="govuk-body">
+      To see history and notes, you can
+      <a class="govuk-link" [routerLink]="accountDetailsRoute()" target="_blank" rel="noopener noreferrer"
+        >view the account in a new tab</a
+      >.
+    </p>
+    <div class="govuk-button-group">
+      <button class="govuk-button" type="button" id="fines-mci-confirm-account" (click)="confirm()">Confirm</button>
+      <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
+    </div>
+  } @else {
+    <p class="govuk-body">{{ content.placeholder }}</p>
+  }
 </div>

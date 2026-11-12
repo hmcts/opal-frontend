@@ -814,6 +814,6 @@ describe('Criminal matches Continue navigation', () => {
     harness.detectChanges();
 
     expect(TestBed.inject(Router).url).toBe(`/${routeRoot}/account/${accountId}/individual`);
-    expect(harness.routeNativeElement?.textContent).toContain('Successful confirm account');
+    expect(harness.routeNativeElement?.textContent).toContain('Confirm account');
   });
 });

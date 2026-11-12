@@ -107,6 +107,7 @@ describe('finesMci routes', () => {
   it.each([
     ['search', FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalSearch],
     ['matches', FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalMatches],
+    ['payment-details/1', FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalPaymentDetails],
   ])('should resolve the existing criminal %s URL and inherit the till navigation setting', async (page, title) => {
     TestBed.configureTestingModule({
       providers: [
@@ -132,7 +133,7 @@ describe('finesMci routes', () => {
       'payment',
       'category',
       'criminal',
-      page,
+      page.startsWith('payment-details') ? 'payment-details/:accountId' : page,
     ]);
     expect(snapshot.data).toEqual(expect.objectContaining({ ...PRIMARY_NAV_HIDDEN_ROUTE_DATA, title }));
   });
@@ -217,7 +218,7 @@ describe('finesMci routes', () => {
   });
 
   it.each(['individual', 'company'])(
-    'should render the PO-3530 placeholder at the criminal account URL for an %s',
+    'should render the confirmation screen at the criminal account URL for an %s',
     async (type) => {
       const accountRoute = criminalRoute!.children!.find(
         (route) => route.path === `${FINES_MCI_ROUTING_PATHS.children.account}/:accountId/:type`,
@@ -247,10 +248,52 @@ describe('finesMci routes', () => {
       await harness.navigateByUrl(url, FinesMciPaymentCategoryCriminalAccountComponent);
 
       expect(TestBed.inject(Router).url).toBe(url);
-      expect(harness.routeNativeElement?.textContent).toContain('Successful confirm account');
-      expect(harness.routeNativeElement?.textContent).toContain(
-        'Placeholder page. This page will be fully implemented under ticket PO-3530.',
-      );
+      expect(harness.routeNativeElement?.textContent).toContain('Confirm account');
+      expect(harness.routeNativeElement?.querySelector('#fines-mci-confirm-account')).toBeTruthy();
     },
   );
+  it('protects the payment details placeholder with the same guards as confirmation', async () => {
+    const route = criminalRoute!.children!.find((route) => route.path === 'payment-details/:accountId')!;
+    expect(route.canActivate).toEqual([authGuard, routePermissionsGuard, finesMciFlowStateGuard]);
+    expect(route.data?.['routePermissionId']).toEqual([FINES_PERMISSIONS['process-and-allocate-payments']]);
+    expect(route.resolve).toEqual({ title: TitleResolver });
+    TestBed.configureTestingModule({ providers: [provideRouter([{ ...route, canActivate: [], resolve: {} }])] });
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl('/payment-details/1');
+    expect(harness.routeNativeElement?.querySelector('h1')?.textContent?.trim()).toBe('Payment details');
+  });
+  it('navigates from confirmation to payment details with the same account ID', async () => {
+    const accountRoute = criminalRoute!.children!.find((route) => route.path === 'account/:accountId/:type')!;
+    const paymentRoute = criminalRoute!.children!.find((route) => route.path === 'payment-details/:accountId')!;
+    const root = '/fines/manual-cash-input/create/till/payment/category/criminal';
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([
+          {
+            path: root.slice(1),
+            children: [
+              { ...accountRoute, canActivate: [], resolve: {} },
+              { ...paymentRoute, canActivate: [], resolve: {} },
+            ],
+          },
+        ]),
+      ],
+    });
+    const store = TestBed.inject(FinesMciStore);
+    store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    store.setSelectedCriminalAccount(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0]);
+    store.setSelectedCriminalAccountAtAGlance({
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
+      account_status_code: 'L',
+      account_balance: 175,
+    });
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl(`${root}/account/1/individual`);
+    harness.routeNativeElement!.querySelector<HTMLButtonElement>('#fines-mci-confirm-account')!.click();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(TestBed.inject(Router).url).toBe(`${root}/payment-details/1`);
+    expect(harness.routeNativeElement!.querySelector('h1')!.textContent!.trim()).toBe('Payment details');
+    expect(store.selectedCriminalAccount()?.defendant_account_id).toBe(1);
+  });
 });
