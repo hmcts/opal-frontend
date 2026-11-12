@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import {
   GovukSummaryListComponent,
@@ -70,7 +69,6 @@ function comparePayment(draft: IFinesMciCourtFeeDraft, fee: IOpalFinesCourtFee):
 @Component({
   selector: 'app-fines-mci-create-till-over-underpayment-confirmation',
   imports: [
-    GovukBackLinkComponent,
     GovukCancelLinkComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,
@@ -80,6 +78,7 @@ function comparePayment(draft: IFinesMciCourtFeeDraft, fee: IOpalFinesCourtFee):
     MojAlertTextComponent,
   ],
   templateUrl: './fines-mci-create-till-over-underpayment-confirmation.component.html',
+  styleUrl: '../fines-mci-create-till-back-link.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMciCreateTillOverUnderpaymentConfirmationComponent implements OnInit {

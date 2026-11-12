@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, HostListener, inject } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
-import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import {
   GovukSummaryListComponent,
@@ -13,8 +12,9 @@ import { FinesMciStore } from '../../stores/fines-mci.store';
 
 @Component({
   selector: 'app-fines-mci-create-till-details',
-  imports: [GovukBackLinkComponent, GovukButtonComponent, GovukSummaryListComponent, GovukSummaryListRowComponent],
+  imports: [GovukButtonComponent, GovukSummaryListComponent, GovukSummaryListRowComponent],
   templateUrl: './fines-mci-create-till-details.component.html',
+  styleUrl: '../fines-mci-create-till-back-link.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMciCreateTillDetailsComponent {

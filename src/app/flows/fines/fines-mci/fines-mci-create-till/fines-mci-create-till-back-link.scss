@@ -1,0 +1,14 @@
+:host {
+  display: block;
+}
+
+// Keep room for any session or error banner displayed above the page.
+:host-context(.govuk-main-wrapper > .govuk-grid-row:first-child) {
+  margin-top: -10px;
+}
+
+@media (min-width: 40.0625em) {
+  :host-context(.govuk-main-wrapper > .govuk-grid-row:first-child) {
+    margin-top: -25px;
+  }
+}

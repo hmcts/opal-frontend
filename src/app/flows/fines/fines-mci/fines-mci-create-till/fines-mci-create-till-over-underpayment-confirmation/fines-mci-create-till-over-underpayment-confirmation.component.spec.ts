@@ -177,7 +177,7 @@ describe('FinesMciCreateTillOverUnderpaymentConfirmationComponent', () => {
     store.setCourtFeeDraft(draft);
     const element = render();
 
-    const backLink = element.querySelector<HTMLAnchorElement>('opal-lib-govuk-back-link a')!;
+    const backLink = element.querySelector<HTMLAnchorElement>('.govuk-back-link')!;
     expect(backLink.textContent?.trim()).toBe('Back');
     backLink.click();
 
