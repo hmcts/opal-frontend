@@ -38,6 +38,39 @@ describe('FinesMciCreateTillOverUnderpaymentConfirmationComponent', () => {
     return fixture.nativeElement as HTMLElement;
   }
 
+  it('protects the till when leaving or refreshing the confirmation screen', () => {
+    store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: '30', numberOfItems: '2' });
+    render();
+
+    expect(fixture.componentInstance.canDeactivate()).toBe(false);
+    const event = new Event('beforeunload', { cancelable: true });
+    window.dispatchEvent(event);
+    expect(event.defaultPrevented).toBe(true);
+  });
+
+  it.each(['back', 'confirm', 'cancel', 'return'])('allows intended %s navigation', async (action) => {
+    const amountPaid = action === 'return' ? '24.99' : '30';
+    store.setCourtFeeDraft({ courtFeeId: 1, amountPaid, numberOfItems: '2' });
+    const element = render();
+    vi.mocked(router.navigate).mockImplementation(async () => {
+      expect(fixture.componentInstance.canDeactivate()).toBe(true);
+      return false;
+    });
+    const selectors: Record<string, string> = {
+      back: '.govuk-back-link',
+      confirm: '#confirm-overpayment',
+      cancel: '#cancel-overpayment',
+      return: 'opal-lib-govuk-cancel-link a',
+    };
+
+    element.querySelector<HTMLElement>(selectors[action])!.click();
+    await fixture.whenStable();
+
+    expect(router.navigate).toHaveBeenCalled();
+    expect(fixture.componentInstance.canDeactivate()).toBe(false);
+    expect(store.courtFeeDraft()).not.toBeNull();
+  });
+
   it('shows the overpayment difference and entered court fee details', () => {
     store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: '30', numberOfItems: '2' });
 

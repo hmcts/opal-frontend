@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, HostListener, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
@@ -82,6 +82,7 @@ function comparePayment(draft: IFinesMciCourtFeeDraft, fee: IOpalFinesCourtFee):
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMciCreateTillOverUnderpaymentConfirmationComponent implements OnInit {
+  private allowIntendedNavigation = false;
   private readonly opalFines = inject(OpalFines);
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
@@ -90,6 +91,24 @@ export class FinesMciCreateTillOverUnderpaymentConfirmationComponent implements 
   protected readonly finesMciStore = inject(FinesMciStore);
   protected readonly payment = signal<ICourtFeePaymentComparison | null>(null);
   protected readonly loading = signal(true);
+
+  private async navigateTo(path: string): Promise<boolean> {
+    this.allowIntendedNavigation = true;
+    try {
+      return await this.router.navigate([`../${path}`], { relativeTo: this.activatedRoute });
+    } finally {
+      this.allowIntendedNavigation = false;
+    }
+  }
+
+  public canDeactivate(): boolean {
+    return this.allowIntendedNavigation;
+  }
+
+  @HostListener('window:beforeunload')
+  public handleBeforeUnload(): boolean {
+    return false;
+  }
 
   public ngOnInit(): void {
     const draft = this.finesMciStore.courtFeeDraft();
@@ -114,28 +133,22 @@ export class FinesMciCreateTillOverUnderpaymentConfirmationComponent implements 
 
   /** Returns to the court fee form with the existing draft. */
   public handleBack(): void {
-    void this.router.navigate([`../${FINES_MCI_ROUTING_PATHS.children.courtFeeDetails}`], {
-      relativeTo: this.activatedRoute,
-    });
+    void this.navigateTo(FINES_MCI_ROUTING_PATHS.children.courtFeeDetails);
   }
 
   /** Continues to payment details only when the payment is an overpayment. */
   public handleConfirm(): void {
     if (this.payment()?.type !== 'information') return;
 
-    void this.router.navigate([`../${FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails}`], {
-      relativeTo: this.activatedRoute,
-    });
+    void this.navigateTo(FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails);
   }
 
   /** Discards the payment draft after successfully returning to the till. */
   public handleReturnToTill(): void {
     if (this.payment()?.type !== 'warning') return;
 
-    void this.router
-      .navigate([`../${FINES_MCI_ROUTING_PATHS.children.details}`], { relativeTo: this.activatedRoute })
-      .then((navigated) => {
-        if (navigated) this.finesMciStore.setDraftJourney(null);
-      });
+    void this.navigateTo(FINES_MCI_ROUTING_PATHS.children.details).then((navigated) => {
+      if (navigated) this.finesMciStore.setDraftJourney(null);
+    });
   }
 }

@@ -109,6 +109,7 @@ describe('finesMci routes', () => {
     );
 
     expect(await route?.loadComponent?.()).toBe(FinesMciCreateTillOverUnderpaymentConfirmationComponent);
+    expect(route?.canDeactivate).toEqual([canDeactivateGuard]);
     expect(route?.data?.['heading']).toBe(FINES_MCI_ROUTING_TITLES.children.createTillOverUnderpaymentConfirmation);
   });
 

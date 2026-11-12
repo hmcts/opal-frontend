@@ -169,6 +169,7 @@ export const routing: Routes = [
                 (c) => c.FinesMciCreateTillOverUnderpaymentConfirmationComponent,
               ),
             canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+            canDeactivate: [canDeactivateGuard],
             data: {
               heading: FINES_MCI_ROUTING_TITLES.children.createTillOverUnderpaymentConfirmation,
               permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
