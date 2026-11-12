@@ -67,7 +67,7 @@ describe('finesAccAprAddChangeModeGuard', () => {
     });
   });
 
-  it.each(['add'])('allows mode %s to load fresh APR data', async (mode) => {
+  it.each(['add', 'change'])('allows mode %s to load fresh APR data', async (mode) => {
     api.getAprs.mockReturnValue(of({ references: mode === 'change' ? [reference] : [], version: '"7"' }));
     const harness = await RouterTestingHarness.create();
     const destination = `${aprRoot}/${mode}?alternatePaymentReferenceId=11`;
@@ -80,7 +80,6 @@ describe('finesAccAprAddChangeModeGuard', () => {
   });
 
   it.each([
-    { mode: 'change', accountId: 141 },
     { mode: 'edit', accountId: 141 },
     { mode: 'unknown', accountId: 142 },
     { mode: 'ADD', accountId: 141 },

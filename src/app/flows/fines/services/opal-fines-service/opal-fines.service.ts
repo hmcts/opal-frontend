@@ -1276,6 +1276,29 @@ export class OpalFines {
       );
   }
 
+  public updateApr(
+    accountId: number,
+    referenceId: number,
+    payload: IOpalFinesAprPayload,
+    version: string,
+  ): Observable<IOpalFinesAprResponse> {
+    return this.http
+      .patch<IOpalFinesApr>(
+        `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/alternate-payment-references/${referenceId}`,
+        payload,
+        {
+          observe: 'response',
+          headers: { 'If-Match': version },
+        },
+      )
+      .pipe(
+        map((response) => ({
+          reference: response.body!,
+          version: this.extractEtagVersion(response.headers),
+        })),
+      );
+  }
+
   /**
    * Adds a note to be associated with a record (Entity).
    * In this instance, the associated record (Entity) will be the Defendant Account.

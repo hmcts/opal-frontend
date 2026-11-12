@@ -2247,6 +2247,44 @@ describe('OpalFines', () => {
     req.flush({ message: errorMessage }, { status: 500, statusText: errorMessage });
   });
 
+  describe('updateApr', () => {
+    const url = '/opal-fines-service/defendant-accounts/141/alternate-payment-references/11';
+
+    it('patches only the selected reference with exact text, quoted account ETag', () => {
+      const result = vi.fn();
+      const reference = { alternate_payment_reference_id: 11, apr_text: ' MiXeD-123 ' };
+      service.updateApr(141, 11, { apr_text: ' MiXeD-123 ' }, '"7"').subscribe(result);
+      const request = httpMock.expectOne(url);
+
+      expect(request.request.method).toBe('PATCH');
+      expect(request.request.body).toEqual({ apr_text: ' MiXeD-123 ' });
+      expect(request.request.headers.keys()).toEqual(['If-Match']);
+      expect(request.request.headers.get('If-Match')).toBe('"7"');
+      request.flush(reference, { headers: { ETag: '"8"' } });
+      expect(result).toHaveBeenCalledWith({ reference, version: '"8"' });
+    });
+
+    it('returns a missing response ETag as null rather than reusing the submitted version', () => {
+      const result = vi.fn();
+      service.updateApr(141, 11, { apr_text: 'Changed' }, '"7"').subscribe(result);
+      httpMock.expectOne(url).flush({ alternate_payment_reference_id: 11, apr_text: 'Changed' });
+
+      expect(result).toHaveBeenCalledWith({
+        reference: { alternate_payment_reference_id: 11, apr_text: 'Changed' },
+        version: null,
+      });
+    });
+
+    it.each([403, 409, 422, 500, 503])('does not retry a failed PATCH with status %s', (status) => {
+      const error = vi.fn();
+      service.updateApr(141, 11, { apr_text: 'Changed' }, '"7"').subscribe({ error });
+      httpMock.expectOne(url).flush({ status }, { status, statusText: 'Failure' });
+
+      expect(error).toHaveBeenCalledOnce();
+      httpMock.expectNone(url);
+    });
+  });
+
   it('should return a mock response for patching defendant account', () => {
     const accountId = 123456;
     const updatePayload = {

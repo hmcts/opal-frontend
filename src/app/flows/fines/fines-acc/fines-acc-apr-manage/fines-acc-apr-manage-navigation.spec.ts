@@ -5,7 +5,7 @@ import { NavigationEnd, provideRouter, Router, RouterLink } from '@angular/route
 import { RouterTestingHarness } from '@angular/router/testing';
 import { Title } from '@angular/platform-browser';
 import { filter, firstValueFrom, map, of } from 'rxjs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthService } from '@hmcts/opal-frontend-common/services/auth-service';
 import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch-darkly-service';
 import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
@@ -69,6 +69,7 @@ describe('APR Manage navigation from Payment terms', () => {
   let bankingInterfacesEnabled: boolean;
   let permittedBusinessUnitId: number;
   let references: IOpalFinesApr[];
+  let accountVersion: string;
   const reference: IOpalFinesApr = {
     alternate_payment_reference_id: 11,
     defendant_account_id: 123,
@@ -81,10 +82,11 @@ describe('APR Manage navigation from Payment terms', () => {
   };
   const opalFines = {
     getDefendantAccountHeadingData: vi.fn(() => of({})),
-    getAprs: vi.fn(() => of({ references, version: '1' })),
+    getAprs: vi.fn(() => of({ references, version: accountVersion })),
     createApr: vi.fn(),
     updateApr: vi.fn(),
     deleteApr: vi.fn(),
+    clearAccountDetailsCache: vi.fn(),
   };
 
   async function clickAndNavigate(harness: RouterTestingHarness, selector: string): Promise<void> {
@@ -102,6 +104,7 @@ describe('APR Manage navigation from Payment terms', () => {
     bankingInterfacesEnabled = true;
     permittedBusinessUnitId = 77;
     references = [];
+    accountVersion = '1';
     vi.clearAllMocks();
     const accountRoute = routing.find(
       (route) => route.path === `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`,
@@ -165,6 +168,8 @@ describe('APR Manage navigation from Payment terms', () => {
       TestBed.inject(FinesAccountStore).getAccountState(),
     );
   });
+
+  afterEach(() => vi.restoreAllMocks());
 
   it('opens the registered Manage page by clicking the Payment terms link and returns to the same tab', async () => {
     const harness = await RouterTestingHarness.create(`${detailsUrl}#payment-terms`);
@@ -324,6 +329,50 @@ describe('APR Manage navigation from Payment terms', () => {
       expect(TestBed.inject(Router).url).toBe(manageUrl);
       expect(harness.routeNativeElement?.querySelector('[data-reference-id="11"]')).toBeNull();
       expect(opalFines.updateApr).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each(['CONSOLIDATED', 'AMALGAMATED'] as const)(
+    'saves a user-entered %s reference from Manage through Change and refreshes the consolidated section',
+    async (relationship) => {
+      references = [{ ...reference, relationship }];
+      const enteredText = 'MiXeD-Inherited';
+      const updatedReference = { ...references[0], apr_text: enteredText, updated_at: '2026-11-09T12:00:00Z' };
+      vi.spyOn(opalFines, 'updateApr').mockImplementationOnce(() => {
+        references = [updatedReference];
+        accountVersion = '2';
+        return of({ reference: updatedReference, version: accountVersion });
+      });
+      const harness = await RouterTestingHarness.create(manageUrl);
+      await clickAndNavigate(harness, '#apr-consolidated-table #apr-change-11');
+      const input = harness.routeNativeElement?.querySelector<HTMLInputElement>('#apr_text');
+      expect(input?.value).toBe('MOCK-REFERENCE');
+      input!.value = enteredText;
+      input!.dispatchEvent(new Event('input', { bubbles: true }));
+      const completed = firstValueFrom(
+        TestBed.inject(Router).events.pipe(filter((event) => event instanceof NavigationEnd)),
+      );
+
+      harness
+        .routeNativeElement!.querySelector('form')!
+        .dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+      await completed;
+      harness.detectChanges();
+
+      expect(opalFines.updateApr).toHaveBeenCalledExactlyOnceWith(123, 11, { apr_text: enteredText }, '1');
+      expect(opalFines.createApr).not.toHaveBeenCalled();
+      expect(opalFines.deleteApr).not.toHaveBeenCalled();
+      expect(opalFines.getAprs).toHaveBeenCalledTimes(3);
+      expect(opalFines.clearAccountDetailsCache).toHaveBeenCalledOnce();
+      expect(TestBed.inject(Router).url).toBe(manageUrl);
+      expect(TestBed.inject(FinesAccountStore).base_version()).toBe('2');
+      expect(TestBed.inject(FinesAccountStore).successMessage()).toBeNull();
+      expect(
+        harness.routeNativeElement?.querySelector('#apr-consolidated-table #apr-reference-11')?.textContent,
+      ).toContain(enteredText);
+      expect(harness.routeNativeElement?.querySelector('#apr-banners')?.textContent).toContain(
+        'Alternate payment reference updated',
+      );
     },
   );
   it('returns direct APR denied entry to the same account Payment terms tab', async () => {

@@ -5,6 +5,7 @@ import { catchError, EMPTY, filter, finalize, Subject, takeUntil } from 'rxjs';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { IOpalFinesApr } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
 import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-aprs-response.interface';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { FinesAccPayloadService } from '../services/fines-acc-payload.service';
@@ -32,9 +33,11 @@ export class FinesAccAprAddChangeComponent extends AbstractFormParentBaseCompone
   private readonly utils = inject(UtilsService);
   private readonly ngUnsubscribe = new Subject<void>();
   private readonly contextChanged = new Subject<void>();
+  private readonly selectedReference = signal<IOpalFinesApr | null>(null);
   private currentContext: {
     accountId: number;
     mode: TFinesAccAprAddChangeMode;
+    referenceId?: number;
     aprs: IOpalFinesAprsResponse;
     version: string | null;
   } | null = null;
@@ -45,7 +48,9 @@ export class FinesAccAprAddChangeComponent extends AbstractFormParentBaseCompone
   public readonly text = computed(
     () => FINES_ACC_APR_ADD_CHANGE_TEXT[this.mode() ?? FINES_ACC_APR_ADD_CHANGE_MODES.ADD],
   );
-  public readonly savedValue = computed(() => this.payloadService.transformAprToForm(null).apr_text);
+  public readonly savedValue = computed(
+    () => this.payloadService.transformAprToForm(this.selectedReference()).apr_text,
+  );
   public readonly initialValue = signal('');
   public readonly pending = signal(false);
   public readonly accountCaption = computed(
@@ -55,7 +60,7 @@ export class FinesAccAprAddChangeComponent extends AbstractFormParentBaseCompone
   private resetFormContext(): void {
     const snapshot = this.pageRoute.snapshot;
     const mode = snapshot.paramMap.get('mode');
-    if (mode !== FINES_ACC_APR_ADD_CHANGE_MODES.ADD) {
+    if (mode !== FINES_ACC_APR_ADD_CHANGE_MODES.ADD && mode !== FINES_ACC_APR_ADD_CHANGE_MODES.CHANGE) {
       this.contextChanged.next();
       this.currentContext = null;
       this.mode.set(null);
@@ -65,8 +70,12 @@ export class FinesAccAprAddChangeComponent extends AbstractFormParentBaseCompone
       return;
     }
     const accountId = Number(snapshot.paramMap.get('accountId'));
+    const referenceId =
+      mode === FINES_ACC_APR_ADD_CHANGE_MODES.CHANGE
+        ? Number(snapshot.queryParamMap.get('alternatePaymentReferenceId'))
+        : undefined;
     const aprs = snapshot.data['aprs'] as IOpalFinesAprsResponse;
-    if (!canAccessAprPage(aprs.references, mode, undefined)) {
+    if (!canAccessAprPage(aprs.references, mode, referenceId)) {
       this.contextChanged.next();
       this.currentContext = null;
       this.pending.set(false);
@@ -78,15 +87,19 @@ export class FinesAccAprAddChangeComponent extends AbstractFormParentBaseCompone
     if (
       previous?.accountId === accountId &&
       previous.mode === mode &&
+      previous.referenceId === referenceId &&
       previous.aprs === aprs &&
       previous.version === aprs.version
     ) {
       return;
     }
     this.contextChanged.next();
-    this.currentContext = { accountId, mode, aprs, version: aprs.version };
+    this.currentContext = { accountId, mode, referenceId, aprs, version: aprs.version };
     this.mode.set(mode);
     this.formContext.set({ ...snapshot.data });
+    this.selectedReference.set(
+      aprs.references.find((reference) => reference.alternate_payment_reference_id === referenceId) ?? null,
+    );
     this.initialValue.set(this.savedValue());
     this.pending.set(false);
     this.stateUnsavedChanges = this.initialValue() !== this.savedValue();
@@ -112,15 +125,30 @@ export class FinesAccAprAddChangeComponent extends AbstractFormParentBaseCompone
   }
 
   public handleSubmit(form: IAbstractFormBaseForm<IFinesAccAprAddChangeFormState>): void {
+    const aprText = form.formData.apr_text;
     if (this.pending()) return;
     const context = this.currentContext;
-    if (!context?.accountId || !context.version?.trim()) {
+    const reference = this.selectedReference();
+    if (
+      !context?.accountId ||
+      (context.mode === FINES_ACC_APR_ADD_CHANGE_MODES.CHANGE && !reference) ||
+      !context.version?.trim()
+    ) {
       this.navigateToManage();
       return;
     }
     const { accountId, mode, version } = context;
+    if (mode === FINES_ACC_APR_ADD_CHANGE_MODES.CHANGE && aprText === this.savedValue()) {
+      this.stateUnsavedChanges = false;
+      this.navigateToManage();
+      return;
+    }
+
     const payload = this.payloadService.buildAprPayload(form.formData);
-    const request$ = this.api.createApr(accountId, payload, version);
+    const request$ =
+      mode === FINES_ACC_APR_ADD_CHANGE_MODES.CHANGE && reference
+        ? this.api.updateApr(accountId, reference.alternate_payment_reference_id, payload, version)
+        : this.api.createApr(accountId, payload, version);
     this.pending.set(true);
     let saveSucceeded = false;
     request$
