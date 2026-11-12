@@ -134,10 +134,9 @@ describe('FinesFinanceInboundFilesComponent', () => {
     for (const filter of ['business-unit', 'source', 'type']) {
       expect((await getFilterInput(filter)).value).toBe('');
     }
-    expect(filters.source).toHaveLength(11);
-    expect(filters.source.some((item) => ['OPAL', 'OTHER', 'VARIANT_BANKING'].includes(String(item.value)))).toBe(
-      false,
-    );
+    expect(filters.source).toHaveLength(12);
+    expect(filters.source).toContainEqual({ name: 'Variant Banking', value: 'VARIANT_BANKING' });
+    expect(filters.source.some((item) => ['OPAL', 'OTHER'].includes(String(item.value)))).toBe(false);
     expect(filters.sourceList).toEqual([
       { name: 'RAW', value: 'SOURCE' },
       { name: 'TRANSFORMED', value: 'TRANSFORMED_JSON' },
@@ -586,6 +585,77 @@ describe('FinesFinanceInboundFilesComponent', () => {
     );
     expect(pendingRow?.querySelector('td:last-child')?.textContent?.trim()).toBe('-');
   });
+
+  it.each([
+    {
+      type: 'SOURCE',
+      label: 'RAW',
+      filename: 'a121_261020_VB_077_AA.dat',
+      contentType: 'application/octet-stream',
+      bytes: new Uint8Array([0x00, 0xff, 0x0d, 0x0a]),
+    },
+    {
+      type: 'TRANSFORMED_JSON',
+      label: 'TRANSFORMED',
+      filename: 'a121_261020_VB_077_AA.json',
+      contentType: 'application/json',
+      bytes: new TextEncoder().encode('{"transactions":[]}'),
+    },
+  ])(
+    'filters, renders and downloads Variant Banking $type files without changing their filename or content',
+    async ({ type, label, filename, contentType, bytes }) => {
+      const { createObjectURL, revokeObjectURL, filenames } = mockFileSave();
+      fixture.detectChanges();
+      httpMock
+        .expectOne((req) => req.url === '/opal-file-handling-service/interface-files')
+        .flush({ number_of_results: 0, interface_files: [] });
+      const filters = fixture.debugElement.query(By.directive(CustomFileInterfaceViewerFiltersComponent))
+        .componentInstance as CustomFileInterfaceViewerFiltersComponent;
+      filters.filtersForm.patchValue({ source: 'VARIANT_BANKING', fileType: type });
+      filters.filtersForm.markAsDirty();
+      fixture.detectChanges();
+
+      (fixture.nativeElement.querySelector('#refresh-reports-button') as HTMLButtonElement).click();
+
+      const search = httpMock.expectOne((req) => req.url === '/opal-file-handling-service/interface-files');
+      expect(search.request.params.get('source')).toBe('VARIANT_BANKING');
+      expect(search.request.params.get('type')).toBe(type);
+      expect(search.request.params.get('domain')).toBe('FINES');
+      expect(search.request.params.get('target')).toBe('OPAL');
+      search.flush({
+        number_of_results: 1,
+        interface_files: [
+          {
+            ...FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files![0],
+            source: 'VARIANT_BANKING',
+            type,
+            file_name: filename,
+          },
+        ],
+      });
+      fixture.detectChanges();
+
+      expect(component.tableData()?.[0]).toMatchObject({ Title: filename, Source: 'Variant Banking', Type: label });
+      const download = fixture.nativeElement.querySelector('#interface-file-download-1001') as HTMLAnchorElement;
+      expect(download.closest('tr')?.textContent).toContain('Variant Banking');
+      expect(download.closest('tr')?.textContent).toContain(label);
+      expect(download.getAttribute('aria-label')).toBe('Download ' + filename);
+      expect(download.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))).toBe(false);
+      const request = httpMock.expectOne('/opal-file-handling-service/interface-files/1001/content');
+      expect(request.request.method).toBe('GET');
+      expect(request.request.responseType).toBe('blob');
+      expect(request.request.headers.get('Accept')).toBe('application/octet-stream');
+      expect(request.request.headers.get('Want-Content-Digest')).toBe('sha-512');
+      const content = new Blob([bytes], { type: contentType });
+
+      request.flush(content, { headers: { 'Content-Type': contentType } });
+
+      expect(filenames).toEqual([filename]);
+      expect(createObjectURL).toHaveBeenCalledExactlyOnceWith(content);
+      expect((createObjectURL.mock.calls[0][0] as Blob).type).toBe(contentType);
+      await vi.waitFor(() => expect(revokeObjectURL).toHaveBeenCalledExactlyOnceWith('blob:test-download'));
+    },
+  );
 
   it('rechecks the latest row before downloading from a stale action', () => {
     fixture.detectChanges();
