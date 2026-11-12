@@ -97,8 +97,6 @@ export class FinesMacCompanyDetailsFormComponent extends AbstractFormAliasBaseCo
         optionalMaxLengthValidator(8),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
-      fm_company_details_vehicle_make: new FormControl(null, [optionalMaxLengthValidator(30)]),
-      fm_company_details_vehicle_registration_mark: new FormControl(null, [optionalMaxLengthValidator(7)]),
     });
   }
 

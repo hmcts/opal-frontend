@@ -132,16 +132,4 @@ export const FINES_MAC_COMPANY_DETAILS_FIELD_ERRORS: IFinesMacCompanyDetailsFiel
       priority: 2,
     },
   },
-  fm_company_details_vehicle_make: {
-    maxlength: {
-      message: `Make and model must be 30 characters or fewer`,
-      priority: 1,
-    },
-  },
-  fm_company_details_vehicle_registration_mark: {
-    maxlength: {
-      message: `Registration number must be 7 characters or fewer`,
-      priority: 1,
-    },
-  },
 };

@@ -8,6 +8,4 @@ export interface IFinesMacCompanyDetailsState {
   fm_company_details_address_line_2: string | null;
   fm_company_details_address_line_3: string | null;
   fm_company_details_postcode: string | null;
-  fm_company_details_vehicle_make: string | null;
-  fm_company_details_vehicle_registration_mark: string | null;
 }

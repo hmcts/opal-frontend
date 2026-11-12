@@ -8,6 +8,4 @@ export const FINES_MAC_COMPANY_DETAILS_STATE_MOCK: IFinesMacCompanyDetailsState 
   fm_company_details_address_line_2: 'City',
   fm_company_details_address_line_3: 'County',
   fm_company_details_postcode: 'AB12 3CD',
-  fm_company_details_vehicle_make: 'Toyota',
-  fm_company_details_vehicle_registration_mark: 'AB12CDE',
 };
