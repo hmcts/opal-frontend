@@ -245,8 +245,43 @@ export class ManualCashInputActions {
 
   /** Confirms the Criminal journey opens Search for an Account. */
   public assertSearchForAccountIsDisplayed(): void {
-    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/search-account');
-    cy.contains('h1', 'Search for an account').should('be.visible');
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/payment/category/criminal/search');
+    cy.get(ManualCashInputLocators.searchAccount.heading).should('have.text', 'Search for an account');
+  }
+
+  /** Confirms the selected business unit is displayed on Search for an Account. */
+  public assertSearchForAccountBusinessUnitIsDisplayed(): void {
+    cy.get(ManualCashInputLocators.searchAccount.businessUnit).should('have.text', 'Camden and Islington');
+  }
+
+  /** Confirms the quick and advanced search fields on Search for an Account. */
+  public assertSearchForAccountFieldsAreDisplayed(): void {
+    const search = ManualCashInputLocators.searchAccount;
+    cy.contains('h2', 'Quick search').should('be.visible');
+    cy.contains('h2', 'Advanced search').should('be.visible');
+    cy.get(search.accountNumber).should('be.visible');
+    cy.get(search.individualsTab).should('be.visible').and('have.attr', 'aria-selected', 'true');
+    cy.get(search.companiesTab).should('be.visible').and('have.attr', 'aria-selected', 'false');
+    cy.get(search.lastName).should('be.visible');
+    cy.get(search.lastNameExactMatchLabel).should('be.visible');
+    cy.get(search.lastNameExactMatch).should('not.be.checked');
+    cy.get(search.firstNames).should('be.visible');
+    cy.get(search.firstNamesExactMatchLabel).should('be.visible');
+    cy.get(search.firstNamesExactMatch).should('not.be.checked');
+    cy.get(search.individualAliasesLabel).should('be.visible');
+    cy.get(search.individualAliases).should('not.be.checked');
+    cy.get(search.searchButton).should('be.visible').and('contain.text', 'Search');
+    cy.get(search.cancelLink).should('be.visible').and('contain.text', 'Cancel');
+
+    cy.get(search.companiesTab).click();
+    cy.get(search.companyName).should('be.visible');
+    cy.get(search.companyNameExactMatchLabel).should('be.visible');
+    cy.get(search.companyNameExactMatch).should('not.be.checked');
+    cy.get(search.companyAliasesLabel).should('be.visible');
+    cy.get(search.companyAliases).should('not.be.checked');
+    cy.get(search.lastName).should('not.exist');
+    cy.get(search.firstNames).should('not.exist');
+    cy.get(search.individualAliases).should('not.exist');
   }
 
   /** Confirms that the selected category opens its details destination.

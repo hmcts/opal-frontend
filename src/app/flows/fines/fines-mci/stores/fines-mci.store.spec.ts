@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesMciStore } from './fines-mci.store';
+import { IFinesMciCriminalSearch } from './interfaces/fines-mci-criminal-search.interface';
 
 describe('FinesMciStore', () => {
   let store: InstanceType<typeof FinesMciStore>;
@@ -10,6 +11,48 @@ describe('FinesMciStore', () => {
     TestBed.configureTestingModule({ providers: [FinesMciStore] });
     store = TestBed.inject(FinesMciStore);
   });
+
+  it.each(['business unit change', 'reset'] as const)(
+    'should clear criminal search and payment drafts on %s',
+    (action) => {
+      const [initialBusinessUnit, nextBusinessUnit] = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData;
+      const criminalSearch: IFinesMciCriminalSearch = {
+        activeTab: 'individuals',
+        searchCriteriaCannotBeCombined: false,
+        formData: {
+          fsa_search_account_number: '12345678',
+          fsa_search_account_individuals_search_criteria: {
+            fsa_search_account_individuals_last_name: null,
+            fsa_search_account_individuals_first_names: null,
+            fsa_search_account_individuals_last_name_exact_match: false,
+            fsa_search_account_individuals_first_names_exact_match: false,
+            fsa_search_account_individuals_include_aliases: false,
+          },
+          fsa_search_account_companies_search_criteria: {
+            fsa_search_account_companies_company_name: null,
+            fsa_search_account_companies_company_name_exact_match: false,
+            fsa_search_account_companies_include_aliases: false,
+          },
+        },
+      };
+      store.setBusinessUnit(initialBusinessUnit);
+      store.ensureTill();
+      store.setDraftJourney('courtFee');
+      store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: '25.00', numberOfItems: '2' });
+      store.setCriminalSearch(criminalSearch);
+
+      if (action === 'reset') {
+        store.reset();
+      } else {
+        store.setBusinessUnit(nextBusinessUnit);
+      }
+
+      expect(store.criminalSearch()).toBeNull();
+      expect(store.draftJourney()).toBeNull();
+      expect(store.courtFeeDraft()).toBeNull();
+      expect(store.tills()).toEqual([]);
+    },
+  );
 
   it('should store the selected business unit', () => {
     const businessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];

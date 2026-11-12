@@ -1,12 +1,14 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import { FinesMciJourney, IFinesMciCourtFeeDraft, IFinesMciTill } from './interfaces/fines-mci.interface';
+import { IFinesMciCriminalSearch } from './interfaces/fines-mci-criminal-search.interface';
 
 export const FinesMciStore = signalStore(
   { providedIn: 'root' },
   withState(() => ({
     businessUnit: null as IOpalFinesBusinessUnit | null,
     tills: [] as IFinesMciTill[],
+    criminalSearch: null as IFinesMciCriminalSearch | null,
     draftJourney: null as FinesMciJourney | null,
     courtFeeDraft: null as IFinesMciCourtFeeDraft | null,
   })),
@@ -24,11 +26,24 @@ export const FinesMciStore = signalStore(
     };
 
     return {
-      /** Sets the selected business unit and clears tills when switching to a different unit. */
+      /**
+       * Stores submitted criteria, the selected tab and the conflict flag for the matches resolver
+       * and for restoring the form when the user returns to amend their search.
+       *
+       * @param criminalSearch The submitted criminal account search state.
+       */
+      setCriminalSearch(criminalSearch: IFinesMciCriminalSearch): void {
+        patchState(store, { criminalSearch });
+      },
+      /** Clears submitted search state while preserving the selected business unit, tills and category draft. */
+      resetCriminalSearch(): void {
+        patchState(store, { criminalSearch: null });
+      },
+      /** Sets the business unit, clearing payment and search state when the unit changes. */
       setBusinessUnit(businessUnit: IOpalFinesBusinessUnit): void {
         const currentBusinessUnit = store.businessUnit();
         if (currentBusinessUnit && currentBusinessUnit.business_unit_id !== businessUnit.business_unit_id) {
-          patchState(store, { businessUnit, tills: [], draftJourney: null, courtFeeDraft: null });
+          patchState(store, { businessUnit, tills: [], criminalSearch: null, draftJourney: null, courtFeeDraft: null });
           return;
         }
 
@@ -58,9 +73,15 @@ export const FinesMciStore = signalStore(
         });
         return paymentId;
       },
-      /** Clears the selected business unit and all till data. */
+      /** Clears the business unit, tills, payment drafts and submitted search criteria. */
       reset(): void {
-        patchState(store, { businessUnit: null, tills: [], draftJourney: null, courtFeeDraft: null });
+        patchState(store, {
+          businessUnit: null,
+          tills: [],
+          criminalSearch: null,
+          draftJourney: null,
+          courtFeeDraft: null,
+        });
       },
     };
   }),
