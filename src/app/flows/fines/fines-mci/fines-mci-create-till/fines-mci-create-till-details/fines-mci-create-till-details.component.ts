@@ -15,7 +15,6 @@ import { FinesMciStore } from '../../stores/fines-mci.store';
   selector: 'app-fines-mci-create-till-details',
   imports: [GovukBackLinkComponent, GovukButtonComponent, GovukSummaryListComponent, GovukSummaryListRowComponent],
   templateUrl: './fines-mci-create-till-details.component.html',
-  styleUrl: '../fines-mci-create-till-back-link.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMciCreateTillDetailsComponent {

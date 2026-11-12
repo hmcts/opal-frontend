@@ -19,15 +19,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
 import { FinesMciStore } from '../../stores/fines-mci.store';
 import { IFinesMciCourtFeeDraft } from '../../stores/interfaces/fines-mci.interface';
-
-interface ICourtFeePaymentComparison {
-  type: 'information' | 'warning';
-  heading: 'Confirm overpayment' | 'You cannot add an underpayment';
-  message: string;
-  courtFee: string;
-  amount: string;
-  numberOfItems: string;
-}
+import { ICourtFeePaymentComparison } from './interfaces/fines-mci-create-till-court-fee-payment-comparison.interface';
 
 /** Formats money without rounding sub-penny values or converting large integers to numbers. */
 function formatPounds(amount: bigint, decimalPlaces: number): string {
@@ -82,7 +74,6 @@ function comparePayment(draft: IFinesMciCourtFeeDraft, fee: IOpalFinesCourtFee):
     MojAlertTextComponent,
   ],
   templateUrl: './fines-mci-create-till-over-underpayment-confirmation.component.html',
-  styleUrl: '../fines-mci-create-till-back-link.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMciCreateTillOverUnderpaymentConfirmationComponent implements OnInit {
