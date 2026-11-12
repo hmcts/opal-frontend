@@ -1,3 +1,4 @@
+import { FINES_ACC_APR_ROUTING_TITLES } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-titles.constant';
 import { TestBed } from '@angular/core/testing';
 import {
   ActivatedRoute,
@@ -146,9 +147,24 @@ describe('fines acc routes', () => {
     expect(manageRoute?.data?.['accessDeniedPath']).toBeUndefined();
   });
 
+  it('registers the APR denied page before action routes with account-state protection and no APR permission requirement', () => {
+    const deniedRoute = defendantJourneyGroup?.children?.find(
+      (route) => route.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/${FINES_ACC_APR_ROUTING_PATHS.children.denied}`,
+    );
+
+    expect(deniedRoute?.loadComponent).toBeTypeOf('function');
+    expect(deniedRoute?.canActivate).toEqual([finesAccStateGuard]);
+    expect(deniedRoute?.data?.['title']).toBe(FINES_ACC_APR_ROUTING_TITLES.children.denied);
+    expect(deniedRoute?.data?.['routePermissionId']).toBeUndefined();
+    expect(deniedRoute?.resolve).toEqual({ title: TitleResolver });
+    expect(defendantJourneyGroup?.children?.[0]).toBe(deniedRoute);
+  });
+
   it('protects APR pages with the standard account guards and shared permission denial', () => {
-    const aprRoutes = (defendantJourneyGroup?.children ?? []).filter((route) =>
-      route.path?.startsWith(`${FINES_ACC_APR_ROUTING_PATHS.root}/`),
+    const aprRoutes = (defendantJourneyGroup?.children ?? []).filter(
+      (route) =>
+        route.path?.startsWith(`${FINES_ACC_APR_ROUTING_PATHS.root}/`) &&
+        route.path !== `${FINES_ACC_APR_ROUTING_PATHS.root}/${FINES_ACC_APR_ROUTING_PATHS.children.denied}`,
     );
     expect(aprRoutes.length).toBeGreaterThan(0);
     for (const route of aprRoutes) {

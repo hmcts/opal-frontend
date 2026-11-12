@@ -1,0 +1,11 @@
+<opal-lib-govuk-heading-with-caption
+  captionText="{{ accountStore.getAccountState().account_number }} - {{ accountStore.getAccountState().party_name }}"
+  headingText="You cannot manage alternate payment references"
+  headingClasses="govuk-heading-l govuk-!-margin-bottom-6"
+/>
+
+<p class="govuk-body govuk-!-margin-bottom-6">You do not have the required permissions for this business unit.</p>
+
+<opal-lib-govuk-button buttonId="go-back" buttonClasses="govuk-button--secondary" (buttonClickEvent)="navigateBack()">
+  Go back
+</opal-lib-govuk-button>
