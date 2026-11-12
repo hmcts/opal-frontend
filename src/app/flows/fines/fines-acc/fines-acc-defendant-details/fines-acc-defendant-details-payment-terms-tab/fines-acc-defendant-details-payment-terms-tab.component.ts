@@ -44,6 +44,7 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
   @Input() requestPaymentCardDeniedType: string = 'permission';
   @Input() bankingInterfacesEnabled: boolean = false;
   @Input() hasManageAprPermission: boolean = false;
+  @Input() canManageApr: boolean = false;
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
   public readonly selectPaymentTermsFragment = FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS.selectPaymentTerms;
@@ -81,9 +82,12 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
     return this.canAmendPaymentTerms ? this.selectPaymentTermsFragment : undefined;
   }
 
+  /**
+   * Routes the APR action to Manage or its business-unit access-denied page.
+   */
   public manageAprLink(): string {
     const { root, children } = FINES_ACC_APR_ROUTING_PATHS;
-    return `../${root}/${children.manage}`;
+    return `../${root}/${this.canManageApr ? children.manage : children.denied}`;
   }
 
   /**
