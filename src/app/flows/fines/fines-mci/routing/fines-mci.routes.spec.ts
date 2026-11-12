@@ -11,6 +11,7 @@ import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.con
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
 import { FinesMciCreateTillCourtFeeDetailsComponent } from '../fines-mci-create-till/fines-mci-create-till-court-fee-details/fines-mci-create-till-court-fee-details.component';
+import { FinesMciCreateTillOverUnderpaymentConfirmationComponent } from '../fines-mci-create-till/fines-mci-create-till-over-underpayment-confirmation/fines-mci-create-till-over-underpayment-confirmation.component';
 import { FinesMciPlaceholderComponent } from '../fines-mci-placeholder/fines-mci-placeholder.component';
 
 describe('finesMci routes', () => {
@@ -93,20 +94,22 @@ describe('finesMci routes', () => {
     expect(courtFeeRoute?.canDeactivate).toEqual([canDeactivateGuard]);
   });
 
-  it.each([
-    [
-      FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,
-      FINES_MCI_ROUTING_TITLES.children.createTillCourtFeePaymentDetails,
-    ],
-    [
-      FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation,
-      FINES_MCI_ROUTING_TITLES.children.createTillOverUnderpaymentConfirmation,
-    ],
-  ])('loads the %s temporary destination with its own heading', async (path, heading) => {
-    const route = createTillRoute?.children?.find((child) => child.path === path);
+  it('loads the temporary Court Fee Payment Details destination', async () => {
+    const route = createTillRoute?.children?.find(
+      (child) => child.path === FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,
+    );
 
     expect(await route?.loadComponent?.()).toBe(FinesMciPlaceholderComponent);
-    expect(route?.data?.['heading']).toBe(heading);
+    expect(route?.data?.['heading']).toBe(FINES_MCI_ROUTING_TITLES.children.createTillCourtFeePaymentDetails);
+  });
+
+  it('loads the overpayment and underpayment confirmation screen', async () => {
+    const route = createTillRoute?.children?.find(
+      (child) => child.path === FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation,
+    );
+
+    expect(await route?.loadComponent?.()).toBe(FinesMciCreateTillOverUnderpaymentConfirmationComponent);
+    expect(route?.data?.['heading']).toBe(FINES_MCI_ROUTING_TITLES.children.createTillOverUnderpaymentConfirmation);
   });
 
   it.each([
