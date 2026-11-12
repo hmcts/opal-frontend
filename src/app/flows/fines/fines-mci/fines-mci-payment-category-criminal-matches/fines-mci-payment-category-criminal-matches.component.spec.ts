@@ -9,7 +9,6 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/o
 import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { IFinesMciCriminalAccountsResult } from '../interfaces/fines-mci-criminal-accounts-result.interface';
-import { FinesMciCriminalSearchResults } from '../constants/fines-mci-criminal-search-results.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { FinesMciStore } from '../stores/fines-mci.store';
 import { IFinesMciCriminalSearch } from '../stores/interfaces/fines-mci-criminal-search.interface';
@@ -23,6 +22,7 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
   let fixture: ComponentFixture<FinesMciPaymentCategoryCriminalMatchesComponent>;
   let routeDataSubject: BehaviorSubject<{ criminalAccounts: IFinesMciCriminalAccountsResult }>;
   let finesMciStore: InstanceType<typeof FinesMciStore>;
+  const criminalSearchPath = '/fines/manual-cash-input/create/till/payment/category/criminal/search';
   let opalFines: {
     clearCache: ReturnType<typeof vi.fn>;
     getDefendantAccountAtAGlance: ReturnType<typeof vi.fn>;
@@ -467,19 +467,54 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
     expect(fixture.nativeElement.querySelector('.govuk-form-group--error')).toBeNull();
   });
 
-  it.each([
-    ['no-matches', 'No matching criminal accounts', 'PO-3528'],
-    ['too-many', 'More than 100 matching criminal accounts', 'PO-3528'],
-    ['search-criteria-cannot-be-combined', 'Search criteria cannot be combined', 'PO-3529'],
-  ])('should render placeholder content for %s', (results, heading, ticket) => {
-    routeDataSubject.next({ criminalAccounts: { results: results as FinesMciCriminalSearchResults, response: null } });
+  it('should render no matches content with a link back to the criminal search page', () => {
+    routeDataSubject.next({
+      criminalAccounts: { results: 'no-matches', response: { count: 0, defendant_accounts: [] } },
+    });
+    fixture.detectChanges();
+
+    const text = fixture.nativeElement.textContent;
+    const link = fixture.nativeElement.querySelector('a.govuk-link') as HTMLAnchorElement;
+
+    expect(text).toContain(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name);
+    expect(text).toContain('Search results');
+    expect(text).toContain('There are no matching results');
+    expect(text).toContain('Check your search');
+    expect(text).toContain('and try again.');
+    expect(text).not.toContain('Placeholder for PO-3528');
+    expect(link.textContent?.trim()).toBe('Check your search');
+    expect(link.getAttribute('href')).toBe(criminalSearchPath);
+  });
+
+  it('should render too many results content with a link back to the criminal search page', () => {
+    routeDataSubject.next({
+      criminalAccounts: { results: 'too-many', response: { count: 101, defendant_accounts: [] } },
+    });
+    fixture.detectChanges();
+
+    const text = fixture.nativeElement.textContent;
+    const link = fixture.nativeElement.querySelector('a.govuk-link') as HTMLAnchorElement;
+
+    expect(text).toContain(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name);
+    expect(text).toContain('Search results');
+    expect(text).toContain('There are more than 100 results');
+    expect(text).toContain('Try searching by account number or full name');
+    expect(text).not.toContain('Placeholder for PO-3528');
+    expect(link.textContent?.trim()).toBe('Try searching by account number or full name');
+    expect(link.getAttribute('href')).toBe(criminalSearchPath);
+  });
+
+  it('should render placeholder content for search criteria that cannot be combined', () => {
+    routeDataSubject.next({
+      criminalAccounts: { results: 'search-criteria-cannot-be-combined', response: null },
+    });
     fixture.detectChanges();
 
     const text = fixture.nativeElement.textContent;
 
     expect(text).toContain(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name);
-    expect(text).toContain(heading);
-    expect(text).toContain(ticket);
+    expect(text).toContain('Search criteria cannot be combined');
+    expect(text).toContain('PO-3529');
     expect(
       fixture.nativeElement.querySelector('app-fines-mci-payment-category-criminal-matches-table-wrapper'),
     ).toBeNull();
