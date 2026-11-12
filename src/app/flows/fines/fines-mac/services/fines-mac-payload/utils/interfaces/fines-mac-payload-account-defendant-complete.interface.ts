@@ -14,6 +14,8 @@ export interface IFinesMacPayloadAccountDefendantComplete {
   address_line_4: string | null;
   address_line_5: string | null;
   post_code: string | null;
+  vehicle_make?: string | null;
+  vehicle_registration_mark?: string | null;
   telephone_number_home: string | null;
   telephone_number_business: string | null;
   telephone_number_mobile: string | null;

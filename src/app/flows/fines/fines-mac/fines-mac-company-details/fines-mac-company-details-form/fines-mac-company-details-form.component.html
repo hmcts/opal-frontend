@@ -121,6 +121,31 @@
     ></opal-lib-govuk-text-input>
   </fieldset>
 
+  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+      <h2 class="govuk-heading-m govuk-!-margin-0">Vehicle details</h2>
+    </legend>
+    <opal-lib-govuk-text-input
+      labelText="Make and model"
+      inputId="fm_company_details_vehicle_make"
+      inputName="fm_company_details_vehicle_make"
+      labelClasses="govuk-label--s"
+      [control]="form.get('fm_company_details_vehicle_make')"
+      [errors]="formControlErrorMessages['fm_company_details_vehicle_make']"
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
+      labelText="Registration number"
+      inputId="fm_company_details_vehicle_registration_mark"
+      inputName="fm_company_details_vehicle_registration_mark"
+      inputClasses="govuk-input--width-10"
+      labelClasses="govuk-label--s"
+      [control]="form.get('fm_company_details_vehicle_registration_mark')"
+      [errors]="formControlErrorMessages['fm_company_details_vehicle_registration_mark']"
+      [opalLibCapitaliseAllCharacters]="form.get('fm_company_details_vehicle_registration_mark')!"
+    ></opal-lib-govuk-text-input>
+  </fieldset>
+
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <opal-lib-govuk-button buttonId="submitForm" type="submit"> Return to account details </opal-lib-govuk-button>

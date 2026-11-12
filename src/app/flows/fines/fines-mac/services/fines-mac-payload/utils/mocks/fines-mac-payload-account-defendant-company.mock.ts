@@ -7,6 +7,8 @@ export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK: IFinesMacPayloadA
   address_line_2: 'Tech Park',
   address_line_3: 'Westshire',
   post_code: 'XY45 6ZT',
+  vehicle_make: 'Toyota',
+  vehicle_registration_mark: 'XY45ZTT',
   telephone_number_home: '01412345678',
   telephone_number_business: '02079461234',
   telephone_number_mobile: '07900112233',

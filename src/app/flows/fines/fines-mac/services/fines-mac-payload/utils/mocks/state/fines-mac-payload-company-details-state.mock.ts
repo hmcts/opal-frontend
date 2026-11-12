@@ -8,4 +8,6 @@ export const FINES_MAC_PAYLOAD_COMPANY_DETAILS_STATE_MOCK: IFinesMacCompanyDetai
   fm_company_details_address_line_2: 'Tech Park',
   fm_company_details_address_line_3: 'Westshire',
   fm_company_details_postcode: 'XY45 6ZT',
+  fm_company_details_vehicle_make: 'Toyota',
+  fm_company_details_vehicle_registration_mark: 'XY45ZTT',
 };

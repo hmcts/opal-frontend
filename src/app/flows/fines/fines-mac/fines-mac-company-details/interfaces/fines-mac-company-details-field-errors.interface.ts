@@ -14,4 +14,6 @@ export interface IFinesMacCompanyDetailsFieldErrors extends IAbstractFormBaseFie
   fm_company_details_address_line_2: IAbstractFormBaseFieldError;
   fm_company_details_address_line_3: IAbstractFormBaseFieldError;
   fm_company_details_postcode: IAbstractFormBaseFieldError;
+  fm_company_details_vehicle_make: IAbstractFormBaseFieldError;
+  fm_company_details_vehicle_registration_mark: IAbstractFormBaseFieldError;
 }

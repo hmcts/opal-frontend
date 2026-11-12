@@ -66,6 +66,8 @@ export const finesMacPayloadBuildAccountDefendantCompany = (
     fm_company_details_address_line_2: address_line_2,
     fm_company_details_address_line_3: address_line_3,
     fm_company_details_postcode: post_code,
+    fm_company_details_vehicle_make: vehicle_make,
+    fm_company_details_vehicle_registration_mark: vehicle_registration_mark,
   } = companyDetailsState;
 
   const {
@@ -83,6 +85,8 @@ export const finesMacPayloadBuildAccountDefendantCompany = (
     address_line_2,
     address_line_3,
     post_code,
+    vehicle_make,
+    vehicle_registration_mark,
     telephone_number_home,
     telephone_number_business,
     telephone_number_mobile,
