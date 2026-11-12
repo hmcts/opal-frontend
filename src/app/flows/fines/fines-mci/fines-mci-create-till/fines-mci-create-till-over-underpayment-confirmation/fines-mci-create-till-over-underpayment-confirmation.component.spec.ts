@@ -128,6 +128,29 @@ describe('FinesMciCreateTillOverUnderpaymentConfirmationComponent', () => {
     expect(element.querySelectorAll('.govuk-summary-list__row')[1].textContent).toContain('£0.301');
   });
 
+  it('groups large amounts while preserving sub-penny precision', () => {
+    store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: '1030.001', numberOfItems: '2' });
+
+    const element = render();
+
+    expect(element.querySelector('.moj-alert--information')?.textContent).toContain('£1,005.001 overpayment');
+    expect(element.querySelectorAll('.govuk-summary-list__row')[1].textContent).toContain('£1,030.001');
+  });
+
+  it('groups the fee, entered amount and difference for large whole-pound amounts', () => {
+    getCourtFees.mockReturnValue(
+      of({ court_fees: [{ court_fee_id: 1, court_fee_code: 'CF001', description: 'Application', amount: 1234.5 }] }),
+    );
+    store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: '3000', numberOfItems: '1' });
+
+    const element = render();
+
+    expect(element.querySelectorAll('.govuk-summary-list__row')[0].textContent).toContain('£1,234.50');
+    expect(element.querySelectorAll('.govuk-summary-list__row')[1].textContent).toContain('£3,000.00');
+    expect(element.querySelector('.moj-alert--information')?.textContent).toContain('£1,765.50 overpayment');
+    expect(element.querySelector('#confirm-overpayment')?.getAttribute('data-module')).toBe('govuk-button');
+  });
+
   it('shows a loading message until court fees arrive', () => {
     const response = new Subject<{ court_fees: typeof courtFees }>();
     getCourtFees.mockReturnValue(response.asObservable());

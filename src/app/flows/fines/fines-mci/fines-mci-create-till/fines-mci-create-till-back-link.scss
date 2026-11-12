@@ -2,6 +2,16 @@
   display: block;
 }
 
+// The shared back link has no class input for overriding its default margin.
+:host ::ng-deep opal-lib-govuk-back-link .govuk-back-link {
+  margin-top: 0;
+}
+
+// Keep the shared button as a direct flex item so its text aligns with Cancel.
+.govuk-button-group > opal-lib-govuk-button {
+  display: contents;
+}
+
 // Keep room for any session or error banner displayed above the page.
 :host-context(.govuk-main-wrapper > .govuk-grid-row:first-child) {
   margin-top: -10px;

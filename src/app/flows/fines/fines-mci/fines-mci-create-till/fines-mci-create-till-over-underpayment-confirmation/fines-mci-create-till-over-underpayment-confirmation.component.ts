@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, HostListener, OnInit, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
+import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import {
   GovukSummaryListComponent,
@@ -27,12 +29,12 @@ interface ICourtFeePaymentComparison {
   numberOfItems: string;
 }
 
-/** Formats an integer amount at the given decimal scale, retaining at least two decimal places. */
+/** Formats money without rounding sub-penny values or converting large integers to numbers. */
 function formatPounds(amount: bigint, decimalPlaces: number): string {
   const scale = 10n ** BigInt(decimalPlaces);
   const pounds = amount / scale;
   const pence = (amount % scale).toString().padStart(decimalPlaces, '0').replace(/0+$/, '').padEnd(2, '0');
-  return `£${pounds}.${pence}`;
+  return `£${pounds.toLocaleString('en-GB')}.${pence}`;
 }
 
 /** Compares the entered amount with the fee total without floating point rounding. */
@@ -60,7 +62,7 @@ function comparePayment(draft: IFinesMciCourtFeeDraft, fee: IOpalFinesCourtFee):
     type: overpayment ? 'information' : 'warning',
     heading: overpayment ? 'Confirm overpayment' : 'You cannot add an underpayment',
     message: `This amount contains a ${differenceAmount} ${overpayment ? 'overpayment' : 'underpayment'}.`,
-    courtFee: `${fee.court_fee_code} – ${fee.description} (£${fee.amount.toFixed(2)})`,
+    courtFee: `${fee.court_fee_code} – ${fee.description} (${formatPounds(BigInt(Math.round(fee.amount * 100)), 2)})`,
     amount: formatPounds(paid, decimalPlaces),
     numberOfItems,
   };
@@ -69,6 +71,8 @@ function comparePayment(draft: IFinesMciCourtFeeDraft, fee: IOpalFinesCourtFee):
 @Component({
   selector: 'app-fines-mci-create-till-over-underpayment-confirmation',
   imports: [
+    GovukBackLinkComponent,
+    GovukButtonComponent,
     GovukCancelLinkComponent,
     GovukSummaryListComponent,
     GovukSummaryListRowComponent,

@@ -1,5 +1,5 @@
 <div class="govuk-grid-column-full govuk-!-margin-bottom-4">
-  <a class="govuk-back-link govuk-!-margin-top-0" href="" (click)="$event.preventDefault(); handleBack()">Back</a>
+  <opal-lib-govuk-back-link (clickEvent)="handleBack()"></opal-lib-govuk-back-link>
 </div>
 
 <div class="govuk-grid-column-two-thirds" id="fines-mci-create-till-over-underpayment-confirmation">
@@ -48,7 +48,9 @@
 
     @if (paymentDetails.type === 'information') {
       <div class="govuk-button-group">
-        <button id="confirm-overpayment" type="button" class="govuk-button" (click)="handleConfirm()">Confirm</button>
+        <opal-lib-govuk-button buttonId="confirm-overpayment" (buttonClickEvent)="handleConfirm()">
+          Confirm
+        </opal-lib-govuk-button>
         <a
           id="cancel-overpayment"
           class="govuk-link govuk-link--no-visited-state"
