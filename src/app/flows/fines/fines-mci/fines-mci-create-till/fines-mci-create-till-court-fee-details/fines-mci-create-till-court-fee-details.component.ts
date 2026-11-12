@@ -96,13 +96,16 @@ export class FinesMciCreateTillCourtFeeDetailsComponent
     this.navigationFailed = false;
     this.stateUnsavedChanges = false;
     this.isContinuing = true;
-    void this.navigationRouter.navigate([`../${destination}`], { relativeTo: this.currentRoute }).then((navigated) => {
-      if (!navigated) {
-        this.isContinuing = false;
-        this.navigationFailed = true;
-        this.stateUnsavedChanges = true;
-      }
-    });
+    void this.navigationRouter
+      .navigate([`../${destination}`], { relativeTo: this.currentRoute })
+      .catch(() => false)
+      .then((navigated) => {
+        if (!navigated) {
+          this.isContinuing = false;
+          this.navigationFailed = true;
+          this.stateUnsavedChanges = true;
+        }
+      });
   }
 
   public handleCancel(): void {

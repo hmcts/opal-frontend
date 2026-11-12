@@ -435,16 +435,21 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     expect(store.courtFeeDraft()).toEqual({ courtFeeId: 1, amountPaid: '12.50', numberOfItems: '1' });
   });
 
-  it('protects the form again if Continue cannot navigate', async () => {
-    vi.mocked(router.navigate).mockResolvedValueOnce(false);
+  it.each(['cancelled', 'rejected'])('protects the form again if Continue navigation is %s', async (outcome) => {
+    if (outcome === 'rejected') {
+      vi.mocked(router.navigate).mockRejectedValueOnce(new Error('Failed to load the next screen'));
+    } else {
+      vi.mocked(router.navigate).mockResolvedValueOnce(false);
+    }
     const component = render();
     enterCourtFeeText('CF001 - Application (£12.50)');
     courtFeeForm().form.setValue({ courtFeeId: 1, amountPaid: '12.50', numberOfItems: '1' });
 
     submitForm();
-    await Promise.resolve();
+    await fixture.whenStable();
 
     expect(component.handleBeforeUnload()).toBe(false);
+    expect(store.courtFeeDraft()).toEqual({ courtFeeId: 1, amountPaid: '12.50', numberOfItems: '1' });
     courtFeeForm().form.controls['amountPaid'].setValue('13.00');
     expect(component.handleBeforeUnload()).toBe(false);
   });
