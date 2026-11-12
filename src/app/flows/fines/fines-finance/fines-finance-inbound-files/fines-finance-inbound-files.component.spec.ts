@@ -294,8 +294,8 @@ describe('FinesFinanceInboundFilesComponent', () => {
     {
       heading: 'Actions',
       cellIndex: 6,
-      ascending: ['', 'Download', 'Download', 'Download'],
-      descending: ['Download', 'Download', 'Download', ''],
+      ascending: ['-', 'Download', 'Download', 'Download'],
+      descending: ['Download', 'Download', 'Download', '-'],
     },
   ])(
     'sorts the $heading column in both directions through its heading button',
@@ -580,6 +580,11 @@ describe('FinesFinanceInboundFilesComponent', () => {
       (row) => row.textContent?.includes('missing-id.xml'),
     );
     expect(missingIdRow?.querySelector('a')).toBeNull();
+    expect(missingIdRow?.querySelector('td:last-child')?.textContent?.trim()).toBe('-');
+    const pendingRow = Array.from(fixture.nativeElement.querySelectorAll('tbody tr') as NodeListOf<HTMLElement>).find(
+      (row) => row.textContent?.includes('In-Progress'),
+    );
+    expect(pendingRow?.querySelector('td:last-child')?.textContent?.trim()).toBe('-');
   });
 
   it('rechecks the latest row before downloading from a stale action', () => {

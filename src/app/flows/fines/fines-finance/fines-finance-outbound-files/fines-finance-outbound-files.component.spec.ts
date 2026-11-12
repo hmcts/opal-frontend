@@ -259,13 +259,13 @@ describe('FinesFinanceOutboundFilesComponent', () => {
     button.click();
     fixture.detectChanges();
     expect(header.getAttribute('aria-sort')).toBe('ascending');
-    expect(actions()).toEqual(['', 'Download', 'Download', 'Download']);
+    expect(actions()).toEqual(['-', 'Download', 'Download', 'Download']);
     expect(element.querySelector('tbody tr td:nth-child(2)')?.textContent).toBe('ant_2003.csv');
 
     button.click();
     fixture.detectChanges();
     expect(header.getAttribute('aria-sort')).toBe('descending');
-    expect(actions()).toEqual(['Download', 'Download', 'Download', '']);
+    expect(actions()).toEqual(['Download', 'Download', 'Download', '-']);
     expect(element.querySelector('tbody tr:last-child td:nth-child(2)')?.textContent).toBe('ant_2003.csv');
     httpMock.expectNone((req) => req.url.endsWith('/content'));
   });
