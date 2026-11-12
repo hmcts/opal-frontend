@@ -107,6 +107,18 @@ export const routing: Routes = [
         },
         children: [
           {
+            path: `${FINES_ACC_APR_ROUTING_PATHS.root}/${FINES_ACC_APR_ROUTING_PATHS.children.denied}`,
+            loadComponent: () =>
+              import('../fines-acc-apr-access-denied/fines-acc-apr-access-denied.component').then(
+                (c) => c.FinesAccAprAccessDeniedComponent,
+              ),
+            canActivate: [finesAccStateGuard],
+            data: {
+              title: FINES_ACC_APR_ROUTING_TITLES.children.denied,
+            },
+            resolve: { title: TitleResolver },
+          },
+          {
             path: `${FINES_ACC_APR_ROUTING_PATHS.root}/${FINES_ACC_APR_ROUTING_PATHS.children.manage}`,
             loadComponent: () =>
               import('../fines-acc-apr-manage/fines-acc-apr-manage.component').then(
