@@ -245,6 +245,11 @@ describe('APR Manage navigation from Payment terms', () => {
   it.each([
     { action: 'add', selector: '#apr-add', heading: 'Add Alternate Payment Reference' },
     { action: 'change', selector: '#apr-change-11', heading: 'Change Alternate Payment Reference' },
+    {
+      action: 'delete',
+      selector: '#apr-remove-11',
+      heading: 'Are you sure you want to remove this alternate payment reference?',
+    },
   ])('opens the $action destination and returns without writing data', async ({ action, selector, heading }) => {
     references = action === 'add' ? [] : [reference];
     const harness = await RouterTestingHarness.create(manageUrl);
@@ -261,15 +266,20 @@ describe('APR Manage navigation from Payment terms', () => {
     expect(opalFines.deleteApr).not.toHaveBeenCalled();
   });
 
-  it.each(['APR', 'CONSOLIDATED', 'AMALGAMATED'] as const)(
-    'keeps Remove hidden for %s references while its route is a stub',
+  it.each(['CONSOLIDATED', 'AMALGAMATED'] as const)(
+    'opens the implemented Remove confirmation for a user-entered %s reference',
     async (relationship) => {
       references = [{ ...reference, relationship }];
       const harness = await RouterTestingHarness.create(manageUrl);
 
-      expect(harness.routeNativeElement?.querySelector('[data-reference-id="11"]')).not.toBeNull();
-      expect(harness.routeNativeElement?.querySelector('[id^="apr-remove-"]')).toBeNull();
-      expect(harness.routeNativeElement?.querySelector('#apr-change-11')).not.toBeNull();
+      await clickAndNavigate(harness, '#apr-remove-11');
+
+      expect(TestBed.inject(Router).url).toBe(manageUrl.replace('/manage', '/delete?alternatePaymentReferenceId=11'));
+      expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toContain(
+        'Are you sure you want to remove this alternate payment reference?',
+      );
+      await clickAndNavigate(harness, '#apr-remove-cancel a');
+      expect(TestBed.inject(Router).url).toBe(manageUrl);
       expect(opalFines.deleteApr).not.toHaveBeenCalled();
     },
   );

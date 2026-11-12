@@ -82,6 +82,7 @@ import { IOpalFinesInterfaceJobsSummaryParams } from './interfaces/opal-fines-in
 import { IOpalFinesInterfaceJobsSummaryResponse } from './interfaces/opal-fines-interface-jobs-summary-response.interface';
 import { IOpalFinesProcessInterfaceJobsPayload } from './interfaces/opal-fines-process-interface-jobs-payload.interface';
 import { IOpalFinesApr } from './interfaces/opal-fines-apr.interface';
+import { IOpalFinesAprResponse } from './interfaces/opal-fines-apr-response.interface';
 import { IOpalFinesAprsResponse } from './interfaces/opal-fines-aprs-response.interface';
 
 const SAFE_READ_RETRY_POLICY = {
@@ -1423,6 +1424,25 @@ export class OpalFines {
     }
 
     return this.http.delete<void>(url, { headers, body: payload });
+  }
+
+  /** Removes an APR using the current defendant-account version for optimistic locking. */
+  public deleteApr(
+    accountId: number,
+    alternatePaymentReferenceId: number,
+    version: string,
+  ): Observable<IOpalFinesAprResponse> {
+    return this.http
+      .delete<IOpalFinesApr>(
+        `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/alternate-payment-references/${alternatePaymentReferenceId}`,
+        { ...this.buildIfMatchHeader(version), observe: 'response' },
+      )
+      .pipe(
+        map((response) => ({
+          reference: response.body!,
+          version: this.extractEtagVersion(response.headers),
+        })),
+      );
   }
 
   /**

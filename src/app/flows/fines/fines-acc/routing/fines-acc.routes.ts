@@ -170,8 +170,8 @@ export const routing: Routes = [
           {
             path: `${FINES_ACC_APR_ROUTING_PATHS.root}/${FINES_ACC_APR_ROUTING_PATHS.children.delete}`,
             loadComponent: () =>
-              import('../fines-acc-apr-action/fines-acc-apr-action.component').then(
-                (c) => c.FinesAccAprActionComponent,
+              import('../fines-acc-apr-delete/fines-acc-apr-delete.component').then(
+                (c) => c.FinesAccAprDeleteComponent,
               ),
             canActivate: [
               release1cBankingInterfacesFeatureFlagGuard,
