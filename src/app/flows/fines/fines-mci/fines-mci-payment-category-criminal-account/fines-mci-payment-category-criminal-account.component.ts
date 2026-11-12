@@ -6,6 +6,12 @@ import {
   GovukSummaryListComponent,
   GovukSummaryListRowComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
+import {
+  MojAlertComponent,
+  MojAlertContentComponent,
+  MojAlertIconComponent,
+  MojAlertTextComponent,
+} from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
@@ -16,13 +22,17 @@ import { OPAL_FINES_CONFIGURATION_ITEMS } from '@services/fines/opal-fines-servi
 import { FinesMciStore } from '../stores/fines-mci.store';
 import {
   FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_ACCOUNT_CONTENT,
-  FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_ACCOUNT_RESTRICTED_STATUS_HEADINGS,
+  FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_ACCOUNT_RESTRICTED_STATUS_WARNINGS,
 } from './constants/fines-mci-payment-category-criminal-account-content.constant';
 
 @Component({
   selector: 'app-fines-mci-payment-category-criminal-account',
   imports: [
     RouterLink,
+    MojAlertComponent,
+    MojAlertContentComponent,
+    MojAlertIconComponent,
+    MojAlertTextComponent,
     GovukBackLinkComponent,
     GovukCancelLinkComponent,
     GovukSummaryListComponent,
@@ -38,6 +48,18 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
   private readonly router = inject(Router);
   private readonly dateFormat = inject(DateFormatPipe);
   private readonly monetary = inject(MonetaryPipe);
+
+  private readonly lastEnforcementAction = computed(() => {
+    const action = this.store.selectedCriminalAccountAtAGlance()?.enforcement_status?.last_enforcement_action;
+    return action
+      ? [
+          action.last_enforcement_action_title,
+          action.last_enforcement_action_id ? `(${action.last_enforcement_action_id})` : null,
+        ]
+          .filter(Boolean)
+          .join(' ')
+      : null;
+  });
 
   protected readonly businessUnitName = computed(() => this.store.businessUnit()?.business_unit_name ?? '—');
   protected readonly accountDetailsRoute = computed(() => [
@@ -66,7 +88,6 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
       );
     const terms = account?.payment_terms;
     const instalmentBased = terms?.payment_terms_type?.payment_terms_type_code === 'I';
-    const action = account?.enforcement_status?.last_enforcement_action;
     const address = account?.address;
     const notes = account?.comments_and_notes;
     const balance =
@@ -94,20 +115,11 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
           address?.postcode,
         ],
       },
-      { label: 'Balance', values: [this.monetary.transform(balance)] },
       {
-        label: 'Enforcement action',
-        values: [
-          action
-            ? [
-                action.last_enforcement_action_title,
-                action.last_enforcement_action_id ? `(${action.last_enforcement_action_id})` : null,
-              ]
-                .filter(Boolean)
-                .join(' ')
-            : null,
-        ],
+        label: 'Balance',
+        values: [typeof balance === 'number' && Number.isFinite(balance) ? this.monetary.transform(balance) : null],
       },
+      { label: 'Enforcement action', values: [this.lastEnforcementAction()] },
       {
         label: 'Payment terms',
         values: [
@@ -140,7 +152,7 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
    * Uses at-a-glance restriction data, falling back to the header for optional status and balance fields.
    * Restricted statuses take precedence over zero balance and business-unit enforcement inhibits.
    */
-  protected readonly heading = computed(() => {
+  protected readonly accountState = computed<{ available: boolean; warningMessage: string | null }>(() => {
     const account = this.store.selectedCriminalAccount();
     const atAGlance = this.store.selectedCriminalAccountAtAGlance();
     const header = this.store.selectedCriminalAccountHeader();
@@ -149,32 +161,40 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
     const accountId = this.route.snapshot.paramMap.get('accountId');
 
     if (!account || String(account.defendant_account_id) !== accountId || !atAGlance || !businessUnit || !statusCode) {
-      return this.content.unavailable;
+      return { available: false, warningMessage: null };
     }
 
-    const restrictedStatusHeading = FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_ACCOUNT_RESTRICTED_STATUS_HEADINGS[statusCode];
-    if (restrictedStatusHeading) {
-      return restrictedStatusHeading;
+    const statusWarning = FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_ACCOUNT_RESTRICTED_STATUS_WARNINGS[statusCode];
+    if (statusWarning) {
+      return { available: true, warningMessage: statusWarning };
     }
 
     const balance = atAGlance.account_balance ?? header?.payment_state_summary.account_balance;
     if (typeof balance !== 'number' || !Number.isFinite(balance)) {
-      return this.content.unavailable;
+      return { available: false, warningMessage: null };
     }
     if (balance === 0) {
-      return this.content.zeroBalance;
+      return { available: true, warningMessage: this.content.zeroBalance };
     }
 
-    const lastEnforcementActionId = atAGlance.enforcement_status.last_enforcement_action?.last_enforcement_action_id;
+    const lastEnforcementActionId = atAGlance.enforcement_status?.last_enforcement_action?.last_enforcement_action_id;
     const inhibitedEnforcementActionIds =
       businessUnit.configuration_items.find(
         (item) => item.item_name === OPAL_FINES_CONFIGURATION_ITEMS.resultsToInhibitPayments,
       )?.item_values ?? [];
     if (lastEnforcementActionId && inhibitedEnforcementActionIds.includes(lastEnforcementActionId)) {
-      return this.content.inhibitedEnforcementAction;
+      return {
+        available: true,
+        warningMessage: `${this.content.inhibitedEnforcementAction} ${this.lastEnforcementAction() ?? '—'}`,
+      };
     }
 
-    return this.content.success;
+    return { available: true, warningMessage: null };
+  });
+  protected readonly heading = computed(() => {
+    const state = this.accountState();
+    if (!state.available) return this.content.unavailable;
+    return state.warningMessage ? this.content.cannotPay : this.content.success;
   });
 
   /** Joins available name parts without displaying spaces for missing data. */
@@ -201,6 +221,27 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
       [FINES_MCI_ROUTING_PATHS.children.paymentDetails, this.route.snapshot.paramMap.get('accountId')],
       { relativeTo: this.route.parent },
     );
+  }
+
+  /** Opens the existing suspense journey, retaining the account details for the suspense payment. */
+  protected payIntoSuspense(): void {
+    const state = this.accountState();
+    if (!state.available || !state.warningMessage) return;
+    void this.router
+      .navigate([
+        '/',
+        FINES_ROUTING_PATHS.root,
+        FINES_MCI_ROUTING_PATHS.root,
+        FINES_MCI_ROUTING_PATHS.children.create,
+        FINES_MCI_ROUTING_PATHS.children.till,
+        FINES_MCI_ROUTING_PATHS.children.payment,
+        FINES_MCI_ROUTING_PATHS.children.category,
+        FINES_MCI_ROUTING_PATHS.children.suspense,
+        FINES_MCI_ROUTING_PATHS.children.paymentDetails,
+      ])
+      .then((navigated) => {
+        if (navigated) this.store.setDraftJourney('suspense');
+      });
   }
 
   /** Clears the payment draft and search only after returning to Till Details successfully. */

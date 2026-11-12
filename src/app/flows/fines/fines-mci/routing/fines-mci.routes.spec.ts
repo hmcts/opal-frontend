@@ -46,6 +46,12 @@ describe('finesMci routes', () => {
     ?.children?.find((route) => route.path === FINES_MCI_ROUTING_PATHS.children.category)
     ?.children?.find((route) => route.path === FINES_MCI_ROUTING_PATHS.children.criminal);
 
+  const suspensePaymentDetailsRoute = createTillRoute?.children
+    ?.find((route) => route.path === FINES_MCI_ROUTING_PATHS.children.payment)
+    ?.children?.find((route) => route.path === FINES_MCI_ROUTING_PATHS.children.category)
+    ?.children?.find((route) => route.path === FINES_MCI_ROUTING_PATHS.children.suspense)
+    ?.children?.find((route) => route.path === FINES_MCI_ROUTING_PATHS.children.paymentDetails);
+
   it('should redirect the manual cash input root to create allocate', () => {
     expect(routing[0]).toEqual({
       path: '',
@@ -295,5 +301,90 @@ describe('finesMci routes', () => {
     expect(TestBed.inject(Router).url).toBe(`${root}/payment-details/1`);
     expect(harness.routeNativeElement!.querySelector('h1')!.textContent!.trim()).toBe('Payment details');
     expect(store.selectedCriminalAccount()?.defendant_account_id).toBe(1);
+  });
+  it('renders the restricted account at the same URL and opens the existing suspense placeholder', async () => {
+    const accountRoute = criminalRoute!.children!.find((route) => route.path === 'account/:accountId/:type')!;
+    const suspenseRoute = suspensePaymentDetailsRoute!;
+    const tillRoot = '/fines/manual-cash-input/create/till';
+    const criminalPath = 'payment/category/criminal';
+    const accountId = '9007199254740993';
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([
+          {
+            path: tillRoot.slice(1),
+            children: [
+              { path: criminalPath, children: [{ ...accountRoute, canActivate: [], resolve: {} }] },
+              { path: 'payment/category/suspense', children: [{ ...suspenseRoute, canActivate: [], resolve: {} }] },
+            ],
+          },
+        ]),
+      ],
+    });
+    const store = TestBed.inject(FinesMciStore);
+    store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    store.setDraftJourney('criminal');
+    store.setSelectedCriminalAccount({
+      ...OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0],
+      defendant_account_id: accountId,
+    });
+    store.setSelectedCriminalAccountAtAGlance({
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
+      account_status_code: 'WO',
+      account_balance: 0,
+    });
+    const harness = await RouterTestingHarness.create();
+    const url = `${tillRoot}/${criminalPath}/account/${accountId}/individual`;
+    await harness.navigateByUrl(url);
+    expect(TestBed.inject(Router).url).toBe(url);
+    expect(harness.routeNativeElement!.querySelector('h1')!.textContent!.trim()).toBe(
+      'You cannot pay into this account',
+    );
+    expect(harness.routeNativeElement!.querySelector('#fines-mci-account-warning')!.textContent!.trim()).toBe(
+      'Account has been written off in full',
+    );
+    expect(harness.routeNativeElement!.querySelector('a[target="_blank"]')!.getAttribute('href')).toBe(
+      `/fines/account/defendant/${accountId}/details`,
+    );
+    harness.routeNativeElement!.querySelector<HTMLButtonElement>('#fines-mci-pay-into-suspense')!.click();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(TestBed.inject(Router).url).toBe(`${tillRoot}/payment/category/suspense/payment-details`);
+    expect(harness.routeNativeElement!.querySelector('h1')!.textContent!.trim()).toBe('Payment details');
+    expect(store.selectedCriminalAccount()?.defendant_account_id).toBe(accountId);
+    expect(store.draftJourney()).toBe('suspense');
+  });
+  it('exposes guarded suspense payment details and inherits the hidden primary navigation', async () => {
+    expect(suspensePaymentDetailsRoute?.canActivate).toEqual([
+      authGuard,
+      routePermissionsGuard,
+      finesMciFlowStateGuard,
+    ]);
+    expect(suspensePaymentDetailsRoute?.data).toEqual({
+      heading: FINES_MCI_ROUTING_TITLES.children.paymentCategorySuspensePaymentDetails,
+      title: FINES_MCI_ROUTING_TITLES.children.paymentCategorySuspensePaymentDetails,
+      routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+    });
+    expect(suspensePaymentDetailsRoute?.resolve).toEqual({ title: TitleResolver });
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([
+          { path: 'fines', children: [{ path: 'manual-cash-input', children: routesForRecognition(routing) }] },
+        ]),
+      ],
+    });
+    const harness = await RouterTestingHarness.create();
+    const url = '/fines/manual-cash-input/create/till/payment/category/suspense/payment-details';
+    await harness.navigateByUrl(url, RouteDestinationComponent);
+    const router = TestBed.inject(Router);
+    expect(router.url).toBe(url);
+    let snapshot = router.routerState.snapshot.root;
+    while (snapshot.firstChild) snapshot = snapshot.firstChild;
+    expect(snapshot.data).toEqual(
+      expect.objectContaining({
+        ...PRIMARY_NAV_HIDDEN_ROUTE_DATA,
+        title: FINES_MCI_ROUTING_TITLES.children.paymentCategorySuspensePaymentDetails,
+      }),
+    );
   });
 });

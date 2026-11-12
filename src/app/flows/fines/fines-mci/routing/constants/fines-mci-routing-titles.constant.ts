@@ -4,6 +4,7 @@ export const FINES_MCI_ROUTING_TITLES = {
     createAllocate: 'Create and allocate tills',
     paymentCategoryCriminalMatches: 'Criminal account search matches',
     paymentCategoryCriminalPaymentDetails: 'Payment details',
+    paymentCategorySuspensePaymentDetails: 'Payment details',
     paymentCategoryCriminalAccount: 'Confirm account',
     paymentCategoryCriminalSearch: 'Search for criminal accounts',
     createTillSelectBusinessUnit: 'Select business unit',

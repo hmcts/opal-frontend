@@ -4,7 +4,15 @@
 <div class="govuk-grid-column-two-thirds">
   <span class="govuk-caption-m">{{ businessUnitName() }}</span>
   <h1 class="govuk-heading-l">{{ heading() }}</h1>
-  @if (heading() === content.success) {
+  @if (accountState().available) {
+    @if (accountState().warningMessage; as warningMessage) {
+      <opal-lib-moj-alert type="warning" [ariaLabel]="warningMessage" id="fines-mci-account-warning">
+        <opal-lib-moj-alert-icon icon type="warning"></opal-lib-moj-alert-icon>
+        <opal-lib-moj-alert-content content>
+          <opal-lib-moj-alert-content-text>{{ warningMessage }}</opal-lib-moj-alert-content-text>
+        </opal-lib-moj-alert-content>
+      </opal-lib-moj-alert>
+    }
     <opal-lib-govuk-summary-list summaryListId="fines-mci-confirm-account-summary">
       @for (row of rows(); track row.label) {
         <div
@@ -34,10 +42,14 @@
       >.
     </p>
     <div class="govuk-button-group">
-      <button class="govuk-button" type="button" id="fines-mci-confirm-account" (click)="confirm()">Confirm</button>
+      @if (accountState().warningMessage) {
+        <button class="govuk-button" type="button" id="fines-mci-pay-into-suspense" (click)="payIntoSuspense()">
+          Pay into suspense
+        </button>
+      } @else {
+        <button class="govuk-button" type="button" id="fines-mci-confirm-account" (click)="confirm()">Confirm</button>
+      }
       <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
     </div>
-  } @else {
-    <p class="govuk-body">{{ content.placeholder }}</p>
   }
 </div>

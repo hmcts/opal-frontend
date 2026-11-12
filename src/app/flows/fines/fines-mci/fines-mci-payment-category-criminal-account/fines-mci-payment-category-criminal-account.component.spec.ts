@@ -27,11 +27,11 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
   });
 
   it.each([
-    ['CS', 'You cannot pay into this account \u2013 Account has been consolidated'],
-    ['WO', 'You cannot pay into this account \u2013 Account has been written off'],
-    ['TO', 'You cannot pay into this account \u2013 Transfer out in progress'],
-    ['TS', 'You cannot pay into this account \u2013 Account has been transferred out to Scotland or Northern Ireland'],
-    ['TA', 'You cannot pay into this account \u2013 Account has been transferred out'],
+    ['CS', 'Account has been consolidated.'],
+    ['WO', 'Account has been written off in full'],
+    ['TO', 'Account has been transferred out'],
+    ['TS', 'Account has been transferred out'],
+    ['TA', 'Account has been transferred out'],
     ['L', 'Confirm account'],
   ])('should display the %s account outcome', (accountStatusCode, heading) => {
     store.setSelectedCriminalAccountHeader({
@@ -44,7 +44,12 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
     const fixture = TestBed.createComponent(FinesMciPaymentCategoryCriminalAccountComponent);
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('h1').textContent.trim()).toBe(heading);
+    expect(fixture.nativeElement.querySelector('h1').textContent.trim()).toBe(
+      accountStatusCode === 'L' ? 'Confirm account' : 'You cannot pay into this account',
+    );
+    expect(fixture.nativeElement.querySelector('#fines-mci-account-warning')?.textContent.trim()).toBe(
+      accountStatusCode === 'L' ? undefined : heading,
+    );
     expect(!!fixture.nativeElement.querySelector('#fines-mci-confirm-account')).toBe(accountStatusCode === 'L');
   });
 
@@ -52,6 +57,10 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
     const fixture = TestBed.createComponent(FinesMciPaymentCategoryCriminalAccountComponent);
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('h1').textContent.trim()).toBe('Account details are not available');
+    expect(fixture.nativeElement.querySelector('dl')).toBeNull();
+    expect(fixture.nativeElement.querySelector('#fines-mci-account-warning')).toBeNull();
+    expect(fixture.nativeElement.querySelector('#fines-mci-confirm-account')).toBeNull();
+    expect(fixture.nativeElement.querySelector('#fines-mci-pay-into-suspense')).toBeNull();
   });
 
   it('should not display another selected account outcome for a different route ID', () => {
@@ -60,9 +69,13 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
     const fixture = TestBed.createComponent(FinesMciPaymentCategoryCriminalAccountComponent);
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('h1').textContent.trim()).toBe('Account details are not available');
+    expect(fixture.nativeElement.querySelector('dl')).toBeNull();
+    expect(fixture.nativeElement.querySelector('#fines-mci-account-warning')).toBeNull();
+    expect(fixture.nativeElement.querySelector('#fines-mci-confirm-account')).toBeNull();
+    expect(fixture.nativeElement.querySelector('#fines-mci-pay-into-suspense')).toBeNull();
   });
 
-  it('should update the placeholder when the selected account status changes', () => {
+  it('should update the warning when the selected account status changes', () => {
     store.setSelectedCriminalAccountHeader({
       ...FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK,
       account_status_reference: { account_status_code: 'L', account_status_display_name: 'Live' },
@@ -77,18 +90,19 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
     });
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('h1').textContent.trim()).toBe(
-      'You cannot pay into this account \u2013 Transfer out in progress',
+    expect(fixture.nativeElement.querySelector('h1').textContent.trim()).toBe('You cannot pay into this account');
+    expect(fixture.nativeElement.querySelector('#fines-mci-account-warning').textContent.trim()).toBe(
+      'Account has been transferred out',
     );
     expect(fixture.nativeElement.textContent).not.toContain('Confirm account');
   });
 
   it.each([
-    ['CS', 'You cannot pay into this account \u2013 Account has been consolidated'],
-    ['WO', 'You cannot pay into this account \u2013 Account has been written off'],
-    ['TO', 'You cannot pay into this account \u2013 Transfer out in progress'],
-    ['TS', 'You cannot pay into this account \u2013 Account has been transferred out to Scotland or Northern Ireland'],
-    ['TA', 'You cannot pay into this account \u2013 Account has been transferred out'],
+    ['CS', 'Account has been consolidated.'],
+    ['WO', 'Account has been written off in full'],
+    ['TO', 'Account has been transferred out'],
+    ['TS', 'Account has been transferred out'],
+    ['TA', 'Account has been transferred out'],
   ])('should use at-a-glance status %s before a conflicting header status', (statusCode, expectedHeading) => {
     store.setSelectedCriminalAccountHeader({
       ...FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK,
@@ -102,7 +116,7 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
     const fixture = TestBed.createComponent(FinesMciPaymentCategoryCriminalAccountComponent);
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('h1').textContent.trim()).toBe(expectedHeading);
+    expect(fixture.nativeElement.querySelector('#fines-mci-account-warning').textContent.trim()).toBe(expectedHeading);
   });
 
   it('should block a zero balance from at-a-glance even when the header and search result have outstanding balances', () => {
@@ -118,8 +132,8 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
     const fixture = TestBed.createComponent(FinesMciPaymentCategoryCriminalAccountComponent);
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('h1').textContent.trim()).toBe(
-      'You cannot pay into this account \u2013 Account has a zero balance',
+    expect(fixture.nativeElement.querySelector('#fines-mci-account-warning').textContent.trim()).toBe(
+      'Account has a zero balance',
     );
   });
 
@@ -139,8 +153,8 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
       const fixture = TestBed.createComponent(FinesMciPaymentCategoryCriminalAccountComponent);
       fixture.detectChanges();
 
-      expect(fixture.nativeElement.querySelector('h1').textContent.trim()).toBe(
-        'You cannot pay into this account \u2013 Account has a zero balance',
+      expect(fixture.nativeElement.querySelector('#fines-mci-account-warning').textContent.trim()).toBe(
+        'Account has a zero balance',
       );
     },
   );
@@ -201,10 +215,8 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
       const fixture = TestBed.createComponent(FinesMciPaymentCategoryCriminalAccountComponent);
       fixture.detectChanges();
 
-      expect(fixture.nativeElement.querySelector('h1').textContent.trim()).toBe(
-        restricted
-          ? 'You cannot pay into this account \u2013 Account has an inhibited enforcement action'
-          : 'Confirm account',
+      expect(fixture.nativeElement.querySelector('#fines-mci-account-warning')?.textContent.trim()).toBe(
+        restricted ? 'Account is subject to inhibit related enforcement actions: Warrant Issued (EA-001)' : undefined,
       );
     },
   );
@@ -254,8 +266,8 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
     const fixture = TestBed.createComponent(FinesMciPaymentCategoryCriminalAccountComponent);
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('h1').textContent.trim()).toBe(
-      'You cannot pay into this account \u2013 Account has been consolidated',
+    expect(fixture.nativeElement.querySelector('#fines-mci-account-warning').textContent.trim()).toBe(
+      'Account has been consolidated.',
     );
   });
 
@@ -345,47 +357,51 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
       expect(value('Aliases')).toMatch(/First Company.*Second Company/s);
     });
 
-    it('shows em dashes for missing optional values and retains a zero instalment amount', () => {
-      store.setSelectedCriminalAccountAtAGlance({
-        ...store.selectedCriminalAccountAtAGlance()!,
-        account_number: '',
-        party_details: { party_id: 'test', organisation_flag: false, individual_details: null },
-        address: {
-          address_line_1: '',
-          address_line_2: null,
-          address_line_3: null,
-          address_line_4: null,
-          address_line_5: null,
-          postcode: null,
-        },
-        comments_and_notes: null,
-        enforcement_status: {
-          ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK.enforcement_status,
-          last_enforcement_action: null,
-        },
-        payment_terms: {
-          ...store.selectedCriminalAccountAtAGlance()!.payment_terms,
-          instalment_period: null,
-          instalment_amount: 0,
-          effective_date: null,
-        },
-      });
-      const { value } = render();
-      for (const label of [
-        'Account number',
-        'Name',
-        'Aliases',
-        'Date of birth',
-        'Address',
-        'Enforcement action',
-        'Frequency',
-        'Start date',
-        'Comments',
-      ]) {
-        expect(value(label), label).toBe('—');
-      }
-      expect(value('Instalments')).toBe('£0.00');
-    });
+    it.each(['L', 'WO'])(
+      'shows em dashes for missing optional values and retains a zero instalment amount for %s',
+      (status) => {
+        store.setSelectedCriminalAccountAtAGlance({
+          ...store.selectedCriminalAccountAtAGlance()!,
+          account_status_code: status,
+          account_number: '',
+          party_details: { party_id: 'test', organisation_flag: false, individual_details: null },
+          address: {
+            address_line_1: '',
+            address_line_2: null,
+            address_line_3: null,
+            address_line_4: null,
+            address_line_5: null,
+            postcode: null,
+          },
+          comments_and_notes: null,
+          enforcement_status: {
+            ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK.enforcement_status,
+            last_enforcement_action: null,
+          },
+          payment_terms: {
+            ...store.selectedCriminalAccountAtAGlance()!.payment_terms,
+            instalment_period: null,
+            instalment_amount: 0,
+            effective_date: null,
+          },
+        });
+        const { value } = render();
+        for (const label of [
+          'Account number',
+          'Name',
+          'Aliases',
+          'Date of birth',
+          'Address',
+          'Enforcement action',
+          'Frequency',
+          'Start date',
+          'Comments',
+        ]) {
+          expect(value(label), label).toBe('—');
+        }
+        expect(value('Instalments')).toBe('£0.00');
+      },
+    );
 
     it('uses by-date terms without instalment-only rows', () => {
       store.setSelectedCriminalAccountAtAGlance({
@@ -420,6 +436,96 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
       expect(value('Instalments')).toBe('—');
     });
 
+    it.each(['CS', 'WO', 'TO', 'TA', 'TS'])(
+      'renders the business unit and account data for restricted status %s',
+      (status) => {
+        store.setSelectedCriminalAccountAtAGlance({
+          ...store.selectedCriminalAccountAtAGlance()!,
+          account_status_code: status,
+        });
+        const { value, element } = render();
+        expect(element.querySelector('.govuk-caption-m')?.textContent).toBe(store.businessUnit()?.business_unit_name);
+        expect(value('Name')).toBe('Mx Example PERSON');
+        expect(value('Account number')).toBe(store.selectedCriminalAccountAtAGlance()?.account_number);
+        expect(value('Aliases')).toMatch(/First ALIAS.*Second ALIAS/s);
+        expect(value('Date of birth')).toBe('03 February 1990');
+        expect(value('Balance')).toBe('£175.00');
+        expect(value('Enforcement action')).toBe('Warrant Issued (EA-001)');
+        expect(value('Payment terms')).toBe('Lump sum plus instalments');
+        expect(value('Frequency')).toBe('Monthly');
+        expect(value('Instalments')).toBe('£25.00');
+        expect(value('Start date')).toBe('05 July 2025');
+        expect(value('Comments')).toMatch(/Account reviewed.*First note.*Second note/s);
+        expect(element.querySelector('a[target="_blank"]')?.getAttribute('href')).toBe(
+          '/fines/account/defendant/1/details',
+        );
+        expect(element.querySelector('#fines-mci-confirm-account')).toBeNull();
+        expect(element.querySelector('#fines-mci-pay-into-suspense')?.textContent?.trim()).toBe('Pay into suspense');
+      },
+    );
+
+    it('shows zero balance in pounds on the restricted screen', () => {
+      store.setSelectedCriminalAccountAtAGlance({ ...store.selectedCriminalAccountAtAGlance()!, account_balance: 0 });
+      const { value } = render();
+      expect(value('Balance')).toBe('£0.00');
+    });
+
+    it.each([null, undefined, NaN, Infinity])(
+      'shows an em dash for missing or invalid balance on a written-off account: %s',
+      (balance) => {
+        store.setSelectedCriminalAccountAtAGlance({
+          ...store.selectedCriminalAccountAtAGlance()!,
+          account_status_code: 'WO',
+          account_balance: balance,
+        });
+        const { value } = render();
+        expect(value('Balance')).toBe('—');
+      },
+    );
+
+    it.each([true, false])(
+      'opens suspense and updates the draft only when navigation succeeds: %s',
+      async (navigated) => {
+        store.setSelectedCriminalAccountAtAGlance({
+          ...store.selectedCriminalAccountAtAGlance()!,
+          account_status_code: 'WO',
+        });
+        store.setDraftJourney('criminal');
+        const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(navigated);
+        const { element, fixture } = render();
+        element.querySelector<HTMLButtonElement>('#fines-mci-pay-into-suspense')!.click();
+        await fixture.whenStable();
+        expect(navigate).toHaveBeenCalledWith([
+          '/',
+          'fines',
+          'manual-cash-input',
+          'create',
+          'till',
+          'payment',
+          'category',
+          'suspense',
+          'payment-details',
+        ]);
+        expect(store.draftJourney()).toBe(navigated ? 'suspense' : 'criminal');
+        expect(store.selectedCriminalAccount()?.defendant_account_id).toBe(1);
+      },
+    );
+
+    it('does not start suspense if the restriction is removed before the view updates', () => {
+      store.setSelectedCriminalAccountAtAGlance({
+        ...store.selectedCriminalAccountAtAGlance()!,
+        account_status_code: 'WO',
+      });
+      const { element } = render();
+      const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+      store.setSelectedCriminalAccountAtAGlance({
+        ...store.selectedCriminalAccountAtAGlance()!,
+        account_status_code: 'L',
+      });
+      element.querySelector<HTMLButtonElement>('#fines-mci-pay-into-suspense')!.click();
+      expect(navigate).not.toHaveBeenCalled();
+    });
+
     it('requests the payment-details route when Confirm is selected', () => {
       const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
       const { element } = render();
@@ -427,7 +533,11 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
       expect(navigate).toHaveBeenCalledWith(['payment-details', '1'], { relativeTo: undefined });
     });
 
-    it('returns to the search results without clearing the selected account', () => {
+    it.each(['L', 'WO'])('returns to the search results without clearing the selected account for %s', (status) => {
+      store.setSelectedCriminalAccountAtAGlance({
+        ...store.selectedCriminalAccountAtAGlance()!,
+        account_status_code: status,
+      });
       const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
       const { element } = render();
       element.querySelector<HTMLAnchorElement>('.govuk-back-link')!.click();
@@ -435,9 +545,18 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
       expect(store.selectedCriminalAccount()?.defendant_account_id).toBe(1);
     });
 
-    it.each([true, false])(
-      'clears the payment draft and search only if Cancel navigation succeeds: %s',
-      async (navigated) => {
+    it.each([
+      [true, 'L'],
+      [false, 'L'],
+      [true, 'WO'],
+      [false, 'WO'],
+    ] as const)(
+      'clears the payment draft and search only if Cancel navigation succeeds: %s for %s',
+      async (navigated, status) => {
+        store.setSelectedCriminalAccountAtAGlance({
+          ...store.selectedCriminalAccountAtAGlance()!,
+          account_status_code: status,
+        });
         const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(navigated);
         const clearDraft = vi.spyOn(store, 'setDraftJourney');
         const clearSearch = vi.spyOn(store, 'resetCriminalSearch');
@@ -461,14 +580,18 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
       expect(navigate).not.toHaveBeenCalled();
     });
 
-    it('removes the details and Confirm button when the account becomes restricted', () => {
+    it('retains the details and replaces Confirm with Pay into suspense when the account becomes restricted', () => {
       const { fixture, element } = render();
       store.setSelectedCriminalAccountAtAGlance({
         ...store.selectedCriminalAccountAtAGlance()!,
         account_status_code: 'WO',
       });
       fixture.detectChanges();
-      expect(element.querySelector('dl')).toBeNull();
+      expect(element.querySelector('dl')).not.toBeNull();
+      expect(element.querySelector('#fines-mci-account-warning')?.textContent?.trim()).toBe(
+        'Account has been written off in full',
+      );
+      expect(element.querySelector('#fines-mci-pay-into-suspense')).not.toBeNull();
       expect(element.querySelector('#fines-mci-confirm-account')).toBeNull();
     });
   });
