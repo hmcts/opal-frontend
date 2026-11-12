@@ -504,17 +504,28 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
     expect(link.getAttribute('href')).toBe(criminalSearchPath);
   });
 
-  it('should render placeholder content for search criteria that cannot be combined', () => {
+  it('should render the search criteria cannot be combined problem page with a link back to the criminal search page', () => {
     routeDataSubject.next({
       criminalAccounts: { results: 'search-criteria-cannot-be-combined', response: null },
     });
     fixture.detectChanges();
 
     const text = fixture.nativeElement.textContent;
+    const link = fixture.nativeElement.querySelector('a.govuk-link') as HTMLAnchorElement;
 
-    expect(text).toContain(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name);
-    expect(text).toContain('Search criteria cannot be combined');
-    expect(text).toContain('PO-3529');
+    expect(text).toContain('There is a problem');
+    expect(text).toContain(
+      'Reference data and account information cannot be entered together when searching for an account. Search using either:',
+    );
+    expect(text).toContain('account number, or');
+    expect(text).toContain('advanced search');
+    expect(text).toContain('Go back');
+    expect(fixture.nativeElement.querySelector('.govuk-caption-m')).toBeNull();
+    expect(text).not.toContain('Search criteria cannot be combined');
+    expect(text).not.toContain('PO-3529');
+    expect(fixture.nativeElement.querySelector('opal-lib-govuk-back-link')).toBeNull();
+    expect(link.textContent?.trim()).toBe('Go back');
+    expect(link.getAttribute('href')).toBe(criminalSearchPath);
     expect(
       fixture.nativeElement.querySelector('app-fines-mci-payment-category-criminal-matches-table-wrapper'),
     ).toBeNull();
