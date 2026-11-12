@@ -642,6 +642,8 @@ boolean legacyEnabled = cachedPrLabels.contains('enable_legacy_mode')
 env.with { pipelineEnv ->
     pipelineEnv.DEV_DEFAULT_APP_MODE = opalName
     pipelineEnv.DEV_OPAL_LEGACY_GATEWAY_URL = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
+    pipelineEnv.STG_OPAL_LEGACY_GATEWAY_URL = pipelineEnv.STG_OPAL_LEGACY_GATEWAY_URL ?:
+        'https://opal-legacy-db-stub-staging.platform.hmcts.net/opal'
     pipelineEnv.IS_LEGACY_MODE = stringFalse
     pipelineEnv.LEGACY_ENABLED = stringFalse
     pipelineEnv.JCDE_OVERRIDE = stringFalse
