@@ -34,17 +34,15 @@ export const buildUserStateResponse = (
 });
 
 /**
- * Intercepts the authenticated-user check using the endpoint's boolean response contract.
+ * Intercepts the authenticated-user check and returns a successful SSO response.
  *
- * @param authenticated - Whether the stubbed session is authenticated.
- * @param statusCode - HTTP response status, including legacy unauthenticated 401 responses.
  * @returns Cypress chainable aliased as `getAuthenticatedUser`.
  */
-export function interceptAuthenticatedUser(authenticated = true, statusCode: 200 | 401 = 200) {
+export function interceptAuthenticatedUser() {
   return cy
     .intercept('GET', '/sso/authenticated', {
-      statusCode,
-      body: authenticated,
+      statusCode: 200,
+      body: { authenticated: true },
     })
     .as('getAuthenticatedUser');
 }
