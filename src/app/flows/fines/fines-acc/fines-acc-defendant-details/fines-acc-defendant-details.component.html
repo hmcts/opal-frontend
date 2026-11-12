@@ -232,6 +232,7 @@
         [requestPaymentCardDeniedType]="getRequestPaymentCardDeniedType()"
         [bankingInterfacesEnabled]="bankingInterfacesEnabled"
         [hasManageAprPermission]="hasPermission(finesPermissions['manage-alternate-payment-references'])"
+        [canManageApr]="hasBusinessUnitPermissionKey('manage-alternate-payment-references')"
         [style]="tabContentStyles"
       ></app-fines-acc-defendant-details-payment-terms-tab>
     }

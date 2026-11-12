@@ -82,9 +82,10 @@ describe('FinesAccDefendantDetailsPaymentTermsTabComponent', () => {
     expect(fixture.nativeElement.querySelector('.govuk-grid-column-one-third')).toBeNull();
   });
 
-  it('should display the APR action to a user with permission in any BU and let the Manage route guard enforce access', () => {
+  it('should display the Manage action when APR permission is granted in the account business unit', () => {
     component.bankingInterfacesEnabled = true;
     component.hasManageAprPermission = true;
+    component.canManageApr = true;
 
     fixture.detectChanges();
 
@@ -94,6 +95,18 @@ describe('FinesAccDefendantDetailsPaymentTermsTabComponent', () => {
     expect(link.closest('.govuk-grid-column-one-third')).toBeTruthy();
     expect(getLinkByText('Change')).toBeUndefined();
     expect(getLinkByText('Request payment card')).toBeUndefined();
+  });
+
+  it('should keep the APR action visible and target its denied page when permission is only in another business unit', () => {
+    component.bankingInterfacesEnabled = true;
+    component.hasManageAprPermission = true;
+    component.canManageApr = false;
+
+    fixture.detectChanges();
+
+    const link = fixture.nativeElement.querySelector('#manage-alternate-payment-references') as HTMLAnchorElement;
+    expect(link.textContent?.trim()).toBe('Manage alternate payment references');
+    expect(link.getAttribute('href')).toBe('/alternate/payment/reference/denied');
   });
 
   it('should display Change when enforcement prevents amending so the user can follow the existing denied route', () => {
