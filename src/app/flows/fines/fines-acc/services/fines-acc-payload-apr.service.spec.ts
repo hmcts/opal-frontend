@@ -29,6 +29,15 @@ describe('FinesAccPayloadService APR payloads', () => {
     Settings.defaultZone = originalZone;
   });
 
+  it('builds the exact API payload from submitted APR form state', () => {
+    expect(service.buildAprPayload({ apr_text: ' MiXeD-123 ' })).toEqual({ apr_text: ' MiXeD-123 ' });
+  });
+
+  it('transforms an API reference into its editable form state and initialises Add without a reference', () => {
+    expect(service.transformAprToForm(reference)).toEqual({ apr_text: ' MiXeD-123 ' });
+    expect(service.transformAprToForm(null)).toEqual({ apr_text: '' });
+  });
+
   it('transforms the API list into eligible current and inherited APR sections with display dates', () => {
     const result = service.transformAprsPayload({
       references: [
