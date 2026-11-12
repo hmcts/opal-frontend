@@ -47,6 +47,7 @@ import { FINES_ACCOUNT_ROUTE_TYPES } from './constants/fines-acc-route-types.con
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 import { fetchAccCourtsResolver } from './resolvers/fetch-acc-courts-resolver/fetch-acc-courts.resolver';
 import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';
+import { FINES_ACC_APR_ROUTING_TITLES } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-titles.constant';
 
 describe('fines acc routes', () => {
   const defendantRoute = routing.find((route) => route.path === `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`);
@@ -140,6 +141,19 @@ describe('fines acc routes', () => {
     ]);
     expect(manageRoute?.resolve?.['title']).toBe(TitleResolver);
     expect(manageRoute?.data?.['accessDeniedPath']).toBeUndefined();
+  });
+
+  it('registers the APR denied page before action routes with account-state protection and no APR permission requirement', () => {
+    const deniedRoute = defendantJourneyGroup?.children?.find(
+      (route) => route.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/${FINES_ACC_APR_ROUTING_PATHS.children.denied}`,
+    );
+
+    expect(deniedRoute?.loadComponent).toBeTypeOf('function');
+    expect(deniedRoute?.canActivate).toEqual([finesAccStateGuard]);
+    expect(deniedRoute?.data?.['title']).toBe(FINES_ACC_APR_ROUTING_TITLES.children.denied);
+    expect(deniedRoute?.data?.['routePermissionId']).toBeUndefined();
+    expect(deniedRoute?.resolve).toEqual({ title: TitleResolver });
+    expect(defendantJourneyGroup?.children?.[0]).toBe(deniedRoute);
   });
 
   it('should load the add enforcement action component through the lazy route factory', async () => {
