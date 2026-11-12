@@ -45,18 +45,18 @@ describe('FinesFinancePayloadService', () => {
     });
   });
 
-  it('maps all business-unit codes to alphabetic display labels', () => {
+  it('maps all business-unit IDs to alphabetic display labels', () => {
     expect(service.mapBusinessUnitsToOptions(FINES_FINANCE_BUSINESS_UNIT_REF_DATA_MOCK.refData)).toEqual([
-      { name: 'Camberwell Green', value: '0046' },
-      { name: 'Camden and Islington', value: '0034' },
-      { name: 'N E Region', value: '0047' },
-      { name: 'West London', value: '0042' },
+      { name: 'Camberwell Green', value: '77' },
+      { name: 'Camden and Islington', value: '65' },
+      { name: 'N E Region', value: '78' },
+      { name: 'West London', value: '73' },
     ]);
   });
 
   it('uses current-user permissions for business-unit filter choices', () => {
     expect(service.getPermittedBusinessUnitOptions(FINES_FINANCE_BUSINESS_UNIT_REF_DATA_MOCK.refData)).toEqual([
-      { name: 'Camberwell Green', value: '0046' },
+      { name: 'Camberwell Green', value: '77' },
     ]);
   });
 
@@ -70,7 +70,7 @@ describe('FinesFinancePayloadService', () => {
       dateTimeDisplay: '20 Oct 2026 at 13:00',
       Title: 'allpay_1001.xml',
       Type: 'RAW',
-      'Business unit': 'Camberwell Green',
+      'Business unit': ['Camberwell Green'],
       Source: 'Allpay',
       Status: 'Ready',
       Actions: null,

@@ -20,10 +20,10 @@ describe('Inbound interface files', () => {
       setupInboundFilesComponent();
 
       cy.wait('@inboundFiles').then(({ request }) => {
-        expect(request.query.domain).to.equal('FINES');
-        expect(request.query.target).to.equal('OPAL');
-        expect(request.query.type).to.equal('SOURCE,TRANSFORMED_JSON');
-        expect(request.query.type).not.to.contain('SOURCE_JSON');
+        expect(request.query['domain']).to.equal('FINES');
+        expect(request.query['target']).to.equal('OPAL');
+        expect(request.query['type']).to.equal('SOURCE,TRANSFORMED_JSON');
+        expect(request.query['type']).not.to.contain('SOURCE_JSON');
       });
 
       cy.get('table thead').within(() => {
@@ -77,11 +77,11 @@ describe('Inbound interface files', () => {
       cy.get('#refresh-reports-button').click();
 
       cy.wait('@filteredInboundFiles').then(({ request }) => {
-        expect(request.query.business_unit_code).to.equal('0046');
-        expect(request.query.source).to.equal('ALLPAY');
-        expect(request.query.type).to.equal('SOURCE');
-        expect(request.query.from_date).to.be.a('string').and.not.be.empty;
-        expect(request.query.to_date).to.be.a('string').and.not.be.empty;
+        expect(request.query['business_unit_id']).to.equal('77');
+        expect(request.query['source']).to.equal('ALLPAY');
+        expect(request.query['type']).to.equal('SOURCE');
+        expect(request.query['from_date']).to.be.a('string').and.not.be.empty;
+        expect(request.query['to_date']).to.be.a('string').and.not.be.empty;
       });
       cy.get('table tbody tr:visible').should('have.length', 1).and('contain.text', 'allpay_1001.xml');
     },

@@ -46,7 +46,10 @@ export function buildInboundFilesSearchParams(
         ) + FINES_FINANCE_INBOUND_FILES_DATE_FILTER_CONFIG.inclusiveEndFraction;
     }
   }
-  if (formData.businessUnit) params.business_unit_code = formData.businessUnit;
+  if (formData.businessUnit && /^[1-9]\d*$/.test(formData.businessUnit)) {
+    const businessUnitId = Number(formData.businessUnit);
+    if (Number.isSafeInteger(businessUnitId)) params.business_unit_id = businessUnitId;
+  }
   if (formData.source) params.source = formData.source;
   if (formData.fileType) params.type = [formData.fileType];
   return params;

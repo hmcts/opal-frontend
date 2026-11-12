@@ -149,8 +149,8 @@ describe('FinesFinanceInboundFilesComponent', () => {
     httpMock.expectNone((req) => req.url === '/opal-file-handling-service/interface-files');
   });
 
-  it('offers only permitted business units using codes rather than IDs', () => {
-    expect(component.businessUnits).toEqual([{ name: 'Camberwell Green', value: '0046' }]);
+  it('offers only permitted business units using their IDs', () => {
+    expect(component.businessUnits).toEqual([{ name: 'Camberwell Green', value: '77' }]);
   });
 
   it('offers no business units when reference data is absent', () => {
@@ -180,7 +180,7 @@ describe('FinesFinanceInboundFilesComponent', () => {
       dateTimeDisplay: '20 Oct 2026 at 13:00',
       Title: 'allpay_1001.xml',
       Type: 'RAW',
-      'Business unit': 'Camberwell Green',
+      'Business unit': ['Camberwell Green'],
       Source: 'Allpay',
       Status: 'Ready',
       Actions: null,
@@ -211,12 +211,12 @@ describe('FinesFinanceInboundFilesComponent', () => {
       .flush(FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK);
     const filters = fixture.debugElement.query(By.directive(CustomFileInterfaceViewerFiltersComponent))
       .componentInstance as CustomFileInterfaceViewerFiltersComponent;
-    filters.filtersForm.patchValue({ businessUnit: '0046', source: 'ALLPAY', fileType: 'TRANSFORMED_JSON' });
+    filters.filtersForm.patchValue({ businessUnit: '77', source: 'ALLPAY', fileType: 'TRANSFORMED_JSON' });
     filters.filtersForm.markAsDirty();
     fixture.detectChanges();
     (fixture.nativeElement.querySelector('#refresh-reports-button') as HTMLButtonElement).click();
     const request = httpMock.expectOne((req) => req.url === '/opal-file-handling-service/interface-files');
-    expect(request.request.params.get('business_unit_code')).toBe('0046');
+    expect(request.request.params.get('business_unit_id')).toBe('77');
     expect(request.request.params.get('source')).toBe('ALLPAY');
     expect(request.request.params.get('type')).toBe('TRANSFORMED_JSON');
     request.flush({ number_of_results: 0, interface_files: [] });
@@ -374,10 +374,10 @@ describe('FinesFinanceInboundFilesComponent', () => {
     await selectFilterOption('business-unit', 'Camberwell Green');
     await selectFilterOption('source', 'Allpay');
     await selectFilterOption('type', 'RAW');
-    expect(filters.filtersForm.controls.businessUnit.value).toBe('0046');
+    expect(filters.filtersForm.controls.businessUnit.value).toBe('77');
     (fixture.nativeElement.querySelector('#refresh-reports-button') as HTMLButtonElement).click();
     const selected = httpMock.expectOne((req) => req.url === '/opal-file-handling-service/interface-files');
-    expect(selected.request.params.get('business_unit_code')).toBe('0046');
+    expect(selected.request.params.get('business_unit_id')).toBe('77');
     expect(selected.request.params.get('source')).toBe('ALLPAY');
     expect(selected.request.params.get('type')).toBe('SOURCE');
     selected.flush({
@@ -385,7 +385,7 @@ describe('FinesFinanceInboundFilesComponent', () => {
       interface_files: [FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files![0]],
     });
     fixture.detectChanges();
-    expect(component.tableData()?.every((row) => row['Business unit'] === 'Camberwell Green')).toBe(true);
+    expect(component.tableData()?.map((row) => row['Business unit'])).toEqual([['Camberwell Green']]);
 
     await selectFilterOption('business-unit', 'All business units');
     await selectFilterOption('source', 'All sources');
@@ -396,7 +396,7 @@ describe('FinesFinanceInboundFilesComponent', () => {
     expect(filters.filtersForm.controls.dateFilter.value).toBe('last7Days');
     (fixture.nativeElement.querySelector('#refresh-reports-button') as HTMLButtonElement).click();
     const all = httpMock.expectOne((req) => req.url === '/opal-file-handling-service/interface-files');
-    expect(all.request.params.has('business_unit_code')).toBe(false);
+    expect(all.request.params.has('business_unit_id')).toBe(false);
     expect(all.request.params.has('source')).toBe(false);
     expect(all.request.params.get('type')).toBe('SOURCE,TRANSFORMED_JSON');
     expect(all.request.params.get('from_date')).toBe('2026-10-13T23:00:00');

@@ -19,10 +19,8 @@ import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-c
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { ActivatedRoute } from '@angular/router';
 import { IOpalFinesBusinessUnitRefData } from '../../services/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
-import {
-  CustomInboundFileViewerComponent,
-  ICustomFileInterfaceViewerInboundTableWrapperTableData,
-} from '@hmcts/opal-frontend-common/components/custom/custom-file-interface-viewer/custom-inbound-file-viewer';
+import { CustomInboundFileViewerComponent } from '@hmcts/opal-frontend-common/components/custom/custom-file-interface-viewer/custom-inbound-file-viewer';
+import type { ICustomFileInterfaceViewerInboundTableWrapperTableData } from '@hmcts/opal-frontend-common/components/custom/custom-file-interface-viewer/custom-inbound-file-viewer/interfaces';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { FileService } from '@hmcts/opal-frontend-common/services/file-service';
 import { FinesFinancePayloadService } from '../services/fines-finance-payload.service';

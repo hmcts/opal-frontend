@@ -1,5 +1,5 @@
 import type { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
-import type { ICustomFileInterfaceViewerInboundTableWrapperTableData } from '@hmcts/opal-frontend-common/components/custom/custom-file-interface-viewer/custom-inbound-file-viewer';
+import type { ICustomFileInterfaceViewerInboundTableWrapperTableData } from '@hmcts/opal-frontend-common/components/custom/custom-file-interface-viewer/custom-inbound-file-viewer/interfaces';
 import type { IOpalFileHandlingInterfaceFile } from '@hmcts/opal-frontend-common/services/opal-file-handling-service/interfaces';
 import type { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FINES_FINANCE_INBOUND_FILES_STATUS_LABELS } from '../../constants/fines-finance-inbound-files-status-labels.constant';
@@ -14,7 +14,7 @@ import type { FinesFinanceInboundFileDateTime } from '../types/fines-finance-inb
  * @param options - Known names and values.
  * @returns The matching name or the original value.
  */
-function getDisplayName(value: string | null, options: IAlphagovAccessibleAutocompleteItem[]): string | null {
+function getDisplayName<T extends string | null>(value: T, options: IAlphagovAccessibleAutocompleteItem[]): string | T {
   return options.find((option) => String(option.value) === value)?.name ?? value;
 }
 
@@ -54,8 +54,7 @@ export function mapInboundFilesToTableData(
       ...getFileDateTime(file.created_datetime, dateService),
       Title: file.file_name,
       Type: getDisplayName(file.type, options.types),
-      'Business unit':
-        file.business_unit_codes?.map((code) => getDisplayName(code, options.businessUnits)).join(', ') ?? null,
+      'Business unit': file.business_unit_ids?.map((id) => getDisplayName(String(id), options.businessUnits)) ?? null,
       Source: getDisplayName(file.source, options.sources),
       Status: file.status ? (FINES_FINANCE_INBOUND_FILES_STATUS_LABELS[file.status] ?? file.status) : null,
       Actions: null,

@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import type { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
-import type { ICustomFileInterfaceViewerInboundTableWrapperTableData } from '@hmcts/opal-frontend-common/components/custom/custom-file-interface-viewer/custom-inbound-file-viewer';
+import type { ICustomFileInterfaceViewerInboundTableWrapperTableData } from '@hmcts/opal-frontend-common/components/custom/custom-file-interface-viewer/custom-inbound-file-viewer/interfaces';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import type {
   IOpalFileHandlingInterfaceFile,
@@ -33,9 +33,9 @@ export class FinesFinancePayloadService {
   }
 
   /**
-   * Resolves every business-unit name for displaying returned API codes.
+   * Resolves every business-unit name for displaying returned API IDs.
    * @param businessUnits - Resolved business-unit reference data.
-   * @returns Alphabetic name/code options, preserving leading zeros.
+   * @returns Alphabetic name/ID options with string values for the filter controls.
    */
   public mapBusinessUnitsToOptions(businessUnits: IOpalFinesBusinessUnit[]): IAlphagovAccessibleAutocompleteItem[] {
     return mapBusinessUnitsToOptions(businessUnits);
@@ -44,7 +44,7 @@ export class FinesFinancePayloadService {
   /**
    * Limits filter choices to business units where the current user can view interface files.
    * @param businessUnits - Resolved business-unit reference data.
-   * @returns Permitted alphabetic name/code options.
+   * @returns Permitted alphabetic name/ID options.
    */
   public getPermittedBusinessUnitOptions(
     businessUnits: IOpalFinesBusinessUnit[],
@@ -55,7 +55,7 @@ export class FinesFinancePayloadService {
   /**
    * Maps API metadata into localized, sortable rows using Finance reference labels.
    * @param files - Returned files, or an absent result list.
-   * @param businessUnitOptions - Names for all resolved business-unit codes.
+   * @param businessUnitOptions - Names for all resolved business-unit IDs.
    * @returns Rows for the presentational inbound-file viewer.
    */
   public mapInboundFilesToTableData(
