@@ -10,4 +10,5 @@ export enum FinesFinanceInboundFileSource {
   Cder = 'CDER',
   Jacobs = 'JACOBS',
   Marston = 'MARSTON',
+  VariantBanking = 'VARIANT_BANKING',
 }

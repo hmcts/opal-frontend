@@ -76,6 +76,28 @@ describe('buildInboundFilesSearchParams', () => {
     });
   });
 
+  it.each([FinesFinanceInboundFileType.Source, FinesFinanceInboundFileType.TransformedJson])(
+    'filters Variant Banking files by the selected %s type without changing the inbound scope',
+    (fileType) => {
+      const params = buildInboundFilesSearchParams(
+        {
+          ...FINES_FINANCE_INBOUND_FILES_INITIAL_FILTER_STATE,
+          source: FinesFinanceInboundFileSource.VariantBanking,
+          fileType,
+        },
+        dateService,
+      );
+
+      expect(params).toMatchObject({
+        source: 'VARIANT_BANKING',
+        type: [fileType],
+        domain: 'FINES',
+        target: 'OPAL',
+        not_status: ['FAILED_SUPERSEDED'],
+      });
+    },
+  );
+
   it('converts explicit date boundaries to inclusive API timestamps', () => {
     const formData: IFinesFinanceInboundFilesForm = {
       businessUnit: null,

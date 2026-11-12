@@ -13,4 +13,5 @@ export const FINES_FINANCE_INBOUND_FILES_SOURCE_OPTIONS = [
   { name: 'Jacobs', value: FinesFinanceInboundFileSource.Jacobs },
   { name: 'BT Eckoh Report', value: FinesFinanceInboundFileSource.BteckohReport },
   { name: 'CAPS Report', value: FinesFinanceInboundFileSource.CapsReport },
+  { name: 'Variant Banking', value: FinesFinanceInboundFileSource.VariantBanking },
 ] satisfies IAlphagovAccessibleAutocompleteItem[];

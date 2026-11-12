@@ -5,6 +5,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { IFinesFinanceInboundFilesTableOptions } from '../interfaces/fines-finance-inbound-files-table-options.interface';
 import { FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK } from '../mocks/fines-finance-inbound-files-response.mock';
 import { mapInboundFilesToTableData } from './fines-finance-payload-map-inbound-files.utils';
+import { FINES_FINANCE_INBOUND_FILES_SOURCE_OPTIONS } from '../constants/fines-finance-inbound-files-source-options.constant';
+import { FINES_FINANCE_INBOUND_FILES_TYPE_OPTIONS } from '../constants/fines-finance-inbound-files-type-options.constant';
 
 describe('mapInboundFilesToTableData', () => {
   let dateService: DateService;
@@ -46,6 +48,31 @@ describe('mapInboundFilesToTableData', () => {
       },
     ]);
     expect(response).toEqual(original);
+  });
+
+  it.each([
+    { type: 'SOURCE', label: 'RAW', filename: 'a121_261020_VB_077_AA.dat' },
+    { type: 'TRANSFORMED_JSON', label: 'TRANSFORMED', filename: 'a121_261020_VB_077_AA.json' },
+  ])('maps Variant Banking $type rows using the configured source and type labels', ({ type, label, filename }) => {
+    const rows = mapInboundFilesToTableData(
+      [{ ...file, source: 'VARIANT_BANKING', type, file_name: filename }],
+      {
+        ...options,
+        sources: FINES_FINANCE_INBOUND_FILES_SOURCE_OPTIONS,
+        types: FINES_FINANCE_INBOUND_FILES_TYPE_OPTIONS,
+      },
+      dateService,
+    );
+
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({
+      Title: filename,
+      Source: 'Variant Banking',
+      Type: label,
+      'Business unit': ['Camberwell Green'],
+      Status: 'Ready',
+      Actions: 'Download',
+    });
   });
 
   it.each([null, undefined, []])('returns an empty table for %s files', (files) => {

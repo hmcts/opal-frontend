@@ -20,10 +20,10 @@ describe('Inbound interface files', () => {
       setupInboundFilesComponent();
 
       cy.wait('@inboundFiles').then(({ request }) => {
-        expect(request.query.domain).to.equal('FINES');
-        expect(request.query.target).to.equal('OPAL');
-        expect(request.query.type).to.equal('SOURCE,TRANSFORMED_JSON');
-        expect(request.query.type).not.to.contain('SOURCE_JSON');
+        expect(request.query['domain']).to.equal('FINES');
+        expect(request.query['target']).to.equal('OPAL');
+        expect(request.query['type']).to.equal('SOURCE,TRANSFORMED_JSON');
+        expect(request.query['type']).not.to.contain('SOURCE_JSON');
       });
 
       cy.get('table thead').within(() => {
@@ -77,13 +77,102 @@ describe('Inbound interface files', () => {
       cy.get('#refresh-reports-button').click();
 
       cy.wait('@filteredInboundFiles').then(({ request }) => {
-        expect(request.query.business_unit_id).to.equal('77');
-        expect(request.query.source).to.equal('ALLPAY');
-        expect(request.query.type).to.equal('SOURCE');
-        expect(request.query.from_date).to.be.a('string').and.not.be.empty;
-        expect(request.query.to_date).to.be.a('string').and.not.be.empty;
+        expect(request.query['business_unit_id']).to.equal('77');
+        expect(request.query['source']).to.equal('ALLPAY');
+        expect(request.query['type']).to.equal('SOURCE');
+        expect(request.query['from_date']).to.be.a('string').and.not.be.empty;
+        expect(request.query['to_date']).to.be.a('string').and.not.be.empty;
       });
       cy.get('table tbody tr:visible').should('have.length', 1).and('contain.text', 'allpay_1001.xml');
+    },
+  );
+
+  it(
+    'shows Variant Banking source and transformed files, filters by source and saves both original filenames',
+    { tags: INBOUND_FILES_JIRA_TAGS },
+    () => {
+      const sourceFile = {
+        ...FINES_FINANCE_INBOUND_FILES_RESPONSE_MOCK.interface_files![0],
+        interface_file_id: 2001,
+        source: 'VARIANT_BANKING',
+        type: 'SOURCE',
+        status: 'SUCCESS',
+        file_name: 'a121_261027_VB_077_AA.dat',
+      };
+      const transformedFile = {
+        ...sourceFile,
+        interface_file_id: 2002,
+        type: 'TRANSFORMED_JSON',
+        file_name: 'a121_261027_VB_077_AA.json',
+      };
+      const response = { number_of_results: 2, interface_files: [sourceFile, transformedFile] };
+      const sourceContent = 'Variant Banking source file contents\r\n';
+      const transformedContent = { transactions: [] };
+      cy.intercept('GET', '**/opal-file-handling-service/interface-files*', { body: response }).as('inboundFiles');
+      cy.intercept('GET', '**/opal-file-handling-service/interface-files/2001/content', {
+        statusCode: 200,
+        headers: {
+          'content-type': 'application/octet-stream',
+          'content-disposition': `attachment; filename="${sourceFile.file_name}"`,
+        },
+        body: sourceContent,
+      }).as('downloadVariantBankingSource');
+      cy.intercept('GET', '**/opal-file-handling-service/interface-files/2002/content', {
+        statusCode: 200,
+        headers: {
+          'content-type': 'application/json',
+          'content-disposition': `attachment; filename="${transformedFile.file_name}"`,
+        },
+        body: JSON.stringify(transformedContent),
+      }).as('downloadVariantBankingTransformed');
+
+      setupInboundFilesComponent();
+      cy.wait('@inboundFiles');
+
+      cy.get('#interface-file-download-2001')
+        .closest('tr')
+        .should('contain.text', sourceFile.file_name)
+        .and('contain.text', 'Variant Banking')
+        .and('contain.text', 'RAW');
+      cy.get('#interface-file-download-2002')
+        .closest('tr')
+        .should('contain.text', transformedFile.file_name)
+        .and('contain.text', 'Variant Banking')
+        .and('contain.text', 'TRANSFORMED');
+      cy.get('#custom-file-interface-viewer-source-autocomplete').click();
+      cy.get('#custom-file-interface-viewer-source-autocomplete__listbox [role="option"]')
+        .contains('Variant Banking')
+        .click();
+      cy.intercept('GET', '**/opal-file-handling-service/interface-files*', { body: response }).as(
+        'variantBankingFiles',
+      );
+      cy.get('#refresh-reports-button').click();
+
+      cy.wait('@variantBankingFiles').then(({ request }) => {
+        expect(request.query['source']).to.equal('VARIANT_BANKING');
+        expect(request.query['domain']).to.equal('FINES');
+        expect(request.query['target']).to.equal('OPAL');
+        expect(request.query['type']).to.equal('SOURCE,TRANSFORMED_JSON');
+      });
+      cy.get('table tbody tr:visible').should('have.length', 2);
+      cy.get('#interface-file-download-2001')
+        .should('be.visible')
+        .and('have.attr', 'href', '/opal-file-handling-service/interface-files/2001/content');
+      cy.get('#interface-file-download-2001').click();
+      cy.wait('@downloadVariantBankingSource').its('request.method').should('equal', 'GET');
+      cy.readFile(`${Cypress.config('downloadsFolder')}/${sourceFile.file_name}`, 'utf8').should(
+        'equal',
+        sourceContent,
+      );
+      cy.get('#interface-file-download-2002')
+        .should('be.visible')
+        .and('have.attr', 'href', '/opal-file-handling-service/interface-files/2002/content');
+      cy.get('#interface-file-download-2002').click();
+      cy.wait('@downloadVariantBankingTransformed').its('request.method').should('equal', 'GET');
+      cy.readFile(`${Cypress.config('downloadsFolder')}/${transformedFile.file_name}`).should(
+        'deep.equal',
+        transformedContent,
+      );
     },
   );
 
