@@ -166,6 +166,7 @@ describe('finesMci routes', () => {
     );
 
     expect(await route?.loadComponent?.()).toBe(FinesMciCreateTillCourtFeePaymentDetailsComponent);
+    expect(route?.canDeactivate).toEqual([canDeactivateGuard]);
     expect(route?.resolve?.['paymentMappings']).toBe(finesMciPaymentMappingsResolver);
     expect(route?.data?.['heading']).toBe(FINES_MCI_ROUTING_TITLES.children.createTillCourtFeePaymentDetails);
   });

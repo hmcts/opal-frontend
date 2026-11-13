@@ -80,5 +80,74 @@
     }
   </opal-lib-govuk-radio>
 
+  <opal-lib-govuk-radio
+    fieldSetId="payer-type"
+    legendText="Payer type"
+    legendClasses="govuk-fieldset__legend--s"
+    [errors]="formControlErrorMessages['payerType']"
+  >
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Individual"
+      inputId="payerType"
+      inputName="payerType"
+      inputValue="individual"
+      ariaControls="payer-individual-conditional"
+      [control]="form.controls['payerType']"
+    ></div>
+    <opal-lib-govuk-radios-conditional conditionalId="payer-individual-conditional">
+      @if (form.controls['payerType'].value === 'individual') {
+        <opal-lib-govuk-select
+          labelText="Title"
+          labelClasses="govuk-label--s"
+          selectId="title"
+          selectName="title"
+          [options]="titleOptions"
+          [control]="form.controls['title']"
+        ></opal-lib-govuk-select>
+        <opal-lib-govuk-text-input
+          labelText="First names"
+          labelClasses="govuk-label--s"
+          inputId="firstNames"
+          inputName="firstNames"
+          inputClasses="govuk-input--width-20"
+          hintText="Include their middle names"
+          [control]="form.controls['firstNames']"
+          [errors]="formControlErrorMessages['firstNames']"
+        ></opal-lib-govuk-text-input>
+        <opal-lib-govuk-text-input
+          labelText="Last name"
+          labelClasses="govuk-label--s"
+          inputId="lastName"
+          inputName="lastName"
+          inputClasses="govuk-input--width-20"
+          [control]="form.controls['lastName']"
+          [errors]="formControlErrorMessages['lastName']"
+        ></opal-lib-govuk-text-input>
+      }
+    </opal-lib-govuk-radios-conditional>
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Company"
+      inputId="payerType-company"
+      inputName="payerType"
+      inputValue="company"
+      ariaControls="payer-company-conditional"
+      [control]="form.controls['payerType']"
+    ></div>
+    <opal-lib-govuk-radios-conditional conditionalId="payer-company-conditional">
+      @if (form.controls['payerType'].value === 'company') {
+        <opal-lib-govuk-text-input
+          labelText="Company name"
+          labelClasses="govuk-label--s"
+          inputId="companyName"
+          inputName="companyName"
+          [control]="form.controls['companyName']"
+          [errors]="formControlErrorMessages['companyName']"
+        ></opal-lib-govuk-text-input>
+      }
+    </opal-lib-govuk-radios-conditional>
+  </opal-lib-govuk-radio>
+
   <button class="govuk-button" id="submitForm" type="submit">Continue</button>
 </form>

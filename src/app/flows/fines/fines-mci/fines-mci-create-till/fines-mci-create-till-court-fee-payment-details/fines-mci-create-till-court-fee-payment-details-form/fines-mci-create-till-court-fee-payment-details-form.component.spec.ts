@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -23,6 +23,17 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsFormComponent', () => {
     fixture.componentRef.setInput('paymentSources', sources);
     fixture.detectChanges();
     return fixture;
+  }
+
+  /** Completes the payer section so tests of other fields can submit the form. */
+  function completeCompany(fixture: ComponentFixture<FinesMciCreateTillCourtFeePaymentDetailsFormComponent>): void {
+    const element = fixture.nativeElement as HTMLElement;
+    element.querySelector<HTMLInputElement>('input[value="company"]')!.click();
+    fixture.detectChanges();
+    const companyName = element.querySelector<HTMLInputElement>('#companyName')!;
+    companyName.value = 'Example Ltd';
+    companyName.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
   }
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -68,6 +79,7 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsFormComponent', () => {
 
     element.querySelector<HTMLInputElement>(`input[value="${value}"]`)!.click();
     element.querySelector<HTMLInputElement>('input[value="NC"]')!.click();
+    completeCompany(fixture);
     fixture.detectChanges();
     submit();
     fixture.detectChanges();
@@ -76,7 +88,7 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsFormComponent', () => {
     expect(element.querySelector('.govuk-error-summary__list')).toBeNull();
     expect(element.querySelector('.govuk-form-group--error')).toBeNull();
     expect(emitted).toHaveBeenCalledWith({
-      formData: { paymentReceivedFrom: value, paymentMethod: 'NC' },
+      formData: { paymentReceivedFrom: value, paymentMethod: 'NC', payerType: 'company', companyName: 'Example Ltd' },
       nestedFlow: false,
     });
   });
@@ -120,6 +132,7 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsFormComponent', () => {
     const element = fixture.nativeElement as HTMLElement;
     element.querySelector<HTMLInputElement>('input[value="applicant"]')!.click();
     element.querySelector<HTMLInputElement>('input[value="CT"]')!.click();
+    completeCompany(fixture);
     fixture.detectChanges();
     element.querySelector('form')!.dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
     fixture.detectChanges();
@@ -142,6 +155,7 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsFormComponent', () => {
     const element = fixture.nativeElement as HTMLElement;
     element.querySelector<HTMLInputElement>('input[value="applicant"]')!.click();
     element.querySelector<HTMLInputElement>(`input[value="${method}"]`)!.click();
+    completeCompany(fixture);
     fixture.detectChanges();
     if (method === 'CT') element.querySelector<HTMLInputElement>('input[value="OTHER"]')!.click();
     const reference = element.querySelector<HTMLInputElement>('#paymentReference')!;
@@ -163,6 +177,95 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsFormComponent', () => {
     );
     reference.value = "A1 - O'Brien";
     reference.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+    expect(fixture.componentInstance.form.valid).toBe(true);
+  });
+
+  it('requires a payer type and then a last name for an individual', () => {
+    const fixture = render();
+    const element = fixture.nativeElement as HTMLElement;
+    element.querySelector<HTMLInputElement>('input[value="applicant"]')!.click();
+    element.querySelector<HTMLInputElement>('input[value="NC"]')!.click();
+    const submit = () =>
+      element.querySelector('form')!.dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+    submit();
+    fixture.detectChanges();
+    expect(element.querySelector('.govuk-error-summary__list')?.textContent).toContain('Select payer type');
+
+    element.querySelector<HTMLInputElement>('input[value="individual"]')!.click();
+    fixture.detectChanges();
+    expect(element.querySelector('#title')).not.toBeNull();
+    expect(element.querySelector('#firstNames')).not.toBeNull();
+    expect(element.querySelector('#lastName')).not.toBeNull();
+    expect(element.querySelector('#companyName')).toBeNull();
+    submit();
+    fixture.detectChanges();
+    expect(element.querySelector('.govuk-error-summary__list')?.textContent).toContain('Enter last name');
+    const lastName = element.querySelector<HTMLInputElement>('#lastName')!;
+    lastName.value = '   ';
+    lastName.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+    expect(element.querySelector('.govuk-error-summary__list')?.textContent).toContain('Enter last name');
+    lastName.value = "O'Brien-Smith";
+    lastName.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+    expect(fixture.componentInstance.form.valid).toBe(true);
+    expect(element.querySelector('.govuk-error-summary__list')).toBeNull();
+  });
+
+  it('requires a company name and keeps individual values when switching payer type', () => {
+    const fixture = render();
+    const element = fixture.nativeElement as HTMLElement;
+    element.querySelector<HTMLInputElement>('input[value="individual"]')!.click();
+    fixture.detectChanges();
+    const lastName = element.querySelector<HTMLInputElement>('#lastName')!;
+    lastName.value = 'Smith';
+    lastName.dispatchEvent(new Event('input', { bubbles: true }));
+    element.querySelector<HTMLInputElement>('input[value="company"]')!.click();
+    fixture.detectChanges();
+    element.querySelector('form')!.dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+    fixture.detectChanges();
+    expect(element.querySelector('.govuk-error-summary__list')?.textContent).toContain('Enter company name');
+    expect(element.querySelector('#lastName')).toBeNull();
+    expect(fixture.componentInstance.form.controls['lastName'].disabled).toBe(true);
+    element.querySelector<HTMLInputElement>('input[value="individual"]')!.click();
+    fixture.detectChanges();
+    expect(element.querySelector<HTMLInputElement>('#lastName')?.value).toBe('Smith');
+    expect(fixture.componentInstance.form.controls['companyName'].disabled).toBe(true);
+  });
+
+  it.each([
+    ['individual', 'firstNames', 'First names', 20],
+    ['individual', 'lastName', 'Last name', 30],
+    ['company', 'companyName', 'Company name', 50],
+  ] as const)('validates the characters and length of %s %s', (payer, field, label, maxLength) => {
+    const fixture = render();
+    const element = fixture.nativeElement as HTMLElement;
+    element.querySelector<HTMLInputElement>('input[value="applicant"]')!.click();
+    element.querySelector<HTMLInputElement>('input[value="NC"]')!.click();
+    element.querySelector<HTMLInputElement>(`input[value="${payer}"]`)!.click();
+    fixture.detectChanges();
+    if (field === 'firstNames') {
+      const lastName = element.querySelector<HTMLInputElement>('#lastName')!;
+      lastName.value = 'Smith';
+      lastName.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    const input = element.querySelector<HTMLInputElement>(`#${field}`)!;
+    input.value = payer === 'individual' ? 'Name1' : 'Company!';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    element.querySelector('form')!.dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+    fixture.detectChanges();
+    expect(element.querySelector('.govuk-error-summary__list')?.textContent).toContain(
+      `${label} must only include letters a to z`,
+    );
+    input.value = 'A'.repeat(maxLength + 1);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+    expect(element.querySelector('.govuk-error-summary__list')?.textContent).toContain(
+      `${label} must be ${maxLength} characters or fewer`,
+    );
+    input.value = payer === 'individual' ? "Anne-Marie O'Brien" : "O'Brien 123 Ltd";
+    input.dispatchEvent(new Event('input', { bubbles: true }));
     fixture.detectChanges();
     expect(fixture.componentInstance.form.valid).toBe(true);
   });

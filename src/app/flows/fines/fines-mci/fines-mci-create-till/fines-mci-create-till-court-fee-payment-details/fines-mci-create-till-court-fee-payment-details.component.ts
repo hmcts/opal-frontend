@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { FinesMciStore } from '../../stores/fines-mci.store';
 import { IFinesMciPaymentMappings } from '../../routing/interfaces/fines-mci-payment-mappings.interface';
 import { FinesMciCreateTillCourtFeePaymentDetailsFormComponent } from './fines-mci-create-till-court-fee-payment-details-form/fines-mci-create-till-court-fee-payment-details-form.component';
@@ -10,10 +11,21 @@ import { FinesMciCreateTillCourtFeePaymentDetailsFormComponent } from './fines-m
   templateUrl: './fines-mci-create-till-court-fee-payment-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMciCreateTillCourtFeePaymentDetailsComponent {
+export class FinesMciCreateTillCourtFeePaymentDetailsComponent extends AbstractFormParentBaseComponent {
   protected readonly finesMciStore = inject(FinesMciStore);
   protected readonly paymentMappings = inject(ActivatedRoute).snapshot.data['paymentMappings'] as
     | IFinesMciPaymentMappings
     | null
     | undefined;
+
+  /** Tracks entered payment details for the route leave warning. */
+  public handleUnsavedChanges(unsavedChanges: boolean): void {
+    this.stateUnsavedChanges = unsavedChanges;
+  }
+
+  /** Requests a warning before refreshing or closing the tab containing the in-memory till. */
+  @HostListener('window:beforeunload')
+  public handleBeforeUnload(): boolean {
+    return false;
+  }
 }
