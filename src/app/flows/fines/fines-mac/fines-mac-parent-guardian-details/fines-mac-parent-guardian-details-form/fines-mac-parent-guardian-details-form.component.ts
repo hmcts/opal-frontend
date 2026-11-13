@@ -76,16 +76,35 @@ export class FinesMacParentGuardianDetailsFormComponent
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly globalStore = inject(GlobalStore);
 
+  private get vehicleRegistrationConfig(): { maxLength: number; errorMessage: string } {
+    if (getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true) {
+      return { maxLength: 7, errorMessage: 'Registration number must be 7 characters or fewer' };
+    } else {
+      return { maxLength: 10, errorMessage: 'Registration number must be 11 characters or fewer' };
+    }
+  }
+
   @Output() protected override formSubmit = new EventEmitter<IFinesMacParentGuardianDetailsForm>();
   protected readonly dateService = inject(DateService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected override readonly aliasFormArrayName = 'fm_parent_guardian_details_aliases';
 
-  override fieldErrors: IFinesMacParentGuardianDetailsFieldErrors = FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS;
-
   public readonly release1a1_2Enabled = computed(
     () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
   );
+
+  override fieldErrors: IFinesMacParentGuardianDetailsFieldErrors = {
+    ...FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS,
+    fm_parent_guardian_details_vehicle_registration_mark: {
+      ...FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS.fm_parent_guardian_details_vehicle_registration_mark,
+      maxlength: {
+        ...FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS.fm_parent_guardian_details_vehicle_registration_mark[
+          'maxlength'
+        ],
+        message: this.vehicleRegistrationConfig.errorMessage,
+      },
+    },
+  };
 
   public yesterday!: string;
   public age!: number;
@@ -128,7 +147,9 @@ export class FinesMacParentGuardianDetailsFormComponent
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_parent_guardian_details_vehicle_make: new FormControl(null, [optionalMaxLengthValidator(30)]),
-      fm_parent_guardian_details_vehicle_registration_mark: new FormControl(null, [optionalMaxLengthValidator(10)]),
+      fm_parent_guardian_details_vehicle_registration_mark: new FormControl(null, [
+        optionalMaxLengthValidator(this.vehicleRegistrationConfig.maxLength),
+      ]),
     });
   }
 
@@ -164,5 +185,10 @@ export class FinesMacParentGuardianDetailsFormComponent
   public override ngOnInit(): void {
     this.initialParentGuardianDetailsSetup();
     super.ngOnInit();
+    this.watchOptionalMaxLengthFeatureFlag(
+      this.globalStore.featureFlags,
+      'fm_parent_guardian_details_vehicle_registration_mark',
+      () => this.vehicleRegistrationConfig,
+    );
   }
 }

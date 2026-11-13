@@ -62,13 +62,13 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FinesMacPersonalDetailsFormComponent);
-    component = fixture.componentInstance;
     globalStore = TestBed.inject(GlobalStore);
-
     globalStore.setFeatureFlags({
       [RELEASE_1A_1_2_FEATURE_FLAG]: false,
     });
+
+    fixture = TestBed.createComponent(FinesMacPersonalDetailsFormComponent);
+    component = fixture.componentInstance;
 
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
@@ -88,6 +88,29 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should apply the seven-character vehicle registration limit only while release-1a-1-2 is enabled', async () => {
+    await fixture.whenStable();
+    const registrationControl = component.form.get('fm_personal_details_vehicle_registration_mark');
+    registrationControl?.setValue('12345678901');
+    expect(registrationControl?.hasError('maxlength')).toBe(false);
+
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+    await fixture.whenStable();
+
+    expect(registrationControl?.hasError('maxlength')).toBe(true);
+    expect(component.fieldErrors.fm_personal_details_vehicle_registration_mark['maxlength'].message).toBe(
+      'Registration number must be 7 characters or fewer',
+    );
+
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+    await fixture.whenStable();
+
+    expect(registrationControl?.hasError('maxlength')).toBe(false);
+    expect(component.fieldErrors.fm_personal_details_vehicle_registration_mark['maxlength'].message).toBe(
+      'Registration number must be 11 characters or fewer',
+    );
   });
 
   it('should display Remove alias buttons when release-1a-1-2 is enabled', () => {

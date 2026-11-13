@@ -87,6 +87,14 @@ export class FinesMacPersonalDetailsFormComponent
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly globalStore = inject(GlobalStore);
 
+  private get vehicleRegistrationConfig(): { maxLength: number; errorMessage: string } {
+    if (getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true) {
+      return { maxLength: 7, errorMessage: 'Registration number must be 7 characters or fewer' };
+    } else {
+      return { maxLength: 11, errorMessage: 'Registration number must be 11 characters or fewer' };
+    }
+  }
+
   @Output() protected override formSubmit = new EventEmitter<IFinesMacPersonalDetailsForm>();
   protected readonly dateService = inject(DateService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
@@ -96,6 +104,13 @@ export class FinesMacPersonalDetailsFormComponent
   @Input() public defendantType!: string;
   override fieldErrors: IFinesMacPersonalDetailsFieldErrors = {
     ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,
+    fm_personal_details_vehicle_registration_mark: {
+      ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS.fm_personal_details_vehicle_registration_mark,
+      maxlength: {
+        ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS.fm_personal_details_vehicle_registration_mark['maxlength'],
+        message: this.vehicleRegistrationConfig.errorMessage,
+      },
+    },
   };
 
   public readonly release1a1_2Enabled = computed(
@@ -163,7 +178,12 @@ export class FinesMacPersonalDetailsFormComponent
    */
   private addVehicleDetailsControls(): void {
     for (const control of FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS) {
-      this.createControl(control.controlName, control.validators);
+      this.createControl(
+        control.controlName,
+        control.controlName === 'fm_personal_details_vehicle_registration_mark'
+          ? [optionalMaxLengthValidator(this.vehicleRegistrationConfig.maxLength)]
+          : control.validators,
+      );
     }
   }
 
@@ -227,5 +247,10 @@ export class FinesMacPersonalDetailsFormComponent
   public override ngOnInit(): void {
     this.initialPersonalDetailsSetup();
     super.ngOnInit();
+    this.watchOptionalMaxLengthFeatureFlag(
+      this.globalStore.featureFlags,
+      'fm_personal_details_vehicle_registration_mark',
+      () => this.vehicleRegistrationConfig,
+    );
   }
 }
