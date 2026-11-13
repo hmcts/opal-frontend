@@ -113,6 +113,9 @@ describe('FinesMciStore', () => {
     const tillId = store.ensureTill();
     store.addPayment(tillId, 'criminal');
     const tills = store.tills();
+    const courtFeeDraft = { courtFeeId: 1, amountPaid: '25.00', numberOfItems: '2' };
+    store.setDraftJourney('courtFee');
+    store.setCourtFeeDraft(courtFeeDraft);
     store.setCriminalSearchResults(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK);
     store.setSelectedCriminalAccount(account);
 
@@ -120,6 +123,7 @@ describe('FinesMciStore', () => {
 
     expect(store.ensureTill()).toBe(tillId);
     expect(store.tills()).toEqual(tills);
+    expect(store.courtFeeDraft()).toEqual(courtFeeDraft);
     expect(store.criminalSearchResults()).toEqual(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK);
     expect(store.selectedCriminalAccount()).toEqual(account);
   });

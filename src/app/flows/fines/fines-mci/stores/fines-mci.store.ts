@@ -98,6 +98,7 @@ export const FinesMciStore = signalStore(
             selectedCriminalAccountAtAGlance: null,
             selectedCriminalAccountHeader: null,
             draftJourney: null,
+            courtFeeDraft: null,
           });
           return;
         }
