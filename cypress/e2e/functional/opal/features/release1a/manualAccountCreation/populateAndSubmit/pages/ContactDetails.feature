@@ -15,9 +15,9 @@ Feature: Contact Details
     When I complete manual contact details:
       | Primary email address   | P@EMAIL.COM   |
       | Secondary email address | S@EMAIL.COM   |
-      | Mobile telephone number | 07123 456 789 |
-      | Home telephone number   | 07123 456 789 |
-      | Work telephone number   | 07123 456 789 |
+      | Mobile telephone number | 07123456789 |
+      | Home telephone number   | 07123456789 |
+      | Work telephone number   | 07123456789 |
     And I return to account details
     Then I return to the top of the page
     Then the "Contact details" task status is "Provided"
@@ -25,9 +25,9 @@ Feature: Contact Details
     Then the manual contact details fields are:
       | Primary email address   | P@EMAIL.COM   |
       | Secondary email address | S@EMAIL.COM   |
-      | Mobile telephone number | 07123 456 789 |
-      | Home telephone number   | 07123 456 789 |
-      | Work telephone number   | 07123 456 789 |
+      | Mobile telephone number | 07123456789 |
+      | Home telephone number   | 07123456789 |
+      | Work telephone number   | 07123456789 |
 
     When I restart manual fine account for business unit "West London" with defendant type "Adult or youth only"
     Then the "Contact details" task status is "Not provided"
@@ -50,7 +50,7 @@ Feature: Contact Details
   Scenario: (AC.10) Unsaved contact details are cleared when user confirms cancel [@PO-272, @PO-344, @PO-345, @PO-419, @PO-371, @PO-370, @PO-358]
     When I complete manual contact details:
       | Primary email address   | P@EMAIL.COM   |
-      | Mobile telephone number | 07123 456 789 |
+      | Mobile telephone number | 07123456789 |
     And I confirm cancellation of manual contact details "Ok" and I am taken to account details
     And the "Contact details" task status is "Not provided"
 
@@ -66,30 +66,30 @@ Feature: Contact Details
   Scenario: (AC.10) Unsaved contact details are retained when cancel is dismissed
     When I complete manual contact details:
       | Primary email address   | P@EMAIL.COM   |
-      | Mobile telephone number | 07123 456 789 |
+      | Mobile telephone number | 07123456789 |
     And I cancel manual contact details choosing "Cancel"
     Then I am viewing contact details
     And the manual contact details fields are:
       | Primary email address   | P@EMAIL.COM   |
-      | Mobile telephone number | 07123 456 789 |
+      | Mobile telephone number | 07123456789 |
 
   @R1A @JIRA-TEST-KEY:PO-5493
   Scenario: (AC.11) Confirming cancel restores last saved contact details
     Given I complete manual contact details:
       | Primary email address   | P@EMAIL.COM   |
-      | Mobile telephone number | 07123 456 789 |
+      | Mobile telephone number | 07123456789 |
     And I return to account details
     And the "Contact details" task status is "Provided"
     When I view the "Contact details" task
     And I complete manual contact details:
       | Primary email address   | P-EDIT@EMAIL.COM |
-      | Mobile telephone number | 07123 456 789    |
+      | Mobile telephone number | 07123456789    |
     And I confirm cancellation of manual contact details "Ok" and I am taken to account details
 
     When I view the "Contact details" task
     Then the manual contact details fields are:
       | Primary email address   | P@EMAIL.COM   |
-      | Mobile telephone number | 07123 456 789 |
+      | Mobile telephone number | 07123456789 |
 
   @R1A @JIRA-TEST-KEY:PO-5494 @JIRA-NFR:PO-2549
   Scenario: (AC.11) Inline primary email error persists across navigation and cancel
