@@ -36,7 +36,7 @@ const withReportPermission = (userState: IOpalUserState): IOpalUserState => {
   const nextUserState = structuredClone(userState);
 
   nextUserState.business_unit_users[0].permissions.push({
-    permission_id: FINES_PERMISSIONS['operational-report-by-enforcement'],
+    permission_code: FINES_PERMISSIONS['operational-report-by-enforcement'],
     permission_name: 'Operational report by enforcement',
   });
 

@@ -1,9 +1,9 @@
-import { IDashboardPageConfigurationLink } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
+import { type IFinesDashboardConfigurationLink } from '@app/interfaces/fines-dashboard-configuration.interface';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 
-export const FINES_REPORTS_OPERATIONAL_REPORT_LINKS: IDashboardPageConfigurationLink[] = [
+export const FINES_REPORTS_OPERATIONAL_REPORT_LINKS: IFinesDashboardConfigurationLink[] = [
   {
     id: 'finesReportsOperationalReportsByEnforcementLink',
     text: 'Operational reports (by enforcement)',
@@ -15,7 +15,7 @@ export const FINES_REPORTS_OPERATIONAL_REPORT_LINKS: IDashboardPageConfiguration
       FINES_ROUTING_PATHS.children.reports.children['summaryList'],
     ],
     fragment: null,
-    permissionIds: [FINES_PERMISSIONS['operational-report-by-enforcement']],
+    permissionCodes: [FINES_PERMISSIONS['operational-report-by-enforcement']],
     newTab: false,
     style: 'guidance-panel-blue',
   },
@@ -30,7 +30,7 @@ export const FINES_REPORTS_OPERATIONAL_REPORT_LINKS: IDashboardPageConfiguration
       FINES_ROUTING_PATHS.children.reports.children['summaryList'],
     ],
     fragment: null,
-    permissionIds: [FINES_PERMISSIONS['operational-report-by-payments']],
+    permissionCodes: [FINES_PERMISSIONS['operational-report-by-payments']],
     newTab: false,
     style: 'guidance-panel-blue',
   },

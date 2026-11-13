@@ -1,3 +1,4 @@
+import { type FinesPermissionCode } from '@app/constants/fines-permissions.constant';
 import { provideHttpClient } from '@angular/common/http';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { AppInsightsService } from '@hmcts/opal-frontend-common/services/app-insights-service';
@@ -22,16 +23,16 @@ type FeatureFlags = Record<string, boolean>;
 
 const buildTags = (...tags: string[]) => [...tags, CONSOLIDATION_JIRA_LABEL];
 
-const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpalUserState => {
+const createUserStateWithPermissions = (permissionCodes: readonly FinesPermissionCode[]): IOpalUserState => {
   const userState = structuredClone(OPAL_USER_STATE_MOCK);
   const [firstBusinessUnit] = userState.business_unit_users;
 
   userState.business_unit_users = [
     {
       ...firstBusinessUnit,
-      permissions: permissionIds.map((permissionId) => ({
-        permission_id: permissionId,
-        permission_name: `Permission ${permissionId}`,
+      permissions: permissionCodes.map((permissionCode) => ({
+        permission_code: permissionCode,
+        permission_name: `Permission ${permissionCode}`,
       })),
     },
   ];
@@ -49,15 +50,15 @@ const createGlobalStore = (userState: IOpalUserState, featureFlags: FeatureFlags
   return store;
 };
 
-const draftAccountPermissionIds = [
+const draftAccountPermissionCodes = [
   FINES_PERMISSIONS['create-and-manage-draft-accounts'],
   FINES_PERMISSIONS['check-and-validate-draft-accounts'],
 ];
 
-const consolidationPermissionIds = [FINES_PERMISSIONS['consolidate']];
+const consolidationPermissionCodes = [FINES_PERMISSIONS['consolidate']];
 
 describe('WriteOffRelease1cFeatureToggles', () => {
-  const setupAppComponent = (permissionIds: readonly number[], featureFlags: FeatureFlags) => {
+  const setupAppComponent = (permissionCodes: readonly FinesPermissionCode[], featureFlags: FeatureFlags) => {
     cy.then(() => {
       mount(AppComponent, {
         providers: [
@@ -65,7 +66,7 @@ describe('WriteOffRelease1cFeatureToggles', () => {
           provideRouter([]),
           {
             provide: GlobalStore,
-            useFactory: () => createGlobalStore(createUserStateWithPermissions(permissionIds), featureFlags),
+            useFactory: () => createGlobalStore(createUserStateWithPermissions(permissionCodes), featureFlags),
           },
           {
             provide: SessionService,
@@ -92,9 +93,9 @@ describe('WriteOffRelease1cFeatureToggles', () => {
     });
   };
 
-  const setupDashboardComponent = (permissionIds: readonly number[], featureFlags: FeatureFlags) => {
+  const setupDashboardComponent = (permissionCodes: readonly FinesPermissionCode[], featureFlags: FeatureFlags) => {
     const dashboardTypeParamMapSubject = new BehaviorSubject(convertToParamMap({ dashboardType: 'accounts' }));
-    const userState = createUserStateWithPermissions(permissionIds);
+    const userState = createUserStateWithPermissions(permissionCodes);
 
     cy.then(() => {
       return mount(DashboardComponent, {
@@ -109,7 +110,7 @@ describe('WriteOffRelease1cFeatureToggles', () => {
           {
             provide: PermissionsService,
             useValue: {
-              getUniquePermissions: () => [...permissionIds],
+              getUniquePermissions: () => [...permissionCodes],
             },
           },
           {
@@ -130,7 +131,7 @@ describe('WriteOffRelease1cFeatureToggles', () => {
       tags: [...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG), RELEASE_EPIC_TAG, '@R1CWriteOff', '@JIRA-TEST-KEY:PO-7530'],
     },
     () => {
-      setupAppComponent(consolidationPermissionIds, { 'release-1a': false, 'release-1c-write-off': true });
+      setupAppComponent(consolidationPermissionCodes, { 'release-1a': false, 'release-1c-write-off': true });
 
       cy.get(PrimaryNav.container).should('be.visible');
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.accounts)).should('be.visible');
@@ -148,7 +149,7 @@ describe('WriteOffRelease1cFeatureToggles', () => {
       ],
     },
     () => {
-      setupAppComponent(consolidationPermissionIds, { 'release-1a': true, 'release-1c-write-off': false });
+      setupAppComponent(consolidationPermissionCodes, { 'release-1a': true, 'release-1c-write-off': false });
 
       cy.get(PrimaryNav.container).should('not.be.visible');
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.accounts)).should('not.exist');
@@ -166,7 +167,7 @@ describe('WriteOffRelease1cFeatureToggles', () => {
       ],
     },
     () => {
-      setupAppComponent(draftAccountPermissionIds, { 'release-1a': true, 'release-1c-write-off': false });
+      setupAppComponent(draftAccountPermissionCodes, { 'release-1a': true, 'release-1c-write-off': false });
 
       cy.get(PrimaryNav.container).should('be.visible');
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.accounts)).should('be.visible');
@@ -179,7 +180,7 @@ describe('WriteOffRelease1cFeatureToggles', () => {
       tags: [...buildTags(RELEASE_1C_WRITE_OFF_STORY_TAG), RELEASE_EPIC_TAG, '@R1CWriteOff', '@JIRA-TEST-KEY:PO-7533'],
     },
     () => {
-      setupDashboardComponent(consolidationPermissionIds, { 'release-1a': false, 'release-1c-write-off': true });
+      setupDashboardComponent(consolidationPermissionCodes, { 'release-1a': false, 'release-1c-write-off': true });
 
       cy.contains('h1', 'Accounts').should('be.visible');
       cy.contains('h2', 'Account management').should('be.visible');
@@ -198,7 +199,7 @@ describe('WriteOffRelease1cFeatureToggles', () => {
       ],
     },
     () => {
-      setupDashboardComponent(consolidationPermissionIds, { 'release-1a': false, 'release-1c-write-off': false });
+      setupDashboardComponent(consolidationPermissionCodes, { 'release-1a': false, 'release-1c-write-off': false });
 
       cy.contains('h1', 'Accounts').should('be.visible');
       cy.contains('h2', 'Account management').should('not.exist');
@@ -217,7 +218,7 @@ describe('WriteOffRelease1cFeatureToggles', () => {
       ],
     },
     () => {
-      setupDashboardComponent(draftAccountPermissionIds, { 'release-1a': true, 'release-1c-write-off': false });
+      setupDashboardComponent(draftAccountPermissionCodes, { 'release-1a': true, 'release-1c-write-off': false });
 
       cy.contains('h1', 'Accounts').should('be.visible');
       cy.contains('h2', 'Draft accounts').should('be.visible');

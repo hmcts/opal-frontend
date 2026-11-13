@@ -12,15 +12,15 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 17,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 4,
+          permission_code: 'COLLECTION_ORDER',
           permission_name: 'Collection Order',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -30,11 +30,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 16,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -44,11 +44,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 19,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -58,11 +58,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 13,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -72,11 +72,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 76,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -86,11 +86,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 81,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -100,11 +100,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 77,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -114,11 +114,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 78,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -128,11 +128,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 79,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -142,11 +142,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 40,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -156,11 +156,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 66,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -170,11 +170,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 72,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -184,11 +184,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 67,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -198,11 +198,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 73,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -212,11 +212,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 68,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -226,11 +226,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 74,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -240,11 +240,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 69,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -254,11 +254,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 75,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -268,11 +268,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 80,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -282,11 +282,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 62,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -296,11 +296,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 25,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -310,11 +310,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 32,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -324,11 +324,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 63,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -338,11 +338,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 64,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -352,11 +352,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 70,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -366,11 +366,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 65,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],
@@ -380,11 +380,11 @@ export const PAYMENT_TERMS_SESSION_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 71,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
       ],

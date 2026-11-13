@@ -21,7 +21,7 @@ describe('fines aec routes', () => {
 
     expect(configRoute?.canActivate).toEqual([authGuard, routePermissionsGuard]);
     expect(configRoute?.data).toEqual({
-      routePermissionId: [FINES_PERMISSIONS['auto-enforcement']],
+      routePermissionCodes: [FINES_PERMISSIONS['auto-enforcement']],
       title: FINES_AEC_ROUTING_TITLES.children.config,
     });
     expect(configRoute?.resolve).toEqual({ title: TitleResolver });

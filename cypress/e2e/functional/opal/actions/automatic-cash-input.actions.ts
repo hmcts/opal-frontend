@@ -1,3 +1,4 @@
+import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { AutomaticCashInputLocators } from '../../../../shared/selectors/automatic-cash-input.locators';
 import { FinanceLocators } from '../../../../shared/selectors/finance.locators';
 import { createScopedLogger } from '../../../../support/utils/log.helper';
@@ -9,7 +10,7 @@ const OUTSTANDING_AUTO_PAYMENT_COUNTS_ALIAS = 'outstandingAutoPaymentCounts';
 const INTERFACE_JOBS_SUMMARY_ENDPOINT = '/opal-fines-service/interface-jobs/summary';
 const INTERFACE_JOBS_SUMMARY_ALIAS = 'interfaceJobsSummary';
 const IGNORED_INTERFACE_JOBS_SUMMARY_ALIAS = 'ignoredInterfaceJobsSummary';
-const PROCESS_AND_ALLOCATE_PAYMENTS_PERMISSION_ID = 16;
+const PROCESS_AND_ALLOCATE_PAYMENTS_PERMISSION_CODE = FINES_PERMISSIONS['process-and-allocate-payments'];
 const ELIGIBLE_PROCESS_STATUSES = ['CREATED', 'FAILED'];
 
 type BusinessUnitCount = {
@@ -48,7 +49,7 @@ const hasProcessAndAllocatePaymentsPermission = (businessUnitUser: Record<string
     Array.isArray(permissions) &&
     permissions.some(
       (permission) =>
-        isRecord(permission) && permission['permission_id'] === PROCESS_AND_ALLOCATE_PAYMENTS_PERMISSION_ID,
+        isRecord(permission) && permission['permission_code'] === PROCESS_AND_ALLOCATE_PAYMENTS_PERMISSION_CODE,
     )
   );
 };
@@ -111,7 +112,7 @@ export class AutomaticCashInputActions {
   }
 
   /**
-   * Asserts that the API and rendered table include only BUs for which the signed-in user has permission 16.
+   * Asserts that the API and rendered table include only BUs for which the signed-in user has PROCESS_AND_ALLOCATE_PAYMENTS permission.
    */
   public assertOnlyPermittedBusinessUnitsAreDisplayed(): void {
     cy.wait(`@${OUTSTANDING_AUTO_PAYMENT_COUNTS_ALIAS}`).then((interception) => {

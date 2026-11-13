@@ -1,8 +1,8 @@
-import { IDashboardPageConfigurationLink } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
+import { type IFinesDashboardConfigurationLink } from '@app/interfaces/fines-dashboard-configuration.interface';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 
-export const REPORTS_LINKS: IDashboardPageConfigurationLink[] = [
+export const REPORTS_LINKS: IFinesDashboardConfigurationLink[] = [
   {
     id: 'testReportsLink',
     text: 'Test Reports Link',
@@ -13,7 +13,7 @@ export const REPORTS_LINKS: IDashboardPageConfigurationLink[] = [
       FINES_DASHBOARD_ROUTING_PATHS.children.reports,
     ],
     fragment: null,
-    permissionIds: [],
+    permissionCodes: [],
     newTab: false,
     style: null,
   },

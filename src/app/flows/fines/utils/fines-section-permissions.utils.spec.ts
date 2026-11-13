@@ -1,3 +1,4 @@
+import { type FinesPermissionCode } from '@app/constants/fines-permissions.constant';
 import { describe, expect, it } from 'vitest';
 import { type INavigationBarConfiguration } from '@app/interfaces/navigation-bar-configuration.interface';
 import { DASHBOARD_PAGE_CONFIGURATION_MAP } from '@app/pages/dashboard/constants/dashboard-config.constant';
@@ -27,29 +28,29 @@ import {
   getDashboardLandingType,
   getFeatureFlagReleaseState,
   getFirstAccessibleDashboardType,
-  getRequiredPermissionIdsForSection,
-  getUserPermissionIds,
+  getRequiredPermissionCodesForSection,
+  getUserPermissionCodes,
   hasAnyPermission,
   isFinesPrimaryNavigationSectionEnabled,
 } from './fines-section-permissions.utils';
 
-const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpalUserState => {
+const createUserStateWithPermissions = (permissionCodes: readonly FinesPermissionCode[]): IOpalUserState => {
   const userState = structuredClone(OPAL_USER_STATE_MOCK);
   const [firstBusinessUnit, secondBusinessUnit] = userState.business_unit_users;
 
   userState.business_unit_users = [
     {
       ...firstBusinessUnit,
-      permissions: permissionIds.map((permissionId) => ({
-        permission_id: permissionId,
-        permission_name: `Permission ${permissionId}`,
+      permissions: permissionCodes.map((permissionCode) => ({
+        permission_code: permissionCode,
+        permission_name: `Permission ${permissionCode}`,
       })),
     },
     {
       ...secondBusinessUnit,
-      permissions: permissionIds.map((permissionId) => ({
-        permission_id: permissionId,
-        permission_name: `Permission ${permissionId}`,
+      permissions: permissionCodes.map((permissionCode) => ({
+        permission_code: permissionCode,
+        permission_name: `Permission ${permissionCode}`,
       })),
     },
   ];
@@ -108,23 +109,41 @@ describe('fines-section-permissions.utils', () => {
   const release1cFinancialMovementsEnabled = { [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true };
   const release1cFinancialMovementsDisabled = { [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: false };
   const release1cBankingInterfacesEnabled = { [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true };
-  describe('getUserPermissionIds', () => {
-    it('should deduplicate permission ids across business units', () => {
+  describe('getUserPermissionCodes', () => {
+    it('should deduplicate permission codes across business units', () => {
       const userState = createUserStateWithPermissions([SEARCH_PERMISSIONS[0], ACCOUNTS_PERMISSIONS[0]]);
 
-      expect(getUserPermissionIds(userState)).toEqual([SEARCH_PERMISSIONS[0], ACCOUNTS_PERMISSIONS[0]]);
+      expect(getUserPermissionCodes(userState)).toEqual([SEARCH_PERMISSIONS[0], ACCOUNTS_PERMISSIONS[0]]);
     });
 
     it('should return an empty array when user state is missing', () => {
-      expect(getUserPermissionIds(null)).toEqual([]);
+      expect(getUserPermissionCodes(null)).toEqual([]);
+    });
+
+    it('should preserve unknown backend codes without using their display names for access', () => {
+      const userState = createUserStateWithPermissions([SEARCH_PERMISSIONS[0]]);
+      userState.business_unit_users.forEach((businessUnitUser) => {
+        businessUnitUser.permissions = [
+          {
+            permission_code: 'FUTURE_PERMISSION',
+            permission_name: SEARCH_PERMISSIONS[0],
+          },
+        ];
+      });
+
+      expect(getUserPermissionCodes(userState)).toEqual(['FUTURE_PERMISSION']);
+      expect(canAccessFinesPrimaryNavigationSection('search', userState, release1bEnabled)).toBe(false);
     });
   });
 
   describe('hasAnyPermission', () => {
     it('should return true when any required permission is present', () => {
-      expect(hasAnyPermission([SEARCH_PERMISSIONS[0], ACCOUNTS_PERMISSIONS[0]], [999, ACCOUNTS_PERMISSIONS[0]])).toBe(
-        true,
-      );
+      expect(
+        hasAnyPermission(
+          [SEARCH_PERMISSIONS[0], ACCOUNTS_PERMISSIONS[0]],
+          ['UNKNOWN_PERMISSION', ACCOUNTS_PERMISSIONS[0]],
+        ),
+      ).toBe(true);
     });
 
     it('should return false when none of the required permissions are present', () => {
@@ -229,50 +248,52 @@ describe('fines-section-permissions.utils', () => {
     });
   });
 
-  describe('getRequiredPermissionIdsForSection', () => {
+  describe('getRequiredPermissionCodesForSection', () => {
     it('should return Search permissions when release-1b is enabled', () => {
-      expect(getRequiredPermissionIdsForSection('search', release1bEnabled)).toEqual(SEARCH_PERMISSIONS);
+      expect(getRequiredPermissionCodesForSection('search', release1bEnabled)).toEqual(SEARCH_PERMISSIONS);
     });
 
     it('should remove Search permissions when release-1b is disabled', () => {
-      expect(getRequiredPermissionIdsForSection('search', release1bDisabled)).toEqual([]);
+      expect(getRequiredPermissionCodesForSection('search', release1bDisabled)).toEqual([]);
     });
 
     it('should return all Accounts permissions when release-1a and release-1c-write-off are enabled', () => {
-      expect(getRequiredPermissionIdsForSection('accounts', release1aAndWriteOffEnabled)).toEqual(ACCOUNTS_PERMISSIONS);
+      expect(getRequiredPermissionCodesForSection('accounts', release1aAndWriteOffEnabled)).toEqual(
+        ACCOUNTS_PERMISSIONS,
+      );
     });
 
     it('should keep draft Accounts permissions when release-1a is enabled and release-1c-write-off is disabled', () => {
-      expect(getRequiredPermissionIdsForSection('accounts', release1aEnabledWithWriteOffDisabled)).toEqual([
+      expect(getRequiredPermissionCodesForSection('accounts', release1aEnabledWithWriteOffDisabled)).toEqual([
         ACCOUNTS_PERMISSIONS[0],
         ACCOUNTS_PERMISSIONS[1],
       ]);
     });
 
     it('should keep consolidation Accounts permissions when release-1a is disabled and release-1c-write-off is enabled', () => {
-      expect(getRequiredPermissionIdsForSection('accounts', release1aDisabledWithWriteOffEnabled)).toEqual([
+      expect(getRequiredPermissionCodesForSection('accounts', release1aDisabledWithWriteOffEnabled)).toEqual([
         ACCOUNTS_PERMISSIONS[2],
       ]);
     });
 
     it('should return Reports permissions when release-1c enforcement operational reporting is enabled', () => {
-      expect(getRequiredPermissionIdsForSection('reports', release1cReportingEnabled)).toEqual(REPORTS_PERMISSIONS);
+      expect(getRequiredPermissionCodesForSection('reports', release1cReportingEnabled)).toEqual(REPORTS_PERMISSIONS);
     });
 
     it('should remove Reports permissions when release-1c enforcement operational reporting is disabled', () => {
-      expect(getRequiredPermissionIdsForSection('reports', release1cReportingDisabled)).toEqual([]);
+      expect(getRequiredPermissionCodesForSection('reports', release1cReportingDisabled)).toEqual([]);
     });
 
-    it('should ignore an exclusion flag that has no configured permission ids', () => {
+    it('should ignore an exclusion flag that has no configured permission codes', () => {
       const searchExclusions = FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS.search as Record<
         string,
-        readonly number[] | undefined
+        readonly FinesPermissionCode[] | undefined
       >;
       const originalRelease1bExclusions = searchExclusions[RELEASE_1B_FEATURE_FLAG];
       searchExclusions[RELEASE_1B_FEATURE_FLAG] = undefined;
 
       try {
-        expect(getRequiredPermissionIdsForSection('search', release1bDisabled)).toEqual(SEARCH_PERMISSIONS);
+        expect(getRequiredPermissionCodesForSection('search', release1bDisabled)).toEqual(SEARCH_PERMISSIONS);
       } finally {
         searchExclusions[RELEASE_1B_FEATURE_FLAG] = originalRelease1bExclusions;
       }
@@ -283,7 +304,7 @@ describe('fines-section-permissions.utils', () => {
       delete FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS.search;
 
       try {
-        expect(getRequiredPermissionIdsForSection('search', release1bDisabled)).toEqual(SEARCH_PERMISSIONS);
+        expect(getRequiredPermissionCodesForSection('search', release1bDisabled)).toEqual(SEARCH_PERMISSIONS);
       } finally {
         FEATURE_FLAG_SECTION_PERMISSION_EXCLUSIONS.search = originalSearchExclusions;
       }

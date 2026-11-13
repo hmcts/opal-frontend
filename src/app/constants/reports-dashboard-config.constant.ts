@@ -1,8 +1,8 @@
+import { type IFinesDashboardConfiguration } from '@app/interfaces/fines-dashboard-configuration.interface';
 import { FINES_REPORTS_HIGHLIGHT_REPORT_LINKS } from '@app/flows/fines/fines-reports/constants/fines-reports-highlight-report-links.constant';
 import { FINES_REPORTS_OPERATIONAL_REPORT_LINKS } from '@app/flows/fines/fines-reports/constants/fines-reports-operational-report-links.constant';
-import { IDashboardPageConfiguration } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
 
-export const REPORTS_DASHBOARD_CONFIG: IDashboardPageConfiguration = {
+export const REPORTS_DASHBOARD_CONFIG: IFinesDashboardConfiguration = {
   title: 'Reports',
   highlights: [...FINES_REPORTS_HIGHLIGHT_REPORT_LINKS],
   groups: [

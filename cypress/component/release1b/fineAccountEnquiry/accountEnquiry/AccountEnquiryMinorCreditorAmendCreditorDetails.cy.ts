@@ -37,7 +37,7 @@ const createUserStateWithMinorCreditorMaintenancePermission = () => {
   const userState = structuredClone(USER_STATE_MOCK_PERMISSION_BU77);
 
   userState.business_unit_users[0].permissions.push({
-    permission_id: FINES_PERMISSIONS['account-maintenance-minor-creditor'],
+    permission_code: FINES_PERMISSIONS['account-maintenance-minor-creditor'],
     permission_name: 'Account Maintenance - Minor Creditor',
   });
 

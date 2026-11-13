@@ -1,3 +1,4 @@
+import { type IFinesRoutePermissionData } from '@app/interfaces/fines-route-permission-data.interface';
 import { fetchSourceMappingsResolver } from '../../routing/resolvers/fetch-source-mappings-resolver/fetch-source-mappings.resolver';
 import { Routes } from '@angular/router';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
@@ -23,9 +24,9 @@ export const routing: Routes = [
       import('../fines-api-select-bus/fines-api-select-bus.component').then((c) => c.FinesApiSelectBusComponent),
     canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+      routePermissionCodes: [FINES_PERMISSIONS['process-and-allocate-payments']],
       title: FINES_API_ROUTING_TITLES.children.selectBusinessUnits,
-    },
+    } satisfies IFinesRoutePermissionData,
     resolve: {
       title: TitleResolver,
       businessUnitCounts: finesApiBusinessUnitCountsResolver,
@@ -40,9 +41,9 @@ export const routing: Routes = [
     canActivate: [authGuard, routePermissionsGuard, finesApiFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
     data: {
-      routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+      routePermissionCodes: [FINES_PERMISSIONS['process-and-allocate-payments']],
       title: FINES_API_ROUTING_TITLES.children.processAllocate,
-    },
+    } satisfies IFinesRoutePermissionData,
     resolve: {
       title: TitleResolver,
       sourceMappings: fetchSourceMappingsResolver,
@@ -57,9 +58,9 @@ export const routing: Routes = [
     canActivate: [authGuard, routePermissionsGuard, finesApiFlowStateGuard, finesApiFileSelectionGuard],
     canDeactivate: [canDeactivateGuard],
     data: {
-      routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+      routePermissionCodes: [FINES_PERMISSIONS['process-and-allocate-payments']],
       title: FINES_API_ROUTING_TITLES.children.confirmProcess,
-    },
+    } satisfies IFinesRoutePermissionData,
     resolve: {
       title: TitleResolver,
     },
@@ -72,9 +73,9 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+      routePermissionCodes: [FINES_PERMISSIONS['process-and-allocate-payments']],
       title: FINES_API_ROUTING_TITLES.children.tillSummary,
-    },
+    } satisfies IFinesRoutePermissionData,
     resolve: {
       title: TitleResolver,
       // The till summary data resolver will be added when report data loading is implemented.
@@ -88,9 +89,9 @@ export const routing: Routes = [
       ),
     canActivate: [authGuard, routePermissionsGuard],
     data: {
-      routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+      routePermissionCodes: [FINES_PERMISSIONS['process-and-allocate-payments']],
       title: FINES_API_ROUTING_TITLES.children.fileSummary,
-    },
+    } satisfies IFinesRoutePermissionData,
     resolve: {
       title: TitleResolver,
       // The file summary data resolver will be added when report data loading is implemented.

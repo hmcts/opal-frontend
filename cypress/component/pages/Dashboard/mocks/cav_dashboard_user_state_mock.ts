@@ -12,15 +12,15 @@ export const CAV_DASHBOARD_USER_STATE_MOCK: IOpalUserState = {
       business_unit_id: 17,
       permissions: [
         {
-          permission_id: 3,
+          permission_code: 'ACCOUNT_ENQUIRY',
           permission_name: 'Account Enquiry',
         },
         {
-          permission_id: 2,
+          permission_code: 'ACCOUNT_ENQUIRY_NOTES',
           permission_name: 'Account Enquiry - Account Notes',
         },
         {
-          permission_id: 5,
+          permission_code: 'CHECK_VALIDATE_DRAFT_ACCOUNTS',
           permission_name: 'Check and Validate Draft Accounts',
         },
       ],

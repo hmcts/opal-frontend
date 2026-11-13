@@ -1,3 +1,4 @@
+import { type FinesPermissionCode } from '@app/constants/fines-permissions.constant';
 import { provideHttpClient } from '@angular/common/http';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 import { AppInsightsService } from '@hmcts/opal-frontend-common/services/app-insights-service';
@@ -39,16 +40,16 @@ const buildTags = (...tags: string[]) => [
   MANUAL_ACCOUNT_CREATION_JIRA_LABEL,
 ];
 
-const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpalUserState => {
+const createUserStateWithPermissions = (permissionCodes: readonly FinesPermissionCode[]): IOpalUserState => {
   const userState = structuredClone(OPAL_USER_STATE_MOCK);
   const [firstBusinessUnit] = userState.business_unit_users;
 
   userState.business_unit_users = [
     {
       ...firstBusinessUnit,
-      permissions: permissionIds.map((permissionId) => ({
-        permission_id: permissionId,
-        permission_name: `Permission ${permissionId}`,
+      permissions: permissionCodes.map((permissionCode) => ({
+        permission_code: permissionCode,
+        permission_name: `Permission ${permissionCode}`,
       })),
     },
   ];
@@ -66,15 +67,15 @@ const createGlobalStore = (userState: IOpalUserState, featureFlags: FeatureFlags
   return store;
 };
 
-const draftAccountPermissionIds = [
+const draftAccountPermissionCodes = [
   FINES_PERMISSIONS['create-and-manage-draft-accounts'],
   FINES_PERMISSIONS['check-and-validate-draft-accounts'],
 ];
 
-const consolidationPermissionIds = [FINES_PERMISSIONS['consolidate']];
+const consolidationPermissionCodes = [FINES_PERMISSIONS['consolidate']];
 
 describe('FinesDraftRelease1aFeatureToggles', () => {
-  const setupAppComponent = (permissionIds: readonly number[], featureFlags: FeatureFlags) => {
+  const setupAppComponent = (permissionCodes: readonly FinesPermissionCode[], featureFlags: FeatureFlags) => {
     cy.then(() => {
       mount(AppComponent, {
         providers: [
@@ -82,7 +83,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
           provideRouter([]),
           {
             provide: GlobalStore,
-            useFactory: () => createGlobalStore(createUserStateWithPermissions(permissionIds), featureFlags),
+            useFactory: () => createGlobalStore(createUserStateWithPermissions(permissionCodes), featureFlags),
           },
           {
             provide: SessionService,
@@ -109,9 +110,9 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
     });
   };
 
-  const setupDashboardComponent = (permissionIds: readonly number[], featureFlags: FeatureFlags) => {
+  const setupDashboardComponent = (permissionCodes: readonly FinesPermissionCode[], featureFlags: FeatureFlags) => {
     const dashboardTypeParamMapSubject = new BehaviorSubject(convertToParamMap({ dashboardType: 'accounts' }));
-    const userState = createUserStateWithPermissions(permissionIds);
+    const userState = createUserStateWithPermissions(permissionCodes);
 
     cy.then(() => {
       return mount(DashboardComponent, {
@@ -126,7 +127,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
           {
             provide: PermissionsService,
             useValue: {
-              getUniquePermissions: () => [...permissionIds],
+              getUniquePermissions: () => [...permissionCodes],
             },
           },
           {
@@ -156,7 +157,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
         permissions: [
           ...businessUnitUser.permissions,
           {
-            permission_id: FINES_PERMISSIONS['search-and-view-accounts'],
+            permission_code: FINES_PERMISSIONS['search-and-view-accounts'],
             permission_name: 'Search and View Accounts',
           },
         ],
@@ -189,7 +190,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
     '(AC.1, AC.2, AC.4) should show Accounts in primary navigation for draft-account users when release-1a is enabled',
     { tags: buildTags(RELEASE_1A_STORY_TAG, RELEASE_EPIC_TAG, '@JIRA-TEST-KEY:PO-7536') },
     () => {
-      setupAppComponent(draftAccountPermissionIds, { 'release-1a': true });
+      setupAppComponent(draftAccountPermissionCodes, { 'release-1a': true });
 
       cy.get(PrimaryNav.container).should('be.visible');
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.accounts)).should('be.visible');
@@ -200,7 +201,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
     '(AC.3, AC.4) should hide Accounts in primary navigation for draft-account only users when release-1a is disabled',
     { tags: buildTags(RELEASE_1A_STORY_TAG, RELEASE_EPIC_TAG, '@R1AOff', '@JIRA-TEST-KEY:PO-7537') },
     () => {
-      setupAppComponent(draftAccountPermissionIds, { 'release-1a': false });
+      setupAppComponent(draftAccountPermissionCodes, { 'release-1a': false });
 
       cy.get(PrimaryNav.container).should('not.be.visible');
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.accounts)).should('not.exist');
@@ -211,7 +212,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
     '(AC.4, AC.5) should keep Accounts in primary navigation for consolidation users when release-1a is disabled',
     { tags: buildTags(RELEASE_1A_STORY_TAG, RELEASE_EPIC_TAG, '@R1AOff', '@JIRA-TEST-KEY:PO-7538') },
     () => {
-      setupAppComponent(consolidationPermissionIds, { 'release-1a': false, 'release-1c-write-off': true });
+      setupAppComponent(consolidationPermissionCodes, { 'release-1a': false, 'release-1c-write-off': true });
 
       cy.get(PrimaryNav.container).should('be.visible');
       cy.get(PrimaryNav.itemByText(PrimaryNav.labels.accounts)).should('be.visible');
@@ -222,7 +223,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
     '(AC.1, AC.2, AC.4) should show the Draft accounts dashboard entry points when release-1a is enabled',
     { tags: buildTags(RELEASE_1A_STORY_TAG, RELEASE_EPIC_TAG, '@JIRA-TEST-KEY:PO-7539') },
     () => {
-      setupDashboardComponent(draftAccountPermissionIds, { 'release-1a': true });
+      setupDashboardComponent(draftAccountPermissionCodes, { 'release-1a': true });
 
       cy.contains('h1', 'Accounts').should('be.visible');
       cy.contains('h2', 'Draft accounts').should('be.visible');
@@ -235,7 +236,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
     '(AC.3, AC.4) should hide the Draft accounts dashboard entry points when release-1a is disabled',
     { tags: buildTags(RELEASE_1A_STORY_TAG, RELEASE_EPIC_TAG, '@R1AOff', '@JIRA-TEST-KEY:PO-7540') },
     () => {
-      setupDashboardComponent(draftAccountPermissionIds, { 'release-1a': false });
+      setupDashboardComponent(draftAccountPermissionCodes, { 'release-1a': false });
 
       cy.contains('h1', 'Accounts').should('be.visible');
       cy.contains('h2', 'Draft accounts').should('not.exist');
@@ -248,7 +249,7 @@ describe('FinesDraftRelease1aFeatureToggles', () => {
     '(AC.4, AC.5) should keep non-R1A Accounts dashboard links available when release-1a is disabled',
     { tags: buildTags(RELEASE_1A_STORY_TAG, RELEASE_EPIC_TAG, '@R1AOff', '@JIRA-TEST-KEY:PO-7541') },
     () => {
-      setupDashboardComponent(consolidationPermissionIds, { 'release-1a': false, 'release-1c-write-off': true });
+      setupDashboardComponent(consolidationPermissionCodes, { 'release-1a': false, 'release-1c-write-off': true });
 
       cy.contains('h1', 'Accounts').should('be.visible');
       cy.get('#finesConsolidationLink').should('be.visible').and('contain.text', 'Consolidate accounts');
