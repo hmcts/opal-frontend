@@ -384,6 +384,17 @@ describe('OpalFines', () => {
     secondReq.flush(mockBusinessUnitCounts);
   });
 
+  it('loads payment method mappings from the mappings API', () => {
+    const mappings = [{ code: 'NC', display_name: 'Notes and coins' }];
+    const received = vi.fn();
+    service.getMethodOfPaymentMappings().subscribe(received);
+
+    const request = httpMock.expectOne('/opal-fines-service/mappings/method-of-payment');
+    expect(request.request.method).toBe('GET');
+    request.flush(mappings);
+    expect(received).toHaveBeenCalledExactlyOnceWith(mappings);
+  });
+
   describe('getSourceMappings', () => {
     it('shares concurrent requests and replays the response to later callers', () => {
       const first = vi.fn();

@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { FinesMciStore } from '../../stores/fines-mci.store';
@@ -9,7 +9,14 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinesMciCreateTillCourtFeePaymentDetailsComponent],
-      providers: [FinesMciStore, provideRouter([])],
+      providers: [
+        FinesMciStore,
+        provideRouter([]),
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: { data: { paymentMappings: { methods: [], sources: [] } } } },
+        },
+      ],
     }).compileComponents();
   });
 
@@ -31,4 +38,14 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsComponent', () => {
       expect(store.courtFeeDraft()).toEqual(courtFeeDraft);
     },
   );
+
+  it('shows an error instead of the form when payment mappings cannot be loaded', () => {
+    TestBed.inject(ActivatedRoute).snapshot.data['paymentMappings'] = null;
+    const fixture = TestBed.createComponent(FinesMciCreateTillCourtFeePaymentDetailsComponent);
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+
+    expect(element.querySelector('[role="alert"]')?.textContent).toContain('Payment options could not be loaded');
+    expect(element.querySelector('form')).toBeNull();
+  });
 });

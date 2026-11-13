@@ -1,4 +1,5 @@
 import { IOpalFinesSourceMapping } from './interfaces/opal-fines-source-mapping.interface';
+import { IOpalFinesMapping } from './interfaces/opal-fines-mapping.interface';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
@@ -428,6 +429,15 @@ export class OpalFines {
       OPAL_FINES_PATHS.interfaceJobsSummary,
       this.withRetrySafeReadOptions({ params: this.getInterfaceJobsSummaryParams(params) }),
     );
+  }
+
+  /**
+   * Retrieves payment method codes and display names from the mappings endpoint.
+   *
+   * @returns The payment method mappings supplied by the backend.
+   */
+  public getMethodOfPaymentMappings(): Observable<IOpalFinesMapping[]> {
+    return this.http.get<IOpalFinesMapping[]>(OPAL_FINES_PATHS.methodOfPaymentMappings, this.retrySafeReadOptions());
   }
 
   /**

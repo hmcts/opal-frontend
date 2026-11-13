@@ -10,6 +10,7 @@ import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.con
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
 import { finesMciCourtFeesResolver } from './resolvers/fines-mci-court-fees.resolver';
+import { finesMciPaymentMappingsResolver } from './resolvers/fines-mci-payment-mappings.resolver';
 import { finesMciCriminalAccountsResolver } from './resolvers/fines-mci-criminal-accounts/fines-mci-criminal-accounts.resolver';
 
 export const routing: Routes = [
@@ -222,6 +223,7 @@ export const routing: Routes = [
               title: FINES_MCI_ROUTING_TITLES.children.createTillCourtFeePaymentDetails,
             },
             resolve: {
+              paymentMappings: finesMciPaymentMappingsResolver,
               title: TitleResolver,
             },
           },

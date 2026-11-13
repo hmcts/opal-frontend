@@ -28,5 +28,57 @@
     ></div>
   </opal-lib-govuk-radio>
 
+  <opal-lib-govuk-radio
+    fieldSetId="payment-method"
+    legendText="Method of payment"
+    legendClasses="govuk-fieldset__legend--s"
+    [errors]="formControlErrorMessages['paymentMethod']"
+  >
+    @for (method of paymentMethods; track method.code; let first = $first) {
+      <div
+        opal-lib-govuk-radios-item
+        [labelText]="method.display_name"
+        [inputId]="first ? 'paymentMethod' : 'paymentMethod-' + method.code"
+        inputName="paymentMethod"
+        [inputValue]="method.code"
+        [ariaControls]="method.code === 'NC' ? '' : 'payment-method-conditional-' + method.code"
+        [control]="form.controls['paymentMethod']"
+      ></div>
+      @if (method.code === 'PO' || method.code === 'CQ' || method.code === 'CT') {
+        <opal-lib-govuk-radios-conditional [conditionalId]="'payment-method-conditional-' + method.code">
+          @if (form.controls['paymentMethod'].value === method.code) {
+            @if (method.code === 'CT') {
+              <opal-lib-govuk-radio
+                fieldSetId="payment-source"
+                legendText="Source"
+                legendClasses="govuk-fieldset__legend--s"
+                [errors]="formControlErrorMessages['paymentSource']"
+              >
+                @for (source of paymentSources; track source.code; let first = $first) {
+                  <div
+                    opal-lib-govuk-radios-item
+                    [labelText]="source.display_name"
+                    [inputId]="first ? 'paymentSource' : 'paymentSource-' + source.code"
+                    inputName="paymentSource"
+                    [inputValue]="source.code"
+                    [control]="form.controls['paymentSource']"
+                  ></div>
+                }
+              </opal-lib-govuk-radio>
+            }
+            <opal-lib-govuk-text-input
+              labelText="Payment reference"
+              labelClasses="govuk-label--s"
+              inputId="paymentReference"
+              inputName="paymentReference"
+              [control]="form.controls['paymentReference']"
+              [errors]="formControlErrorMessages['paymentReference']"
+            ></opal-lib-govuk-text-input>
+          }
+        </opal-lib-govuk-radios-conditional>
+      }
+    }
+  </opal-lib-govuk-radio>
+
   <button class="govuk-button" id="submitForm" type="submit">Continue</button>
 </form>
