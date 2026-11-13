@@ -12,7 +12,7 @@ import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.c
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
 import { FinesMciCreateTillCourtFeeDetailsComponent } from '../fines-mci-create-till/fines-mci-create-till-court-fee-details/fines-mci-create-till-court-fee-details.component';
 import { FinesMciCreateTillOverUnderpaymentConfirmationComponent } from '../fines-mci-create-till/fines-mci-create-till-over-underpayment-confirmation/fines-mci-create-till-over-underpayment-confirmation.component';
-import { FinesMciPlaceholderComponent } from '../fines-mci-placeholder/fines-mci-placeholder.component';
+import { FinesMciCreateTillCourtFeePaymentDetailsComponent } from '../fines-mci-create-till/fines-mci-create-till-court-fee-payment-details/fines-mci-create-till-court-fee-payment-details.component';
 
 describe('finesMci routes', () => {
   const createTillRoute = routing
@@ -94,12 +94,12 @@ describe('finesMci routes', () => {
     expect(courtFeeRoute?.canDeactivate).toEqual([canDeactivateGuard]);
   });
 
-  it('loads the temporary Court Fee Payment Details destination', async () => {
+  it('loads the Court Fee Payment Details screen', async () => {
     const route = createTillRoute?.children?.find(
       (child) => child.path === FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,
     );
 
-    expect(await route?.loadComponent?.()).toBe(FinesMciPlaceholderComponent);
+    expect(await route?.loadComponent?.()).toBe(FinesMciCreateTillCourtFeePaymentDetailsComponent);
     expect(route?.data?.['heading']).toBe(FINES_MCI_ROUTING_TITLES.children.createTillCourtFeePaymentDetails);
   });
 
