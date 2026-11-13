@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { FinesMciStore } from '../../stores/fines-mci.store';
@@ -8,7 +9,7 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinesMciCreateTillCourtFeePaymentDetailsComponent],
-      providers: [FinesMciStore],
+      providers: [FinesMciStore, provideRouter([])],
     }).compileComponents();
   });
 
