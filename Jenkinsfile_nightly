@@ -18,6 +18,7 @@ import java.time.ZonedDateTime
 @Field String uatTechnicalSuiteR1aChoice = suiteR1aChoice
 @Field String uatTechnicalSuiteR1bDrop1Choice = 'R1BDrop1'
 @Field String uatTechnicalSuiteR1bDrop2Choice = 'R1BDrop2'
+@Field String uatTechnicalSuiteR1cChoice = 'R1C'
 @Field String uatTechnicalSuiteR1bDrop1AndR1bDrop2Choice = 'R1BDrop1AndR1BDrop2'
 @Field String uatTechnicalSuiteR1aAndR1bDrop1Choice = 'R1AAndR1BDrop1'
 @Field String uatTechnicalSuiteR1aAndR1bChoice = 'R1AAndR1B'
@@ -33,6 +34,8 @@ import java.time.ZonedDateTime
 @Field String functionalUatTechnicalR1bDrop1PreProdCommand = 'test:functional:uat_legacy_r1b_drop1_preprod'
 @Field String functionalUatTechnicalR1bDrop2JcdeCommand = 'test:functional:uat_legacy_r1b_drop2_jcde'
 @Field String functionalUatTechnicalR1bDrop2PreProdCommand = 'test:functional:uat_legacy_r1b_drop2_preprod'
+@Field String functionalUatTechnicalR1cJcdeCommand = 'test:functional:uat_legacy_r1c_jcde'
+@Field String functionalUatTechnicalR1cPreProdCommand = 'test:functional:uat_legacy_r1c_preprod'
 @Field String functionalUatTechnicalR1bDrop1AndR1bDrop2JcdeCommand =
   'test:functional:uat_legacy_r1b_drop1_and_r1b_drop2_jcde'
 @Field String functionalUatTechnicalR1bDrop1AndR1bDrop2PreProdCommand =
@@ -46,6 +49,8 @@ import java.time.ZonedDateTime
 @Field String zephyrUatTechnicalR1bDrop1PreProdCommand = 'zephyr:test:uat_technical_r1b_drop1_preprod'
 @Field String zephyrUatTechnicalR1bDrop2JcdeCommand = 'zephyr:test:uat_technical_r1b_drop2_jcde'
 @Field String zephyrUatTechnicalR1bDrop2PreProdCommand = 'zephyr:test:uat_technical_r1b_drop2_preprod'
+@Field String zephyrUatTechnicalR1cJcdeCommand = 'zephyr:test:uat_technical_r1c_jcde'
+@Field String zephyrUatTechnicalR1cPreProdCommand = 'zephyr:test:uat_technical_r1c_preprod'
 @Field String zephyrUatTechnicalR1bDrop1AndR1bDrop2JcdeCommand =
   'zephyr:test:uat_technical_r1b_drop1_and_r1b_drop2_jcde'
 @Field String zephyrUatTechnicalR1bDrop1AndR1bDrop2PreProdCommand =
@@ -109,6 +114,7 @@ properties([
         uatTechnicalSuiteR1aChoice,
         uatTechnicalSuiteR1bDrop1Choice,
         uatTechnicalSuiteR1bDrop2Choice,
+        uatTechnicalSuiteR1cChoice,
         uatTechnicalSuiteR1aAndR1bDrop1Choice,
       ],
       description: 'Select which UAT-Technical suite to run when RunUatTech=true.'
@@ -143,6 +149,7 @@ String failureResult = 'FAILURE'
 @Field String demoStageUatTechnicalR1aDirName = 'uat-technical-r1a'
 @Field String demoStageUatTechnicalR1bDrop1DirName = 'uat-technical-r1b-drop1'
 @Field String demoStageUatTechnicalR1bDrop2DirName = 'uat-technical-r1b-drop2'
+@Field String demoStageUatTechnicalR1cDirName = 'uat-technical-r1c'
 @Field String demoStageUatTechnicalR1bDrop1AndR1bDrop2DirName = 'uat-technical-r1b-drop1-and-r1b-drop2'
 @Field String demoStageUatTechnicalR1aAndR1bDrop1DirName = 'uat-technical-r1a-and-r1b-drop1'
 @Field String demoStageUatTechnicalR1aAndR1bDirName = 'uat-technical-r1a-and-r1b'
@@ -338,6 +345,7 @@ String selectedUatTechnicalSuite() {
     uatTechnicalSuiteR1aChoice,
     uatTechnicalSuiteR1bDrop1Choice,
     uatTechnicalSuiteR1bDrop2Choice,
+    uatTechnicalSuiteR1cChoice,
     uatTechnicalSuiteR1bDrop1AndR1bDrop2Choice,
     uatTechnicalSuiteR1aAndR1bDrop1Choice,
     uatTechnicalSuiteR1aAndR1bChoice,
@@ -358,6 +366,10 @@ String resolveUatTechnicalCommand(String suite, boolean shouldRunWithZephyr, boo
         return usePreProdLegacyGateway
           ? zephyrUatTechnicalR1bDrop1PreProdCommand
           : zephyrUatTechnicalR1bDrop1JcdeCommand
+      case uatTechnicalSuiteR1cChoice:
+        return usePreProdLegacyGateway
+          ? zephyrUatTechnicalR1cPreProdCommand
+          : zephyrUatTechnicalR1cJcdeCommand
       case uatTechnicalSuiteR1bDrop2Choice:
         return usePreProdLegacyGateway
           ? zephyrUatTechnicalR1bDrop2PreProdCommand
@@ -380,6 +392,10 @@ String resolveUatTechnicalCommand(String suite, boolean shouldRunWithZephyr, boo
       return usePreProdLegacyGateway
         ? functionalUatTechnicalR1bDrop1PreProdCommand
         : functionalUatTechnicalR1bDrop1JcdeCommand
+    case uatTechnicalSuiteR1cChoice:
+      return usePreProdLegacyGateway
+        ? functionalUatTechnicalR1cPreProdCommand
+        : functionalUatTechnicalR1cJcdeCommand
     case uatTechnicalSuiteR1bDrop2Choice:
       return usePreProdLegacyGateway
         ? functionalUatTechnicalR1bDrop2PreProdCommand
@@ -402,6 +418,8 @@ String resolveUatTechnicalOutputDir(String suite) {
   switch (suite) {
     case uatTechnicalSuiteR1bDrop1Choice:
       return demoStageUatTechnicalR1bDrop1DirName
+    case uatTechnicalSuiteR1cChoice:
+      return demoStageUatTechnicalR1cDirName
     case uatTechnicalSuiteR1bDrop2Choice:
       return demoStageUatTechnicalR1bDrop2DirName
     case uatTechnicalSuiteR1bDrop1AndR1bDrop2Choice:

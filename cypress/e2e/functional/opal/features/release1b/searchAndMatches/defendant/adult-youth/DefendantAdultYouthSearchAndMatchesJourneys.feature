@@ -368,7 +368,7 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     Examples:
       | LEGACY_CONSOLIDATED_ACCOUNT_NUMBER | LEGACY_CONSOLIDATED_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_CONSOLIDATED_VALIDATION_FIXTURE                        |
       | 26000289W                          | Mr Henry CPGB-ADULT-B-H            | West London   | accountEnquiry/legacyDefendant/jcde/consolidated-account.json |
-    @R1BCUatTechPreprod
+    @R1CUatTechPreprod
     Examples:
       | LEGACY_CONSOLIDATED_ACCOUNT_NUMBER | LEGACY_CONSOLIDATED_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_CONSOLIDATED_VALIDATION_FIXTURE                           |
       | 26000060B                          | Mr Steve Consolidate-sub           | West London   | accountEnquiry/legacyDefendant/preprod/consolidated-account.json |
