@@ -793,4 +793,70 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
     expect(component.form.get('fm_fp_court_details_originator_name')?.value).toBe('');
   });
+
+  it.each([
+    [true, 500],
+    [false, 1000],
+  ] as const)(
+    'should set fixed penalty account notes maximum length to %i when release-1a-1-2 is %s',
+    (releaseEnabled, expectedMaxLength) => {
+      globalStore.setFeatureFlags({
+        [RELEASE_1A_1_2_FEATURE_FLAG]: releaseEnabled,
+      });
+
+      fixture.detectChanges();
+
+      const notesTextarea: HTMLTextAreaElement = fixture.debugElement.query(
+        By.css('textarea[id="fm_fp_account_comments_notes_notes"]'),
+      ).nativeElement;
+
+      expect(notesTextarea.maxLength).toBe(expectedMaxLength);
+    },
+  );
+
+  it('should reject fixed penalty account notes exceeding 500 characters when release-1a-1-2 is enabled', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+    });
+
+    const testFixture = TestBed.createComponent(FinesMacFixedPenaltyDetailsFormComponent);
+    const testComponent = testFixture.componentInstance;
+
+    testFixture.detectChanges();
+
+    const notesControl = testComponent.form.get('fm_fp_account_comments_notes_notes');
+
+    notesControl?.setValue('A'.repeat(500));
+    expect(notesControl?.hasError('maxlength')).toBe(false);
+
+    notesControl?.setValue('A'.repeat(501));
+    expect(notesControl?.hasError('maxlength')).toBe(true);
+
+    testFixture.destroy();
+  });
+
+  it('should allow 1000 characters and reject 1001 when release-1a-1-2 is disabled', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+    });
+
+    const testFixture = TestBed.createComponent(FinesMacFixedPenaltyDetailsFormComponent);
+    const testComponent = testFixture.componentInstance;
+
+    testComponent.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
+    testComponent.enforcingCourtAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
+    testComponent.issuingAuthorityAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
+
+    testFixture.detectChanges();
+
+    const notesControl = testComponent.form.get('fm_fp_account_comments_notes_notes');
+
+    notesControl?.setValue('A'.repeat(1000));
+    expect(notesControl?.hasError('maxlength')).toBe(false);
+
+    notesControl?.setValue('A'.repeat(1001));
+    expect(notesControl?.hasError('maxlength')).toBe(true);
+
+    testFixture.destroy();
+  });
 });
