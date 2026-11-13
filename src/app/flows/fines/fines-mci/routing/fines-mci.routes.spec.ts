@@ -50,6 +50,7 @@ const routesForRecognition = (routes: Routes): Routes =>
     component: route.loadComponent ? RouteDestinationComponent : undefined,
     children: route.children ? routesForRecognition(route.children) : undefined,
   }));
+import { FinesMciCreateTillPayerDetailsComponent } from '../fines-mci-create-till/fines-mci-create-till-payer-details/fines-mci-create-till-payer-details.component';
 
 describe('finesMci routes', () => {
   beforeEach(() =>
@@ -138,6 +139,20 @@ describe('finesMci routes', () => {
     );
 
     expect(suspenseDetailsRoute?.canDeactivate).toEqual([canDeactivateGuard]);
+  });
+
+  it('should guard navigation away from payer details when form data has been entered', () => {
+    const payerDetailsRoute = createTillRoute?.children?.find(
+      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.payerDetails,
+    );
+    expect(payerDetailsRoute?.canDeactivate).toEqual([canDeactivateGuard]);
+  });
+
+  it('loads the payer details screen after suspense details', async () => {
+    const payerDetailsRoute = createTillRoute?.children?.find(
+      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.payerDetails,
+    );
+    expect(await payerDetailsRoute?.loadComponent?.()).toBe(FinesMciCreateTillPayerDetailsComponent);
   });
 
   it.each([
@@ -246,6 +261,7 @@ describe('finesMci routes', () => {
     [FINES_MCI_ROUTING_PATHS.children.details, FINES_MCI_ROUTING_TITLES.children.createTillDetails],
     [FINES_MCI_ROUTING_PATHS.children.paymentCategory, FINES_MCI_ROUTING_TITLES.children.createTillPaymentCategory],
     [FINES_MCI_ROUTING_PATHS.children.suspenseDetails, FINES_MCI_ROUTING_TITLES.children.createTillSuspenseDetails],
+    [FINES_MCI_ROUTING_PATHS.children.payerDetails, FINES_MCI_ROUTING_TITLES.children.createTillPayerDetails],
     [FINES_MCI_ROUTING_PATHS.children.courtFeeDetails, FINES_MCI_ROUTING_TITLES.children.createTillCourtFeeDetails],
     [
       FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,

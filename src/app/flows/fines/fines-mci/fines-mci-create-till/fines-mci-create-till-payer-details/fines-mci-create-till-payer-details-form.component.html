@@ -1,0 +1,95 @@
+@if (formSubmitted) {
+  <opal-lib-govuk-error-summary
+    [errors]="formErrorSummaryMessage"
+    (errorClick)="scrollTo($event)"
+  ></opal-lib-govuk-error-summary>
+}
+<form [formGroup]="form" (submit)="submitForm($event)" novalidate>
+  <opal-lib-govuk-radio
+    fieldSetId="payerType"
+    legendText="Payer type"
+    legendClasses="govuk-fieldset__legend--s"
+    [errors]="formSubmitted ? formControlErrorMessages['payerType'] : null"
+  >
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Individual"
+      inputId="payer-individual"
+      inputName="payerType"
+      inputValue="individual"
+      [ariaControls]="'individual-payer-conditional'"
+      [control]="form.controls['payerType']"
+    ></div>
+    <opal-lib-govuk-radios-conditional conditionalId="individual-payer-conditional">
+      @if (form.controls['payerType'].value === 'individual') {
+        <div class="govuk-form-group">
+          <label class="govuk-label govuk-!-font-weight-bold" for="title">Title</label>
+          <select class="govuk-select" id="title" formControlName="title">
+            <option [ngValue]="null">Select</option>
+            <option value="Mr">Mr</option>
+            <option value="Mrs">Mrs</option>
+            <option value="Miss">Miss</option>
+            <option value="Ms">Ms</option>
+          </select>
+        </div>
+        @for (field of individualFields; track field.name) {
+          <ng-container [ngTemplateOutlet]="textField" [ngTemplateOutletContext]="{ $implicit: field }"></ng-container>
+        }
+      }
+    </opal-lib-govuk-radios-conditional>
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Company"
+      inputId="payer-company"
+      inputName="payerType"
+      inputValue="company"
+      [ariaControls]="'company-payer-conditional'"
+      [control]="form.controls['payerType']"
+    ></div>
+    <opal-lib-govuk-radios-conditional conditionalId="company-payer-conditional">
+      @if (form.controls['payerType'].value === 'company') {
+        @for (field of companyFields; track field.name) {
+          <ng-container [ngTemplateOutlet]="textField" [ngTemplateOutletContext]="{ $implicit: field }"></ng-container>
+        }
+      }
+    </opal-lib-govuk-radios-conditional>
+  </opal-lib-govuk-radio>
+
+  <h2 class="govuk-heading-m">Address</h2>
+  @for (field of addressFields; track field.name) {
+    <ng-container [ngTemplateOutlet]="textField" [ngTemplateOutletContext]="{ $implicit: field }"></ng-container>
+  }
+
+  <div class="govuk-button-group">
+    <button class="govuk-button" id="submitForm" type="submit">Continue</button>
+    <opal-lib-govuk-cancel-link (linkClickEvent)="cancelRequested.emit()"></opal-lib-govuk-cancel-link>
+  </div>
+</form>
+
+<ng-template #textField let-field>
+  <div class="govuk-form-group" [class.govuk-form-group--error]="formSubmitted && formControlErrorMessages[field.name]">
+    <label class="govuk-label" [class.govuk-!-font-weight-bold]="field.bold" [for]="field.name">{{
+      field.label
+    }}</label>
+    @if (field.name === 'firstNames') {
+      <div class="govuk-hint" id="firstNames-hint">Include their middle names</div>
+    }
+    @if (formSubmitted && formControlErrorMessages[field.name]; as message) {
+      <p class="govuk-error-message" [id]="field.name + '-error'">{{ message }}</p>
+    }
+    <input
+      class="govuk-input"
+      [class.govuk-input--width-20]="field.width === '20'"
+      [class.govuk-input--width-10]="field.width === '10'"
+      [id]="field.name"
+      [formControl]="fieldControl(field.name)"
+      [attr.aria-describedby]="
+        field.name === 'firstNames'
+          ? 'firstNames-hint' + (formSubmitted && formControlErrorMessages[field.name] ? ' firstNames-error' : '')
+          : formSubmitted && formControlErrorMessages[field.name]
+            ? field.name + '-error'
+            : null
+      "
+    />
+  </div>
+</ng-template>
