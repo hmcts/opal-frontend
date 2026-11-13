@@ -101,26 +101,29 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
     expect(finesMciStore.tills()[0].payments).toHaveLength(0);
   });
 
-  it('navigates to Till Details when Cancel is selected', () => {
+  it('navigates to Till Details when Cancel is selected', async () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     finesMciStore.setDraftJourney('criminal');
 
     fixture.componentInstance.handleCancel();
+    await fixture.whenStable();
 
     expect(navigateSpy).toHaveBeenCalledWith(['details'], { relativeTo: null });
     expect(finesMciStore.draftJourney()).toBeNull();
   });
 
-  it('keeps leave protection active when Cancel is selected after changing category', () => {
-    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+  it('preserves the selected category when leaving is cancelled', async () => {
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(false);
     const component = fixture.componentInstance;
+    finesMciStore.setDraftJourney('courtFee');
     component.handleUnsavedChanges(true);
 
     component.handleCancel();
+    await fixture.whenStable();
 
     expect(component['canDeactivate']()).toBe(false);
     expect(navigateSpy).toHaveBeenCalledWith(['details'], { relativeTo: null });
-    expect(finesMciStore.draftJourney()).toBeNull();
+    expect(finesMciStore.draftJourney()).toBe('courtFee');
   });
 
   it('tracks child form changes for route and browser leave warnings', () => {
@@ -142,6 +145,10 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
     const component = pendingFixture.componentInstance;
 
     component.handleSubmit({ formData: { paymentCategory: 'courtFee' }, nestedFlow: false });
+    pendingFixture.detectChanges();
+    const element = pendingFixture.nativeElement as HTMLElement;
+    expect(element.textContent).toContain('Loading next screen');
+    expect(element.querySelector('input[type="radio"]')).toBeNull();
     expect(component.handleBeforeUnload()).toBe(false);
     events.next(new ResolveStart(1, '/payment-category', '/court-fee-details', {} as RouterStateSnapshot));
     component.handleUnsavedChanges(false);
@@ -149,6 +156,9 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
 
     finishNavigation(false);
     await pendingFixture.whenStable();
+    pendingFixture.detectChanges();
+    expect(element.textContent).not.toContain('Loading next screen');
+    expect(element.querySelector<HTMLInputElement>('input[type="radio"]:checked')?.value).toBe('courtFee');
     component.handleUnsavedChanges(false);
     expect(component['canDeactivate']()).toBe(false);
     expect(component.handleBeforeUnload()).toBe(false);
