@@ -3,6 +3,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  Injector,
   OnDestroy,
   OnInit,
   Output,
@@ -23,6 +24,9 @@ import { FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS as FM_PERSONAL_DETAIL
 import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-types.interface';
 import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../constants/fines-mac-title-dropdown-options.constant';
 import { FinesMacStore } from '../../stores/fines-mac.store';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import {
@@ -43,6 +47,7 @@ import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govu
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { SINGLE_ASCII_CHARACTERS, ALPHANUMERIC_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
@@ -76,6 +81,16 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
 })
 export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseComponent implements OnInit, OnDestroy {
   private readonly finesMacStore = inject(FinesMacStore);
+  private readonly globalStore = inject(GlobalStore);
+  private readonly injector = inject(Injector);
+
+  private get vehicleRegistrationConfig(): { maxLength: number; errorMessage: string } {
+    if (getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true) {
+      return { maxLength: 7, errorMessage: 'Registration number must be 7 characters or fewer' };
+    } else {
+      return { maxLength: 11, errorMessage: 'Registration number must be 11 characters or fewer' };
+    }
+  }
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacPersonalDetailsForm>();
   protected readonly dateService = inject(DateService);
@@ -85,6 +100,13 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
   @Input() public defendantType!: string;
   override fieldErrors: IFinesMacPersonalDetailsFieldErrors = {
     ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,
+    fm_personal_details_vehicle_registration_mark: {
+      ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS.fm_personal_details_vehicle_registration_mark,
+      maxlength: {
+        ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS.fm_personal_details_vehicle_registration_mark['maxlength'],
+        message: this.vehicleRegistrationConfig.errorMessage,
+      },
+    },
   };
   public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
   public yesterday!: string;
@@ -147,8 +169,39 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
    */
   private addVehicleDetailsControls(): void {
     for (const control of FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS) {
-      this.createControl(control.controlName, control.validators);
+      this.createControl(
+        control.controlName,
+        control.controlName === 'fm_personal_details_vehicle_registration_mark'
+          ? [optionalMaxLengthValidator(this.vehicleRegistrationConfig.maxLength)]
+          : control.validators,
+      );
     }
+  }
+
+  private watchVehicleRegistrationConfig(): void {
+    toObservable(this.globalStore.featureFlags, { injector: this.injector })
+      .pipe(takeUntil(this['ngUnsubscribe']))
+      .subscribe(() => {
+        const config = this.vehicleRegistrationConfig;
+        const registrationControl = this.form.get('fm_personal_details_vehicle_registration_mark');
+
+        if (registrationControl) {
+          registrationControl.setValidators([optionalMaxLengthValidator(config.maxLength)]);
+          registrationControl.updateValueAndValidity({ emitEvent: false });
+        }
+
+        this.fieldErrors = {
+          ...this.fieldErrors,
+          fm_personal_details_vehicle_registration_mark: {
+            ...this.fieldErrors.fm_personal_details_vehicle_registration_mark,
+            maxlength: {
+              ...this.fieldErrors.fm_personal_details_vehicle_registration_mark['maxlength'],
+              message: config.errorMessage,
+            },
+          },
+        };
+        this.setInitialErrorMessages();
+      });
   }
 
   /**
@@ -211,5 +264,6 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
   public override ngOnInit(): void {
     this.initialPersonalDetailsSetup();
     super.ngOnInit();
+    this.watchVehicleRegistrationConfig();
   }
 }

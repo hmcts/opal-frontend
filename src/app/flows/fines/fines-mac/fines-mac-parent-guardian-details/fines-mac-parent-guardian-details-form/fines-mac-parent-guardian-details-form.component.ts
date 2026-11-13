@@ -1,6 +1,16 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Injector,
+  OnDestroy,
+  OnInit,
+  Output,
+  inject,
+} from '@angular/core';
 import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-alias-base';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { takeUntil } from 'rxjs';
 import { IFinesMacParentGuardianDetailsFieldErrors } from '../interfaces/fines-mac-parent-guardian-details-field-errors.interface';
 import { IFinesMacParentGuardianDetailsForm } from '../interfaces/fines-mac-parent-guardian-details-form.interface';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS } from '../constants/fines-mac-parent-guardian-details-alias';
@@ -9,6 +19,9 @@ import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS } from '../constants/fines-mac-parent-guardian-details-field-errors.constant';
 import { FinesMacStore } from '../../stores/fines-mac.store';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
@@ -26,6 +39,7 @@ import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validato
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { ALPHANUMERIC_WITH_SPACES_PATTERN, SINGLE_ASCII_CHARACTERS } from '@hmcts/opal-frontend-common/constants';
 
 // regex pattern validators for the form controls
@@ -60,12 +74,33 @@ export class FinesMacParentGuardianDetailsFormComponent
   implements OnInit, OnDestroy
 {
   private readonly finesMacStore = inject(FinesMacStore);
+  private readonly globalStore = inject(GlobalStore);
+  private readonly injector = inject(Injector);
+
+  private get vehicleRegistrationConfig(): { maxLength: number; errorMessage: string } {
+    if (getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true) {
+      return { maxLength: 7, errorMessage: 'Registration number must be 7 characters or fewer' };
+    } else {
+      return { maxLength: 10, errorMessage: 'Registration number must be 11 characters or fewer' };
+    }
+  }
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacParentGuardianDetailsForm>();
   protected readonly dateService = inject(DateService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
 
-  override fieldErrors: IFinesMacParentGuardianDetailsFieldErrors = FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS;
+  override fieldErrors: IFinesMacParentGuardianDetailsFieldErrors = {
+    ...FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS,
+    fm_parent_guardian_details_vehicle_registration_mark: {
+      ...FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS.fm_parent_guardian_details_vehicle_registration_mark,
+      maxlength: {
+        ...FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS.fm_parent_guardian_details_vehicle_registration_mark[
+          'maxlength'
+        ],
+        message: this.vehicleRegistrationConfig.errorMessage,
+      },
+    },
+  };
   public yesterday!: string;
   public age!: number;
   public ageLabel!: string;
@@ -107,8 +142,36 @@ export class FinesMacParentGuardianDetailsFormComponent
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_parent_guardian_details_vehicle_make: new FormControl(null, [optionalMaxLengthValidator(30)]),
-      fm_parent_guardian_details_vehicle_registration_mark: new FormControl(null, [optionalMaxLengthValidator(7)]),
+      fm_parent_guardian_details_vehicle_registration_mark: new FormControl(null, [
+        optionalMaxLengthValidator(this.vehicleRegistrationConfig.maxLength),
+      ]),
     });
+  }
+
+  private watchVehicleRegistrationConfig(): void {
+    toObservable(this.globalStore.featureFlags, { injector: this.injector })
+      .pipe(takeUntil(this['ngUnsubscribe']))
+      .subscribe(() => {
+        const config = this.vehicleRegistrationConfig;
+        const registrationControl = this.form.get('fm_parent_guardian_details_vehicle_registration_mark');
+
+        if (registrationControl) {
+          registrationControl.setValidators([optionalMaxLengthValidator(config.maxLength)]);
+          registrationControl.updateValueAndValidity({ emitEvent: false });
+        }
+
+        this.fieldErrors = {
+          ...this.fieldErrors,
+          fm_parent_guardian_details_vehicle_registration_mark: {
+            ...this.fieldErrors.fm_parent_guardian_details_vehicle_registration_mark,
+            maxlength: {
+              ...this.fieldErrors.fm_parent_guardian_details_vehicle_registration_mark['maxlength'],
+              message: config.errorMessage,
+            },
+          },
+        };
+        this.setInitialErrorMessages();
+      });
   }
 
   /**
@@ -143,5 +206,6 @@ export class FinesMacParentGuardianDetailsFormComponent
   public override ngOnInit(): void {
     this.initialParentGuardianDetailsSetup();
     super.ngOnInit();
+    this.watchVehicleRegistrationConfig();
   }
 }

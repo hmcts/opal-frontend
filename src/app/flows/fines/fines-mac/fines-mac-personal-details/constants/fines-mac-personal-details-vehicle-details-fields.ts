@@ -8,6 +8,6 @@ export const FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS: IAbstractFormArr
   },
   {
     controlName: 'fm_personal_details_vehicle_registration_mark',
-    validators: [optionalMaxLengthValidator(7)],
+    validators: [optionalMaxLengthValidator(11)],
   },
 ];

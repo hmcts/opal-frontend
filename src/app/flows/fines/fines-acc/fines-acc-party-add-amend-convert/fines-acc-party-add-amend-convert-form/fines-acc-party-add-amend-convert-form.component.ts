@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  Injector,
   Component,
   EventEmitter,
   Input,
@@ -18,9 +19,11 @@ import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_ALIAS } from '../validators/fines-acc
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_COMPANY_ALIAS } from '../validators/fines-acc-party-add-amend-convert-company-alias.validators';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../constants/fines-acc-party-add-amend-convert-party-types.constant';
 import { takeUntil } from 'rxjs';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../../fines-mac/constants/fines-mac-title-dropdown-options.constant';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../../fines-mac/fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS } from '../../fines-acc-defendant-details/constants/fines-acc-defendant-details-tabs-keys.constant';
 import { type TFinesAccDefendantDetailsTabKey } from '../../fines-acc-defendant-details/types/fines-acc-defendant-details-tab-key.type';
@@ -61,6 +64,8 @@ import { FinesAccPartyAddAmendConvertDobNi } from './components/fines-acc-party-
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../constants/fines-acc-party-add-amend-convert-modes.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS } from '../constants/fines-acc-party-add-amend-convert-fragments.constant';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
 import {
   MojAlertComponent,
   MojAlertContentComponent,
@@ -110,6 +115,16 @@ export class FinesAccPartyAddAmendConvertFormComponent
   implements OnInit, OnDestroy
 {
   private readonly finesAccountStore = inject(FinesAccountStore);
+  private readonly globalStore = inject(GlobalStore);
+  private readonly injector = inject(Injector);
+
+  private get vehicleRegistrationConfig(): { maxLength: number; errorMessage: string } {
+    if (getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true) {
+      return { maxLength: 7, errorMessage: 'Vehicle registration must be 7 characters or fewer' };
+    } else {
+      return { maxLength: 11, errorMessage: 'Vehicle registration must be 11 characters or fewer' };
+    }
+  }
 
   @Output() protected override formSubmit = new EventEmitter<IFinesAccPartyAddAmendConvertForm>();
   protected readonly dateService = inject(DateService);
@@ -124,6 +139,15 @@ export class FinesAccPartyAddAmendConvertFormComponent
     FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM;
   override fieldErrors: IFinesAccPartyAddAmendConvertFieldErrors = {
     ...FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS,
+    facc_party_add_amend_convert_vehicle_registration_mark: {
+      ...FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS.facc_party_add_amend_convert_vehicle_registration_mark,
+      maxlength: {
+        ...FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS.facc_party_add_amend_convert_vehicle_registration_mark[
+          'maxlength'
+        ],
+        message: this.vehicleRegistrationConfig.errorMessage,
+      },
+    },
   };
   public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
   public yesterday!: string;
@@ -185,12 +209,41 @@ export class FinesAccPartyAddAmendConvertFormComponent
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_vehicle_registration_mark: new FormControl(null, [
-        optionalMaxLengthValidator(7),
+        optionalMaxLengthValidator(this.vehicleRegistrationConfig.maxLength),
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_language_preferences_document_language: new FormControl(null),
       facc_party_add_amend_convert_language_preferences_hearing_language: new FormControl(null),
     });
+  }
+
+  private watchVehicleRegistrationConfig(): void {
+    toObservable(this.globalStore.featureFlags, { injector: this.injector })
+      .pipe(takeUntil(this['ngUnsubscribe']))
+      .subscribe(() => {
+        const config = this.vehicleRegistrationConfig;
+        const registrationControl = this.form.get('facc_party_add_amend_convert_vehicle_registration_mark');
+
+        if (registrationControl) {
+          registrationControl.setValidators([
+            optionalMaxLengthValidator(config.maxLength),
+            ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
+          ]);
+          registrationControl.updateValueAndValidity({ emitEvent: false });
+        }
+
+        this.fieldErrors = {
+          ...this.fieldErrors,
+          facc_party_add_amend_convert_vehicle_registration_mark: {
+            ...this.fieldErrors.facc_party_add_amend_convert_vehicle_registration_mark,
+            maxlength: {
+              ...this.fieldErrors.facc_party_add_amend_convert_vehicle_registration_mark['maxlength'],
+              message: config.errorMessage,
+            },
+          },
+        };
+        this.setInitialErrorMessages();
+      });
   }
 
   /**
@@ -521,5 +574,6 @@ export class FinesAccPartyAddAmendConvertFormComponent
     this.initialPartyAddAmendConvertSetup();
     super.ngOnInit();
     this.setupPartySpecificErrorMessages();
+    this.watchVehicleRegistrationConfig();
   }
 }
