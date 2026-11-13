@@ -474,6 +474,31 @@ describe('OpalFines', () => {
     });
   });
 
+  describe('allocateTills', () => {
+    it.each([200, 202])('posts one batch and accepts a bodyless %i response', (status) => {
+      const payload = {
+        tills: [
+          { till_id: 101, business_unit_id: 77 },
+          { till_id: 102, business_unit_id: 78 },
+        ],
+      };
+      const next = vi.fn();
+      service.allocateTills(payload).subscribe(next);
+      const request = httpMock.expectOne('/opal-fines-service/tills/allocate');
+      expect(request.request.method).toBe('POST');
+      expect(request.request.body).toEqual(payload);
+      request.flush(null, { status, statusText: status === 202 ? 'Accepted' : 'OK' });
+      expect(next).toHaveBeenCalledOnce();
+    });
+
+    it.each([400, 403, 409, 503])('propagates a failed mutation (%i) without retrying it', (status) => {
+      const error = vi.fn();
+      service.allocateTills({ tills: [{ till_id: 101, business_unit_id: 77 }] }).subscribe({ error });
+      httpMock.expectOne(OPAL_FINES_PATHS.allocateTills).flush(null, { status, statusText: 'Rejected' });
+      expect(error).toHaveBeenCalledOnce();
+      httpMock.expectNone(OPAL_FINES_PATHS.allocateTills);
+    });
+  });
   describe('getTills', () => {
     it('requests eligible auto-payment tills with CSV filters and preserves the response', () => {
       const response = {

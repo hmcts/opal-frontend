@@ -8,6 +8,7 @@ import { IFinesApiAllocateTillsTableWrapperTableData } from './interfaces/fines-
 const rows = (count = 2): IFinesApiAllocateTillsTableWrapperTableData[] =>
   Array.from({ length: count }, (_, index) => ({
     tillId: String(101 + index),
+    businessUnitId: 77 + index,
     'Till number': 7,
     Errors: index,
     Filename: `payments-${index}.dat`,

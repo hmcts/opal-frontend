@@ -1,3 +1,7 @@
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { By } from '@angular/platform-browser';
+import { FinesApiAllocateComponent } from './fines-api-allocate-tab/fines-api-allocate.component';
+import { MojAlertComponent } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { DateTime } from 'luxon';
 import { OPAL_FINES_SOURCE_MAPPINGS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-source-mappings.mock';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
@@ -65,6 +69,7 @@ describe('FinesApiProcessAllocateComponent', () => {
   let getInterfaceJobsSummary: ReturnType<
     typeof vi.fn<(...args: unknown[]) => Observable<IOpalFinesInterfaceJobsSummaryResponse>>
   >;
+  let allocateTills: ReturnType<typeof vi.fn>;
   let getTills: ReturnType<typeof vi.fn>;
   let getIgnoredJobs: ReturnType<
     typeof vi.fn<(...args: unknown[]) => Observable<IOpalFinesInterfaceJobsSummaryResponse>>
@@ -81,6 +86,7 @@ describe('FinesApiProcessAllocateComponent', () => {
   beforeEach(async () => {
     activatedRoute.snapshot.data.sourceMappings = OPAL_FINES_SOURCE_MAPPINGS_MOCK;
     processJobs = PROCESS_JOBS;
+    allocateTills = vi.fn();
     getIgnoredJobs = vi.fn(() => of({ interface_jobs: [] }));
     getTills = vi.fn((): Observable<IOpalFinesTillsResponse> => of({ tills: [] }));
     activatedRoute.snapshot.fragment = 'process';
@@ -105,6 +111,7 @@ describe('FinesApiProcessAllocateComponent', () => {
             getInterfaceJobsSummary: (params: { statuses?: string[] }) =>
               params.statuses?.includes('IGNORED') ? getIgnoredJobs(params) : getInterfaceJobsSummary(params),
             getTills,
+            allocateTills,
           },
         },
       ],
@@ -141,6 +148,68 @@ describe('FinesApiProcessAllocateComponent', () => {
       finalUrl: TestBed.inject(Router).parseUrl(url),
     });
   };
+
+  describe('allocation success banner', () => {
+    const allocateTab = (): FinesApiAllocateComponent =>
+      fixture.debugElement.query(By.directive(FinesApiAllocateComponent)).componentInstance;
+    const banner = (): HTMLElement | null => fixture.nativeElement.querySelector('#fines-api-allocate-success');
+
+    beforeEach(() => {
+      activatedRoute.snapshot.fragment = 'allocate';
+      activatedRoute.fragment = of('allocate');
+    });
+
+    it.each([
+      [1, '1 till is'],
+      [14, '14 tills are'],
+    ])('renders acceptance of %i tills above the H1 using the shared dismissible alert', (count, subject) => {
+      render();
+      expect(banner()).toBeNull();
+      allocateTab().allocationCountChanged.emit(count as number);
+      fixture.detectChanges();
+      const message = `${subject} being allocated. View the cash list report.`;
+      const alert = fixture.debugElement.query(By.directive(MojAlertComponent)).componentInstance;
+      expect(alert.ariaLabel).toBe(message);
+      expect(banner()!.classList.contains('moj-alert--success')).toBe(true);
+      expect(
+        banner()!.compareDocumentPosition(fixture.nativeElement.querySelector('h1')) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
+      const text = banner()!.querySelector('opal-lib-moj-alert-content-text')!;
+      expect(text.textContent!.replace(/\s+/g, ' ').trim()).toBe(message);
+      expect(text.querySelector('a')!.getAttribute('href')).toBe('/fines/reports/cash_list/summary-list');
+      expect(text.querySelector('a')!.textContent!.trim()).toBe('cash list report');
+      expect(banner()!.querySelector('opal-lib-moj-alert-icon')).toBeTruthy();
+      banner()!.querySelector<HTMLButtonElement>('.moj-alert__dismiss')!.click();
+      fixture.detectChanges();
+      expect(banner()).toBeNull();
+      allocateTab().allocationCountChanged.emit(1);
+      fixture.detectChanges();
+      expect(banner()).toBeTruthy();
+    });
+
+    it('clears previous success when another allocation starts or data is refreshed', () => {
+      render();
+      allocateTab().allocationCountChanged.emit(2);
+      fixture.detectChanges();
+      allocateTab().allocationCountChanged.emit(0);
+      fixture.detectChanges();
+      expect(banner()).toBeNull();
+      allocateTab().allocationCountChanged.emit(2);
+      fixture.detectChanges();
+      allocateTab().refreshRequested.emit();
+      fixture.detectChanges();
+      expect(banner()).toBeNull();
+    });
+
+    it('clears success when leaving the Allocate tab', () => {
+      render();
+      allocateTab().allocationCountChanged.emit(2);
+      fixture.detectChanges();
+      component['handleTabSwitch']('process');
+      fixture.detectChanges();
+      expect(banner()).toBeNull();
+    });
+  });
 
   it('should render the shell and load the Process tab component by default', () => {
     render();
@@ -413,6 +482,7 @@ describe('FinesApiProcessAllocateComponent', () => {
       tills: [
         {
           till_id: 123,
+          business_unit_id: 77,
           till_number: 7,
           amount: '12.50',
           errors: 0,
@@ -442,6 +512,76 @@ describe('FinesApiProcessAllocateComponent', () => {
     beforeEach(() => {
       processJobs = [{ ...PROCESS_JOBS[0], status: 'PROCESSING', business_unit_name: 'BU Alpha' }];
       getTills.mockReturnValue(of(tillResponse()));
+    });
+
+    it.each(['success', 'failure'] as const)(
+      'cancels an older refresh on allocation and allows subsequent refresh after %s',
+      (outcome) => {
+        const jobs = new Subject<IOpalFinesInterfaceJobsSummaryResponse>();
+        const tills = new Subject<IOpalFinesTillsResponse>();
+        const allocation = new Subject<void>();
+        getInterfaceJobsSummary.mockReturnValueOnce(of({ interface_jobs: [] })).mockReturnValueOnce(jobs);
+        getTills.mockReturnValueOnce(of(tillResponse())).mockReturnValueOnce(tills);
+        allocateTills.mockReturnValue(allocation);
+        vi.spyOn(TestBed.inject(UtilsService), 'scrollToTop').mockImplementation(() => {});
+        startAllocate();
+        refresh();
+        expect(jobs.observed).toBe(true);
+        expect(tills.observed).toBe(true);
+        native().querySelector<HTMLInputElement>('#fines-api-allocate-till-123')!.click();
+        fixture.detectChanges();
+        native().querySelector<HTMLButtonElement>('#fines-api-allocate-submit')!.click();
+        fixture.detectChanges();
+        expect(allocateTills).toHaveBeenCalledExactlyOnceWith({ tills: [{ till_id: 123, business_unit_id: 77 }] });
+        expect(jobs.observed).toBe(false);
+        expect(tills.observed).toBe(false);
+
+        if (outcome === 'success') {
+          allocation.next();
+          allocation.complete();
+        } else {
+          allocation.error(new Error('Rejected'));
+        }
+        fixture.detectChanges();
+        // Deliver the stale response after the write has finished.
+        jobs.next({ interface_jobs: [] });
+        jobs.complete();
+        tills.next(tillResponse('stale.dat'));
+        tills.complete();
+        fixture.detectChanges();
+        expect(native().textContent).not.toContain('stale.dat');
+        if (outcome === 'success') {
+          expect(native().querySelector('#fines-api-allocate-till-123')).toBeNull();
+          expect(native().querySelector('#fines-api-allocate-submit')).toBeNull();
+          expect(native().querySelector('#fines-api-allocate-success')?.textContent).toContain(
+            '1 till is being allocated.',
+          );
+        } else {
+          expect(native().querySelector<HTMLInputElement>('#fines-api-allocate-till-123')!.checked).toBe(true);
+          expect(native().querySelector<HTMLButtonElement>('#fines-api-allocate-submit')!.disabled).toBe(false);
+          expect(native().querySelector('#fines-api-allocate-success')).toBeNull();
+        }
+        getTills.mockReturnValueOnce(of(tillResponse('fresh.dat')));
+        refresh();
+        expect(native().textContent).toContain('fresh.dat');
+        expect(allocateTills).toHaveBeenCalledOnce();
+      },
+    );
+
+    it('keeps an in-flight refresh when allocation validation fails', () => {
+      const tills = new Subject<IOpalFinesTillsResponse>();
+      getTills.mockReturnValueOnce(of(tillResponse())).mockReturnValueOnce(tills);
+      vi.spyOn(TestBed.inject(UtilsService), 'scrollToTop').mockImplementation(() => {});
+      startAllocate();
+      refresh();
+      native().querySelector<HTMLButtonElement>('#fines-api-allocate-submit')!.click();
+      fixture.detectChanges();
+      expect(allocateTills).not.toHaveBeenCalled();
+      expect(tills.observed).toBe(true);
+      tills.next(tillResponse('updated.dat'));
+      tills.complete();
+      fixture.detectChanges();
+      expect(native().textContent).toContain('updated.dat');
     });
 
     it('uses the resolved mapping in both tabs and after refresh', () => {
@@ -502,7 +642,7 @@ describe('FinesApiProcessAllocateComponent', () => {
       tills.next({ tills: [] });
       tills.complete();
       fixture.detectChanges();
-      expect(native().textContent).toContain('There are no outstanding tills to allocate');
+      expect(native().textContent).toContain('There are no tills ready to allocate');
     });
 
     it('keeps till checkbox selection local without marking the shared journey as dirty', () => {
@@ -625,7 +765,7 @@ describe('FinesApiProcessAllocateComponent', () => {
         getInterfaceJobsSummary.mockReturnValue(of({ interface_jobs: [] }));
         getTills.mockReturnValue(of({ tills: [] }));
         refresh();
-        expect(native().textContent).toContain('There are no outstanding tills to allocate');
+        expect(native().textContent).toContain('There are no tills ready to allocate');
         expect(native().querySelector('#fines-api-allocate-processing')).toBeNull();
       },
     );

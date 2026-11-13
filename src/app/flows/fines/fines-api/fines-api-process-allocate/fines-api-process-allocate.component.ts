@@ -1,11 +1,19 @@
+import {
+  MojAlertComponent,
+  MojAlertContentComponent,
+  MojAlertIconComponent,
+  MojAlertTextComponent,
+} from '@hmcts/opal-frontend-common/components/moj/moj-alert';
+import { FINES_REPORTS_ROUTING_PATHS } from '../../fines-reports/routing/constants/fines-reports-routing-paths.constant';
+import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../../fines-reports/fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { FinesApiIgnoredComponent } from './fines-api-ignored-tab/fines-api-ignored.component';
 import { IFinesApiIgnoredData } from './fines-api-ignored-tab/interfaces/fines-api-ignored-data.interface';
 import { getIgnoredDateBounds } from '../services/utils/fines-api-ignored-dates.utils';
 import { IOpalFinesSourceMapping } from '../../services/opal-fines-service/interfaces/opal-fines-source-mapping.interface';
 import { AsyncPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
@@ -23,6 +31,7 @@ import {
   map,
   startWith,
   switchMap,
+  takeUntil,
 } from 'rxjs';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
@@ -47,6 +56,11 @@ import { TFinesApiProcessAllocateTabKey } from './types/fines-api-process-alloca
   selector: 'app-fines-api-process-allocate',
   imports: [
     AsyncPipe,
+    RouterLink,
+    MojAlertComponent,
+    MojAlertContentComponent,
+    MojAlertIconComponent,
+    MojAlertTextComponent,
     FinesApiIgnoredComponent,
     FinesApiProcessComponent,
     FinesApiAllocateComponent,
@@ -72,9 +86,18 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly processDataRefresh = new Subject<void>();
   private readonly allocateDataRefresh = new Subject<void>();
+  private readonly cancelAllocateRefresh = new Subject<void>();
   private readonly ignoredDataRefresh = new Subject<void>();
 
   protected readonly finesApiStore = inject(FinesApiStore);
+  protected readonly cashListRoute = [
+    '/',
+    FINES_ROUTING_PATHS.root,
+    FINES_REPORTS_ROUTING_PATHS.root,
+    FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.cashList,
+    FINES_REPORTS_ROUTING_PATHS.children.summaryList,
+  ];
+  protected readonly submittedCount = signal(0);
   protected readonly content = FINES_API_PROCESS_ALLOCATE_CONTENT;
   protected readonly allocateContent = FINES_API_ALLOCATE_CONTENT;
   protected readonly tabs: IFinesApiProcessAllocateTabs = FINES_API_PROCESS_ALLOCATE_TABS;
@@ -88,7 +111,8 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
   /** Each tab entry subscribes afresh; refresh replaces any in-flight pair of reads. */
   protected readonly tabAllocate$: Observable<IFinesApiAllocateData> = this.allocateDataRefresh.pipe(
     startWith(undefined),
-    switchMap(() => this.fetchAllocateData()),
+    // Cancel only the current reads so subsequent explicit refreshes still work.
+    switchMap(() => this.fetchAllocateData().pipe(takeUntil(this.cancelAllocateRefresh))),
   );
 
   /** One shell-level subscription keeps the counter and table in sync across tab switches. */
@@ -247,6 +271,7 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
     }
 
     if (tab !== this.finesApiStore.activeTab()) {
+      this.submittedCount.set(0);
       this.finesApiStore.setSelectedFileIds([]);
       this.finesApiStore.setActiveTab(tab);
     }
@@ -259,8 +284,14 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
     this.processDataRefresh.next();
   }
 
+  /** Prevents reads started before allocation from restoring submitted tills. */
+  protected handleAllocationStarted(): void {
+    this.cancelAllocateRefresh.next();
+  }
+
   /** Reloads both Allocate datasets; the child clears local selection before emitting. */
   protected refreshAllocateData(): void {
+    this.submittedCount.set(0);
     this.allocateDataRefresh.next();
   }
 
@@ -301,5 +332,6 @@ export class FinesApiProcessAllocateComponent implements OnInit, OnDestroy {
     this.ignoredDataRefresh.complete();
     this.processDataRefresh.complete();
     this.allocateDataRefresh.complete();
+    this.cancelAllocateRefresh.complete();
   }
 }
