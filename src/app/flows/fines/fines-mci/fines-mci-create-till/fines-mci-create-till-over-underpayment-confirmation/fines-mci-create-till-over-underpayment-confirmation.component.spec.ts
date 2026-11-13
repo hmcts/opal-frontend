@@ -1,9 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { IOpalFinesCourtFeesResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-fees.interface';
 import * as axe from 'axe-core';
-import { of, Subject, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesMciStore } from '../../stores/fines-mci.store';
 import { FinesMciCreateTillOverUnderpaymentConfirmationComponent } from './fines-mci-create-till-over-underpayment-confirmation.component';
@@ -16,14 +15,13 @@ describe('FinesMciCreateTillOverUnderpaymentConfirmationComponent', () => {
     { court_fee_id: 1, court_fee_code: 'CF001', description: 'Application', amount: 12.5 },
     { court_fee_id: 2, court_fee_code: 'CF002', description: 'Issue', amount: 0.1 },
   ];
-  const getCourtFees = vi.fn(() => of({ court_fees: courtFees }));
+  let route: { snapshot: { data: { courtFees: IOpalFinesCourtFeesResponse | null } } };
 
   beforeEach(async () => {
-    getCourtFees.mockReset();
-    getCourtFees.mockReturnValue(of({ court_fees: courtFees }));
+    route = { snapshot: { data: { courtFees: { court_fees: courtFees } } } };
     await TestBed.configureTestingModule({
       imports: [FinesMciCreateTillOverUnderpaymentConfirmationComponent],
-      providers: [provideRouter([]), FinesMciStore, { provide: OpalFines, useValue: { getCourtFees } }],
+      providers: [provideRouter([]), FinesMciStore, { provide: ActivatedRoute, useValue: route }],
     }).compileComponents();
     store = TestBed.inject(FinesMciStore);
     store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
@@ -71,12 +69,35 @@ describe('FinesMciCreateTillOverUnderpaymentConfirmationComponent', () => {
     expect(store.courtFeeDraft()).not.toBeNull();
   });
 
+  it.each(['back', 'confirm', 'cancel', 'return'])(
+    'retains the draft and leave protection if %s navigation fails',
+    async (action) => {
+      const draft = { courtFeeId: 1, amountPaid: action === 'return' ? '24.99' : '30', numberOfItems: '2' };
+      store.setCourtFeeDraft(draft);
+      vi.mocked(router.navigate).mockRejectedValueOnce(new Error('Navigation failed'));
+      const element = render();
+      const selectors: Record<string, string> = {
+        back: '.govuk-back-link',
+        confirm: '#confirm-overpayment',
+        cancel: '#cancel-overpayment',
+        return: 'opal-lib-govuk-cancel-link a',
+      };
+
+      element.querySelector<HTMLElement>(selectors[action])!.click();
+      await fixture.whenStable();
+
+      expect(router.navigate).toHaveBeenCalledOnce();
+      expect(fixture.componentInstance.canDeactivate()).toBe(false);
+      expect(store.courtFeeDraft()).toEqual(draft);
+      expect(store.draftJourney()).toBe('courtFee');
+    },
+  );
+
   it('shows the overpayment difference and entered court fee details', () => {
     store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: '30', numberOfItems: '2' });
 
     const element = render();
 
-    expect(getCourtFees).toHaveBeenCalledWith(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_id);
     expect(element.textContent).toContain('Historical Debt');
     expect(element.querySelector('h1')?.textContent).toContain('Confirm overpayment');
     expect(element.querySelector('.moj-alert--information')?.textContent).toContain(
@@ -138,9 +159,9 @@ describe('FinesMciCreateTillOverUnderpaymentConfirmationComponent', () => {
   });
 
   it('groups the fee, entered amount and difference for large whole-pound amounts', () => {
-    getCourtFees.mockReturnValue(
-      of({ court_fees: [{ court_fee_id: 1, court_fee_code: 'CF001', description: 'Application', amount: 1234.5 }] }),
-    );
+    route.snapshot.data.courtFees = {
+      court_fees: [{ court_fee_id: 1, court_fee_code: 'CF001', description: 'Application', amount: 1234.5 }],
+    };
     store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: '3000', numberOfItems: '1' });
 
     const element = render();
@@ -151,24 +172,9 @@ describe('FinesMciCreateTillOverUnderpaymentConfirmationComponent', () => {
     expect(element.querySelector('#confirm-overpayment')?.getAttribute('data-module')).toBe('govuk-button');
   });
 
-  it('shows a loading message until court fees arrive', () => {
-    const response = new Subject<{ court_fees: typeof courtFees }>();
-    getCourtFees.mockReturnValue(response.asObservable());
-    store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: '30', numberOfItems: '2' });
-
-    const element = render();
-    expect(element.querySelector('output.govuk-body')?.textContent).toContain('Loading court fee payment details');
-
-    response.next({ court_fees: courtFees });
-    fixture.detectChanges();
-    expect(element.querySelector('output.govuk-body')).toBeNull();
-    expect(element.querySelector('.moj-alert--information')).not.toBeNull();
-  });
-
   it('shows an error when the court fee draft is missing', () => {
     const element = render();
 
-    expect(getCourtFees).not.toHaveBeenCalled();
     expect(element.querySelector('[role="alert"]')?.textContent).toContain('could not be loaded');
   });
 
@@ -181,7 +187,7 @@ describe('FinesMciCreateTillOverUnderpaymentConfirmationComponent', () => {
   });
 
   it('shows an error when court fees cannot be loaded', () => {
-    getCourtFees.mockReturnValue(throwError(() => new Error('Unavailable')));
+    route.snapshot.data.courtFees = null;
     store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: '30', numberOfItems: '2' });
 
     const element = render();

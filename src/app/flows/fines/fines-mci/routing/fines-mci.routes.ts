@@ -9,6 +9,7 @@ import { fetchBusinessUnitsResolver } from '@app/flows/fines/routing/resolvers/f
 import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.constant';
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
+import { finesMciCourtFeesResolver } from './resolvers/fines-mci-court-fees.resolver';
 
 export const routing: Routes = [
   {
@@ -142,6 +143,7 @@ export const routing: Routes = [
               title: FINES_MCI_ROUTING_TITLES.children.createTillCourtFeeDetails,
             },
             resolve: {
+              courtFees: finesMciCourtFeesResolver,
               title: TitleResolver,
             },
           },
@@ -177,6 +179,7 @@ export const routing: Routes = [
               title: FINES_MCI_ROUTING_TITLES.children.createTillOverUnderpaymentConfirmation,
             },
             resolve: {
+              courtFees: finesMciCourtFeesResolver,
               title: TitleResolver,
             },
           },

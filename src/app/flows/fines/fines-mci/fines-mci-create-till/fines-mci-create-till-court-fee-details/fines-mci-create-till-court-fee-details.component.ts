@@ -9,13 +9,16 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ResolveStart, Router } from '@angular/router';
+import { filter } from 'rxjs';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
-import { IOpalFinesCourtFee } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-fees.interface';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import {
+  IOpalFinesCourtFee,
+  IOpalFinesCourtFeesResponse,
+} from '@services/fines/opal-fines-service/interfaces/opal-fines-court-fees.interface';
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
 import { FinesMciStore } from '../../stores/fines-mci.store';
 import { IFinesMciCourtFeeDraft } from '../../stores/interfaces/fines-mci.interface';
@@ -32,43 +35,40 @@ export class FinesMciCreateTillCourtFeeDetailsComponent
   extends AbstractFormParentBaseComponent
   implements OnInit, OnDestroy
 {
-  private readonly opalFines = inject(OpalFines);
   private readonly navigationRouter = inject(Router);
   private readonly currentRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
   private readonly courtFees = signal<IOpalFinesCourtFee[]>([]);
-  private isContinuing = false;
   private navigationFailed = false;
 
   protected readonly finesMciStore = inject(FinesMciStore);
   protected readonly courtFeeItems = signal<IAlphagovAccessibleAutocompleteItem[]>([]);
   protected readonly feeLoadFailed = signal(false);
-  protected readonly feesLoaded = signal(false);
+  protected readonly isContinuing = signal(false);
 
   public ngOnInit(): void {
+    this.navigationRouter.events
+      .pipe(
+        filter((event): event is ResolveStart => event instanceof ResolveStart),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => {
+        if (this.isContinuing()) this.stateUnsavedChanges = true;
+      });
     this.stateUnsavedChanges = this.finesMciStore.courtFeeDraft() !== null;
-    const businessUnitId = this.finesMciStore.businessUnit()?.business_unit_id;
-    if (businessUnitId == null) {
+    const fees = this.currentRoute.snapshot.data['courtFees'] as IOpalFinesCourtFeesResponse | null | undefined;
+    if (this.finesMciStore.businessUnit()?.business_unit_id == null || !fees) {
       this.feeLoadFailed.set(true);
       return;
     }
 
-    this.opalFines
-      .getCourtFees(businessUnitId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: ({ court_fees }) => {
-          this.courtFees.set(court_fees);
-          this.courtFeeItems.set(
-            court_fees.map(({ court_fee_id, court_fee_code, description, amount }) => ({
-              value: court_fee_id,
-              name: `${court_fee_code} - ${description} (£${amount.toFixed(2)})`,
-            })),
-          );
-          this.feesLoaded.set(true);
-        },
-        error: () => this.feeLoadFailed.set(true),
-      });
+    this.courtFees.set(fees.court_fees);
+    this.courtFeeItems.set(
+      fees.court_fees.map(({ court_fee_id, court_fee_code, description, amount }) => ({
+        value: court_fee_id,
+        name: `${court_fee_code} - ${description} (£${amount.toFixed(2)})`,
+      })),
+    );
   }
 
   /** Saves a valid payment draft and opens the appropriate next screen. */
@@ -87,13 +87,13 @@ export class FinesMciCreateTillCourtFeeDetailsComponent
 
     this.navigationFailed = false;
     this.stateUnsavedChanges = false;
-    this.isContinuing = true;
+    this.isContinuing.set(true);
     void this.navigationRouter
       .navigate([`../${destination}`], { relativeTo: this.currentRoute })
       .catch(() => false)
       .then((navigated) => {
         if (!navigated) {
-          this.isContinuing = false;
+          this.isContinuing.set(false);
           this.navigationFailed = true;
           this.stateUnsavedChanges = true;
         }
@@ -117,11 +117,11 @@ export class FinesMciCreateTillCourtFeeDetailsComponent
 
   @HostListener('window:beforeunload')
   public handleBeforeUnload(): boolean {
-    return this.canDeactivate() === true;
+    return !this.isContinuing() && this.canDeactivate() === true;
   }
 
   public ngOnDestroy(): void {
-    if (!this.isContinuing) {
+    if (!this.isContinuing()) {
       this.finesMciStore.setCourtFeeDraft(null);
       this.finesMciStore.setDraftJourney(null);
     }

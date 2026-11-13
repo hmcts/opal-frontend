@@ -6,9 +6,7 @@
   <span class="govuk-caption-l">{{ finesMciStore.businessUnit()?.business_unit_name }}</span>
   <h1 class="govuk-heading-l">{{ payment()?.heading ?? 'Overpayment or underpayment' }}</h1>
 
-  @if (loading()) {
-    <output class="govuk-body govuk-!-display-block">Loading court fee payment details</output>
-  } @else if (payment(); as paymentDetails) {
+  @if (payment(); as paymentDetails) {
     <div opal-lib-moj-alert [type]="paymentDetails.type" [ariaLabel]="paymentDetails.message">
       <opal-lib-moj-alert-icon icon [type]="paymentDetails.type"></opal-lib-moj-alert-icon>
       <opal-lib-moj-alert-content content>

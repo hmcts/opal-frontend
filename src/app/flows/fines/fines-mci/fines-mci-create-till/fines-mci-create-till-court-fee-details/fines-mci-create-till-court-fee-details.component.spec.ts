@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { Router, provideRouter } from '@angular/router';
+import { ActivatedRoute, ResolveStart, Router, RouterStateSnapshot, provideRouter } from '@angular/router';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { IOpalFinesCourtFeesResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-fees.interface';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { of, Subject, throwError } from 'rxjs';
+import { Subject } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesMciStore } from '../../stores/fines-mci.store';
 import { FinesMciCreateTillCourtFeeDetailsComponent } from './fines-mci-create-till-court-fee-details.component';
@@ -18,13 +18,13 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     { court_fee_id: 1, court_fee_code: 'CF001', description: 'Application', amount: 12.5 },
     { court_fee_id: 2, court_fee_code: 'CF002', description: 'Issue', amount: 0.1 },
   ];
-  const getCourtFees = vi.fn(() => of({ court_fees: courtFees }));
+  let route: { snapshot: { data: { courtFees: IOpalFinesCourtFeesResponse | null } } };
 
   beforeEach(async () => {
-    getCourtFees.mockClear();
+    route = { snapshot: { data: { courtFees: { court_fees: courtFees } } } };
     await TestBed.configureTestingModule({
       imports: [FinesMciCreateTillCourtFeeDetailsComponent],
-      providers: [provideRouter([]), FinesMciStore, { provide: OpalFines, useValue: { getCourtFees } }],
+      providers: [provideRouter([]), FinesMciStore, { provide: ActivatedRoute, useValue: route }],
     }).compileComponents();
     store = TestBed.inject(FinesMciStore);
     store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
@@ -66,7 +66,6 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     const component = render();
     const element = fixture.nativeElement as HTMLElement;
 
-    expect(getCourtFees).toHaveBeenCalledWith(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_id);
     expect(element.textContent).toContain('Historical Debt');
     expect(element.querySelector('h1')?.textContent).toContain('Court fee');
     expect(element.textContent).toContain('Search using court fee code or description');
@@ -332,12 +331,13 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     courtFeeForm().form.controls['courtFeeId'].setValue(1);
     courtFeeForm().form.controls['amountPaid'].setValue(amount);
     courtFeeForm().form.controls['numberOfItems'].setValue(numberOfItems);
+    const form = courtFeeForm().form;
 
     submitForm();
 
     expect(router.navigate).toHaveBeenCalledWith([`../${destination}`], expect.any(Object));
     expect(store.courtFeeDraft()).toEqual({ courtFeeId: 1, amountPaid: amount, numberOfItems });
-    expect(courtFeeForm().form.valid).toBe(true);
+    expect(form.valid).toBe(true);
   });
 
   it('uses pence when comparing a decimal court fee for multiple items', () => {
@@ -363,20 +363,6 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     expect(element.querySelector('.govuk-error-summary')?.textContent).toContain('Enter an amount');
     expect(element.querySelector('.govuk-error-summary')?.textContent).not.toContain('Enter number of items');
     expect(element.querySelector('#numberOfItems-error-message')).toBeNull();
-  });
-
-  it('waits for fee data before rendering the typeahead', () => {
-    const response = new Subject<{ court_fees: typeof courtFees }>();
-    getCourtFees.mockReturnValueOnce(response);
-    render();
-
-    expect((fixture.nativeElement as HTMLElement).textContent).toContain('Loading court fees');
-    expect((fixture.nativeElement as HTMLElement).querySelector('form')).toBeNull();
-
-    response.next({ court_fees: courtFees });
-    fixture.detectChanges();
-
-    expect((fixture.nativeElement as HTMLElement).querySelector('form')).not.toBeNull();
   });
 
   it('restores draft form values when returning to the screen', () => {
@@ -423,15 +409,14 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     expect(courtFeeForm().form.controls['amountPaid'].value).toBe('12.50');
   });
 
-  it('allows a valid Continue without a warning and keeps the draft for the next screen', () => {
-    const component = render();
+  it('allows a valid Continue and keeps the draft for the next screen', () => {
+    render();
     enterCourtFeeText('CF001 - Application (£12.50)');
     courtFeeForm().form.setValue({ courtFeeId: 1, amountPaid: '12.50', numberOfItems: '1' });
 
     submitForm();
     fixture.destroy();
 
-    expect(component.handleBeforeUnload()).toBe(true);
     expect(store.courtFeeDraft()).toEqual({ courtFeeId: 1, amountPaid: '12.50', numberOfItems: '1' });
   });
 
@@ -447,26 +432,56 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
 
     submitForm();
     await fixture.whenStable();
+    fixture.detectChanges();
 
     expect(component.handleBeforeUnload()).toBe(false);
     expect(store.courtFeeDraft()).toEqual({ courtFeeId: 1, amountPaid: '12.50', numberOfItems: '1' });
+    expect(courtFeeForm().form.getRawValue()).toEqual(store.courtFeeDraft());
     courtFeeForm().form.controls['amountPaid'].setValue('13.00');
     expect(component.handleBeforeUnload()).toBe(false);
   });
 
+  it('protects the draft while the next screen is resolving and restores the form if navigation is cancelled', async () => {
+    const events = new Subject<ResolveStart>();
+    vi.spyOn(router, 'events', 'get').mockReturnValue(events.asObservable());
+    let finishNavigation!: (navigated: boolean) => void;
+    vi.mocked(router.navigate).mockReturnValueOnce(
+      new Promise((resolve) => {
+        finishNavigation = resolve;
+      }),
+    );
+    const component = render();
+    enterCourtFeeText('CF001 - Application (£12.50)');
+    courtFeeForm().form.setValue({ courtFeeId: 1, amountPaid: '25.01', numberOfItems: '2' });
+
+    submitForm();
+    events.next(new ResolveStart(1, '/previous', '/next', {} as RouterStateSnapshot));
+
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('Loading next screen');
+    expect((fixture.nativeElement as HTMLElement).querySelector('form')).toBeNull();
+    expect(component.handleBeforeUnload()).toBe(false);
+    expect(component['canDeactivate']()).toBe(false);
+
+    finishNavigation(false);
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(courtFeeForm().form.getRawValue()).toEqual({ courtFeeId: 1, amountPaid: '25.01', numberOfItems: '2' });
+    expect(component.handleBeforeUnload()).toBe(false);
+  });
+
   it('shows an error when court fee reference data cannot load', () => {
-    getCourtFees.mockReturnValueOnce(throwError(() => new Error('unavailable')));
+    route.snapshot.data.courtFees = null;
     render();
 
     expect((fixture.nativeElement as HTMLElement).textContent).toContain('Court fees could not be loaded');
   });
 
-  it('does not request court fees when no business unit is selected', () => {
+  it('shows an error when no business unit is selected', () => {
     store.reset();
     render();
 
     const element = fixture.nativeElement as HTMLElement;
-    expect(getCourtFees).not.toHaveBeenCalled();
     expect(element.textContent).toContain('Court fees could not be loaded');
     expect(element.querySelector('form')).toBeNull();
   });
@@ -484,7 +499,7 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
   });
 
   it('explains when the selected business unit has no court fees', () => {
-    getCourtFees.mockReturnValueOnce(of({ court_fees: [] }));
+    route.snapshot.data.courtFees = { court_fees: [] };
     render();
 
     const element = fixture.nativeElement as HTMLElement;

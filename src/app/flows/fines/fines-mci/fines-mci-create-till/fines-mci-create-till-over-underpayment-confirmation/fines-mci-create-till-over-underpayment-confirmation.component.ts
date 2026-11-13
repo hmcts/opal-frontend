@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, HostListener, OnInit, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, HostListener, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
@@ -14,7 +13,7 @@ import {
   MojAlertIconComponent,
   MojAlertTextComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { IOpalFinesCourtFeesResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-fees.interface';
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
 import { FinesMciStore } from '../../stores/fines-mci.store';
 import { ICourtFeePaymentComparison } from '../interfaces/fines-mci-court-fee-payment-comparison.interface';
@@ -38,19 +37,18 @@ import { comparePayment } from '../utils/fines-mci-court-fee-payment.utils';
 })
 export class FinesMciCreateTillOverUnderpaymentConfirmationComponent implements OnInit {
   private allowIntendedNavigation = false;
-  private readonly opalFines = inject(OpalFines);
-  private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
 
   protected readonly finesMciStore = inject(FinesMciStore);
   protected readonly payment = signal<ICourtFeePaymentComparison | null>(null);
-  protected readonly loading = signal(true);
 
   private async navigateTo(path: string): Promise<boolean> {
     this.allowIntendedNavigation = true;
     try {
       return await this.router.navigate([`../${path}`], { relativeTo: this.activatedRoute });
+    } catch {
+      return false;
     } finally {
       this.allowIntendedNavigation = false;
     }
@@ -67,23 +65,12 @@ export class FinesMciCreateTillOverUnderpaymentConfirmationComponent implements 
 
   public ngOnInit(): void {
     const draft = this.finesMciStore.courtFeeDraft();
-    const businessUnitId = this.finesMciStore.businessUnit()?.business_unit_id;
-    if (!draft || draft.courtFeeId == null || businessUnitId == null) {
-      this.loading.set(false);
+    const fees = this.activatedRoute.snapshot.data['courtFees'] as IOpalFinesCourtFeesResponse | null | undefined;
+    if (!draft || draft.courtFeeId == null || this.finesMciStore.businessUnit()?.business_unit_id == null || !fees)
       return;
-    }
 
-    this.opalFines
-      .getCourtFees(businessUnitId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: ({ court_fees }) => {
-          const fee = court_fees.find(({ court_fee_id }) => court_fee_id === draft.courtFeeId);
-          this.payment.set(fee ? comparePayment(draft, fee) : null);
-          this.loading.set(false);
-        },
-        error: () => this.loading.set(false),
-      });
+    const fee = fees.court_fees.find(({ court_fee_id }) => court_fee_id === draft.courtFeeId);
+    this.payment.set(fee ? comparePayment(draft, fee) : null);
   }
 
   /** Returns to the court fee form with the existing draft. */
