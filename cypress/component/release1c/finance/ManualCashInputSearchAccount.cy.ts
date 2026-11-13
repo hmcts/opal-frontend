@@ -229,8 +229,9 @@ describe('Manual Cash Input - Search for an Account', () => {
     cy.get(Mci.searchAccount.lastName).type('Smith');
     cy.get(Mci.searchAccount.searchButton).click();
 
-    cy.contains('h1', 'Matching criminal accounts').should('be.visible');
-    cy.contains('Placeholder for PO-3490.').should('be.visible');
+    cy.contains('h1', 'Search results').should('be.visible');
+    cy.get('app-fines-mci-payment-category-criminal-matches-table-wrapper table').should('be.visible');
+    cy.get('#criminalAccountNumber').should('contain.text', '130001BU');
     cy.get('@getDefendantAccounts').should('have.been.calledOnce');
   });
 
