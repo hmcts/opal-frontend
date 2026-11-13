@@ -15,6 +15,7 @@ import {
   GovukRadiosItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 import { FINES_MCI_CREATE_TILL_COURT_FEE_PAYMENT_DETAILS_FIELD_ERRORS } from '../constants/fines-mci-create-till-court-fee-payment-details-field-errors.constant';
+import { FINES_MCI_PAYMENT_DETAILS_PATTERNS } from '../constants/fines-mci-payment-details-patterns.constant';
 import { requiredTrimmed } from '../validators/fines-mci-payment-details.validators';
 
 @Component({
@@ -52,24 +53,40 @@ export class FinesMciCreateTillCourtFeePaymentDetailsFormComponent extends Abstr
       paymentMethod: new FormControl<string | null>(null, Validators.required),
       paymentSource: new FormControl<string | null>({ value: null, disabled: true }, Validators.required),
       paymentReference: new FormControl<string | null>({ value: null, disabled: true }, [
-        Validators.pattern(/^[a-zA-Z0-9 '\-]*$/),
+        Validators.pattern(FINES_MCI_PAYMENT_DETAILS_PATTERNS.alphanumeric),
         Validators.maxLength(50),
       ]),
       payerType: new FormControl<string | null>(null, Validators.required),
       title: new FormControl<string | null>({ value: null, disabled: true }),
       firstNames: new FormControl<string | null>({ value: null, disabled: true }, [
-        Validators.pattern(/^[a-zA-Z '\-]*$/),
+        Validators.pattern(FINES_MCI_PAYMENT_DETAILS_PATTERNS.alphabetic),
         Validators.maxLength(20),
       ]),
       lastName: new FormControl<string | null>({ value: null, disabled: true }, [
         requiredTrimmed,
-        Validators.pattern(/^[a-zA-Z '\-]*$/),
+        Validators.pattern(FINES_MCI_PAYMENT_DETAILS_PATTERNS.alphabetic),
         Validators.maxLength(30),
       ]),
       companyName: new FormControl<string | null>({ value: null, disabled: true }, [
         requiredTrimmed,
-        Validators.pattern(/^[a-zA-Z0-9 '\-]*$/),
+        Validators.pattern(FINES_MCI_PAYMENT_DETAILS_PATTERNS.alphanumeric),
         Validators.maxLength(50),
+      ]),
+      addressLine1: new FormControl<string | null>(null, [
+        Validators.pattern(FINES_MCI_PAYMENT_DETAILS_PATTERNS.alphanumeric),
+        Validators.maxLength(30),
+      ]),
+      addressLine2: new FormControl<string | null>(null, [
+        Validators.pattern(FINES_MCI_PAYMENT_DETAILS_PATTERNS.alphanumeric),
+        Validators.maxLength(30),
+      ]),
+      addressLine3: new FormControl<string | null>(null, [
+        Validators.pattern(FINES_MCI_PAYMENT_DETAILS_PATTERNS.alphanumeric),
+        Validators.maxLength(30),
+      ]),
+      postcode: new FormControl<string | null>(null, [
+        Validators.pattern(FINES_MCI_PAYMENT_DETAILS_PATTERNS.alphanumeric),
+        Validators.maxLength(8),
       ]),
     });
     this.setInitialErrorMessages();

@@ -88,7 +88,16 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsFormComponent', () => {
     expect(element.querySelector('.govuk-error-summary__list')).toBeNull();
     expect(element.querySelector('.govuk-form-group--error')).toBeNull();
     expect(emitted).toHaveBeenCalledWith({
-      formData: { paymentReceivedFrom: value, paymentMethod: 'NC', payerType: 'company', companyName: 'Example Ltd' },
+      formData: {
+        paymentReceivedFrom: value,
+        paymentMethod: 'NC',
+        payerType: 'company',
+        companyName: 'Example Ltd',
+        addressLine1: null,
+        addressLine2: null,
+        addressLine3: null,
+        postcode: null,
+      },
       nestedFlow: false,
     });
   });
@@ -268,5 +277,53 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsFormComponent', () => {
     input.dispatchEvent(new Event('input', { bubbles: true }));
     fixture.detectChanges();
     expect(fixture.componentInstance.form.valid).toBe(true);
+  });
+
+  it.each([
+    ['addressLine1', 'Address line 1', 30, "12 O'Brien Street"],
+    ['addressLine2', 'Address line 2', 30, 'Flat 2-A'],
+    ['addressLine3', 'Address line 3', 30, 'London'],
+    ['postcode', 'Postcode', 8, 'SW1A 1AA'],
+  ] as const)('validates optional %s characters and length', (field, label, maxLength, validValue) => {
+    const fixture = render();
+    const element = fixture.nativeElement as HTMLElement;
+    element.querySelector<HTMLInputElement>('input[value="applicant"]')!.click();
+    element.querySelector<HTMLInputElement>('input[value="NC"]')!.click();
+    completeCompany(fixture);
+    const input = element.querySelector<HTMLInputElement>(`#${field}`)!;
+    const submit = () =>
+      element.querySelector('form')!.dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+
+    expect(fixture.componentInstance.form.valid).toBe(true);
+    input.value = 'Invalid!';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    submit();
+    fixture.detectChanges();
+    expect(element.querySelector('.govuk-error-summary__list')?.textContent).toContain(
+      `${label} must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
+    );
+    expect(element.querySelector(`#${field}-error-message`)?.textContent).toContain(`${label} must only include`);
+
+    input.value = 'A'.repeat(maxLength + 1);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+    expect(element.querySelector('.govuk-error-summary__list')?.textContent).toContain(
+      `${label} must be ${maxLength} characters or fewer`,
+    );
+    input.value = validValue;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    fixture.detectChanges();
+    expect(fixture.componentInstance.form.valid).toBe(true);
+    expect(element.querySelector('.govuk-error-summary__list')).toBeNull();
+  });
+
+  it('accepts an optional postcode that meets AC4 without enforcing a UK postcode format', () => {
+    const fixture = render();
+    const postcode = fixture.componentInstance.form.controls['postcode'];
+
+    postcode.setValue('ABC123');
+    expect(postcode.valid).toBe(true);
+    postcode.setValue('');
+    expect(postcode.valid).toBe(true);
   });
 });

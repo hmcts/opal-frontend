@@ -149,5 +149,41 @@
     </opal-lib-govuk-radios-conditional>
   </opal-lib-govuk-radio>
 
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Address</legend>
+    <opal-lib-govuk-text-input
+      labelText="Address line 1"
+      inputId="addressLine1"
+      inputName="addressLine1"
+      inputClasses="govuk-input--width-30"
+      [control]="form.controls['addressLine1']"
+      [errors]="formControlErrorMessages['addressLine1']"
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
+      labelText="Address line 2"
+      inputId="addressLine2"
+      inputName="addressLine2"
+      inputClasses="govuk-input--width-30"
+      [control]="form.controls['addressLine2']"
+      [errors]="formControlErrorMessages['addressLine2']"
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
+      labelText="Address line 3"
+      inputId="addressLine3"
+      inputName="addressLine3"
+      inputClasses="govuk-input--width-30"
+      [control]="form.controls['addressLine3']"
+      [errors]="formControlErrorMessages['addressLine3']"
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
+      labelText="Postcode"
+      inputId="postcode"
+      inputName="postcode"
+      inputClasses="govuk-input--width-10"
+      [control]="form.controls['postcode']"
+      [errors]="formControlErrorMessages['postcode']"
+    ></opal-lib-govuk-text-input>
+  </fieldset>
+
   <button class="govuk-button" id="submitForm" type="submit">Continue</button>
 </form>
