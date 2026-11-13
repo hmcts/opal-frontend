@@ -39,7 +39,7 @@ export class FinesMacPayloadService {
   private readonly transformationService = inject(TransformationService);
   private readonly globalStore = inject(GlobalStore);
 
-  private get newSortCodeFunctionalityEnabled(): boolean {
+  private get isR1A12Enabled(): boolean {
     return getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true;
   }
 
@@ -48,6 +48,7 @@ export class FinesMacPayloadService {
    * defined in the FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG.
    *
    * @param finesMacPayload - The payload object to be transformed.
+   * @param transformItemsConfig
    * @returns The transformed payload object.
    */
   private transformPayload<
@@ -88,6 +89,7 @@ export class FinesMacPayloadService {
       paymentTermsState,
       offenceDetailsState,
       fixedPenaltyDetails,
+      this.isR1A12Enabled,
     );
     const defendant = finesMacPayloadBuildAccountDefendant(
       accountDetailsState,
@@ -108,7 +110,7 @@ export class FinesMacPayloadService {
       offenceDetailsForms,
       fixedPenaltyDetails,
       accountType,
-      this.newSortCodeFunctionalityEnabled,
+      this.isR1A12Enabled,
     );
 
     // Return our payload object
@@ -194,6 +196,8 @@ export class FinesMacPayloadService {
    * Maps the provided account payload to the fines MAC state.
    *
    * @param payload - The payload containing account information to be mapped.
+   * @param businessUnitRefData
+   * @param offencesRefData
    * @returns The updated fines MAC state after mapping the account information.
    */
   public mapAccountPayload(
@@ -208,7 +212,11 @@ export class FinesMacPayloadService {
     let finesMacState: IFinesMacState = structuredClone(FINES_MAC_STATE);
     finesMacState = finesMacPayloadMapAccountBase(finesMacState, transformedPayload);
     finesMacState = finesMacPayloadMapAccountDefendant(finesMacState, transformedPayload.account);
-    finesMacState = finesMacPayloadMapAccountPaymentTerms(finesMacState, transformedPayload.account);
+    finesMacState = finesMacPayloadMapAccountPaymentTerms(
+      finesMacState,
+      transformedPayload.account,
+      this.isR1A12Enabled,
+    );
     finesMacState = finesMacPayloadMapAccountAccountNotesPayload(
       finesMacState,
       transformedPayload.account.account_notes,
