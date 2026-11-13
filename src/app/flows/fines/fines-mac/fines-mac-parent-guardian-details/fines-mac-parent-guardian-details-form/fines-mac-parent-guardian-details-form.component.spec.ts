@@ -59,14 +59,13 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FinesMacParentGuardianDetailsFormComponent);
-    component = fixture.componentInstance;
-
     globalStore = TestBed.inject(GlobalStore);
-
     globalStore.setFeatureFlags({
       [RELEASE_1A_1_2_FEATURE_FLAG]: false,
     });
+
+    fixture = TestBed.createComponent(FinesMacParentGuardianDetailsFormComponent);
+    component = fixture.componentInstance;
 
     const finesMacState = structuredClone(FINES_MAC_STATE_MOCK);
     finesMacState.accountDetails.formData.fm_create_account_defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
@@ -79,6 +78,29 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should apply the seven-character vehicle registration limit only while release-1a-1-2 is enabled', async () => {
+    await fixture.whenStable();
+    const registrationControl = component.form.get('fm_parent_guardian_details_vehicle_registration_mark');
+    registrationControl?.setValue('1234567890');
+    expect(registrationControl?.hasError('maxlength')).toBe(false);
+
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+    await fixture.whenStable();
+
+    expect(registrationControl?.hasError('maxlength')).toBe(true);
+    expect(
+      component.fieldErrors.fm_parent_guardian_details_vehicle_registration_mark['maxlength'].message,
+    ).toBe('Registration number must be 7 characters or fewer');
+
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+    await fixture.whenStable();
+
+    expect(registrationControl?.hasError('maxlength')).toBe(false);
+    expect(
+      component.fieldErrors.fm_parent_guardian_details_vehicle_registration_mark['maxlength'].message,
+    ).toBe('Registration number must be 11 characters or fewer');
   });
 
   it('should display numbered Remove buttons when release-1a-1-2 is enabled', () => {
