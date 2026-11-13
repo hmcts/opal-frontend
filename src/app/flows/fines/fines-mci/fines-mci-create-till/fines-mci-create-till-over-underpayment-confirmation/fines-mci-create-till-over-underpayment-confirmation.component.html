@@ -46,7 +46,11 @@
 
     @if (paymentDetails.type === 'information') {
       <div class="govuk-button-group">
-        <opal-lib-govuk-button buttonId="confirm-overpayment" (buttonClickEvent)="handleConfirm()">
+        <opal-lib-govuk-button
+          buttonId="confirm-overpayment"
+          buttonClasses="govuk-!-display-block"
+          (buttonClickEvent)="handleConfirm()"
+        >
           Confirm
         </opal-lib-govuk-button>
         <a
