@@ -38,6 +38,10 @@ const createUserState = () => {
     ...businessUnitUser,
     permissions: [
       {
+        permission_id: FINES_PERMISSIONS['process-and-allocate-payments'],
+        permission_name: 'Process and Allocate Payments',
+      },
+      {
         permission_id: FINES_PERMISSIONS['operational-report-by-enforcement'],
         permission_name: 'Permission',
       },

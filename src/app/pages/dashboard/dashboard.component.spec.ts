@@ -20,6 +20,7 @@ import {
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
   RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
   RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
+  RELEASE_1C_SUSPENSE_FEATURE_FLAG,
 } from '@app/flows/fines/constants/release-feature-flags.constant';
 
 describe('DashboardComponent', () => {
@@ -38,6 +39,7 @@ describe('DashboardComponent', () => {
     [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: true,
     [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
     [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true,
+    [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: true,
   };
 
   const setupComponent = () => {
@@ -70,10 +72,70 @@ describe('DashboardComponent', () => {
     }).compileComponents();
   });
 
+  it.each([
+    { name: 'enabled', flags: { [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: true }, visible: true },
+    { name: 'disabled', flags: { [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: false }, visible: false },
+    { name: 'missing', flags: {}, visible: false },
+  ])('should render the Suspense heading and link only when the flag is enabled ($name)', ({ flags, visible }) => {
+    permissionsServiceMock.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['view-suspense-items']]);
+    globalStoreMock.featureFlags.mockReturnValue({
+      [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
+      [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true,
+      ...flags,
+    });
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
+    setupComponent();
+
+    const element: HTMLElement = fixture.nativeElement;
+    const suspenseHeading = Array.from(element.querySelectorAll('h2')).find(
+      (heading) => heading.textContent?.trim() === 'Suspense',
+    );
+    const suspenseLink = element.querySelector('a[href="/fines/suspense-item/search"]');
+    expect(Boolean(suspenseHeading)).toBe(visible);
+    expect(Boolean(suspenseLink)).toBe(visible);
+    expect(component.resolvedConfig().groups.map((group) => group.id)).toEqual(
+      visible ? ['suspense', 'cash', 'bankingInterfaces'] : ['cash', 'bankingInterfaces'],
+    );
+  });
+
+  it.each([
+    { name: 'View only', permissions: [24], visible: true },
+    { name: 'Manage only', permissions: [25], visible: true },
+    { name: 'both', permissions: [24, 25], visible: true },
+    { name: 'Cash only', permissions: [16], visible: false },
+  ])('filters the Suspense heading and link for $name', ({ permissions, visible }) => {
+    permissionsServiceMock.getUniquePermissions.mockReturnValue(permissions);
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
+    setupComponent();
+
+    const element: HTMLElement = fixture.nativeElement;
+    expect(element.querySelectorAll('a[href="/fines/suspense-item/search"]')).toHaveLength(visible ? 1 : 0);
+    expect(
+      Array.from(element.querySelectorAll('h2')).some((heading) => heading.textContent?.trim() === 'Suspense'),
+    ).toBe(visible);
+  });
+
   it('should create', () => {
     setupComponent();
 
     expect(component).toBeTruthy();
+  });
+
+  it('renders Manage Suspense Items under Suspense before the Cash section', () => {
+    permissionsServiceMock.getUniquePermissions.mockReturnValue([
+      FINES_PERMISSIONS['process-and-allocate-payments'],
+      FINES_PERMISSIONS['view-suspense-items'],
+    ]);
+    dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
+    setupComponent();
+
+    const element: HTMLElement = fixture.nativeElement;
+    const headings = Array.from(element.querySelectorAll('h2')).map((heading) => heading.textContent?.trim());
+    const link = element.querySelector<HTMLAnchorElement>('a[href="/fines/suspense-item/search"]');
+
+    expect(headings.slice(0, 2)).toEqual(['Suspense', 'Cash']);
+    expect(link?.textContent?.trim()).toBe('Manage Suspense Items');
+    expect(link?.target).not.toBe('_blank');
   });
 
   it('should resolve the reports config for the reports dashboard type', () => {

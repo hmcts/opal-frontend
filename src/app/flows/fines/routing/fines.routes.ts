@@ -9,7 +9,10 @@ import { routing as reportingRouting } from '../fines-reports/routing/fines-repo
 import { routing as manualCashInputRouting } from '../fines-mci/routing/fines-mci.routes';
 import { routing as autoPaymentInRouting } from '../fines-api/routing/fines-api.routes';
 import { routing as financeRouting } from '../fines-finance/routing/fines-finance.routes';
+import { routing as suspenseItemRouting } from '../fines-suspense-item/routing/fines-suspense-item.routes';
 import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
+import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
+import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { accountGuard } from '@hmcts/opal-frontend-common/guards/account';
@@ -35,6 +38,8 @@ import {
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
   RELEASE_1C_PAYMENT_FEATURE_FLAG,
+  RELEASE_1C_SUSPENSE_FEATURE_FLAG,
+  RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
 } from '../constants/release-feature-flags.constant';
 
 export const release1aFeatureFlagGuard = featureFlagRedirectGuard(RELEASE_1A_FEATURE_FLAG);
@@ -43,7 +48,12 @@ export const release1cWriteOffFeatureFlagGuard = featureFlagRedirectGuard(RELEAS
 export const release1cEnforcementOperationalReportingFeatureFlagGuard = featureFlagRedirectGuard(
   RELEASE_1C_ENFORCEMENT_OPERATIONAL_REPORTING_FEATURE_FLAG,
 );
+export const release1cFinancialMovementsFeatureFlagGuard = featureFlagRedirectGuard(
+  RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
+);
 export const release1cPaymentFeatureFlagGuard = featureFlagRedirectGuard(RELEASE_1C_PAYMENT_FEATURE_FLAG);
+
+export const release1cSuspenseFeatureFlagGuard = featureFlagRedirectGuard(RELEASE_1C_SUSPENSE_FEATURE_FLAG);
 
 export const finesRouting: Routes = [
   {
@@ -109,16 +119,29 @@ export const finesRouting: Routes = [
       {
         path: FINES_ROUTING_PATHS.children.mci.root,
         children: manualCashInputRouting,
-        canActivate: [authGuard, finesSectionPermissionsGuard],
+        canActivate: [authGuard, release1cFinancialMovementsFeatureFlagGuard, finesSectionPermissionsGuard],
         data: {
           sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+        },
+      },
+      {
+        path: FINES_ROUTING_PATHS.children.suspenseItem.root,
+        children: suspenseItemRouting,
+        canActivate: [authGuard, release1cSuspenseFeatureFlagGuard, routePermissionsGuard],
+        data: {
+          routePermissionId: [FINES_PERMISSIONS['view-suspense-items'], FINES_PERMISSIONS['manage-suspense-items']],
         },
       },
       {
         path: FINES_ROUTING_PATHS.children.autoPaymentIn.root,
         loadComponent: () => import('../fines-api/fines-api.component').then((c) => c.FinesApiComponent),
         children: autoPaymentInRouting,
-        canActivate: [authGuard, release1cPaymentFeatureFlagGuard, finesSectionPermissionsGuard],
+        canActivate: [
+          authGuard,
+          release1cPaymentFeatureFlagGuard,
+          release1cFinancialMovementsFeatureFlagGuard,
+          finesSectionPermissionsGuard,
+        ],
         canActivateChild: [release1cPaymentFeatureFlagGuard],
         canDeactivate: [canDeactivateGuard],
         data: {

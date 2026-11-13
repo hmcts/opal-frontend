@@ -2,6 +2,7 @@ import { IChildRoutingPaths, IParentRoutingPaths } from '@hmcts/opal-frontend-co
 import { IFinesDashboardRoutingPaths } from '../../interfaces/fines-dashboard-routing-paths.interface';
 import { IFinesMciRoutingPaths } from '../../fines-mci/routing/interfaces/fines-mci-routing-paths.interface';
 import { IFinesApiRoutingPaths } from '../../fines-api/interfaces/fines-api-routing-paths.interface';
+import { IFinesSuspenseItemRoutingPaths } from '../../fines-suspense-item/routing/interfaces/fines-suspense-item-routing-paths.interface';
 
 export interface IFinesRoutingPaths extends IParentRoutingPaths {
   children: {
@@ -16,5 +17,6 @@ export interface IFinesRoutingPaths extends IParentRoutingPaths {
     reports: IChildRoutingPaths;
     aec: IChildRoutingPaths;
     finance: IChildRoutingPaths;
+    suspenseItem: IFinesSuspenseItemRoutingPaths;
   };
 }

@@ -32,6 +32,15 @@ const DEFAULT_RELEASE_FEATURE_FLAGS = {
   [RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG]: true,
 };
 
+const withFinancePermission = (userState: IOpalUserState): IOpalUserState => {
+  const nextUserState = structuredClone(userState);
+  nextUserState.business_unit_users[0].permissions.push({
+    permission_id: FINES_PERMISSIONS['process-and-allocate-payments'],
+    permission_name: 'Process and Allocate Payments',
+  });
+  return nextUserState;
+};
+
 const withReportPermission = (userState: IOpalUserState): IOpalUserState => {
   const nextUserState = structuredClone(userState);
 
@@ -92,7 +101,7 @@ describe(
       'AC4e hides Reports from the primary navigation when the user has no report permissions in any business unit',
       { tags: ['@JIRA-TEST-KEY:PO-5249', '@R1CEnforcementOperationalReporting'] },
       () => {
-        setupComponent(USER_STATE_MOCK_NO_PERMISSION);
+        setupComponent(withFinancePermission(USER_STATE_MOCK_NO_PERMISSION));
 
         cy.get(L.container).should('be.visible');
         cy.get(L.items)
@@ -110,7 +119,7 @@ describe(
       'shows Reports in the primary navigation when the user has a report permission in any business unit',
       { tags: ['@JIRA-TEST-KEY:PO-5250', '@R1CEnforcementOperationalReporting'] },
       () => {
-        setupComponent(withReportPermission(USER_STATE_MOCK_NO_PERMISSION));
+        setupComponent(withReportPermission(withFinancePermission(USER_STATE_MOCK_NO_PERMISSION)));
 
         cy.get(L.container).should('be.visible');
         cy.get(L.items)
