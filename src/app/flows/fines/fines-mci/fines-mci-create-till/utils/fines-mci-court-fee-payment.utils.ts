@@ -3,7 +3,13 @@ import { IFinesMciCourtFeeDraft } from '../../stores/interfaces/fines-mci.interf
 import { IFinesMciCourtFeeAmountComparison } from '../interfaces/fines-mci-court-fee-amount-comparison.interface';
 import { ICourtFeePaymentComparison } from '../interfaces/fines-mci-court-fee-payment-comparison.interface';
 
-/** Formats money without rounding sub-penny values or converting large integers to numbers. */
+/**
+ * Formats money without rounding sub-penny values or converting large integers to numbers.
+ *
+ * @param amount A non-negative integer representing pounds scaled by 10 to the power of decimalPlaces.
+ * @param decimalPlaces The number of fractional digits represented by the scaled amount, at least two.
+ * @returns A pound amount with thousands separators and at least two fractional digits.
+ */
 export function formatPounds(amount: bigint, decimalPlaces: number): string {
   const scale = 10n ** BigInt(decimalPlaces);
   const pounds = amount / scale;
@@ -11,7 +17,14 @@ export function formatPounds(amount: bigint, decimalPlaces: number): string {
   return `£${pounds.toLocaleString('en-GB')}.${pence}`;
 }
 
-/** Compares the paid amount and fee total at the entered decimal scale. */
+/**
+ * Compares the paid amount and fee total at the entered decimal scale, preserving sub-penny differences.
+ *
+ * @param amount The entered amount in pounds as an unsigned decimal string.
+ * @param feeAmount The unit fee in pounds, rounded to whole pence before multiplication.
+ * @param numberOfItems The entered positive whole-number quantity.
+ * @returns The scaled paid amount and signed difference, or null for invalid input.
+ */
 export function compareCourtFeeAmounts(
   amount: string,
   feeAmount: number,
@@ -32,7 +45,13 @@ export function compareCourtFeeAmounts(
   return { paid, difference: paid - expected, decimalPlaces };
 }
 
-/** Builds the confirmation details for an overpayment or underpayment. */
+/**
+ * Builds the confirmation content and formatted summary for an overpayment or underpayment.
+ *
+ * @param draft The saved court fee payment details.
+ * @param fee The selected fee used to calculate the expected total.
+ * @returns Confirmation details, or null when the payment is exact or the draft values are invalid.
+ */
 export function comparePayment(
   draft: IFinesMciCourtFeeDraft,
   fee: IOpalFinesCourtFee,

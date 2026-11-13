@@ -43,6 +43,12 @@ export class FinesMciCreateTillOverUnderpaymentConfirmationComponent implements 
   protected readonly finesMciStore = inject(FinesMciStore);
   protected readonly payment = signal<ICourtFeePaymentComparison | null>(null);
 
+  /**
+   * Allows an intentional journey transition and restores the leave warning if the screen remains open.
+   *
+   * @param path The sibling route to open.
+   * @returns Whether navigation completed successfully.
+   */
   private async navigateTo(path: string): Promise<boolean> {
     this.allowIntendedNavigation = true;
     try {
@@ -54,15 +60,18 @@ export class FinesMciCreateTillOverUnderpaymentConfirmationComponent implements 
     }
   }
 
+  /** Allows route changes without a warning only when initiated by this screen's journey actions. */
   public canDeactivate(): boolean {
     return this.allowIntendedNavigation;
   }
 
+  /** Requests a browser leave warning because refreshing or closing the tab would lose the in-memory till. */
   @HostListener('window:beforeunload')
   public handleBeforeUnload(): boolean {
     return false;
   }
 
+  /** Builds the confirmation from the saved draft and resolved fees, leaving the error view for missing data. */
   public ngOnInit(): void {
     const draft = this.finesMciStore.courtFeeDraft();
     const fees = this.activatedRoute.snapshot.data['courtFees'] as IOpalFinesCourtFeesResponse | null | undefined;

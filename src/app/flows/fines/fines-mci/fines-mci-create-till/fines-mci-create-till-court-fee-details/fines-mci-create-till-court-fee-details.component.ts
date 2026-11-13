@@ -46,6 +46,7 @@ export class FinesMciCreateTillCourtFeeDetailsComponent
   protected readonly feeLoadFailed = signal(false);
   protected readonly isContinuing = signal(false);
 
+  /** Restores draft protection, prepares resolved fee options and protects the till during pending navigation. */
   public ngOnInit(): void {
     this.navigationRouter.events
       .pipe(
@@ -100,6 +101,7 @@ export class FinesMciCreateTillCourtFeeDetailsComponent
       });
   }
 
+  /** Returns to the till, clearing the payment draft only after navigation succeeds. */
   public handleCancel(): void {
     void this.navigationRouter
       .navigate([`../${FINES_MCI_ROUTING_PATHS.children.details}`], { relativeTo: this.currentRoute })
@@ -111,15 +113,18 @@ export class FinesMciCreateTillCourtFeeDetailsComponent
       });
   }
 
+  /** Keeps leave protection active after a failed transition, even if the submitted child form reports no changes. */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.stateUnsavedChanges = this.navigationFailed || unsavedChanges;
   }
 
+  /** Requests a browser leave warning for unsaved input or a draft awaiting the next screen. */
   @HostListener('window:beforeunload')
   public handleBeforeUnload(): boolean {
     return !this.isContinuing() && this.canDeactivate() === true;
   }
 
+  /** Discards abandoned payment data while preserving drafts passed to the next journey screen. */
   public ngOnDestroy(): void {
     if (!this.isContinuing()) {
       this.finesMciStore.setCourtFeeDraft(null);

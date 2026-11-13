@@ -25,7 +25,7 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
   protected readonly finesMciStore = inject(FinesMciStore);
   protected readonly isContinuing = signal(false);
 
-  /** Restores leave protection for a category draft restored into the child form. */
+  /** Restores category draft protection and keeps it active while the destination's resolvers are pending. */
   public ngOnInit(): void {
     this.stateUnsavedChanges = this.finesMciStore.draftJourney() !== null;
     this.navigationRouter.events
@@ -83,7 +83,7 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
       });
   }
 
-  /** Returns to Till Details when the user cancels. */
+  /** Returns to Till Details, discarding the category draft only after navigation succeeds. */
   public handleCancel(): void {
     void this.navigationRouter
       .navigate([FINES_MCI_ROUTING_PATHS.children.details], { relativeTo: this.currentRoute.parent })
@@ -92,13 +92,13 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
       });
   }
 
-  /** Updates the route guard state when the child form changes. */
+  /** Tracks child changes without clearing leave protection during pending or failed navigation. */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.stateUnsavedChanges =
       this.navigationFailed || unsavedChanges || (this.isContinuing() && this.stateUnsavedChanges);
   }
 
-  /** Allows the browser to unload only when there are no unsaved changes. */
+  /** Requests a browser leave warning for unsaved selections or a journey awaiting navigation. */
   @HostListener('window:beforeunload')
   public handleBeforeUnload(): boolean {
     return !this.isContinuing() && !this.stateUnsavedChanges;
