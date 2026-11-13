@@ -12,23 +12,23 @@ Feature: Minor Creditor View Defendant Account Summary Accessibility
       | prosecutor case reference | PCRMINA11Y{uniqUpper} |
       | title                     | Mrs                   |
       | first name                | Mina                  |
-      | last name                 | AllyMinor{uniq}       |
+      | last name                 | Ally{uniq}            |
       | address line 1            | 1 High Street         |
       | postcode                  | MC1 1AA               |
     And I am on the Account Search page - Individuals form displayed by default
     When I view the Minor creditors search form
     And I search using the following inputs:
       | minor creditor type  | Individual      |
-      | individual last name | AllyMinor{uniq} |
+      | individual last name | Ally{uniq}      |
       | first names          | Mina            |
       | address line 1       | 1 High Street   |
       | postcode             | MC1 1AA         |
     Then I see the Search results page
     And I see the Minor creditors search results:
-      | Name           | AllyMinor{uniq}, Mina |
+      | Name           | Ally{uniq}, Mina      |
       | Address line 1 | 1 High Street         |
     When I open the latest matching result from the search results
-    Then I should see the account header contains "Mrs Mina ALLYMINOR{uniqUpper}"
+    Then I should see the account header contains "Mrs Mina ALLY{uniqUpper}"
     And the At a glance tab should be selected by default
     And I check the page for accessibility
     When I go to the Creditor tab
@@ -40,7 +40,7 @@ Feature: Minor Creditor View Defendant Account Summary Accessibility
       | prosecutor case reference | PCRMINREPA11Y{uniqUpper} |
       | title                     | Mrs                      |
       | first name                | Mina                     |
-      | last name                 | RepaymentAlly{uniq}      |
+      | last name                 | Repay{uniq}              |
       | address line 1            | 1 High Street            |
       | postcode                  | MC1 1AA                  |
     And the minor creditor header summary API returns a repayment with paid out value "50"
@@ -48,7 +48,7 @@ Feature: Minor Creditor View Defendant Account Summary Accessibility
     When I view the Minor creditors search form
     And I search using the following inputs:
       | minor creditor type  | Individual          |
-      | individual last name | RepaymentAlly{uniq} |
+      | individual last name | Repay{uniq}         |
       | first names          | Mina                |
       | address line 1       | 1 High Street       |
       | postcode             | MC1 1AA             |
