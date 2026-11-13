@@ -23,7 +23,12 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
     this.stateUnsavedChanges = this.finesMciStore.draftJourney() !== null;
   }
 
-  /** Handles Continue, saving the selected journey as a draft and opening it. */
+  /**
+   * Saves the selected payment category as a draft and opens its journey without a leave warning.
+   * Starting Criminal search clears previous search criteria so a new payment starts with a blank form.
+   *
+   * @param form The validated payment category form submission.
+   */
   public handleSubmit(form: IAbstractFormBaseForm<IFinesMciCreateTillPaymentCategoryFormState>): void {
     const paymentCategory = form.formData.paymentCategory;
     if (!paymentCategory) {
@@ -31,16 +36,24 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
       return;
     }
 
+    if (paymentCategory === 'criminal') {
+      this.finesMciStore.resetCriminalSearch();
+    }
     this.finesMciStore.setDraftJourney(paymentCategory);
     this.stateUnsavedChanges = false;
 
     const journeyRoute = {
-      criminal: FINES_MCI_ROUTING_PATHS.children.searchAccount,
-      courtFee: FINES_MCI_ROUTING_PATHS.children.courtFeeDetails,
-      suspense: FINES_MCI_ROUTING_PATHS.children.suspenseDetails,
+      criminal: [
+        FINES_MCI_ROUTING_PATHS.children.payment,
+        FINES_MCI_ROUTING_PATHS.children.category,
+        FINES_MCI_ROUTING_PATHS.children.criminal,
+        FINES_MCI_ROUTING_PATHS.children.search,
+      ],
+      courtFee: [FINES_MCI_ROUTING_PATHS.children.courtFeeDetails],
+      suspense: [FINES_MCI_ROUTING_PATHS.children.suspenseDetails],
     }[paymentCategory];
 
-    this.routerNavigate(journeyRoute);
+    void this.navigationRouter.navigate(journeyRoute, { relativeTo: this.navigationRoute.parent });
   }
 
   /** Returns to Till Details and discards the draft only after navigation succeeds. */
@@ -60,8 +73,8 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
     this.stateUnsavedChanges = unsavedChanges;
   }
 
-  @HostListener('window:beforeunload')
   /** Allows the browser to unload only when there are no unsaved changes. */
+  @HostListener('window:beforeunload')
   public handleBeforeUnload(): boolean {
     return !this.stateUnsavedChanges;
   }
