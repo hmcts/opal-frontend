@@ -13,7 +13,9 @@
       <app-fines-mci-create-till-court-fee-payment-details-form
         [paymentMethods]="mappings.methods"
         [paymentSources]="mappings.sources"
+        [initialValue]="finesMciStore.courtFeePaymentDetails()"
         (unsavedChanges)="handleUnsavedChanges($event)"
+        (formSubmit)="handleSubmit($event)"
         (cancelRequested)="handleCancel()"
       ></app-fines-mci-create-till-court-fee-payment-details-form>
     } @else {

@@ -69,7 +69,8 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsComponent', () => {
     expect(component['canDeactivate']()).toBe(false);
   });
 
-  it('continues to protect entered data after validating the current form', () => {
+  it('retains the draft and restores leave protection when Continue navigation fails', async () => {
+    vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(false);
     const fixture = TestBed.createComponent(FinesMciCreateTillCourtFeePaymentDetailsComponent);
     fixture.detectChanges();
     const element = fixture.nativeElement as HTMLElement;
@@ -81,8 +82,10 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsComponent', () => {
     companyName.value = 'Example Ltd';
     companyName.dispatchEvent(new Event('input', { bubbles: true }));
     element.querySelector('form')!.dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+    await fixture.whenStable();
 
     expect(fixture.componentInstance['canDeactivate']()).toBe(false);
+    expect(TestBed.inject(FinesMciStore).courtFeePaymentDetails()?.companyName).toBe('Example Ltd');
   });
 
   it('preserves the form while navigation is pending and restores it if navigation fails', async () => {

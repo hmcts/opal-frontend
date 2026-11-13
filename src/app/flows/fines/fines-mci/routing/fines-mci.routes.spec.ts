@@ -17,6 +17,8 @@ import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.c
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
 import { finesMciCourtFeesResolver } from './resolvers/fines-mci-court-fees.resolver';
 import { finesMciPaymentMappingsResolver } from './resolvers/fines-mci-payment-mappings.resolver';
+import { finesMciCourtFeeCheckGuard } from './guards/fines-mci-court-fee-check.guard';
+import { FinesMciCreateTillCourtFeeCheckComponent } from '../fines-mci-create-till/fines-mci-create-till-court-fee-check/fines-mci-create-till-court-fee-check.component';
 import { FinesMciCreateTillCourtFeeDetailsComponent } from '../fines-mci-create-till/fines-mci-create-till-court-fee-details/fines-mci-create-till-court-fee-details.component';
 import { FinesMciCreateTillOverUnderpaymentConfirmationComponent } from '../fines-mci-create-till/fines-mci-create-till-over-underpayment-confirmation/fines-mci-create-till-over-underpayment-confirmation.component';
 import { FinesMciCreateTillCourtFeePaymentDetailsComponent } from '../fines-mci-create-till/fines-mci-create-till-court-fee-payment-details/fines-mci-create-till-court-fee-payment-details.component';
@@ -169,6 +171,15 @@ describe('finesMci routes', () => {
     expect(route?.canDeactivate).toEqual([canDeactivateGuard]);
     expect(route?.resolve?.['paymentMappings']).toBe(finesMciPaymentMappingsResolver);
     expect(route?.data?.['heading']).toBe(FINES_MCI_ROUTING_TITLES.children.createTillCourtFeePaymentDetails);
+  });
+
+  it('loads the temporary Court Fee check screen with draft and leave protection', async () => {
+    const route = createTillRoute?.children?.find(
+      (child) => child.path === FINES_MCI_ROUTING_PATHS.children.checkCourtFee,
+    );
+    expect(await route?.loadComponent?.()).toBe(FinesMciCreateTillCourtFeeCheckComponent);
+    expect(route?.canActivate).toContain(finesMciCourtFeeCheckGuard);
+    expect(route?.canDeactivate).toEqual([canDeactivateGuard]);
   });
 
   it('loads the overpayment and underpayment confirmation screen', async () => {

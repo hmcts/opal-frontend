@@ -1,7 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import * as axe from 'axe-core';
+// @ts-expect-error govuk-frontend does not ship TypeScript declarations.
+import { Radios } from 'govuk-frontend';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesMciCreateTillCourtFeePaymentDetailsFormComponent } from './fines-mci-create-till-court-fee-payment-details-form.component';
 
 describe('FinesMciCreateTillCourtFeePaymentDetailsFormComponent', () => {
@@ -41,6 +44,8 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsFormComponent', () => {
       providers: [provideRouter([]), { provide: UtilsService, useValue: { scrollToTop: vi.fn() } }],
     }).compileComponents();
   });
+
+  afterEach(() => document.body.classList.remove('govuk-frontend-supported', 'js-enabled'));
 
   it('shows the required error in the summary and next to the choices when neither is selected', () => {
     const fixture = render();
@@ -120,16 +125,10 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsFormComponent', () => {
   ])('shows the appropriate fields for %s', (method, hasReference, hasSource) => {
     const fixture = render();
     const element = fixture.nativeElement as HTMLElement;
-    if (hasReference) {
-      const conditionalId = element
-        .querySelector<HTMLInputElement>(`input[value="${method}"]`)
-        ?.getAttribute('aria-controls');
-      expect(conditionalId).toBe(`payment-method-conditional-${method}`);
-      expect(element.querySelector(`#${conditionalId}`)).not.toBeNull();
-    }
     element.querySelector<HTMLInputElement>(`input[value="${method}"]`)!.click();
     fixture.detectChanges();
 
+    expect(!!element.querySelector(`#payment-method-conditional-${method}`)).toBe(hasReference);
     expect(!!element.querySelector('#paymentReference')).toBe(hasReference);
     expect(!!element.querySelector('input[value="ALLPAY"]')).toBe(hasSource);
     expect(fixture.componentInstance.form.controls['paymentReference'].enabled).toBe(hasReference);
@@ -325,5 +324,62 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsFormComponent', () => {
     expect(postcode.valid).toBe(true);
     postcode.setValue('');
     expect(postcode.valid).toBe(true);
+  });
+
+  it('restores credit-transfer and individual fields from a saved draft', () => {
+    const fixture = TestBed.createComponent(FinesMciCreateTillCourtFeePaymentDetailsFormComponent);
+    fixture.componentRef.setInput('paymentMethods', methods);
+    fixture.componentRef.setInput('paymentSources', sources);
+    fixture.componentRef.setInput('initialValue', {
+      paymentReceivedFrom: 'applicant',
+      paymentMethod: 'CT',
+      paymentSource: 'ALLPAY',
+      paymentReference: 'REF-1',
+      payerType: 'individual',
+      title: 'Mr',
+      firstNames: 'Alex',
+      lastName: 'Smith',
+      addressLine1: '12 Example Street',
+      addressLine2: null,
+      addressLine3: null,
+      postcode: 'SW1A 1AA',
+    });
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.querySelector<HTMLInputElement>('input[value="CT"]')?.checked).toBe(true);
+    expect(element.querySelector<HTMLInputElement>('input[value="ALLPAY"]')?.checked).toBe(true);
+    expect(element.querySelector<HTMLInputElement>('#paymentReference')?.value).toBe('REF-1');
+    expect(element.querySelector<HTMLInputElement>('#lastName')?.value).toBe('Smith');
+    expect(element.querySelector<HTMLSelectElement>('#title')?.value).toBe('Mr');
+    expect(fixture.componentInstance.form.valid).toBe(true);
+    expect(fixture.componentInstance['hasUnsavedChanges']()).toBe(true);
+  });
+
+  it.each(['individual', 'company'])('has no detectable WCAG violations for %s and credit transfer', async (payer) => {
+    document.body.classList.add('govuk-frontend-supported', 'js-enabled');
+    const fixture = render();
+    const element = fixture.nativeElement as HTMLElement;
+    await fixture.whenStable();
+    const radioGroups = element.querySelectorAll('.govuk-radios');
+    for (const group of [radioGroups[1], radioGroups[2]]) {
+      if (!group.hasAttribute('data-govuk-radios-init')) new Radios(group);
+    }
+    element.querySelector<HTMLInputElement>('input[value="CT"]')!.click();
+    element.querySelector<HTMLInputElement>(`input[value="${payer}"]`)!.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(element.querySelector('#payment-method-conditional-CT')?.classList).not.toContain(
+      'govuk-radios__conditional--hidden',
+    );
+    expect(element.querySelector(`#payer-${payer}-conditional`)?.classList).not.toContain(
+      'govuk-radios__conditional--hidden',
+    );
+    const results = await axe.run(element, {
+      runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] },
+      // JSDOM does not render colours, so contrast needs a browser-based check.
+      rules: { 'color-contrast': { enabled: false } },
+    });
+    expect(results.passes.length).toBeGreaterThan(0);
+    expect(results.violations).toEqual([]);
   });
 });
