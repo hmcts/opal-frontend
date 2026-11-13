@@ -11,12 +11,16 @@ import { of } from 'rxjs';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS } from '../constants/fines-mac-account-comments-notes-field-errors.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { By } from '@angular/platform-browser';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 
 describe('FinesMacAccountCommentsNotesFormComponent', () => {
   let component: FinesMacAccountCommentsNotesFormComponent;
   let fixture: ComponentFixture<FinesMacAccountCommentsNotesFormComponent>;
   let formSubmit: IFinesMacAccountCommentsNotesForm;
   let finesMacStore: FinesMacStoreType;
+  let globalStore: InstanceType<typeof GlobalStore>;
 
   beforeEach(async () => {
     formSubmit = structuredClone(FINES_MAC_ACCOUNT_COMMENTS_NOTES_FORM_MOCK);
@@ -32,6 +36,9 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
         },
       ],
     }).compileComponents();
+
+    globalStore = TestBed.inject(GlobalStore);
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
 
     fixture = TestBed.createComponent(FinesMacAccountCommentsNotesFormComponent);
     component = fixture.componentInstance;
@@ -159,5 +166,75 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
       fieldId: 'fm_account_comments_notes_comments',
       message: expectedErrorMessage,
     });
+  });
+
+  it.each([
+    [true, 500],
+    [false, 1000],
+  ] as const)(
+    'should set account notes maximum length to %i when release-1a-1-2 is %s',
+    (releaseEnabled, expectedMaxLength) => {
+      globalStore.setFeatureFlags({
+        [RELEASE_1A_1_2_FEATURE_FLAG]: releaseEnabled,
+      });
+
+      fixture.detectChanges();
+
+      const notesTextarea: HTMLTextAreaElement = fixture.debugElement.query(
+        By.css('textarea[id="fm_account_comments_notes_notes"]'),
+      ).nativeElement;
+
+      expect(notesTextarea.maxLength).toBe(expectedMaxLength);
+    },
+  );
+
+  it('should keep the comment maximum length at 30 characters', () => {
+    const commentTextarea: HTMLTextAreaElement = fixture.debugElement.query(
+      By.css('textarea[id="fm_account_comments_notes_comments"]'),
+    ).nativeElement;
+
+    expect(commentTextarea.maxLength).toBe(30);
+  });
+
+  it('should reject account notes exceeding 500 characters when release-1a-1-2 is enabled', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+    });
+
+    const testFixture = TestBed.createComponent(FinesMacAccountCommentsNotesFormComponent);
+    const testComponent = testFixture.componentInstance;
+
+    testFixture.detectChanges();
+
+    const notesControl = testComponent.form.get('fm_account_comments_notes_notes');
+
+    notesControl?.setValue('A'.repeat(500));
+    expect(notesControl?.hasError('maxlength')).toBe(false);
+
+    notesControl?.setValue('A'.repeat(501));
+    expect(notesControl?.hasError('maxlength')).toBe(true);
+
+    testFixture.destroy();
+  });
+
+  it('should allow 1000 characters and reject 1001 when release-1a-1-2 is disabled', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+    });
+
+    const testFixture = TestBed.createComponent(FinesMacAccountCommentsNotesFormComponent);
+    const testComponent = testFixture.componentInstance;
+
+    testFixture.detectChanges();
+
+    const notesControl = testComponent.form.get('fm_account_comments_notes_notes');
+
+    notesControl?.setValue('A'.repeat(1000));
+    expect(notesControl?.hasError('maxlength')).toBe(false);
+
+    notesControl?.setValue('A'.repeat(1001));
+    expect(notesControl?.hasError('maxlength')).toBe(true);
+
+    testFixture.destroy();
   });
 });

@@ -14,3 +14,10 @@ export const FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS: IFinesMacAccountComm
     },
   },
 };
+
+export const getAccountNotesMaxLengthError = (maxLength: number) => ({
+  maxlength: {
+    message: `Add account note must be ${maxLength} characters or fewer`,
+    priority: 2,
+  },
+});

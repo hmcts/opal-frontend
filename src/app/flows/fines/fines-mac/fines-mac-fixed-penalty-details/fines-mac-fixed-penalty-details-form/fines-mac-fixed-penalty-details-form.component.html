@@ -404,7 +404,7 @@
       inputName="fm_fp_account_comments_notes_notes"
       [control]="form.controls['fm_fp_account_comments_notes_notes']"
       [characterCountEnabled]="true"
-      [maxCharacterLimit]="1000"
+      [maxCharacterLimit]="release1a1_2Enabled() ? 500 : 1000"
       [errors]="formControlErrorMessages['fm_fp_account_comments_notes_notes']"
     ></opal-lib-govuk-text-area>
   </fieldset>
