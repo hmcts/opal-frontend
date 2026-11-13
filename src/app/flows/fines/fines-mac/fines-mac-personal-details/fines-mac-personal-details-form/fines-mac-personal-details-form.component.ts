@@ -45,6 +45,9 @@ import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-com
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { SINGLE_ASCII_CHARACTERS, ALPHANUMERIC_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
 
 // regex pattern validators for the form controls
 const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_CHARACTERS, 'singleAsciiCharacters');
@@ -76,6 +79,7 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
 })
 export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseComponent implements OnInit, OnDestroy {
   private readonly finesMacStore = inject(FinesMacStore);
+  private readonly globalStore = inject(GlobalStore);
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacPersonalDetailsForm>();
   protected readonly dateService = inject(DateService);
@@ -178,7 +182,9 @@ export class FinesMacPersonalDetailsFormComponent extends AbstractFormAliasBaseC
       this.age = this.dateService.calculateAge(dateOfBirth);
       this.ageLabel = this.age >= 18 ? 'Adult' : 'Youth';
 
-      this.finesMacStore.resetPaymentTermsDaysInDefault();
+      if (getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] !== true) {
+        this.finesMacStore.resetPaymentTermsDaysInDefault();
+      }
     }
   }
 
