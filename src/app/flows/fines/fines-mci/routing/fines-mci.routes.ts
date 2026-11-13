@@ -10,6 +10,7 @@ import { fetchBusinessUnitsResolver } from '@app/flows/fines/routing/resolvers/f
 import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.constant';
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
+import { finesMciCriminalAccountsResolver } from './resolvers/fines-mci-criminal-accounts/fines-mci-criminal-accounts.resolver';
 
 export const routing: Routes = [
   {
@@ -93,6 +94,66 @@ export const routing: Routes = [
             resolve: {
               title: TitleResolver,
             },
+          },
+          {
+            path: FINES_MCI_ROUTING_PATHS.children.payment,
+            children: [
+              {
+                path: FINES_MCI_ROUTING_PATHS.children.category,
+                children: [
+                  {
+                    path: FINES_MCI_ROUTING_PATHS.children.criminal,
+                    children: [
+                      {
+                        path: FINES_MCI_ROUTING_PATHS.children.search,
+                        loadComponent: () =>
+                          import('../fines-mci-payment-category-criminal-search/fines-mci-payment-category-criminal-search.component').then(
+                            (c) => c.FinesMciPaymentCategoryCriminalSearchComponent,
+                          ),
+                        canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+                        canDeactivate: [canDeactivateGuard],
+                        data: {
+                          routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+                          title: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalSearch,
+                        },
+                        resolve: {
+                          title: TitleResolver,
+                        },
+                      },
+                      {
+                        path: FINES_MCI_ROUTING_PATHS.children.matches,
+                        loadComponent: () =>
+                          import('../fines-mci-payment-category-criminal-matches/fines-mci-payment-category-criminal-matches.component').then(
+                            (c) => c.FinesMciPaymentCategoryCriminalMatchesComponent,
+                          ),
+                        canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+                        data: {
+                          routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+                          title: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalMatches,
+                        },
+                        resolve: {
+                          criminalAccounts: finesMciCriminalAccountsResolver,
+                          title: TitleResolver,
+                        },
+                      },
+                      {
+                        path: `${FINES_MCI_ROUTING_PATHS.children.account}/:accountId/:type`,
+                        loadComponent: () =>
+                          import('../fines-mci-payment-category-criminal-account/fines-mci-payment-category-criminal-account.component').then(
+                            (c) => c.FinesMciPaymentCategoryCriminalAccountComponent,
+                          ),
+                        canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+                        data: {
+                          routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+                          title: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalAccount,
+                        },
+                        resolve: { title: TitleResolver },
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
           },
           {
             path: FINES_MCI_ROUTING_PATHS.children.searchAccount,
