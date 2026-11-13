@@ -14,51 +14,11 @@ import {
   MojAlertIconComponent,
   MojAlertTextComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
-import { IOpalFinesCourtFee } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-fees.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
 import { FinesMciStore } from '../../stores/fines-mci.store';
-import { IFinesMciCourtFeeDraft } from '../../stores/interfaces/fines-mci.interface';
-import { ICourtFeePaymentComparison } from './interfaces/fines-mci-create-till-court-fee-payment-comparison.interface';
-
-/** Formats money without rounding sub-penny values or converting large integers to numbers. */
-function formatPounds(amount: bigint, decimalPlaces: number): string {
-  const scale = 10n ** BigInt(decimalPlaces);
-  const pounds = amount / scale;
-  const pence = (amount % scale).toString().padStart(decimalPlaces, '0').replace(/0+$/, '').padEnd(2, '0');
-  return `£${pounds.toLocaleString('en-GB')}.${pence}`;
-}
-
-/** Compares the entered amount with the fee total without floating point rounding. */
-function comparePayment(draft: IFinesMciCourtFeeDraft, fee: IOpalFinesCourtFee): ICourtFeePaymentComparison | null {
-  const amount = draft.amountPaid?.trim();
-  const numberOfItems = draft.numberOfItems?.trim();
-  if (!amount || !/^\d+(?:\.\d+)?$/.test(amount) || !numberOfItems || !/^\d+$/.test(numberOfItems)) {
-    return null;
-  }
-
-  const items = BigInt(numberOfItems);
-  if (items === 0n) return null;
-
-  const [wholePounds, fraction = ''] = amount.split('.');
-  const decimalPlaces = Math.max(2, fraction.length);
-  const scale = 10n ** BigInt(decimalPlaces);
-  const paid = BigInt(wholePounds) * scale + BigInt(fraction.padEnd(decimalPlaces, '0'));
-  const expected = BigInt(Math.round(fee.amount * 100)) * items * (scale / 100n);
-  const difference = paid - expected;
-  if (difference === 0n) return null;
-
-  const overpayment = difference > 0n;
-  const differenceAmount = formatPounds(overpayment ? difference : -difference, decimalPlaces);
-  return {
-    type: overpayment ? 'information' : 'warning',
-    heading: overpayment ? 'Confirm overpayment' : 'You cannot add an underpayment',
-    message: `This amount contains a ${differenceAmount} ${overpayment ? 'overpayment' : 'underpayment'}.`,
-    courtFee: `${fee.court_fee_code} – ${fee.description} (${formatPounds(BigInt(Math.round(fee.amount * 100)), 2)})`,
-    amount: formatPounds(paid, decimalPlaces),
-    numberOfItems,
-  };
-}
+import { ICourtFeePaymentComparison } from '../interfaces/fines-mci-court-fee-payment-comparison.interface';
+import { comparePayment } from '../utils/fines-mci-court-fee-payment.utils';
 
 @Component({
   selector: 'app-fines-mci-create-till-over-underpayment-confirmation',
