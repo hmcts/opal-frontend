@@ -1,0 +1,282 @@
+@if (formSubmitted) {
+  <opal-lib-govuk-error-summary
+    [errors]="formErrorSummaryMessage"
+    (errorClick)="scrollTo($event)"
+  ></opal-lib-govuk-error-summary>
+}
+<form [formGroup]="form" (submit)="submitForm($event)" novalidate>
+  <div class="govuk-form-group" [class.govuk-form-group--error]="formSubmitted && formControlErrorMessages['amount']">
+    <h2 class="govuk-heading-m">Amount</h2>
+    <label class="govuk-label govuk-visually-hidden" for="amount">Amount</label>
+    @if (formSubmitted && formControlErrorMessages['amount']; as message) {
+      <p class="govuk-error-message" id="amount-error">{{ message }}</p>
+    }
+    <div class="govuk-input__wrapper">
+      <span class="govuk-input__prefix">£</span
+      ><input
+        class="govuk-input govuk-input--width-5"
+        id="amount"
+        type="text"
+        inputmode="decimal"
+        formControlName="amount"
+        [attr.aria-describedby]="formSubmitted && formControlErrorMessages['amount'] ? 'amount-error' : null"
+      />
+    </div>
+  </div>
+  <opal-lib-govuk-radio
+    fieldSetId="payerType"
+    legendText="Payment received from"
+    legendClasses="govuk-fieldset__legend--s"
+    [errors]="formSubmitted ? formControlErrorMessages['payerType'] : null"
+  >
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Defendant"
+      inputId="suspense-payer-defendant"
+      inputName="payerType"
+      inputValue="defendant"
+      [control]="form.controls['payerType']"
+    ></div>
+    <div
+      opal-lib-govuk-radios-item
+      labelText="3rd party"
+      inputId="suspense-payer-third-party"
+      inputName="payerType"
+      inputValue="thirdParty"
+      [control]="form.controls['payerType']"
+    ></div>
+  </opal-lib-govuk-radio>
+  <opal-lib-govuk-radio
+    fieldSetId="methodOfPayment"
+    legendText="Method of payment"
+    legendClasses="govuk-fieldset__legend--s"
+    [errors]="formSubmitted ? formControlErrorMessages['methodOfPayment'] : null"
+  >
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Notes and coins"
+      inputId="suspense-method-notes-coins"
+      inputName="methodOfPayment"
+      inputValue="notesCoins"
+      [control]="form.controls['methodOfPayment']"
+    ></div>
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Postal order"
+      inputId="suspense-method-postal-order"
+      inputName="methodOfPayment"
+      inputValue="postalOrder"
+      [ariaControls]="'postal-order-reference-conditional'"
+      [control]="form.controls['methodOfPayment']"
+    ></div>
+    <opal-lib-govuk-radios-conditional conditionalId="postal-order-reference-conditional">
+      <div
+        class="govuk-form-group"
+        [class.govuk-form-group--error]="formSubmitted && formControlErrorMessages['paymentReferencePostalOrder']"
+      >
+        <label class="govuk-label govuk-heading-s govuk-!-font-weight-bold" for="paymentReferencePostalOrder"
+          >Payment reference</label
+        >
+        @if (formSubmitted && formControlErrorMessages['paymentReferencePostalOrder']; as message) {
+          <p class="govuk-error-message" id="paymentReferencePostalOrder-error">{{ message }}</p>
+        }
+        <input
+          class="govuk-input"
+          id="paymentReferencePostalOrder"
+          maxlength="50"
+          formControlName="paymentReferencePostalOrder"
+          [attr.aria-describedby]="
+            formSubmitted && formControlErrorMessages['paymentReferencePostalOrder']
+              ? 'paymentReferencePostalOrder-error'
+              : null
+          "
+        />
+      </div>
+    </opal-lib-govuk-radios-conditional>
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Cheque"
+      inputId="suspense-method-cheque"
+      inputName="methodOfPayment"
+      inputValue="cheque"
+      [ariaControls]="'cheque-reference-conditional'"
+      [control]="form.controls['methodOfPayment']"
+    ></div>
+    <opal-lib-govuk-radios-conditional conditionalId="cheque-reference-conditional">
+      <div
+        class="govuk-form-group"
+        [class.govuk-form-group--error]="formSubmitted && formControlErrorMessages['paymentReferenceCheque']"
+      >
+        <label class="govuk-label govuk-heading-s govuk-!-font-weight-bold" for="paymentReferenceCheque"
+          >Payment reference</label
+        >
+        @if (formSubmitted && formControlErrorMessages['paymentReferenceCheque']; as message) {
+          <p class="govuk-error-message" id="paymentReferenceCheque-error">{{ message }}</p>
+        }
+        <input
+          class="govuk-input"
+          id="paymentReferenceCheque"
+          maxlength="50"
+          formControlName="paymentReferenceCheque"
+          [attr.aria-describedby]="
+            formSubmitted && formControlErrorMessages['paymentReferenceCheque'] ? 'paymentReferenceCheque-error' : null
+          "
+        />
+      </div>
+    </opal-lib-govuk-radios-conditional>
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Credit transfer"
+      inputId="suspense-method-credit-transfer"
+      inputName="methodOfPayment"
+      inputValue="creditTransfer"
+      [ariaControls]="'credit-transfer-details-conditional'"
+      [control]="form.controls['methodOfPayment']"
+    ></div>
+    <opal-lib-govuk-radios-conditional conditionalId="credit-transfer-details-conditional">
+      <opal-lib-govuk-radio
+        fieldSetId="source"
+        legendText="Source"
+        legendClasses="govuk-fieldset__legend--s"
+        [errors]="formSubmitted ? formControlErrorMessages['source'] : null"
+      >
+        <div
+          opal-lib-govuk-radios-item
+          labelText="allpay"
+          inputId="source-allpay"
+          inputName="source"
+          inputValue="allpay"
+          [control]="form.controls['source']"
+        ></div>
+        <div
+          opal-lib-govuk-radios-item
+          labelText="Barclaycard"
+          inputId="source-barclaycard"
+          inputName="source"
+          inputValue="Barclaycard"
+          [control]="form.controls['source']"
+        ></div>
+        <div
+          opal-lib-govuk-radios-item
+          labelText="British Telecom"
+          inputId="source-british-telecom"
+          inputName="source"
+          inputValue="British Telecom"
+          [control]="form.controls['source']"
+        ></div>
+        <div
+          opal-lib-govuk-radios-item
+          labelText="DWP/AEA"
+          inputId="source-dwp-aea"
+          inputName="source"
+          inputValue="DWP/AEA"
+          [control]="form.controls['source']"
+        ></div>
+        <div
+          opal-lib-govuk-radios-item
+          labelText="NatWest"
+          inputId="source-natwest"
+          inputName="source"
+          inputValue="NatWest"
+          [control]="form.controls['source']"
+        ></div>
+        <div
+          opal-lib-govuk-radios-item
+          labelText="Other"
+          inputId="source-other"
+          inputName="source"
+          inputValue="Other"
+          [control]="form.controls['source']"
+        ></div>
+      </opal-lib-govuk-radio>
+      <div
+        class="govuk-form-group"
+        [class.govuk-form-group--error]="formSubmitted && formControlErrorMessages['paymentReferenceCreditTransfer']"
+      >
+        <label class="govuk-label govuk-heading-s govuk-!-font-weight-bold" for="paymentReferenceCreditTransfer"
+          >Payment reference</label
+        >
+        @if (formSubmitted && formControlErrorMessages['paymentReferenceCreditTransfer']; as message) {
+          <p class="govuk-error-message" id="paymentReferenceCreditTransfer-error">{{ message }}</p>
+        }
+        <input
+          class="govuk-input"
+          id="paymentReferenceCreditTransfer"
+          maxlength="50"
+          formControlName="paymentReferenceCreditTransfer"
+          [attr.aria-describedby]="
+            formSubmitted && formControlErrorMessages['paymentReferenceCreditTransfer']
+              ? 'paymentReferenceCreditTransfer-error'
+              : null
+          "
+        />
+      </div>
+    </opal-lib-govuk-radios-conditional>
+  </opal-lib-govuk-radio>
+  <opal-lib-govuk-radio
+    fieldSetId="reason"
+    legendText="Suspense reason"
+    legendClasses="govuk-fieldset__legend--s"
+    [errors]="formSubmitted ? formControlErrorMessages['reason'] : null"
+  >
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Fines overpayment (OF)"
+      inputId="suspense-reason-overpayment"
+      inputName="reason"
+      inputValue="overpayment"
+      [control]="form.controls['reason']"
+    ></div>
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Fine paid in advance (FA)"
+      inputId="suspense-reason-advance"
+      inputName="reason"
+      inputValue="advance"
+      [control]="form.controls['reason']"
+    ></div>
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Miscellaneous payment (MS)"
+      inputId="suspense-reason-miscellaneous"
+      inputName="reason"
+      inputValue="miscellaneous"
+      [control]="form.controls['reason']"
+    ></div>
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Unidentified amount (UN)"
+      inputId="suspense-reason-unidentified"
+      inputName="reason"
+      inputValue="unidentified"
+      [ariaControls]="'unidentified-details-conditional'"
+      [control]="form.controls['reason']"
+    ></div>
+    <opal-lib-govuk-radios-conditional conditionalId="unidentified-details-conditional">
+      <div
+        class="govuk-form-group"
+        [class.govuk-form-group--error]="formSubmitted && formControlErrorMessages['relevantDetails']"
+      >
+        <label class="govuk-label govuk-heading-s govuk-!-font-weight-bold" for="relevantDetails"
+          >Add relevant details</label
+        >
+        @if (formSubmitted && formControlErrorMessages['relevantDetails']; as message) {
+          <p class="govuk-error-message" id="relevantDetails-error">{{ message }}</p>
+        }
+        <input
+          class="govuk-input"
+          id="relevantDetails"
+          maxlength="50"
+          formControlName="relevantDetails"
+          [attr.aria-describedby]="
+            formSubmitted && formControlErrorMessages['relevantDetails'] ? 'relevantDetails-error' : null
+          "
+        />
+      </div>
+    </opal-lib-govuk-radios-conditional>
+  </opal-lib-govuk-radio>
+  <div class="govuk-button-group">
+    <button class="govuk-button" id="submitForm" type="submit">Continue</button
+    ><opal-lib-govuk-cancel-link (linkClickEvent)="cancelRequested.emit()"></opal-lib-govuk-cancel-link>
+  </div>
+</form>
