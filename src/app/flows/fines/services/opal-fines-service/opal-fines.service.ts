@@ -10,6 +10,7 @@ import { IOpalFinesBusinessUnitOutstandingAutoPaymentCounts } from '@services/fi
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { IOpalFinesCourt } from '@services/fines/opal-fines-service/interfaces/opal-fines-court.interface';
 import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-ref-data.interface';
+import { IOpalFinesCourtFeesResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-fees.interface';
 import { IOpalFinesProsecutor } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor.interface';
 import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
 import { IOpalFinesLocalJusticeArea } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area.interface';
@@ -305,6 +306,14 @@ export class OpalFines {
     }
 
     return httpParams;
+  }
+
+  /** Loads court fee reference data for a business unit. */
+  public getCourtFees(businessUnitId: number): Observable<IOpalFinesCourtFeesResponse> {
+    return this.http.get<IOpalFinesCourtFeesResponse>(OPAL_FINES_PATHS.courtFees, {
+      params: { business_unit_id: businessUnitId.toString() },
+      ...this.retrySafeReadOptions(),
+    });
   }
 
   /**

@@ -191,15 +191,50 @@ export const routing: Routes = [
           {
             path: FINES_MCI_ROUTING_PATHS.children.courtFeeDetails,
             loadComponent: () =>
-              import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
-                (c) => c.FinesMciPlaceholderComponent,
+              import('../fines-mci-create-till/fines-mci-create-till-court-fee-details/fines-mci-create-till-court-fee-details.component').then(
+                (c) => c.FinesMciCreateTillCourtFeeDetailsComponent,
               ),
             canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+            canDeactivate: [canDeactivateGuard],
             data: {
               heading: FINES_MCI_ROUTING_TITLES.children.createTillCourtFeeDetails,
               permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
               routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
               title: FINES_MCI_ROUTING_TITLES.children.createTillCourtFeeDetails,
+            },
+            resolve: {
+              title: TitleResolver,
+            },
+          },
+          {
+            path: FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,
+            loadComponent: () =>
+              import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
+                (c) => c.FinesMciPlaceholderComponent,
+              ),
+            canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+            data: {
+              heading: FINES_MCI_ROUTING_TITLES.children.createTillCourtFeePaymentDetails,
+              permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
+              routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+              title: FINES_MCI_ROUTING_TITLES.children.createTillCourtFeePaymentDetails,
+            },
+            resolve: {
+              title: TitleResolver,
+            },
+          },
+          {
+            path: FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation,
+            loadComponent: () =>
+              import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
+                (c) => c.FinesMciPlaceholderComponent,
+              ),
+            canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+            data: {
+              heading: FINES_MCI_ROUTING_TITLES.children.createTillOverUnderpaymentConfirmation,
+              permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
+              routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+              title: FINES_MCI_ROUTING_TITLES.children.createTillOverUnderpaymentConfirmation,
             },
             resolve: {
               title: TitleResolver,

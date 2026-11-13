@@ -31,6 +31,7 @@ import { FinesMciCreateAllocateComponent } from 'src/app/flows/fines/fines-mci/f
 import { FinesMciCreateTillSelectBuComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-select-bu/fines-mci-create-till-select-bu.component';
 import { FinesMciCreateTillDetailsComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-details/fines-mci-create-till-details.component';
 import { FinesMciCreateTillPaymentCategoryComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-payment-category/fines-mci-create-till-payment-category.component';
+import { FinesMciCreateTillCourtFeeDetailsComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-court-fee-details/fines-mci-create-till-court-fee-details.component';
 import { FinesMciPaymentCategoryCriminalSearchComponent } from 'src/app/flows/fines/fines-mci/fines-mci-payment-category-criminal-search/fines-mci-payment-category-criminal-search.component';
 import { FinesMciPaymentCategoryCriminalMatchesComponent } from 'src/app/flows/fines/fines-mci/fines-mci-payment-category-criminal-matches/fines-mci-payment-category-criminal-matches.component';
 import { finesMciCriminalAccountsResolver } from 'src/app/flows/fines/fines-mci/routing/resolvers/fines-mci-criminal-accounts/fines-mci-criminal-accounts.resolver';
@@ -170,6 +171,15 @@ const FINANCE_COMPONENT_ROUTES: Routes = [
             resolve: { criminalAccounts: finesMciCriminalAccountsResolver },
           },
         ],
+      },
+      {
+        path: [
+          FINES_MCI_ROUTING_PATHS.children.create,
+          FINES_MCI_ROUTING_PATHS.children.till,
+          FINES_MCI_ROUTING_PATHS.children.courtFeeDetails,
+        ].join('/'),
+        component: FinesMciCreateTillCourtFeeDetailsComponent,
+        canDeactivate: [canDeactivateGuard],
       },
       {
         path: [

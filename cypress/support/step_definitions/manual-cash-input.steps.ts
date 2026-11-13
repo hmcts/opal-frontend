@@ -75,6 +75,18 @@ Then('I see Court Fee Details', () => {
   manualCashInputFlow().assertPaymentCategoryDetailsAreDisplayed('courtFee');
 });
 
+When('I submit a CF001 court fee payment of {string} for {string} items', (amount: string, numberOfItems: string) => {
+  manualCashInputFlow().submitCourtFeePayment(amount, numberOfItems);
+});
+
+Then('I see Court Fee Payment Details', () => {
+  manualCashInputFlow().assertCourtFeePaymentDetailsIsDisplayed();
+});
+
+Then('I see Court Fee Overpayment\\/Underpayment Confirmation', () => {
+  manualCashInputFlow().assertCourtFeeOverUnderpaymentIsDisplayed();
+});
+
 Then('I see Suspense Details', () => {
   manualCashInputFlow().assertPaymentCategoryDetailsAreDisplayed('suspense');
 });

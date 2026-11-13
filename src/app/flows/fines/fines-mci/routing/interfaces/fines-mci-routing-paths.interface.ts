@@ -16,6 +16,8 @@ export interface IFinesMciRoutingPaths extends IChildRoutingPaths {
     account: string;
     suspenseDetails: string;
     courtFeeDetails: string;
+    courtFeePaymentDetails: string;
+    overUnderpaymentConfirmation: string;
     searchAccount: string;
     cancel: string;
   };
