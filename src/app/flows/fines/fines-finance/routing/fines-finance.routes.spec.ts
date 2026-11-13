@@ -7,7 +7,6 @@ import { FinesFinanceOutboundFilesComponent } from '../fines-finance-outbound-fi
 import { FinesFinanceUploadVariantBankingFilesComponent } from '../fines-finance-upload-variant-banking-files/fines-finance-upload-variant-banking-files.component';
 import { FINES_FINANCE_ROUTING_TITLES } from './constants/fines-finance-routing-titles.constant';
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
-import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { release1cBankingInterfacesFeatureFlagGuard, routing } from './fines-finance.routes';
 describe('fines finance routes', () => {
@@ -41,7 +40,7 @@ describe('fines finance routes', () => {
 
     expect(route?.data).toEqual({ title, routePermissionId: [routePermissionId] });
     expect(route?.resolve).toEqual({ title: TitleResolver });
-    expect(route?.canActivate).toEqual([authGuard, routePermissionsGuard, release1cBankingInterfacesFeatureFlagGuard]);
+    expect(route?.canActivate).toEqual([routePermissionsGuard, release1cBankingInterfacesFeatureFlagGuard]);
     await expect(route?.loadComponent?.()).resolves.toBe(component);
   });
 });

@@ -4,7 +4,6 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router, Routes } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
-import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
@@ -60,7 +59,7 @@ describe('finesMci routes', () => {
     expect(createAllocateRoute).toEqual(
       expect.objectContaining({
         path: FINES_MCI_ROUTING_PATHS.children.createAllocate,
-        canActivate: [authGuard, routePermissionsGuard],
+        canActivate: [routePermissionsGuard],
         data: {
           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
           title: FINES_MCI_ROUTING_TITLES.children.createAllocate,
@@ -85,7 +84,7 @@ describe('finesMci routes', () => {
     expect(createTillSelectBusinessUnitRoute).toEqual(
       expect.objectContaining({
         path: FINES_MCI_ROUTING_PATHS.children.selectBusinessUnit,
-        canActivate: [authGuard, routePermissionsGuard],
+        canActivate: [routePermissionsGuard],
         data: {
           permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
@@ -158,7 +157,7 @@ describe('finesMci routes', () => {
     expect(childRoute).toEqual(
       expect.objectContaining({
         path,
-        canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+        canActivate: [routePermissionsGuard, finesMciFlowStateGuard],
         data: expect.objectContaining({
           permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
@@ -180,7 +179,7 @@ describe('finesMci routes', () => {
     expect(criminalAccountSearchRoute).toEqual(
       expect.objectContaining({
         path: FINES_MCI_ROUTING_PATHS.children.search,
-        canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+        canActivate: [routePermissionsGuard, finesMciFlowStateGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
@@ -202,7 +201,7 @@ describe('finesMci routes', () => {
     expect(criminalAccountMatchesRoute).toEqual(
       expect.objectContaining({
         path: FINES_MCI_ROUTING_PATHS.children.matches,
-        canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+        canActivate: [routePermissionsGuard, finesMciFlowStateGuard],
         data: {
           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
           title: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalMatches,

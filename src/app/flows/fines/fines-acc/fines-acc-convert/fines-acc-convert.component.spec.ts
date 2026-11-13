@@ -15,7 +15,6 @@ import { routing } from '../routing/fines-acc.routes';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { defendantAccountHeadingResolver } from '../routing/resolvers/defendant-account-heading.resolver';
 import { businessUnitRoutePermissionsGuard } from '@hmcts/opal-frontend-common/guards/business-unit-route-permissions';
-import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { finesAccStateGuard } from '../routing/guards/fines-acc-state-guard/fines-acc-state.guard';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../fines-acc-party-add-amend-convert/constants/fines-acc-party-add-amend-convert-modes.constant';
 import { IOpalFinesAccountDefendantDetailsHeader } from '../fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
@@ -143,7 +142,7 @@ describe('FinesAccConvertComponent', () => {
     );
 
     expect(convertRoute?.path).toBe(`${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.convert}/:partyType`);
-    expect(convertRoute?.canActivate).toEqual([authGuard, businessUnitRoutePermissionsGuard, finesAccStateGuard]);
+    expect(convertRoute?.canActivate).toEqual([businessUnitRoutePermissionsGuard, finesAccStateGuard]);
     expect(convertRoute?.data).toEqual({
       routePermissionId: [FINES_PERMISSIONS['account-maintenance']],
       title: FINES_ACC_DEFENDANT_ROUTING_TITLES.children.convert,

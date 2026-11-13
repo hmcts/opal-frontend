@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { FINES_DRAFT_ROUTING_PATHS } from '../../routing/constants/fines-draft-routing-paths.constant';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
-import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_PATHS } from './constants/fines-draft-create-and-manage-routing-paths.constant';
 import { FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_TITLES } from './constants/fines-draft-create-and-manage-routing-titles.constant';
@@ -27,7 +26,7 @@ export const routing: Routes = [
       import('../fines-draft-create-and-manage-tabs/fines-draft-create-and-manage-tabs.component').then(
         (c) => c.FinesDraftCreateAndManageTabsComponent,
       ),
-    canActivate: [authGuard, routePermissionsGuard],
+    canActivate: [routePermissionsGuard],
     data: {
       routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
       title: FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_TITLES.children.tabs,
@@ -52,7 +51,7 @@ export const routing: Routes = [
       import('../fines-draft-create-and-manage-view-all-rejected/fines-draft-create-and-manage-view-all-rejected.component').then(
         (c) => c.FinesDraftCreateAndManageViewAllRejectedComponent,
       ),
-    canActivate: [authGuard, routePermissionsGuard],
+    canActivate: [routePermissionsGuard],
     data: {
       routePermissionId: [draftRootPermissionIds['create-and-manage-draft-accounts']],
       title: FINES_DRAFT_CREATE_AND_MANAGE_ROUTING_TITLES.children.viewAllRejected,

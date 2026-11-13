@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
@@ -23,7 +22,7 @@ export const routing: Routes = [
       import('../fines-mci-create-allocate/fines-mci-create-allocate.component').then(
         (c) => c.FinesMciCreateAllocateComponent,
       ),
-    canActivate: [authGuard, routePermissionsGuard],
+    canActivate: [routePermissionsGuard],
     canDeactivate: [canDeactivateGuard],
     data: {
       routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
@@ -48,7 +47,7 @@ export const routing: Routes = [
               import('../fines-mci-create-till/fines-mci-create-till-select-bu/fines-mci-create-till-select-bu.component').then(
                 (c) => c.FinesMciCreateTillSelectBuComponent,
               ),
-            canActivate: [authGuard, routePermissionsGuard],
+            canActivate: [routePermissionsGuard],
             canDeactivate: [canDeactivateGuard],
             data: {
               permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
@@ -66,7 +65,7 @@ export const routing: Routes = [
               import('../fines-mci-create-till/fines-mci-create-till-details/fines-mci-create-till-details.component').then(
                 (c) => c.FinesMciCreateTillDetailsComponent,
               ),
-            canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+            canActivate: [routePermissionsGuard, finesMciFlowStateGuard],
             canDeactivate: [canDeactivateGuard],
             data: {
               permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
@@ -83,7 +82,7 @@ export const routing: Routes = [
               import('../fines-mci-create-till/fines-mci-create-till-payment-category/fines-mci-create-till-payment-category.component').then(
                 (c) => c.FinesMciCreateTillPaymentCategoryComponent,
               ),
-            canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+            canActivate: [routePermissionsGuard, finesMciFlowStateGuard],
             canDeactivate: [canDeactivateGuard],
             data: {
               permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
@@ -109,7 +108,7 @@ export const routing: Routes = [
                           import('../fines-mci-payment-category-criminal-search/fines-mci-payment-category-criminal-search.component').then(
                             (c) => c.FinesMciPaymentCategoryCriminalSearchComponent,
                           ),
-                        canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+                        canActivate: [routePermissionsGuard, finesMciFlowStateGuard],
                         canDeactivate: [canDeactivateGuard],
                         data: {
                           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
@@ -125,7 +124,7 @@ export const routing: Routes = [
                           import('../fines-mci-payment-category-criminal-matches/fines-mci-payment-category-criminal-matches.component').then(
                             (c) => c.FinesMciPaymentCategoryCriminalMatchesComponent,
                           ),
-                        canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+                        canActivate: [routePermissionsGuard, finesMciFlowStateGuard],
                         data: {
                           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
                           title: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalMatches,
@@ -160,7 +159,7 @@ export const routing: Routes = [
               import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
                 (c) => c.FinesMciPlaceholderComponent,
               ),
-            canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+            canActivate: [routePermissionsGuard, finesMciFlowStateGuard],
             data: {
               heading: FINES_MCI_ROUTING_TITLES.children.createTillSearchAccount,
               permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
@@ -177,7 +176,7 @@ export const routing: Routes = [
               import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
                 (c) => c.FinesMciPlaceholderComponent,
               ),
-            canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+            canActivate: [routePermissionsGuard, finesMciFlowStateGuard],
             data: {
               heading: FINES_MCI_ROUTING_TITLES.children.createTillSuspenseDetails,
               permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
@@ -194,7 +193,7 @@ export const routing: Routes = [
               import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
                 (c) => c.FinesMciPlaceholderComponent,
               ),
-            canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+            canActivate: [routePermissionsGuard, finesMciFlowStateGuard],
             data: {
               heading: FINES_MCI_ROUTING_TITLES.children.createTillCourtFeeDetails,
               permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
@@ -211,7 +210,7 @@ export const routing: Routes = [
               import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
                 (c) => c.FinesMciPlaceholderComponent,
               ),
-            canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+            canActivate: [routePermissionsGuard, finesMciFlowStateGuard],
             data: {
               heading: FINES_MCI_ROUTING_TITLES.children.createTillCancel,
               permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',

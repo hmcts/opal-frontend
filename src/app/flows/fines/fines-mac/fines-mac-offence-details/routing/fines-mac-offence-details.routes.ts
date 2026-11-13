@@ -6,7 +6,6 @@ import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deact
 import { finesMacFlowStateGuard } from '../../guards/fines-mac-flow-state/fines-mac-flow-state.guard';
 import { routing as searchOffencesRouting } from '../fines-mac-offence-details-search-offences/routing/fines-mac-offence-details-search-offences.routes';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_TITLES } from '../fines-mac-offence-details-search-offences/routing/constants/fines-mac-offence-details-search-offences-routing-titles.constant';
-import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_PATHS } from '../fines-mac-offence-details-search-offences/routing/constants/fines-mac-offence-details-search-offences-routing-paths.constant';
 import { fetchResultsResolver } from './resolvers/fetch-results-resolver/fetch-results.resolver';
 import { fetchMajorCreditorsResolver } from './resolvers/fetch-major-creditors-resolver/fetch-major-creditors.resolver';
@@ -46,7 +45,6 @@ export const routing: Routes = [
         (c) => c.FinesMacOffenceDetailsSearchOffencesComponent,
       ),
     children: searchOffencesRouting,
-    canActivate: [authGuard],
     canDeactivate: [canDeactivateGuard],
     data: { title: FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_ROUTING_TITLES.root },
     resolve: { title: TitleResolver },

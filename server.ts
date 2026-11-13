@@ -20,6 +20,8 @@ import { existsSync } from 'node:fs';
 import { Logger } from '@hmcts/nodejs-logging';
 import config from 'config';
 import bootstrap from './src/main.server';
+import { renderSsrResponse } from './src/app/server/ssr-response';
+import { getSsrSessionCookie, SSR_SESSION_CONTEXT } from './src/app/server/ssr-session.interceptor';
 
 import {
   getRoutesConfig,
@@ -126,22 +128,30 @@ function app(): Express {
   server.get(/.*/, async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { protocol, originalUrl, baseUrl, headers } = req;
+      const port = req.socket.localPort;
+      if (!port) {
+        throw new Error('Cannot determine the local server port for SSR session checks');
+      }
 
-      const html = await commonEngine.render({
-        bootstrap,
-        documentFilePath: indexHtml,
-        url: `${protocol}://${headers.host}${originalUrl}`,
-        publicPath: distFolder,
-        providers: [
-          { provide: APP_BASE_HREF, useValue: baseUrl },
-          {
-            provide: 'serverTransferState',
-            useValue: serverTransferState,
-          },
-        ],
-      });
-
-      res.send(html);
+      await renderSsrResponse(
+        commonEngine,
+        {
+          bootstrap,
+          documentFilePath: indexHtml,
+          url: `${protocol}://${headers.host}${originalUrl}`,
+          publicPath: distFolder,
+          providers: [
+            { provide: APP_BASE_HREF, useValue: baseUrl },
+            { provide: 'serverTransferState', useValue: serverTransferState },
+            {
+              provide: SSR_SESSION_CONTEXT,
+              useValue: { port, cookie: getSsrSessionCookie(headers.cookie, routesConfiguration.prefix) },
+            },
+          ],
+        },
+        res,
+        ssoConfiguration,
+      );
     } catch (err) {
       ssrLogger.error('SSR render failed', err);
       next(err);
