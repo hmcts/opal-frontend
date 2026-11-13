@@ -90,17 +90,17 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     await fixture.whenStable();
 
     expect(registrationControl?.hasError('maxlength')).toBe(true);
-    expect(
-      component.fieldErrors.fm_parent_guardian_details_vehicle_registration_mark['maxlength'].message,
-    ).toBe('Registration number must be 7 characters or fewer');
+    expect(component.fieldErrors.fm_parent_guardian_details_vehicle_registration_mark['maxlength'].message).toBe(
+      'Registration number must be 7 characters or fewer',
+    );
 
     globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
     await fixture.whenStable();
 
     expect(registrationControl?.hasError('maxlength')).toBe(false);
-    expect(
-      component.fieldErrors.fm_parent_guardian_details_vehicle_registration_mark['maxlength'].message,
-    ).toBe('Registration number must be 11 characters or fewer');
+    expect(component.fieldErrors.fm_parent_guardian_details_vehicle_registration_mark['maxlength'].message).toBe(
+      'Registration number must be 11 characters or fewer',
+    );
   });
 
   it('should display numbered Remove buttons when release-1a-1-2 is enabled', () => {
