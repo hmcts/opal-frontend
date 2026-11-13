@@ -1,3 +1,4 @@
+import { FINES_ACC_APR_ROUTING_TITLES } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-titles.constant';
 import { TestBed } from '@angular/core/testing';
 import {
   ActivatedRoute,
@@ -47,7 +48,6 @@ import { FINES_ACCOUNT_ROUTE_TYPES } from './constants/fines-acc-route-types.con
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 import { fetchAccCourtsResolver } from './resolvers/fetch-acc-courts-resolver/fetch-acc-courts.resolver';
 import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';
-import { FINES_ACC_APR_ROUTING_TITLES } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-titles.constant';
 
 describe('fines acc routes', () => {
   const defendantRoute = routing.find((route) => route.path === `${FINES_ACC_DEFENDANT_ROUTING_PATHS.root}/:accountId`);
@@ -154,6 +154,34 @@ describe('fines acc routes', () => {
     expect(deniedRoute?.data?.['routePermissionId']).toBeUndefined();
     expect(deniedRoute?.resolve).toEqual({ title: TitleResolver });
     expect(defendantJourneyGroup?.children?.[0]).toBe(deniedRoute);
+  });
+
+  it('protects APR pages with the standard account guards and shared permission denial', () => {
+    const aprRoutes = (defendantJourneyGroup?.children ?? []).filter(
+      (route) =>
+        route.path?.startsWith(`${FINES_ACC_APR_ROUTING_PATHS.root}/`) &&
+        route.path !== `${FINES_ACC_APR_ROUTING_PATHS.root}/${FINES_ACC_APR_ROUTING_PATHS.children.denied}`,
+    );
+    expect(aprRoutes.length).toBeGreaterThan(0);
+    for (const route of aprRoutes) {
+      expect(route.canActivate).toContain(release1cBankingInterfacesFeatureFlagGuard);
+      expect(route.canActivate?.slice(-2)).toEqual([businessUnitRoutePermissionsGuard, finesAccStateGuard]);
+      expect(route.data?.['routePermissionId']).toEqual([FINES_PERMISSIONS['manage-alternate-payment-references']]);
+      expect(route.data?.['accessDeniedPath']).toBeUndefined();
+    }
+    expect(aprRoutes.some((route) => route.path?.endsWith('/denied'))).toBe(false);
+  });
+
+  it.each(['add', 'change', 'delete'])('registers an APR %s destination with selection resolution', (action) => {
+    const routes = defendantJourneyGroup?.children ?? [];
+    const actionRoute =
+      routes.find((route) => route.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/${action}`) ??
+      routes.find((route) => route.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/:mode`);
+
+    expect(actionRoute?.loadComponent).toBeTypeOf('function');
+    expect(actionRoute?.resolve?.['aprs']).toBeTypeOf('function');
+    expect(actionRoute?.canActivate).toContain(release1cBankingInterfacesFeatureFlagGuard);
+    expect(actionRoute?.canActivate?.slice(-2)).toEqual([businessUnitRoutePermissionsGuard, finesAccStateGuard]);
   });
 
   it('should load the add enforcement action component through the lazy route factory', async () => {

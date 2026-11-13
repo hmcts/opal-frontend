@@ -1,0 +1,51 @@
+<opal-lib-govuk-table [id]="tableId">
+  <ng-container head>
+    <th opal-lib-govuk-table-heading>Reference</th>
+    <th opal-lib-govuk-table-heading>Date created</th>
+    <th opal-lib-govuk-table-heading>Date updated</th>
+    @if (showActions) {
+      <th opal-lib-govuk-table-heading>Actions</th>
+    }
+  </ng-container>
+  <ng-container body>
+    @for (reference of references; track reference.alternate_payment_reference_id) {
+      <tr opal-lib-govuk-table-body-row [attr.data-reference-id]="reference.alternate_payment_reference_id">
+        <th
+          scope="row"
+          opal-lib-govuk-table-body-row-data
+          [id]="'apr-reference-' + reference.alternate_payment_reference_id"
+        >
+          {{ reference.apr_text }}
+        </th>
+        <td opal-lib-govuk-table-body-row-data [id]="'apr-created-' + reference.alternate_payment_reference_id">
+          {{ reference.createdDate }}
+        </td>
+        <td opal-lib-govuk-table-body-row-data [id]="'apr-updated-' + reference.alternate_payment_reference_id">
+          {{ reference.updatedDate }}
+        </td>
+        @if (showActions) {
+          <td opal-lib-govuk-table-body-row-data [id]="'apr-actions-' + reference.alternate_payment_reference_id">
+            @if (reference.canChange) {
+              <a
+                class="govuk-link govuk-!-margin-right-3"
+                [id]="'apr-change-' + reference.alternate_payment_reference_id"
+                [routerLink]="['../change']"
+                [queryParams]="{ alternatePaymentReferenceId: reference.alternate_payment_reference_id }"
+                >change<span class="govuk-visually-hidden"> {{ reference.apr_text }}</span></a
+              >
+            }
+            @if (deleteJourneyAvailable && reference.canRemove) {
+              <a
+                class="govuk-link"
+                [id]="'apr-remove-' + reference.alternate_payment_reference_id"
+                [routerLink]="['../delete']"
+                [queryParams]="{ alternatePaymentReferenceId: reference.alternate_payment_reference_id }"
+                >remove<span class="govuk-visually-hidden"> {{ reference.apr_text }}</span></a
+              >
+            }
+          </td>
+        }
+      </tr>
+    }
+  </ng-container>
+</opal-lib-govuk-table>

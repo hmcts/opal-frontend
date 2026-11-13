@@ -1,8 +1,43 @@
 <div class="govuk-grid-column-full">
   <opal-lib-govuk-back-link id="apr-back" (clickEvent)="navigateBack()" />
+</div>
+<app-fines-acc-banner-messages
+  [hasVersionMismatch]="false"
+  [hasPaymentHold]="false"
+  [isTransferredIn]="false"
+  [successMessage]="successMessage()"
+  (clearSuccessMessage)="successMessage.set(null)"
+  id="apr-banners"
+/>
+<div class="govuk-grid-column-full">
   <opal-lib-govuk-heading-with-caption
     [captionText]="accountCaption()"
     headingText="Manage Alternate Payment References"
     headingClasses="govuk-heading-l"
   />
+  <h2 class="govuk-heading-m">Alternate Payment References for this Account</h2>
+  @if (currentReferences().length) {
+    <app-fines-acc-apr-manage-table [references]="currentReferences()" tableId="apr-current-table" />
+  } @else {
+    <p id="apr-current-empty" class="govuk-hint govuk-!-margin-bottom-4">
+      There are no alternate payment reference for this account
+    </p>
+  }
+  @if (canAdd()) {
+    <opal-lib-govuk-button
+      buttonId="apr-add"
+      buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
+      type="button"
+      (buttonClickEvent)="navigateToAdd()"
+      >Add alternate payment reference</opal-lib-govuk-button
+    >
+  }
+  <h2 class="govuk-heading-m govuk-!-margin-top-6">Alternate Payment Reference from Consolidated Accounts</h2>
+  @if (consolidatedReferences().length) {
+    <app-fines-acc-apr-manage-table [references]="consolidatedReferences()" tableId="apr-consolidated-table" />
+  } @else {
+    <p id="apr-consolidated-empty" class="govuk-hint govuk-!-margin-bottom-4">
+      There are no alternate payment reference from consolidated accounts
+    </p>
+  }
 </div>
