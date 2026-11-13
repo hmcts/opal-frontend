@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router, provideRouter } from '@angular/router';
+import { ActivatedRoute, ResolveStart, Router, RouterStateSnapshot, provideRouter } from '@angular/router';
+import { Subject } from 'rxjs';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesMciStore } from '../../stores/fines-mci.store';
@@ -43,7 +44,9 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
       nestedFlow: false,
     });
 
-    expect(navigateSpy).toHaveBeenCalledWith(['search-account'], { relativeTo: null });
+    expect(navigateSpy).toHaveBeenCalledWith(['payment', 'category', 'criminal', 'search'], {
+      relativeTo: TestBed.inject(ActivatedRoute).parent,
+    });
     expect(fixture.componentInstance.stateUnsavedChanges).toBe(false);
     expect(finesMciStore.draftJourney()).toBe('criminal');
     expect(finesMciStore.tills()[0].payments).toEqual([]);
@@ -88,7 +91,9 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
     });
     expect(finesMciStore.tills()[0].payments).toHaveLength(0);
 
-    fixture.componentInstance.handleSubmit({
+    const returnedFixture = TestBed.createComponent(FinesMciCreateTillPaymentCategoryComponent);
+    returnedFixture.detectChanges();
+    returnedFixture.componentInstance.handleSubmit({
       formData: { paymentCategory: 'courtFee' },
       nestedFlow: false,
     });
@@ -98,26 +103,29 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
     expect(finesMciStore.tills()[0].payments).toHaveLength(0);
   });
 
-  it('navigates to Till Details when Cancel is selected', () => {
+  it('navigates to Till Details when Cancel is selected', async () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     finesMciStore.setDraftJourney('criminal');
 
     fixture.componentInstance.handleCancel();
+    await fixture.whenStable();
 
     expect(navigateSpy).toHaveBeenCalledWith(['details'], { relativeTo: null });
     expect(finesMciStore.draftJourney()).toBeNull();
   });
 
-  it('keeps leave protection active when Cancel is selected after changing category', () => {
-    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+  it('preserves the selected category when leaving is cancelled', async () => {
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(false);
     const component = fixture.componentInstance;
+    finesMciStore.setDraftJourney('courtFee');
     component.handleUnsavedChanges(true);
 
     component.handleCancel();
+    await fixture.whenStable();
 
     expect(component['canDeactivate']()).toBe(false);
     expect(navigateSpy).toHaveBeenCalledWith(['details'], { relativeTo: null });
-    expect(finesMciStore.draftJourney()).toBeNull();
+    expect(finesMciStore.draftJourney()).toBe('courtFee');
   });
 
   it('tracks child form changes for route and browser leave warnings', () => {
@@ -127,6 +135,46 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
     expect(fixture.componentInstance['canDeactivate']()).toBe(false);
     expect(window.dispatchEvent(beforeUnloadEvent)).toBe(false);
     expect(beforeUnloadEvent.defaultPrevented).toBe(true);
+  });
+
+  it('protects the till while court fees are loading and restores protection if navigation is cancelled', async () => {
+    const events = new Subject<ResolveStart>();
+    vi.spyOn(router, 'events', 'get').mockReturnValue(events.asObservable());
+    let finishNavigation!: (navigated: boolean) => void;
+    vi.spyOn(router, 'navigate').mockReturnValue(new Promise((resolve) => (finishNavigation = resolve)));
+    const pendingFixture = TestBed.createComponent(FinesMciCreateTillPaymentCategoryComponent);
+    pendingFixture.detectChanges();
+    const component = pendingFixture.componentInstance;
+
+    component.handleSubmit({ formData: { paymentCategory: 'courtFee' }, nestedFlow: false });
+    pendingFixture.detectChanges();
+    const element = pendingFixture.nativeElement as HTMLElement;
+    expect(element.textContent).toContain('Loading next screen');
+    expect(element.querySelector('input[type="radio"]')).toBeNull();
+    expect(component.handleBeforeUnload()).toBe(false);
+    events.next(new ResolveStart(1, '/payment-category', '/court-fee-details', {} as RouterStateSnapshot));
+    component.handleUnsavedChanges(false);
+    expect(component['canDeactivate']()).toBe(false);
+
+    finishNavigation(false);
+    await pendingFixture.whenStable();
+    pendingFixture.detectChanges();
+    expect(element.textContent).not.toContain('Loading next screen');
+    expect(element.querySelector<HTMLInputElement>('input[type="radio"]:checked')?.value).toBe('courtFee');
+    component.handleUnsavedChanges(false);
+    expect(component['canDeactivate']()).toBe(false);
+    expect(component.handleBeforeUnload()).toBe(false);
+  });
+
+  it('restores leave protection if navigation rejects', async () => {
+    vi.spyOn(router, 'navigate').mockRejectedValue(new Error('Navigation failed'));
+    const component = fixture.componentInstance;
+
+    component.handleSubmit({ formData: { paymentCategory: 'courtFee' }, nestedFlow: false });
+    await fixture.whenStable();
+
+    expect(component['canDeactivate']()).toBe(false);
+    expect(component.handleBeforeUnload()).toBe(false);
   });
 
   it('restores leave protection for a seeded draft before any further input', () => {

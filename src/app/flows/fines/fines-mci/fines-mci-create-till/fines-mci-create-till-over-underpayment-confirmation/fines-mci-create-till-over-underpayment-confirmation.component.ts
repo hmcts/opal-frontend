@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, HostListener, OnInit, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, HostListener, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
@@ -14,51 +13,11 @@ import {
   MojAlertIconComponent,
   MojAlertTextComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
-import { IOpalFinesCourtFee } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-fees.interface';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { IOpalFinesCourtFeesResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-fees.interface';
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
 import { FinesMciStore } from '../../stores/fines-mci.store';
-import { IFinesMciCourtFeeDraft } from '../../stores/interfaces/fines-mci.interface';
-import { ICourtFeePaymentComparison } from './interfaces/fines-mci-create-till-court-fee-payment-comparison.interface';
-
-/** Formats money without rounding sub-penny values or converting large integers to numbers. */
-function formatPounds(amount: bigint, decimalPlaces: number): string {
-  const scale = 10n ** BigInt(decimalPlaces);
-  const pounds = amount / scale;
-  const pence = (amount % scale).toString().padStart(decimalPlaces, '0').replace(/0+$/, '').padEnd(2, '0');
-  return `£${pounds.toLocaleString('en-GB')}.${pence}`;
-}
-
-/** Compares the entered amount with the fee total without floating point rounding. */
-function comparePayment(draft: IFinesMciCourtFeeDraft, fee: IOpalFinesCourtFee): ICourtFeePaymentComparison | null {
-  const amount = draft.amountPaid?.trim();
-  const numberOfItems = draft.numberOfItems?.trim();
-  if (!amount || !/^\d+(?:\.\d+)?$/.test(amount) || !numberOfItems || !/^\d+$/.test(numberOfItems)) {
-    return null;
-  }
-
-  const items = BigInt(numberOfItems);
-  if (items === 0n) return null;
-
-  const [wholePounds, fraction = ''] = amount.split('.');
-  const decimalPlaces = Math.max(2, fraction.length);
-  const scale = 10n ** BigInt(decimalPlaces);
-  const paid = BigInt(wholePounds) * scale + BigInt(fraction.padEnd(decimalPlaces, '0'));
-  const expected = BigInt(Math.round(fee.amount * 100)) * items * (scale / 100n);
-  const difference = paid - expected;
-  if (difference === 0n) return null;
-
-  const overpayment = difference > 0n;
-  const differenceAmount = formatPounds(overpayment ? difference : -difference, decimalPlaces);
-  return {
-    type: overpayment ? 'information' : 'warning',
-    heading: overpayment ? 'Confirm overpayment' : 'You cannot add an underpayment',
-    message: `This amount contains a ${differenceAmount} ${overpayment ? 'overpayment' : 'underpayment'}.`,
-    courtFee: `${fee.court_fee_code} – ${fee.description} (${formatPounds(BigInt(Math.round(fee.amount * 100)), 2)})`,
-    amount: formatPounds(paid, decimalPlaces),
-    numberOfItems,
-  };
-}
+import { ICourtFeePaymentComparison } from '../interfaces/fines-mci-court-fee-payment-comparison.interface';
+import { comparePayment } from '../utils/fines-mci-court-fee-payment.utils';
 
 @Component({
   selector: 'app-fines-mci-create-till-over-underpayment-confirmation',
@@ -78,52 +37,49 @@ function comparePayment(draft: IFinesMciCourtFeeDraft, fee: IOpalFinesCourtFee):
 })
 export class FinesMciCreateTillOverUnderpaymentConfirmationComponent implements OnInit {
   private allowIntendedNavigation = false;
-  private readonly opalFines = inject(OpalFines);
-  private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
 
   protected readonly finesMciStore = inject(FinesMciStore);
   protected readonly payment = signal<ICourtFeePaymentComparison | null>(null);
-  protected readonly loading = signal(true);
 
+  /**
+   * Allows an intentional journey transition and restores the leave warning if the screen remains open.
+   *
+   * @param path The sibling route to open.
+   * @returns Whether navigation completed successfully.
+   */
   private async navigateTo(path: string): Promise<boolean> {
     this.allowIntendedNavigation = true;
     try {
       return await this.router.navigate([`../${path}`], { relativeTo: this.activatedRoute });
+    } catch {
+      return false;
     } finally {
       this.allowIntendedNavigation = false;
     }
   }
 
+  /** Allows route changes without a warning only when initiated by this screen's journey actions. */
   public canDeactivate(): boolean {
     return this.allowIntendedNavigation;
   }
 
+  /** Requests a browser leave warning because refreshing or closing the tab would lose the in-memory till. */
   @HostListener('window:beforeunload')
   public handleBeforeUnload(): boolean {
     return false;
   }
 
+  /** Builds the confirmation from the saved draft and resolved fees, leaving the error view for missing data. */
   public ngOnInit(): void {
     const draft = this.finesMciStore.courtFeeDraft();
-    const businessUnitId = this.finesMciStore.businessUnit()?.business_unit_id;
-    if (!draft || draft.courtFeeId == null || businessUnitId == null) {
-      this.loading.set(false);
+    const fees = this.activatedRoute.snapshot.data['courtFees'] as IOpalFinesCourtFeesResponse | null | undefined;
+    if (!draft || draft.courtFeeId == null || this.finesMciStore.businessUnit()?.business_unit_id == null || !fees)
       return;
-    }
 
-    this.opalFines
-      .getCourtFees(businessUnitId)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: ({ court_fees }) => {
-          const fee = court_fees.find(({ court_fee_id }) => court_fee_id === draft.courtFeeId);
-          this.payment.set(fee ? comparePayment(draft, fee) : null);
-          this.loading.set(false);
-        },
-        error: () => this.loading.set(false),
-      });
+    const fee = fees.court_fees.find(({ court_fee_id }) => court_fee_id === draft.courtFeeId);
+    this.payment.set(fee ? comparePayment(draft, fee) : null);
   }
 
   /** Returns to the court fee form with the existing draft. */
