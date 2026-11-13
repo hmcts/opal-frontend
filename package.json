@@ -242,16 +242,16 @@
     "diff": "^9.0.0",
     "@actions/http-client/undici": "^8.0.0",
     "esbuild": "^0.28.0",
-    "@badeball/cypress-cucumber-preprocessor/glob": "13.0.6",
-    "@cucumber/cucumber/glob": "13.0.6",
-    "cypress-parallel/glob": "13.0.6",
-    "@npmcli/package-json/glob": "13.0.6",
-    "cacache/glob": "13.0.6",
-    "mocha/glob": "13.0.6",
-    "mochawesome-merge/glob": "13.0.6",
-    "module-lookup-amd/glob": "13.0.6",
-    "node-gyp/glob": "13.0.6",
-    "rimraf/glob": "13.0.6",
-    "shelljs/glob": "13.0.6"
+    "@badeball/cypress-cucumber-preprocessor/glob": "13.0.7",
+    "@cucumber/cucumber/glob": "13.0.7",
+    "cypress-parallel/glob": "13.0.7",
+    "@npmcli/package-json/glob": "13.0.7",
+    "cacache/glob": "13.0.7",
+    "mocha/glob": "13.0.7",
+    "mochawesome-merge/glob": "13.0.7",
+    "module-lookup-amd/glob": "13.0.7",
+    "node-gyp/glob": "13.0.7",
+    "rimraf/glob": "13.0.7",
+    "shelljs/glob": "13.0.7"
   }
 }
