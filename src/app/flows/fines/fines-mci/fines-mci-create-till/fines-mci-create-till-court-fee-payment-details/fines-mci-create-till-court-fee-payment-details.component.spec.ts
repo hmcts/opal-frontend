@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRoute, provideRouter } from '@angular/router';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesMciStore } from '../../stores/fines-mci.store';
 import { FinesMciCreateTillCourtFeePaymentDetailsComponent } from './fines-mci-create-till-court-fee-payment-details.component';
 
@@ -82,6 +82,31 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsComponent', () => {
     companyName.dispatchEvent(new Event('input', { bubbles: true }));
     element.querySelector('form')!.dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
 
+    expect(fixture.componentInstance['canDeactivate']()).toBe(false);
+  });
+
+  it('preserves the form while navigation is pending and restores it if navigation fails', async () => {
+    let finishNavigation!: (navigated: boolean) => void;
+    vi.spyOn(TestBed.inject(Router), 'navigate').mockReturnValue(
+      new Promise((resolve) => (finishNavigation = resolve)),
+    );
+    const fixture = TestBed.createComponent(FinesMciCreateTillCourtFeePaymentDetailsComponent);
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    element.querySelector<HTMLInputElement>('input[value="applicant"]')!.click();
+
+    fixture.componentInstance.handleBack();
+    fixture.detectChanges();
+    expect(element.textContent).toContain('Loading next screen');
+    expect(element.querySelector('form')?.parentElement?.parentElement?.hasAttribute('hidden')).toBe(true);
+    expect(element.querySelector<HTMLInputElement>('input[value="applicant"]')!.checked).toBe(true);
+    expect(fixture.componentInstance.handleBeforeUnload()).toBe(false);
+
+    finishNavigation(false);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(element.textContent).not.toContain('Loading next screen');
+    expect(element.querySelector<HTMLInputElement>('input[value="applicant"]')!.checked).toBe(true);
     expect(fixture.componentInstance['canDeactivate']()).toBe(false);
   });
 });

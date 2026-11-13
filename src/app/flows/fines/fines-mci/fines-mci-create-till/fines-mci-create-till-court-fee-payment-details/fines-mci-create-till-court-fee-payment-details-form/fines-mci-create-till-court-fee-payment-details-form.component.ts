@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntil } from 'rxjs';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
+import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukSelectComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-select';
 import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '@app/flows/fines/fines-mac/constants/fines-mac-title-dropdown-options.constant';
@@ -22,6 +23,7 @@ import { requiredTrimmed } from '../validators/fines-mci-payment-details.validat
   selector: 'app-fines-mci-create-till-court-fee-payment-details-form',
   imports: [
     GovukErrorSummaryComponent,
+    GovukCancelLinkComponent,
     GovukRadioComponent,
     GovukRadiosConditionalComponent,
     GovukRadiosItemComponent,
@@ -37,6 +39,7 @@ export class FinesMciCreateTillCourtFeePaymentDetailsFormComponent extends Abstr
     ...FINES_MCI_CREATE_TILL_COURT_FEE_PAYMENT_DETAILS_FIELD_ERRORS,
   };
   protected readonly titleOptions = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
+  @Output() protected cancelRequested = new EventEmitter<void>();
   @Input({ required: true }) public paymentMethods: IOpalFinesMapping[] = [];
   @Input({ required: true }) public paymentSources: IOpalFinesMapping[] = [];
   public override formControlErrorMessages: IAbstractFormControlErrorMessage = {};

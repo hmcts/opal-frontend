@@ -185,5 +185,8 @@
     ></opal-lib-govuk-text-input>
   </fieldset>
 
-  <button class="govuk-button" id="submitForm" type="submit">Continue</button>
+  <div class="govuk-button-group">
+    <button class="govuk-button" id="submitForm" type="submit">Continue</button>
+    <opal-lib-govuk-cancel-link (linkClickEvent)="cancelRequested.emit()"></opal-lib-govuk-cancel-link>
+  </div>
 </form>

@@ -1,13 +1,24 @@
+<div class="govuk-grid-column-full govuk-!-margin-bottom-4" [hidden]="isNavigating()">
+  <opal-lib-govuk-back-link (clickEvent)="handleBack()"></opal-lib-govuk-back-link>
+</div>
+
 <div class="govuk-grid-column-two-thirds" id="fines-mci-create-till-court-fee-payment-details">
   <span class="govuk-caption-l">{{ finesMciStore.businessUnit()?.business_unit_name }}</span>
   <h1 class="govuk-heading-l">Payment details</h1>
-  @if (paymentMappings; as mappings) {
-    <app-fines-mci-create-till-court-fee-payment-details-form
-      [paymentMethods]="mappings.methods"
-      [paymentSources]="mappings.sources"
-      (unsavedChanges)="handleUnsavedChanges($event)"
-    ></app-fines-mci-create-till-court-fee-payment-details-form>
-  } @else {
-    <p class="govuk-error-message" role="alert">Payment options could not be loaded. Try again later.</p>
+  @if (isNavigating()) {
+    <output class="govuk-body govuk-!-display-block">Loading next screen</output>
   }
+  <div [hidden]="isNavigating()">
+    @if (paymentMappings; as mappings) {
+      <app-fines-mci-create-till-court-fee-payment-details-form
+        [paymentMethods]="mappings.methods"
+        [paymentSources]="mappings.sources"
+        (unsavedChanges)="handleUnsavedChanges($event)"
+        (cancelRequested)="handleCancel()"
+      ></app-fines-mci-create-till-court-fee-payment-details-form>
+    } @else {
+      <p class="govuk-error-message" role="alert">Payment options could not be loaded. Try again later.</p>
+      <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
+    }
+  </div>
 </div>
