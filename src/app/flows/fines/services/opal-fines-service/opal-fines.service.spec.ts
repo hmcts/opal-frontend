@@ -1538,8 +1538,7 @@ describe('OpalFines', () => {
     expect(result).toEqual({});
   });
 
-  it('should getDefendantAccountHeader', () => {
-    const accountId = 456;
+  it.each([456, '9007199254740993'])('should getDefendantAccountHeader for account %s', (accountId) => {
     const expectedResponse = FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK;
     const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
 
@@ -1554,9 +1553,12 @@ describe('OpalFines', () => {
     req.flush(expectedResponse);
   });
 
-  it('should getDefendantAccountAtAGlance data', () => {
-    const account_id: number = 77;
-    const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK;
+  it.each([77, '9007199254740993'])('should getDefendantAccountAtAGlance data for account %s', (account_id) => {
+    const expectedResponse = {
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
+      account_status_code: 'L',
+      account_balance: 0,
+    };
     const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/at-a-glance`;
 
     service.getDefendantAccountAtAGlance(account_id).subscribe((response) => {
@@ -1583,6 +1585,25 @@ describe('OpalFines', () => {
     });
 
     httpMock.expectNone(apiUrl);
+  });
+
+  it('should cancel an unobserved at-a-glance request and fetch again on a later subscription', () => {
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/77/at-a-glance`;
+    const atAGlance = service.getDefendantAccountAtAGlance(77);
+    const firstSubscription = atAGlance.subscribe();
+    const secondSubscription = atAGlance.subscribe();
+    const pendingRequest = httpMock.expectOne(apiUrl);
+
+    firstSubscription.unsubscribe();
+    expect(pendingRequest.cancelled).toBe(false);
+
+    secondSubscription.unsubscribe();
+    expect(pendingRequest.cancelled).toBe(true);
+
+    const next = vi.fn();
+    atAGlance.subscribe(next);
+    httpMock.expectOne(apiUrl).flush(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+    expect(next).toHaveBeenCalledExactlyOnceWith(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
   });
 
   it('should getDefendantAccountParty', () => {

@@ -77,13 +77,13 @@
         "offence_type": "Vehicle",
         "date_of_sentence": "15/05/2025",
         "imposing_court_id": 770000000001,
-        "offence_id": 33369,
+        "offence_id": 47883,
         "impositions": [
           {
-            "result_id": "FCOST",
+            "result_id": "FO",
             "amount_imposed": 2200,
             "amount_paid": 100,
-            "major_creditor_id": 770000000061,
+            "major_creditor_id": null,
             "minor_creditor": null
           }
         ]

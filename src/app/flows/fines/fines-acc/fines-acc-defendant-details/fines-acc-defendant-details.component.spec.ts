@@ -137,6 +137,16 @@ describe('FinesAccDefendantDetailsComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it.each([
+    { flags: {}, enabled: false },
+    { flags: { 'release-1c-banking-interfaces': false }, enabled: false },
+    { flags: { 'release-1c-banking-interfaces': true }, enabled: true },
+  ])('should expose the banking interfaces flag as $enabled for APR actions', ({ flags, enabled }) => {
+    vi.spyOn(TestBed.inject(GlobalStore), 'featureFlags').mockReturnValue(flags);
+
+    expect(component.bankingInterfacesEnabled).toBe(enabled);
+  });
+
   it('should default to at-a-glance tab if no fragment is present', () => {
     const activatedRoute = TestBed.inject(ActivatedRoute);
     activatedRoute.snapshot.fragment = null; // Simulate no fragment

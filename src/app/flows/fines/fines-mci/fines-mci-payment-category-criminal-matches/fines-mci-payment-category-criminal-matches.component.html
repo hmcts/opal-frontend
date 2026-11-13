@@ -1,6 +1,61 @@
-<div class="govuk-grid-column-two-thirds">
+<opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
+
+@if (isMatchesResults()) {
+  <div #errorSummary>
+    <opal-lib-govuk-error-summary
+      [errors]="selectionErrorSummary()"
+      (errorClick)="scrollTo($event)"
+    ></opal-lib-govuk-error-summary>
+  </div>
+
   <span class="govuk-caption-m">{{ finesMciStore.businessUnit()?.business_unit_name }}</span>
-  <h1 class="govuk-heading-l">{{ content().heading }}</h1>
-  <p class="govuk-body">{{ content().body }}</p>
-  <p class="govuk-body">Placeholder for {{ content().ticket }}.</p>
-</div>
+  <h1 class="govuk-heading-l">Search results</h1>
+
+  <div class="govuk-form-group" [class.govuk-form-group--error]="hasSelectionValidationError()">
+    <fieldset
+      class="govuk-fieldset"
+      [attr.aria-describedby]="hasSelectionValidationError() ? selectionErrorFieldId + '-error' : null"
+    >
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m" [id]="selectionErrorFieldId" tabindex="-1">
+        Select 1 account to continue
+      </legend>
+
+      @if (selectionValidationMessage()) {
+        <p [id]="selectionErrorFieldId + '-error'" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error: </span>{{ selectionValidationMessage() }}
+        </p>
+      }
+
+      <app-fines-mci-payment-category-criminal-matches-table-wrapper
+        [tableData]="tableData()"
+        [existingSortState]="sortState"
+        [selectedAccountIds]="selectedAccountIds()"
+        (accountSelectionChanged)="onAccountSelectionChanged($event)"
+      ></app-fines-mci-payment-category-criminal-matches-table-wrapper>
+    </fieldset>
+  </div>
+
+  <div class="govuk-button-group govuk-!-margin-top-6">
+    <button class="govuk-button" type="button" [disabled]="isLoadingAccountDetails()" (click)="continue()">
+      Continue
+    </button>
+    <a
+      class="govuk-link govuk-link--no-visited-state"
+      [routerLink]="criminalSearchRoute"
+      [fragment]="finesMciStore.criminalSearch()?.activeTab ?? 'individuals'"
+      (click)="handleSearchAgain()"
+      >Search again</a
+    >
+  </div>
+
+  <p class="govuk-body">
+    <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
+  </p>
+} @else {
+  <div class="govuk-grid-column-two-thirds">
+    <span class="govuk-caption-m">{{ finesMciStore.businessUnit()?.business_unit_name }}</span>
+    <h1 class="govuk-heading-l">{{ content().heading }}</h1>
+    <p class="govuk-body">{{ content().body }}</p>
+    <p class="govuk-body">Placeholder for {{ content().ticket }}.</p>
+  </div>
+}
