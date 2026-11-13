@@ -1,0 +1,338 @@
+import { DOCUMENT } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  ElementRef,
+  inject,
+  signal,
+  ViewChild,
+} from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
+import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
+import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import {
+  FinesMciCriminalAccountId,
+  IFinesMciCriminalAccount,
+} from '../interfaces/fines-mci-criminal-account.interface';
+import { catchError, defaultIfEmpty, finalize, map, of, Subject, takeUntil } from 'rxjs';
+import { FinesMciCriminalAccountService } from '../services/fines-mci-criminal-account.service';
+import { IFinesMciCriminalAccountsResult } from '../interfaces/fines-mci-criminal-accounts-result.interface';
+import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
+import {
+  FINES_MCI_CRIMINAL_SEARCH_RESULTS,
+  FinesMciCriminalSearchResults,
+} from '../constants/fines-mci-criminal-search-results.constant';
+import { FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_MATCHES_ERROR_FIELD_IDS } from './constants/fines-mci-payment-category-criminal-matches-errors.constant';
+import { FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_MATCHES_TABLE_WRAPPER_TABLE_SORT_DEFAULT } from './fines-mci-payment-category-criminal-matches-table-wrapper/constants/fines-mci-payment-category-criminal-matches-table-wrapper-table-sort-default.constant';
+import {
+  FinesMciPaymentCategoryCriminalMatchesTableWrapperComponent,
+  IFinesMciPaymentCategoryCriminalMatchesTableWrapperAccountSelection,
+} from './fines-mci-payment-category-criminal-matches-table-wrapper/fines-mci-payment-category-criminal-matches-table-wrapper.component';
+import { IFinesMciPaymentCategoryCriminalMatchesTableWrapperTableData } from './fines-mci-payment-category-criminal-matches-table-wrapper/interfaces/fines-mci-payment-category-criminal-matches-table-wrapper-table-data.interface';
+import { FINES_MCI_ROUTING_PATHS } from '../routing/constants/fines-mci-routing-paths.constant';
+import { FinesMciStore } from '../stores/fines-mci.store';
+import { finesMciPaymentCategoryCriminalMatchesSelectionValidator } from './validators/fines-mci-payment-category-criminal-matches.validator';
+
+interface FinesMciCriminalMatchesContent {
+  heading: string;
+  ticket: string;
+  body: string;
+}
+
+type FinesMciCriminalMatchesPlaceholderResults = Exclude<
+  FinesMciCriminalSearchResults,
+  typeof FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches
+>;
+
+const FINES_MCI_CRIMINAL_MATCHES_CONTENT: Record<
+  FinesMciCriminalMatchesPlaceholderResults,
+  FinesMciCriminalMatchesContent
+> = {
+  [FINES_MCI_CRIMINAL_SEARCH_RESULTS.noMatches]: {
+    heading: 'No matching criminal accounts',
+    ticket: 'PO-3528',
+    body: 'The design and functionality for no matching criminal account results will be implemented under ticket PO-3528.',
+  },
+  [FINES_MCI_CRIMINAL_SEARCH_RESULTS.tooMany]: {
+    heading: 'More than 100 matching criminal accounts',
+    ticket: 'PO-3528',
+    body: 'The design and functionality for searches returning more than 100 criminal account results will be implemented under ticket PO-3528.',
+  },
+  [FINES_MCI_CRIMINAL_SEARCH_RESULTS.searchCriteriaCannotBeCombined]: {
+    heading: 'Search criteria cannot be combined',
+    ticket: 'PO-3529',
+    body: 'The design and functionality for searches where reference data and account information are entered together will be implemented under ticket PO-3529.',
+  },
+};
+
+@Component({
+  selector: 'app-fines-mci-payment-category-criminal-matches',
+  imports: [
+    FinesMciPaymentCategoryCriminalMatchesTableWrapperComponent,
+    GovukBackLinkComponent,
+    GovukCancelLinkComponent,
+    GovukErrorSummaryComponent,
+    RouterLink,
+  ],
+  templateUrl: './fines-mci-payment-category-criminal-matches.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class FinesMciPaymentCategoryCriminalMatchesComponent {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly document = inject(DOCUMENT);
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly utilsService = inject(UtilsService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly criminalAccountService = inject(FinesMciCriminalAccountService);
+  private readonly cancelAccountDetailsRequest = new Subject<void>();
+  private readonly selectedAccountIdsSignal = signal<Set<FinesMciCriminalAccountId>>(new Set());
+  private readonly selectionValidationMessageSignal = signal<string | null>(null);
+  private readonly accountsResult = toSignal(
+    this.route.data.pipe(map((data) => data['criminalAccounts'] as IFinesMciCriminalAccountsResult)),
+    { requireSync: true },
+  );
+  private readonly results = computed(() => this.accountsResult().results);
+  @ViewChild('errorSummary', { read: ElementRef }) private readonly errorSummary?: ElementRef<HTMLElement>;
+
+  protected readonly finesMciStore = inject(FinesMciStore);
+  protected readonly isLoadingAccountDetails = signal(false);
+  protected readonly selectionErrorFieldId =
+    FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_MATCHES_ERROR_FIELD_IDS.accountSelection;
+  protected readonly content = computed(
+    () => FINES_MCI_CRIMINAL_MATCHES_CONTENT[this.results() as FinesMciCriminalMatchesPlaceholderResults],
+  );
+  protected readonly searchResults = computed(
+    () => this.finesMciStore.criminalSearchResults()?.defendant_accounts ?? [],
+  );
+  protected readonly selectedAccountIds = computed(() => [...this.selectedAccountIdsSignal()]);
+  protected readonly selectionValidationMessage = computed(() => this.selectionValidationMessageSignal());
+  protected readonly hasSelectionValidationError = computed(() => !!this.selectionValidationMessageSignal());
+  protected readonly selectionErrorSummary = computed<IAbstractFormBaseFormErrorSummaryMessage[]>(() => {
+    const message = this.selectionValidationMessageSignal();
+    return message ? [{ fieldId: this.selectionErrorFieldId, message }] : [];
+  });
+  protected readonly tableData = computed(() => this.mapAccountsToTableData(this.searchResults()));
+  protected readonly sortState = FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_MATCHES_TABLE_WRAPPER_TABLE_SORT_DEFAULT;
+  protected readonly isMatchesResults = computed(() => this.results() === FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches);
+  protected readonly tillDetailsRoute = [
+    '/',
+    FINES_ROUTING_PATHS.root,
+    FINES_MCI_ROUTING_PATHS.root,
+    FINES_MCI_ROUTING_PATHS.children.create,
+    FINES_MCI_ROUTING_PATHS.children.till,
+    FINES_MCI_ROUTING_PATHS.children.details,
+  ];
+  protected readonly criminalSearchRoute = [
+    '/',
+    FINES_ROUTING_PATHS.root,
+    FINES_MCI_ROUTING_PATHS.root,
+    FINES_MCI_ROUTING_PATHS.children.create,
+    FINES_MCI_ROUTING_PATHS.children.till,
+    FINES_MCI_ROUTING_PATHS.children.payment,
+    FINES_MCI_ROUTING_PATHS.children.category,
+    FINES_MCI_ROUTING_PATHS.children.criminal,
+    FINES_MCI_ROUTING_PATHS.children.search,
+  ];
+
+  constructor() {
+    effect(() => {
+      this.cancelAccountDetailsRequest.next();
+      this.finesMciStore.setCriminalSearchResults(this.accountsResult().response);
+      this.selectedAccountIdsSignal.set(new Set());
+      this.selectionValidationMessageSignal.set(null);
+    });
+  }
+
+  /**
+   * Formats individuals as SURNAME, First names and companies using their organisation name.
+   * Returns null when no name is available so the table can display its missing-value marker.
+   */
+  private formatDefendantName(account: IFinesMciCriminalAccount): string | null {
+    if (account.organisation ?? account.organisation_flag) {
+      return account.organisation_name;
+    }
+
+    if (!account.defendant_surname && !account.defendant_firstnames) {
+      return null;
+    }
+
+    const surname = account.defendant_surname?.toUpperCase() ?? '';
+    const firstnames = account.defendant_firstnames ?? '';
+    const separator = account.defendant_surname && account.defendant_firstnames ? ', ' : '';
+    return `${surname}${separator}${firstnames}`;
+  }
+
+  /**
+   * Formats aliases on separate lines in ascending alias-number order without mutating the response.
+   * Aliases without a number appear last; missing or empty aliases return null for the table marker.
+   */
+  private formatAliases(account: IFinesMciCriminalAccount): string | null {
+    if (!account.aliases || account.aliases.length === 0) {
+      return null;
+    }
+
+    const aliases = [...account.aliases]
+      .sort((a, b) => (a.alias_number ?? Infinity) - (b.alias_number ?? Infinity))
+      .map((alias) => {
+        if (account.organisation ?? account.organisation_flag) {
+          return alias.organisation_name;
+        }
+
+        const surname = alias.surname ?? '';
+        const forenames = alias.forenames ?? '';
+        const separator = alias.surname && alias.forenames ? ', ' : '';
+        return `${surname}${separator}${forenames}`;
+      });
+
+    return aliases.filter(Boolean).join('\n') || null;
+  }
+
+  /**
+   * Maps API accounts to sortable table rows, retaining account IDs for selection and enquiry links.
+   * Company dates of birth and absent collection orders use the table's missing-value marker.
+   */
+  private mapAccountsToTableData(
+    accounts: IFinesMciCriminalAccount[],
+  ): IFinesMciPaymentCategoryCriminalMatchesTableWrapperTableData[] {
+    return accounts.map((account) => ({
+      'Account ID': account.defendant_account_id,
+      Account: account.account_number,
+      Name: this.formatDefendantName(account),
+      Aliases: this.formatAliases(account),
+      'Date of birth': (account.organisation ?? account.organisation_flag) ? null : account.birth_date,
+      'Address line 1': account.address_line_1,
+      Postcode: account.postcode,
+      Balance: account.account_balance,
+      Enf: account.last_enforcement_action,
+      CO: account.has_collection_order ? 'Y' : null,
+    }));
+  }
+
+  /** Renders and focuses the validation summary, then scrolls it into view using the shared form pattern. */
+  private focusErrorSummary(): void {
+    this.changeDetector.detectChanges();
+    this.errorSummary?.nativeElement.querySelector<HTMLElement>('.govuk-error-summary')?.focus({ preventScroll: true });
+    this.utilsService.scrollToTop();
+  }
+
+  /** Focuses the account selection legend when its error summary link is activated. */
+  protected scrollTo(fieldId: string): void {
+    this.document.getElementById(fieldId)?.focus();
+  }
+
+  /**
+   * Cancels pending detail loading and clears the selected account before returning to search.
+   * Preserves submitted criteria and the selected tab for restoration on the search form.
+   */
+  protected navigateBack(): void {
+    this.handleSearchAgain();
+    void this.router.navigate(this.criminalSearchRoute);
+  }
+
+  /** Cancels pending detail loading and clears the selected account while retaining search criteria. */
+  protected handleSearchAgain(): void {
+    this.cancelAccountDetailsRequest.next();
+    this.finesMciStore.setSelectedCriminalAccount(null);
+  }
+
+  /**
+   * Stops pending account loading and returns to Till Details.
+   * Clears the payment draft and criminal search state only after successful navigation.
+   */
+  protected handleCancel(): void {
+    this.cancelAccountDetailsRequest.next();
+    void this.router.navigate(this.tillDetailsRoute).then((navigated) => {
+      if (navigated) {
+        this.finesMciStore.setDraftJourney(null);
+        this.finesMciStore.resetCriminalSearch();
+      }
+    });
+  }
+
+  /**
+   * Updates the selected IDs and clears validation feedback and previously loaded account details.
+   * Cancels pending detail loading so a superseded selection cannot trigger navigation.
+   *
+   * @param accountSelection The account ID and its updated checkbox state.
+   */
+  protected onAccountSelectionChanged(
+    accountSelection: IFinesMciPaymentCategoryCriminalMatchesTableWrapperAccountSelection,
+  ): void {
+    this.cancelAccountDetailsRequest.next();
+    const selectedAccountIds = new Set(this.selectedAccountIdsSignal());
+
+    if (accountSelection.selected) {
+      selectedAccountIds.add(accountSelection.accountId);
+    } else {
+      selectedAccountIds.delete(accountSelection.accountId);
+    }
+
+    this.selectedAccountIdsSignal.set(selectedAccountIds);
+    this.selectionValidationMessageSignal.set(null);
+    this.finesMciStore.setSelectedCriminalAccount(null);
+  }
+
+  /**
+   * Requires exactly one selected account, then loads and stores its details before navigating.
+   * Invalid selections focus the shared error summary and retain inline feedback beside the checkboxes.
+   * Ignores duplicate submissions while loading. Failed or empty responses keep the user here
+   * and scroll to the top, where shared HTTP error handling displays any applicable feedback.
+   */
+  protected continue(): void {
+    if (this.isLoadingAccountDetails()) {
+      return;
+    }
+
+    const selectedAccountIds = this.selectedAccountIds();
+    const validationMessage = finesMciPaymentCategoryCriminalMatchesSelectionValidator(selectedAccountIds);
+
+    if (validationMessage) {
+      this.selectionValidationMessageSignal.set(validationMessage);
+      this.focusErrorSummary();
+      return;
+    }
+
+    this.selectionValidationMessageSignal.set(null);
+
+    const selectedAccount =
+      this.searchResults().find((account) => account.defendant_account_id === selectedAccountIds[0]) ?? null;
+    if (!selectedAccount || selectedAccount.defendant_account_id === null) {
+      return;
+    }
+
+    this.isLoadingAccountDetails.set(true);
+    this.criminalAccountService
+      .loadSelectedAccountDetails(selectedAccount)
+      .pipe(
+        catchError(() => of(null)),
+        // The shared interceptor can complete retriable 409 responses without emitting data.
+        defaultIfEmpty(null),
+        finalize(() => this.isLoadingAccountDetails.set(false)),
+        takeUntil(this.cancelAccountDetailsRequest),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((accountDetails) => {
+        if (!accountDetails) {
+          this.utilsService.scrollToTop();
+          return;
+        }
+        void this.router.navigate(
+          [
+            FINES_MCI_ROUTING_PATHS.children.account,
+            selectedAccount.defendant_account_id,
+            (selectedAccount.organisation ?? selectedAccount.organisation_flag) ? 'company' : 'individual',
+          ],
+          { relativeTo: this.route.parent },
+        );
+      });
+  }
+}
