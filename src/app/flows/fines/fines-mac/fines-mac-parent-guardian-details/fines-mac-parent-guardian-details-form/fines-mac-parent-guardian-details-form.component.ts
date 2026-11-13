@@ -78,7 +78,7 @@ export class FinesMacParentGuardianDetailsFormComponent
 {
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly globalStore = inject(GlobalStore);
-  private readonly injector = inject(Injector);
+  private readonly featureFlagInjector = inject(Injector);
 
   private get vehicleRegistrationConfig(): { maxLength: number; errorMessage: string } {
     if (getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true) {
@@ -92,8 +92,6 @@ export class FinesMacParentGuardianDetailsFormComponent
   protected readonly dateService = inject(DateService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected override readonly aliasFormArrayName = 'fm_parent_guardian_details_aliases';
-
-  override fieldErrors: IFinesMacParentGuardianDetailsFieldErrors = FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS;
 
   public readonly release1a1_2Enabled = computed(
     () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
@@ -160,7 +158,7 @@ export class FinesMacParentGuardianDetailsFormComponent
   }
 
   private watchVehicleRegistrationConfig(): void {
-    toObservable(this.globalStore.featureFlags, { injector: this.injector })
+    toObservable(this.globalStore.featureFlags, { injector: this.featureFlagInjector })
       .pipe(takeUntil(this['ngUnsubscribe']))
       .subscribe(() => {
         const config = this.vehicleRegistrationConfig;

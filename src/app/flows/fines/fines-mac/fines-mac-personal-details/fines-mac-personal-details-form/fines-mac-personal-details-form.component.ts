@@ -88,7 +88,7 @@ export class FinesMacPersonalDetailsFormComponent
 {
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly globalStore = inject(GlobalStore);
-  private readonly injector = inject(Injector);
+  private readonly featureFlagInjector = inject(Injector);
 
   private get vehicleRegistrationConfig(): { maxLength: number; errorMessage: string } {
     if (getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true) {
@@ -191,7 +191,7 @@ export class FinesMacPersonalDetailsFormComponent
   }
 
   private watchVehicleRegistrationConfig(): void {
-    toObservable(this.globalStore.featureFlags, { injector: this.injector })
+    toObservable(this.globalStore.featureFlags, { injector: this.featureFlagInjector })
       .pipe(takeUntil(this['ngUnsubscribe']))
       .subscribe(() => {
         const config = this.vehicleRegistrationConfig;
