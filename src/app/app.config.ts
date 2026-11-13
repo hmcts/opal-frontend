@@ -5,7 +5,8 @@ import {
   withInterceptorsFromDi,
   withXsrfConfiguration,
 } from '@angular/common/http';
-import { ApplicationConfig } from '@angular/core';
+import { isPlatformBrowser, DOCUMENT } from '@angular/common';
+import { ApplicationConfig, inject, PLATFORM_ID, provideAppInitializer } from '@angular/core';
 import { provideClientHydration, withNoHttpTransferCache } from '@angular/platform-browser';
 import { provideRouter, withInMemoryScrolling, withRouterConfig } from '@angular/router';
 import { routes } from './app.routes';
@@ -13,6 +14,7 @@ import { provideOpalAppInitializer } from '@hmcts/opal-frontend-common/services/
 import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-error';
 import { contentDigestInterceptor } from '@hmcts/opal-frontend-common/interceptors/content-digest';
 import { httpRetryInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-retry';
+import { loadDynatraceScript, type DynatraceWindow } from './dynatrace-loader';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -38,5 +40,10 @@ export const appConfig: ApplicationConfig = {
       }),
     ),
     provideOpalAppInitializer(),
+    provideAppInitializer(() => {
+      if (isPlatformBrowser(inject(PLATFORM_ID))) {
+        loadDynatraceScript(inject(DOCUMENT), window as DynatraceWindow);
+      }
+    }),
   ],
 };
