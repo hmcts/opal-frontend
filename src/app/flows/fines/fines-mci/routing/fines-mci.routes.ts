@@ -9,6 +9,7 @@ import { fetchBusinessUnitsResolver } from '@app/flows/fines/routing/resolvers/f
 import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.constant';
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
+import { finesMciCourtFeesResolver } from './resolvers/fines-mci-court-fees.resolver';
 import { finesMciCriminalAccountsResolver } from './resolvers/fines-mci-criminal-accounts/fines-mci-criminal-accounts.resolver';
 
 export const routing: Routes = [
@@ -203,6 +204,7 @@ export const routing: Routes = [
               title: FINES_MCI_ROUTING_TITLES.children.createTillCourtFeeDetails,
             },
             resolve: {
+              courtFees: finesMciCourtFeesResolver,
               title: TitleResolver,
             },
           },
@@ -226,10 +228,11 @@ export const routing: Routes = [
           {
             path: FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation,
             loadComponent: () =>
-              import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
-                (c) => c.FinesMciPlaceholderComponent,
+              import('../fines-mci-create-till/fines-mci-create-till-over-underpayment-confirmation/fines-mci-create-till-over-underpayment-confirmation.component').then(
+                (c) => c.FinesMciCreateTillOverUnderpaymentConfirmationComponent,
               ),
             canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+            canDeactivate: [canDeactivateGuard],
             data: {
               heading: FINES_MCI_ROUTING_TITLES.children.createTillOverUnderpaymentConfirmation,
               permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
@@ -237,6 +240,7 @@ export const routing: Routes = [
               title: FINES_MCI_ROUTING_TITLES.children.createTillOverUnderpaymentConfirmation,
             },
             resolve: {
+              courtFees: finesMciCourtFeesResolver,
               title: TitleResolver,
             },
           },

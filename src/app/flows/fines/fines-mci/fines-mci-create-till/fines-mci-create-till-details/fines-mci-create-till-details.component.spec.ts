@@ -55,7 +55,7 @@ describe('FinesMciCreateTillDetailsComponent', () => {
     const store = TestBed.inject(FinesMciStore);
     const selectedBusinessUnit = store.businessUnit();
 
-    fixture.debugElement.query(By.css('opal-lib-govuk-back-link')).triggerEventHandler('clickEvent');
+    (fixture.nativeElement as HTMLElement).querySelector<HTMLAnchorElement>('.govuk-back-link')!.click();
 
     expect(store.businessUnit()).toEqual(selectedBusinessUnit);
     expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create', 'till', 'select-bu'], {
