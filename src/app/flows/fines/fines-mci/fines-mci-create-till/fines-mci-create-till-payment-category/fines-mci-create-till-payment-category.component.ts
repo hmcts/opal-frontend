@@ -38,7 +38,12 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
       });
   }
 
-  /** Handles Continue, saving the selected journey as a draft and opening it. */
+  /**
+   * Saves the selected payment category as a draft and opens its journey without a leave warning.
+   * Starting Criminal search clears previous search criteria so a new payment starts with a blank form.
+   *
+   * @param form The validated payment category form submission.
+   */
   public handleSubmit(form: IAbstractFormBaseForm<IFinesMciCreateTillPaymentCategoryFormState>): void {
     if (this.isContinuing()) return;
     const paymentCategory = form.formData.paymentCategory;
@@ -47,19 +52,27 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
       return;
     }
 
+    if (paymentCategory === 'criminal') {
+      this.finesMciStore.resetCriminalSearch();
+    }
     this.finesMciStore.setDraftJourney(paymentCategory);
     this.stateUnsavedChanges = false;
     this.navigationFailed = false;
     this.isContinuing.set(true);
 
     const journeyRoute = {
-      criminal: FINES_MCI_ROUTING_PATHS.children.searchAccount,
-      courtFee: FINES_MCI_ROUTING_PATHS.children.courtFeeDetails,
-      suspense: FINES_MCI_ROUTING_PATHS.children.suspenseDetails,
+      criminal: [
+        FINES_MCI_ROUTING_PATHS.children.payment,
+        FINES_MCI_ROUTING_PATHS.children.category,
+        FINES_MCI_ROUTING_PATHS.children.criminal,
+        FINES_MCI_ROUTING_PATHS.children.search,
+      ],
+      courtFee: [FINES_MCI_ROUTING_PATHS.children.courtFeeDetails],
+      suspense: [FINES_MCI_ROUTING_PATHS.children.suspenseDetails],
     }[paymentCategory];
 
     void this.navigationRouter
-      .navigate([journeyRoute], { relativeTo: this.currentRoute.parent })
+      .navigate(journeyRoute, { relativeTo: this.currentRoute.parent })
       .catch(() => false)
       .then((navigated) => {
         if (!navigated) {
@@ -85,8 +98,8 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
       this.navigationFailed || unsavedChanges || (this.isContinuing() && this.stateUnsavedChanges);
   }
 
-  @HostListener('window:beforeunload')
   /** Allows the browser to unload only when there are no unsaved changes. */
+  @HostListener('window:beforeunload')
   public handleBeforeUnload(): boolean {
     return !this.isContinuing() && !this.stateUnsavedChanges;
   }

@@ -16,8 +16,8 @@ Feature: Manual Cash Input - Payment Category
     And I add a payment to the till
     Then I see the following text on the page "Payment category"
 
-  @JIRA-STORY:PO-3486
-  Scenario: AC4 - Criminal continues to Search for an Account
+  @JIRA-STORY:PO-3486 @JIRA-STORY:PO-3489 @AC1
+  Scenario: AC4, AC1, AC1a, AC1b, AC1c - Criminal continues to Search for an Account
     When I select the Fines primary navigation item "Finance"
     And I am taken to the "Finance" Fines landing page
     And I open Manual Cash Input
@@ -27,6 +27,8 @@ Feature: Manual Cash Input - Payment Category
     And I add a payment to the till
     And I continue with payment category "criminal"
     Then I see Search for an Account
+    And the selected business unit is displayed on Search for an Account
+    And the Search for an Account screen displays the quick and advanced search fields
 
   @JIRA-STORY:PO-3486 @JIRA-STORY:PO-3679 @JIRA-STORY:PO-3669
   Scenario: AC1, AC4a - Court Fee continues to Court Fee Details
