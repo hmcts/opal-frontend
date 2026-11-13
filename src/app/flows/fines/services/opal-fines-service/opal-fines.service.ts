@@ -913,13 +913,15 @@ export class OpalFines {
   }
 
   /**
-   * Retrieves the defendant account details at a glance for a specific tab.
-   * If the account details for the specified tab are not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   * Retrieves defendant at-a-glance details and caches the completed response for subsequent subscribers.
+   * Cancels an in-flight request when its last subscriber leaves, allowing a later subscription to retry.
    *
    * @param account_id - The ID of the defendant account.
-   * @returns An Observable that emits the account details at a glance for the specified tab.
+   * @returns An Observable that emits the defendant account details at a glance.
    */
-  public getDefendantAccountAtAGlance(account_id: number | null): Observable<IOpalFinesAccountDefendantAtAGlance> {
+  public getDefendantAccountAtAGlance(
+    account_id: number | string | null,
+  ): Observable<IOpalFinesAccountDefendantAtAGlance> {
     if (!this.cache.defendantAccountAtAGlanceCache$) {
       const url = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/at-a-glance`;
       this.cache.defendantAccountAtAGlanceCache$ = this.http
@@ -933,7 +935,7 @@ export class OpalFines {
               version,
             };
           }),
-          shareReplay(1),
+          shareReplay({ bufferSize: 1, refCount: true }),
         );
     }
 
@@ -1221,7 +1223,9 @@ export class OpalFines {
    * @param accountId - The unique identifier of the defendant account.
    * @returns An Observable that emits the defendant account header data.
    */
-  public getDefendantAccountHeadingData(accountId: number): Observable<IOpalFinesAccountDefendantDetailsHeader> {
+  public getDefendantAccountHeadingData(
+    accountId: number | string,
+  ): Observable<IOpalFinesAccountDefendantDetailsHeader> {
     const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
     return this.http
       .get<IOpalFinesAccountDefendantDetailsHeader>(
