@@ -7,14 +7,12 @@ import {
   Output,
   computed,
   inject,
-  Injector,
 } from '@angular/core';
 import { FinesMacAbstractAliasFormComponent } from '../../abstracts/fines-mac-abstract-alias-form.component';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
-import { takeUntil } from 'rxjs';
 import { IFinesMacParentGuardianDetailsFieldErrors } from '../interfaces/fines-mac-parent-guardian-details-field-errors.interface';
 import { IFinesMacParentGuardianDetailsForm } from '../interfaces/fines-mac-parent-guardian-details-form.interface';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS } from '../constants/fines-mac-parent-guardian-details-alias';
@@ -41,7 +39,6 @@ import { optionalValidDateValidator } from '@hmcts/opal-frontend-common/validato
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { toObservable } from '@angular/core/rxjs-interop';
 import { ALPHANUMERIC_WITH_SPACES_PATTERN, SINGLE_ASCII_CHARACTERS } from '@hmcts/opal-frontend-common/constants';
 
 // regex pattern validators for the form controls
@@ -78,7 +75,6 @@ export class FinesMacParentGuardianDetailsFormComponent
 {
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly globalStore = inject(GlobalStore);
-  private readonly featureFlagInjector = inject(Injector);
 
   private get vehicleRegistrationConfig(): { maxLength: number; errorMessage: string } {
     if (getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true) {
@@ -157,32 +153,6 @@ export class FinesMacParentGuardianDetailsFormComponent
     });
   }
 
-  private watchVehicleRegistrationConfig(): void {
-    toObservable(this.globalStore.featureFlags, { injector: this.featureFlagInjector })
-      .pipe(takeUntil(this['ngUnsubscribe']))
-      .subscribe(() => {
-        const config = this.vehicleRegistrationConfig;
-        const registrationControl = this.form.get('fm_parent_guardian_details_vehicle_registration_mark');
-
-        if (registrationControl) {
-          registrationControl.setValidators([optionalMaxLengthValidator(config.maxLength)]);
-          registrationControl.updateValueAndValidity({ emitEvent: false });
-        }
-
-        this.fieldErrors = {
-          ...this.fieldErrors,
-          fm_parent_guardian_details_vehicle_registration_mark: {
-            ...this.fieldErrors.fm_parent_guardian_details_vehicle_registration_mark,
-            maxlength: {
-              ...this.fieldErrors.fm_parent_guardian_details_vehicle_registration_mark['maxlength'],
-              message: config.errorMessage,
-            },
-          },
-        };
-        this.setInitialErrorMessages();
-      });
-  }
-
   /**
    * Sets up the alias configuration for the parent or guardian details form.
    * The alias configuration includes the alias fields and controls validation.
@@ -215,6 +185,10 @@ export class FinesMacParentGuardianDetailsFormComponent
   public override ngOnInit(): void {
     this.initialParentGuardianDetailsSetup();
     super.ngOnInit();
-    this.watchVehicleRegistrationConfig();
+    this.watchOptionalMaxLengthFeatureFlag(
+      this.globalStore.featureFlags,
+      'fm_parent_guardian_details_vehicle_registration_mark',
+      () => this.vehicleRegistrationConfig,
+    );
   }
 }

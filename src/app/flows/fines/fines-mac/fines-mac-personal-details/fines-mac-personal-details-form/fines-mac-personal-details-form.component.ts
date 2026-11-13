@@ -3,7 +3,6 @@ import {
   Component,
   EventEmitter,
   Input,
-  Injector,
   OnDestroy,
   OnInit,
   Output,
@@ -49,7 +48,6 @@ import { IGovUkSelectOptions } from '@hmcts/opal-frontend-common/components/govu
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
-import { toObservable } from '@angular/core/rxjs-interop';
 import { SINGLE_ASCII_CHARACTERS, ALPHANUMERIC_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 
@@ -88,7 +86,6 @@ export class FinesMacPersonalDetailsFormComponent
 {
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly globalStore = inject(GlobalStore);
-  private readonly featureFlagInjector = inject(Injector);
 
   private get vehicleRegistrationConfig(): { maxLength: number; errorMessage: string } {
     if (getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true) {
@@ -190,32 +187,6 @@ export class FinesMacPersonalDetailsFormComponent
     }
   }
 
-  private watchVehicleRegistrationConfig(): void {
-    toObservable(this.globalStore.featureFlags, { injector: this.featureFlagInjector })
-      .pipe(takeUntil(this['ngUnsubscribe']))
-      .subscribe(() => {
-        const config = this.vehicleRegistrationConfig;
-        const registrationControl = this.form.get('fm_personal_details_vehicle_registration_mark');
-
-        if (registrationControl) {
-          registrationControl.setValidators([optionalMaxLengthValidator(config.maxLength)]);
-          registrationControl.updateValueAndValidity({ emitEvent: false });
-        }
-
-        this.fieldErrors = {
-          ...this.fieldErrors,
-          fm_personal_details_vehicle_registration_mark: {
-            ...this.fieldErrors.fm_personal_details_vehicle_registration_mark,
-            maxlength: {
-              ...this.fieldErrors.fm_personal_details_vehicle_registration_mark['maxlength'],
-              message: config.errorMessage,
-            },
-          },
-        };
-        this.setInitialErrorMessages();
-      });
-  }
-
   /**
    * Listens for changes in the date of birth control and updates the age and label accordingly.
    */
@@ -276,6 +247,10 @@ export class FinesMacPersonalDetailsFormComponent
   public override ngOnInit(): void {
     this.initialPersonalDetailsSetup();
     super.ngOnInit();
-    this.watchVehicleRegistrationConfig();
+    this.watchOptionalMaxLengthFeatureFlag(
+      this.globalStore.featureFlags,
+      'fm_personal_details_vehicle_registration_mark',
+      () => this.vehicleRegistrationConfig,
+    );
   }
 }
