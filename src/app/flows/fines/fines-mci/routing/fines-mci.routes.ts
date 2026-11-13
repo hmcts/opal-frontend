@@ -111,6 +111,21 @@ export const routing: Routes = [
             },
           },
           {
+            path: FINES_MCI_ROUTING_PATHS.children.payerDetails,
+            loadComponent: () =>
+              import('../fines-mci-create-till/fines-mci-create-till-payer-details/fines-mci-create-till-payer-details.component').then(
+                (c) => c.FinesMciCreateTillPayerDetailsComponent,
+              ),
+            canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+            canDeactivate: [canDeactivateGuard],
+            data: {
+              permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
+              routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+              title: FINES_MCI_ROUTING_TITLES.children.createTillPayerDetails,
+            },
+            resolve: { title: TitleResolver },
+          },
+          {
             path: FINES_MCI_ROUTING_PATHS.children.suspenseDetails,
             loadComponent: () =>
               import('../fines-mci-create-till/fines-mci-create-till-suspense-details/fines-mci-create-till-suspense-details.component').then(
@@ -128,24 +143,23 @@ export const routing: Routes = [
               title: TitleResolver,
             },
           },
-          ...[
-            [FINES_MCI_ROUTING_PATHS.children.checkSuspensePayment, 'Check suspense payment'],
-            [FINES_MCI_ROUTING_PATHS.children.payerDetails, 'Payer details'],
-          ].map(([path, heading]) => ({
-            path,
-            loadComponent: () =>
-              import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
-                (c) => c.FinesMciPlaceholderComponent,
-              ),
-            canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
-            data: {
-              heading,
-              permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
-              routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
-              title: heading,
-            },
-            resolve: { title: TitleResolver },
-          })),
+          ...[[FINES_MCI_ROUTING_PATHS.children.checkSuspensePayment, 'Check suspense payment']].map(
+            ([path, heading]) => ({
+              path,
+              loadComponent: () =>
+                import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
+                  (c) => c.FinesMciPlaceholderComponent,
+                ),
+              canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+              data: {
+                heading,
+                permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
+                routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+                title: heading,
+              },
+              resolve: { title: TitleResolver },
+            }),
+          ),
           {
             path: FINES_MCI_ROUTING_PATHS.children.courtFeeDetails,
             loadComponent: () =>

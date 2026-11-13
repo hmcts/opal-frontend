@@ -1,0 +1,13 @@
+<div class="govuk-grid-column-full govuk-!-margin-bottom-4">
+  <opal-lib-govuk-back-link (clickEvent)="handleBack()"></opal-lib-govuk-back-link>
+</div>
+<div class="govuk-grid-column-two-thirds">
+  <span class="govuk-caption-l">{{ finesMciStore.businessUnit()?.business_unit_name }}</span>
+  <h1 class="govuk-heading-l">Payer details</h1>
+  <app-fines-mci-create-till-payer-details-form
+    [initialValue]="finesMciStore.suspensePayerDetails()"
+    (formSubmit)="handleSubmit($event)"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+    (cancelRequested)="handleCancel()"
+  ></app-fines-mci-create-till-payer-details-form>
+</div>

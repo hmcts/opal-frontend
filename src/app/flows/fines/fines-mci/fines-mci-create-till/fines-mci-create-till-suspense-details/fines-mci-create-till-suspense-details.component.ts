@@ -26,6 +26,9 @@ export class FinesMciCreateTillSuspenseDetailsComponent extends AbstractFormPare
   /** Stores validated suspense details and routes to the next screen for the selected reason. */
   public handleSubmit(form: IAbstractFormBaseForm<IFinesMciSuspensePayment>): void {
     this.finesMciStore.setSuspensePayment(form.formData);
+    if (form.formData.reason === 'unidentified') {
+      this.finesMciStore.setSuspensePayerDetails(null);
+    }
     this.stateUnsavedChanges = false;
     const target =
       form.formData.reason === 'unidentified'
@@ -49,6 +52,7 @@ export class FinesMciCreateTillSuspenseDetailsComponent extends AbstractFormPare
         if (navigated) {
           this.finesMciStore.setDraftJourney(null);
           this.finesMciStore.setSuspensePayment(null);
+          this.finesMciStore.setSuspensePayerDetails(null);
         }
       });
   }

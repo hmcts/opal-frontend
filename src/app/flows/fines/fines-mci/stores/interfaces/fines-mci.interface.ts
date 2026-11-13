@@ -12,6 +12,18 @@ export interface IFinesMciSuspensePayment {
   relevantDetails: string;
 }
 
+export interface IFinesMciSuspensePayerDetails {
+  payerType: 'individual' | 'company' | null;
+  title: 'Mr' | 'Mrs' | 'Miss' | 'Ms' | null;
+  firstNames: string;
+  lastName: string;
+  companyName: string;
+  addressLine1: string;
+  addressLine2: string;
+  addressLine3: string;
+  postcode: string;
+}
+
 export interface IFinesMciPayment {
   paymentId: string;
   journey: FinesMciJourney;

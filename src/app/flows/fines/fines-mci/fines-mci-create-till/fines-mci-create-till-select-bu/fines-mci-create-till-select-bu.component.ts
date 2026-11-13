@@ -12,8 +12,8 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
-import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
@@ -42,15 +42,15 @@ import { FinesMciStore } from '../../stores/fines-mci.store';
   templateUrl: './fines-mci-create-till-select-bu.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMciCreateTillSelectBuComponent implements OnDestroy {
-  private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly router = inject(Router);
+export class FinesMciCreateTillSelectBuComponent extends AbstractFormParentBaseComponent implements OnDestroy {
+  private readonly navigationRoute = inject(ActivatedRoute);
+  private readonly navigationRouter = inject(Router);
   private readonly document = inject(DOCUMENT);
   private readonly changeDetector = inject(ChangeDetectorRef);
   private readonly utilsService = inject(UtilsService);
   private readonly finesMciStore = inject(FinesMciStore);
   @ViewChild('errorSummary', { read: ElementRef }) private readonly errorSummary?: ElementRef<HTMLElement>;
-  private readonly businessUnitsRefData: IOpalFinesBusinessUnitRefData = (this.activatedRoute.snapshot.data[
+  private readonly businessUnitsRefData: IOpalFinesBusinessUnitRefData = (this.navigationRoute.snapshot.data[
     'businessUnits'
   ] as IOpalFinesBusinessUnitRefData | undefined) ?? {
     count: 0,
@@ -73,7 +73,9 @@ export class FinesMciCreateTillSelectBuComponent implements OnDestroy {
   protected formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
 
   public constructor() {
-    const preserveBusinessUnit = this.router.currentNavigation()?.extras.state?.['preserveBusinessUnit'] === true;
+    super();
+    const preserveBusinessUnit =
+      this.navigationRouter.currentNavigation()?.extras.state?.['preserveBusinessUnit'] === true;
     if (!preserveBusinessUnit) {
       this.finesMciStore.reset();
     }
@@ -175,7 +177,7 @@ export class FinesMciCreateTillSelectBuComponent implements OnDestroy {
     this.finesMciStore.setBusinessUnit(businessUnit);
     this.finesMciStore.ensureTill();
     this.isContinuing = true;
-    void this.router.navigate([
+    void this.navigationRouter.navigate([
       '/',
       FINES_ROUTING_PATHS.root,
       FINES_MCI_ROUTING_PATHS.root,
@@ -189,13 +191,13 @@ export class FinesMciCreateTillSelectBuComponent implements OnDestroy {
    * Returns the user to the manual cash input create and allocate page.
    */
   public handleCancel(): void {
-    void this.router.navigate(this.createAllocateRoute);
+    void this.navigationRouter.navigate(this.createAllocateRoute);
   }
 
   /**
    * Warns before leaving when the user has selected a business unit.
    */
-  public canDeactivate(): CanDeactivateTypes {
+  public override canDeactivate(): boolean {
     return this.isContinuing || !this.hasSelectedBusinessUnit();
   }
 

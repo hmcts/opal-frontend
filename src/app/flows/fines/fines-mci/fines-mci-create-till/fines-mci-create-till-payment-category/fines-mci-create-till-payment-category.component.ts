@@ -51,6 +51,7 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
         if (navigated) {
           this.finesMciStore.setDraftJourney(null);
           this.finesMciStore.setSuspensePayment(null);
+          this.finesMciStore.setSuspensePayerDetails(null);
         }
       });
   }

@@ -57,6 +57,7 @@ describe('FinesMciCreateTillSuspenseDetailsComponent', () => {
 
     expect(fixture.componentInstance['canDeactivate']()).toBe(false);
     expect(fixture.componentInstance.handleBeforeUnload()).toBe(false);
+    expect((fixture.nativeElement as HTMLElement).querySelector<HTMLInputElement>('#amount')?.value).toBe('25.00');
   });
 
   it.each([
@@ -71,6 +72,25 @@ describe('FinesMciCreateTillSuspenseDetailsComponent', () => {
     expect(store.suspensePayment()).toEqual(data);
     expect(fixture.componentInstance.stateUnsavedChanges).toBe(false);
     expect(navigateSpy).toHaveBeenCalledWith([target], { relativeTo: null });
+  });
+
+  it('clears saved payer details when the reason changes to unidentified', () => {
+    store.setSuspensePayerDetails({
+      payerType: 'individual',
+      title: null,
+      firstNames: '',
+      lastName: 'Smith',
+      companyName: '',
+      addressLine1: '',
+      addressLine2: '',
+      addressLine3: '',
+      postcode: '',
+    });
+    vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    fixture.componentInstance.handleSubmit({ formData: SUSPENSE_PAYMENT, nestedFlow: false });
+
+    expect(store.suspensePayerDetails()).toBeNull();
   });
 
   it('tracks unsaved child form values for route and browser leave protection', () => {

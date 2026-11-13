@@ -6,6 +6,7 @@ export const FINES_MCI_ROUTING_TITLES = {
     createTillDetails: 'Till details',
     createTillPaymentCategory: 'Payment category',
     createTillSuspenseDetails: 'Suspense details',
+    createTillPayerDetails: 'Payer details',
     createTillCourtFeeDetails: 'Court fee details',
     createTillSearchAccount: 'Search for an account',
     createTillCancel: 'Cancel till creation',

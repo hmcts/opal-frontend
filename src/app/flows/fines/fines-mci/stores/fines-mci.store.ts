@@ -1,6 +1,11 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
-import { FinesMciJourney, IFinesMciSuspensePayment, IFinesMciTill } from './interfaces/fines-mci.interface';
+import {
+  FinesMciJourney,
+  IFinesMciSuspensePayerDetails,
+  IFinesMciSuspensePayment,
+  IFinesMciTill,
+} from './interfaces/fines-mci.interface';
 
 export const FinesMciStore = signalStore(
   { providedIn: 'root' },
@@ -9,6 +14,7 @@ export const FinesMciStore = signalStore(
     tills: [] as IFinesMciTill[],
     draftJourney: null as FinesMciJourney | null,
     suspensePayment: null as IFinesMciSuspensePayment | null,
+    suspensePayerDetails: null as IFinesMciSuspensePayerDetails | null,
   })),
   withMethods((store) => {
     /** Returns the existing till ID or creates the first till for the current business unit. */
@@ -28,7 +34,13 @@ export const FinesMciStore = signalStore(
       setBusinessUnit(businessUnit: IOpalFinesBusinessUnit): void {
         const currentBusinessUnit = store.businessUnit();
         if (currentBusinessUnit && currentBusinessUnit.business_unit_id !== businessUnit.business_unit_id) {
-          patchState(store, { businessUnit, tills: [], draftJourney: null, suspensePayment: null });
+          patchState(store, {
+            businessUnit,
+            tills: [],
+            draftJourney: null,
+            suspensePayment: null,
+            suspensePayerDetails: null,
+          });
           return;
         }
 
@@ -43,6 +55,10 @@ export const FinesMciStore = signalStore(
       /** Stores validated suspense details in application memory. */
       setSuspensePayment(suspensePayment: IFinesMciSuspensePayment | null): void {
         patchState(store, { suspensePayment });
+      },
+      /** Stores payer details until the suspense payment is confirmed. */
+      setSuspensePayerDetails(suspensePayerDetails: IFinesMciSuspensePayerDetails | null): void {
+        patchState(store, { suspensePayerDetails });
       },
       /** Adds a payment journey to the matching till and returns the new payment ID. */
       addPayment(tillId: string, journey: FinesMciJourney): string {
@@ -60,7 +76,13 @@ export const FinesMciStore = signalStore(
       },
       /** Clears the selected business unit and all till data. */
       reset(): void {
-        patchState(store, { businessUnit: null, tills: [], draftJourney: null, suspensePayment: null });
+        patchState(store, {
+          businessUnit: null,
+          tills: [],
+          draftJourney: null,
+          suspensePayment: null,
+          suspensePayerDetails: null,
+        });
       },
     };
   }),
