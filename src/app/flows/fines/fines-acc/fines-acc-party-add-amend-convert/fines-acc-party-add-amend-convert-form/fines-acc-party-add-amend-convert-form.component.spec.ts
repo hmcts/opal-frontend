@@ -112,6 +112,21 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     );
   });
 
+  it('should update vehicle registration errors when its control is absent', async () => {
+    component.partyType = 'individual';
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    component.form.removeControl('facc_party_add_amend_convert_vehicle_registration_mark');
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(
+      component.fieldErrors.facc_party_add_amend_convert_vehicle_registration_mark['maxlength'].message,
+    ).toBe('Vehicle registration must be 7 characters or fewer');
+  });
+
   it.each([
     'facc_party_add_amend_convert_employer_address_line_1',
     'facc_party_add_amend_convert_employer_address_line_2',
