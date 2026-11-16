@@ -49,6 +49,3 @@ Feature: Parent Guardian To Pay Collection Order
       And the Collection Order status is "Yes"
       And I cancel the Change Collection Order status form and choose to stay
       Then I should remain on the Change Collection Order status page
-
-
-    @JIRA-STORY:PO-1848

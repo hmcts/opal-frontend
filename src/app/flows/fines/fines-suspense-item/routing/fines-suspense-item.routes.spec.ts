@@ -81,7 +81,7 @@ describe('Suspense entry access', () => {
 
   beforeEach(() => {
     suspenseEnabled = true;
-    permissionIds = [24];
+    permissionIds = [25];
     const suspenseRoute = finesRouting
       .find((route) => route.children)
       ?.children?.find((route) => route.path === FINES_ROUTING_PATHS.children.suspenseItem.root);
@@ -126,14 +126,15 @@ describe('Suspense entry access', () => {
   });
 
   it.each([
-    { enabled: true, permissions: [24], allowed: true },
     { enabled: true, permissions: [25], allowed: true },
-    { enabled: true, permissions: [24, 25], allowed: true },
+    { enabled: true, permissions: [26], allowed: true },
+    { enabled: true, permissions: [25, 26], allowed: true },
     { enabled: true, permissions: [], allowed: false },
+    { enabled: true, permissions: [24], allowed: false },
     { enabled: true, permissions: [16, 18, 19], allowed: false },
-    { enabled: false, permissions: [24], allowed: false },
     { enabled: false, permissions: [25], allowed: false },
-    { enabled: false, permissions: [24, 25], allowed: false },
+    { enabled: false, permissions: [26], allowed: false },
+    { enabled: false, permissions: [25, 26], allowed: false },
     { enabled: false, permissions: [], allowed: false },
   ])(
     'direct entry: enabled=$enabled, permissions=$permissions, allowed=$allowed',
@@ -152,7 +153,7 @@ describe('Suspense entry access', () => {
   );
 
   it.each([true, false])('checks permissions when a Finance link is clicked (allowed=%s)', async (allowed) => {
-    permissionIds = allowed ? [25] : [];
+    permissionIds = allowed ? [26] : [24];
     const harness = await RouterTestingHarness.create('/fines/dashboard/finance');
 
     harness.routeNativeElement?.querySelector<HTMLAnchorElement>('a')?.click();

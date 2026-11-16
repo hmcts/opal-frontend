@@ -61,13 +61,14 @@ const createUserStateWithPermissions = (permissionIds: readonly number[]): IOpal
 
 describe('fines-section-permissions.utils', () => {
   it.each([
-    { permissions: [24], enabled: true, expected: true },
     { permissions: [25], enabled: true, expected: true },
-    { permissions: [24, 25], enabled: true, expected: true },
+    { permissions: [26], enabled: true, expected: true },
+    { permissions: [25, 26], enabled: true, expected: true },
     { permissions: [16], enabled: true, expected: false },
-    { permissions: [24], enabled: false, expected: false },
+    { permissions: [24], enabled: true, expected: false },
     { permissions: [25], enabled: false, expected: false },
-    { permissions: [24, 25], enabled: false, expected: false },
+    { permissions: [26], enabled: false, expected: false },
+    { permissions: [25, 26], enabled: false, expected: false },
   ])(
     'checks Suspense-only Finance access for $permissions with flag $enabled',
     ({ permissions, enabled, expected }) => {

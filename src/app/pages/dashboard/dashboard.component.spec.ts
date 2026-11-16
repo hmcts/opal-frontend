@@ -99,9 +99,10 @@ describe('DashboardComponent', () => {
   });
 
   it.each([
-    { name: 'View only', permissions: [24], visible: true },
-    { name: 'Manage only', permissions: [25], visible: true },
-    { name: 'both', permissions: [24, 25], visible: true },
+    { name: 'View only', permissions: [25], visible: true },
+    { name: 'Manage only', permissions: [26], visible: true },
+    { name: 'both', permissions: [25, 26], visible: true },
+    { name: 'APR only', permissions: [24], visible: false },
     { name: 'Cash only', permissions: [16], visible: false },
   ])('filters the Suspense heading and link for $name', ({ permissions, visible }) => {
     permissionsServiceMock.getUniquePermissions.mockReturnValue(permissions);

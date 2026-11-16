@@ -83,7 +83,7 @@ describe('fines routes', () => {
     expect(suspenseRoute).toBeDefined();
     expect(suspenseRoute?.children).toBe(suspenseItemRouting);
     expect(suspenseRoute?.canActivate).toEqual([authGuard, release1cSuspenseFeatureFlagGuard, routePermissionsGuard]);
-    expect(suspenseRoute?.data?.['routePermissionId']).toEqual([24, 25]);
+    expect(suspenseRoute?.data?.['routePermissionId']).toEqual([25, 26]);
   });
 
   it('should guard the draft root as an Accounts section entry route', () => {
