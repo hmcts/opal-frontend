@@ -1,3 +1,4 @@
+import { IFinesMciCriminalAccountsResponse } from '../../../interfaces/fines-mci-criminal-accounts-response.interface';
 import { inject } from '@angular/core';
 import { RedirectCommand, ResolveFn, Router } from '@angular/router';
 import { forkJoin, map, of } from 'rxjs';
@@ -78,10 +79,22 @@ const buildSearchParams = (
   };
 };
 
+/** Classifies either a fresh response or the unchanged results restored from the store. */
+const classifySearchResults = (response: IFinesMciCriminalAccountsResponse): IFinesMciCriminalAccountsResult => {
+  if (response.count > 100) {
+    return { response, results: FINES_MCI_CRIMINAL_SEARCH_RESULTS.tooMany };
+  }
+  if (response.count === 0) {
+    return { response, results: FINES_MCI_CRIMINAL_SEARCH_RESULTS.noMatches };
+  }
+  return { response, results: FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches };
+};
+
 /**
  * Resolves the matches page from stored criteria, redirecting to search when required state is absent.
  * Conflicting criteria return a local outcome without calling the API. Account-number searches query
  * both party types and combine their counts and records; name searches use the selected tab.
+ * Reuses stored results on return navigation; submitting a search clears them so the API is queried again.
  * Classifies the total count as zero, 1–100, or over 100, and lets request errors propagate.
  *
  * @returns A redirect or an observable containing the search outcome and API response.
@@ -113,6 +126,11 @@ export const finesMciCriminalAccountsResolver: ResolveFn<IFinesMciCriminalAccoun
     return of({ results: FINES_MCI_CRIMINAL_SEARCH_RESULTS.searchCriteriaCannotBeCombined, response: null });
   }
 
+  const storedResults = store.criminalSearchResults();
+  if (storedResults) {
+    return of(classifySearchResults(storedResults));
+  }
+
   const accounts$ = search.formData.fsa_search_account_number
     ? forkJoin({
         individuals: opalFines.getDefendantAccounts(buildSearchParams(search, businessUnit.business_unit_id, false)),
@@ -125,15 +143,5 @@ export const finesMciCriminalAccountsResolver: ResolveFn<IFinesMciCriminalAccoun
       )
     : opalFines.getDefendantAccounts(buildSearchParams(search, businessUnit.business_unit_id));
 
-  return accounts$.pipe(
-    map((response): IFinesMciCriminalAccountsResult => {
-      if (response.count > 100) {
-        return { response, results: FINES_MCI_CRIMINAL_SEARCH_RESULTS.tooMany };
-      }
-      if (response.count === 0) {
-        return { response, results: FINES_MCI_CRIMINAL_SEARCH_RESULTS.noMatches };
-      }
-      return { response, results: FINES_MCI_CRIMINAL_SEARCH_RESULTS.matches };
-    }),
-  );
+  return accounts$.pipe(map(classifySearchResults));
 };

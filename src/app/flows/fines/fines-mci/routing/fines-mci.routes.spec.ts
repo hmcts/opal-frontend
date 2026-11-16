@@ -1,3 +1,4 @@
+import { FINES_MCI_CRIMINAL_SEARCH_MOCK } from '../mocks/fines-mci-criminal-search.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { of } from 'rxjs';
 import { FinesMciCriminalAccountService } from '../services/fines-mci-criminal-account.service';
@@ -423,7 +424,58 @@ describe('finesMci routes', () => {
       expect(harness.routeNativeElement!.textContent).toContain('MASTER123');
       expect(harness.routeNativeElement!.querySelector('form')).toBeNull();
       expect(store.selectedCriminalAccountAtAGlance()).toEqual(masterDetails);
+      const enquiryLink = harness.routeNativeElement!.querySelector<HTMLAnchorElement>('a[target="_blank"]')!;
+      expect(enquiryLink.getAttribute('href')).toBe(`/fines/account/defendant/${masterId}/details`);
+      expect(enquiryLink.target).toBe('_blank');
       expect(store.businessUnit()).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
     },
   );
+  it('returns Cancel to Till Details and clears the account search and payment draft', async () => {
+    const accountRoute = criminalRoute!.children!.find((route) => route.path === 'account/:accountId/:type')!;
+    const detailsRoute = createTillRoute!.children!.find(
+      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.details,
+    )!;
+    const root = 'fines/manual-cash-input/create/till';
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([
+          {
+            path: root,
+            children: [
+              { path: 'payment/category/criminal', children: [{ ...accountRoute, canActivate: [], resolve: {} }] },
+              { ...detailsRoute, canActivate: [], resolve: {} },
+            ],
+          },
+        ]),
+      ],
+    });
+    const store = TestBed.inject(FinesMciStore);
+    store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    store.ensureTill();
+    store.setDraftJourney('criminal');
+    store.setCriminalSearch(FINES_MCI_CRIMINAL_SEARCH_MOCK);
+    store.setCriminalSearchResults(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK);
+    store.setSelectedCriminalAccount(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0]);
+    store.setSelectedCriminalAccountHeader(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
+    store.setSelectedCriminalAccountAtAGlance({
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
+      account_status_code: 'CS',
+      account_balance: 0,
+    });
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl(`/${root}/payment/category/criminal/account/1/individual`);
+    harness.routeNativeElement!.querySelector<HTMLAnchorElement>('opal-lib-govuk-cancel-link a')!.click();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(TestBed.inject(Router).url).toBe(`/${root}/details`);
+    expect(harness.routeNativeElement!.querySelector('h1')!.textContent!.trim()).toBe('Till details');
+    expect(store.criminalSearch()).toBeNull();
+    expect(store.criminalSearchResults()).toBeNull();
+    expect(store.selectedCriminalAccount()).toBeNull();
+    expect(store.selectedCriminalAccountHeader()).toBeNull();
+    expect(store.selectedCriminalAccountAtAGlance()).toBeNull();
+    expect(store.draftJourney()).toBeNull();
+    expect(store.businessUnit()).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    expect(store.tills()).toHaveLength(1);
+  });
 });

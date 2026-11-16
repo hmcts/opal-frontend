@@ -1,3 +1,4 @@
+import { FINES_MCI_CRIMINAL_SEARCH_MOCK } from '../mocks/fines-mci-criminal-search.mock';
 import { of, Subject, throwError, EMPTY } from 'rxjs';
 import { FinesMciCriminalAccountService } from '../services/fines-mci-criminal-account.service';
 import { TestBed } from '@angular/core/testing';
@@ -533,6 +534,24 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
       expect(navigate).not.toHaveBeenCalled();
     });
 
+    it.each(['L', 'WO', 'CS'])(
+      'links the associated account to the default enquiry tab in a new tab for %s',
+      (status) => {
+        store.setSelectedCriminalAccountAtAGlance({
+          ...store.selectedCriminalAccountAtAGlance()!,
+          account_status_code: status,
+        });
+        const { element } = render();
+        const link = Array.from(element.querySelectorAll('a')).find((anchor) =>
+          anchor.textContent?.includes('view the account in a new tab'),
+        )!;
+        expect(link.getAttribute('href')).toBe('/fines/account/defendant/1/details');
+        expect(link.target).toBe('_blank');
+        expect(link.rel).toContain('noopener');
+        expect(link.rel).toContain('noreferrer');
+      },
+    );
+
     it('requests the payment-details route when Confirm is selected', () => {
       const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
       const { element } = render();
@@ -557,13 +576,22 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
       [false, 'L'],
       [true, 'WO'],
       [false, 'WO'],
+      [true, 'CS'],
+      [false, 'CS'],
     ] as const)(
       'clears the payment draft and search only if Cancel navigation succeeds: %s for %s',
       async (navigated, status) => {
-        store.setSelectedCriminalAccountAtAGlance({
-          ...store.selectedCriminalAccountAtAGlance()!,
-          account_status_code: status,
-        });
+        const selected = store.selectedCriminalAccount()!;
+        const details = { ...store.selectedCriminalAccountAtAGlance()!, account_status_code: status };
+        store.setCriminalSearch(FINES_MCI_CRIMINAL_SEARCH_MOCK);
+        store.setCriminalSearchResults(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK);
+        store.setSelectedCriminalAccount(selected);
+        store.setSelectedCriminalAccountAtAGlance(details);
+        store.setSelectedCriminalAccountHeader(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
+        const tillId = store.ensureTill();
+        store.addPayment(tillId, 'criminal');
+        const tills = store.tills();
+        store.setDraftJourney('criminal');
         const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(navigated);
         const clearDraft = vi.spyOn(store, 'setDraftJourney');
         const clearSearch = vi.spyOn(store, 'resetCriminalSearch');
@@ -573,6 +601,16 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
         expect(navigate).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create', 'till', 'details']);
         expect(clearDraft).toHaveBeenCalledTimes(navigated ? 1 : 0);
         expect(clearSearch).toHaveBeenCalledTimes(navigated ? 1 : 0);
+        expect(store.criminalSearch()).toBe(navigated ? null : FINES_MCI_CRIMINAL_SEARCH_MOCK);
+        expect(store.criminalSearchResults()).toBe(
+          navigated ? null : OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK,
+        );
+        expect(store.selectedCriminalAccount()).toBe(navigated ? null : selected);
+        expect(store.selectedCriminalAccountAtAGlance()).toBe(navigated ? null : details);
+        expect(store.selectedCriminalAccountHeader()).toBe(navigated ? null : FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
+        expect(store.draftJourney()).toBe(navigated ? null : 'criminal');
+        expect(store.businessUnit()).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+        expect(store.tills()).toBe(tills);
       },
     );
 

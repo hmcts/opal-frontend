@@ -1,3 +1,5 @@
+import { FINES_MCI_CRIMINAL_SEARCH_MOCK } from '../mocks/fines-mci-criminal-search.mock';
+import { finesMciCriminalAccountsResolver } from '../routing/resolvers/fines-mci-criminal-accounts/fines-mci-criminal-accounts.resolver';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { getState } from '@ngrx/signals';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
@@ -758,62 +760,84 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
 });
 
 describe('Criminal matches Continue navigation', () => {
-  it('should redirect account 23456789A to its account placeholder after both detail requests succeed', async () => {
-    const accountId = '99000000000002';
-    const routeRoot = 'fines/manual-cash-input/create/till/payment/category/criminal';
-    const account = {
-      ...OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0],
-      defendant_account_id: accountId,
-      account_number: '23456789A',
-      organisation: false,
-    };
-    const atAGlance = new Subject<IOpalFinesAccountDefendantAtAGlance>();
-    const header = new Subject<typeof FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK>();
-    const opalFines = {
-      clearCache: vi.fn(),
-      getDefendantAccountAtAGlance: vi.fn().mockReturnValue(atAGlance),
-      getDefendantAccountHeadingData: vi.fn().mockReturnValue(header),
-    };
-    TestBed.configureTestingModule({
-      providers: [
-        { provide: OpalFines, useValue: opalFines },
-        provideRouter([
-          {
-            path: routeRoot,
-            children: [
-              {
-                path: 'matches',
-                component: FinesMciPaymentCategoryCriminalMatchesComponent,
-                data: {
-                  criminalAccounts: { results: 'matches', response: { count: 1, defendant_accounts: [account] } },
+  it.each(['L', 'WO', 'CS'])(
+    'preserves the previous search results when returning from a %s account',
+    async (status) => {
+      const accountId = '99000000000002';
+      const routeRoot = 'fines/manual-cash-input/create/till/payment/category/criminal';
+      const account = {
+        ...OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0],
+        defendant_account_id: accountId,
+        account_number: '23456789A',
+        organisation: false,
+      };
+      const searchResponse = { count: 1, defendant_accounts: [account] };
+      const atAGlance = new Subject<IOpalFinesAccountDefendantAtAGlance>();
+      const header = new Subject<typeof FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK>();
+      const opalFines = {
+        getDefendantAccounts: vi.fn().mockReturnValue(of(searchResponse)),
+        clearCache: vi.fn(),
+        getDefendantAccountAtAGlance: vi.fn().mockReturnValue(atAGlance),
+        getDefendantAccountHeadingData: vi.fn().mockReturnValue(header),
+      };
+      TestBed.configureTestingModule({
+        providers: [
+          { provide: OpalFines, useValue: opalFines },
+          provideRouter([
+            {
+              path: routeRoot,
+              children: [
+                {
+                  path: 'matches',
+                  component: FinesMciPaymentCategoryCriminalMatchesComponent,
+                  resolve: { criminalAccounts: finesMciCriminalAccountsResolver },
                 },
-              },
-              { path: 'account/:accountId/:type', component: FinesMciPaymentCategoryCriminalAccountComponent },
-            ],
-          },
-        ]),
-      ],
-    });
-    TestBed.inject(FinesMciStore).setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
-    const harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl(`/${routeRoot}/matches`, FinesMciPaymentCategoryCriminalMatchesComponent);
-    (harness.routeNativeElement!.querySelector(`#fines-mci-criminal-account-${accountId}`) as HTMLInputElement).click();
-    harness.detectChanges();
-    (harness.routeNativeElement!.querySelector('button.govuk-button') as HTMLButtonElement).click();
+                { path: 'account/:accountId/:type', component: FinesMciPaymentCategoryCriminalAccountComponent },
+              ],
+            },
+          ]),
+        ],
+      });
+      const store = TestBed.inject(FinesMciStore);
+      store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+      store.setCriminalSearch(FINES_MCI_CRIMINAL_SEARCH_MOCK);
+      const harness = await RouterTestingHarness.create();
+      await harness.navigateByUrl(`/${routeRoot}/matches`, FinesMciPaymentCategoryCriminalMatchesComponent);
+      (
+        harness.routeNativeElement!.querySelector(`#fines-mci-criminal-account-${accountId}`) as HTMLInputElement
+      ).click();
+      harness.detectChanges();
+      (harness.routeNativeElement!.querySelector('button.govuk-button') as HTMLButtonElement).click();
 
-    expect(opalFines.getDefendantAccountAtAGlance).toHaveBeenCalledExactlyOnceWith(accountId);
-    expect(opalFines.getDefendantAccountHeadingData).toHaveBeenCalledExactlyOnceWith(accountId);
-    atAGlance.next({ ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, defendant_account_id: accountId });
-    atAGlance.complete();
-    await harness.fixture.whenStable();
-    expect(TestBed.inject(Router).url).toBe(`/${routeRoot}/matches`);
+      expect(opalFines.getDefendantAccountAtAGlance).toHaveBeenCalledExactlyOnceWith(accountId);
+      expect(opalFines.getDefendantAccountHeadingData).toHaveBeenCalledExactlyOnceWith(accountId);
+      atAGlance.next({
+        ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
+        defendant_account_id: accountId,
+        account_status_code: status,
+      });
+      atAGlance.complete();
+      await harness.fixture.whenStable();
+      expect(TestBed.inject(Router).url).toBe(`/${routeRoot}/matches`);
 
-    header.next({ ...FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK, defendant_account_id: accountId });
-    header.complete();
-    await harness.fixture.whenStable();
-    harness.detectChanges();
+      header.next({ ...FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK, defendant_account_id: accountId });
+      header.complete();
+      await harness.fixture.whenStable();
+      harness.detectChanges();
 
-    expect(TestBed.inject(Router).url).toBe(`/${routeRoot}/account/${accountId}/individual`);
-    expect(harness.routeNativeElement?.textContent).toContain('Confirm account');
-  });
+      expect(TestBed.inject(Router).url).toBe(`/${routeRoot}/account/${accountId}/individual`);
+      expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toContain(
+        status === 'L' ? 'Confirm account' : 'You cannot pay into this account',
+      );
+      opalFines.getDefendantAccounts.mockReturnValue(of({ count: 0, defendant_accounts: [] }));
+      harness.routeNativeElement!.querySelector<HTMLAnchorElement>('.govuk-back-link')!.click();
+      await harness.fixture.whenStable();
+      harness.detectChanges();
+      expect(TestBed.inject(Router).url).toBe(`/${routeRoot}/matches`);
+      expect(harness.routeNativeElement?.textContent).toContain(account.account_number);
+      expect(store.criminalSearchResults()).toBe(searchResponse);
+      expect(store.criminalSearch()).toBe(FINES_MCI_CRIMINAL_SEARCH_MOCK);
+      expect(opalFines.getDefendantAccounts).toHaveBeenCalledOnce();
+    },
+  );
 });

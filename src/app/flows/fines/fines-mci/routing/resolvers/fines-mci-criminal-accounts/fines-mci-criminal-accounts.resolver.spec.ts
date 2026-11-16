@@ -313,4 +313,25 @@ describe('finesMciCriminalAccountsResolver', () => {
 
     await expect(resolveResult()).rejects.toBe(error);
   });
+  it.each([
+    [0, 'no-matches'],
+    [1, 'matches'],
+    [100, 'matches'],
+    [101, 'too-many'],
+  ] as const)('reuses the stored response with count %s on return navigation', async (count, outcome) => {
+    const storedResults = { ...OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK, count };
+    store.setCriminalSearchResults(storedResults);
+    const result = await resolveResult();
+    expect(result.response).toBe(storedResults);
+    expect(result.results).toBe(outcome);
+    expect(service.getDefendantAccounts).not.toHaveBeenCalled();
+  });
+
+  it('queries the API again when a new search is submitted after viewing results', async () => {
+    store.setCriminalSearchResults(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK);
+    store.setCriminalSearch({ ...search });
+    const result = await resolveResult();
+    expect(service.getDefendantAccounts).toHaveBeenCalledOnce();
+    expect(result.response).toBe(response);
+  });
 });
