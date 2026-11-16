@@ -122,9 +122,9 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     fixture.detectChanges();
     await fixture.whenStable();
 
-    expect(
-      component.fieldErrors.facc_party_add_amend_convert_vehicle_registration_mark['maxlength'].message,
-    ).toBe('Vehicle registration must be 7 characters or fewer');
+    expect(component.fieldErrors.facc_party_add_amend_convert_vehicle_registration_mark['maxlength'].message).toBe(
+      'Vehicle registration must be 7 characters or fewer',
+    );
   });
 
   it.each([
