@@ -94,6 +94,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(registrationControl?.hasError('maxlength')).toBe(false);
 
     globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+    fixture.detectChanges();
     await fixture.whenStable();
 
     expect(registrationControl?.hasError('maxlength')).toBe(true);
@@ -102,6 +103,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     );
 
     globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+    fixture.detectChanges();
     await fixture.whenStable();
 
     expect(registrationControl?.hasError('maxlength')).toBe(false);
