@@ -34,6 +34,7 @@ import {
 import {
   nonWhitespaceRequiredValidator,
   PAYER_POSTCODE_PATTERN_VALIDATOR,
+  ukPostcodeValidator,
 } from './validators/fines-mci-create-till-payer-details.validators';
 
 @Component({
@@ -64,6 +65,9 @@ export class FinesMciCreateTillPayerDetailsFormComponent extends AbstractFormBas
   /** Applies validators for the selected payer type and removes errors for fields that are no longer shown. */
   private updatePayerValidators(): void {
     const payerType = this.form.controls['payerType'].value;
+    this.form.controls['firstNames'].setValidators(
+      payerType === 'individual' ? [Validators.maxLength(20), Validators.pattern(PAYER_NAME_PATTERN)] : [],
+    );
     this.form.controls['lastName'].setValidators(
       payerType === 'individual'
         ? [nonWhitespaceRequiredValidator, Validators.maxLength(30), Validators.pattern(PAYER_NAME_PATTERN)]
@@ -74,14 +78,15 @@ export class FinesMciCreateTillPayerDetailsFormComponent extends AbstractFormBas
         ? [nonWhitespaceRequiredValidator, Validators.maxLength(50), Validators.pattern(PAYER_TEXT_PATTERN)]
         : [],
     );
+    this.form.controls['firstNames'].updateValueAndValidity({ emitEvent: false });
     this.form.controls['lastName'].updateValueAndValidity({ emitEvent: false });
     this.form.controls['companyName'].updateValueAndValidity({ emitEvent: false });
     const inactiveFields =
       payerType === 'individual'
         ? ['companyName']
         : payerType === 'company'
-          ? ['lastName']
-          : ['lastName', 'companyName'];
+          ? ['firstNames', 'lastName']
+          : ['firstNames', 'lastName', 'companyName'];
     for (const field of inactiveFields) {
       this.removeControlErrors(field);
     }
@@ -103,10 +108,7 @@ export class FinesMciCreateTillPayerDetailsFormComponent extends AbstractFormBas
     this.form = new FormGroup({
       payerType: new FormControl(initial?.payerType ?? null, Validators.required),
       title: new FormControl(initial?.title ?? null),
-      firstNames: new FormControl(initial?.firstNames ?? '', [
-        Validators.maxLength(20),
-        Validators.pattern(PAYER_NAME_PATTERN),
-      ]),
+      firstNames: new FormControl(initial?.firstNames ?? ''),
       lastName: new FormControl(initial?.lastName ?? ''),
       companyName: new FormControl(initial?.companyName ?? ''),
       addressLine1: new FormControl(initial?.addressLine1 ?? '', [
@@ -124,6 +126,7 @@ export class FinesMciCreateTillPayerDetailsFormComponent extends AbstractFormBas
       postcode: new FormControl(initial?.postcode ?? '', [
         optionalMaxLengthValidator(8),
         PAYER_POSTCODE_PATTERN_VALIDATOR,
+        ukPostcodeValidator,
       ]),
     });
     this.setInitialErrorMessages();
