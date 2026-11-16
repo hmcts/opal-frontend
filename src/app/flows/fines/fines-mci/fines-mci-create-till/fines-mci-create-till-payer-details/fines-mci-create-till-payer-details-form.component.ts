@@ -81,12 +81,14 @@ export class FinesMciCreateTillPayerDetailsFormComponent extends AbstractFormBas
     this.form.controls['firstNames'].updateValueAndValidity({ emitEvent: false });
     this.form.controls['lastName'].updateValueAndValidity({ emitEvent: false });
     this.form.controls['companyName'].updateValueAndValidity({ emitEvent: false });
-    const inactiveFields =
-      payerType === 'individual'
-        ? ['companyName']
-        : payerType === 'company'
-          ? ['firstNames', 'lastName']
-          : ['firstNames', 'lastName', 'companyName'];
+    let inactiveFields: string[];
+    if (payerType === 'individual') {
+      inactiveFields = ['companyName'];
+    } else if (payerType === 'company') {
+      inactiveFields = ['firstNames', 'lastName'];
+    } else {
+      inactiveFields = ['firstNames', 'lastName', 'companyName'];
+    }
     for (const field of inactiveFields) {
       this.removeControlErrors(field);
     }
