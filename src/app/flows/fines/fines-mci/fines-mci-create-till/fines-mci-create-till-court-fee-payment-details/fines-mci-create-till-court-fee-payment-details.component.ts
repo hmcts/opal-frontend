@@ -1,18 +1,37 @@
-import { ChangeDetectionStrategy, Component, HostListener, OnInit, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  ElementRef,
+  HostListener,
+  OnInit,
+  ViewChild,
+  inject,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
+import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
+import { finalize } from 'rxjs';
 import { FinesMciStore } from '../../stores/fines-mci.store';
 import { IFinesMciPaymentMappings } from '../../routing/interfaces/fines-mci-payment-mappings.interface';
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
 import { FinesMciCreateTillCourtFeePaymentDetailsFormComponent } from './fines-mci-create-till-court-fee-payment-details-form/fines-mci-create-till-court-fee-payment-details-form.component';
 import { IFinesMciCourtFeePaymentDetails } from '../../stores/interfaces/fines-mci-court-fee-payment-details.interface';
+import { FinesMciPaymentMappingsService } from '../../services/fines-mci-payment-mappings.service';
 
 @Component({
   selector: 'app-fines-mci-create-till-court-fee-payment-details',
-  imports: [FinesMciCreateTillCourtFeePaymentDetailsFormComponent, GovukBackLinkComponent, GovukCancelLinkComponent],
+  imports: [
+    FinesMciCreateTillCourtFeePaymentDetailsFormComponent,
+    GovukBackLinkComponent,
+    GovukCancelLinkComponent,
+    GovukButtonComponent,
+  ],
   templateUrl: './fines-mci-create-till-court-fee-payment-details.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -22,6 +41,9 @@ export class FinesMciCreateTillCourtFeePaymentDetailsComponent
 {
   private readonly navigationRouter = inject(Router);
   private readonly currentRoute = inject(ActivatedRoute);
+  private readonly paymentMappingsService = inject(FinesMciPaymentMappingsService);
+  private readonly destroyRef = inject(DestroyRef);
+  @ViewChild('paymentHeading', { read: ElementRef }) private readonly paymentHeading?: ElementRef<HTMLElement>;
   private isContinuing = false;
   private readonly previousUrlPath = this.navigationRouter
     .currentNavigation()
@@ -30,10 +52,10 @@ export class FinesMciCreateTillCourtFeePaymentDetailsComponent
 
   protected readonly finesMciStore = inject(FinesMciStore);
   protected readonly isNavigating = signal(false);
-  protected readonly paymentMappings = this.currentRoute.snapshot.data['paymentMappings'] as
-    | IFinesMciPaymentMappings
-    | null
-    | undefined;
+  protected readonly isRetrying = signal(false);
+  protected readonly paymentMappings = signal(
+    (this.currentRoute.snapshot.data['paymentMappings'] as IFinesMciPaymentMappings | null | undefined) ?? null,
+  );
 
   /**
    * Opens a sibling screen while preventing edits during navigation.
@@ -85,6 +107,22 @@ export class FinesMciCreateTillCourtFeePaymentDetailsComponent
     void this.navigateTo(FINES_MCI_ROUTING_PATHS.children.details).then((navigated) => {
       if (navigated) this.finesMciStore.setDraftJourney(null);
     });
+  }
+
+  /** Reloads payment options without leaving the screen or discarding the saved draft. */
+  public handleRetry(): void {
+    if (this.isRetrying() || this.isNavigating()) return;
+    this.isRetrying.set(true);
+    this.paymentMappingsService
+      .load(true)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.isRetrying.set(false)),
+      )
+      .subscribe((mappings) => {
+        this.paymentMappings.set(mappings);
+        if (mappings) this.paymentHeading?.nativeElement.focus();
+      });
   }
 
   /** Saves validated payment details and opens the temporary check screen. */

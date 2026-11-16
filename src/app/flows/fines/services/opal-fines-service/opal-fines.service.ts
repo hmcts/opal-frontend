@@ -445,9 +445,11 @@ export class OpalFines {
    * Eligible transient failures receive one automatic retry through the safe-read policy.
    * Failed requests can be retried by a later subscriber. Clearing reference caches resets this response.
    *
+   * @param forceRefresh Whether to replace the cached response with a new request.
    * @returns The source mapping array supplied by the backend.
    */
-  public getSourceMappings(): Observable<IOpalFinesSourceMapping[]> {
+  public getSourceMappings(forceRefresh = false): Observable<IOpalFinesSourceMapping[]> {
+    if (forceRefresh) this.cache.sourceMappingsCache$ = null;
     this.cache.sourceMappingsCache$ ??= this.http
       .get<IOpalFinesSourceMapping[]>(OPAL_FINES_PATHS.sourceMappings, this.retrySafeReadOptions())
       .pipe(shareReplay({ bufferSize: 1, refCount: false }));

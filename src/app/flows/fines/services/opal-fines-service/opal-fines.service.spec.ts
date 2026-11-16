@@ -461,6 +461,21 @@ describe('OpalFines', () => {
       httpMock.expectNone(OPAL_FINES_PATHS.sourceMappings);
     });
 
+    it('refreshes a cached empty source response when explicitly requested', () => {
+      service.getSourceMappings().subscribe();
+      httpMock.expectOne(OPAL_FINES_PATHS.sourceMappings).flush([]);
+
+      const refreshed = vi.fn();
+      service.getSourceMappings(true).subscribe(refreshed);
+      httpMock.expectOne(OPAL_FINES_PATHS.sourceMappings).flush(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+      expect(refreshed).toHaveBeenCalledExactlyOnceWith(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+
+      const later = vi.fn();
+      service.getSourceMappings().subscribe(later);
+      expect(later).toHaveBeenCalledExactlyOnceWith(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+      httpMock.expectNone(OPAL_FINES_PATHS.sourceMappings);
+    });
+
     it('allows a new request after a failure', () => {
       const failed = vi.fn();
       service.getSourceMappings().subscribe({ error: failed });

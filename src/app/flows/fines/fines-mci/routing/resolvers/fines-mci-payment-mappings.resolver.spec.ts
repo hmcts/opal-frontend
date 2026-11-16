@@ -4,6 +4,7 @@ import { firstValueFrom, Observable, of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { IFinesMciPaymentMappings } from '../interfaces/fines-mci-payment-mappings.interface';
 import { finesMciPaymentMappingsResolver } from './fines-mci-payment-mappings.resolver';
+import { FinesMciPaymentMappingsService } from '../../services/fines-mci-payment-mappings.service';
 
 describe('finesMciPaymentMappingsResolver', () => {
   const getMethodOfPaymentMappings = vi.fn();
@@ -29,6 +30,12 @@ describe('finesMciPaymentMappingsResolver', () => {
     expect(await resolve()).toEqual({ methods, sources });
     expect(getMethodOfPaymentMappings).toHaveBeenCalledOnce();
     expect(getSourceMappings).toHaveBeenCalledOnce();
+  });
+
+  it('refreshes the source cache when the mappings service retries', async () => {
+    const mappings = TestBed.inject(FinesMciPaymentMappingsService);
+    expect(await firstValueFrom(mappings.load(true))).toEqual({ methods, sources });
+    expect(getSourceMappings).toHaveBeenCalledExactlyOnceWith(true);
   });
 
   it.each(['methods', 'sources'])('reports a load failure if %s cannot be retrieved', async (failedList) => {
