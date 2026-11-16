@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { takeUntil } from 'rxjs';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
@@ -6,6 +15,8 @@ import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/ab
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
+import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
+import { GovukTextInputPrefixSuffixComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input-prefix-suffix';
 import {
   GovukRadioComponent,
   GovukRadiosConditionalComponent,
@@ -21,6 +32,8 @@ import { IFinesMciCreateTillSuspenseDetailsFieldErrors } from './interfaces/fine
   imports: [
     GovukCancelLinkComponent,
     GovukErrorSummaryComponent,
+    GovukTextInputComponent,
+    GovukTextInputPrefixSuffixComponent,
     GovukRadioComponent,
     GovukRadiosConditionalComponent,
     GovukRadiosItemComponent,
@@ -30,6 +43,7 @@ import { IFinesMciCreateTillSuspenseDetailsFieldErrors } from './interfaces/fine
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMciCreateTillSuspenseDetailsFormComponent extends AbstractFormBaseComponent implements OnInit {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   @Output() protected override formSubmit = new EventEmitter<IAbstractFormBaseForm<IFinesMciSuspensePayment>>();
   @Output() protected cancelRequested = new EventEmitter<void>();
   protected override fieldErrors: IFinesMciCreateTillSuspenseDetailsFieldErrors = {
@@ -65,6 +79,7 @@ export class FinesMciCreateTillSuspenseDetailsFormComponent extends AbstractForm
       reason: new FormControl<IFinesMciSuspensePayment['reason']>(initial.reason, Validators.required),
       relevantDetails: new FormControl(initial.relevantDetails),
     });
+    this.setInitialErrorMessages();
     this.updateConditionalValidators();
   }
 
@@ -72,23 +87,29 @@ export class FinesMciCreateTillSuspenseDetailsFormComponent extends AbstractForm
   private updateConditionalValidators(): void {
     const method = this.form.controls['methodOfPayment'].value;
     const referenceValidators = [Validators.maxLength(50), Validators.pattern(/^[a-zA-Z0-9\- '\u2019]*$/)];
-    const postalOrderReference = this.form.controls['paymentReferencePostalOrder'];
-    const chequeReference = this.form.controls['paymentReferenceCheque'];
-    const creditTransferReference = this.form.controls['paymentReferenceCreditTransfer'];
-    postalOrderReference.setValidators(method === 'postalOrder' ? referenceValidators : []);
-    chequeReference.setValidators(method === 'cheque' ? referenceValidators : []);
-    creditTransferReference.setValidators(method === 'creditTransfer' ? referenceValidators : []);
-    this.form.controls['source'].setValidators(method === 'creditTransfer' ? [Validators.required] : []);
-    this.form.controls['relevantDetails'].setValidators(
+    this.updateControl('paymentReferencePostalOrder', method === 'postalOrder' ? referenceValidators : []);
+    this.updateControl('paymentReferenceCheque', method === 'cheque' ? referenceValidators : []);
+    this.updateControl('paymentReferenceCreditTransfer', method === 'creditTransfer' ? referenceValidators : []);
+    this.updateControl('source', method === 'creditTransfer' ? [Validators.required] : []);
+    this.updateControl(
+      'relevantDetails',
       this.form.controls['reason'].value === 'unidentified'
         ? [Validators.maxLength(50), Validators.pattern(/^[a-zA-Z0-9\- '\u2019]*$/)]
         : [],
     );
-    postalOrderReference.updateValueAndValidity({ emitEvent: false });
-    chequeReference.updateValueAndValidity({ emitEvent: false });
-    creditTransferReference.updateValueAndValidity({ emitEvent: false });
-    this.form.controls['source'].updateValueAndValidity({ emitEvent: false });
-    this.form.controls['relevantDetails'].updateValueAndValidity({ emitEvent: false });
+    const inactiveFields = [
+      ...(method === 'postalOrder' ? [] : ['paymentReferencePostalOrder']),
+      ...(method === 'cheque' ? [] : ['paymentReferenceCheque']),
+      ...(method === 'creditTransfer' ? [] : ['paymentReferenceCreditTransfer', 'source']),
+      ...(this.form.controls['reason'].value === 'unidentified' ? [] : ['relevantDetails']),
+    ];
+    for (const field of inactiveFields) {
+      this.removeControlErrors(field);
+    }
+    this.formErrorSummaryMessage =
+      this.formErrorSummaryMessage?.filter((error) => !inactiveFields.includes(error.fieldId)) ?? [];
+    this.formErrors = this.formErrors?.filter((error) => !inactiveFields.includes(error.fieldId)) ?? [];
+    this.changeDetector.markForCheck();
   }
 
   /** Reports unsaved changes whenever at least one field contains a value. */
@@ -101,16 +122,17 @@ export class FinesMciCreateTillSuspenseDetailsFormComponent extends AbstractForm
   /** Initialises the form and refreshes conditional validators when selections change. */
   public override ngOnInit(): void {
     this.initialiseForm();
-    this.setInitialErrorMessages();
-    this.form.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
+    this.form.controls['methodOfPayment'].valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
+      this.updateConditionalValidators();
+    });
+    this.form.controls['reason'].valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
       this.updateConditionalValidators();
     });
     super.ngOnInit();
   }
 
-  /** Marks the form as submitted before delegating validation and error handling to the base form. */
-  public submitForm(event: SubmitEvent): void {
-    this.formSubmitted = true;
+  /** Clears references for other payment methods before submitting through the base form. */
+  public override handleFormSubmit(event: SubmitEvent): void {
     const selectedMethod = this.form.controls['methodOfPayment'].value;
     const referenceFields = [
       { method: 'postalOrder', controlName: 'paymentReferencePostalOrder' },
@@ -124,6 +146,6 @@ export class FinesMciCreateTillSuspenseDetailsFormComponent extends AbstractForm
       }
     }
 
-    this.handleFormSubmit(event);
+    super.handleFormSubmit(event);
   }
 }
