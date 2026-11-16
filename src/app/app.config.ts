@@ -1,4 +1,3 @@
-import { suspenseLocalMockInterceptor } from './flows/fines/services/opal-fines-service/interceptors/suspense-local-mock.interceptor';
 import {
   provideHttpClient,
   withFetch,
@@ -31,12 +30,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withFetch(),
       // Response errors unwind in reverse order, so retry handles transient failures before the error UI.
-      withInterceptors([
-        httpErrorInterceptor,
-        contentDigestInterceptor,
-        suspenseLocalMockInterceptor,
-        httpRetryInterceptor,
-      ]),
+      withInterceptors([httpErrorInterceptor, contentDigestInterceptor, httpRetryInterceptor]),
       withInterceptorsFromDi(),
       withXsrfConfiguration({
         headerName: 'X-XSRF-TOKEN',

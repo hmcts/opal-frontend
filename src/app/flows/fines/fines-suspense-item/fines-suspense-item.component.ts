@@ -24,7 +24,6 @@ export class FinesSuspenseItemComponent implements OnDestroy {
   /** Keep state between Suspense pages, but clear it when the whole journey is left. */
   public ngOnDestroy(): void {
     this.opalFines.clearCache('suspenseItemSummaryCache$');
-    this.opalFines.clearCache('suspenseItemHistoryCache$');
     this.store.resetStore();
   }
 }

@@ -1,6 +1,5 @@
 export interface IOpalFinesPaths {
   suspenseAccounts: string;
-  suspenseItems: string;
   businessUnitRefData: string;
   businessUnitOutstandingAutoPaymentCount: string;
   localJusticeAreaRefData: string;

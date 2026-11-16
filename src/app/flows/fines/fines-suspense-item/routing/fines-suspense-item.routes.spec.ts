@@ -156,7 +156,6 @@ describe('Suspense item navigation', () => {
     expect(TestBed.inject(Router).url).toBe('/fines/dashboard/finance');
     expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('Finance');
     expect(clearCache).toHaveBeenCalledWith('suspenseItemSummaryCache$');
-    expect(clearCache).toHaveBeenCalledWith('suspenseItemHistoryCache$');
     expect(TestBed.inject(FinesSuspenseItemStore).selectedBusinessUnitId()).toBeNull();
     expect(window.confirm).not.toHaveBeenCalled();
   });
@@ -178,7 +177,6 @@ describe('Suspense item navigation', () => {
     if (leave) {
       expect(TestBed.inject(Router).url).toBe('/fines/dashboard/finance');
       expect(clearCache).toHaveBeenCalledWith('suspenseItemSummaryCache$');
-      expect(clearCache).toHaveBeenCalledWith('suspenseItemHistoryCache$');
     } else {
       expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/search');
       expect(reference.value).toBe('001234');

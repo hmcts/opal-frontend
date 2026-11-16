@@ -173,7 +173,7 @@ describe('FinesSuspenseItemSearchComponent', () => {
     expect(store.unsavedChanges()).toBe(false);
   });
 
-  it('logs the response and clears both caches before each lookup', () => {
+  it('logs the response and clears the summary cache before each lookup', () => {
     fixture.detectChanges();
     const form = {
       formData: { fsis_business_unit_id: 22, fsis_suspense_reference_number: '001234' },
@@ -181,11 +181,10 @@ describe('FinesSuspenseItemSearchComponent', () => {
     };
     component.handleFormSubmit(form);
     expect(clearCache).toHaveBeenCalledWith('suspenseItemSummaryCache$');
-    expect(clearCache).toHaveBeenCalledWith('suspenseItemHistoryCache$');
     expect(console.log).toHaveBeenCalledWith('Suspense item summary:', OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
     component.handleFormSubmit(form);
     expect(getSuspenseItemSummary).toHaveBeenCalledTimes(2);
-    expect(clearCache).toHaveBeenCalledTimes(4);
+    expect(clearCache).toHaveBeenCalledTimes(2);
   });
 
   it('allows another submission while a request is pending', () => {

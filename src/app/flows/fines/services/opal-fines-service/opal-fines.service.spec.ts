@@ -1,5 +1,4 @@
 import { OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK } from './mocks/opal-fines-suspense-item-summary.mock';
-import { OPAL_FINES_SUSPENSE_ITEM_HISTORY_MOCK } from './mocks/opal-fines-suspense-item-history.mock';
 import { OPAL_FINES_SOURCE_MAPPINGS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-source-mappings.mock';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -108,58 +107,7 @@ describe('OpalFines', () => {
     expect(received).toHaveBeenCalledWith(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
   });
 
-  it('requests suspense history by internal ID and sends its BU in the header', () => {
-    const received = vi.fn();
-    service.getSuspenseItemHistory(22, 1001).subscribe(received);
-    const request = httpMock.expectOne('/opal-fines-service/suspense-items/1001/history');
-    expect(request.request.method).toBe('GET');
-    expect(request.request.headers.get('business_unit_id')).toBe('22');
-    request.flush(OPAL_FINES_SUSPENSE_ITEM_HISTORY_MOCK);
-    expect(received).toHaveBeenCalledWith(OPAL_FINES_SUSPENSE_ITEM_HISTORY_MOCK);
-  });
-
-  it('reuses history for the same BU and item while keeping other BUs and items separate', () => {
-    const url = '/opal-fines-service/suspense-items/1001/history';
-    service.getSuspenseItemHistory(22, 1001).subscribe();
-    httpMock.expectOne(url).flush(OPAL_FINES_SUSPENSE_ITEM_HISTORY_MOCK);
-    const received = vi.fn();
-    service.getSuspenseItemHistory(22, 1001).subscribe(received);
-    httpMock.expectNone(url);
-    expect(received).toHaveBeenCalledWith(OPAL_FINES_SUSPENSE_ITEM_HISTORY_MOCK);
-
-    service.getSuspenseItemHistory(11, 1001).subscribe();
-    const otherBu = httpMock.expectOne(url);
-    expect(otherBu.request.headers.get('business_unit_id')).toBe('11');
-    otherBu.flush([]);
-    service.getSuspenseItemHistory(22, 1002).subscribe();
-    httpMock.expectOne('/opal-fines-service/suspense-items/1002/history').flush([]);
-  });
-
-  it.each([
-    ['history', () => service.clearCache('suspenseItemHistoryCache$')],
-    ['all', () => service.clearAllCaches()],
-  ])('fetches fresh history after clearing the %s cache', (_scope, clearCache) => {
-    const url = '/opal-fines-service/suspense-items/1001/history';
-    service.getSuspenseItemHistory(22, 1001).subscribe();
-    httpMock.expectOne(url).flush(OPAL_FINES_SUSPENSE_ITEM_HISTORY_MOCK);
-    clearCache();
-    const received = vi.fn();
-    service.getSuspenseItemHistory(22, 1001).subscribe(received);
-    httpMock.expectOne(url).flush([]);
-    expect(received).toHaveBeenCalledWith([]);
-  });
-
-  it('does not retain a failed history response in the cache', () => {
-    const url = '/opal-fines-service/suspense-items/1001/history';
-    const failed = vi.fn();
-    service.getSuspenseItemHistory(22, 1001).subscribe({ error: failed });
-    httpMock.expectOne(url).flush({}, { status: 500, statusText: 'Server error' });
-    expect(failed).toHaveBeenCalledWith(expect.objectContaining({ status: 500 }));
-    service.getSuspenseItemHistory(22, 1001).subscribe();
-    httpMock.expectOne(url).flush(OPAL_FINES_SUSPENSE_ITEM_HISTORY_MOCK);
-  });
-
-  it('propagates a missing suspense summary when the local fallback is not registered', () => {
+  it('propagates a missing suspense summary', () => {
     const failed = vi.fn();
     service.getSuspenseItemSummary(22, '001234').subscribe({ error: failed });
     httpMock

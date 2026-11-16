@@ -27,7 +27,6 @@ const processInterfaceJobs = 'interface-jobs/process';
 
 export const OPAL_FINES_PATHS: IOpalFinesPaths = {
   suspenseAccounts: `${baseUrl}suspense-accounts`,
-  suspenseItems: `${baseUrl}suspense-items`,
   businessUnitRefData: `${baseUrl}${businessUnit}`,
   businessUnitOutstandingAutoPaymentCount: `${baseUrl}${businessUnit}${outstandingAutoPaymentCount}`,
   localJusticeAreaRefData: `${baseUrl}${localJusticeArea}`,

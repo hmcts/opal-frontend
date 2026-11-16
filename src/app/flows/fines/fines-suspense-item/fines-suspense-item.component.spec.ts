@@ -45,7 +45,6 @@ describe('FinesSuspenseItemComponent', () => {
     expect(store.selectedBusinessUnitId()).toBeNull();
     expect(store.unsavedChanges()).toBe(false);
     expect(clearCache).toHaveBeenCalledWith('suspenseItemSummaryCache$');
-    expect(clearCache).toHaveBeenCalledWith('suspenseItemHistoryCache$');
 
     store.setUnsavedChanges(true);
     const event = new Event('beforeunload', { cancelable: true });

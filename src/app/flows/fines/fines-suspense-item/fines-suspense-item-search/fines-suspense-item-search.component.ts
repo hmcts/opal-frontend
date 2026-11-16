@@ -65,6 +65,10 @@ export class FinesSuspenseItemSearchComponent implements OnInit, OnDestroy {
     this.suspenseItemStore.setSelectedBusinessUnitId(this.initialBusinessUnitId);
   }
 
+  /**
+   * Retains the selected business unit for the current Suspense journey.
+   * @param businessUnitId - The selected business unit ID, or null when cleared.
+   */
   public handleBusinessUnitChange(businessUnitId: number | null): void {
     this.suspenseItemStore.setSelectedBusinessUnitId(businessUnitId);
   }
@@ -83,7 +87,6 @@ export class FinesSuspenseItemSearchComponent implements OnInit, OnDestroy {
     // Strip leading zeroes as text: references have no length limit, so Number() could lose precision.
     const reference = criteria.fsis_suspense_reference_number.replace(/^0+(?=\d)/, '');
     this.opalFines.clearCache('suspenseItemSummaryCache$');
-    this.opalFines.clearCache('suspenseItemHistoryCache$');
     this.opalFines
       .getSuspenseItemSummary(criteria.fsis_business_unit_id, reference)
       .pipe(
@@ -97,6 +100,10 @@ export class FinesSuspenseItemSearchComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Updates the navigation and browser refresh warnings for the search form.
+   * @param unsavedChanges - Whether the form has unsaved changes.
+   */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.stateUnsavedChanges = unsavedChanges;
     this.suspenseItemStore.setUnsavedChanges(unsavedChanges);

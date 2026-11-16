@@ -1,5 +1,4 @@
 import { IOpalFinesSuspenseItemSummary } from './interfaces/opal-fines-suspense-item-summary.interface';
-import { IOpalFinesSuspenseItemHistoryEntry } from './interfaces/opal-fines-suspense-item-history-entry.interface';
 import { IOpalFinesSourceMapping } from './interfaces/opal-fines-source-mapping.interface';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
@@ -396,7 +395,6 @@ export class OpalFines {
    * Looks up the user-facing reference within a BU. Keep the reference as text
    * to preserve leading zeroes and avoid numeric precision loss.
    * Cached by BU/reference until a new search or journey exit clears it.
-   * TODO(PO-9796): Confirm the provisional response types against the API contract.
    *
    * @param businessUnitId - The selected business unit in which to look up the item.
    * @param reference - The user-entered suspense reference, preserved as text and URL-encoded for the request.
@@ -408,29 +406,6 @@ export class OpalFines {
       .get<IOpalFinesSuspenseItemSummary>(url, this.retrySafeReadOptions())
       .pipe(shareReplay({ bufferSize: 1, refCount: true }));
     return this.cache.suspenseItemSummaryCache$[url];
-  }
-
-  /**
-   * Uses the internal item ID returned by the summary, rather than its reference.
-   * Cached by BU/internal ID until a new search or journey exit clears it.
-   * TODO(PO-9797): Confirm the BU header name and provisional history response.
-   *
-   * @param businessUnitId - The item's business unit, sent in the business_unit_id request header.
-   * @param suspenseItemId - The internal suspense_item_id returned by the summary lookup.
-   * @returns An observable of the item's history and notes entries using the provisional response structure.
-   */
-  public getSuspenseItemHistory(
-    businessUnitId: number,
-    suspenseItemId: number,
-  ): Observable<IOpalFinesSuspenseItemHistoryEntry[]> {
-    const url = `${OPAL_FINES_PATHS.suspenseItems}/${suspenseItemId}/history`;
-    // The BU is sent in a header, so the URL alone does not identify the cached request.
-    const cacheKey = `${businessUnitId}:${suspenseItemId}`;
-    const options = this.withRetrySafeReadOptions({ headers: { business_unit_id: String(businessUnitId) } });
-    this.cache.suspenseItemHistoryCache$[cacheKey] ??= this.http
-      .get<IOpalFinesSuspenseItemHistoryEntry[]>(url, options)
-      .pipe(shareReplay({ bufferSize: 1, refCount: true }));
-    return this.cache.suspenseItemHistoryCache$[cacheKey];
   }
 
   /**
@@ -808,7 +783,6 @@ export class OpalFines {
    */
   public clearAllCaches(): void {
     this.clearCache('suspenseItemSummaryCache$');
-    this.clearCache('suspenseItemHistoryCache$');
     this.clearDraftAccountsCache();
     this.clearAccountDetailsCache();
     this.clearReferenceDataCaches();
