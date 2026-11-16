@@ -3,9 +3,22 @@ import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fin
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-defendant-account-response-individual.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesMciStore } from './fines-mci.store';
+import { IFinesMciSuspensePayment } from './interfaces/fines-mci.interface';
+
 import { IFinesMciCriminalSearch } from './interfaces/fines-mci-criminal-search.interface';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
+const SUSPENSE_PAYMENT: IFinesMciSuspensePayment = {
+  amount: '10.00',
+  payerType: 'thirdParty',
+  methodOfPayment: 'notesCoins',
+  paymentReferencePostalOrder: '',
+  paymentReferenceCheque: '',
+  paymentReferenceCreditTransfer: '',
+  source: null,
+  reason: 'miscellaneous',
+  relevantDetails: '',
+};
 
 describe('FinesMciStore', () => {
   let store: InstanceType<typeof FinesMciStore>;
@@ -96,12 +109,20 @@ describe('FinesMciStore', () => {
   it('should clear the in-progress till when the selected business unit changes', () => {
     const [initialBusinessUnit, nextBusinessUnit] = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData;
     store.setBusinessUnit(initialBusinessUnit);
+    store.setSuspensePayment(SUSPENSE_PAYMENT);
     store.ensureTill();
 
     store.setBusinessUnit(nextBusinessUnit);
 
     expect(store.businessUnit()).toEqual(nextBusinessUnit);
     expect(store.tills()).toEqual([]);
+    expect(store.suspensePayment()).toBeNull();
+  });
+
+  it('should store suspense payment details', () => {
+    store.setSuspensePayment(SUSPENSE_PAYMENT);
+
+    expect(store.suspensePayment()).toEqual(SUSPENSE_PAYMENT);
   });
 
   it('should preserve the till, payments and criminal search when reselecting the same business unit', () => {
@@ -125,6 +146,7 @@ describe('FinesMciStore', () => {
   it('should reset the selected business unit', () => {
     store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
     store.setDraftJourney('suspense');
+    store.setSuspensePayment(SUSPENSE_PAYMENT);
     store.ensureTill();
 
     store.reset();
@@ -132,6 +154,7 @@ describe('FinesMciStore', () => {
     expect(store.businessUnit()).toBeNull();
     expect(store.tills()).toEqual([]);
     expect(store.draftJourney()).toBeNull();
+    expect(store.suspensePayment()).toBeNull();
   });
 
   it('should create the in-progress till and return its id', () => {
