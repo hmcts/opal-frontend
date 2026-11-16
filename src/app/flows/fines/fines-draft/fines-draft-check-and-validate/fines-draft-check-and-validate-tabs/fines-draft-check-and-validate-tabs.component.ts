@@ -1,3 +1,5 @@
+import { RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG } from '@app/flows/fines/constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '@app/flows/fines/utils/fines-section-permissions.utils';
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import {
   MojSubNavigationComponent,
@@ -81,6 +83,9 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
       activatedRoute: this.activatedRoute,
       userState: this.userState,
       accountParamOptions: {
+        includeMacSource: getFeatureFlagReleaseState(this.globalStore.featureFlags())[
+          RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG
+        ],
         includeSubmittedBy: false,
         includeNotSubmittedBy: true,
       },
@@ -122,6 +127,9 @@ export class FinesDraftCheckAndValidateTabsComponent extends AbstractTabData imp
       countTab: FINES_DRAFT_TAB_FRAGMENT.failed,
       userState: this.userState,
       accountParamOptions: {
+        includeMacSource: getFeatureFlagReleaseState(this.globalStore.featureFlags())[
+          RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG
+        ],
         statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.publishFailed],
         includeSubmittedBy: false,
         includeNotSubmittedBy: true,
