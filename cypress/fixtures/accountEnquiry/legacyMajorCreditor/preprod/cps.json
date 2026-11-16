@@ -1,0 +1,16 @@
+{
+  "header": {
+    "accountNumber": "00001001M",
+    "name": "Crown Prosecution Service (CPS)",
+    "accountType": "Major creditor",
+    "businessUnit": "West London"
+  },
+  "metrics": {
+    "awaiting payout": "£0.00"
+  },
+  "atAGlance": {
+    "Name": "Crown Prosecution Service (CPS)",
+    "Address": "Add1\nAdd2\nAdd3"
+  },
+  "bacsDetails": "Provided"
+}
