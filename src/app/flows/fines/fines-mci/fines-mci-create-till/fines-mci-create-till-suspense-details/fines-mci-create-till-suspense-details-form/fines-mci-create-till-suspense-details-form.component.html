@@ -204,6 +204,7 @@
       [control]="form.controls['reason']"
     ></div>
     <opal-lib-govuk-radios-conditional conditionalId="unidentified-details-conditional">
+      <<<<<<< HEAD
       <opal-lib-govuk-text-input
         labelText="Add relevant details"
         labelClasses="govuk-label--s"
@@ -212,6 +213,28 @@
         [control]="form.controls['relevantDetails']"
         [errors]="formControlErrorMessages['relevantDetails']"
       ></opal-lib-govuk-text-input>
+      =======
+      <div
+        class="govuk-form-group"
+        [class.govuk-form-group--error]="formSubmitted && formControlErrorMessages['relevantDetails']"
+      >
+        <label class="govuk-label govuk-heading-s govuk-!-font-weight-bold" for="relevantDetails"
+          >Add relevant details</label
+        >
+        @if (formSubmitted && formControlErrorMessages['relevantDetails']; as message) {
+          <p class="govuk-error-message" id="relevantDetails-error">{{ message }}</p>
+        }
+        <input
+          class="govuk-input"
+          id="relevantDetails"
+          maxlength="50"
+          formControlName="relevantDetails"
+          [attr.aria-describedby]="
+            formSubmitted && formControlErrorMessages['relevantDetails'] ? 'relevantDetails-error' : null
+          "
+        />
+      </div>
+      >>>>>>> master
     </opal-lib-govuk-radios-conditional>
   </opal-lib-govuk-radio>
   <div class="govuk-button-group">

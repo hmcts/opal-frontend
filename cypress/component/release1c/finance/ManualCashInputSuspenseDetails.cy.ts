@@ -142,10 +142,7 @@ describe('Manual Cash Input - Suspense Details', () => {
     assertError('amount', 'Enter an amount with no more than 18 digits before the decimal and 2 or fewer after.');
   });
 
-  // Known product defect: the shared amountValidator uses an unescaped decimal separator,
-  // so a 19th integer digit is accepted. Enable when the shared validator is corrected.
-  // See docs/CYPRESS_COMPONENT_TESTING.md: keep real product failures pending without app workarounds.
-  it.skip('(AC2b) rejects an amount with 19 integer digits', { tags: TAGS }, () => {
+  it('(AC2b) rejects an amount with 19 integer digits', { tags: TAGS }, () => {
     openSuspenseDetails();
     cy.get(Mci.suspenseAmount).type('1234567890123456789');
     cy.get(Mci.continueButton).click();

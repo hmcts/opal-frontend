@@ -63,6 +63,14 @@ Then('I see Search for an Account', () => {
   manualCashInputFlow().assertSearchForAccountIsDisplayed();
 });
 
+Then('the selected business unit is displayed on Search for an Account', () => {
+  manualCashInputFlow().assertSearchForAccountBusinessUnitIsDisplayed();
+});
+
+Then('the Search for an Account screen displays the quick and advanced search fields', () => {
+  manualCashInputFlow().assertSearchForAccountFieldsAreDisplayed();
+});
+
 Then('I see Court Fee Details', () => {
   manualCashInputFlow().assertPaymentCategoryDetailsAreDisplayed('courtFee');
 });
