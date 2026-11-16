@@ -47,6 +47,7 @@
           labelClasses="govuk-label--s"
           [control]="form.controls['lastName']"
           [errors]="formControlErrorMessages['lastName']"
+          [opalLibTrimLeadingTrailingWhitespace]="form.controls['lastName']"
         ></opal-lib-govuk-text-input>
       }
     </opal-lib-govuk-radios-conditional>
@@ -69,6 +70,7 @@
           labelClasses="govuk-label--s"
           [control]="form.controls['companyName']"
           [errors]="formControlErrorMessages['companyName']"
+          [opalLibTrimLeadingTrailingWhitespace]="form.controls['companyName']"
         ></opal-lib-govuk-text-input>
       }
     </opal-lib-govuk-radios-conditional>

@@ -7,6 +7,11 @@ export const PAYER_POSTCODE_PATTERN_VALIDATOR = patternValidator(
   'alphanumericTextPattern',
 );
 
+/**
+ * Requires a payer name to contain at least one non-whitespace character.
+ * @param control - Name control being validated.
+ * @returns A required error for a missing or whitespace-only name; otherwise null.
+ */
 export function nonWhitespaceRequiredValidator(control: AbstractControl) {
-  return typeof control.value === 'string' && !control.value.trim() ? { required: true } : null;
+  return typeof control.value !== 'string' || !control.value.trim() ? { required: true } : null;
 }
