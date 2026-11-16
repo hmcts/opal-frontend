@@ -1,0 +1,12 @@
+<app-fines-acc-apr-add-change-form
+  [contextKey]="formContext()"
+  [headingText]="text().headingText"
+  [labelText]="text().labelText"
+  [initialValue]="initialValue()"
+  [savedValue]="savedValue()"
+  [accountCaption]="accountCaption()"
+  [pending]="pending()"
+  (formSubmit)="handleSubmit($event)"
+  (unsavedChanges)="handleUnsavedChanges($event)"
+  (cancelRequested)="handleCancel()"
+/>
