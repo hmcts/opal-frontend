@@ -9,6 +9,7 @@ import {
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
+import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukSelectComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-select';
 import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '@app/flows/fines/fines-mac/constants/fines-mac-title-dropdown-options.constant';
@@ -27,6 +28,7 @@ import { IFinesMciCourtFeePaymentDetails } from '../../../stores/interfaces/fine
   imports: [
     GovukErrorSummaryComponent,
     GovukCancelLinkComponent,
+    GovukButtonComponent,
     GovukRadioComponent,
     GovukRadiosItemComponent,
     GovukTextInputComponent,
@@ -48,13 +50,8 @@ export class FinesMciCreateTillCourtFeePaymentDetailsFormComponent extends Abstr
   @Input() public initialValue: IFinesMciCourtFeePaymentDetails | null = null;
   public override formControlErrorMessages: IAbstractFormControlErrorMessage = {};
 
-  /** Protects edited or restored form data until navigation is explicitly accepted. */
-  protected override hasUnsavedChanges(): boolean {
-    return this.form.dirty || this.initialValue !== null;
-  }
-
-  /** Initialises the payment controls and keeps hidden conditional fields out of validation. */
-  public override ngOnInit(): void {
+  /** Creates the payment controls with draft values and disables hidden conditional fields. */
+  private initialiseForm(): void {
     const initial = this.initialValue;
     const individual = initial?.payerType === 'individual';
     const company = initial?.payerType === 'company';
@@ -103,7 +100,10 @@ export class FinesMciCreateTillCourtFeePaymentDetailsFormComponent extends Abstr
         Validators.maxLength(8),
       ]),
     });
-    this.setInitialErrorMessages();
+  }
+
+  /** Clears payment references and sources and enables the fields for the selected method. */
+  private setupPaymentMethodListener(): void {
     this.form.controls['paymentMethod'].valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((method: string | null) => {
@@ -116,6 +116,10 @@ export class FinesMciCreateTillCourtFeePaymentDetailsFormComponent extends Abstr
         if (method === 'PO' || method === 'CQ' || method === 'CT') reference.enable({ emitEvent: false });
         else reference.disable({ emitEvent: false });
       });
+  }
+
+  /** Enables identity fields for the selected payer type while retaining their entered values. */
+  private setupPayerTypeListener(): void {
     this.form.controls['payerType'].valueChanges
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe((payer: string | null) => {
@@ -126,10 +130,28 @@ export class FinesMciCreateTillCourtFeePaymentDetailsFormComponent extends Abstr
         if (payer === 'company') this.form.controls['companyName'].enable({ emitEvent: false });
         else this.form.controls['companyName'].disable({ emitEvent: false });
       });
+  }
+
+  /** Refreshes displayed validation errors when the user edits the form. */
+  private setupFormChangesListener(): void {
     this.form.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
       this.formSubmitted = false;
       if (this.formErrorSummaryMessage.length) this.handleErrorMessages();
     });
+  }
+
+  /** Protects edited or restored form data until navigation is explicitly accepted. */
+  protected override hasUnsavedChanges(): boolean {
+    return this.form.dirty || this.initialValue !== null;
+  }
+
+  /** Initialises the payment form, validation messages and field change listeners. */
+  public override ngOnInit(): void {
+    this.initialiseForm();
+    this.setInitialErrorMessages();
+    this.setupPaymentMethodListener();
+    this.setupPayerTypeListener();
+    this.setupFormChangesListener();
     super.ngOnInit();
   }
 }
