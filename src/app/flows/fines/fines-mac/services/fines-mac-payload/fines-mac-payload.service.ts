@@ -58,7 +58,7 @@ export class FinesMacPayloadService {
   private readonly transformationService = inject(TransformationService);
   private readonly globalStore = inject(GlobalStore);
 
-  private get newSortCodeFunctionalityEnabled(): boolean {
+  private get release1A12Enabled(): boolean {
     return getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true;
   }
 
@@ -127,7 +127,7 @@ export class FinesMacPayloadService {
       offenceDetailsForms,
       fixedPenaltyDetails,
       accountType,
-      this.newSortCodeFunctionalityEnabled,
+      this.release1A12Enabled,
     );
 
     // Return our payload object
@@ -154,7 +154,9 @@ export class FinesMacPayloadService {
   ): IFinesMacReplaceAccountRequestPayload {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
     const accountPayload = this.buildAccountPayload(finesMacState);
-    normalizeTelephoneNumbers(accountPayload.defendant);
+    if (this.release1A12Enabled) {
+      normalizeTelephoneNumbers(accountPayload.defendant);
+    }
 
     const requestPayload: IFinesMacReplaceAccountRequestPayload = {
       business_unit_id: accountDetailsState['fm_create_account_business_unit_id']!,
