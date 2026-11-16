@@ -106,8 +106,9 @@ export class FinesMciCreateTillSuspenseDetailsFormComponent extends AbstractForm
     for (const field of inactiveFields) {
       this.removeControlErrors(field);
     }
-    this.formErrorSummaryMessage =
-      this.formErrorSummaryMessage?.filter((error) => !inactiveFields.includes(error.fieldId)) ?? [];
+    this.formErrorSummaryMessage = this.formErrorSummaryMessage.filter(
+      (error) => !inactiveFields.includes(error.fieldId),
+    );
     this.formErrors = this.formErrors?.filter((error) => !inactiveFields.includes(error.fieldId)) ?? [];
     this.changeDetector.markForCheck();
   }
@@ -131,7 +132,10 @@ export class FinesMciCreateTillSuspenseDetailsFormComponent extends AbstractForm
     super.ngOnInit();
   }
 
-  /** Clears references for other payment methods before submitting through the base form. */
+  /**
+   * Clears references for other payment methods before submitting through the base form.
+   * @param event - Form submission event.
+   */
   public override handleFormSubmit(event: SubmitEvent): void {
     const selectedMethod = this.form.controls['methodOfPayment'].value;
     const referenceFields = [

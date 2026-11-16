@@ -142,6 +142,44 @@ describe('FinesMciCreateTillPayerDetailsFormComponent', () => {
     expect((fixture.nativeElement as HTMLElement).textContent).toContain(message);
   });
 
+  it.each([
+    ['individual', 'lastName', 'Enter last name'],
+    ['company', 'companyName', 'Enter company name'],
+  ])('rejects a null %s name', (payerType, field, message) => {
+    fixture.detectChanges();
+    component.form.controls['payerType'].setValue(payerType);
+    component.form.controls[field].setValue(null);
+
+    submit();
+
+    expect(component.form.controls[field].hasError('required')).toBe(true);
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain(message);
+  });
+
+  it.each([
+    ['individual', 'lastName'],
+    ['company', 'companyName'],
+  ])('trims the %s name on focusout and before submission', (payerType, field) => {
+    fixture.detectChanges();
+    component.form.controls['payerType'].setValue(payerType);
+    fixture.changeDetectorRef.markForCheck();
+    fixture.detectChanges();
+
+    const control = component.form.controls[field];
+    control.setValue('  Example Name  ');
+    (fixture.nativeElement as HTMLElement)
+      .querySelector<HTMLInputElement>(`#${field}`)
+      ?.dispatchEvent(new Event('focusout', { bubbles: true }));
+    expect(control.value).toBe('Example Name');
+
+    const emit = vi.spyOn(component['formSubmit'], 'emit');
+    control.setValue('  Another Name  ');
+    submit();
+    expect(emit).toHaveBeenCalledWith(
+      expect.objectContaining({ formData: expect.objectContaining({ [field]: 'Another Name' }) }),
+    );
+  });
+
   it('removes the last-name error when switching to company', () => {
     component.initialValue = {
       payerType: 'individual',

@@ -14,6 +14,7 @@ import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/component
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
+import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { GovukSelectComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-select';
@@ -41,6 +42,7 @@ import {
     ReactiveFormsModule,
     GovukSelectComponent,
     GovukTextInputComponent,
+    TrimLeadingTrailingWhitespaceDirective,
     GovukCancelLinkComponent,
     GovukErrorSummaryComponent,
     GovukRadioComponent,
@@ -59,6 +61,7 @@ export class FinesMciCreateTillPayerDetailsFormComponent extends AbstractFormBas
   @Input() public initialValue: IFinesMciSuspensePayerDetails | null = null;
   public override formControlErrorMessages: IAbstractFormControlErrorMessage = {};
 
+  /** Applies validators for the selected payer type and removes errors for fields that are no longer shown. */
   private updatePayerValidators(): void {
     const payerType = this.form.controls['payerType'].value;
     this.form.controls['lastName'].setValidators(
@@ -82,16 +85,19 @@ export class FinesMciCreateTillPayerDetailsFormComponent extends AbstractFormBas
     for (const field of inactiveFields) {
       this.removeControlErrors(field);
     }
-    this.formErrorSummaryMessage =
-      this.formErrorSummaryMessage?.filter((error) => !inactiveFields.includes(error.fieldId)) ?? [];
+    this.formErrorSummaryMessage = this.formErrorSummaryMessage.filter(
+      (error) => !inactiveFields.includes(error.fieldId),
+    );
     this.formErrors = this.formErrors?.filter((error) => !inactiveFields.includes(error.fieldId)) ?? [];
     this.changeDetector.markForCheck();
   }
 
+  /** Reports whether any payer detail has been entered for the leave confirmation. */
   protected override hasUnsavedChanges(): boolean {
     return Object.values(this.form.getRawValue()).some((value) => value !== null && value !== '');
   }
 
+  /** Restores saved payer details and watches payer type changes for conditional validation. */
   public override ngOnInit(): void {
     const initial = this.initialValue;
     this.form = new FormGroup({
@@ -128,7 +134,17 @@ export class FinesMciCreateTillPayerDetailsFormComponent extends AbstractFormBas
     super.ngOnInit();
   }
 
+  /**
+   * Trims the required payer name and clears fields for the other payer type before submission.
+   * @param event - Form submission event.
+   */
   public override handleFormSubmit(event: SubmitEvent): void {
+    for (const name of ['lastName', 'companyName']) {
+      const control = this.form.controls[name];
+      if (typeof control.value === 'string') {
+        control.setValue(control.value.trim(), { emitEvent: false });
+      }
+    }
     if (this.form.controls['payerType'].value !== 'individual') {
       this.form.patchValue({ title: null, firstNames: '', lastName: '' }, { emitEvent: false });
     }
