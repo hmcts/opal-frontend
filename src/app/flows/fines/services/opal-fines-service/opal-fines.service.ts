@@ -1,3 +1,4 @@
+import { IOpalFinesDefendantAccountMaster } from './interfaces/opal-fines-defendant-account-master.interface';
 import { IOpalFinesSourceMapping } from './interfaces/opal-fines-source-mapping.interface';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
@@ -1214,6 +1215,11 @@ export class OpalFines {
     }
 
     return this.http.post<IOpalFinesAmendPaymentTermsPayload>(url, payload, { headers });
+  }
+
+  /** Resolves the live master account ID for a consolidated child account. */
+  public getDefendantAccountMaster(accountId: string | number): Observable<IOpalFinesDefendantAccountMaster> {
+    return this.http.get<IOpalFinesDefendantAccountMaster>(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/master`);
   }
 
   /**

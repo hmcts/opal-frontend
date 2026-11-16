@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { defer, EMPTY, forkJoin, map, Observable } from 'rxjs';
+import { defer, EMPTY, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IFinesMciCriminalAccount } from '../interfaces/fines-mci-criminal-account.interface';
 import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
@@ -9,6 +9,62 @@ import { FinesMciStore } from '../stores/fines-mci.store';
 export class FinesMciCriminalAccountService {
   private readonly opalFines = inject(OpalFines);
   private readonly store = inject(FinesMciStore);
+
+  /** Resolves and loads a master without replacing the child until both detail requests succeed. */
+  public loadMasterAccountDetails(child: IFinesMciCriminalAccount): Observable<IOpalFinesAccountDefendantAtAGlance> {
+    if (child.defendant_account_id === null) return EMPTY;
+    return this.opalFines.getDefendantAccountMaster(child.defendant_account_id).pipe(
+      switchMap(({ defendant_account_id: id }) => {
+        if (
+          id === null ||
+          id === undefined ||
+          String(id) === String(child.defendant_account_id) ||
+          !/^\d+$/.test(String(id)) ||
+          (typeof id === 'number' && !Number.isSafeInteger(id))
+        )
+          return EMPTY;
+        this.opalFines.clearCache('defendantAccountAtAGlanceCache$');
+        return forkJoin({
+          atAGlance: this.opalFines.getDefendantAccountAtAGlance(id),
+          header: this.opalFines.getDefendantAccountHeadingData(id),
+        }).pipe(
+          switchMap(({ atAGlance, header }) => {
+            if (this.store.selectedCriminalAccount() !== child) return EMPTY;
+            const party = atAGlance.party_details;
+            const person = party.individual_details;
+            const company = party.organisation_details;
+            this.store.setSelectedCriminalAccount({
+              defendant_account_id: id,
+              account_number: atAGlance.account_number,
+              organisation_flag: party.organisation_flag,
+              organisation: party.organisation_flag,
+              organisation_name: company?.organisation_name ?? null,
+              defendant_title: person?.title ?? null,
+              defendant_firstnames: person?.forenames ?? null,
+              defendant_surname: person?.surname ?? null,
+              birth_date: person?.date_of_birth ?? null,
+              national_insurance_number: person?.national_insurance_number ?? null,
+              aliases: null,
+              address_line_1: atAGlance.address?.address_line_1 ?? null,
+              postcode: atAGlance.address?.postcode ?? null,
+              business_unit_id: header.business_unit_summary.business_unit_id,
+              business_unit_name: header.business_unit_summary.business_unit_name,
+              prosecutor_case_reference: header.prosecutor_case_reference,
+              last_enforcement_action:
+                atAGlance.enforcement_status?.last_enforcement_action?.last_enforcement_action_id ?? null,
+              account_balance: atAGlance.account_balance ?? header.payment_state_summary.account_balance,
+              parent_guardian_surname: null,
+              parent_guardian_firstnames: null,
+              has_collection_order: header.collection_order,
+            });
+            this.store.setSelectedCriminalAccountAtAGlance(atAGlance);
+            this.store.setSelectedCriminalAccountHeader(header);
+            return of(atAGlance);
+          }),
+        );
+      }),
+    );
+  }
 
   /**
    * On subscription, selects the account and fetches fresh at-a-glance and header data in parallel.

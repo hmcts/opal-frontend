@@ -1,4 +1,26 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { catchError, defaultIfEmpty, finalize, from, map, of, Subject, switchMap, takeUntil } from 'rxjs';
+import {
+  GovukRadioComponent,
+  GovukRadiosItemComponent,
+} from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
+import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { FinesMciCriminalAccountService } from '../services/fines-mci-criminal-account.service';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+  effect,
+  DestroyRef,
+  ChangeDetectorRef,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
@@ -29,6 +51,10 @@ import {
   selector: 'app-fines-mci-payment-category-criminal-account',
   imports: [
     RouterLink,
+    ReactiveFormsModule,
+    GovukRadioComponent,
+    GovukRadiosItemComponent,
+    GovukErrorSummaryComponent,
     MojAlertComponent,
     MojAlertContentComponent,
     MojAlertIconComponent,
@@ -48,6 +74,17 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
   private readonly router = inject(Router);
   private readonly dateFormat = inject(DateFormatPipe);
   private readonly monetary = inject(MonetaryPipe);
+
+  private readonly accountService = inject(FinesMciCriminalAccountService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly document = inject(DOCUMENT);
+  private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly utils = inject(UtilsService);
+  private readonly cancelMasterRequest = new Subject<void>();
+  private readonly accountId = toSignal(this.route.paramMap.pipe(map((params) => params.get('accountId'))), {
+    initialValue: this.route.snapshot.paramMap.get('accountId'),
+  });
+  @ViewChild('errorSummary', { read: ElementRef }) private readonly errorSummary?: ElementRef<HTMLElement>;
 
   private readonly lastEnforcementAction = computed(() => {
     const action = this.store.selectedCriminalAccountAtAGlance()?.enforcement_status?.last_enforcement_action;
@@ -158,7 +195,7 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
     const header = this.store.selectedCriminalAccountHeader();
     const businessUnit = this.store.businessUnit();
     const statusCode = atAGlance?.account_status_code ?? header?.account_status_reference.account_status_code;
-    const accountId = this.route.snapshot.paramMap.get('accountId');
+    const accountId = this.accountId();
 
     if (!account || String(account.defendant_account_id) !== accountId || !atAGlance || !businessUnit || !statusCode) {
       return { available: false, warningMessage: null };
@@ -197,6 +234,29 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
     return state.warningMessage ? this.content.cannotPay : this.content.success;
   });
 
+  protected readonly nextStep = new FormControl<'master' | 'suspense' | null>(null, Validators.required);
+  protected readonly nextStepError = signal<string | null>(null);
+  protected readonly isLoadingMaster = signal(false);
+  protected readonly isConsolidatedChild = computed(
+    () =>
+      this.accountState().available &&
+      (this.store.selectedCriminalAccountAtAGlance()?.account_status_code ??
+        this.store.selectedCriminalAccountHeader()?.account_status_reference.account_status_code) === 'CS',
+  );
+  protected readonly consolidatedErrors = computed(() => {
+    const message = this.nextStepError();
+    return message ? [{ fieldId: 'fines-mci-consolidated-next-step', message }] : [];
+  });
+
+  constructor() {
+    effect(() => {
+      this.accountId();
+      this.nextStep.reset();
+      this.nextStepError.set(null);
+    });
+    this.nextStep.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => this.nextStepError.set(null));
+  }
+
   /** Joins available name parts without displaying spaces for missing data. */
   private joinName(parts: (string | null | undefined)[]): string {
     return parts.filter((part) => !!part?.trim()).join(' ');
@@ -209,8 +269,92 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
       : '—';
   }
 
+  /** Renders and focuses the summary using the search-results validation pattern. */
+  private focusConsolidatedError(): void {
+    this.changeDetector.detectChanges();
+    this.errorSummary?.nativeElement.querySelector<HTMLElement>('.govuk-error-summary')?.focus();
+    this.utils.scrollToTop();
+  }
+
+  /** Loads the master and reuses this route to evaluate its current payment eligibility. */
+  private loadMasterAccount(): void {
+    const child = this.store.selectedCriminalAccount()!;
+    const childDetails = this.store.selectedCriminalAccountAtAGlance()!;
+    const childHeader = this.store.selectedCriminalAccountHeader();
+    let masterId: string | number | null = null;
+    this.isLoadingMaster.set(true);
+    this.accountService
+      .loadMasterAccountDetails(child)
+      .pipe(
+        switchMap(() => {
+          const master = this.store.selectedCriminalAccount()!;
+          masterId = master.defendant_account_id;
+          return from(
+            this.router.navigate(
+              [FINES_MCI_ROUTING_PATHS.children.account, masterId, master.organisation_flag ? 'company' : 'individual'],
+              { relativeTo: this.route.parent },
+            ),
+          );
+        }),
+        catchError(() => of(false)),
+        defaultIfEmpty(false),
+        finalize(() => this.isLoadingMaster.set(false)),
+        takeUntil(this.cancelMasterRequest),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((navigated) => {
+        if (navigated) return;
+        if (masterId !== null && this.store.selectedCriminalAccount()?.defendant_account_id === masterId) {
+          this.store.setSelectedCriminalAccount(child);
+          this.store.setSelectedCriminalAccountAtAGlance(childDetails);
+          if (childHeader) this.store.setSelectedCriminalAccountHeader(childHeader);
+        }
+        // Shared HTTP handling owns failed-load feedback, as on Search Results.
+        this.utils.scrollToTop();
+      });
+  }
+
+  /** Returns to the MCI landing page and clears the payment draft after successful navigation. */
+  private returnToLandingPage(): void {
+    void this.router
+      .navigate([
+        '/',
+        FINES_ROUTING_PATHS.root,
+        FINES_MCI_ROUTING_PATHS.root,
+        FINES_MCI_ROUTING_PATHS.children.createAllocate,
+      ])
+      .then((navigated) => {
+        if (navigated) {
+          this.store.setDraftJourney(null);
+          this.store.resetCriminalSearch();
+        }
+      });
+  }
+
+  /** Focuses the choice from its validation-summary link. */
+  protected focusNextStep(): void {
+    this.document.getElementById('fines-mci-consolidated-next-step')?.focus();
+  }
+
+  /** Validates the consolidated-account choice and starts the selected journey. */
+  protected continueConsolidated(event: Event): void {
+    event.preventDefault();
+    if (!this.isConsolidatedChild() || this.isLoadingMaster()) return;
+    if (this.nextStep.invalid) {
+      this.nextStepError.set(this.content.nextStepRequired);
+      this.focusConsolidatedError();
+      return;
+    }
+    if (this.nextStep.value === 'suspense') {
+      this.returnToLandingPage();
+      return;
+    }
+    this.loadMasterAccount();
+  }
+
   /** Returns to the submitted search results, retaining the search criteria. */
   protected navigateBack(): void {
+    this.cancelMasterRequest.next();
     void this.router.navigate([FINES_MCI_ROUTING_PATHS.children.matches], { relativeTo: this.route.parent });
   }
 
@@ -223,29 +367,16 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
     );
   }
 
-  /** Opens the existing suspense journey, retaining the account details for the suspense payment. */
+  /** Returns a restricted account to the MCI landing page when Pay into suspense is selected. */
   protected payIntoSuspense(): void {
     const state = this.accountState();
-    if (!state.available || !state.warningMessage) return;
-    void this.router
-      .navigate([
-        '/',
-        FINES_ROUTING_PATHS.root,
-        FINES_MCI_ROUTING_PATHS.root,
-        FINES_MCI_ROUTING_PATHS.children.create,
-        FINES_MCI_ROUTING_PATHS.children.till,
-        FINES_MCI_ROUTING_PATHS.children.payment,
-        FINES_MCI_ROUTING_PATHS.children.category,
-        FINES_MCI_ROUTING_PATHS.children.suspense,
-        FINES_MCI_ROUTING_PATHS.children.paymentDetails,
-      ])
-      .then((navigated) => {
-        if (navigated) this.store.setDraftJourney('suspense');
-      });
+    if (!state.available || !state.warningMessage || this.isConsolidatedChild()) return;
+    this.returnToLandingPage();
   }
 
   /** Clears the payment draft and search only after returning to Till Details successfully. */
   protected handleCancel(): void {
+    this.cancelMasterRequest.next();
     void this.router
       .navigate([
         '/',

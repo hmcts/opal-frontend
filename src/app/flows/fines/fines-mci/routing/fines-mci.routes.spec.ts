@@ -1,4 +1,8 @@
-import { describe, expect, it } from 'vitest';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { of } from 'rxjs';
+import { FinesMciCriminalAccountService } from '../services/fines-mci-criminal-account.service';
+import { EMPTY } from 'rxjs';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router, Routes } from '@angular/router';
@@ -37,6 +41,11 @@ const routesForRecognition = (routes: Routes): Routes =>
   }));
 
 describe('finesMci routes', () => {
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      providers: [{ provide: FinesMciCriminalAccountService, useValue: { loadMasterAccountDetails: () => EMPTY } }],
+    }),
+  );
   const createTillRoute = routing
     .find((route) => route.path === 'create')
     ?.children?.find((route) => route.path === 'till');
@@ -45,12 +54,6 @@ describe('finesMci routes', () => {
     ?.find((route) => route.path === FINES_MCI_ROUTING_PATHS.children.payment)
     ?.children?.find((route) => route.path === FINES_MCI_ROUTING_PATHS.children.category)
     ?.children?.find((route) => route.path === FINES_MCI_ROUTING_PATHS.children.criminal);
-
-  const suspensePaymentDetailsRoute = createTillRoute?.children
-    ?.find((route) => route.path === FINES_MCI_ROUTING_PATHS.children.payment)
-    ?.children?.find((route) => route.path === FINES_MCI_ROUTING_PATHS.children.category)
-    ?.children?.find((route) => route.path === FINES_MCI_ROUTING_PATHS.children.suspense)
-    ?.children?.find((route) => route.path === FINES_MCI_ROUTING_PATHS.children.paymentDetails);
 
   it('should redirect the manual cash input root to create allocate', () => {
     expect(routing[0]).toEqual({
@@ -302,9 +305,9 @@ describe('finesMci routes', () => {
     expect(harness.routeNativeElement!.querySelector('h1')!.textContent!.trim()).toBe('Payment details');
     expect(store.selectedCriminalAccount()?.defendant_account_id).toBe(1);
   });
-  it('renders the restricted account at the same URL and opens the existing suspense placeholder', async () => {
+  it('renders the restricted account at the same URL and returns Pay into suspense to the MCI landing page', async () => {
     const accountRoute = criminalRoute!.children!.find((route) => route.path === 'account/:accountId/:type')!;
-    const suspenseRoute = suspensePaymentDetailsRoute!;
+    const landingRoute = routing.find((route) => route.path === FINES_MCI_ROUTING_PATHS.children.createAllocate)!;
     const tillRoot = '/fines/manual-cash-input/create/till';
     const criminalPath = 'payment/category/criminal';
     const accountId = '9007199254740993';
@@ -313,10 +316,16 @@ describe('finesMci routes', () => {
         provideRouter([
           {
             path: tillRoot.slice(1),
-            children: [
-              { path: criminalPath, children: [{ ...accountRoute, canActivate: [], resolve: {} }] },
-              { path: 'payment/category/suspense', children: [{ ...suspenseRoute, canActivate: [], resolve: {} }] },
-            ],
+            children: [{ path: criminalPath, children: [{ ...accountRoute, canActivate: [], resolve: {} }] }],
+          },
+          {
+            ...landingRoute,
+            path: 'fines/manual-cash-input/create-allocate',
+            component: RouteDestinationComponent,
+            loadComponent: undefined,
+            canActivate: [],
+            canDeactivate: [],
+            resolve: {},
           },
         ]),
       ],
@@ -349,42 +358,72 @@ describe('finesMci routes', () => {
     harness.routeNativeElement!.querySelector<HTMLButtonElement>('#fines-mci-pay-into-suspense')!.click();
     await harness.fixture.whenStable();
     harness.detectChanges();
-    expect(TestBed.inject(Router).url).toBe(`${tillRoot}/payment/category/suspense/payment-details`);
-    expect(harness.routeNativeElement!.querySelector('h1')!.textContent!.trim()).toBe('Payment details');
-    expect(store.selectedCriminalAccount()?.defendant_account_id).toBe(accountId);
-    expect(store.draftJourney()).toBe('suspense');
+    expect(TestBed.inject(Router).url).toBe('/fines/manual-cash-input/create-allocate');
+    expect(harness.routeDebugElement!.componentInstance).toBeInstanceOf(RouteDestinationComponent);
+    expect(store.selectedCriminalAccount()).toBeNull();
+    expect(store.draftJourney()).toBeNull();
   });
-  it('exposes guarded suspense payment details and inherits the hidden primary navigation', async () => {
-    expect(suspensePaymentDetailsRoute?.canActivate).toEqual([
-      authGuard,
-      routePermissionsGuard,
-      finesMciFlowStateGuard,
-    ]);
-    expect(suspensePaymentDetailsRoute?.data).toEqual({
-      heading: FINES_MCI_ROUTING_TITLES.children.paymentCategorySuspensePaymentDetails,
-      title: FINES_MCI_ROUTING_TITLES.children.paymentCategorySuspensePaymentDetails,
-      routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
-    });
-    expect(suspensePaymentDetailsRoute?.resolve).toEqual({ title: TitleResolver });
-    TestBed.configureTestingModule({
-      providers: [
-        provideRouter([
-          { path: 'fines', children: [{ path: 'manual-cash-input', children: routesForRecognition(routing) }] },
-        ]),
-      ],
-    });
-    const harness = await RouterTestingHarness.create();
-    const url = '/fines/manual-cash-input/create/till/payment/category/suspense/payment-details';
-    await harness.navigateByUrl(url, RouteDestinationComponent);
-    const router = TestBed.inject(Router);
-    expect(router.url).toBe(url);
-    let snapshot = router.routerState.snapshot.root;
-    while (snapshot.firstChild) snapshot = snapshot.firstChild;
-    expect(snapshot.data).toEqual(
-      expect.objectContaining({
-        ...PRIMARY_NAV_HIDDEN_ROUTE_DATA,
-        title: FINES_MCI_ROUTING_TITLES.children.paymentCategorySuspensePaymentDetails,
-      }),
-    );
-  });
+  it.each([
+    ['L', false, 'Confirm account'],
+    ['WO', true, 'You cannot pay into this account'],
+  ])(
+    'loads a master with status %s and reuses the account route with its own eligibility',
+    async (status, company, heading) => {
+      const accountRoute = criminalRoute!.children!.find((route) => route.path === 'account/:accountId/:type')!;
+      const root = 'fines/manual-cash-input/create/till/payment/category/criminal';
+      const masterId = '9007199254740993';
+      const masterDetails = {
+        ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
+        defendant_account_id: masterId,
+        account_number: 'MASTER123',
+        account_status_code: status as string,
+        account_balance: 175,
+        party_details: {
+          ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK.party_details,
+          organisation_flag: company as boolean,
+        },
+      };
+      TestBed.configureTestingModule({
+        providers: [
+          FinesMciCriminalAccountService,
+          {
+            provide: OpalFines,
+            useValue: {
+              clearCache: () => {},
+              getDefendantAccountMaster: () => of({ defendant_account_id: masterId }),
+              getDefendantAccountAtAGlance: () => of(masterDetails),
+              getDefendantAccountHeadingData: () => of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
+            },
+          },
+          provideRouter([{ path: root, children: [{ ...accountRoute, canActivate: [], resolve: {} }] }]),
+        ],
+      });
+      const store = TestBed.inject(FinesMciStore);
+      store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+      store.setSelectedCriminalAccount(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0]);
+      store.setSelectedCriminalAccountAtAGlance({
+        ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
+        account_status_code: 'CS',
+        account_balance: 0,
+      });
+      const harness = await RouterTestingHarness.create();
+      const component = await harness.navigateByUrl(
+        `/${root}/account/1/individual`,
+        FinesMciPaymentCategoryCriminalAccountComponent,
+      );
+      harness.routeNativeElement!.querySelector<HTMLInputElement>('input[value="master"]')!.click();
+      harness
+        .routeNativeElement!.querySelector('form')!
+        .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      await harness.fixture.whenStable();
+      harness.detectChanges();
+      expect(TestBed.inject(Router).url).toBe(`/${root}/account/${masterId}/${company ? 'company' : 'individual'}`);
+      expect(harness.routeDebugElement!.componentInstance).toBe(component);
+      expect(harness.routeNativeElement!.querySelector('h1')!.textContent!.trim()).toBe(heading);
+      expect(harness.routeNativeElement!.textContent).toContain('MASTER123');
+      expect(harness.routeNativeElement!.querySelector('form')).toBeNull();
+      expect(store.selectedCriminalAccountAtAGlance()).toEqual(masterDetails);
+      expect(store.businessUnit()).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    },
+  );
 });

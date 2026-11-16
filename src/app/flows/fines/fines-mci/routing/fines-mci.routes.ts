@@ -164,25 +164,6 @@ export const routing: Routes = [
                       },
                     ],
                   },
-                  {
-                    path: FINES_MCI_ROUTING_PATHS.children.suspense,
-                    children: [
-                      {
-                        path: FINES_MCI_ROUTING_PATHS.children.paymentDetails,
-                        loadComponent: () =>
-                          import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
-                            (c) => c.FinesMciPlaceholderComponent,
-                          ),
-                        canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
-                        data: {
-                          heading: FINES_MCI_ROUTING_TITLES.children.paymentCategorySuspensePaymentDetails,
-                          routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
-                          title: FINES_MCI_ROUTING_TITLES.children.paymentCategorySuspensePaymentDetails,
-                        },
-                        resolve: { title: TitleResolver },
-                      },
-                    ],
-                  },
                 ],
               },
             ],

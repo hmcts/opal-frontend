@@ -1,4 +1,5 @@
 export const FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_ACCOUNT_CONTENT = {
+  nextStepRequired: 'Select whether to pay into the live account or into suspense',
   consolidated: 'Account has been consolidated.',
   writtenOff: 'Account has been written off in full',
   zeroBalance: 'Account has a zero balance',

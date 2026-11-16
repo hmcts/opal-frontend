@@ -1,3 +1,5 @@
+import { of, Subject, throwError, EMPTY } from 'rxjs';
+import { FinesMciCriminalAccountService } from '../services/fines-mci-criminal-account.service';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -17,7 +19,17 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
       imports: [FinesMciPaymentCategoryCriminalAccountComponent],
       providers: [
         provideRouter([]),
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: convertToParamMap({ accountId: '1' }) } } },
+        {
+          provide: FinesMciCriminalAccountService,
+          useValue: { loadMasterAccountDetails: vi.fn().mockReturnValue(EMPTY) },
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of(convertToParamMap({ accountId: '1' })),
+            snapshot: { paramMap: convertToParamMap({ accountId: '1' }) },
+          },
+        },
       ],
     });
     store = TestBed.inject(FinesMciStore);
@@ -460,7 +472,11 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
           '/fines/account/defendant/1/details',
         );
         expect(element.querySelector('#fines-mci-confirm-account')).toBeNull();
-        expect(element.querySelector('#fines-mci-pay-into-suspense')?.textContent?.trim()).toBe('Pay into suspense');
+        expect(
+          element
+            .querySelector(status === 'CS' ? '#fines-mci-consolidated-continue' : '#fines-mci-pay-into-suspense')
+            ?.textContent?.trim(),
+        ).toBe(status === 'CS' ? 'Continue' : 'Pay into suspense');
       },
     );
 
@@ -484,7 +500,7 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
     );
 
     it.each([true, false])(
-      'opens suspense and updates the draft only when navigation succeeds: %s',
+      'returns Pay into suspense to the landing page and clears the draft only after navigation succeeds: %s',
       async (navigated) => {
         store.setSelectedCriminalAccountAtAGlance({
           ...store.selectedCriminalAccountAtAGlance()!,
@@ -495,19 +511,10 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
         const { element, fixture } = render();
         element.querySelector<HTMLButtonElement>('#fines-mci-pay-into-suspense')!.click();
         await fixture.whenStable();
-        expect(navigate).toHaveBeenCalledWith([
-          '/',
-          'fines',
-          'manual-cash-input',
-          'create',
-          'till',
-          'payment',
-          'category',
-          'suspense',
-          'payment-details',
-        ]);
-        expect(store.draftJourney()).toBe(navigated ? 'suspense' : 'criminal');
-        expect(store.selectedCriminalAccount()?.defendant_account_id).toBe(1);
+        expect(navigate).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create-allocate']);
+        expect(store.draftJourney()).toBe(navigated ? null : 'criminal');
+        expect(store.selectedCriminalAccount()?.defendant_account_id ?? null).toBe(navigated ? null : 1);
+        expect(store.businessUnit()).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
       },
     );
 
@@ -593,6 +600,159 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
       );
       expect(element.querySelector('#fines-mci-pay-into-suspense')).not.toBeNull();
       expect(element.querySelector('#fines-mci-confirm-account')).toBeNull();
+    });
+  });
+  describe('consolidated child next steps', () => {
+    beforeEach(() => {
+      store.setSelectedCriminalAccountAtAGlance({
+        ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
+        account_status_code: 'CS',
+        account_balance: 0,
+      });
+    });
+    const render = () => {
+      const fixture = TestBed.createComponent(FinesMciPaymentCategoryCriminalAccountComponent);
+      fixture.detectChanges();
+      const element: HTMLElement = fixture.nativeElement;
+      const select = (value: string) => {
+        const radio = element.querySelector<HTMLInputElement>(`input[value="${value}"]`)!;
+        radio.click();
+        fixture.detectChanges();
+      };
+      const submit = () => {
+        element.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+        fixture.detectChanges();
+      };
+      return { fixture, element, select, submit };
+    };
+
+    it('displays an unselected Next steps group only for a consolidated child', () => {
+      const { element } = render();
+      expect(element.querySelector('legend')?.textContent).toContain('Next steps');
+      expect(Array.from(element.querySelectorAll('label')).map((label) => label.textContent?.trim())).toEqual([
+        'Pay into the live (master) account',
+        'Pay into suspense',
+      ]);
+      expect(element.querySelector('input:checked')).toBeNull();
+      expect(element.querySelector('#fines-mci-pay-into-suspense')).toBeNull();
+    });
+
+    it('keeps a live master with child accounts on the ordinary confirmation flow', () => {
+      store.setSelectedCriminalAccountAtAGlance({
+        ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
+        account_status_code: 'L',
+        account_balance: 100,
+      });
+      store.setSelectedCriminalAccountHeader({
+        ...FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK,
+        has_consolidated_accounts: true,
+      });
+      const { element } = render();
+      expect(element.querySelector('form')).toBeNull();
+      expect(element.querySelector('#fines-mci-confirm-account')).not.toBeNull();
+    });
+
+    it('shows the exact validation message inline and in the summary without navigating', () => {
+      const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+      const { element, submit, select } = render();
+      submit();
+      const message = 'Select whether to pay into the live account or into suspense';
+      expect(element.querySelector('.govuk-error-summary')?.textContent).toContain(message);
+      expect(element.querySelector('.govuk-error-message')?.textContent).toContain(message);
+      expect(navigate).not.toHaveBeenCalled();
+      const errorLink = element.querySelector<HTMLAnchorElement>('.govuk-error-summary a')!;
+      errorLink.click();
+      expect(document.activeElement?.id).toBe('fines-mci-consolidated-next-step');
+      select('master');
+      expect(element.querySelector('.govuk-error-message')).toBeNull();
+    });
+
+    it.each([true, false])(
+      'returns suspense selection to the MCI landing page and clears the draft only after success: %s',
+      async (navigated) => {
+        store.setDraftJourney('criminal');
+        const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(navigated);
+        const { fixture, select, submit } = render();
+        select('suspense');
+        submit();
+        await fixture.whenStable();
+        expect(navigate).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create-allocate']);
+        expect(store.selectedCriminalAccount() === null).toBe(navigated);
+        expect(store.draftJourney()).toBe(navigated ? null : 'criminal');
+        expect(TestBed.inject(FinesMciCriminalAccountService).loadMasterAccountDetails).not.toHaveBeenCalled();
+      },
+    );
+
+    it('keeps the child and permits retry if the master load fails or emits no response', () => {
+      const load = vi.mocked(TestBed.inject(FinesMciCriminalAccountService).loadMasterAccountDetails);
+      load.mockReturnValueOnce(throwError(() => new Error('Unable to load'))).mockReturnValueOnce(EMPTY);
+      const { element, select, submit } = render();
+      select('master');
+      submit();
+      expect(element.querySelector('.govuk-error-summary')).toBeNull();
+      expect(element.querySelector('.govuk-error-message')).toBeNull();
+      expect(element.querySelector<HTMLButtonElement>('#fines-mci-consolidated-continue')!.disabled).toBe(false);
+      expect(store.selectedCriminalAccount()?.defendant_account_id).toBe(1);
+      submit();
+      expect(load).toHaveBeenCalledTimes(2);
+      expect(element.querySelector('h1')?.textContent).toContain('You cannot pay into this account');
+    });
+
+    it.each(['cancelled', 'failed'])('restores the child if navigation to the loaded master is %s', async (result) => {
+      const child = store.selectedCriminalAccount();
+      const details = store.selectedCriminalAccountAtAGlance();
+      vi.mocked(TestBed.inject(FinesMciCriminalAccountService).loadMasterAccountDetails).mockImplementation(() => {
+        store.setSelectedCriminalAccount({ ...child!, defendant_account_id: '2', organisation_flag: true });
+        store.setSelectedCriminalAccountAtAGlance({ ...details!, account_status_code: 'L', account_balance: 100 });
+        store.setSelectedCriminalAccountHeader(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
+        return of(store.selectedCriminalAccountAtAGlance()!);
+      });
+      const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
+      if (result === 'failed') navigate.mockRejectedValue(new Error('Navigation failed'));
+      else navigate.mockResolvedValue(false);
+      const { fixture, element, select, submit } = render();
+      select('master');
+      submit();
+      await fixture.whenStable();
+      fixture.detectChanges();
+      expect(navigate).toHaveBeenCalledWith(['account', '2', 'company'], { relativeTo: undefined });
+      expect(store.selectedCriminalAccount()).toBe(child);
+      expect(store.selectedCriminalAccountAtAGlance()).toBe(details);
+      expect(store.selectedCriminalAccountHeader()).toBeNull();
+      expect(element.querySelector('.govuk-error-summary')).toBeNull();
+      expect(element.querySelector('.govuk-error-message')).toBeNull();
+      expect(element.querySelector('legend')?.textContent).toContain('Next steps');
+    });
+
+    it('unsubscribes from a master request when the page is destroyed', () => {
+      const response = new Subject<typeof OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK>();
+      vi.mocked(TestBed.inject(FinesMciCriminalAccountService).loadMasterAccountDetails).mockReturnValue(response);
+      const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
+      const { fixture, select, submit } = render();
+      select('master');
+      submit();
+      fixture.destroy();
+      response.next(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      expect(navigate).not.toHaveBeenCalled();
+      expect(response.observed).toBe(false);
+    });
+
+    it('ignores duplicate submissions and cancels the request when Back is selected', () => {
+      const response = new Subject<typeof OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK>();
+      const load = vi
+        .mocked(TestBed.inject(FinesMciCriminalAccountService).loadMasterAccountDetails)
+        .mockReturnValue(response);
+      const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+      const { element, select, submit } = render();
+      select('master');
+      submit();
+      submit();
+      expect(load).toHaveBeenCalledTimes(1);
+      expect(element.querySelector<HTMLButtonElement>('#fines-mci-consolidated-continue')!.disabled).toBe(true);
+      element.querySelector<HTMLAnchorElement>('.govuk-back-link')!.click();
+      response.next(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      expect(navigate).toHaveBeenCalledTimes(1);
+      expect(navigate).toHaveBeenCalledWith(['matches'], { relativeTo: undefined });
     });
   });
 });
