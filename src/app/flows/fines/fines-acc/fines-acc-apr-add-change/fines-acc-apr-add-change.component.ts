@@ -66,7 +66,7 @@ export class FinesAccAprAddChangeComponent extends AbstractFormParentBaseCompone
     }
     const accountId = Number(snapshot.paramMap.get('accountId'));
     const aprs = snapshot.data['aprs'] as IOpalFinesAprsResponse;
-    if (!canAccessAprPage(aprs.references, mode, undefined)) {
+    if (!canAccessAprPage(aprs.references, mode)) {
       this.contextChanged.next();
       this.currentContext = null;
       this.pending.set(false);

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
+import { ActivatedRoute, Data, provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { describe, expect, it, vi } from 'vitest';
 import { IOpalFinesApr } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -77,6 +77,31 @@ const navigationDestination = (element: Element, selector: string): string => {
 };
 
 describe('FinesAccAprManageComponent', () => {
+  it('defaults to empty references and disables Add until route data becomes available', async () => {
+    const routeData = new Subject<Data>();
+    const inheritedReference: IOpalFinesApr = { ...currentReference, relationship: 'CONSOLIDATED' };
+    await TestBed.configureTestingModule({
+      imports: [FinesAccAprManageComponent],
+      providers: [
+        provideRouter([]),
+        { provide: ActivatedRoute, useValue: { data: routeData.asObservable() } },
+        { provide: FinesAccPayloadService, useValue: { transformAprsPayload } },
+      ],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(FinesAccAprManageComponent);
+    const component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(component.currentReferences()).toEqual([]);
+    expect(component.consolidatedReferences()).toEqual([]);
+    expect(component.canAdd()).toBe(false);
+
+    routeData.next({ aprs: { references: [inheritedReference], version: '"7"' } });
+
+    expect(component.consolidatedReferences()).toEqual([expect.objectContaining(inheritedReference)]);
+    expect(component.canAdd()).toBe(true);
+  });
+
   it('renders the account caption, both empty states and links to add or return to the same account Payment terms', async () => {
     const { element } = await renderManage([]);
 

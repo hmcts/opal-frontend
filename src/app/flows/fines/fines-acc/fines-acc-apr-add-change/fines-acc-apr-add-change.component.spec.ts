@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, provideRouter, ResolveStart, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
@@ -46,6 +47,7 @@ describe('FinesAccAprAddChangeComponent add mode', () => {
   };
   let utils: { scrollToTop: ReturnType<typeof vi.fn> };
   let initialVersion: string | null;
+  let initialReferences: IOpalFinesAprsResponse['references'];
   let manageAprs$: Observable<IOpalFinesAprsResponse>;
 
   const render = async () => {
@@ -67,8 +69,9 @@ describe('FinesAccAprAddChangeComponent add mode', () => {
 
   beforeEach(async () => {
     initialVersion = '"7"';
+    initialReferences = [];
     manageAprs$ = of({ references: [], version: '"8"' });
-    const sharedResolvedData: IOpalFinesAprsResponse = { references: [], version: initialVersion };
+    const sharedResolvedData: IOpalFinesAprsResponse = { references: initialReferences, version: initialVersion };
     api = { createApr: vi.fn().mockReturnValue(of(response)), clearAccountDetailsCache: vi.fn() };
     utils = { scrollToTop: vi.fn() };
     const formRoute = routing.find((route) => route.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/:mode`)!;
@@ -159,6 +162,33 @@ describe('FinesAccAprAddChangeComponent add mode', () => {
     expect(api.createApr).toHaveBeenCalledTimes(2);
     expect(api.createApr).toHaveBeenLastCalledWith(141, { apr_text: 'Retry-Reference' }, '"7"');
     expect(TestBed.inject(Router).url).toBe(manageUrl);
+  });
+
+  it('allows leaving a non-retriable failed submission without confirming unsaved changes', async () => {
+    const result = new Subject<IOpalFinesAprResponse>();
+    api.createApr.mockReturnValue(result);
+    const { harness, component, enter, save, cancel } = await render();
+    const confirm = vi.spyOn(window, 'confirm');
+    enter('Rejected-Reference');
+    save();
+
+    result.error(new HttpErrorResponse({ status: 409, error: { retriable: false } }));
+    harness.detectChanges();
+
+    expect(component.pending()).toBe(false);
+    expect(component.stateUnsavedChanges).toBe(false);
+    expect((harness.routeNativeElement!.querySelector('#apr_text') as HTMLInputElement).value).toBe(
+      'Rejected-Reference',
+    );
+    expect(utils.scrollToTop).toHaveBeenCalledOnce();
+    expect(accountStore.successMessage()).toBeNull();
+    expect(api.clearAccountDetailsCache).not.toHaveBeenCalled();
+
+    cancel();
+    await harness.fixture.whenStable();
+
+    expect(TestBed.inject(Router).url).toBe(manageUrl);
+    expect(confirm).not.toHaveBeenCalled();
   });
 
   it('permits only one pending request and disables Save', async () => {
@@ -292,6 +322,65 @@ describe('FinesAccAprAddChangeComponent add mode', () => {
     expect(accountStore.successMessage()).toBeNull();
     expect(api.clearAccountDetailsCache).not.toHaveBeenCalled();
     expect(TestBed.inject(Router).url).toBe(addUrl.replace('/141/', '/142/'));
+  });
+
+  it('preserves an entered reference and pending request when navigation retains the resolved account context', async () => {
+    const result = new Subject<IOpalFinesAprResponse>();
+    api.createApr.mockReturnValue(result);
+    const { harness, component, enter, save } = await render();
+    const context = component.formContext();
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    enter('Pending-Reference');
+    save();
+
+    const reused = await harness.navigateByUrl(`${addUrl}?refresh=1`, FinesAccAprAddChangeComponent);
+
+    expect(reused).toBe(component);
+    expect(component.formContext()).toBe(context);
+    expect(component.pending()).toBe(true);
+    expect(component.stateUnsavedChanges).toBe(true);
+    expect(result.observed).toBe(true);
+    expect((harness.routeNativeElement!.querySelector('#apr_text') as HTMLInputElement).value).toBe(
+      'Pending-Reference',
+    );
+    expect(api.createApr).toHaveBeenCalledExactlyOnceWith(141, { apr_text: 'Pending-Reference' }, '"7"');
+  });
+
+  it('cancels a pending Add when a reused route requests an unsupported mode', async () => {
+    const result = new Subject<IOpalFinesAprResponse>();
+    api.createApr.mockReturnValue(result);
+    const { harness, component, enter, save } = await render();
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    enter('Old-Reference');
+    save();
+
+    await harness.navigateByUrl(addUrl.replace(/add$/, 'change'));
+    await harness.fixture.whenStable();
+    result.next(response);
+
+    expect(TestBed.inject(Router).url).toBe(manageUrl);
+    expect(component.mode()).toBeNull();
+    expect(component.text().headingText).toBe('Add Alternate Payment Reference');
+    expect(component.pending()).toBe(false);
+    expect(component.stateUnsavedChanges).toBe(false);
+    expect(result.observed).toBe(false);
+    expect(accountStore.base_version()).toBe('"7"');
+    expect(accountStore.successMessage()).toBeNull();
+    expect(api.clearAccountDetailsCache).not.toHaveBeenCalled();
+  });
+
+  it('returns to Manage when resolved references already contain an APR', async () => {
+    initialReferences.push(response.reference);
+    const harness = await RouterTestingHarness.create();
+    const confirm = vi.spyOn(window, 'confirm');
+
+    await harness.navigateByUrl(addUrl);
+    await harness.fixture.whenStable();
+
+    expect(TestBed.inject(Router).url).toBe(manageUrl);
+    expect(api.createApr).not.toHaveBeenCalled();
+    expect(accountStore.successMessage()).toBeNull();
+    expect(confirm).not.toHaveBeenCalled();
   });
 
   it('does not submit without an account version', async () => {
