@@ -80,7 +80,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should apply the seven-character vehicle registration limit only while release-1a-1-2 is enabled ', async () => {
+  it('should apply the seven-character vehicle registration limit only while release-1a-1-2 is enabled', async () => {
     await fixture.whenStable();
     const registrationControl = component.form.get('fm_parent_guardian_details_vehicle_registration_mark');
     registrationControl?.setValue('1234567890');
