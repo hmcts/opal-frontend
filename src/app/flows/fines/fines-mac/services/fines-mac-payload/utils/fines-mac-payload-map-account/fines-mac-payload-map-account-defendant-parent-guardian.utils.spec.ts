@@ -151,4 +151,34 @@ describe('finesMacPayloadMapAccountDefendantParentGuardianPayload', () => {
 
     expect(result.parentGuardianDetails.formData.fm_parent_guardian_details_aliases).toEqual([]);
   });
+
+  it('should restore youth defendant aliases from the payload', () => {
+    const initialState = structuredClone(FINES_MAC_STATE);
+
+    const payload: IFinesMacPayloadAccountDefendantComplete = structuredClone(
+      FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_PARENT_GUARDIAN_COMPLETE_MOCK,
+    );
+
+    payload.debtor_detail = {
+      ...payload.parent_guardian!.debtor_detail!,
+      aliases: [
+        {
+          alias_forenames: 'James',
+          alias_surname: 'Smith',
+          alias_company_name: null,
+        },
+      ],
+    };
+
+    const result = finesMacPayloadMapAccountDefendantParentGuardianPayload(initialState, payload);
+
+    expect(result.personalDetails.formData.fm_personal_details_add_alias).toBe(true);
+
+    expect(result.personalDetails.formData.fm_personal_details_aliases).toEqual([
+      {
+        fm_personal_details_alias_forenames_0: 'James',
+        fm_personal_details_alias_surname_0: 'Smith',
+      },
+    ]);
+  });
 });
