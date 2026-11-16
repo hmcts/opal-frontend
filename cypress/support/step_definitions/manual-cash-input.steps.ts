@@ -47,6 +47,58 @@ When('I continue with the read-only unit', () => {
   manualCashInputFlow().continueWithReadOnlyBusinessUnit();
 });
 
+Then('I see empty Till Details for {string}', (businessUnit: string) => {
+  manualCashInputFlow().assertEmptyTillDetails(businessUnit);
+});
+
+When('I add a payment to the till', () => {
+  manualCashInputFlow().addPayment();
+});
+
+When('I continue with payment category {string}', (category: 'criminal' | 'courtFee' | 'suspense') => {
+  manualCashInputFlow().continueWithPaymentCategory(category);
+});
+
+Then('I see Search for an Account', () => {
+  manualCashInputFlow().assertSearchForAccountIsDisplayed();
+});
+
+Then('the selected business unit is displayed on Search for an Account', () => {
+  manualCashInputFlow().assertSearchForAccountBusinessUnitIsDisplayed();
+});
+
+Then('the Search for an Account screen displays the quick and advanced search fields', () => {
+  manualCashInputFlow().assertSearchForAccountFieldsAreDisplayed();
+});
+
+Then('I see Court Fee Details', () => {
+  manualCashInputFlow().assertPaymentCategoryDetailsAreDisplayed('courtFee');
+});
+
+Then('I see Suspense Details', () => {
+  manualCashInputFlow().assertPaymentCategoryDetailsAreDisplayed('suspense');
+});
+
+Then('I remain on Payment Category', () => {
+  manualCashInputFlow().assertPaymentCategoryIsDisplayed();
+});
+
+When('I continue without selecting a payment category', () => {
+  manualCashInputFlow().continueWithoutPaymentCategory();
+});
+
+Then('the payment category validation summary and field error are displayed', () => {
+  manualCashInputFlow().assertPaymentCategoryValidation();
+});
+
+When('I cancel Payment Category', () => {
+  manualCashInputFlow().cancelPaymentCategory();
+});
+
+When('I delete the till being created', () => {
+  manualCashInputFlow().deleteTill();
+});
+
 When('I cancel', () => {
   manualCashInputFlow().cancelWithoutBusinessUnit();
 });

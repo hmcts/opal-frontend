@@ -1,0 +1,134 @@
+@if (content.announcement) {
+  <opal-lib-custom-deferred-live-region-announcement
+    [id]="content.announcementId!"
+    [message]="content.announcement"
+    role="status"
+  />
+}
+<output [id]="content.selectedCountId" class="govuk-hint" aria-live="polite" aria-atomic="true">
+  {{ content.selected(selectedCount(), fullTableDataComputed().length) }}
+</output>
+<opal-lib-custom-horizontal-scroll-pane>
+  <opal-lib-moj-sortable-table [id]="content.id">
+    <ng-container caption
+      ><span class="govuk-visually-hidden">{{ content.caption }}</span></ng-container
+    >
+    <ng-container head>
+      <th class="govuk-table__header govuk-!-padding-0" scope="col" [id]="content.selectColumnId ?? ''">
+        @if (content.selectColumn) {
+          <span class="govuk-visually-hidden">{{ content.selectColumn }}</span>
+        }
+        @if (fullTableDataComputed().length > 0) {
+          <div class="govuk-form-group">
+            <fieldset
+              [id]="content.selectAllGroupId ?? content.selectAllId + '-group'"
+              class="govuk-fieldset"
+              [attr.aria-labelledby]="content.headingId"
+              [attr.aria-describedby]="
+                content.descriptionId + ' ' + content.selectedCountId + (selectionErrorId ? ' ' + selectionErrorId : '')
+              "
+            >
+              <legend class="govuk-fieldset__legend govuk-visually-hidden">{{ content.selectionLegend }}</legend>
+              <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                <div
+                  class="govuk-checkboxes--small"
+                  opal-lib-govuk-checkboxes-item
+                  opalLibMojMultiSelectHead
+                  [control]="selectAllControl"
+                  [inputId]="content.selectAllId"
+                  [inputName]="content.selectAllId"
+                  labelText=""
+                  labelClasses="govuk-!-margin-0 govuk-!-display-inline"
+                  [ariaLabel]="content.selectAll"
+                  [selectAllIndeterminate]="someSelected()"
+                  (toggleAll)="toggleAll($event)"
+                ></div>
+              </div>
+            </fieldset>
+          </div>
+        }
+      </th>
+      @for (column of columns; track column.key; let index = $index) {
+        <th
+          opal-lib-moj-sortable-table-header
+          [columnKey]="column.key"
+          [sortDirection]="sortStateSignal()[column.key]"
+          (sortChange)="onSortChange($event)"
+          [dataIndex]="index"
+          class="govuk-!-padding-top-2 govuk-!-padding-bottom-0"
+        >
+          {{ column.key }}
+        </th>
+      }
+    </ng-container>
+    <ng-container row>
+      @for (row of visibleRows(); track getRowId(row)) {
+        <tr opal-lib-moj-sortable-table-row [bodyRowClasses]="isSelected(row) ? 'govuk-table__row--selected' : ''">
+          <td
+            #paginationFocusTarget
+            opal-lib-moj-sortable-table-row-data
+            [id]="getCellId(row, content.selectionCellSuffix)"
+            class="govuk-!-padding-top-1 govuk-!-padding-bottom-0"
+          >
+            <opal-lib-govuk-checkboxes
+              [fieldSetId]="getRowDomId(row) + '-group'"
+              checkboxClasses=""
+              [legendText]="rowLabel(row)"
+              legendClasses="govuk-visually-hidden"
+              labelClasses="govuk-!-padding-0"
+            >
+              <div
+                class="govuk-checkboxes--small"
+                opal-lib-govuk-checkboxes-item
+                opalLibMojMultiSelectBody
+                [control]="rowControls.get(getRowId(row))!"
+                [rowId]="getRowId(row)"
+                [inputId]="getRowDomId(row)"
+                [inputName]="getRowDomId(row)"
+                labelText=""
+                labelClasses="govuk-!-padding-0"
+                [ariaLabel]="rowLabel(row)"
+                (selectionChange)="toggleRow($event)"
+              ></div>
+            </opal-lib-govuk-checkboxes>
+          </td>
+          @for (column of columns; track column.key) {
+            <td
+              opal-lib-moj-sortable-table-row-data
+              [id]="getCellId(row, column.idSuffix)"
+              class="govuk-!-padding-top-3"
+              [class.govuk-table__cell--numeric]="column.numeric"
+            >
+              @if (cellTemplate) {
+                <ng-container
+                  [ngTemplateOutlet]="cellTemplate"
+                  [ngTemplateOutletContext]="{ $implicit: row, column: column }"
+                />
+              } @else {
+                {{ row[column.displayKey ?? column.key] }}
+              }
+            </td>
+          }
+        </tr>
+      }
+    </ng-container>
+    <ng-container status>
+      @if (pageSize !== null) {
+        <output aria-atomic="true" class="govuk-visually-hidden">{{ pageChangeAnnouncement() }}</output>
+      }
+      <opal-lib-moj-sortable-table-status
+        [columnTitle]="sortedColumnTitleSignal()"
+        [sortDirection]="sortedColumnDirectionSignal()"
+      />
+    </ng-container>
+  </opal-lib-moj-sortable-table>
+</opal-lib-custom-horizontal-scroll-pane>
+@if (pageSize !== null && fullTableDataComputed().length > visibleRows().length) {
+  <opal-lib-moj-pagination
+    [id]="content.paginationId!"
+    [currentPage]="currentPageSignal()"
+    [limit]="itemsPerPageSignal()"
+    [total]="fullTableDataComputed().length"
+    (changePage)="onPageChange($event)"
+  />
+}

@@ -17,6 +17,8 @@ import { FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK } from './mocks/fines-
 import { FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK } from './utils/mocks/state/fines-mac-payload-fixed-penalty-details-state.mock';
 import { FINES_MAC_PAYMENT_TERMS_FORM } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-form';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 describe('FinesMacPayloadService', () => {
@@ -32,6 +34,7 @@ describe('FinesMacPayloadService', () => {
       account_type: payload.account_type!,
       account_status: payload.account_status,
       status_message: null,
+      source: 'MAC',
     };
   };
 
@@ -61,6 +64,42 @@ describe('FinesMacPayloadService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it.each([
+    { accountType: FINES_ACCOUNT_TYPES.Fine, originatorType: 'NEW' },
+    { accountType: FINES_ACCOUNT_TYPES['Conditional Caution'], originatorType: 'NEW' },
+    { accountType: FINES_ACCOUNT_TYPES['Fixed Penalty'], originatorType: 'FP' },
+    { accountType: FINES_ACCOUNT_TYPES.Fine, originatorType: 'TFO' },
+  ])(
+    'should include MAC source for $accountType with $originatorType originator',
+    ({ accountType, originatorType }) => {
+      if (!finesMacState || !service) {
+        throw new Error('Required mock states are not properly initialised');
+      }
+
+      finesMacState.accountDetails.formData.fm_create_account_account_type = accountType;
+      finesMacState.originatorType.formData.fm_originator_type_originator_type = originatorType;
+
+      const result = service.buildAddAccountPayload(finesMacState);
+
+      expect(result).toHaveProperty('source', 'MAC');
+      expect(result).not.toHaveProperty('source_reference');
+      expect(result.account.originator_type).toBe(originatorType);
+    },
+  );
+
+  it.each([true, false])('should submit MAC without a reference when banking interfaces is %s', (enabled) => {
+    if (!finesMacState || !service) {
+      throw new Error('Required mock states are not properly initialised');
+    }
+
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: enabled });
+
+    const result = service.buildAddAccountPayload(finesMacState);
+
+    expect(result).toHaveProperty('source', 'MAC');
+    expect(result).not.toHaveProperty('source_reference');
   });
 
   it('should create an add account payload', () => {

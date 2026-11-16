@@ -55,10 +55,10 @@ export class FinesMciCreateAllocateComponent {
               : '';
 
             return {
-              tillId: String(till.till_number),
-              'Till number': Number(till.till_number),
-              Payments: till.payment_count,
-              Amount: till.amount,
+              tillId: String(till.till_id),
+              'Till number': till.till_number,
+              Payments: till.payments_count ?? null,
+              Amount: Number(till.amount),
               'Business unit': till.business_unit_name,
               'Created by': till.processed_by,
               'Date created': processedDate?.isValid ? processedDate.toMillis() : null,

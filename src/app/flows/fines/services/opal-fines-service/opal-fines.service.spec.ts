@@ -1,3 +1,4 @@
+import { OPAL_FINES_SOURCE_MAPPINGS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-source-mappings.mock';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { HttpResponse, provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
@@ -108,6 +109,7 @@ describe('OpalFines', () => {
       account_type: payload.account_type!,
       account_status: payload.account_status,
       status_message: null,
+      source: 'MAC',
     };
   };
 
@@ -383,6 +385,145 @@ describe('OpalFines', () => {
     secondReq.flush(mockBusinessUnitCounts);
   });
 
+  describe('getSourceMappings', () => {
+    it('shares concurrent requests and replays the response to later callers', () => {
+      const first = vi.fn();
+      const second = vi.fn();
+      const later = vi.fn();
+      service.getSourceMappings().subscribe(first);
+      service.getSourceMappings().subscribe(second);
+      const request = httpMock.expectOne('/opal-fines-service/mappings/source');
+      expect(request.request.method).toBe('GET');
+      request.flush(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+      service.getSourceMappings().subscribe(later);
+      httpMock.expectNone('/opal-fines-service/mappings/source');
+      for (const subscriber of [first, second, later]) {
+        expect(subscriber).toHaveBeenCalledExactlyOnceWith(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+      }
+    });
+
+    it('retries a transient failure once and caches the successful response', () => {
+      const received = vi.fn();
+      const failed = vi.fn();
+      service.getSourceMappings().subscribe({ next: received, error: failed });
+      httpMock
+        .expectOne(OPAL_FINES_PATHS.sourceMappings)
+        .flush('Timed out', { status: 504, statusText: 'Gateway Timeout' });
+
+      const retry = httpMock.expectOne(OPAL_FINES_PATHS.sourceMappings);
+      expect(retry.request.method).toBe('GET');
+      retry.flush(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+      expect(received).toHaveBeenCalledExactlyOnceWith(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+      expect(failed).not.toHaveBeenCalled();
+
+      const later = vi.fn();
+      service.getSourceMappings().subscribe(later);
+      expect(later).toHaveBeenCalledExactlyOnceWith(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+      httpMock.expectNone(OPAL_FINES_PATHS.sourceMappings);
+    });
+
+    it('propagates an exhausted retry and allows a later subscriber to try again', () => {
+      const received = vi.fn();
+      const failed = vi.fn();
+      service.getSourceMappings().subscribe({ next: received, error: failed });
+      httpMock
+        .expectOne(OPAL_FINES_PATHS.sourceMappings)
+        .flush('Timed out', { status: 504, statusText: 'Gateway Timeout' });
+      httpMock
+        .expectOne(OPAL_FINES_PATHS.sourceMappings)
+        .flush('Still unavailable', { status: 503, statusText: 'Service Unavailable' });
+
+      expect(received).not.toHaveBeenCalled();
+      expect(failed).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ status: 503 }));
+      httpMock.expectNone(OPAL_FINES_PATHS.sourceMappings);
+
+      service.getSourceMappings().subscribe(received);
+      httpMock.expectOne(OPAL_FINES_PATHS.sourceMappings).flush(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+      expect(received).toHaveBeenCalledExactlyOnceWith(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+    });
+
+    it('caches an empty mapping response', () => {
+      service.getSourceMappings().subscribe();
+      httpMock.expectOne(OPAL_FINES_PATHS.sourceMappings).flush([]);
+      const received = vi.fn();
+      service.getSourceMappings().subscribe(received);
+      expect(received).toHaveBeenCalledWith([]);
+      httpMock.expectNone(OPAL_FINES_PATHS.sourceMappings);
+    });
+
+    it('allows a new request after a failure', () => {
+      const failed = vi.fn();
+      service.getSourceMappings().subscribe({ error: failed });
+      httpMock
+        .expectOne(OPAL_FINES_PATHS.sourceMappings)
+        .flush('Unavailable', { status: 400, statusText: 'Bad Request' });
+      expect(failed).toHaveBeenCalledOnce();
+      const received = vi.fn();
+      service.getSourceMappings().subscribe(received);
+      httpMock.expectOne(OPAL_FINES_PATHS.sourceMappings).flush(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+      expect(received).toHaveBeenCalledWith(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+    });
+
+    it('clears the mapping with the session reference caches', () => {
+      service.getSourceMappings().subscribe();
+      httpMock.expectOne(OPAL_FINES_PATHS.sourceMappings).flush(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+      service.clearAllCaches();
+      const received = vi.fn();
+      service.getSourceMappings().subscribe(received);
+      httpMock.expectOne(OPAL_FINES_PATHS.sourceMappings).flush([{ code: 'NEW', display_name: 'New provider' }]);
+      expect(received).toHaveBeenCalledWith([{ code: 'NEW', display_name: 'New provider' }]);
+    });
+  });
+
+  describe('getTills', () => {
+    it('requests eligible auto-payment tills with CSV filters and preserves the response', () => {
+      const response = {
+        tills: [
+          {
+            till_id: '9007199254740993',
+            till_number: 7,
+            amount: '123.45',
+            business_unit_name: 'BU Alpha',
+            processed_by: 'test.operator',
+            errors: 0,
+          },
+        ],
+      };
+      const received = vi.fn();
+      service
+        .getTills({ statuses: ['Created', 'Failed'], auto_payments: true, business_unit_ids: [77, 65] })
+        .subscribe(received);
+
+      const req = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.tills);
+      expect(req.request.method).toBe('GET');
+      expect(req.request.body).toBeNull();
+      expect(req.request.params.getAll('statuses')).toEqual(['Created,Failed']);
+      expect(req.request.params.getAll('business_unit_ids')).toEqual(['77,65']);
+      expect(req.request.params.get('auto_payments')).toBe('true');
+      req.flush(response);
+      expect(received).toHaveBeenCalledWith(response);
+    });
+
+    it('includes an explicit false auto-payments filter and omits empty arrays', () => {
+      service.getTills({ auto_payments: false, statuses: [], business_unit_ids: [] }).subscribe();
+      const req = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.tills);
+      expect(req.request.params.keys()).toEqual(['auto_payments']);
+      expect(req.request.params.get('auto_payments')).toBe('false');
+      req.flush({ tills: [] });
+    });
+
+    it('omits absent filters and fetches fresh results on each call', () => {
+      for (let call = 0; call < 2; call++) {
+        const received = vi.fn();
+        service.getTills({}).subscribe(received);
+        const req = httpMock.expectOne(OPAL_FINES_PATHS.tills);
+        expect(req.request.params.keys()).toEqual([]);
+        req.flush({ tills: [] });
+        expect(received).toHaveBeenCalledWith({ tills: [] });
+      }
+    });
+  });
+
   describe('getInterfaceJobsSummary', () => {
     it('should send a GET request with comma-separated list filters and optional query parameters', () => {
       service
@@ -459,16 +600,28 @@ describe('OpalFines', () => {
     it('should request created and failed manual tills using serialized query parameters', () => {
       const response = { tills: [] };
 
-      service.getTills({ statuses: ['CREATED', 'FAILED'], auto_payments: false }).subscribe((result) => {
-        expect(result).toEqual(response);
-      });
+      service
+        .getTills({ statuses: ['CREATED', 'FAILED'], auto_payments: false, business_unit_ids: [77, 88] })
+        .subscribe((result) => {
+          expect(result).toEqual(response);
+        });
 
       const req = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.tills);
       expect(req.request.method).toBe('GET');
-      expect(req.request.params.getAll('statuses')).toEqual(['CREATED', 'FAILED']);
+      expect(req.request.params.getAll('statuses')).toEqual(['CREATED,FAILED']);
       expect(req.request.params.get('auto_payments')).toBe('false');
+      expect(req.request.params.get('business_unit_ids')).toBe('77,88');
 
       req.flush(response);
+    });
+
+    it('should omit filters when none are provided', () => {
+      service.getTills({ statuses: [], business_unit_ids: [] }).subscribe();
+
+      const req = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.tills);
+      expect(req.request.params.keys()).toEqual([]);
+
+      req.flush({ tills: [] });
     });
   });
 
@@ -1093,6 +1246,7 @@ describe('OpalFines', () => {
       'account_type',
       'account_status',
       'status_message',
+      'source',
     ]);
 
     req.flush(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK);
@@ -1405,8 +1559,7 @@ describe('OpalFines', () => {
     expect(result).toEqual({});
   });
 
-  it('should getDefendantAccountHeader', () => {
-    const accountId = 456;
+  it.each([456, '9007199254740993'])('should getDefendantAccountHeader for account %s', (accountId) => {
     const expectedResponse = FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK;
     const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
 
@@ -1421,9 +1574,12 @@ describe('OpalFines', () => {
     req.flush(expectedResponse);
   });
 
-  it('should getDefendantAccountAtAGlance data', () => {
-    const account_id: number = 77;
-    const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK;
+  it.each([77, '9007199254740993'])('should getDefendantAccountAtAGlance data for account %s', (account_id) => {
+    const expectedResponse = {
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
+      account_status_code: 'L',
+      account_balance: 0,
+    };
     const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${account_id}/at-a-glance`;
 
     service.getDefendantAccountAtAGlance(account_id).subscribe((response) => {
@@ -1450,6 +1606,25 @@ describe('OpalFines', () => {
     });
 
     httpMock.expectNone(apiUrl);
+  });
+
+  it('should cancel an unobserved at-a-glance request and fetch again on a later subscription', () => {
+    const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/77/at-a-glance`;
+    const atAGlance = service.getDefendantAccountAtAGlance(77);
+    const firstSubscription = atAGlance.subscribe();
+    const secondSubscription = atAGlance.subscribe();
+    const pendingRequest = httpMock.expectOne(apiUrl);
+
+    firstSubscription.unsubscribe();
+    expect(pendingRequest.cancelled).toBe(false);
+
+    secondSubscription.unsubscribe();
+    expect(pendingRequest.cancelled).toBe(true);
+
+    const next = vi.fn();
+    atAGlance.subscribe(next);
+    httpMock.expectOne(apiUrl).flush(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+    expect(next).toHaveBeenCalledExactlyOnceWith(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
   });
 
   it('should getDefendantAccountParty', () => {

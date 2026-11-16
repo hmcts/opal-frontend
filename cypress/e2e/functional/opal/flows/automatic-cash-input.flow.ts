@@ -40,4 +40,14 @@ export class AutomaticCashInputFlow {
   public selectAProcessFileAndOpenConfirmProcess(): void {
     this.actions.selectAProcessFileAndOpenConfirmProcess();
   }
+
+  /** Selects a business unit and loads deterministic ignored-file data. */
+  public selectBusinessUnitsAndContinueWithStubbedIgnoredFiles(): void {
+    this.actions.selectBusinessUnitsAndContinueWithStubbedIgnoredFiles();
+  }
+
+  /** Checks the ignored-files tab and follows its file-summary link. */
+  public assertIgnoredFilesAndOpenFileSummary(): void {
+    this.actions.assertIgnoredFilesAndOpenFileSummary();
+  }
 }

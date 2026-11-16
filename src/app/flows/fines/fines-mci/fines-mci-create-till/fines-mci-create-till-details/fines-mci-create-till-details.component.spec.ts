@@ -39,6 +39,17 @@ describe('FinesMciCreateTillDetailsComponent', () => {
     expect(deleteTillLink?.textContent?.trim()).toBe('Delete till');
   });
 
+  it('should block navigation away from the till details page', () => {
+    expect(fixture.componentInstance.canDeactivate()).toBe(false);
+  });
+
+  it('should block browser refresh, reload, and exit', () => {
+    const beforeUnloadEvent = new Event('beforeunload', { cancelable: true });
+
+    expect(window.dispatchEvent(beforeUnloadEvent)).toBe(false);
+    expect(beforeUnloadEvent.defaultPrevented).toBe(true);
+  });
+
   it('should navigate back to select business unit and preserve the selected business unit', () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     const store = TestBed.inject(FinesMciStore);

@@ -5,6 +5,7 @@ import { FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_INDIVIDUAL_MOCK } from '../utils/mo
 import { FINES_ACCOUNT_TYPES } from '../../../../constants/fines-account-types.constant';
 
 export const FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK: IFinesMacAddAccountPayload = {
+  source: null,
   draft_account_id: null,
   created_at: null,
   account_snapshot: null,

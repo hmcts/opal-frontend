@@ -1,3 +1,4 @@
+import { fetchSourceMappingsResolver } from '../../routing/resolvers/fetch-source-mappings-resolver/fetch-source-mappings.resolver';
 import { Routes } from '@angular/router';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
@@ -44,6 +45,7 @@ export const routing: Routes = [
     },
     resolve: {
       title: TitleResolver,
+      sourceMappings: fetchSourceMappingsResolver,
     },
   },
   {
@@ -60,6 +62,38 @@ export const routing: Routes = [
     },
     resolve: {
       title: TitleResolver,
+    },
+  },
+  {
+    path: `${FINES_API_ROUTING_PATHS.children.tillSummary}/:tillId`,
+    loadComponent: () =>
+      import('../fines-api-summary-report/fines-api-summary-report.component').then(
+        (c) => c.FinesApiSummaryReportComponent,
+      ),
+    canActivate: [authGuard, routePermissionsGuard],
+    data: {
+      routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+      title: FINES_API_ROUTING_TITLES.children.tillSummary,
+    },
+    resolve: {
+      title: TitleResolver,
+      // The till summary data resolver will be added when report data loading is implemented.
+    },
+  },
+  {
+    path: `${FINES_API_ROUTING_PATHS.children.fileSummary}/:fileId`,
+    loadComponent: () =>
+      import('../fines-api-summary-report/fines-api-summary-report.component').then(
+        (c) => c.FinesApiSummaryReportComponent,
+      ),
+    canActivate: [authGuard, routePermissionsGuard],
+    data: {
+      routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+      title: FINES_API_ROUTING_TITLES.children.fileSummary,
+    },
+    resolve: {
+      title: TitleResolver,
+      // The file summary data resolver will be added when report data loading is implemented.
     },
   },
 ];

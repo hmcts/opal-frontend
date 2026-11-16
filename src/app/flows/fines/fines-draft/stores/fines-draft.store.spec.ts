@@ -28,6 +28,7 @@ describe('FinesDraftStore', () => {
     expect(store.created_at()).toEqual('');
     expect(store.account_snapshot()).toEqual({} as IFinesMacPayloadAccountSnapshot);
     expect(store.account_status_date()).toEqual('');
+    expect(store.getFinesDraftState().source).toBeNull();
     expect(store.fragment()).toEqual('');
   });
 
@@ -103,6 +104,23 @@ describe('FinesDraftStore', () => {
     expect(store.created_at()).toEqual(finesDraftState.created_at);
     expect(store.account_snapshot()).toEqual(finesDraftState.account_snapshot);
     expect(store.account_status_date()).toEqual(finesDraftState.account_status_date);
+  });
+
+  it.each(['MAC', 'CPP', 'VPFPO'] as const)('should preserve source %s in draft state', (source) => {
+    const finesDraftState = { ...structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT), source };
+
+    store.setFinesDraftState(finesDraftState);
+
+    expect(store.getFinesDraftState().source).toBe(source);
+  });
+
+  it('should use null when a draft response omits source', () => {
+    const finesDraftState = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
+    Reflect.deleteProperty(finesDraftState, 'source');
+
+    store.setFinesDraftState(finesDraftState);
+
+    expect(store.getFinesDraftState().source).toBeNull();
   });
 
   it('should get finesDraftState', () => {
