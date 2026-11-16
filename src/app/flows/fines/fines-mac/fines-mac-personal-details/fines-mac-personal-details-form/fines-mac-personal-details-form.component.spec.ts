@@ -115,10 +115,18 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     );
   });
 
-  it('should update vehicle registration errors when its control is absent', async () => {
+  it('should use the 11-character vehicle registration message when release-1a-1-2 is disabled', async () => {
     await fixture.whenStable();
-    component.form.removeControl('fm_personal_details_vehicle_registration_mark');
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+    fixture.detectChanges();
+    await fixture.whenStable();
 
+    expect(component.fieldErrors.fm_personal_details_vehicle_registration_mark['maxlength'].message).toBe(
+      'Registration number must be 11 characters or fewer',
+    );
+  });
+
+  it('should use the seven-character vehicle registration message when release-1a-1-2 is enabled', async () => {
     globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
     fixture.detectChanges();
     await fixture.whenStable();
