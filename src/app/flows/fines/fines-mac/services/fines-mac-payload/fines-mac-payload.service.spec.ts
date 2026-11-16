@@ -156,6 +156,45 @@ describe('FinesMacPayloadService', () => {
     expect(result).toEqual(buildExpectedReplaceRequest(finesMacPayloadAddAccount));
   });
 
+  it.each([
+    { defendantType: FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly, requestType: 'submit' },
+    { defendantType: FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly, requestType: 'resubmit' },
+    { defendantType: FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay, requestType: 'submit' },
+    { defendantType: FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay, requestType: 'resubmit' },
+    { defendantType: FINES_MAC_DEFENDANT_TYPES_KEYS.company, requestType: 'submit' },
+    { defendantType: FINES_MAC_DEFENDANT_TYPES_KEYS.company, requestType: 'resubmit' },
+  ])('strips telephone number spaces for $defendantType on $requestType', ({ defendantType, requestType }) => {
+    if (!finesMacState || !service) {
+      throw new Error('Required mock states are not properly initialised');
+    }
+
+    finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantType;
+    finesMacState.contactDetails.formData.fm_contact_details_telephone_number_mobile = '07 898 45 67 89';
+    finesMacState.contactDetails.formData.fm_contact_details_telephone_number_home = '0 208 123 45 67';
+    finesMacState.contactDetails.formData.fm_contact_details_telephone_number_business = '0207 123 4567';
+    finesMacState.employerDetails.formData.fm_employer_details_employer_telephone_number = '0207 234 56 78';
+
+    const result =
+      requestType === 'submit'
+        ? service.buildAddAccountPayload(finesMacState)
+        : service.buildReplaceAccountPayload(finesMacState);
+    const defendant = result.account.defendant;
+    const contact = defendantType === FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay ? defendant.parent_guardian : defendant;
+    const debtorDetail =
+      defendantType === FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay
+        ? defendant.parent_guardian?.debtor_detail
+        : defendant.debtor_detail;
+
+    expect(contact?.telephone_number_mobile).toBe('07898456789');
+    expect(contact?.telephone_number_home).toBe('02081234567');
+    expect(contact?.telephone_number_business).toBe('02071234567');
+    if (defendantType !== FINES_MAC_DEFENDANT_TYPES_KEYS.company) {
+      expect(debtorDetail?.employer_telephone_number).toBe('02072345678');
+    }
+    expect(finesMacState.contactDetails.formData.fm_contact_details_telephone_number_mobile).toBe('07 898 45 67 89');
+    expect(finesMacState.employerDetails.formData.fm_employer_details_employer_telephone_number).toBe('0207 234 56 78');
+  });
+
   it('should mapAccountPayload', () => {
     if (!finesMacPayloadAddAccount || !service) {
       throw new Error('Required mock states are not properly initialised');

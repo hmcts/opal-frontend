@@ -31,6 +31,25 @@ import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
+import { IFinesMacPayloadAccountDefendantComplete } from './utils/interfaces/fines-mac-payload-account-defendant-complete.interface';
+
+const stripTelephoneNumberSpaces = (value: string | null): string | null => value?.replace(/\s/g, '') ?? null;
+
+const normalizeTelephoneNumbers = (defendant: IFinesMacPayloadAccountDefendantComplete): void => {
+  for (const contact of [defendant, defendant.parent_guardian]) {
+    if (contact) {
+      contact.telephone_number_home = stripTelephoneNumberSpaces(contact.telephone_number_home);
+      contact.telephone_number_business = stripTelephoneNumberSpaces(contact.telephone_number_business);
+      contact.telephone_number_mobile = stripTelephoneNumberSpaces(contact.telephone_number_mobile);
+    }
+  }
+
+  for (const debtorDetail of [defendant.debtor_detail, defendant.parent_guardian?.debtor_detail]) {
+    if (debtorDetail) {
+      debtorDetail.employer_telephone_number = stripTelephoneNumberSpaces(debtorDetail.employer_telephone_number);
+    }
+  }
+};
 
 @Injectable({
   providedIn: 'root',
@@ -135,6 +154,7 @@ export class FinesMacPayloadService {
   ): IFinesMacReplaceAccountRequestPayload {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
     const accountPayload = this.buildAccountPayload(finesMacState);
+    normalizeTelephoneNumbers(accountPayload.defendant);
 
     const requestPayload: IFinesMacReplaceAccountRequestPayload = {
       business_unit_id: accountDetailsState['fm_create_account_business_unit_id']!,
