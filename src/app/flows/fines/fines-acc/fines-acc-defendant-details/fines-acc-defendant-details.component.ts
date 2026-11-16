@@ -61,6 +61,7 @@ import { IOpalFinesAccountDefendantDetailsConsolidatedAccounts } from '@services
 import { FinesAccDefendantDetailsConsolidatedAccountsTabComponent } from './fines-acc-defendant-details-consolidated-accounts-tab/fines-acc-defendant-details-consolidated-accounts-tab.component';
 import { getFinesAccCollectionOrderBannerMessage } from '../utils/fines-acc-collection-order-banner.utils';
 import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
+import { RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG } from '../../constants/release-feature-flags.constant';
 
 @Component({
   selector: 'app-fines-acc-defendant-details',
@@ -119,6 +120,13 @@ export class FinesAccDefendantDetailsComponent
   public accountTypes = FINES_ACCOUNT_TYPES;
   public lastEnforcement: IOpalFinesResultRefData | null = null;
   public finesPermissions = FINES_PERMISSIONS;
+
+  public get bankingInterfacesEnabled(): boolean {
+    return (
+      (this.globalStore.featureFlags() as Record<string, unknown>)[RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG] === true
+    );
+  }
+
   private fetchTabDataTyped<T extends IOpalFinesVersion>(serviceCall: Observable<T>): Observable<T> {
     return this.fetchTabData(serviceCall, (version) => this.accountStore.compareVersion(version)) as Observable<T>;
   }

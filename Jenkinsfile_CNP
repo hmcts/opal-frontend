@@ -61,14 +61,18 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String componentTestScript = 'test:component'
 @Field String r1bDrop1UatTechJcdeTag = '@R1BDrop1UatTechJCDE'
 @Field String r1bDrop2UatTechJcdeTag = '@R1BDrop2UatTechJCDE'
+@Field String r1cUatTechJcdeTag = '@R1CUatTechJCDE'
 @Field List<String> defaultFunctionalUatTechExclusions = [
   '@UAT-Technical',
   r1bDrop1UatTechJcdeTag,
   '@R1BDrop1UatTechPreprod',
   r1bDrop2UatTechJcdeTag,
   '@R1BDrop2UatTechPreprod',
+  r1cUatTechJcdeTag,
+  '@R1CUatTechPreprod',
 ]
 @Field List<String> jcdeOverrideTags = [
+  r1cUatTechJcdeTag,
   r1bDrop1UatTechJcdeTag,
   r1bDrop2UatTechJcdeTag,
 ]
@@ -642,6 +646,8 @@ boolean legacyEnabled = cachedPrLabels.contains('enable_legacy_mode')
 env.with { pipelineEnv ->
     pipelineEnv.DEV_DEFAULT_APP_MODE = opalName
     pipelineEnv.DEV_OPAL_LEGACY_GATEWAY_URL = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
+    pipelineEnv.STG_OPAL_LEGACY_GATEWAY_URL = pipelineEnv.STG_OPAL_LEGACY_GATEWAY_URL ?:
+        'https://opal-legacy-db-stub-staging.platform.hmcts.net/opal'
     pipelineEnv.IS_LEGACY_MODE = stringFalse
     pipelineEnv.LEGACY_ENABLED = stringFalse
     pipelineEnv.JCDE_OVERRIDE = stringFalse
