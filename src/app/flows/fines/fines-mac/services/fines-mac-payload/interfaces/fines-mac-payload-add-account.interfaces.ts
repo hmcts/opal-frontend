@@ -2,6 +2,7 @@ import { IOpalFinesVersion } from 'src/app/flows/fines/services/opal-fines-servi
 import { IFinesMacPayloadAccountSnapshot } from './fines-mac-payload-account-snapshot.interface';
 import { IFinesMacAccountTimelineData } from './fines-mac-payload-account-timeline-data.interface';
 import { IFinesMacPayloadAccount } from './fines-mac-payload-account.interface';
+import { FinesMacPayloadSource } from '../types/fines-mac-payload-source.type';
 
 export interface IFinesMacAddAccountPayload extends IOpalFinesVersion {
   business_unit_id: number | null;
@@ -16,4 +17,5 @@ export interface IFinesMacAddAccountPayload extends IOpalFinesVersion {
   created_at: string | null;
   account_snapshot: IFinesMacPayloadAccountSnapshot | null;
   account_status_date: string | null;
+  source: FinesMacPayloadSource | null;
 }

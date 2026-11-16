@@ -1,0 +1,6 @@
+@use 'govuk-frontend/dist/govuk/helpers/colour' as *;
+
+.fines-api-ignored-count {
+  background-color: govuk-colour('blue');
+  outline-color: govuk-colour('blue');
+}

@@ -48,7 +48,7 @@ describe('Suspense item navigation', () => {
 
   afterEach(() => vi.restoreAllMocks());
 
-  it.each([24, 25])('allows search with only permission %s', async (permissionId) => {
+  it.each([25, 26])('allows search with only permission %s', async (permissionId) => {
     const user = structuredClone(OPAL_USER_STATE_MOCK);
     user.business_unit_users = [user.business_unit_users[0]];
     user.business_unit_users[0].permissions = [{ permission_id: permissionId, permission_name: 'Suspense permission' }];
@@ -58,17 +58,23 @@ describe('Suspense item navigation', () => {
     expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/search');
   });
 
-  it('denies direct access without suspense permission before requesting business units', async () => {
-    const user = structuredClone(OPAL_USER_STATE_MOCK);
-    user.business_unit_users.forEach((unit) => {
-      unit.permissions = [];
-    });
-    getLoggedInUserState.mockReturnValue(of(user));
-    const harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl('/fines/suspense-item/search');
-    expect(TestBed.inject(Router).url).toBe('/access-denied');
-    expect(getBusinessUnitsByPermission).not.toHaveBeenCalled();
-  });
+  it.each([{ permissionIds: [] }, { permissionIds: [24] }])(
+    'denies direct access with permissions %j before requesting business units',
+    async ({ permissionIds }) => {
+      const user = structuredClone(OPAL_USER_STATE_MOCK);
+      user.business_unit_users.forEach((unit) => {
+        unit.permissions = permissionIds.map((permissionId) => ({
+          permission_id: permissionId,
+          permission_name: 'Non-suspense permission',
+        }));
+      });
+      getLoggedInUserState.mockReturnValue(of(user));
+      const harness = await RouterTestingHarness.create();
+      await harness.navigateByUrl('/fines/suspense-item/search');
+      expect(TestBed.inject(Router).url).toBe('/access-denied');
+      expect(getBusinessUnitsByPermission).not.toHaveBeenCalled();
+    },
+  );
 
   it('redirects the suspense root to the search screen', async () => {
     const harness = await RouterTestingHarness.create();

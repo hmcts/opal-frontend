@@ -11,3 +11,11 @@ Feature: Automatic Cash Input - Processing
     And I open Automatic Cash Input Select Business Units
     And I select business units and continue to Processing
     Then only files for the selected business units are displayed
+
+  @JIRA-STORY:PO-2588 @AC1 @AC2 @AC2a @AC2b @AC2c @AC3 @AC3a @AC4 @AC4a
+  Scenario: AC1, AC2, AC3 and AC4 - users view ignored files from the last 14 days and open their File Summary
+    When I select the Fines primary navigation item "Finance"
+    And I am taken to the "Finance" Fines landing page
+    And I open Automatic Cash Input Select Business Units
+    And I select a business unit and continue to Ignored files
+    Then I can view ignored files from the last 14 days and open their File Summary

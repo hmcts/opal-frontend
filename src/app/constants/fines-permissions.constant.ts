@@ -21,6 +21,7 @@ export const FINES_PERMISSIONS: IFinesPermissions = {
   'view-interface-files': 18,
   'create-interface-files': 19,
   'account-maintenance-minor-creditor': 20,
-  'view-suspense-items': 24,
-  'manage-suspense-items': 25,
+  'manage-alternate-payment-references': 24,
+  'view-suspense-items': 25,
+  'manage-suspense-items': 26,
 };

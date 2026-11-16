@@ -156,6 +156,7 @@ export class FinesMacPayloadService {
     return {
       ...this.buildAccountRequestPayload(structuredClone(finesMacState), FINES_MAC_PAYLOAD_STATUSES.submitted),
       status_message: null,
+      source: 'MAC',
     };
   }
 
