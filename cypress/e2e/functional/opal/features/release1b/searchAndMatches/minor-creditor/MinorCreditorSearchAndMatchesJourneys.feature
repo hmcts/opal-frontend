@@ -70,8 +70,7 @@ Feature: Minor Creditor Search And Matches Journeys
       | Name           | Co {uniq}     |
       | Address line 1 | 2 High Street |
 
-  # Legacy-data scenarios are scaffolds.
-  # Replace the LEGACY_* placeholders with real seeded data values before executing them.
+  # JCDE examples still require seeded data. PreProd example values are populated from the supplied legacy accounts.
 
   @LegacyData @JIRA-STORY:PO-715 @JIRA-STORY:PO-706 @JIRA-STORY:PO-708 @JIRA-EPIC:PO-704
   # Minimum data set required: one individual minor creditor with last name LEGACY_MINOR_CREDITOR_LAST_NAME, display name LEGACY_MINOR_CREDITOR_NAME, and address line 1 LEGACY_MINOR_CREDITOR_ADDRESS_LINE_1.
@@ -92,5 +91,5 @@ Feature: Minor Creditor Search And Matches Journeys
       | MinCredAccUniB                  | placeholder                | Unique MinCred CT                    |
     @R1BDrop2UatTechPreprod
     Examples:
-      | LEGACY_MINOR_CREDITOR_LAST_NAME | LEGACY_MINOR_CREDITOR_NAME | LEGACY_MINOR_CREDITOR_ADDRESS_LINE_1 |
-      | placeholder                     | placeholder                | placeholder                          |
+      | LEGACY_MINOR_CREDITOR_LAST_NAME | LEGACY_MINOR_CREDITOR_NAME   | LEGACY_MINOR_CREDITOR_ADDRESS_LINE_1 |
+      | Kaspian JFmicred-k              | Kaspian JFmicred-k, Katarina | 123 asdf                             |
