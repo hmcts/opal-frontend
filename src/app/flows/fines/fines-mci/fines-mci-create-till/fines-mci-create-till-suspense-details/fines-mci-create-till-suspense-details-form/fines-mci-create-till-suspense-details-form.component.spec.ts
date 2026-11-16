@@ -40,7 +40,7 @@ describe('FinesMciCreateTillSuspenseDetailsFormComponent', () => {
   }
 
   function submit(): void {
-    component.submitForm(new SubmitEvent('submit'));
+    component.handleFormSubmit(new SubmitEvent('submit'));
     fixture.detectChanges();
   }
 
@@ -86,8 +86,8 @@ describe('FinesMciCreateTillSuspenseDetailsFormComponent', () => {
     expect(element.textContent).toContain('Select who payment was received from');
     expect(element.textContent).toContain('Select a method of payment');
     expect(element.textContent).toContain('Select a reason for the suspense');
-    expect(element.querySelector('#amount-error')?.textContent).toContain('Enter an amount');
-    expect(element.querySelector('#amount')?.getAttribute('aria-describedby')).toBe('amount-error');
+    expect(element.querySelector('#amount-error-message')?.textContent).toContain('Enter an amount');
+    expect(element.querySelector('#amount')?.getAttribute('aria-describedby')).toBe('amount-error-message');
   });
 
   it('refreshes displayed validation only after Continue is clicked again', () => {
@@ -142,8 +142,27 @@ describe('FinesMciCreateTillSuspenseDetailsFormComponent', () => {
       (fixture.nativeElement as HTMLElement)
         .querySelector('#paymentReferencePostalOrder')
         ?.getAttribute('aria-describedby'),
-    ).toBe('paymentReferencePostalOrder-error');
-    expect((fixture.nativeElement as HTMLElement).querySelector('#paymentReferencePostalOrder-error')).not.toBeNull();
+    ).toBe('paymentReferencePostalOrder-error-message');
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector('#paymentReferencePostalOrder-error-message'),
+    ).not.toBeNull();
+  });
+
+  it('clears an obsolete reference error when the payment method changes', () => {
+    createForm();
+    setValidPayment();
+    component.form.controls['methodOfPayment'].setValue('postalOrder');
+    component.form.controls['paymentReferencePostalOrder'].setValue('invalid!');
+    submit();
+    expect(component.formControlErrorMessages['paymentReferencePostalOrder']).toBeTruthy();
+
+    component.form.controls['methodOfPayment'].setValue('cheque');
+    fixture.detectChanges();
+
+    expect(component.formControlErrorMessages['paymentReferencePostalOrder']).toBeUndefined();
+    expect(component.formErrorSummaryMessage.some((error) => error.fieldId === 'paymentReferencePostalOrder')).toBe(
+      false,
+    );
   });
 
   it('validates a cheque reference that exceeds 50 characters', () => {
@@ -158,8 +177,10 @@ describe('FinesMciCreateTillSuspenseDetailsFormComponent', () => {
     );
     expect(
       (fixture.nativeElement as HTMLElement).querySelector('#paymentReferenceCheque')?.getAttribute('aria-describedby'),
-    ).toBe('paymentReferenceCheque-error');
-    expect((fixture.nativeElement as HTMLElement).querySelector('#paymentReferenceCheque-error')).not.toBeNull();
+    ).toBe('paymentReferenceCheque-error-message');
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector('#paymentReferenceCheque-error-message'),
+    ).not.toBeNull();
   });
 
   it('requires a source and validates the credit transfer reference', () => {
@@ -184,9 +205,9 @@ describe('FinesMciCreateTillSuspenseDetailsFormComponent', () => {
       (fixture.nativeElement as HTMLElement)
         .querySelector('#paymentReferenceCreditTransfer')
         ?.getAttribute('aria-describedby'),
-    ).toBe('paymentReferenceCreditTransfer-error');
+    ).toBe('paymentReferenceCreditTransfer-error-message');
     expect(
-      (fixture.nativeElement as HTMLElement).querySelector('#paymentReferenceCreditTransfer-error'),
+      (fixture.nativeElement as HTMLElement).querySelector('#paymentReferenceCreditTransfer-error-message'),
     ).not.toBeNull();
   });
 
@@ -207,8 +228,8 @@ describe('FinesMciCreateTillSuspenseDetailsFormComponent', () => {
     );
     expect(
       (fixture.nativeElement as HTMLElement).querySelector('#relevantDetails')?.getAttribute('aria-describedby'),
-    ).toBe('relevantDetails-error');
-    expect((fixture.nativeElement as HTMLElement).querySelector('#relevantDetails-error')).not.toBeNull();
+    ).toBe('relevantDetails-error-message');
+    expect((fixture.nativeElement as HTMLElement).querySelector('#relevantDetails-error-message')).not.toBeNull();
   });
 
   it('emits valid form values when Continue is clicked', () => {

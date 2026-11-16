@@ -18,7 +18,7 @@ describe('FinesMciCreateTillPayerDetailsFormComponent', () => {
   });
 
   function submit(): void {
-    component.submitForm(new SubmitEvent('submit'));
+    component.handleFormSubmit(new SubmitEvent('submit'));
     fixture.detectChanges();
   }
 
@@ -126,6 +126,45 @@ describe('FinesMciCreateTillPayerDetailsFormComponent', () => {
 
     expect(component.form.controls['postcode'].valid).toBe(true);
     expect(component.form.valid).toBe(true);
+  });
+
+  it.each([
+    ['individual', 'lastName', 'Enter last name'],
+    ['company', 'companyName', 'Enter company name'],
+  ])('rejects a whitespace-only %s name', (payerType, field, message) => {
+    fixture.detectChanges();
+    component.form.controls['payerType'].setValue(payerType);
+    component.form.controls[field].setValue('   ');
+
+    submit();
+
+    expect(component.form.controls[field].hasError('required')).toBe(true);
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain(message);
+  });
+
+  it('removes the last-name error when switching to company', () => {
+    component.initialValue = {
+      payerType: 'individual',
+      title: null,
+      firstNames: '',
+      lastName: '',
+      companyName: '',
+      addressLine1: '',
+      addressLine2: '',
+      addressLine3: '',
+      postcode: '',
+    };
+    fixture.detectChanges();
+    submit();
+    expect(component.formErrorSummaryMessage.some((error) => error.fieldId === 'lastName')).toBe(true);
+
+    component.form.controls['payerType'].setValue('company');
+    fixture.changeDetectorRef.markForCheck();
+    fixture.detectChanges();
+
+    expect(component.formControlErrorMessages['lastName']).toBeUndefined();
+    expect(component.formErrorSummaryMessage.some((error) => error.fieldId === 'lastName')).toBe(false);
+    expect((fixture.nativeElement as HTMLElement).textContent).not.toContain('Enter last name');
   });
 
   it('emits valid individual details and clears fields for the other payer type', () => {

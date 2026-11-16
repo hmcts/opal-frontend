@@ -1,15 +1,13 @@
-@if (formSubmitted) {
-  <opal-lib-govuk-error-summary
-    [errors]="formErrorSummaryMessage"
-    (errorClick)="scrollTo($event)"
-  ></opal-lib-govuk-error-summary>
-}
-<form [formGroup]="form" (submit)="submitForm($event)" novalidate>
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
+<form [formGroup]="form" (submit)="handleFormSubmit($event)" novalidate>
   <opal-lib-govuk-radio
     fieldSetId="payerType"
     legendText="Payer type"
     legendClasses="govuk-fieldset__legend--s"
-    [errors]="formSubmitted ? formControlErrorMessages['payerType'] : null"
+    [errors]="formControlErrorMessages['payerType']"
   >
     <div
       opal-lib-govuk-radios-item
@@ -22,19 +20,34 @@
     ></div>
     <opal-lib-govuk-radios-conditional conditionalId="individual-payer-conditional">
       @if (form.controls['payerType'].value === 'individual') {
-        <div class="govuk-form-group">
-          <label class="govuk-label govuk-!-font-weight-bold" for="title">Title</label>
-          <select class="govuk-select" id="title" formControlName="title">
-            <option [ngValue]="null">Select</option>
-            <option value="Mr">Mr</option>
-            <option value="Mrs">Mrs</option>
-            <option value="Miss">Miss</option>
-            <option value="Ms">Ms</option>
-          </select>
-        </div>
-        @for (field of individualFields; track field.name) {
-          <ng-container [ngTemplateOutlet]="textField" [ngTemplateOutletContext]="{ $implicit: field }"></ng-container>
-        }
+        <opal-lib-govuk-select
+          labelText="Title"
+          labelClasses="govuk-label--s"
+          selectId="title"
+          selectName="title"
+          [options]="titleOptions"
+          [control]="form.controls['title']"
+          [errors]="formControlErrorMessages['title']"
+        ></opal-lib-govuk-select>
+        <opal-lib-govuk-text-input
+          labelText="First names"
+          inputId="firstNames"
+          inputName="firstNames"
+          inputClasses="govuk-input--width-20"
+          labelClasses="govuk-label--s"
+          hintText="Include their middle names"
+          [control]="form.controls['firstNames']"
+          [errors]="formControlErrorMessages['firstNames']"
+        ></opal-lib-govuk-text-input>
+        <opal-lib-govuk-text-input
+          labelText="Last name"
+          inputId="lastName"
+          inputName="lastName"
+          inputClasses="govuk-input--width-20"
+          labelClasses="govuk-label--s"
+          [control]="form.controls['lastName']"
+          [errors]="formControlErrorMessages['lastName']"
+        ></opal-lib-govuk-text-input>
       }
     </opal-lib-govuk-radios-conditional>
     <div
@@ -48,48 +61,53 @@
     ></div>
     <opal-lib-govuk-radios-conditional conditionalId="company-payer-conditional">
       @if (form.controls['payerType'].value === 'company') {
-        @for (field of companyFields; track field.name) {
-          <ng-container [ngTemplateOutlet]="textField" [ngTemplateOutletContext]="{ $implicit: field }"></ng-container>
-        }
+        <opal-lib-govuk-text-input
+          labelText="Company name"
+          inputId="companyName"
+          inputName="companyName"
+          inputClasses="govuk-input--width-20"
+          labelClasses="govuk-label--s"
+          [control]="form.controls['companyName']"
+          [errors]="formControlErrorMessages['companyName']"
+        ></opal-lib-govuk-text-input>
       }
     </opal-lib-govuk-radios-conditional>
   </opal-lib-govuk-radio>
 
   <h2 class="govuk-heading-m">Address</h2>
-  @for (field of addressFields; track field.name) {
-    <ng-container [ngTemplateOutlet]="textField" [ngTemplateOutletContext]="{ $implicit: field }"></ng-container>
-  }
+  <opal-lib-govuk-text-input
+    labelText="Address line 1"
+    inputId="addressLine1"
+    inputName="addressLine1"
+    [control]="form.controls['addressLine1']"
+    [errors]="formControlErrorMessages['addressLine1']"
+  ></opal-lib-govuk-text-input>
+  <opal-lib-govuk-text-input
+    labelText="Address line 2"
+    inputId="addressLine2"
+    inputName="addressLine2"
+    [control]="form.controls['addressLine2']"
+    [errors]="formControlErrorMessages['addressLine2']"
+  ></opal-lib-govuk-text-input>
+  <opal-lib-govuk-text-input
+    labelText="Address line 3"
+    inputId="addressLine3"
+    inputName="addressLine3"
+    inputClasses="govuk-input--width-20"
+    [control]="form.controls['addressLine3']"
+    [errors]="formControlErrorMessages['addressLine3']"
+  ></opal-lib-govuk-text-input>
+  <opal-lib-govuk-text-input
+    labelText="Post code"
+    inputId="postcode"
+    inputName="postcode"
+    inputClasses="govuk-input--width-10"
+    [control]="form.controls['postcode']"
+    [errors]="formControlErrorMessages['postcode']"
+  ></opal-lib-govuk-text-input>
 
   <div class="govuk-button-group">
     <button class="govuk-button" id="submitForm" type="submit">Continue</button>
     <opal-lib-govuk-cancel-link (linkClickEvent)="cancelRequested.emit()"></opal-lib-govuk-cancel-link>
   </div>
 </form>
-
-<ng-template #textField let-field>
-  <div class="govuk-form-group" [class.govuk-form-group--error]="formSubmitted && formControlErrorMessages[field.name]">
-    <label class="govuk-label" [class.govuk-!-font-weight-bold]="field.bold" [for]="field.name">{{
-      field.label
-    }}</label>
-    @if (field.name === 'firstNames') {
-      <div class="govuk-hint" id="firstNames-hint">Include their middle names</div>
-    }
-    @if (formSubmitted && formControlErrorMessages[field.name]; as message) {
-      <p class="govuk-error-message" [id]="field.name + '-error'">{{ message }}</p>
-    }
-    <input
-      class="govuk-input"
-      [class.govuk-input--width-20]="field.width === '20'"
-      [class.govuk-input--width-10]="field.width === '10'"
-      [id]="field.name"
-      [formControl]="fieldControl(field.name)"
-      [attr.aria-describedby]="
-        field.name === 'firstNames'
-          ? 'firstNames-hint' + (formSubmitted && formControlErrorMessages[field.name] ? ' firstNames-error' : '')
-          : formSubmitted && formControlErrorMessages[field.name]
-            ? field.name + '-error'
-            : null
-      "
-    />
-  </div>
-</ng-template>
