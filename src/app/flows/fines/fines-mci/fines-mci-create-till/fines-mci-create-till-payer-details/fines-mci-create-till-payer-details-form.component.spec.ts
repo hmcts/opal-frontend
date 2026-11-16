@@ -120,12 +120,24 @@ describe('FinesMciCreateTillPayerDetailsFormComponent', () => {
     );
   });
 
-  it('accepts an optional alphanumeric post code without checking its UK format', () => {
+  it.each(['123', 'ABC 123'])('rejects a post code that is not a UK postcode: %s', (postcode) => {
     fixture.detectChanges();
-    component.form.patchValue({ payerType: 'individual', lastName: 'Smith', postcode: 'ABC 123' });
+    component.form.patchValue({ payerType: 'individual', lastName: 'Smith', postcode });
+    submit();
+
+    expect(component.form.controls['postcode'].hasError('ukPostcode')).toBe(true);
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('Enter a valid UK post code');
+  });
+
+  it('accepts an optional blank or valid UK post code', () => {
+    fixture.detectChanges();
+    component.form.patchValue({ payerType: 'individual', lastName: 'Smith', postcode: 'SW1A 1AA' });
 
     expect(component.form.controls['postcode'].valid).toBe(true);
     expect(component.form.valid).toBe(true);
+
+    component.form.controls['postcode'].setValue('');
+    expect(component.form.controls['postcode'].valid).toBe(true);
   });
 
   it.each([
@@ -203,6 +215,39 @@ describe('FinesMciCreateTillPayerDetailsFormComponent', () => {
     expect(component.formControlErrorMessages['lastName']).toBeUndefined();
     expect(component.formErrorSummaryMessage.some((error) => error.fieldId === 'lastName')).toBe(false);
     expect((fixture.nativeElement as HTMLElement).textContent).not.toContain('Enter last name');
+  });
+
+  it('removes first-name validation errors when switching to company', () => {
+    component.initialValue = {
+      payerType: 'individual',
+      title: null,
+      firstNames: '',
+      lastName: '',
+      companyName: '',
+      addressLine1: '',
+      addressLine2: '',
+      addressLine3: '',
+      postcode: '',
+    };
+    fixture.detectChanges();
+    component.form.controls['firstNames'].setValue('A1');
+    component.form.controls['lastName'].setValue('Smith');
+    submit();
+    expect(component.formControlErrorMessages['firstNames']).toBeDefined();
+    expect(component.formErrorSummaryMessage.some((error) => error.fieldId === 'firstNames')).toBe(true);
+
+    component.form.controls['companyName'].setValue('Example Ltd');
+    component.form.controls['payerType'].setValue('company');
+    fixture.changeDetectorRef.markForCheck();
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+    expect(component.form.controls['firstNames'].errors).toBeNull();
+    expect(component.formControlErrorMessages['firstNames']).toBeUndefined();
+    expect(component.formErrorSummaryMessage.some((error) => error.fieldId === 'firstNames')).toBe(false);
+    expect(element.querySelector('#firstNames')).toBeNull();
+    expect(element.querySelector('.govuk-error-summary a[href="#firstNames"]')).toBeNull();
+    expect(element.textContent).not.toContain('First names must only include letters a to z');
   });
 
   it('emits valid individual details and clears fields for the other payer type', () => {

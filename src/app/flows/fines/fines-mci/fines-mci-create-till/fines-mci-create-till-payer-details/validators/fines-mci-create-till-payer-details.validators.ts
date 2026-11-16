@@ -7,6 +7,14 @@ export const PAYER_POSTCODE_PATTERN_VALIDATOR = patternValidator(
   'alphanumericTextPattern',
 );
 
+const UK_POSTCODE_PATTERN = /^(?:GIR 0AA|[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2})$/i;
+
+/** Validates a populated postcode against the UK postcode structure. */
+export function ukPostcodeValidator(control: AbstractControl) {
+  if (typeof control.value !== 'string' || control.value.length === 0) return null;
+  return UK_POSTCODE_PATTERN.test(control.value.trim()) ? null : { ukPostcode: true };
+}
+
 /**
  * Requires a payer name to contain at least one non-whitespace character.
  * @param control - Name control being validated.
