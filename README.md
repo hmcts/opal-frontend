@@ -12,6 +12,7 @@ This is an [Angular SSR](https://angular.dev/guide/ssr) application. There are t
 - [Shared Codex Skills](#shared-codex-skills)
 - [Local Development Strategy](#local-development-strategy)
 - [Production Server](#5-production-server)
+- [Dynatrace runtime configuration](#dynatrace-runtime-configuration)
 - [Running Unit Tests](#running-unit-tests)
 - [Running End-to-End Tests](#running-end-to-end-tests)
 - [Running Tests Against JCDE Payloads](#running-tests-against-jcde-payloads)
@@ -663,6 +664,14 @@ We are using [axe-core](https://github.com/dequelabs/axe-core) and [cypress-axe]
 Run the production server and once running you can run the smoke or functional test commands.
 
 > See [opal-frontend-common-ui-lib](https://github.com/hmcts/opal-frontend-common-ui-lib), [opal-frontend-common-node-lib](https://github.com/hmcts/opal-frontend-common-node-lib), and [opal-frontend-common-cypress-lib](https://github.com/hmcts/opal-frontend-common-cypress-lib) for usage and build instructions.
+
+## Dynatrace runtime configuration
+
+The SSR server reads `DYNATRACE_ENABLED` and `DYNATRACE_SCRIPT_URL` at startup. Both are optional; monitoring is off by default. Set `DYNATRACE_ENABLED=true` and provide the complete HTTPS JavaScript URL supplied for that deployment environment to include the script in the rendered `<head>`. The URL must use a `dynatrace.com` subdomain, which is already allowed by the shared CSP. An absent or invalid URL leaves the page unchanged. The script uses `async` so a failed download does not block application scripts.
+
+The base Helm values disable Dynatrace and contain no URL. Supply the flag and environment-specific URL through deployment values; the development and staging templates accept `DYNATRACE_ENABLED` and `DYNATRACE_SCRIPT_URL`. Before enabling an environment, confirm its script URL, ingestion endpoints, and automatic-start setting with the Dynatrace team, then verify telemetry in that environment. The SSR integration only inserts the script and does not call `dtrum.enable()`.
+
+Consent controls and persistence are outside PO-10538. Before adding them, agree whether the script may download before acceptance. That decision determines whether SSR loading can remain or must move behind consent.
 
 ## Switching Between Local and Published Common Libraries
 

@@ -5,10 +5,10 @@ const distFolder = join(process.cwd(), 'dist/opal-frontend/browser');
 const indexHtmlPath = existsSync(join(distFolder, 'index.original.html'))
   ? join(distFolder, 'index.original.html')
   : join(distFolder, 'index.html');
-const indexHtmlDocument = addDynatraceScriptUrl(
-  fs.readFileSync(indexHtmlPath).toString(),
-  config.get<string>('dynatrace.scriptUrl'),
-);
+const indexHtmlDocument = addDynatraceScript(fs.readFileSync(indexHtmlPath).toString(), {
+  enabled: config.has('dynatrace.enabled') && String(config.get('dynatrace.enabled')).toLowerCase() === 'true',
+  scriptUrl: config.has('dynatrace.scriptUrl') ? config.get<string>('dynatrace.scriptUrl') : undefined,
+});
 const template = indexHtmlDocument;
 
 const win = domino.createWindow(template.toString());
@@ -26,7 +26,7 @@ import { existsSync } from 'node:fs';
 import { Logger } from '@hmcts/nodejs-logging';
 import config from 'config';
 import bootstrap from './src/main.server';
-import { addDynatraceScriptUrl } from './src/app/dynatrace-config';
+import { addDynatraceScript } from '@hmcts/opal-frontend-common-node/dynatrace';
 
 import {
   getRoutesConfig,

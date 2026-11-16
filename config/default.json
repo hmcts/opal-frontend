@@ -102,6 +102,7 @@
     "cloudRoleName": "opal-frontend"
   },
   "dynatrace": {
+    "enabled": false,
     "scriptUrl": ""
   },
   "microsoft": {
