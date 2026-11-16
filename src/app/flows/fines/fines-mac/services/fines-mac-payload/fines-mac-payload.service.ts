@@ -29,7 +29,10 @@ import { finesMacPayloadMapAccountFixedPenalty } from './utils/fines-mac-payload
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
 import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-patch-request-payload.interface';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import {
+  RELEASE_1A_1_2_FEATURE_FLAG,
+  RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
+} from '../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
 
 @Injectable({
@@ -153,10 +156,14 @@ export class FinesMacPayloadService {
    * @returns The payload required to add an account in the fines MAC system.
    */
   public buildAddAccountPayload(finesMacState: IFinesMacState): IFinesMacAddAccountRequestPayload {
+    const bankingInterfacesEnabled = getFeatureFlagReleaseState(this.globalStore.featureFlags())[
+      RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG
+    ];
+
     return {
       ...this.buildAccountRequestPayload(structuredClone(finesMacState), FINES_MAC_PAYLOAD_STATUSES.submitted),
       status_message: null,
-      source: 'MAC',
+      ...(bankingInterfacesEnabled ? { source: 'MAC' as const } : {}),
     };
   }
 

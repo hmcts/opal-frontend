@@ -50,6 +50,7 @@ describe('FinesMacPayloadService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({});
     service = TestBed.inject(FinesMacPayloadService);
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true });
 
     finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
     finesMacPayloadAddAccount = structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT);
@@ -89,16 +90,27 @@ describe('FinesMacPayloadService', () => {
     },
   );
 
-  it.each([true, false])('should submit MAC without a reference when banking interfaces is %s', (enabled) => {
+  it.each([true, false, undefined])('should retain the add payload when banking interfaces is %s', (enabled) => {
     if (!finesMacState || !service) {
       throw new Error('Required mock states are not properly initialised');
     }
 
-    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: enabled });
+    TestBed.inject(GlobalStore).setFeatureFlags(
+      enabled === undefined ? {} : { [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: enabled },
+    );
 
     const result = service.buildAddAccountPayload(finesMacState);
+    const expected = buildExpectedAddRequest(structuredClone(FINES_MAC_PAYLOAD_ADD_ACCOUNT));
+    expected.account.defendant.parent_guardian = null;
 
-    expect(result).toHaveProperty('source', 'MAC');
+    if (enabled) {
+      expect(result).toHaveProperty('source', 'MAC');
+    } else {
+      delete expected.source;
+      expect(result).not.toHaveProperty('source');
+    }
+
+    expect(result).toEqual(expected);
     expect(result).not.toHaveProperty('source_reference');
   });
 

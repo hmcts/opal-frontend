@@ -22,7 +22,11 @@ import { FINES_DRAFT_STATE } from 'src/app/flows/fines/fines-draft/constants/fin
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
-import { RELEASE_1A_1_1_FEATURE_FLAG } from 'src/app/flows/fines/constants/release-feature-flags.constant';
+import {
+  RELEASE_1A_1_1_FEATURE_FLAG,
+  RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
+} from 'src/app/flows/fines/constants/release-feature-flags.constant';
+import { FINES_MAC_ROUTING_PATHS } from 'src/app/flows/fines/fines-mac/routing/constants/fines-mac-routing-paths.constant';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
@@ -48,6 +52,7 @@ describe('FinesMacReviewAccountComponent', () => {
     amend: boolean = true,
     checker: boolean = false,
     draftAccountId: string | null = '42',
+    bankingInterfacesEnabled?: boolean,
   ) => {
     finesDraftStateMock = structuredClone(finesDraftStateMock);
     activatedRouteMock = activatedRouteMock ? structuredClone(activatedRouteMock) : null;
@@ -85,7 +90,12 @@ describe('FinesMacReviewAccountComponent', () => {
             const store = new GlobalStore();
             store.setUserState(OPAL_USER_STATE_MOCK);
             store.setBannerError({ ...GLOBAL_ERROR_STATE, error: false, message: '' });
-            store.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: true });
+            store.setFeatureFlags({
+              [RELEASE_1A_1_1_FEATURE_FLAG]: true,
+              ...(bankingInterfacesEnabled === undefined
+                ? {}
+                : { [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: bankingInterfacesEnabled }),
+            });
             return store;
           },
         },
@@ -1702,7 +1712,7 @@ describe('FinesMacReviewAccountComponent', () => {
         formData: { fm_originator_type_originator_type: 'NEW' },
       };
 
-      setupComponent(finesDraftState, null, false, false);
+      setupComponent(finesDraftState, null, false, false, '42', true);
       cy.get(DOM_ELEMENTS.submitButton).should('exist').click();
 
       cy.wait('@postDraftAccount')
@@ -1724,7 +1734,7 @@ describe('FinesMacReviewAccountComponent', () => {
         formData: { fm_originator_type_originator_type: 'TFO' },
       };
 
-      setupComponent(finesDraftState, null, false, false);
+      setupComponent(finesDraftState, null, false, false, '42', true);
       cy.get(DOM_ELEMENTS.submitButton).should('exist').click();
 
       cy.wait('@postDraftAccount')
@@ -1734,6 +1744,65 @@ describe('FinesMacReviewAccountComponent', () => {
           expect(body).not.to.have.property('source_reference');
           expect(body.account).to.have.property('originator_type', 'TFO');
         });
+    },
+  );
+
+  [true, false, undefined].forEach((bankingInterfacesEnabled) => {
+    it(
+      `should submit the MAC draft account with banking interfaces ${bankingInterfacesEnabled ?? 'missing'}`,
+      { tags: buildTags('@JIRA-STORY:PO-10337') },
+      () => {
+        setupComponent(finesDraftState, null, false, false, '42', bankingInterfacesEnabled);
+
+        cy.get(DOM_ELEMENTS.submitButton).click();
+
+        cy.wait('@postDraftAccount')
+          .its('request.body')
+          .should((body) => {
+            if (bankingInterfacesEnabled) {
+              expect(body).to.have.property('source', 'MAC');
+            } else {
+              expect(body).not.to.have.property('source');
+            }
+
+            expect(body).not.to.have.property('source_reference');
+            expect(body).to.have.property(
+              'business_unit_id',
+              finesMacState.accountDetails.formData.fm_create_account_business_unit_id,
+            );
+            expect(body).to.have.property(
+              'account_type',
+              finesMacState.accountDetails.formData.fm_create_account_account_type,
+            );
+            expect(body).to.have.property('account_status', 'Submitted');
+            expect(body).to.have.property('status_message', null);
+            expect(body.account).to.have.property(
+              'originator_type',
+              finesMacState.originatorType.formData.fm_originator_type_originator_type,
+            );
+          });
+        cy.get('@routerNavigate').should('have.been.calledWith', [FINES_MAC_ROUTING_PATHS.children.submitConfirmation]);
+      },
+    );
+  });
+
+  it(
+    'should retain the review page when a MAC source submission fails',
+    { tags: buildTags('@JIRA-STORY:PO-10337') },
+    () => {
+      cy.intercept('POST', '**/opal-fines-service/draft-accounts**', { statusCode: 500 }).as('failedDraftAccount');
+      setupComponent(finesDraftState, null, false, false, '42', true);
+
+      cy.get(DOM_ELEMENTS.submitButton).click();
+
+      cy.wait('@failedDraftAccount')
+        .its('request.body')
+        .should((body) => {
+          expect(body).to.have.property('source', 'MAC');
+          expect(body).not.to.have.property('source_reference');
+        });
+      cy.get(DOM_ELEMENTS.submitButton).should('be.visible');
+      cy.get('@routerNavigate').should('not.have.been.called');
     },
   );
 });
