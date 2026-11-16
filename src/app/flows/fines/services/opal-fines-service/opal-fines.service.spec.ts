@@ -82,7 +82,6 @@ import { OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK } from './mocks/o
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK } from './mocks/opal-fines-account-defendant-details-consolidated-accounts.mock';
 import { IOpalFinesReport } from './interfaces/opal-fines-report.interface';
 import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
-import { IOpalFinesApr } from './interfaces/opal-fines-apr.interface';
 
 const INTERFACE_JOBS_SUMMARY_RESPONSE: IOpalFinesInterfaceJobsSummaryResponse = {
   interface_jobs: [
