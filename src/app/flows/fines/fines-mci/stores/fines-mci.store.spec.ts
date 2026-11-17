@@ -29,7 +29,7 @@ describe('FinesMciStore', () => {
   });
 
   it.each(['business unit change', 'reset'] as const)(
-    'should clear criminal search and the draft journey on %s',
+    'should clear criminal search and payment drafts on %s',
     (action) => {
       const [initialBusinessUnit, nextBusinessUnit] = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData;
       const criminalSearch: IFinesMciCriminalSearch = {
@@ -53,7 +53,8 @@ describe('FinesMciStore', () => {
       };
       store.setBusinessUnit(initialBusinessUnit);
       store.ensureTill();
-      store.setDraftJourney('criminal');
+      store.setDraftJourney('courtFee');
+      store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: '25.00', numberOfItems: '2' });
       store.setCriminalSearch(criminalSearch);
       store.setCriminalSearchResults(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK);
       store.setSelectedCriminalAccount(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0]);
@@ -72,6 +73,7 @@ describe('FinesMciStore', () => {
       expect(store.selectedCriminalAccountAtAGlance()).toBeNull();
       expect(store.selectedCriminalAccountHeader()).toBeNull();
       expect(store.draftJourney()).toBeNull();
+      expect(store.courtFeeDraft()).toBeNull();
       expect(store.tills()).toEqual([]);
     },
   );
@@ -132,6 +134,9 @@ describe('FinesMciStore', () => {
     const tillId = store.ensureTill();
     store.addPayment(tillId, 'criminal');
     const tills = store.tills();
+    const courtFeeDraft = { courtFeeId: 1, amountPaid: '25.00', numberOfItems: '2' };
+    store.setDraftJourney('courtFee');
+    store.setCourtFeeDraft(courtFeeDraft);
     store.setCriminalSearchResults(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK);
     store.setSelectedCriminalAccount(account);
 
@@ -139,6 +144,7 @@ describe('FinesMciStore', () => {
 
     expect(store.ensureTill()).toBe(tillId);
     expect(store.tills()).toEqual(tills);
+    expect(store.courtFeeDraft()).toEqual(courtFeeDraft);
     expect(store.criminalSearchResults()).toEqual(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK);
     expect(store.selectedCriminalAccount()).toEqual(account);
   });
@@ -155,6 +161,24 @@ describe('FinesMciStore', () => {
     expect(store.tills()).toEqual([]);
     expect(store.draftJourney()).toBeNull();
     expect(store.suspensePayment()).toBeNull();
+  });
+
+  it('keeps court fee details in memory until the journey is cancelled or the business unit changes', () => {
+    const [initialBusinessUnit, nextBusinessUnit] = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData;
+    const draft = {
+      courtFeeId: 1,
+      amountPaid: '25.00',
+      numberOfItems: '2',
+    };
+    store.setBusinessUnit(initialBusinessUnit);
+    store.setDraftJourney('courtFee');
+    store.setCourtFeeDraft(draft);
+
+    expect(store.courtFeeDraft()).toEqual(draft);
+
+    store.setBusinessUnit(nextBusinessUnit);
+
+    expect(store.courtFeeDraft()).toBeNull();
   });
 
   it('should create the in-progress till and return its id', () => {

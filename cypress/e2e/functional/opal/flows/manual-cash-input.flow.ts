@@ -124,6 +124,25 @@ export class ManualCashInputFlow {
     this.actions.assertPaymentCategoryDetailsAreDisplayed(category);
   }
 
+  /**
+   * Submits a Court Fee payment with the specified amount and item count.
+   * @param amount - Amount paid for the court fee.
+   * @param numberOfItems - Number of court fee items paid for.
+   */
+  public submitCourtFeePayment(amount: string, numberOfItems: string): void {
+    this.actions.submitCourtFeePayment(amount, numberOfItems);
+  }
+
+  /** Verifies the exact-payment destination. */
+  public assertCourtFeePaymentDetailsIsDisplayed(): void {
+    this.actions.assertCourtFeePaymentDetailsIsDisplayed();
+  }
+
+  /** Verifies the over/underpayment destination. */
+  public assertCourtFeeOverUnderpaymentIsDisplayed(): void {
+    this.actions.assertCourtFeeOverUnderpaymentIsDisplayed();
+  }
+
   /** Verifies the Payment Category page remains displayed. */
   public assertPaymentCategoryIsDisplayed(): void {
     this.actions.assertPaymentCategoryIsDisplayed();
