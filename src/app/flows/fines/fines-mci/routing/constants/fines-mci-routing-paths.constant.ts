@@ -16,6 +16,8 @@ export const FINES_MCI_ROUTING_PATHS: IFinesMciRoutingPaths = {
     matches: 'matches',
     account: 'account',
     suspenseDetails: 'suspense-details',
+    checkSuspensePayment: 'check-suspense-payment',
+    payerDetails: 'payer-details',
     courtFeeDetails: 'court-fee-details',
     courtFeePaymentDetails: 'court-fee-payment-details',
     overUnderpaymentConfirmation: 'over-underpayment-confirmation',
