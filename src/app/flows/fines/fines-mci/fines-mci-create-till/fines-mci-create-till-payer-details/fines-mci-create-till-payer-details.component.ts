@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, HostListener, inject, OnInit } from
 import { Router } from '@angular/router';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
+import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
@@ -18,11 +19,14 @@ import { FinesMciCreateTillPayerDetailsFormComponent } from './fines-mci-create-
 export class FinesMciCreateTillPayerDetailsComponent extends AbstractFormParentBaseComponent implements OnInit {
   private readonly navigationRouter = inject(Router);
   protected readonly finesMciStore = inject(FinesMciStore);
+  private isNavigatingFromPageAction = false;
+  private hasUnsavedPayerDetails = false;
 
   private navigateTo(path: string, cancel: boolean): void {
     const suspensePayment = this.finesMciStore.suspensePayment();
     const payerDetails = this.finesMciStore.suspensePayerDetails();
     const draftJourney = this.finesMciStore.draftJourney();
+    this.isNavigatingFromPageAction = !this.hasUnsavedPayerDetails && payerDetails === null;
     this.finesMciStore.setSuspensePayerDetails(null);
     if (cancel) {
       this.finesMciStore.setSuspensePayment(null);
@@ -39,6 +43,7 @@ export class FinesMciCreateTillPayerDetailsComponent extends AbstractFormParentB
       ])
       .then((navigated) => {
         if (!navigated) {
+          this.isNavigatingFromPageAction = false;
           this.finesMciStore.setSuspensePayerDetails(payerDetails);
           if (cancel) {
             this.finesMciStore.setSuspensePayment(suspensePayment);
@@ -60,10 +65,16 @@ export class FinesMciCreateTillPayerDetailsComponent extends AbstractFormParentB
   }
 
   public handleUnsavedChanges(unsavedChanges: boolean): void {
+    this.hasUnsavedPayerDetails = unsavedChanges;
     this.stateUnsavedChanges =
       unsavedChanges ||
       this.finesMciStore.suspensePayment() !== null ||
       this.finesMciStore.suspensePayerDetails() !== null;
+  }
+
+  /** Allows Back and Cancel from an empty payer form without disabling unload protection. */
+  public override canDeactivate(): CanDeactivateTypes {
+    return this.isNavigatingFromPageAction || super.canDeactivate();
   }
 
   public handleBack(): void {
