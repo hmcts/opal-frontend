@@ -108,7 +108,7 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
     FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details,
   ]);
 
-  /** Builds display rows from the fresh account details, preserving alias order in the stored response. */
+  /** Builds display rows from fresh details, sorting aliases without mutating the stored response. */
   protected readonly rows = computed(() => {
     const account = this.store.selectedCriminalAccountAtAGlance();
     const party = account?.party_details;
@@ -248,9 +248,11 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
     return message ? [{ fieldId: 'fines-mci-consolidated-next-step', message }] : [];
   });
 
+  /** Resets choices when the routed account changes and cancels master loading when the user changes their choice. */
   constructor() {
     effect(() => {
       this.accountId();
+      // A route-driven reset must not cancel the master navigation that changed the account.
       this.nextStep.reset(null, { emitEvent: false });
       this.nextStepError.set(null);
     });
@@ -279,7 +281,11 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
     this.utils.scrollToTop();
   }
 
-  /** Loads the master and reuses this route to evaluate its current payment eligibility. */
+  /**
+   * Loads the master and reuses this route to evaluate its current payment eligibility.
+   * Restores the child if navigation fails or is cancelled. Failed loads retain the child and scroll
+   * to the global error banner; choice changes, Back, Cancel and destruction unsubscribe pending work.
+   */
   private loadMasterAccount(): void {
     const child = this.store.selectedCriminalAccount()!;
     const childDetails = this.store.selectedCriminalAccountAtAGlance()!;
@@ -339,7 +345,13 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
     this.document.getElementById('fines-mci-consolidated-next-step')?.focus();
   }
 
-  /** Validates the consolidated-account choice and starts the selected journey. */
+  /**
+   * Validates the consolidated-account choice, focusing the error summary when no option is selected.
+   * Starts master loading or returns to the MCI landing page for suspense, ignoring duplicate submissions
+   * while a master load is pending.
+   *
+   * @param event The Next steps form submission, whose default browser navigation is prevented.
+   */
   protected continueConsolidated(event: Event): void {
     event.preventDefault();
     if (!this.isConsolidatedChild() || this.isLoadingMaster()) return;

@@ -13,7 +13,16 @@ export class FinesMciCriminalAccountService {
   private readonly store = inject(FinesMciStore);
   private readonly globalStore = inject(GlobalStore);
 
-  /** Resolves and loads a master without replacing the child until both detail requests succeed. */
+  /**
+   * Resolves a child's master and loads fresh header and at-a-glance data in parallel.
+   * Replaces the selection only after both requests succeed and the child is still selected.
+   * Unusable lookup responses set the standard global banner and emit an error; HTTP errors propagate
+   * to the caller after the shared interceptor handles them.
+   *
+   * @param child The selected consolidated child whose master should be loaded.
+   * @returns The master's at-a-glance details after updating the store, or no value when the child has
+   * no ID or the selection changes before loading finishes. Lookup and detail errors are emitted.
+   */
   public loadMasterAccountDetails(child: IFinesMciCriminalAccount): Observable<IOpalFinesAccountDefendantAtAGlance> {
     if (child.defendant_account_id === null) return EMPTY;
     return this.opalFines.getDefendantAccountMaster(child.defendant_account_id).pipe(

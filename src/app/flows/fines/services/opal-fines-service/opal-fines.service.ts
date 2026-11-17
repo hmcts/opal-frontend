@@ -1217,7 +1217,12 @@ export class OpalFines {
     return this.http.post<IOpalFinesAmendPaymentTermsPayload>(url, payload, { headers });
   }
 
-  /** Resolves the live master account ID for a consolidated child account. */
+  /**
+   * Retrieves the master-account lookup response for a consolidated child without caching it.
+   *
+   * @param accountId The child account ID, preserving digit strings without numeric conversion.
+   * @returns The lookup response; the calling flow validates the returned master ID before using it.
+   */
   public getDefendantAccountMaster(accountId: string | number): Observable<IOpalFinesDefendantAccountMaster> {
     return this.http.get<IOpalFinesDefendantAccountMaster>(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/master`);
   }
