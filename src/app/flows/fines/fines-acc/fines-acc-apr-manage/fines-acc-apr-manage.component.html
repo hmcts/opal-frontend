@@ -12,10 +12,10 @@
 <div class="govuk-grid-column-full">
   <opal-lib-govuk-heading-with-caption
     [captionText]="accountCaption()"
-    headingText="Manage Alternate Payment References"
+    headingText="Manage alternate payment references"
     headingClasses="govuk-heading-l"
   />
-  <h2 class="govuk-heading-m">Alternate Payment References for this Account</h2>
+  <h2 class="govuk-heading-m">Alternate payment references for this account</h2>
   @if (currentReferences().length) {
     <app-fines-acc-apr-manage-table
       [references]="currentReferences()"
@@ -33,10 +33,10 @@
       buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
       type="button"
       (buttonClickEvent)="navigateToAdd()"
-      >Add alternate payment reference</opal-lib-govuk-button
+      >Add payment reference</opal-lib-govuk-button
     >
   }
-  <h2 class="govuk-heading-m govuk-!-margin-top-6">Alternate Payment Reference from Consolidated Accounts</h2>
+  <h2 class="govuk-heading-m govuk-!-margin-top-6">Alternate payment reference from consolidated accounts</h2>
   @if (consolidatedReferences().length) {
     <app-fines-acc-apr-manage-table
       [references]="consolidatedReferences()"

@@ -344,7 +344,7 @@ describe('FinesAccAprDeleteComponent', () => {
     const deleteRoute = routing.find((route) => route.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/delete`);
 
     expect(await deleteRoute?.loadComponent?.()).toBe(FinesAccAprDeleteComponent);
-    expect(deleteRoute?.data?.['title']).toBe('Remove Alternate Payment Reference');
+    expect(deleteRoute?.data?.['title']).toBe('Remove alternate payment reference');
     expect(deleteRoute?.data?.['routePermissionId']).toEqual([
       FINES_PERMISSIONS['manage-alternate-payment-references'],
     ]);
