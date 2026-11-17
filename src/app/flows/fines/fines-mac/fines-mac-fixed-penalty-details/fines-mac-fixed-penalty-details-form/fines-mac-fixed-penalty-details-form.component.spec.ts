@@ -859,4 +859,88 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
 
     testFixture.destroy();
   });
+
+  it('should update fixed penalty account notes validation when the feature flag changes', () => {
+    const notesControl = component.form.get('fm_fp_account_comments_notes_notes');
+
+    expect(notesControl).toBeTruthy();
+
+    // Initially enabled: 500 characters
+    notesControl!.setValue('A'.repeat(750));
+    expect(notesControl!.hasError('maxlength')).toBe(true);
+
+    // Change the flag without recreating the component
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+    });
+
+    fixture.detectChanges();
+
+    // Disabled: 1000 characters
+    expect(notesControl!.hasError('maxlength')).toBe(false);
+
+    const notesTextarea: HTMLTextAreaElement = fixture.debugElement.query(
+      By.css('textarea[id="fm_fp_account_comments_notes_notes"]'),
+    ).nativeElement;
+
+    expect(notesTextarea.maxLength).toBe(1000);
+
+    expect(component['fieldErrors'].fm_fp_account_comments_notes_notes['maxlength']?.message).toBe(
+      'Add account note must be 1000 characters or fewer',
+    );
+  });
+
+  it('should preserve ASCII and maximum-length validation for fixed penalty account notes', () => {
+    const notesControl = component.form.get('fm_fp_account_comments_notes_notes');
+
+    expect(notesControl).toBeTruthy();
+
+    // Invalid character, within the 500-character limit
+    notesControl!.setValue('Café');
+    expect(notesControl!.hasError('singleAsciiCharacters')).toBe(true);
+
+    // Valid characters, exceeding the 500-character limit
+    notesControl!.setValue('A'.repeat(501));
+    expect(notesControl!.hasError('maxlength')).toBe(true);
+
+    // Valid characters, within the limit
+    notesControl!.setValue('A'.repeat(500));
+    expect(notesControl!.valid).toBe(true);
+  });
+
+  it('should clear displayed fixed penalty account note errors when the feature flag increases the limit', () => {
+    const notesControl = component.form.get('fm_fp_account_comments_notes_notes');
+
+    expect(notesControl).toBeTruthy();
+
+    // Initially enabled: 500 characters
+    notesControl!.setValue('A'.repeat(750));
+
+    // Simulate an unsuccessful submission displaying validation errors
+    component['handleErrorMessages']();
+
+    expect(component['formErrorSummaryMessage']).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          fieldId: 'fm_fp_account_comments_notes_notes',
+          message: 'Add account note must be 500 characters or fewer',
+        }),
+      ]),
+    );
+
+    // Disable the feature flag: maximum increases to 1000
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+    });
+
+    fixture.detectChanges();
+
+    expect(notesControl!.valid).toBe(true);
+
+    expect(
+      component['formErrorSummaryMessage'].some(
+        (error: { fieldId: string }) => error.fieldId === 'fm_fp_account_comments_notes_notes',
+      ),
+    ).toBe(false);
+  });
 });

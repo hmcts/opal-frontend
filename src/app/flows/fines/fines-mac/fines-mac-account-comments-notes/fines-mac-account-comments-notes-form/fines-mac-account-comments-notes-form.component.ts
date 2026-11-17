@@ -7,6 +7,7 @@ import {
   OnInit,
   Output,
   computed,
+  effect,
   inject,
 } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -61,16 +62,30 @@ export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseC
     () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
   );
 
+  protected readonly accountNotesMaxLength = computed(() => (this.release1a1_2Enabled() ? 500 : 1000));
+
   protected override fieldErrors: IFinesMacAccountCommentsNotesFieldErrors = {
     ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS,
     fm_account_comments_notes_notes: {
       ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS.fm_account_comments_notes_notes,
-      ...getAccountNotesMaxLengthError(this.release1a1_2Enabled() ? 500 : 1000),
+      ...getAccountNotesMaxLengthError(this.accountNotesMaxLength()),
     },
   };
 
   @Input() public defendantType!: string;
   public mandatorySectionsCompleted!: boolean;
+
+  constructor() {
+    super();
+
+    effect(() => {
+      const maxLength = this.accountNotesMaxLength();
+
+      if (this.form) {
+        this.updateAccountNotesValidation(maxLength);
+      }
+    });
+  }
 
   /**
    * Sets up the account comments and notes form with the necessary form controls.
@@ -82,10 +97,37 @@ export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseC
       ]),
       fm_account_comments_notes_notes: new FormControl<string | null>(null, [
         SINGLE_ASCII_CHARACTERS_WITH_POUND_PATTERN_VALIDATOR,
-        Validators.maxLength(this.release1a1_2Enabled() ? 500 : 1000),
+        Validators.maxLength(this.accountNotesMaxLength()),
       ]),
       fm_account_comments_notes_system_notes: new FormControl<string | null>(null),
     });
+  }
+
+  /**
+   * Updates the account notes validators and error message based on the maximum character limit.
+   *
+   * @param maxLength - The maximum number of characters allowed for account notes.
+   */
+  private updateAccountNotesValidation(maxLength: number): void {
+    const notesControl = this.form.get('fm_account_comments_notes_notes');
+
+    if (!notesControl) return;
+
+    notesControl.setValidators([SINGLE_ASCII_CHARACTERS_WITH_POUND_PATTERN_VALIDATOR, Validators.maxLength(maxLength)]);
+
+    notesControl.updateValueAndValidity({ emitEvent: false });
+
+    this.fieldErrors = {
+      ...this.fieldErrors,
+      fm_account_comments_notes_notes: {
+        ...this.fieldErrors.fm_account_comments_notes_notes,
+        ...getAccountNotesMaxLengthError(maxLength),
+      },
+    };
+
+    if (this.formErrorSummaryMessage?.length) {
+      this.handleErrorMessages();
+    }
   }
 
   /**

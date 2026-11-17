@@ -237,4 +237,70 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
 
     testFixture.destroy();
   });
+
+  it('should update account notes validation when the feature flag changes', () => {
+    const notesControl = component.form.get('fm_account_comments_notes_notes');
+
+    expect(notesControl).toBeTruthy();
+
+    // Initially enabled: 500 characters
+    notesControl!.setValue('A'.repeat(750));
+    expect(notesControl!.hasError('maxlength')).toBe(true);
+
+    // Change the flag without recreating the component
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+    });
+
+    fixture.detectChanges();
+
+    // Disabled: 1000 characters
+    expect(notesControl!.hasError('maxlength')).toBe(false);
+
+    const notesTextarea: HTMLTextAreaElement = fixture.debugElement.query(
+      By.css('textarea[id="fm_account_comments_notes_notes"]'),
+    ).nativeElement;
+
+    expect(notesTextarea.maxLength).toBe(1000);
+
+    expect(component['fieldErrors'].fm_account_comments_notes_notes['maxlength']?.message).toBe(
+      'Add account note must be 1000 characters or fewer',
+    );
+  });
+
+  it('should clear displayed account note errors when the feature flag increases the limit', () => {
+    const notesControl = component.form.get('fm_account_comments_notes_notes');
+
+    expect(notesControl).toBeTruthy();
+
+    // Flag enabled: maximum 500 characters
+    notesControl!.setValue('A'.repeat(750));
+
+    // Simulate an unsuccessful submission displaying validation errors
+    component['handleErrorMessages']();
+
+    expect(component['formErrorSummaryMessage']).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          fieldId: 'fm_account_comments_notes_notes',
+          message: 'Add account note must be 500 characters or fewer',
+        }),
+      ]),
+    );
+
+    // Disable the flag: maximum increases to 1000
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+    });
+
+    fixture.detectChanges();
+
+    expect(notesControl!.valid).toBe(true);
+
+    expect(
+      component['formErrorSummaryMessage'].some(
+        (error: { fieldId: string }) => error.fieldId === 'fm_account_comments_notes_notes',
+      ),
+    ).toBe(false);
+  });
 });
