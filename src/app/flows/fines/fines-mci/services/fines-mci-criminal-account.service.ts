@@ -1,3 +1,5 @@
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
 import { inject, Injectable } from '@angular/core';
 import { defer, EMPTY, forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
@@ -9,20 +11,30 @@ import { FinesMciStore } from '../stores/fines-mci.store';
 export class FinesMciCriminalAccountService {
   private readonly opalFines = inject(OpalFines);
   private readonly store = inject(FinesMciStore);
+  private readonly globalStore = inject(GlobalStore);
 
   /** Resolves and loads a master without replacing the child until both detail requests succeed. */
   public loadMasterAccountDetails(child: IFinesMciCriminalAccount): Observable<IOpalFinesAccountDefendantAtAGlance> {
     if (child.defendant_account_id === null) return EMPTY;
     return this.opalFines.getDefendantAccountMaster(child.defendant_account_id).pipe(
-      switchMap(({ defendant_account_id: id }) => {
+      switchMap((response) => {
+        const id = response?.defendant_account_id;
         if (
           id === null ||
           id === undefined ||
           String(id) === String(child.defendant_account_id) ||
           !/^\d+$/.test(String(id)) ||
           (typeof id === 'number' && !Number.isSafeInteger(id))
-        )
-          return EMPTY;
+        ) {
+          // HTTP 200 responses bypass the interceptor's error path; use the existing global banner pattern.
+          this.globalStore.setBannerError({
+            ...GLOBAL_ERROR_STATE,
+            error: true,
+            title: 'There was a problem',
+            message: 'You can try again. If the problem persists, contact the service desk.',
+          });
+          throw new Error('Invalid master account response');
+        }
         this.opalFines.clearCache('defendantAccountAtAGlanceCache$');
         return forkJoin({
           atAGlance: this.opalFines.getDefendantAccountAtAGlance(id),

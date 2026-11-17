@@ -18,6 +18,7 @@ import { FinesMciCriminalAccountService } from './fines-mci-criminal-account.ser
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
 
 describe('FinesMciCriminalAccountService', () => {
+  const globalStore = { setBannerError: vi.fn() };
   let service: FinesMciCriminalAccountService;
   let store: InstanceType<typeof FinesMciStore>;
   let opalFines: {
@@ -35,7 +36,13 @@ describe('FinesMciCriminalAccountService', () => {
       getDefendantAccountHeadingData: vi.fn().mockReturnValue(of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK)),
       getDefendantAccountAtAGlance: vi.fn().mockReturnValue(of(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK)),
     };
-    TestBed.configureTestingModule({ providers: [{ provide: OpalFines, useValue: opalFines }] });
+    globalStore.setBannerError.mockClear();
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: OpalFines, useValue: opalFines },
+        { provide: GlobalStore, useValue: globalStore },
+      ],
+    });
     service = TestBed.inject(FinesMciCriminalAccountService);
     store = TestBed.inject(FinesMciStore);
   });
@@ -165,11 +172,23 @@ describe('FinesMciCriminalAccountService', () => {
     });
 
     it.each([null, undefined, 1, '1', '', 'invalid', 9007199254740992])(
-      'ignores a missing, unsafe, or self-referencing master ID: %s',
+      'reports a missing, unsafe, or self-referencing master ID: %s',
       async (id) => {
         opalFines.getDefendantAccountMaster.mockReturnValue(of({ defendant_account_id: id }));
-        expect(await firstValueFrom(service.loadMasterAccountDetails(accounts[0]).pipe(toArray()))).toEqual([]);
+        await expect(firstValueFrom(service.loadMasterAccountDetails(accounts[0]))).rejects.toThrow(
+          'Invalid master account response',
+        );
+        expect(globalStore.setBannerError).toHaveBeenCalledExactlyOnceWith(
+          expect.objectContaining({
+            error: true,
+            title: 'There was a problem',
+            message: 'You can try again. If the problem persists, contact the service desk.',
+          }),
+        );
         expect(opalFines.getDefendantAccountAtAGlance).not.toHaveBeenCalled();
+        expect(opalFines.getDefendantAccountHeadingData).not.toHaveBeenCalled();
+        expect(store.selectedCriminalAccountAtAGlance()).toBe(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+        expect(store.selectedCriminalAccountHeader()).toBe(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
         expect(store.selectedCriminalAccount()).toBe(accounts[0]);
       },
     );
@@ -316,5 +335,40 @@ describe('FinesMciCriminalAccountService HTTP error handling', () => {
     expect(next).toHaveBeenCalledExactlyOnceWith(null);
     expect(isErrorBannerVisible()).toBe(false);
     expect(store.selectedCriminalAccount()).toBe(account);
+  });
+  it.each([
+    null,
+    {},
+    { defendant_account_id: null },
+    { defendant_account_id: account.defendant_account_id },
+    { defendant_account_id: 'invalid' },
+  ])('shows the standard global banner for an unusable HTTP 200 master response: %s', (response) => {
+    const store = TestBed.inject(FinesMciStore);
+    store.setSelectedCriminalAccount(account);
+    store.setSelectedCriminalAccountAtAGlance(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+    store.setSelectedCriminalAccountHeader(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
+    const setBanner = vi.spyOn(TestBed.inject(GlobalStore), 'setBannerError');
+    const next = vi.fn();
+    service
+      .loadMasterAccountDetails(account)
+      .pipe(
+        catchError(() => of(null)),
+        defaultIfEmpty(null),
+      )
+      .subscribe(next);
+    httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${account.defendant_account_id}/master`).flush(response);
+    expect(isErrorBannerVisible()).toBe(true);
+    expect(setBanner).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({
+        error: true,
+        title: 'There was a problem',
+        message: 'You can try again. If the problem persists, contact the service desk.',
+      }),
+    );
+    expect(next).toHaveBeenCalledExactlyOnceWith(null);
+    expect(TestBed.inject(Router).navigate).not.toHaveBeenCalled();
+    expect(store.selectedCriminalAccount()).toBe(account);
+    expect(store.selectedCriminalAccountAtAGlance()).toBe(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+    expect(store.selectedCriminalAccountHeader()).toBe(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
   });
 });
