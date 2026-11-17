@@ -54,11 +54,12 @@ export class FinesSuspenseItemSearchComponent implements OnInit, OnDestroy {
    * used as a default only when the user has no saved selection.
    */
   private initialiseBusinessUnit(): void {
-    this.initialBusinessUnitId = this.suspenseItemStore.selectedBusinessUnitId();
+    const retainedId = this.suspenseItemStore.selectedBusinessUnitId();
     const soleBusinessUnit =
       this.businessUnitAutoCompleteItems.length === 1 ? this.businessUnitAutoCompleteItems[0] : null;
 
-    if (this.initialBusinessUnitId === null && soleBusinessUnit && typeof soleBusinessUnit.value === 'number') {
+    this.initialBusinessUnitId = retainedId;
+    if (retainedId === null && soleBusinessUnit && typeof soleBusinessUnit.value === 'number') {
       this.initialBusinessUnitId = soleBusinessUnit.value;
     }
     this.suspenseItemStore.setSelectedBusinessUnitId(this.initialBusinessUnitId);
@@ -94,7 +95,7 @@ export class FinesSuspenseItemSearchComponent implements OnInit, OnDestroy {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
-        // PO-9764 will replace console logging with results navigation and resolver-provided route data.
+        // TODO(PO-9764, PO-9765): Replace console logging with results navigation and resolver-provided route data.
         next: (summary) => console.log('Suspense item summary:', summary),
       });
   }
