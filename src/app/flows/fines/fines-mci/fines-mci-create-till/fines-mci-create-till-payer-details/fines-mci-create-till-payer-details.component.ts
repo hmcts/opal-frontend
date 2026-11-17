@@ -18,9 +18,9 @@ import { FinesMciCreateTillPayerDetailsFormComponent } from './fines-mci-create-
 })
 export class FinesMciCreateTillPayerDetailsComponent extends AbstractFormParentBaseComponent implements OnInit {
   private readonly navigationRouter = inject(Router);
-  protected readonly finesMciStore = inject(FinesMciStore);
   private isNavigatingFromPageAction = false;
   private hasUnsavedPayerDetails = false;
+  protected readonly finesMciStore = inject(FinesMciStore);
 
   private navigateTo(path: string, cancel: boolean): void {
     const suspensePayment = this.finesMciStore.suspensePayment();
