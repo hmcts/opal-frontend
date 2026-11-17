@@ -229,7 +229,7 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
     if (lastEnforcementActionId && inhibitedEnforcementActionIds.includes(lastEnforcementActionId)) {
       return {
         available: true,
-        warningMessage: `${this.content.inhibitedEnforcementAction} ${this.lastEnforcementAction() ?? '—'}`,
+        warningMessage: `${this.content.inhibitedEnforcementAction} ${this.lastEnforcementAction()}`,
       };
     }
 

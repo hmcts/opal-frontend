@@ -159,6 +159,32 @@ describe('FinesMciCriminalAccountService', () => {
       );
     });
 
+    it('retains missing master address fields and enforcement action as null in the selection', async () => {
+      opalFines.getDefendantAccountAtAGlance.mockReturnValue(
+        of({
+          ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
+          address: {
+            ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK.address,
+            address_line_1: undefined,
+            postcode: undefined,
+          },
+          enforcement_status: {
+            ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK.enforcement_status,
+            last_enforcement_action: null,
+          },
+        }),
+      );
+      await firstValueFrom(service.loadMasterAccountDetails(accounts[0]));
+      expect(store.selectedCriminalAccount()).toEqual(
+        expect.objectContaining({
+          defendant_account_id: '9007199254740993',
+          address_line_1: null,
+          postcode: null,
+          last_enforcement_action: null,
+        }),
+      );
+    });
+
     it('keeps the child selected until both requests finish and on a request error', () => {
       const header = new Subject<typeof FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK>();
       opalFines.getDefendantAccountHeadingData.mockReturnValue(header);
