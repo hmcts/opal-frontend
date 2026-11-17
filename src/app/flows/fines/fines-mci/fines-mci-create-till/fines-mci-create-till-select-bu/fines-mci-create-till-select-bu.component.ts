@@ -17,7 +17,6 @@ import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deact
 import { AlphagovAccessibleAutocompleteComponent } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete';
 import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import { IAbstractFormBaseFormErrorSummaryMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
-import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import {
@@ -34,7 +33,6 @@ import { FinesMciStore } from '../../stores/fines-mci.store';
   selector: 'app-fines-mci-create-till-select-bu',
   imports: [
     AlphagovAccessibleAutocompleteComponent,
-    GovukButtonComponent,
     GovukCancelLinkComponent,
     GovukErrorSummaryComponent,
     GovukSummaryListComponent,
@@ -42,7 +40,6 @@ import { FinesMciStore } from '../../stores/fines-mci.store';
     ReactiveFormsModule,
   ],
   templateUrl: './fines-mci-create-till-select-bu.component.html',
-  styleUrl: './fines-mci-create-till-select-bu.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMciCreateTillSelectBuComponent implements OnDestroy {
@@ -76,7 +73,7 @@ export class FinesMciCreateTillSelectBuComponent implements OnDestroy {
   protected formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];
 
   public constructor() {
-    const preserveBusinessUnit = this.router.getCurrentNavigation()?.extras.state?.['preserveBusinessUnit'] === true;
+    const preserveBusinessUnit = this.router.currentNavigation()?.extras.state?.['preserveBusinessUnit'] === true;
     if (!preserveBusinessUnit) {
       this.finesMciStore.reset();
     }
@@ -108,7 +105,8 @@ export class FinesMciCreateTillSelectBuComponent implements OnDestroy {
   }
 
   /**
-   * Defaults the form when the user has exactly one associated business unit.
+   * Restores a stored business unit selection when available, otherwise defaults the form
+   * when the user has exactly one associated business unit.
    */
   private setInitialBusinessUnit(): void {
     const selectedBusinessUnitId = this.finesMciStore.businessUnit()?.business_unit_id;
@@ -175,6 +173,7 @@ export class FinesMciCreateTillSelectBuComponent implements OnDestroy {
     this.businessUnitSelectionError = null;
     this.formErrorSummaryMessage = [];
     this.finesMciStore.setBusinessUnit(businessUnit);
+    this.finesMciStore.ensureTill();
     this.isContinuing = true;
     void this.router.navigate([
       '/',

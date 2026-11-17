@@ -1,4 +1,5 @@
 import { IFinesMacPayloadAccountDefendantParentGuardianParentGuardian } from './fines-mac-payload-account-defendant-parent-guardian-parent-guardian.interface';
+import { IFinesMacPayloadAccountDefendantIndividualDebtorDetailsAlias } from './fines-mac-payload-account-defendant-individual-debtor-details-alias.interface';
 
 export interface IFinesMacPayloadAccountDefendantParentGuardian {
   company_flag: boolean | null;
@@ -12,4 +13,5 @@ export interface IFinesMacPayloadAccountDefendantParentGuardian {
   post_code: string | null;
   national_insurance_number: string | null;
   parent_guardian: IFinesMacPayloadAccountDefendantParentGuardianParentGuardian;
+  aliases: IFinesMacPayloadAccountDefendantIndividualDebtorDetailsAlias[] | null;
 }

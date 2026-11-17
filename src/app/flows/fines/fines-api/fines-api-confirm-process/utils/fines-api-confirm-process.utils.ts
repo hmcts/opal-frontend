@@ -1,7 +1,6 @@
 import { IOpalFinesBusinessUnitOutstandingAutoPaymentCount } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-outstanding-auto-payment-count.interface';
 import { IOpalFinesInterfaceJobSummary } from '@services/fines/opal-fines-service/interfaces/opal-fines-interface-job-summary.interface';
 import { IOpalFinesProcessInterfaceJobsPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-process-interface-jobs-payload.interface';
-import { FINES_API_INTERFACE_JOB_SOURCE_LABELS } from '../../services/constants/fines-api-interface-job-source-labels.constant';
 import { IFinesApiConfirmProcessBusinessUnitSummary } from '../interfaces/fines-api-confirm-process-business-unit-summary.interface';
 import { IFinesApiConfirmProcessInterfaceJob } from '../interfaces/fines-api-confirm-process-interface-job.interface';
 
@@ -17,9 +16,13 @@ export const getSelectedInterfaceJobs = (
   );
 };
 
-/** Identifies every backend source code displayed as DWP/AEA by the Process journey. */
-export const isDwpAeaSource = (source: string): boolean =>
-  FINES_API_INTERFACE_JOB_SOURCE_LABELS[source.trim().toUpperCase()] === 'DWP/AEA';
+/**
+ * Identifies DWP files by their backend code, independently of configurable display names.
+ *
+ * @param source The backend source code.
+ * @returns True for the DWP code, ignoring surrounding whitespace and case.
+ */
+export const isDwpAeaSource = (source: string): boolean => source.trim().toUpperCase() === 'DWP';
 
 /**
  * Adds the business-unit ID omitted by the summary API by matching each row to the selected

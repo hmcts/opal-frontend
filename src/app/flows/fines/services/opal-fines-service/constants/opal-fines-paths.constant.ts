@@ -47,6 +47,7 @@ export const OPAL_FINES_PATHS: IOpalFinesPaths = {
   reportInstances: `${baseUrl}${reportInstances}`,
   interfaceJobsSummary: `${baseUrl}${interfaceJobsSummary}`,
   tills: `${baseUrl}${tills}`,
+  sourceMappings: `${baseUrl}mappings/source`,
   processInterfaceJobs: `${baseUrl}${processInterfaceJobs}`,
   defendantAccountParties,
   centralFunds: `${baseUrl}${centralFunds}`,
