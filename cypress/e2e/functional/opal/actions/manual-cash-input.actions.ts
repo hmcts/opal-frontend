@@ -344,9 +344,7 @@ export class ManualCashInputActions {
       banner === 'information'
         ? ManualCashInputLocators.courtFeeOverpaymentBanner
         : ManualCashInputLocators.courtFeeUnderpaymentBanner;
-    cy.get(selector)
-      .should('be.visible')
-      .and('contain.text', `This amount contains a £${amount} ${type}.`);
+    cy.get(selector).should('be.visible').and('contain.text', `This amount contains a £${amount} ${type}.`);
   }
 
   /** Confirms the summary displays the court fee, entered amount, and item count.
@@ -371,7 +369,9 @@ export class ManualCashInputActions {
 
   /** Confirms the overpayment screen displays the Confirm button and Cancel link. */
   public assertOverpaymentConfirmationActionsAreDisplayed(): void {
-    cy.get(ManualCashInputLocators.courtFeeConfirmOverpaymentButton).should('be.visible').and('contain.text', 'Confirm');
+    cy.get(ManualCashInputLocators.courtFeeConfirmOverpaymentButton)
+      .should('be.visible')
+      .and('contain.text', 'Confirm');
     cy.get(ManualCashInputLocators.courtFeeCancelOverpaymentLink).should('be.visible').and('contain.text', 'Cancel');
   }
 

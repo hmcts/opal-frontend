@@ -57,9 +57,7 @@ const openOverpaymentConfirmation = (): void => {
     finesMciStore.setCourtFeeDraft(COURT_FEE_DRAFT);
   });
   cy.get('@financeRouter')
-    .then((router) =>
-      (router as { navigate: (commands: string[]) => Promise<boolean> }).navigate(CONFIRMATION_ROUTE),
-    )
+    .then((router) => (router as { navigate: (commands: string[]) => Promise<boolean> }).navigate(CONFIRMATION_ROUTE))
     .should('be.true');
   cy.wait('@courtFees').its('response.statusCode').should('eq', 200);
   cy.get(Mci.courtFeeOverUnderpaymentPage).should('be.visible');
@@ -74,22 +72,26 @@ const assertCourtFeeDraftIsPreserved = (): void => {
 };
 
 describe('Manual Cash Input - Overpayment/Underpayment Confirmation RGACs', () => {
-  it('(AC7a RGAC1) warns before a route change and retains the court fee draft if leaving is declined', { tags: TAGS }, () => {
-    openOverpaymentConfirmation();
-    cy.window().then((window) => cy.wrap(cy.stub(window, 'confirm').returns(false)).as('leavePageConfirm'));
+  it(
+    '(AC7a RGAC1) warns before a route change and retains the court fee draft if leaving is declined',
+    { tags: TAGS },
+    () => {
+      openOverpaymentConfirmation();
+      cy.window().then((window) => cy.wrap(cy.stub(window, 'confirm').returns(false)).as('leavePageConfirm'));
 
-    cy.get('@financeRouter')
-      .then((router) =>
-        (router as { navigate: (commands: string[]) => Promise<boolean> }).navigate(COURT_FEE_DETAILS_ROUTE),
-      )
-      .should('be.false');
-    cy.get('@leavePageConfirm')
-      .should('have.been.calledOnce')
-      .and('have.been.calledWithExactly', UNSAVED_CHANGES_WARNING);
-    cy.get('@financeRouter').its('url').should('eq', CONFIRMATION_URL);
-    cy.get(Mci.courtFeeOverUnderpaymentPage).should('be.visible');
-    assertCourtFeeDraftIsPreserved();
-  });
+      cy.get('@financeRouter')
+        .then((router) =>
+          (router as { navigate: (commands: string[]) => Promise<boolean> }).navigate(COURT_FEE_DETAILS_ROUTE),
+        )
+        .should('be.false');
+      cy.get('@leavePageConfirm')
+        .should('have.been.calledOnce')
+        .and('have.been.calledWithExactly', UNSAVED_CHANGES_WARNING);
+      cy.get('@financeRouter').its('url').should('eq', CONFIRMATION_URL);
+      cy.get(Mci.courtFeeOverUnderpaymentPage).should('be.visible');
+      assertCourtFeeDraftIsPreserved();
+    },
+  );
 
   it('(AC7a RGAC2) warns before browser exit and retains the court fee draft', { tags: TAGS }, () => {
     openOverpaymentConfirmation();

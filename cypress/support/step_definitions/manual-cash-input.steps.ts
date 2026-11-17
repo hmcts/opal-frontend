@@ -91,9 +91,12 @@ Then('the confirmation identifies the payment as an {string}', (type: 'overpayme
   manualCashInputFlow().assertCourtFeePaymentTypeIsDisplayed(type);
 });
 
-Then('the {string} confirmation banner shows a {string} {word}', (banner: 'information' | 'warning', amount: string, type: 'overpayment' | 'underpayment') => {
-  manualCashInputFlow().assertCourtFeeDifferenceBannerIsDisplayed(banner, amount, type);
-});
+Then(
+  'the {string} confirmation banner shows a {string} {word}',
+  (banner: 'information' | 'warning', amount: string, type: 'overpayment' | 'underpayment') => {
+    manualCashInputFlow().assertCourtFeeDifferenceBannerIsDisplayed(banner, amount, type);
+  },
+);
 
 Then(
   'the confirmation shows court fee {string}, amount {string}, and {string} items',
