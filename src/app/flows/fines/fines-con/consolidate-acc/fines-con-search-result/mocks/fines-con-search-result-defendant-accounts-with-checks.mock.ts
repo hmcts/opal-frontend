@@ -9,7 +9,7 @@ export const FINES_CON_SEARCH_RESULT_DEFENDANT_ACCOUNTS_WITH_CHECKS_MOCK: IFines
     address_line_1: '20 Consolidation Street',
     postcode: 'CS2 0BB',
     business_unit_name: 'Camberwell Green',
-    business_unit_id: '77',
+    business_unit_id: 77,
     prosecutor_case_reference: 'CONSOL-SEARCH-CHILD-1',
     last_enforcement_action: 'CONSOL',
     account_balance: 0,
