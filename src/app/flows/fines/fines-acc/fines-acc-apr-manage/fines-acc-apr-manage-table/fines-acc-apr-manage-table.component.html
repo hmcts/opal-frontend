@@ -31,7 +31,7 @@
                 [id]="'apr-change-' + reference.alternate_payment_reference_id"
                 [routerLink]="['../change']"
                 [queryParams]="{ alternatePaymentReferenceId: reference.alternate_payment_reference_id }"
-                >change<span class="govuk-visually-hidden"> {{ reference.apr_text }}</span></a
+                >Change<span class="govuk-visually-hidden"> {{ reference.apr_text }}</span></a
               >
             }
             @if (deleteJourneyAvailable && reference.canRemove) {
@@ -40,7 +40,7 @@
                 [id]="'apr-remove-' + reference.alternate_payment_reference_id"
                 [routerLink]="['../delete']"
                 [queryParams]="{ alternatePaymentReferenceId: reference.alternate_payment_reference_id }"
-                >remove<span class="govuk-visually-hidden"> {{ reference.apr_text }}</span></a
+                >Remove<span class="govuk-visually-hidden"> {{ reference.apr_text }}</span></a
               >
             }
           </td>

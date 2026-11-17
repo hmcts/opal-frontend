@@ -105,7 +105,7 @@ describe('FinesAccAprManageComponent', () => {
   it('renders the account caption, both empty states and links to add or return to the same account Payment terms', async () => {
     const { element } = await renderManage([]);
 
-    expect(element.querySelector('h1')?.textContent).toContain('Manage Alternate Payment References');
+    expect(element.querySelector('h1')?.textContent).toContain('Manage alternate payment references');
     expect(element.textContent).toContain('177A - APR TEST');
     expect(element.querySelector('#apr-current-empty')?.textContent).toContain(
       'There are no alternate payment reference for this account',

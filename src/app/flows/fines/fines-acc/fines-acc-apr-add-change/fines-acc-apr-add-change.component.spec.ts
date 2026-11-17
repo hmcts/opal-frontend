@@ -360,7 +360,7 @@ describe('FinesAccAprAddChangeComponent add mode', () => {
 
     expect(TestBed.inject(Router).url).toBe(manageUrl);
     expect(component.mode()).toBeNull();
-    expect(component.text().headingText).toBe('Add Alternate Payment Reference');
+    expect(component.text().headingText).toBe('Add alternate payment reference');
     expect(component.pending()).toBe(false);
     expect(component.stateUnsavedChanges).toBe(false);
     expect(result.observed).toBe(false);
