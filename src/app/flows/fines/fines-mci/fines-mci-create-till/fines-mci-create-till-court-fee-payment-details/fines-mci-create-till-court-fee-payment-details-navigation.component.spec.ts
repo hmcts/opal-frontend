@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
+import { provideLocationMocks, SpyLocation } from '@angular/common/testing';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, ResolveStart, Router } from '@angular/router';
+import { NavigationEnd, provideRouter, ResolveStart, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { filter, firstValueFrom, of, Subject, take } from 'rxjs';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
@@ -10,6 +12,7 @@ import { FinesMciStore } from '../../stores/fines-mci.store';
 import { FinesMciCreateTillCourtFeePaymentDetailsComponent } from './fines-mci-create-till-court-fee-payment-details.component';
 import { FinesMciCreateTillCourtFeeCheckComponent } from '../fines-mci-create-till-court-fee-check/fines-mci-create-till-court-fee-check.component';
 import { finesMciCourtFeeCheckGuard } from '../../routing/guards/fines-mci-court-fee-check.guard';
+import { finesMciCourtFeeDraftGuard } from '../../routing/guards/fines-mci-court-fee-draft.guard';
 import { FinesMciPaymentMappingsService } from '../../services/fines-mci-payment-mappings.service';
 import { finesMciPaymentMappingsResolver } from '../../routing/resolvers/fines-mci-payment-mappings.resolver';
 
@@ -30,6 +33,7 @@ describe('Court fee payment details navigation', () => {
     TestBed.configureTestingModule({
       providers: [
         FinesMciStore,
+        provideLocationMocks(),
         { provide: FinesMciPaymentMappingsService, useValue: { load: loadMappings } },
         provideRouter([
           {
@@ -47,11 +51,13 @@ describe('Court fee payment details navigation', () => {
               {
                 path: 'court-fee-payment-details',
                 component: FinesMciCreateTillCourtFeePaymentDetailsComponent,
+                canActivate: [finesMciCourtFeeDraftGuard],
                 canDeactivate: [canDeactivateGuard],
                 data: { paymentMappings: mappings },
               },
             ],
           },
+          { path: 'fines/manual-cash-input/create/till/court-fee-details', component: PreviousScreenComponent },
         ]),
       ],
     });
@@ -129,6 +135,31 @@ describe('Court fee payment details navigation', () => {
     expect(store.courtFeeDraft()).toBeNull();
     expect(store.draftJourney()).toBeNull();
     expect(store.tills()[0].payments).toHaveLength(1);
+  });
+
+  it('redirects a browser history navigation to payment details after Cancel clears the draft', async () => {
+    const harness = await RouterTestingHarness.create('/till/court-fee-details');
+    await harness.navigateByUrl(paymentUrl, FinesMciCreateTillCourtFeePaymentDetailsComponent);
+    harness.routeNativeElement!.querySelector<HTMLAnchorElement>('.button-link')!.click();
+    await harness.fixture.whenStable();
+
+    expect(TestBed.inject(FinesMciStore).courtFeeDraft()).toBeNull();
+    expect(TestBed.inject(Router).url).toBe('/till/details');
+
+    const router = TestBed.inject(Router);
+    router.setUpLocationChangeListener();
+    const redirected = firstValueFrom(
+      router.events.pipe(
+        filter((event) => event instanceof NavigationEnd),
+        take(1),
+      ),
+    );
+    (TestBed.inject(Location) as SpyLocation).simulateUrlPop(paymentUrl);
+    await redirected;
+    harness.detectChanges();
+
+    expect(router.url).toBe('/fines/manual-cash-input/create/till/court-fee-details');
+    expect(harness.routeNativeElement?.textContent).toContain('Previous screen');
   });
 
   it.each(['/till/court-fee-details', '/till/over-underpayment-confirmation'])(

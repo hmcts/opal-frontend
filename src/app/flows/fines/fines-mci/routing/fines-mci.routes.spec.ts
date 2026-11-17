@@ -15,6 +15,7 @@ import { routing } from './fines-mci.routes';
 import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.constant';
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
+import { finesMciCourtFeeDraftGuard } from './guards/fines-mci-court-fee-draft.guard';
 import { finesMciCourtFeesResolver } from './resolvers/fines-mci-court-fees.resolver';
 import { finesMciPaymentMappingsResolver } from './resolvers/fines-mci-payment-mappings.resolver';
 import { finesMciCourtFeeCheckGuard } from './guards/fines-mci-court-fee-check.guard';
@@ -168,6 +169,7 @@ describe('finesMci routes', () => {
     );
 
     expect(await route?.loadComponent?.()).toBe(FinesMciCreateTillCourtFeePaymentDetailsComponent);
+    expect(route?.canActivate).toContain(finesMciCourtFeeDraftGuard);
     expect(route?.canDeactivate).toEqual([canDeactivateGuard]);
     expect(route?.resolve?.['paymentMappings']).toBe(finesMciPaymentMappingsResolver);
     expect(route?.data?.['heading']).toBe(FINES_MCI_ROUTING_TITLES.children.createTillCourtFeePaymentDetails);
@@ -214,7 +216,7 @@ describe('finesMci routes', () => {
     expect(childRoute).toEqual(
       expect.objectContaining({
         path,
-        canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+        canActivate: expect.arrayContaining([authGuard, routePermissionsGuard, finesMciFlowStateGuard]),
         data: expect.objectContaining({
           permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
