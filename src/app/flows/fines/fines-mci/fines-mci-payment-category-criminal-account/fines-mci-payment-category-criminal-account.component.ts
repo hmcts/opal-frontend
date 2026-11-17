@@ -375,7 +375,10 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
 
   /** Continues only while the selected account remains eligible for payment. */
   protected confirm(): void {
-    if (this.heading() !== this.content.success) return;
+    const { available, warningMessage } = this.accountState();
+    if (!available || warningMessage) {
+      return;
+    }
     void this.router.navigate(
       [FINES_MCI_ROUTING_PATHS.children.paymentDetails, this.route.snapshot.paramMap.get('accountId')],
       { relativeTo: this.route.parent },
