@@ -205,8 +205,9 @@ describe('Manual Cash Input - Search for an Account', () => {
     cy.get(Mci.searchAccount.lastName).type('Smith');
     cy.get(Mci.searchAccount.searchButton).click();
 
-    cy.contains('h1', 'No matching criminal accounts').should('be.visible');
-    cy.contains('Placeholder for PO-3528.').should('be.visible');
+    cy.contains('h1', 'Search results').should('be.visible');
+    cy.contains('h2', 'There are no matching results').should('be.visible');
+    cy.contains('a', 'Check your search').should('be.visible');
     cy.get('@getDefendantAccounts').should('have.been.calledOnce');
   });
 
@@ -215,8 +216,9 @@ describe('Manual Cash Input - Search for an Account', () => {
     cy.get(Mci.searchAccount.lastName).type('Smith');
     cy.get(Mci.searchAccount.searchButton).click();
 
-    cy.contains('h1', 'More than 100 matching criminal accounts').should('be.visible');
-    cy.contains('Placeholder for PO-3528.').should('be.visible');
+    cy.contains('h1', 'Search results').should('be.visible');
+    cy.contains('h2', 'There are more than 100 results').should('be.visible');
+    cy.contains('a', 'Try searching by account number or full name').should('be.visible');
     cy.get('@getDefendantAccounts').should('have.been.calledOnce');
   });
 
