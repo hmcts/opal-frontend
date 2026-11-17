@@ -11,6 +11,7 @@ services:
       - ROOT_APPENDER
       - OPAL_FINES_SERVICE_API_URL=http://host.docker.internal:4550
       - OPAL_USER_SERVICE_API_URL=http://host.docker.internal:4555
+      - OPAL_FILE_HANDLING_SERVICE_API_URL=http://host.docker.internal:4075
       - FRONTEND_HOSTNAME=http://localhost:4000
       - REDIS_CONNECTION_STRING=redis://host.docker.internal:6379
       - ALLOW_CONFIG_MUTATIONS=true
