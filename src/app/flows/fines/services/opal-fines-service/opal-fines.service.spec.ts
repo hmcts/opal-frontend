@@ -98,6 +98,46 @@ describe('OpalFines', () => {
   let service: OpalFines;
   let httpMock: HttpTestingController;
 
+  function mockHeaders(getFn: (name: string) => string | null) {
+    return { get: getFn } as unknown as HttpResponse<unknown>['headers'];
+  }
+
+  const buildAddRequest = (payload: IFinesMacAddAccountPayload): IFinesMacAddAccountRequestPayload => {
+    return {
+      business_unit_id: payload.business_unit_id!,
+      account: payload.account,
+      account_type: payload.account_type!,
+      account_status: payload.account_status,
+      status_message: null,
+      source: 'MAC',
+    };
+  };
+
+  const buildReplaceRequest = (payload: IFinesMacAddAccountPayload): IFinesMacReplaceAccountRequestPayload => {
+    return {
+      business_unit_id: payload.business_unit_id!,
+      account: payload.account,
+      account_type: payload.account_type!,
+      account_status: payload.account_status,
+    };
+  };
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        OpalFines,
+        provideHttpClient(withInterceptors([httpRetryInterceptor]), withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
+    });
+    service = TestBed.inject(OpalFines);
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    httpMock.verify();
+  });
+
   it('requests a suspense summary with its BU and encoded reference, preserving the response', () => {
     const received = vi.fn();
     service.getSuspenseItemSummary(22, '001234/5').subscribe(received);
@@ -140,48 +180,11 @@ describe('OpalFines', () => {
     service.getSuspenseItemSummary(22, '001234').subscribe();
     httpMock.expectOne(url).flush(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
     service.clearCache('suspenseItemSummaryCache$');
-    service.getSuspenseItemSummary(22, '001234').subscribe();
-    httpMock.expectOne(url).flush(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
-  });
-
-  function mockHeaders(getFn: (name: string) => string | null) {
-    return { get: getFn } as unknown as HttpResponse<unknown>['headers'];
-  }
-
-  const buildAddRequest = (payload: IFinesMacAddAccountPayload): IFinesMacAddAccountRequestPayload => {
-    return {
-      business_unit_id: payload.business_unit_id!,
-      account: payload.account,
-      account_type: payload.account_type!,
-      account_status: payload.account_status,
-      status_message: null,
-      source: 'MAC',
-    };
-  };
-
-  const buildReplaceRequest = (payload: IFinesMacAddAccountPayload): IFinesMacReplaceAccountRequestPayload => {
-    return {
-      business_unit_id: payload.business_unit_id!,
-      account: payload.account,
-      account_type: payload.account_type!,
-      account_status: payload.account_status,
-    };
-  };
-
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        OpalFines,
-        provideHttpClient(withInterceptors([httpRetryInterceptor]), withInterceptorsFromDi()),
-        provideHttpClientTesting(),
-      ],
-    });
-    service = TestBed.inject(OpalFines);
-    httpMock = TestBed.inject(HttpTestingController);
-  });
-
-  afterEach(() => {
-    httpMock.verify();
+    const received = vi.fn();
+    const freshSummary = { ...OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK, balance: 42 };
+    service.getSuspenseItemSummary(22, '001234').subscribe(received);
+    httpMock.expectOne(url).flush(freshSummary);
+    expect(received).toHaveBeenCalledWith(freshSummary);
   });
 
   it('should be created', () => {
