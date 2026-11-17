@@ -25,7 +25,7 @@ import {
   GovukRadiosConditionalComponent,
   GovukRadiosItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
-import { IFinesMciSuspensePayerDetails } from '../../stores/interfaces/fines-mci.interface';
+import { IFinesMciSuspensePayerDetails } from '../../../stores/interfaces/fines-mci.interface';
 import { FINES_MCI_CREATE_TILL_PAYER_DETAILS_FIELD_ERRORS } from './constants/fines-mci-create-till-payer-details-field-errors.constant';
 import { FINES_MCI_CREATE_TILL_PAYER_DETAILS_TITLE_OPTIONS } from './constants/fines-mci-create-till-payer-details-title-options.constant';
 import {

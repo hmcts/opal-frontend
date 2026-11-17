@@ -8,7 +8,7 @@ import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-ro
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
 import { FinesMciStore } from '../../stores/fines-mci.store';
 import { IFinesMciSuspensePayerDetails } from '../../stores/interfaces/fines-mci.interface';
-import { FinesMciCreateTillPayerDetailsFormComponent } from './fines-mci-create-till-payer-details-form.component';
+import { FinesMciCreateTillPayerDetailsFormComponent } from './fines-mci-create-till-payer-details-form/fines-mci-create-till-payer-details-form.component';
 
 @Component({
   selector: 'app-fines-mci-create-till-payer-details',
