@@ -575,9 +575,7 @@ describe('FinesAccAprAddChangeComponent change mode', () => {
     expect(harness.routeNativeElement!.querySelector('h1')!.textContent).toContain(
       'Change alternate payment reference',
     );
-    expect(harness.routeNativeElement!.querySelector('label')!.textContent.trim()).toBe(
-      'Change alternate payment reference',
-    );
+    expect(harness.routeNativeElement!.querySelector('label')!.textContent.trim()).toBe('Enter payment reference');
     expect(input().value).toBe('Original');
     expect(component.savedValue()).toBe('Original');
     expect(component.stateUnsavedChanges).toBe(false);
@@ -926,9 +924,7 @@ describe('FinesAccAprAddChangeComponent change mode', () => {
     expect(harness.routeNativeElement!.querySelector('h1')!.textContent).toContain(
       'Change alternate payment reference',
     );
-    expect(harness.routeNativeElement!.querySelector('label')!.textContent.trim()).toBe(
-      'Change alternate payment reference',
-    );
+    expect(harness.routeNativeElement!.querySelector('label')!.textContent.trim()).toBe('Enter payment reference');
     enter('Pending-Change');
     save();
     harness.detectChanges();

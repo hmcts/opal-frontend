@@ -100,7 +100,7 @@ describe('FinesAccAprAddChangeFormComponent', () => {
   it('prepopulates change mode and considers a value restored to the initial reference saved', () => {
     fixture.componentRef.setInput('initialValue', 'Original');
     fixture.componentRef.setInput('headingText', 'Change alternate payment reference');
-    fixture.componentRef.setInput('labelText', 'Change alternate payment reference');
+    fixture.componentRef.setInput('labelText', 'Enter payment reference');
     const unsaved = vi.spyOn(component['unsavedChanges'], 'emit');
     fixture.detectChanges();
 
