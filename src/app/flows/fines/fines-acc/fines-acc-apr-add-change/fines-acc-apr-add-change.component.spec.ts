@@ -98,7 +98,7 @@ describe('FinesAccAprAddChangeComponent add mode', () => {
               {
                 ...formRoute,
                 canActivate: [],
-                title: 'OPAL - Add Alternate Payment Reference',
+                title: 'OPAL - Add alternate payment reference',
                 resolve: {
                   aprs: (route: ActivatedRouteSnapshot) => {
                     const accountId = Number(route.paramMap.get('accountId'));
@@ -368,7 +368,7 @@ describe('FinesAccAprAddChangeComponent add mode', () => {
 
     expect(TestBed.inject(Router).url).toBe(manageUrl);
     expect(component.mode()).toBeNull();
-    expect(component.text().headingText).toBe('Add Alternate Payment Reference');
+    expect(component.text().headingText).toBe('Add alternate payment reference');
     expect(component.pending()).toBe(false);
     expect(component.stateUnsavedChanges).toBe(false);
     expect(result.observed).toBe(false);
@@ -573,7 +573,7 @@ describe('FinesAccAprAddChangeComponent change mode', () => {
 
     expect(harness.routeNativeElement!.textContent).toContain('141A - APR TEST 141');
     expect(harness.routeNativeElement!.querySelector('h1')!.textContent).toContain(
-      'Change Alternate Payment Reference',
+      'Change alternate payment reference',
     );
     expect(harness.routeNativeElement!.querySelector('label')!.textContent.trim()).toBe(
       'Change alternate payment reference',
@@ -908,7 +908,7 @@ describe('FinesAccAprAddChangeComponent change mode', () => {
     expect(component.mode()).toBe('add');
     expect(component.savedValue()).toBe('');
     expect(input().value).toBe('');
-    expect(harness.routeNativeElement!.querySelector('h1')!.textContent).toContain('Add Alternate Payment Reference');
+    expect(harness.routeNativeElement!.querySelector('h1')!.textContent).toContain('Add alternate payment reference');
     expect(harness.routeNativeElement!.querySelector('label')!.textContent.trim()).toBe('Enter payment reference');
     enter('1234567890123456789');
     save();
@@ -924,7 +924,7 @@ describe('FinesAccAprAddChangeComponent change mode', () => {
     expect(component.stateUnsavedChanges).toBe(false);
     expect(harness.routeNativeElement!.querySelector('.govuk-error-summary')).toBeNull();
     expect(harness.routeNativeElement!.querySelector('h1')!.textContent).toContain(
-      'Change Alternate Payment Reference',
+      'Change alternate payment reference',
     );
     expect(harness.routeNativeElement!.querySelector('label')!.textContent.trim()).toBe(
       'Change alternate payment reference',
@@ -949,7 +949,7 @@ describe('FinesAccAprAddChangeComponent change mode', () => {
     expect(component.stateUnsavedChanges).toBe(false);
     expect(input().value).toBe('');
     expect(harness.routeNativeElement!.querySelector('.govuk-error-summary')).toBeNull();
-    expect(harness.routeNativeElement!.querySelector('h1')!.textContent).toContain('Add Alternate Payment Reference');
+    expect(harness.routeNativeElement!.querySelector('h1')!.textContent).toContain('Add alternate payment reference');
     expect(harness.routeNativeElement!.querySelector('label')!.textContent.trim()).toBe('Enter payment reference');
     expect(accountStore.base_version()).toBe('"7"');
     expect(accountStore.successMessage()).toBeNull();

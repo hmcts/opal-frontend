@@ -19,8 +19,8 @@ describe('finesAccAprAddChangeTitleResolver', () => {
   });
 
   it.each([
-    ['add', 'OPAL - Add Alternate Payment Reference'],
-    ['change', 'OPAL - Change Alternate Payment Reference'],
+    ['add', 'OPAL - Add alternate payment reference'],
+    ['change', 'OPAL - Change alternate payment reference'],
   ])('sets the document title for mode %s', async (mode, expectedTitle) => {
     const harness = await RouterTestingHarness.create();
 
@@ -36,6 +36,6 @@ describe('finesAccAprAddChangeTitleResolver', () => {
     const changePage = await harness.navigateByUrl('/change', TitleResolverTestPage);
 
     expect(changePage).toBe(addPage);
-    expect(TestBed.inject(Title).getTitle()).toBe('OPAL - Change Alternate Payment Reference');
+    expect(TestBed.inject(Title).getTitle()).toBe('OPAL - Change alternate payment reference');
   });
 });

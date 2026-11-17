@@ -181,10 +181,10 @@ describe('APR Manage navigation from Payment terms', () => {
     expect(TestBed.inject(Router).url).toBe(manageUrl);
     expect(harness.routeDebugElement?.componentInstance).toBeInstanceOf(FinesAccAprManageComponent);
     expect(harness.routeNativeElement?.querySelector('h1')?.textContent?.trim()).toContain(
-      'Manage Alternate Payment References',
+      'Manage alternate payment references',
     );
     expect(harness.routeNativeElement?.textContent).toContain(TestBed.inject(FinesAccountStore).party_name());
-    expect(TestBed.inject(Title).getTitle()).toBe('OPAL - Manage Alternate Payment References');
+    expect(TestBed.inject(Title).getTitle()).toBe('OPAL - Manage alternate payment references');
     expect(opalFines.getDefendantAccountHeadingData).toHaveBeenCalledExactlyOnceWith(123);
     expect(opalFines.getAprs).toHaveBeenCalledExactlyOnceWith(123);
 
@@ -248,8 +248,8 @@ describe('APR Manage navigation from Payment terms', () => {
   });
 
   it.each([
-    { action: 'add', selector: '#apr-add', heading: 'Add Alternate Payment Reference' },
-    { action: 'change', selector: '#apr-change-11', heading: 'Change Alternate Payment Reference' },
+    { action: 'add', selector: '#apr-add', heading: 'Add alternate payment reference' },
+    { action: 'change', selector: '#apr-change-11', heading: 'Change alternate payment reference' },
   ])('opens the $action destination and returns without writing data', async ({ action, selector, heading }) => {
     references = action === 'add' ? [] : [reference];
     const harness = await RouterTestingHarness.create(manageUrl);
@@ -310,7 +310,7 @@ describe('APR Manage navigation from Payment terms', () => {
 
       expect(TestBed.inject(Router).url).toBe(manageUrl.replace('/manage', '/change?alternatePaymentReferenceId=11'));
       expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toContain(
-        'Change Alternate Payment Reference',
+        'Change alternate payment reference',
       );
       await clickAndNavigate(harness, '#apr-action-back a, opal-lib-govuk-cancel-link a');
       expect(TestBed.inject(Router).url).toBe(manageUrl);
