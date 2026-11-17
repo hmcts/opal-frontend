@@ -10,6 +10,7 @@ export interface IFinesRoutingPaths extends IParentRoutingPaths {
     mci: IFinesMciRoutingPaths;
     mac: IChildRoutingPaths;
     draft: IChildRoutingPaths;
+    fpu: IChildRoutingPaths;
     acc: IChildRoutingPaths;
     sa: IChildRoutingPaths;
     con: IChildRoutingPaths;

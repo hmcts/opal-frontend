@@ -58,6 +58,7 @@ describe('fines routes', () => {
   let canDeactivateGuard: unknown;
   let aecRouting: Routes;
   let autoPaymentInRouting: Routes;
+  let fixedPenaltyUploadsRouting: Routes;
   let childRoutes: Routes;
 
   beforeEach(async () => {
@@ -74,6 +75,7 @@ describe('fines routes', () => {
       canDeactivateGuardModule,
       aecRoutingModule,
       autoPaymentInRoutingModule,
+      fixedPenaltyUploadsRoutingModule,
     ] = await Promise.all([
       import('./fines.routes'),
       import('./guards/fines-section-permissions/fines-section-permissions.guard'),
@@ -83,6 +85,7 @@ describe('fines routes', () => {
       import('@hmcts/opal-frontend-common/guards/can-deactivate'),
       import('../fines-aec/routing/fines-aec.routes'),
       import('../fines-api/routing/fines-api.routes'),
+      import('../fines-fpu/routing/fines-fpu.routes'),
     ]);
 
     finesRouting = finesRoutes.finesRouting;
@@ -99,6 +102,7 @@ describe('fines routes', () => {
     canDeactivateGuard = canDeactivateGuardModule.canDeactivateGuard;
     aecRouting = aecRoutingModule.routing;
     autoPaymentInRouting = autoPaymentInRoutingModule.routing;
+    fixedPenaltyUploadsRouting = fixedPenaltyUploadsRoutingModule.routing;
     childRoutes =
       finesRouting.find((route) => route.path === FINES_ROUTING_PATHS.root && route.children)?.children ?? [];
   });
@@ -143,6 +147,18 @@ describe('fines routes', () => {
 
     expect(dashboardRoute?.canActivate).toContain(dashboardTypeGuard);
     expect(dashboardRoute?.canActivate).toContain(finesSectionPermissionsGuard);
+  });
+
+  it('should expose Fixed Penalty Uploads as an Accounts journey with cleanup on departure', () => {
+    const fixedPenaltyUploadsRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.fpu.root);
+
+    expect(fixedPenaltyUploadsRoute?.path).toBe('accounts/fixed-penalty-uploads');
+    expect(fixedPenaltyUploadsRoute?.children).toBe(fixedPenaltyUploadsRouting);
+    expect(fixedPenaltyUploadsRoute?.canActivate).toEqual([authGuard, finesSectionPermissionsGuard]);
+    expect(fixedPenaltyUploadsRoute?.canDeactivate).toEqual([canDeactivateGuard]);
+    expect(fixedPenaltyUploadsRoute?.data).toEqual({
+      sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.accounts,
+    });
   });
 
   it('should guard the manual cash input root as a Finance section entry route', () => {

@@ -10,6 +10,7 @@ import { FINES_MCI_ROUTING_PATHS } from '../../fines-mci/routing/constants/fines
 import { FINES_AEC_ROUTING_PATHS } from '../../fines-aec/routing/fines-aec-routing-paths.constant';
 import { FINES_API_ROUTING_PATHS } from '../../fines-api/routing/constants/fines-api-routing-paths.constant';
 import { FINES_FINANCE_ROUTING_PATHS } from '../../fines-finance/routing/fines-finance-routing-paths.constant';
+import { FINES_FPU_ROUTING_PATHS } from '../../fines-fpu/routing/constants/fines-fpu-routing-paths.constant';
 
 export const FINES_ROUTING_PATHS: IFinesRoutingPaths = {
   root: 'fines',
@@ -19,6 +20,7 @@ export const FINES_ROUTING_PATHS: IFinesRoutingPaths = {
     mci: FINES_MCI_ROUTING_PATHS,
     mac: FINES_MAC_ROUTING_PATHS,
     draft: FINES_DRAFT_ROUTING_PATHS,
+    fpu: FINES_FPU_ROUTING_PATHS,
     acc: FINES_ACC_ROUTING_PATHS,
     sa: FINES_SA_ROUTING_PATHS,
     con: FINES_CON_ROUTING_PATHS,
