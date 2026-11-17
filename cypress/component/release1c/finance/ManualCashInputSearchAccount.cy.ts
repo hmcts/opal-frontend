@@ -170,8 +170,8 @@ describe('Manual Cash Input - Search for an Account', () => {
   });
 
   it(
-    '(AC6) opens Invalid Search Combination when account number and individual criteria are combined',
-    { tags: TAGS },
+    '(AC6, AC1a) opens Invalid Search Combination when account number and individual criteria are combined',
+    { tags: [...TAGS, '@JIRA-STORY:PO-3529'] },
     () => {
       openCriminalSearch();
       cy.get(Mci.searchAccount.accountNumber).type('12345678');
@@ -179,7 +179,9 @@ describe('Manual Cash Input - Search for an Account', () => {
       cy.get(Mci.searchAccount.searchButton).click();
 
       cy.contains('h1', 'There is a problem').should('be.visible');
-      cy.contains('Reference data and account information cannot be entered together').should('be.visible');
+      cy.contains(
+        'Reference data and account information cannot be entered together when searching for an account.',
+      ).should('be.visible');
       cy.contains('li', 'account number, or').should('be.visible');
       cy.contains('li', 'advanced search').should('be.visible');
       cy.contains('a', 'Go back')
@@ -193,8 +195,8 @@ describe('Manual Cash Input - Search for an Account', () => {
   );
 
   it(
-    '(AC6) opens Invalid Search Combination when account number and company criteria are combined',
-    { tags: TAGS },
+    '(AC6, AC1b) opens Invalid Search Combination when account number and company criteria are combined',
+    { tags: [...TAGS, '@JIRA-STORY:PO-3529'] },
     () => {
       openCriminalSearch();
       cy.get(Mci.searchAccount.companiesTab).click();
@@ -203,12 +205,84 @@ describe('Manual Cash Input - Search for an Account', () => {
       cy.get(Mci.searchAccount.searchButton).click();
 
       cy.contains('h1', 'There is a problem').should('be.visible');
-      cy.contains('Reference data and account information cannot be entered together').should('be.visible');
+      cy.contains(
+        'Reference data and account information cannot be entered together when searching for an account.',
+      ).should('be.visible');
       cy.contains('a', 'Go back').click();
       cy.get(Mci.searchAccount.heading).should('be.visible');
       cy.get(Mci.searchAccount.accountNumber).should('have.value', '12345678');
       cy.get(Mci.searchAccount.companyName).should('be.visible').and('have.value', 'Acme Ltd');
       cy.get('@getDefendantAccounts').should('not.have.been.called');
+    },
+  );
+
+  it(
+    '(AC2) displays the Invalid Search Combination screen content and layout',
+    { tags: [...TAGS, '@JIRA-STORY:PO-3529'] },
+    () => {
+      openCriminalSearch();
+      cy.get(Mci.searchAccount.accountNumber).type('12345678');
+      cy.get(Mci.searchAccount.lastName).type('Smith');
+      cy.get(Mci.searchAccount.searchButton).click();
+
+      cy.get('.govuk-grid-column-two-thirds').should('be.visible');
+      cy.contains('h1', 'There is a problem').should('be.visible');
+      cy.get('.govuk-grid-column-two-thirds > .govuk-body')
+        .should('be.visible')
+        .and(
+          'contain.text',
+          'Reference data and account information cannot be entered together when searching for an account. Search using either:',
+        );
+      cy.get('.govuk-grid-column-two-thirds ul.govuk-list--bullet li').should('have.length', 2);
+      cy.get('.govuk-grid-column-two-thirds ul.govuk-list--bullet li').eq(0).should('have.text', 'account number, or');
+      cy.get('.govuk-grid-column-two-thirds ul.govuk-list--bullet li').eq(1).should('have.text', 'advanced search');
+      cy.get('.govuk-grid-column-two-thirds a.govuk-link').should('be.visible').and('have.text', 'Go back');
+      cy.get('.govuk-caption-m').should('not.exist');
+      cy.get('app-fines-mci-payment-category-criminal-matches-table-wrapper').should('not.exist');
+    },
+  );
+
+  it(
+    '(AC3) displays the Go back link under the invalid search explanation',
+    { tags: [...TAGS, '@JIRA-STORY:PO-3529'] },
+    () => {
+      openCriminalSearch();
+      cy.get(Mci.searchAccount.accountNumber).type('12345678');
+      cy.get(Mci.searchAccount.lastName).type('Smith');
+      cy.get(Mci.searchAccount.searchButton).click();
+
+      cy.get('.govuk-grid-column-two-thirds ul.govuk-list--bullet li')
+        .last()
+        .then(($lastSearchOption) => {
+          const lastSearchOptionBottom = $lastSearchOption[0].getBoundingClientRect().bottom;
+
+          cy.get('.govuk-grid-column-two-thirds a.govuk-link')
+            .should('be.visible')
+            .and('have.text', 'Go back')
+            .then(($goBackLink) => {
+              expect($goBackLink[0].getBoundingClientRect().top).to.be.greaterThan(lastSearchOptionBottom);
+            });
+        });
+    },
+  );
+
+  it(
+    '(AC3a) returns to Search for an account with the company criteria retained after selecting Go back',
+    { tags: [...TAGS, '@JIRA-STORY:PO-3529'] },
+    () => {
+      openCriminalSearch();
+      cy.get(Mci.searchAccount.companiesTab).click();
+      cy.get(Mci.searchAccount.accountNumber).type('12345678');
+      cy.get(Mci.searchAccount.companyName).type('Acme Ltd');
+      cy.get(Mci.searchAccount.searchButton).click();
+      cy.contains('h1', 'There is a problem').should('be.visible');
+
+      cy.contains('.govuk-grid-column-two-thirds a.govuk-link', 'Go back').click();
+
+      cy.get(Mci.searchAccount.heading).should('be.visible').and('have.text', 'Search for an account');
+      cy.get(Mci.searchAccount.companiesTab).should('have.attr', 'aria-selected', 'true');
+      cy.get(Mci.searchAccount.accountNumber).should('have.value', '12345678');
+      cy.get(Mci.searchAccount.companyName).should('have.value', 'Acme Ltd');
     },
   );
 
