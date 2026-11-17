@@ -86,6 +86,13 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
   });
   @ViewChild('errorSummary', { read: ElementRef }) private readonly errorSummary?: ElementRef<HTMLElement>;
 
+  /** Uses the fresh at-a-glance status when supplied, falling back to the account header. */
+  private readonly accountStatusCode = computed(
+    () =>
+      this.store.selectedCriminalAccountAtAGlance()?.account_status_code ??
+      this.store.selectedCriminalAccountHeader()?.account_status_reference.account_status_code,
+  );
+
   private readonly lastEnforcementAction = computed(() => {
     const action = this.store.selectedCriminalAccountAtAGlance()?.enforcement_status?.last_enforcement_action;
     return action
@@ -194,7 +201,7 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
     const atAGlance = this.store.selectedCriminalAccountAtAGlance();
     const header = this.store.selectedCriminalAccountHeader();
     const businessUnit = this.store.businessUnit();
-    const statusCode = atAGlance?.account_status_code ?? header?.account_status_reference.account_status_code;
+    const statusCode = this.accountStatusCode();
     const accountId = this.accountId();
 
     if (!account || String(account.defendant_account_id) !== accountId || !atAGlance || !businessUnit || !statusCode) {
@@ -238,10 +245,7 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
   protected readonly nextStepError = signal<string | null>(null);
   protected readonly isLoadingMaster = signal(false);
   protected readonly isConsolidatedChild = computed(
-    () =>
-      this.accountState().available &&
-      (this.store.selectedCriminalAccountAtAGlance()?.account_status_code ??
-        this.store.selectedCriminalAccountHeader()?.account_status_reference.account_status_code) === 'CS',
+    () => this.accountState().available && this.accountStatusCode() === 'CS',
   );
   protected readonly consolidatedErrors = computed(() => {
     const message = this.nextStepError();
