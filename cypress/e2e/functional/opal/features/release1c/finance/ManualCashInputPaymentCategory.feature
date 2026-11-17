@@ -30,9 +30,7 @@ Feature: Manual Cash Input - Payment Category
     And the selected business unit is displayed on Search for an Account
     And the Search for an Account screen displays the quick and advanced search fields
 
-  # Update this test to assert the completed screen when PO-3669 is in QA.
-  @JIRA-STORY:PO-3486
-  @JIRA-STORY:PO-3679
+  @JIRA-STORY:PO-3486 @JIRA-STORY:PO-3679 @JIRA-STORY:PO-3669
   Scenario: AC1, AC4a - Court Fee continues to Court Fee Details
     When I select the Fines primary navigation item "Finance"
     And I am taken to the "Finance" Fines landing page

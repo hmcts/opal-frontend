@@ -3803,13 +3803,13 @@ __metadata:
     redis: "npm:^6.0.0"
     session-file-store: "npm:^1.5.0"
     xml2js: "npm:^0.6.2"
-  checksum: 10/104389cc6d2242fe0ee310f49fedcb784f84611276d245020ef352192b4e34a6d0b6600d6ce229d9778da59936a4b2b677bdf1cb8c0206fab871311886f1e7b8
+  checksum: 10/b9a290c03793e6232ca37960b2412a1b0992168d8a9c2bfefa7942bc387feec90950be69d051d0ec89e90d007a09fa9e951dcc488a74165a59a710e35e72662b
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:0.0.121":
-  version: 0.0.121
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.121"
+"@hmcts/opal-frontend-common@npm:0.0.122":
+  version: 0.0.122
+  resolution: "@hmcts/opal-frontend-common@npm:0.0.122"
   dependencies:
     "@microsoft/applicationinsights-web": "npm:^3.3.6"
     "@ministryofjustice/frontend": "npm:^12.0.0"
@@ -3831,7 +3831,7 @@ __metadata:
   peerDependenciesMeta:
     "@ngrx/signals":
       optional: true
-  checksum: 10/5350304e1bdbd3154b39eac7e898f815e5da884e1d72703a0c20948daab4335ba92d225df1a39fbcb864aaf83aef5a7b34e174f57c2e4f34a4bdd30ca2b675ad
+  checksum: 10/4ad497eb50de2c9d8107e871cf98114347f29b1ca655ed97657a774d09e7b9fdcdb837a4ca888af489d27edf4d25ee5c9ed68c6e715f3cf7fa2a2e5a2b6809c5
   languageName: node
   linkType: hard
 
@@ -15671,7 +15671,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:0.0.121"
+    "@hmcts/opal-frontend-common": "npm:0.0.122"
     "@hmcts/opal-frontend-common-cypress": "npm:0.0.5"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.48"
     "@hmcts/properties-volume": "npm:^1.1.0"
