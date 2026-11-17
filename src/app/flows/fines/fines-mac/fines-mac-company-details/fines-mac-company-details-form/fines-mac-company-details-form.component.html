@@ -28,39 +28,44 @@
       opal-lib-govuk-checkboxes-conditional
       conditionalId="fm_company_details_add_alias"
       formArrayName="fm_company_details_aliases"
+      [class.moj-add-another]="release1a1_2Enabled()"
     >
-      @for (aliasControl of aliasControls; let rowIndex = $index; track rowIndex) {
-        <fieldset class="govuk-fieldset">
-          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-            <h2 class="govuk-heading-m govuk-!-margin-0">Alias {{ rowIndex + 1 }}</h2>
-          </legend>
-          <opal-lib-govuk-text-input
-            #aliasFirstField
-            labelText="Company name"
-            [inputId]="aliasControls[rowIndex]['fm_company_details_alias_company_name'].inputId"
-            [inputName]="aliasControls[rowIndex]['fm_company_details_alias_company_name'].inputName"
-            [control]="
-              form.get([
-                'fm_company_details_aliases',
-                rowIndex,
-                aliasControls[rowIndex]['fm_company_details_alias_company_name'].controlName,
-              ])
-            "
-            [errors]="
-              formControlErrorMessages[aliasControls[rowIndex]['fm_company_details_alias_company_name'].controlName]
-            "
-            [opalLibCapitaliseAllCharacters]="
-              form.get([
-                'fm_company_details_aliases',
-                rowIndex,
-                aliasControls[rowIndex]['fm_company_details_alias_company_name'].controlName,
-              ])!
-            "
-          ></opal-lib-govuk-text-input>
-        </fieldset>
-      }
-
-      @if (aliasControls.length > 1) {
+      <div [class.moj-add-another__items]="release1a1_2Enabled()">
+        @for (aliasGroup of aliasFormGroups; let rowIndex = $index; track aliasGroup) {
+          @let aliasControl = aliasControls[rowIndex];
+          @if (aliasControl) {
+            <app-fines-mac-alias-row
+              [index]="rowIndex"
+              [total]="aliasControls.length"
+              [releaseEnabled]="release1a1_2Enabled()"
+              (removeAlias)="removeAndRenumberAlias($event)"
+            >
+              <opal-lib-govuk-text-input
+                #aliasFirstField
+                labelText="Company name"
+                [inputId]="aliasControl['fm_company_details_alias_company_name'].inputId"
+                [inputName]="aliasControl['fm_company_details_alias_company_name'].inputName"
+                [control]="
+                  form.get([
+                    'fm_company_details_aliases',
+                    rowIndex,
+                    aliasControl['fm_company_details_alias_company_name'].controlName,
+                  ])
+                "
+                [errors]="formControlErrorMessages[aliasControl['fm_company_details_alias_company_name'].controlName]"
+                [opalLibCapitaliseAllCharacters]="
+                  form.get([
+                    'fm_company_details_aliases',
+                    rowIndex,
+                    aliasControl['fm_company_details_alias_company_name'].controlName,
+                  ])!
+                "
+              ></opal-lib-govuk-text-input>
+            </app-fines-mac-alias-row>
+          }
+        }
+      </div>
+      @if (!release1a1_2Enabled() && aliasControls.length > 1) {
         <div class="govuk-!-margin-bottom-3">
           <a
             class="govuk-link govuk-link--no-visited-state"
@@ -72,13 +77,15 @@
         </div>
       }
       @if (aliasControls.length < 5) {
-        <opal-lib-govuk-button
-          buttonId="addAlias"
-          buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
-          type="button"
-          (buttonClickEvent)="addAlias(aliasControls.length, 'fm_company_details_aliases')"
-          >Add another alias</opal-lib-govuk-button
-        >
+        <div [class.moj-add-another__add-button-container]="release1a1_2Enabled()">
+          <opal-lib-govuk-button
+            buttonId="addAlias"
+            buttonClasses="govuk-button--secondary govuk-!-margin-bottom-0"
+            type="button"
+            (buttonClickEvent)="addAlias(aliasControls.length, 'fm_company_details_aliases')"
+            >Add another alias</opal-lib-govuk-button
+          >
+        </div>
       }
     </div>
   }
