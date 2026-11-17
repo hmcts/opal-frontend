@@ -6,10 +6,13 @@ import { RouterTestingHarness } from '@angular/router/testing';
 import { AuthService } from '@hmcts/opal-frontend-common/services/auth-service';
 import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
+import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { filter, firstValueFrom, of } from 'rxjs';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
-import { FinesFpuPlaceholderComponent } from '../fines-fpu-placeholder/fines-fpu-placeholder.component';
+import { FinesFpuTabsComponent } from '../fines-fpu-tabs/fines-fpu-tabs.component';
 import { routing } from './fines-fpu.routes';
 
 @Component({ selector: 'app-fpu-test-accounts', template: '<h1>Accounts</h1>' })
@@ -22,9 +25,28 @@ describe('fines FPU routes', () => {
   const fixedPenaltyUploadsUrl = '/fines/accounts/fixed-penalty-uploads';
   const accountsUrl = '/fines/dashboard/accounts';
   let permissionIds: number[];
+  let opalFines: { getDraftAccounts: ReturnType<typeof vi.fn>; clearDraftAccountsCache: ReturnType<typeof vi.fn> };
+
+  const userState = (): IOpalUserState => ({
+    ...structuredClone(OPAL_USER_STATE_MOCK),
+    business_unit_users: [
+      {
+        business_unit_id: 78,
+        business_unit_user_id: 'fpu-test-user',
+        permissions: permissionIds.map((permissionId) => ({
+          permission_id: permissionId,
+          permission_name: `Permission ${permissionId}`,
+        })),
+      },
+    ],
+  });
 
   beforeEach(() => {
     permissionIds = [FINES_PERMISSIONS['publish-fixed-penalty']];
+    opalFines = {
+      getDraftAccounts: vi.fn().mockReturnValue(of({ count: 0, summaries: [] })),
+      clearDraftAccountsCache: vi.fn(),
+    };
 
     TestBed.configureTestingModule({
       providers: [
@@ -34,37 +56,31 @@ describe('fines FPU routes', () => {
           { path: 'access-denied', component: AccessDeniedDestinationComponent },
         ]),
         { provide: AuthService, useValue: { checkAuthenticated: () => of(true) } },
+        { provide: OpalFines, useValue: opalFines },
         {
           provide: OpalUserService,
           useValue: {
-            getLoggedInUserState: () =>
-              of({
-                business_unit_users: [
-                  {
-                    permissions: permissionIds.map((permissionId) => ({ permission_id: permissionId })),
-                  },
-                ],
-              }),
+            getLoggedInUserState: () => of(userState()),
           },
         },
-        { provide: GlobalStore, useValue: {} },
       ],
     });
+    TestBed.inject(GlobalStore).setUserState(userState());
   });
 
-  it('should allow direct entry with the publish permission and render the titled placeholder', async () => {
+  it('should allow direct entry with permission 23 and render the titled To publish page', async () => {
     const harness = await RouterTestingHarness.create();
 
-    await harness.navigateByUrl(fixedPenaltyUploadsUrl, FinesFpuPlaceholderComponent);
+    await harness.navigateByUrl(fixedPenaltyUploadsUrl, FinesFpuTabsComponent);
 
     expect(TestBed.inject(Router).url).toBe(fixedPenaltyUploadsUrl);
     expect(TestBed.inject(Title).getTitle()).toBe('OPAL - Fixed Penalty Uploads');
-    expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('Fixed Penalty Uploads');
-    expect(harness.routeNativeElement?.textContent).toContain('This page is for future implementation.');
+    expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('Fixed Penalty uploads');
+    expect(harness.routeNativeElement?.querySelector('h2')?.textContent).toBe('To register and publish');
     expect(harness.routeNativeElement?.querySelector('a.govuk-back-link')?.getAttribute('href')).toBe(accountsUrl);
   });
 
-  it('should navigate back to Accounts from the placeholder', async () => {
+  it('should navigate back to Accounts from Fixed Penalty uploads', async () => {
     const harness = await RouterTestingHarness.create(fixedPenaltyUploadsUrl);
     const navigationFinished = firstValueFrom(
       TestBed.inject(Router).events.pipe(filter((event) => event instanceof NavigationEnd)),
@@ -89,5 +105,6 @@ describe('fines FPU routes', () => {
 
     expect(TestBed.inject(Router).url).toBe('/access-denied');
     expect(harness.routeNativeElement?.querySelector('#fines-fpu-heading')).toBeNull();
+    expect(opalFines.getDraftAccounts).not.toHaveBeenCalled();
   });
 });

@@ -1,0 +1,56 @@
+<div class="govuk-grid-column-full">
+  @let businessUnits = tabData$ | async;
+  <a id="fines-fpu-back-link" class="govuk-back-link" [routerLink]="accountsDashboardRoute">Back</a>
+  <h1 id="fines-fpu-heading" class="govuk-heading-l">Fixed Penalty uploads</h1>
+  <opal-lib-moj-sub-navigation subNavId="fines-fpu-tabs" (activeSubNavItemFragment)="handleTabSwitch($event)">
+    <li
+      opal-lib-moj-sub-navigation-item
+      subNavItemId="fines-fpu-to-publish-tab"
+      [activeSubNavItemFragment]="activeTab"
+      [subNavItemFragment]="fragments.toPublish"
+      subNavItemText="To publish"
+    ></li>
+    <li
+      opal-lib-moj-sub-navigation-item
+      subNavItemId="fines-fpu-published-tab"
+      [activeSubNavItemFragment]="activeTab"
+      [subNavItemFragment]="fragments.published"
+      subNavItemText="Published"
+    ></li>
+    <li
+      opal-lib-moj-sub-navigation-item
+      subNavItemId="fines-fpu-upload-errors-tab"
+      [activeSubNavItemFragment]="activeTab"
+      [subNavItemFragment]="fragments.uploadErrors"
+      subNavItemText="Upload errors"
+    ></li>
+  </opal-lib-moj-sub-navigation>
+
+  @switch (activeTab) {
+    @case (fragments.toPublish) {
+      <h2 class="govuk-heading-m">To register and publish</h2>
+      @if (businessUnits) {
+        @if (businessUnits.length) {
+          <p class="govuk-body">
+            Select the business unit(s) where you want to register and publish the Fixed Penalties
+          </p>
+          <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+              <app-fines-fpu-to-publish></app-fines-fpu-to-publish>
+            </div>
+          </div>
+        } @else {
+          <p id="fines-fpu-empty" class="govuk-body">There are no tickets to register or publish.</p>
+        }
+      }
+    }
+    @case (fragments.published) {
+      <h2 class="govuk-heading-m">Published</h2>
+      <p class="govuk-body">This page is for future implementation.</p>
+    }
+    @case (fragments.uploadErrors) {
+      <h2 class="govuk-heading-m">Upload errors</h2>
+      <p class="govuk-body">This page is for future implementation.</p>
+    }
+  }
+</div>

@@ -1,0 +1,94 @@
+<opal-lib-govuk-table caption="Tickets to publish by business unit" captionClasses="govuk-visually-hidden">
+  <ng-container head>
+    <th opal-lib-govuk-table-heading id="fines-fpu-business-units-header-select" class="govuk-!-padding-0">
+      <span class="govuk-visually-hidden">Select</span>
+      @if (businessUnits().length) {
+        <opal-lib-govuk-checkboxes
+          fieldSetId="fines-fpu-select-business-units-group"
+          checkboxClasses=""
+          legendText=""
+          legendClasses="govuk-!-margin-0"
+        >
+          <div
+            class="govuk-checkboxes--small"
+            opal-lib-govuk-checkboxes-item
+            opalLibMojMultiSelectHead
+            [control]="selectAllControl"
+            inputId="fines-fpu-select-business-units"
+            inputName="fines-fpu-select-business-units"
+            labelText=""
+            labelClasses="govuk-!-padding-0"
+            ariaLabel="Select all business units"
+            [selectAllIndeterminate]="someBusinessUnitsSelected()"
+            (toggleAll)="toggleAllBusinessUnits($event)"
+          ></div>
+        </opal-lib-govuk-checkboxes>
+      }
+    </th>
+    <th
+      opal-lib-govuk-table-heading
+      id="fines-fpu-business-units-header-name"
+      class="govuk-!-padding-top-2 govuk-!-padding-bottom-0"
+    >
+      Business unit
+    </th>
+    <th
+      opal-lib-govuk-table-heading
+      id="fines-fpu-business-units-header-tickets"
+      class="govuk-table__header--numeric govuk-!-padding-top-2 govuk-!-padding-bottom-0"
+    >
+      Tickets
+    </th>
+  </ng-container>
+
+  <ng-container body>
+    @for (businessUnit of businessUnits(); track businessUnit.business_unit_id) {
+      <tr
+        opal-lib-govuk-table-body-row
+        [bodyRowClasses]="selectedIds().has(businessUnit.business_unit_id) ? 'govuk-table__row--selected' : ''"
+      >
+        <td
+          opal-lib-govuk-table-body-row-data
+          [id]="'fines-fpu-business-unit-select-' + businessUnit.business_unit_id"
+          class="govuk-!-padding-top-1 govuk-!-padding-bottom-0"
+        >
+          <opal-lib-govuk-checkboxes
+            [fieldSetId]="'fines-fpu-business-unit-' + businessUnit.business_unit_id + '-group'"
+            checkboxClasses="govuk-!-padding-0"
+            [legendText]="'Select ' + businessUnit.business_unit_name"
+            legendClasses="govuk-visually-hidden"
+            labelClasses="govuk-!-padding-0"
+          >
+            <div
+              class="govuk-checkboxes--small"
+              opal-lib-govuk-checkboxes-item
+              opalLibMojMultiSelectBody
+              [control]="businessUnitControls.get(businessUnit.business_unit_id)!"
+              [inputId]="'fines-fpu-business-unit-' + businessUnit.business_unit_id"
+              [inputName]="'fines-fpu-business-unit-' + businessUnit.business_unit_id"
+              labelText=""
+              labelClasses="govuk-!-padding-0"
+              [rowId]="businessUnit.business_unit_id"
+              [ariaLabel]="'Select ' + businessUnit.business_unit_name"
+              (selectionChange)="toggleBusinessUnit($event)"
+            ></div>
+          </opal-lib-govuk-checkboxes>
+        </td>
+        <td
+          opal-lib-govuk-table-body-row-data
+          [id]="'fines-fpu-business-unit-name-' + businessUnit.business_unit_id"
+          class="govuk-!-padding-top-3"
+        >
+          {{ businessUnit.business_unit_name }}
+        </td>
+        <td
+          opal-lib-govuk-table-body-row-data
+          [id]="'fines-fpu-business-unit-ticket-count-' + businessUnit.business_unit_id"
+          class="govuk-table__cell--numeric govuk-!-padding-top-3"
+        >
+          {{ businessUnit.ticket_count }}
+        </td>
+      </tr>
+    }
+  </ng-container>
+</opal-lib-govuk-table>
