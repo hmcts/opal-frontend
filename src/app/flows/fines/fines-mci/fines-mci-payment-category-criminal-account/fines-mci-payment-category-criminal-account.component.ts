@@ -251,10 +251,13 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
   constructor() {
     effect(() => {
       this.accountId();
-      this.nextStep.reset();
+      this.nextStep.reset(null, { emitEvent: false });
       this.nextStepError.set(null);
     });
-    this.nextStep.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => this.nextStepError.set(null));
+    this.nextStep.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => {
+      this.cancelMasterRequest.next();
+      this.nextStepError.set(null);
+    });
   }
 
   /** Joins available name parts without displaying spaces for missing data. */

@@ -775,6 +775,62 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
       expect(response.observed).toBe(false);
     });
 
+    it('cancels a pending master load when the choice changes and continues to suspense only on submit', async () => {
+      const response = new Subject<typeof OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK>();
+      vi.mocked(TestBed.inject(FinesMciCriminalAccountService).loadMasterAccountDetails).mockReturnValue(response);
+      const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+      const child = store.selectedCriminalAccount();
+      const details = store.selectedCriminalAccountAtAGlance();
+      const { fixture, element, select, submit } = render();
+      select('master');
+      submit();
+      expect(response.observed).toBe(true);
+      expect(element.querySelector<HTMLButtonElement>('#fines-mci-consolidated-continue')!.disabled).toBe(true);
+      select('suspense');
+      expect(response.observed).toBe(false);
+      expect(element.querySelector<HTMLButtonElement>('#fines-mci-consolidated-continue')!.disabled).toBe(false);
+      expect(element.querySelector<HTMLInputElement>('input[value="suspense"]')!.checked).toBe(true);
+      response.next(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      response.complete();
+      expect(navigate).not.toHaveBeenCalled();
+      expect(store.selectedCriminalAccount()).toBe(child);
+      expect(store.selectedCriminalAccountAtAGlance()).toBe(details);
+      expect(element.querySelector('.govuk-error-summary')).toBeNull();
+      submit();
+      await fixture.whenStable();
+      expect(navigate).toHaveBeenCalledExactlyOnceWith(['/', 'fines', 'manual-cash-input', 'create-allocate']);
+    });
+
+    it('starts a fresh master request if the user switches back to the master option', async () => {
+      const first = new Subject<typeof OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK>();
+      const second = new Subject<typeof OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK>();
+      const load = vi
+        .mocked(TestBed.inject(FinesMciCriminalAccountService).loadMasterAccountDetails)
+        .mockReturnValueOnce(first)
+        .mockReturnValueOnce(second);
+      const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+      const { fixture, select, submit } = render();
+      select('master');
+      submit();
+      select('suspense');
+      select('master');
+      submit();
+      expect(load).toHaveBeenCalledTimes(2);
+      expect(first.observed).toBe(false);
+      expect(second.observed).toBe(true);
+      first.next(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      expect(navigate).not.toHaveBeenCalled();
+      store.setSelectedCriminalAccount({
+        ...store.selectedCriminalAccount()!,
+        defendant_account_id: '2',
+        organisation_flag: false,
+      });
+      second.next(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
+      second.complete();
+      await fixture.whenStable();
+      expect(navigate).toHaveBeenCalledExactlyOnceWith(['account', '2', 'individual'], { relativeTo: undefined });
+    });
+
     it('ignores duplicate submissions and cancels the request when Back is selected', () => {
       const response = new Subject<typeof OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK>();
       const load = vi
