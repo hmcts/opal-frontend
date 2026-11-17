@@ -76,6 +76,19 @@ describe('FinesMciCreateTillPayerDetailsComponent', () => {
     expect(component['canDeactivate']()).toBe(false);
   });
 
+  it('protects the suspense payment before payer details are entered', () => {
+    store.setSuspensePayment(PAYMENT);
+    fixture.detectChanges();
+
+    const component = fixture.componentInstance;
+    expect(component['canDeactivate']()).toBe(false);
+    expect(component.handleBeforeUnload()).toBe(false);
+
+    component.handleUnsavedChanges(false);
+    expect(component['canDeactivate']()).toBe(false);
+    expect(component.handleBeforeUnload()).toBe(false);
+  });
+
   it('stores valid details and navigates to check suspense payment', () => {
     const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     fixture.componentInstance.handleSubmit({ formData: PAYER, nestedFlow: false });

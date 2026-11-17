@@ -49,7 +49,8 @@ export class FinesMciCreateTillPayerDetailsComponent extends AbstractFormParentB
   }
 
   public ngOnInit(): void {
-    this.stateUnsavedChanges = this.finesMciStore.suspensePayerDetails() !== null;
+    this.stateUnsavedChanges =
+      this.finesMciStore.suspensePayment() !== null || this.finesMciStore.suspensePayerDetails() !== null;
   }
 
   public handleSubmit(form: IAbstractFormBaseForm<IFinesMciSuspensePayerDetails>): void {
@@ -59,7 +60,10 @@ export class FinesMciCreateTillPayerDetailsComponent extends AbstractFormParentB
   }
 
   public handleUnsavedChanges(unsavedChanges: boolean): void {
-    this.stateUnsavedChanges = unsavedChanges || this.finesMciStore.suspensePayerDetails() !== null;
+    this.stateUnsavedChanges =
+      unsavedChanges ||
+      this.finesMciStore.suspensePayment() !== null ||
+      this.finesMciStore.suspensePayerDetails() !== null;
   }
 
   public handleBack(): void {

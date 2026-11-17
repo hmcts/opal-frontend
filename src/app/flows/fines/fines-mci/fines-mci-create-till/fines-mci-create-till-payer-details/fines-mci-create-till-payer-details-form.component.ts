@@ -14,6 +14,7 @@ import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/component
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { TrimLeadingTrailingWhitespaceDirective } from '@hmcts/opal-frontend-common/directives/trim-leading-trailing-whitespace';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
@@ -31,11 +32,9 @@ import {
   PAYER_NAME_PATTERN,
   PAYER_TEXT_PATTERN,
 } from './constants/fines-mci-create-till-payer-details-patterns.constant';
-import {
-  nonWhitespaceRequiredValidator,
-  PAYER_POSTCODE_PATTERN_VALIDATOR,
-  ukPostcodeValidator,
-} from './validators/fines-mci-create-till-payer-details.validators';
+import { PAYER_POSTCODE_PATTERN_VALIDATOR } from './validators/fines-mci-create-till-payer-details.validators';
+
+const NON_WHITESPACE_REQUIRED_VALIDATOR = patternValidator(/\S/, 'required');
 
 @Component({
   selector: 'app-fines-mci-create-till-payer-details-form',
@@ -70,12 +69,22 @@ export class FinesMciCreateTillPayerDetailsFormComponent extends AbstractFormBas
     );
     this.form.controls['lastName'].setValidators(
       payerType === 'individual'
-        ? [nonWhitespaceRequiredValidator, Validators.maxLength(30), Validators.pattern(PAYER_NAME_PATTERN)]
+        ? [
+            Validators.required,
+            NON_WHITESPACE_REQUIRED_VALIDATOR,
+            Validators.maxLength(30),
+            Validators.pattern(PAYER_NAME_PATTERN),
+          ]
         : [],
     );
     this.form.controls['companyName'].setValidators(
       payerType === 'company'
-        ? [nonWhitespaceRequiredValidator, Validators.maxLength(50), Validators.pattern(PAYER_TEXT_PATTERN)]
+        ? [
+            Validators.required,
+            NON_WHITESPACE_REQUIRED_VALIDATOR,
+            Validators.maxLength(50),
+            Validators.pattern(PAYER_TEXT_PATTERN),
+          ]
         : [],
     );
     this.form.controls['firstNames'].updateValueAndValidity({ emitEvent: false });
@@ -128,7 +137,6 @@ export class FinesMciCreateTillPayerDetailsFormComponent extends AbstractFormBas
       postcode: new FormControl(initial?.postcode ?? '', [
         optionalMaxLengthValidator(8),
         PAYER_POSTCODE_PATTERN_VALIDATOR,
-        ukPostcodeValidator,
       ]),
     });
     this.setInitialErrorMessages();

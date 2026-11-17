@@ -58,13 +58,6 @@ export class FinesMciCreateTillSelectBuComponent extends AbstractFormParentBaseC
   };
   private isContinuing = false;
 
-  protected readonly createAllocateRoute = [
-    '/',
-    FINES_ROUTING_PATHS.root,
-    FINES_MCI_ROUTING_PATHS.root,
-    FINES_MCI_ROUTING_PATHS.children.createAllocate,
-  ];
-
   protected readonly form = new FormGroup({
     fmci_create_till_business_unit_id: new FormControl<number | null>(null, [Validators.required]),
   });
@@ -177,21 +170,20 @@ export class FinesMciCreateTillSelectBuComponent extends AbstractFormParentBaseC
     this.finesMciStore.setBusinessUnit(businessUnit);
     this.finesMciStore.ensureTill();
     this.isContinuing = true;
-    void this.navigationRouter.navigate([
-      '/',
-      FINES_ROUTING_PATHS.root,
-      FINES_MCI_ROUTING_PATHS.root,
-      FINES_MCI_ROUTING_PATHS.children.create,
-      FINES_MCI_ROUTING_PATHS.children.till,
-      FINES_MCI_ROUTING_PATHS.children.details,
-    ]);
+    this.routerNavigate(
+      `/${FINES_ROUTING_PATHS.root}/${FINES_MCI_ROUTING_PATHS.root}/${FINES_MCI_ROUTING_PATHS.children.create}/${FINES_MCI_ROUTING_PATHS.children.till}/${FINES_MCI_ROUTING_PATHS.children.details}`,
+      true,
+    );
   }
 
   /**
    * Returns the user to the manual cash input create and allocate page.
    */
   public handleCancel(): void {
-    void this.navigationRouter.navigate(this.createAllocateRoute);
+    this.routerNavigate(
+      `/${FINES_ROUTING_PATHS.root}/${FINES_MCI_ROUTING_PATHS.root}/${FINES_MCI_ROUTING_PATHS.children.createAllocate}`,
+      true,
+    );
   }
 
   /**

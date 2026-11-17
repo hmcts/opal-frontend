@@ -120,18 +120,9 @@ describe('FinesMciCreateTillPayerDetailsFormComponent', () => {
     );
   });
 
-  it.each(['123', 'ABC 123'])('rejects a post code that is not a UK postcode: %s', (postcode) => {
+  it('accepts an optional alphanumeric post code using the shared postcode rules', () => {
     fixture.detectChanges();
-    component.form.patchValue({ payerType: 'individual', lastName: 'Smith', postcode });
-    submit();
-
-    expect(component.form.controls['postcode'].hasError('ukPostcode')).toBe(true);
-    expect((fixture.nativeElement as HTMLElement).textContent).toContain('Enter a valid UK post code');
-  });
-
-  it('accepts an optional blank or valid UK post code', () => {
-    fixture.detectChanges();
-    component.form.patchValue({ payerType: 'individual', lastName: 'Smith', postcode: 'SW1A 1AA' });
+    component.form.patchValue({ payerType: 'individual', lastName: 'Smith', postcode: 'ABC 123' });
 
     expect(component.form.controls['postcode'].valid).toBe(true);
     expect(component.form.valid).toBe(true);
