@@ -23,9 +23,13 @@ import {
   GovukRadiosItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 import { amountValidator } from '@hmcts/opal-frontend-common/validators/amount';
+import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { IFinesMciSuspensePayment } from '../../../stores/interfaces/fines-mci.interface';
 import { FINES_MCI_CREATE_TILL_SUSPENSE_DETAILS_FIELD_ERRORS } from './constants/fines-mci-create-till-suspense-details-field-errors.constant';
 import { IFinesMciCreateTillSuspenseDetailsFieldErrors } from './interfaces/fines-mci-create-till-suspense-details-field-errors.interface';
+
+const referenceValidators = [optionalMaxLengthValidator(50), patternValidator(/^[a-zA-Z0-9- '\u2019]*$/, 'pattern')];
 
 @Component({
   selector: 'app-fines-mci-create-till-suspense-details-form',
@@ -80,29 +84,34 @@ export class FinesMciCreateTillSuspenseDetailsFormComponent extends AbstractForm
       relevantDetails: new FormControl(initial.relevantDetails),
     });
     this.setInitialErrorMessages();
-    this.updateConditionalValidators();
+    this.updatePaymentMethodValidators();
+    this.updateReasonValidators();
   }
 
-  /** Applies reference, source, and additional-detail validators only when their fields are relevant. */
-  private updateConditionalValidators(): void {
+  /** Applies reference and source validators for the selected payment method. */
+  private updatePaymentMethodValidators(): void {
     const method = this.form.controls['methodOfPayment'].value;
-    const referenceValidators = [Validators.maxLength(50), Validators.pattern(/^[a-zA-Z0-9\- '\u2019]*$/)];
     this.updateControl('paymentReferencePostalOrder', method === 'postalOrder' ? referenceValidators : []);
     this.updateControl('paymentReferenceCheque', method === 'cheque' ? referenceValidators : []);
     this.updateControl('paymentReferenceCreditTransfer', method === 'creditTransfer' ? referenceValidators : []);
     this.updateControl('source', method === 'creditTransfer' ? [Validators.required] : []);
-    this.updateControl(
-      'relevantDetails',
-      this.form.controls['reason'].value === 'unidentified'
-        ? [Validators.maxLength(50), Validators.pattern(/^[a-zA-Z0-9\- '\u2019]*$/)]
-        : [],
-    );
     const inactiveFields = [
       ...(method === 'postalOrder' ? [] : ['paymentReferencePostalOrder']),
       ...(method === 'cheque' ? [] : ['paymentReferenceCheque']),
       ...(method === 'creditTransfer' ? [] : ['paymentReferenceCreditTransfer', 'source']),
-      ...(this.form.controls['reason'].value === 'unidentified' ? [] : ['relevantDetails']),
     ];
+    this.clearInactiveFieldErrors(inactiveFields);
+  }
+
+  /** Applies additional-detail validators only for the unidentified suspense reason. */
+  private updateReasonValidators(): void {
+    const isUnidentified = this.form.controls['reason'].value === 'unidentified';
+    this.updateControl('relevantDetails', isUnidentified ? referenceValidators : []);
+    this.clearInactiveFieldErrors(isUnidentified ? [] : ['relevantDetails']);
+  }
+
+  /** Clears displayed errors and summary links for fields that are no longer active. */
+  private clearInactiveFieldErrors(inactiveFields: string[]): void {
     for (const field of inactiveFields) {
       this.removeControlErrors(field);
     }
@@ -124,10 +133,10 @@ export class FinesMciCreateTillSuspenseDetailsFormComponent extends AbstractForm
   public override ngOnInit(): void {
     this.initialiseForm();
     this.form.controls['methodOfPayment'].valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
-      this.updateConditionalValidators();
+      this.updatePaymentMethodValidators();
     });
     this.form.controls['reason'].valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
-      this.updateConditionalValidators();
+      this.updateReasonValidators();
     });
     super.ngOnInit();
   }
