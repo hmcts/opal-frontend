@@ -358,7 +358,8 @@ export class DraftAccountsFlow {
           hasBody: Boolean(requestBody),
         });
 
-        req.continue((res: CyHttpMessages.IncomingHttpResponse) => {
+        // Observe the response without preventing other matching intercepts from seeing the request.
+        req.on('response', (res: CyHttpMessages.IncomingHttpResponse) => {
           const responseTimestamp = new Date().toISOString();
           const responsePayload = toPayloadRecord(res.body);
           const responseSummary: Record<string, unknown> = { ...(responsePayload ?? {}) };
