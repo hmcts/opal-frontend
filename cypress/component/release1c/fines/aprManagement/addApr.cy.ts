@@ -25,7 +25,7 @@ describe('Add Alternate Payment Reference', () => {
       ],
       componentProperties: {
         accountCaption: '141A - APR TEST 141',
-        headingText: 'Add Alternate Payment Reference',
+        headingText: 'Add alternate payment reference',
         labelText: 'Enter payment reference',
       },
     });
@@ -80,7 +80,7 @@ describe('Add Alternate Payment Reference', () => {
     () => {
       mountAddAprForm();
 
-      cy.get('h1').should('contain', 'Add Alternate Payment Reference');
+      cy.get('h1').should('contain', 'Add alternate payment reference');
       cy.contains('141A - APR TEST 141').should('be.visible');
       cy.get('label[for="apr_text"]').should('contain', 'Enter payment reference');
       cy.get('#apr_text').should('be.visible');
