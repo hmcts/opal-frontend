@@ -32,7 +32,7 @@ describe('FinesAccAprAddChangeFormComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.textContent).toContain('177A - APR TEST');
-    expect(fixture.nativeElement.querySelector('h1').textContent).toContain('Add Alternate Payment Reference');
+    expect(fixture.nativeElement.querySelector('h1').textContent).toContain('Add alternate payment reference');
     expect(fixture.nativeElement.querySelector('label').getAttribute('for')).toBe('apr_text');
     expect(fixture.nativeElement.querySelector('label').textContent.trim()).toBe('Enter payment reference');
     expect(fixture.nativeElement.querySelector('form').getAttribute('autocomplete')).toBe('off');
@@ -99,7 +99,7 @@ describe('FinesAccAprAddChangeFormComponent', () => {
 
   it('prepopulates change mode and considers a value restored to the initial reference saved', () => {
     fixture.componentRef.setInput('initialValue', 'Original');
-    fixture.componentRef.setInput('headingText', 'Change Alternate Payment Reference');
+    fixture.componentRef.setInput('headingText', 'Change alternate payment reference');
     fixture.componentRef.setInput('labelText', 'Change alternate payment reference');
     const unsaved = vi.spyOn(component['unsavedChanges'], 'emit');
     fixture.detectChanges();

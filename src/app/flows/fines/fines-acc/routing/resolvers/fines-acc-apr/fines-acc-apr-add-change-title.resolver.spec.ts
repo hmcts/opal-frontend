@@ -18,7 +18,7 @@ describe('finesAccAprAddChangeTitleResolver', () => {
     });
   });
 
-  it.each([['add', 'OPAL - Add Alternate Payment Reference']])(
+  it.each([['add', 'OPAL - Add alternate payment reference']])(
     'sets the document title for mode %s',
     async (mode, expectedTitle) => {
       const harness = await RouterTestingHarness.create();
