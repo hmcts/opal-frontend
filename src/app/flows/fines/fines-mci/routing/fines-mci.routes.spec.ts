@@ -164,6 +164,11 @@ describe('finesMci routes', () => {
   });
 
   it('loads the Court Fee Payment Details screen', async () => {
+    expect(
+      createTillRoute?.children?.filter(
+        (child) => child.path === FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,
+      ),
+    ).toHaveLength(1);
     const route = createTillRoute?.children?.find(
       (child) => child.path === FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,
     );
@@ -185,6 +190,11 @@ describe('finesMci routes', () => {
   });
 
   it('loads the overpayment and underpayment confirmation screen', async () => {
+    expect(
+      createTillRoute?.children?.filter(
+        (child) => child.path === FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation,
+      ),
+    ).toHaveLength(1);
     const route = createTillRoute?.children?.find(
       (child) => child.path === FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation,
     );
@@ -193,6 +203,14 @@ describe('finesMci routes', () => {
     expect(route?.canDeactivate).toEqual([canDeactivateGuard]);
     expect(route?.resolve?.['courtFees']).toBe(finesMciCourtFeesResolver);
     expect(route?.data?.['heading']).toBe(FINES_MCI_ROUTING_TITLES.children.createTillOverUnderpaymentConfirmation);
+  });
+
+  it('should guard navigation away from suspense details when form data has been entered', () => {
+    const suspenseDetailsRoute = createTillRoute?.children?.find(
+      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.suspenseDetails,
+    );
+
+    expect(suspenseDetailsRoute?.canDeactivate).toEqual([canDeactivateGuard]);
   });
 
   it.each([
