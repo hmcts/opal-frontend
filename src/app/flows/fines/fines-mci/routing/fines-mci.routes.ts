@@ -243,7 +243,11 @@ export const routing: Routes = [
               routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
               title: FINES_MCI_ROUTING_TITLES.children.createTillCheckCourtFee,
             },
-            resolve: { title: TitleResolver },
+            resolve: {
+              courtFees: finesMciCourtFeesResolver,
+              paymentMappings: finesMciPaymentMappingsResolver,
+              title: TitleResolver,
+            },
           },
           {
             path: FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation,

@@ -1,0 +1,15 @@
+<div class="govuk-summary-card">
+  <div class="govuk-summary-card__title-wrapper">
+    <h2 class="govuk-summary-card__title">{{ title }}</h2>
+  </div>
+  <div class="govuk-summary-card__content">
+    <opal-lib-govuk-summary-list [summaryListId]="summaryId">
+      @for (row of rows; track row.id) {
+        <div opal-lib-govuk-summary-list-row [summaryListId]="summaryId" [summaryListRowId]="row.id">
+          <ng-container name>{{ row.label }}</ng-container>
+          <ng-container value>{{ row.value }}</ng-container>
+        </div>
+      }
+    </opal-lib-govuk-summary-list>
+  </div>
+</div>

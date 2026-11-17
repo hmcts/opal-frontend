@@ -154,7 +154,7 @@ describe('Court fee payment details navigation', () => {
       harness.detectChanges();
 
       expect(TestBed.inject(Router).url).toBe('/till/check-court-fee');
-      expect(harness.routeNativeElement?.textContent).toContain('Check court fee');
+      expect(harness.routeNativeElement?.textContent).toContain('Check payment');
       expect(confirm).not.toHaveBeenCalled();
       expect(store.courtFeeDraft()).toEqual(draft);
       expect(store.courtFeePaymentDetails()).toMatchObject({

@@ -180,6 +180,8 @@ describe('finesMci routes', () => {
     expect(await route?.loadComponent?.()).toBe(FinesMciCreateTillCourtFeeCheckComponent);
     expect(route?.canActivate).toContain(finesMciCourtFeeCheckGuard);
     expect(route?.canDeactivate).toEqual([canDeactivateGuard]);
+    expect(route?.resolve?.['courtFees']).toBe(finesMciCourtFeesResolver);
+    expect(route?.resolve?.['paymentMappings']).toBe(finesMciPaymentMappingsResolver);
   });
 
   it('loads the overpayment and underpayment confirmation screen', async () => {

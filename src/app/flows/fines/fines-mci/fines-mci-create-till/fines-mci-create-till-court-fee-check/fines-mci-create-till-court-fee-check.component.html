@@ -3,8 +3,18 @@
 </div>
 <div class="govuk-grid-column-two-thirds">
   <span class="govuk-caption-l">{{ finesMciStore.businessUnit()?.business_unit_name }}</span>
-  <h1 class="govuk-heading-l">Check court fee</h1>
+  <h1 class="govuk-heading-l">Check payment</h1>
   @if (isNavigating()) {
     <output class="govuk-body govuk-!-display-block">Loading payment details</output>
+  } @else if (summaryRows(); as rows) {
+    <app-fines-mci-create-till-payment-summary
+      title="Court fee payment"
+      summaryId="fines-mci-court-fee-payment-summary"
+      [rows]="rows"
+    ></app-fines-mci-create-till-payment-summary>
+  } @else {
+    <p class="govuk-error-message" role="alert">
+      Court fee payment details could not be loaded. Go back and try again.
+    </p>
   }
 </div>
