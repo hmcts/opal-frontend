@@ -351,6 +351,9 @@ describe(
         interceptNextPermittedEnforcementActions(['WOC']);
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
+        cy.wait('@getEnforcementStatus').its('response.statusCode').should('eq', 200);
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
+
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
 
         cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
@@ -387,6 +390,9 @@ describe(
             ...COMPONENT_PROPERTIES,
             accountId,
           });
+
+          cy.wait('@getEnforcementStatus').its('response.statusCode').should('eq', 200);
+          cy.get(ENF.enforcementOverviewList).should('be.visible');
 
           cy.get(ENF.tabName).should('be.visible').and('contain.text', 'Enforcement');
           cy.get(ENF.addEnforcementActionLink).should('not.exist');
@@ -428,6 +434,9 @@ describe(
           accountId,
         });
 
+        cy.wait('@getEnforcementStatus').its('response.statusCode').should('eq', 200);
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
+
         // Navigate to error page
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
 
@@ -442,6 +451,8 @@ describe(
 
         // AC3 - Go back
         cy.contains('Go back').click();
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
+        cy.get(ENF.enforcementActionValue).should('contain.text', 'NOENF');
       },
     );
 
@@ -477,6 +488,9 @@ describe(
           accountId,
         });
 
+        cy.wait('@getEnforcementStatus').its('response.statusCode').should('eq', 200);
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
+
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
 
         // AC2a
@@ -495,11 +509,13 @@ describe(
 
         // AC3
         cy.contains('Go back').click();
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
+        cy.get(ENF.enforcementActionValue).should('contain.text', 'ENFHOLD');
       },
     );
 
     it(
-      'AC1,1a. Individual: Negative testing, result ID is DW so without NOENF the add enf action button does not appear.',
+      'AC1,1a. Individual: DW with no next permitted actions shows the denial screen and Go back returns to enforcement',
       { tags: ['@JIRA-STORY:PO-1780', '@JIRA-STORY:PO-1824', '@JIRA-EPIC:PO-1674', '@JIRA-TEST-KEY:PO-4440', '@R1B'] },
       () => {
         let headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
@@ -518,7 +534,17 @@ describe(
         interceptNextPermittedEnforcementActionsEmpty();
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
-        cy.get(ENF.addEnforcementActionLink).should('not.exist');
+        cy.wait('@getEnforcementStatus').its('response.statusCode').should('eq', 200);
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
+
+        cy.get(ENF.addEnforcementActionLink).should('be.visible').click();
+
+        cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'You cannot add an enforcement action');
+        cy.contains('Warrant of Control (DW)').should('be.visible');
+
+        cy.contains('Go back').click();
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
+        cy.get(ENF.enforcementActionValue).should('contain.text', 'DW');
       },
     );
 
@@ -583,7 +609,8 @@ describe(
         });
 
         cy.wait('@getDefendantHeaderSummary');
-        cy.wait('@getEnforcementStatus');
+        cy.wait('@getEnforcementStatus').its('response.statusCode').should('eq', 200);
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
 
         cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
@@ -648,6 +675,9 @@ describe(
 
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
+        cy.wait('@getEnforcementStatus').its('response.statusCode').should('eq', 200);
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
+
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
 
         cy.get(ENF_ACTION_SELECT.actionDropdownLabel).should('contain.text', 'Select an enforcement action');
@@ -698,6 +728,9 @@ describe(
 
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
+        cy.wait('@getEnforcementStatus').its('response.statusCode').should('eq', 200);
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
+
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
         cy.get(ENF_ACTION_SELECT.actionDropdown).click();
         cy.get(ENF_ACTION_SELECT.actionDropdownOptions).contains(EMPLOYMENT_REQUIRED_ACTION.result_title).click();
@@ -737,6 +770,9 @@ describe(
         interceptEmploymentRequiredAction();
 
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
+
+        cy.wait('@getEnforcementStatus').its('response.statusCode').should('eq', 200);
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
 
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
         cy.get(ENF_ACTION_SELECT.actionDropdown).click();
@@ -786,11 +822,16 @@ describe(
         interceptNextPermittedEnforcementActions(['WOC', 'WOA']);
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
+        cy.wait('@getEnforcementStatus').its('response.statusCode').should('eq', 200);
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
+
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
         cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
 
         cy.get(ENF_ACTION_SELECT.cancelLink).click();
         cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details']);
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
+        cy.get(ENF.enforcementActionValue).should('contain.text', 'WOC');
         cy.get(ENF.tabName).should('contain.text', 'Enforcement');
       },
     );
@@ -824,6 +865,9 @@ describe(
 
         interceptNextPermittedEnforcementActions(['WOC', 'WOA']);
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
+
+        cy.wait('@getEnforcementStatus').its('response.statusCode').should('eq', 200);
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
 
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
         cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
@@ -867,6 +911,9 @@ describe(
         interceptNextPermittedEnforcementActions(['WOC']);
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
 
+        cy.wait('@getEnforcementStatus').its('response.statusCode').should('eq', 200);
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
+
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
 
         cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
@@ -898,6 +945,9 @@ describe(
         interceptEmploymentRequiredAction();
 
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
+
+        cy.wait('@getEnforcementStatus').its('response.statusCode').should('eq', 200);
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
 
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
         cy.get(ENF_ACTION_SELECT.actionDropdown).click();
@@ -946,6 +996,9 @@ describe(
             accountId,
           });
 
+          cy.wait('@getEnforcementStatus').its('response.statusCode').should('eq', 200);
+          cy.get(ENF.enforcementOverviewList).should('be.visible');
+
           cy.get(ENF.tabName).should('be.visible').and('contain.text', 'Enforcement');
           cy.get(ENF.addEnforcementActionLink).should('not.exist');
         },
@@ -970,6 +1023,8 @@ describe(
 
         mountNavigableEnforcementTab(accountId, headerMock, enforcementMock);
 
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
+
         cy.get(ENF.addEnforcementActionLink).click();
 
         cy.contains('You must first remove the enforcement hold on the account.').should('be.visible');
@@ -977,6 +1032,8 @@ describe(
         cy.contains('177A - Sainsco').should('be.visible');
 
         cy.contains('Go back').click();
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
+        cy.get(ENF.enforcementActionValue).should('contain.text', 'NOENF');
       },
     );
 
@@ -1000,6 +1057,8 @@ describe(
 
         mountNavigableEnforcementTab(accountId, headerMock, enforcementMock);
 
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
+
         cy.get(ENF.addEnforcementActionLink).click();
 
         cy.contains('You cannot add an enforcement action to an account that has a last enforcement action of:').should(
@@ -1011,6 +1070,8 @@ describe(
         cy.contains('177A - Sainsco').should('be.visible');
 
         cy.contains('Go back').click();
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
+        cy.get(ENF.enforcementActionValue).should('contain.text', 'ENFHOLD');
       },
     );
 
@@ -1919,6 +1980,8 @@ describe(
 
         cy.get('@confirmLeave').should('not.have.been.called');
         cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details']);
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
+        cy.get(ENF.enforcementActionValue).should('contain.text', 'COLLO');
         cy.get(ENF.tabName).should('contain.text', 'Enforcement');
       },
     );
@@ -1977,6 +2040,8 @@ describe(
 
         cy.get('@confirmLeave').should('have.been.calledOnce');
         cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details']);
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
+        cy.get(ENF.enforcementActionValue).should('contain.text', 'COLLO');
       },
     );
 
@@ -2092,10 +2157,11 @@ describe(
 
         const accountId = headerMock.defendant_account_party_id;
 
+        interceptNextPermittedEnforcementActions(['COLLO']);
+
         reachAddAnotherEnforcementActionPrompt(accountId, headerMock, enforcementMock);
 
         cy.get(ENF_ACTION_SELECT.newEnforcementActionYesRadio).check({ force: true });
-        interceptNextPermittedEnforcementActions(['COLLO']);
         cy.get(ENF_ACTION_SELECT.newEnforcementActionContinueButton).click();
 
         cy.get('@routerNavigate')
@@ -2129,6 +2195,7 @@ describe(
         cy.get(ENF_ACTION_SELECT.newEnforcementActionContinueButton).click();
 
         cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details'], { fragment: 'enforcement' });
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
         cy.get(ENF.enforcementActionValue)
           .should('be.visible')
           .and('contain.text', 'Warrant of detention')
@@ -2178,7 +2245,8 @@ describe(
 
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
         cy.wait('@getDefendantHeaderSummary');
-        cy.wait('@getEnforcementStatus');
+        cy.wait('@getEnforcementStatus').its('response.statusCode').should('eq', 200);
+        cy.get(ENF.enforcementOverviewList).should('be.visible');
         cy.get(ENF.addEnforcementActionLink).click();
 
         cy.wait('@getActiveEnforcementActions').its('request.query').should('include', {
