@@ -1,12 +1,14 @@
+import { Location } from '@angular/common';
+import { provideLocationMocks } from '@angular/common/testing';
 import { FINES_MCI_CRIMINAL_SEARCH_MOCK } from '../mocks/fines-mci-criminal-search.mock';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { of } from 'rxjs';
+import { filter, firstValueFrom, of, take } from 'rxjs';
 import { FinesMciCriminalAccountService } from '../services/fines-mci-criminal-account.service';
 import { EMPTY } from 'rxjs';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, Router, Routes } from '@angular/router';
+import { NavigationEnd, provideRouter, Router, Routes } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
@@ -375,69 +377,104 @@ describe('finesMci routes', () => {
   it.each([
     ['L', false, 'Confirm account'],
     ['WO', true, 'You cannot pay into this account'],
-  ])(
-    'loads a master with status %s and reuses the account route with its own eligibility',
-    async (status, company, heading) => {
-      const accountRoute = criminalRoute!.children!.find((route) => route.path === 'account/:accountId/:type')!;
-      const root = 'fines/manual-cash-input/create/till/payment/category/criminal';
-      const masterId = '9007199254740993';
-      const masterDetails = {
-        ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
-        defendant_account_id: masterId,
-        account_number: 'MASTER123',
-        account_status_code: status as string,
-        account_balance: 175,
-        party_details: {
-          ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK.party_details,
-          organisation_flag: company as boolean,
-        },
-      };
-      TestBed.configureTestingModule({
-        providers: [
-          FinesMciCriminalAccountService,
-          {
-            provide: OpalFines,
-            useValue: {
-              clearCache: () => {},
-              getDefendantAccountMaster: () => of({ defendant_account_id: masterId }),
-              getDefendantAccountAtAGlance: () => of(masterDetails),
-              getDefendantAccountHeadingData: () => of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
-            },
+  ])('loads a %s master and returns browser Back to the preserved search results', async (status, company, heading) => {
+    const accountRoute = criminalRoute!.children!.find((route) => route.path === 'account/:accountId/:type')!;
+    const matchesRoute = criminalRoute!.children!.find(
+      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.matches,
+    )!;
+    const getDefendantAccounts = vi.fn().mockReturnValue(of({ count: 0, defendant_accounts: [] }));
+    const root = 'fines/manual-cash-input/create/till/payment/category/criminal';
+    const masterId = '9007199254740993';
+    const masterDetails = {
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
+      defendant_account_id: masterId,
+      account_number: 'MASTER123',
+      account_status_code: status as string,
+      account_balance: 175,
+      party_details: {
+        ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK.party_details,
+        organisation_flag: company as boolean,
+      },
+    };
+    TestBed.configureTestingModule({
+      providers: [
+        FinesMciCriminalAccountService,
+        provideLocationMocks(),
+        {
+          provide: OpalFines,
+          useValue: {
+            clearCache: () => {},
+            getDefendantAccounts,
+            getDefendantAccountMaster: () => of({ defendant_account_id: masterId }),
+            getDefendantAccountAtAGlance: () => of(masterDetails),
+            getDefendantAccountHeadingData: () => of(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK),
           },
-          provideRouter([{ path: root, children: [{ ...accountRoute, canActivate: [], resolve: {} }] }]),
-        ],
-      });
-      const store = TestBed.inject(FinesMciStore);
-      store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
-      store.setSelectedCriminalAccount(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0]);
-      store.setSelectedCriminalAccountAtAGlance({
-        ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
-        account_status_code: 'CS',
-        account_balance: 0,
-      });
-      const harness = await RouterTestingHarness.create();
-      const component = await harness.navigateByUrl(
-        `/${root}/account/1/individual`,
-        FinesMciPaymentCategoryCriminalAccountComponent,
-      );
-      harness.routeNativeElement!.querySelector<HTMLInputElement>('input[value="master"]')!.click();
-      harness
-        .routeNativeElement!.querySelector('form')!
-        .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-      await harness.fixture.whenStable();
-      harness.detectChanges();
-      expect(TestBed.inject(Router).url).toBe(`/${root}/account/${masterId}/${company ? 'company' : 'individual'}`);
-      expect(harness.routeDebugElement!.componentInstance).toBe(component);
-      expect(harness.routeNativeElement!.querySelector('h1')!.textContent!.trim()).toBe(heading);
-      expect(harness.routeNativeElement!.textContent).toContain('MASTER123');
-      expect(harness.routeNativeElement!.querySelector('form')).toBeNull();
-      expect(store.selectedCriminalAccountAtAGlance()).toEqual(masterDetails);
-      const enquiryLink = harness.routeNativeElement!.querySelector<HTMLAnchorElement>('a[target="_blank"]')!;
-      expect(enquiryLink.getAttribute('href')).toBe(`/fines/account/defendant/${masterId}/details`);
-      expect(enquiryLink.target).toBe('_blank');
-      expect(store.businessUnit()).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
-    },
-  );
+        },
+        provideRouter([
+          {
+            path: root,
+            children: [
+              { ...matchesRoute, canActivate: [], resolve: { criminalAccounts: finesMciCriminalAccountsResolver } },
+              { ...accountRoute, canActivate: [], resolve: {} },
+            ],
+          },
+        ]),
+      ],
+    });
+    const store = TestBed.inject(FinesMciStore);
+    store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    store.setCriminalSearch(FINES_MCI_CRIMINAL_SEARCH_MOCK);
+    store.setCriminalSearchResults(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK);
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl(`/${root}/matches`);
+    await harness.fixture.whenStable();
+    store.setSelectedCriminalAccount(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0]);
+    store.setSelectedCriminalAccountAtAGlance({
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
+      account_status_code: 'CS',
+      account_balance: 0,
+    });
+    const component = await harness.navigateByUrl(
+      `/${root}/account/1/individual`,
+      FinesMciPaymentCategoryCriminalAccountComponent,
+    );
+    harness.routeNativeElement!.querySelector<HTMLInputElement>('input[value="master"]')!.click();
+    harness
+      .routeNativeElement!.querySelector('form')!
+      .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(TestBed.inject(Router).url).toBe(`/${root}/account/${masterId}/${company ? 'company' : 'individual'}`);
+    expect(harness.routeDebugElement!.componentInstance).toBe(component);
+    expect(harness.routeNativeElement!.querySelector('h1')!.textContent!.trim()).toBe(heading);
+    expect(harness.routeNativeElement!.textContent).toContain('MASTER123');
+    expect(harness.routeNativeElement!.querySelector('form')).toBeNull();
+    expect(store.selectedCriminalAccountAtAGlance()).toEqual(masterDetails);
+    const enquiryLink = harness.routeNativeElement!.querySelector<HTMLAnchorElement>('a[target="_blank"]')!;
+    expect(enquiryLink.getAttribute('href')).toBe(`/fines/account/defendant/${masterId}/details`);
+    expect(enquiryLink.target).toBe('_blank');
+    expect(store.businessUnit()).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    const router = TestBed.inject(Router);
+    // Match application bootstrap so Location.back() triggers a router navigation.
+    router.setUpLocationChangeListener();
+    const navigationEnd = firstValueFrom(
+      router.events.pipe(
+        filter((event) => event instanceof NavigationEnd),
+        take(1),
+      ),
+    );
+    TestBed.inject(Location).back();
+    await navigationEnd;
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(router.url).toBe(`/${root}/matches`);
+    expect(harness.routeNativeElement!.querySelector('h1')!.textContent!.trim()).toBe('Search results');
+    expect(harness.routeNativeElement!.textContent).toContain(
+      OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0].account_number,
+    );
+    expect(store.criminalSearchResults()).toBe(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK);
+    expect(getDefendantAccounts).not.toHaveBeenCalled();
+  });
   it('returns Cancel to Till Details and clears the account search and payment draft', async () => {
     const accountRoute = criminalRoute!.children!.find((route) => route.path === 'account/:accountId/:type')!;
     const detailsRoute = createTillRoute!.children!.find(

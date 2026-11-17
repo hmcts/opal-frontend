@@ -286,7 +286,7 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
   }
 
   /**
-   * Loads the master and reuses this route to evaluate its current payment eligibility.
+   * Loads the master and replaces the child history entry so browser Back returns to the search results.
    * Restores the child if navigation fails or is cancelled. Failed loads retain the child and scroll
    * to the global error banner; choice changes, Back, Cancel and destruction unsubscribe pending work.
    */
@@ -305,7 +305,7 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
           return from(
             this.router.navigate(
               [FINES_MCI_ROUTING_PATHS.children.account, masterId, master.organisation_flag ? 'company' : 'individual'],
-              { relativeTo: this.route.parent },
+              { relativeTo: this.route.parent, replaceUrl: true },
             ),
           );
         }),

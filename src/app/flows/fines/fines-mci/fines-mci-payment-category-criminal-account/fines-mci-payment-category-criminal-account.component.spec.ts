@@ -782,7 +782,7 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
       submit();
       await fixture.whenStable();
       fixture.detectChanges();
-      expect(navigate).toHaveBeenCalledWith(['account', '2', 'company'], { relativeTo: undefined });
+      expect(navigate).toHaveBeenCalledWith(['account', '2', 'company'], { relativeTo: undefined, replaceUrl: true });
       expect(store.selectedCriminalAccount()).toBe(child);
       expect(store.selectedCriminalAccountAtAGlance()).toBe(details);
       expect(store.selectedCriminalAccountHeader()).toBe(hasHeader ? FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK : null);
@@ -857,7 +857,10 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
       second.next(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK);
       second.complete();
       await fixture.whenStable();
-      expect(navigate).toHaveBeenCalledExactlyOnceWith(['account', '2', 'individual'], { relativeTo: undefined });
+      expect(navigate).toHaveBeenCalledExactlyOnceWith(['account', '2', 'individual'], {
+        relativeTo: undefined,
+        replaceUrl: true,
+      });
     });
 
     it('ignores duplicate submissions and cancels the request when Back is selected', () => {
