@@ -115,12 +115,32 @@ describe('FinesMciCreateTillPayerDetailsComponent', () => {
 
   it('uses the Back link to return to Suspense Details', async () => {
     const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    store.setSuspensePayment(PAYMENT);
     fixture.detectChanges();
+    const component = fixture.componentInstance;
+    expect(component['canDeactivate']()).toBe(false);
 
     fixture.debugElement.query(By.css('opal-lib-govuk-back-link')).triggerEventHandler('clickEvent');
+    expect(component['canDeactivate']()).toBe(true);
+    expect(component.handleBeforeUnload()).toBe(false);
     await fixture.whenStable();
 
     expect(navigate).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create', 'till', 'suspense-details']);
+  });
+
+  it('keeps the route guard active when payer details have been entered', async () => {
+    store.setSuspensePayment(PAYMENT);
+    vi.spyOn(router, 'navigate').mockResolvedValue(false);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    component.handleUnsavedChanges(true);
+
+    component.handleBack();
+
+    expect(component['canDeactivate']()).toBe(false);
+    expect(component.handleBeforeUnload()).toBe(false);
+    await fixture.whenStable();
+    expect(component['canDeactivate']()).toBe(false);
   });
 
   it('keeps payer and suspense details when Back navigation is cancelled', async () => {
