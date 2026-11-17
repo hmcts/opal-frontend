@@ -6,7 +6,7 @@ import { FinesSuspenseItemStore } from './stores/fines-suspense-item.store';
 @Component({
   selector: 'app-fines-suspense-item',
   imports: [RouterOutlet],
-  template: '<router-outlet />',
+  templateUrl: './fines-suspense-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '(window:beforeunload)': 'handleBeforeUnload()',
