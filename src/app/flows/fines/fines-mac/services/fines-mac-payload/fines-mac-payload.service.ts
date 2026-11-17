@@ -31,9 +31,8 @@ import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
+import { stripTelephoneNumberSpaces } from '../../../utils/fines-telephone-number.utils';
 import { IFinesMacPayloadAccountDefendantComplete } from './utils/interfaces/fines-mac-payload-account-defendant-complete.interface';
-
-const stripTelephoneNumberSpaces = (value: string | null): string | null => value?.replace(/\s/g, '') ?? null;
 
 const normalizeTelephoneNumbers = (defendant: IFinesMacPayloadAccountDefendantComplete): void => {
   for (const contact of [defendant, defendant.parent_guardian]) {
