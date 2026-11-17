@@ -1,3 +1,5 @@
+import { RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG } from '@app/flows/fines/constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '@app/flows/fines/utils/fines-section-permissions.utils';
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
 import { of } from 'rxjs';
@@ -25,6 +27,9 @@ export const finesDraftCreateAndManageViewAllRejectedResolver: ResolveFn<IOpalFi
   }
 
   const params = buildFinesDraftAccountParams(globalStore.userState(), {
+    includeMacSource: getFeatureFlagReleaseState(globalStore.featureFlags())[
+      RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG
+    ],
     statuses,
     includeSubmittedBy: false,
     includeNotSubmittedBy: true,

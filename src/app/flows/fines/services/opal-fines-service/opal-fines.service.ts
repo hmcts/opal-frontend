@@ -101,6 +101,7 @@ export class OpalFines {
   private readonly PARAM_NOT_SUBMITTED_BY = 'not_submitted_by';
   private readonly PARAM_ACCOUNT_STATUS_DATE_FROM = 'account_status_date_from';
   private readonly PARAM_ACCOUNT_STATUS_DATE_TO = 'account_status_date_to';
+  private readonly PARAM_SOURCE = 'source';
   private readonly PARAM_FROM_DATE = 'from_date';
   private readonly PARAM_TO_DATE = 'to_date';
   private readonly PARAM_BUSINESS_UNITS = 'business_units';
@@ -178,6 +179,7 @@ export class OpalFines {
    */
   private generateDraftAccountsCacheKey(filters: IOpalFinesDraftAccountParams): string {
     return JSON.stringify({
+      source: filters.source,
       businessUnitIds: [...(filters.businessUnitIds ?? [])].sort((a, b) => a - b),
       statuses: [...(filters.statuses ?? [])].sort((a, b) => a.localeCompare(b)),
       submittedBy: [...(filters.submittedBy ?? [])].sort((a, b) => a.localeCompare(b)),
@@ -692,6 +694,7 @@ export class OpalFines {
         [this.PARAM_NOT_SUBMITTED_BY]: filters.notSubmittedBy,
         [this.PARAM_ACCOUNT_STATUS_DATE_FROM]: filters.accountStatusDateFrom,
         [this.PARAM_ACCOUNT_STATUS_DATE_TO]: filters.accountStatusDateTo,
+        [this.PARAM_SOURCE]: filters.source ? [filters.source] : undefined,
       };
 
       for (const [key, values] of Object.entries(filterMapping)) {

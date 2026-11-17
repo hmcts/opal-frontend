@@ -1,3 +1,4 @@
+import { OPAL_FINES_DRAFT_ACCOUNT_STATUSES } from '@services/fines/opal-fines-service/constants/opal-fines-draft-account-statues.constant';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, RedirectCommand, ResolveFn } from '@angular/router';
 import { isObservable, lastValueFrom, of } from 'rxjs';
@@ -155,4 +156,26 @@ describe('finesDraftTabResolver', () => {
     // Restore original value to avoid side effects
     tab.historicWindowInDays = originalHistoricWindow;
   });
+  it.each([true, false, undefined])(
+    'preserves historic and user filters with the banking flag (%s)',
+    async (enabled) => {
+      globalStoreMock.setFeatureFlags(enabled === undefined ? {} : { 'release-1c-banking-interfaces': enabled });
+      dateServiceMock.getDateRange.mockReturnValue({ from: '2026-01-01', to: '2026-01-07' });
+      opalFinesServiceMock.getDraftAccounts.mockReturnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
+
+      await runResolverWithOptions(
+        { defaultTab: FINES_DRAFT_TAB_FRAGMENT.deleted, includeSubmittedBy: false, includeNotSubmittedBy: true },
+        FINES_DRAFT_TAB_FRAGMENT.deleted,
+      );
+
+      expect(opalFinesServiceMock.getDraftAccounts).toHaveBeenCalledWith({
+        businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((user) => user.business_unit_id),
+        notSubmittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((user) => user.business_unit_user_id),
+        statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.deleted],
+        accountStatusDateFrom: ['2026-01-01'],
+        accountStatusDateTo: ['2026-01-07'],
+        ...(enabled ? { source: 'MAC' } : {}),
+      });
+    },
+  );
 });
