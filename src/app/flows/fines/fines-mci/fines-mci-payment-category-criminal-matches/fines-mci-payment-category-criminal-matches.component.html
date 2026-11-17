@@ -1,5 +1,8 @@
-@if (isMatchesResults()) {
+@if (!isSearchCriteriaCannotBeCombinedResults()) {
   <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
+}
+
+@if (isMatchesResults()) {
   <div #errorSummary>
     <opal-lib-govuk-error-summary
       [errors]="selectionErrorSummary()"

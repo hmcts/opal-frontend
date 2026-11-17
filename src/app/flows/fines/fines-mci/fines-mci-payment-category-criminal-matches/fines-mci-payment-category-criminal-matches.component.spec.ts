@@ -481,6 +481,7 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
     expect(text).toContain(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name);
     expect(text).toContain('Search results');
     expect(text).toContain('There are no matching results');
+    expect(fixture.nativeElement.querySelector('.govuk-back-link')).not.toBeNull();
     expect(text).toContain('Check your search');
     expect(text).toContain('and try again.');
     expect(text).not.toContain('Placeholder for PO-3528');
@@ -500,6 +501,7 @@ describe('FinesMciPaymentCategoryCriminalMatchesComponent', () => {
     expect(text).toContain(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name);
     expect(text).toContain('Search results');
     expect(text).toContain('There are more than 100 results');
+    expect(fixture.nativeElement.querySelector('.govuk-back-link')).not.toBeNull();
     expect(text).toContain('Try searching by account number or full name');
     expect(text).not.toContain('Placeholder for PO-3528');
     expect(link.textContent?.trim()).toBe('Try searching by account number or full name');
