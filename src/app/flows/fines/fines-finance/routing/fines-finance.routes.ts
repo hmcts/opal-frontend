@@ -48,7 +48,7 @@ export const routing: Routes = [
       routePermissionId: [financeRootPermissionIds['view-interface-files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.outbound,
     },
-    resolve: { title: TitleResolver },
+    resolve: { title: TitleResolver, businessUnits: fetchBusinessUnitsResolver },
   },
   {
     path: `${FINES_FINANCE_ROUTING_PATHS.children.variantBankingFiles}/${FINES_FINANCE_ROUTING_PATHS.children.upload}`,
