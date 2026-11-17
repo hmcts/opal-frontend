@@ -160,6 +160,11 @@ describe('finesMci routes', () => {
   });
 
   it('loads the temporary Court Fee Payment Details destination', async () => {
+    expect(
+      createTillRoute?.children?.filter(
+        (child) => child.path === FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,
+      ),
+    ).toHaveLength(1);
     const route = createTillRoute?.children?.find(
       (child) => child.path === FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,
     );
@@ -169,6 +174,11 @@ describe('finesMci routes', () => {
   });
 
   it('loads the overpayment and underpayment confirmation screen', async () => {
+    expect(
+      createTillRoute?.children?.filter(
+        (child) => child.path === FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation,
+      ),
+    ).toHaveLength(1);
     const route = createTillRoute?.children?.find(
       (child) => child.path === FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation,
     );
