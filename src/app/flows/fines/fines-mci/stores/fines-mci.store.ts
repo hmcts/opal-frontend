@@ -5,6 +5,7 @@ import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/inter
 import {
   FinesMciJourney,
   IFinesMciSuspensePayerDetails,
+  IFinesMciCourtFeeDraft,
   IFinesMciSuspensePayment,
   IFinesMciTill,
 } from './interfaces/fines-mci.interface';
@@ -24,6 +25,7 @@ export const FinesMciStore = signalStore(
     selectedCriminalAccountHeader: null as IOpalFinesAccountDefendantDetailsHeader | null,
     selectedCriminalAccountAtAGlance: null as IOpalFinesAccountDefendantAtAGlance | null,
     draftJourney: null as FinesMciJourney | null,
+    courtFeeDraft: null as IFinesMciCourtFeeDraft | null,
     suspensePayment: null as IFinesMciSuspensePayment | null,
     suspensePayerDetails: null as IFinesMciSuspensePayerDetails | null,
   })),
@@ -91,7 +93,7 @@ export const FinesMciStore = signalStore(
           selectedCriminalAccountHeader: null,
         });
       },
-      /** Sets the business unit, clearing tills, the category draft and search criteria when the unit changes. */
+      /** Sets the business unit, clearing payment and search state when the unit changes. */
       setBusinessUnit(businessUnit: IOpalFinesBusinessUnit): void {
         const currentBusinessUnit = store.businessUnit();
         if (currentBusinessUnit && currentBusinessUnit.business_unit_id !== businessUnit.business_unit_id) {
@@ -106,6 +108,7 @@ export const FinesMciStore = signalStore(
             selectedCriminalAccount: null,
             selectedCriminalAccountAtAGlance: null,
             selectedCriminalAccountHeader: null,
+            courtFeeDraft: null,
           });
           return;
         }
@@ -116,7 +119,11 @@ export const FinesMciStore = signalStore(
       ensureTill,
       /** Stores the selected payment journey until its details are completed. */
       setDraftJourney(draftJourney: FinesMciJourney | null): void {
-        patchState(store, { draftJourney });
+        patchState(store, { draftJourney, ...(draftJourney !== 'courtFee' && { courtFeeDraft: null }) });
+      },
+      /** Holds court fee form values while the payment journey is in progress. */
+      setCourtFeeDraft(courtFeeDraft: IFinesMciCourtFeeDraft | null): void {
+        patchState(store, { courtFeeDraft });
       },
       /** Stores validated suspense details in application memory. */
       setSuspensePayment(suspensePayment: IFinesMciSuspensePayment | null): void {
@@ -140,7 +147,7 @@ export const FinesMciStore = signalStore(
         });
         return paymentId;
       },
-      /** Clears the business unit, tills, category draft and submitted search criteria. */
+      /** Clears the business unit, tills, payment drafts and submitted search criteria. */
       reset(): void {
         patchState(store, {
           businessUnit: null,
@@ -149,6 +156,7 @@ export const FinesMciStore = signalStore(
           suspensePayment: null,
           suspensePayerDetails: null,
           criminalSearch: null,
+          courtFeeDraft: null,
           criminalSearchResults: null,
           selectedCriminalAccount: null,
           selectedCriminalAccountAtAGlance: null,
