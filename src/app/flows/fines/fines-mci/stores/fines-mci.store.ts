@@ -2,7 +2,7 @@ import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { IFinesMciCriminalAccount } from '../interfaces/fines-mci-criminal-account.interface';
 import { IFinesMciCriminalAccountsResponse } from '../interfaces/fines-mci-criminal-accounts-response.interface';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
-import { FinesMciJourney, IFinesMciTill } from './interfaces/fines-mci.interface';
+import { FinesMciJourney, IFinesMciSuspensePayment, IFinesMciTill } from './interfaces/fines-mci.interface';
 import { IFinesMciCriminalSearch } from './interfaces/fines-mci-criminal-search.interface';
 import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
 
@@ -19,6 +19,7 @@ export const FinesMciStore = signalStore(
     selectedCriminalAccountHeader: null as IOpalFinesAccountDefendantDetailsHeader | null,
     selectedCriminalAccountAtAGlance: null as IOpalFinesAccountDefendantAtAGlance | null,
     draftJourney: null as FinesMciJourney | null,
+    suspensePayment: null as IFinesMciSuspensePayment | null,
   })),
   withMethods((store) => {
     /** Returns the existing till ID or creates the first till for the current business unit. */
@@ -97,6 +98,7 @@ export const FinesMciStore = signalStore(
             selectedCriminalAccountAtAGlance: null,
             selectedCriminalAccountHeader: null,
             draftJourney: null,
+            suspensePayment: null,
           });
           return;
         }
@@ -108,6 +110,10 @@ export const FinesMciStore = signalStore(
       /** Stores the selected payment journey until its details are completed. */
       setDraftJourney(draftJourney: FinesMciJourney | null): void {
         patchState(store, { draftJourney });
+      },
+      /** Stores validated suspense details in application memory. */
+      setSuspensePayment(suspensePayment: IFinesMciSuspensePayment | null): void {
+        patchState(store, { suspensePayment });
       },
       /** Adds a payment journey to the matching till and returns the new payment ID. */
       addPayment(tillId: string, journey: FinesMciJourney): string {
@@ -134,6 +140,7 @@ export const FinesMciStore = signalStore(
           selectedCriminalAccountAtAGlance: null,
           selectedCriminalAccountHeader: null,
           draftJourney: null,
+          suspensePayment: null,
         });
       },
     };

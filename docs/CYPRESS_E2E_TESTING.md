@@ -71,6 +71,16 @@ cypress/e2e/functional/opal/features/release1b/searchAndMatches/
 
 ## Running a Feature
 
+### R1C UAT Technical selection
+
+Use `@R1CUatTechJCDE` and `@R1CUatTechPreprod` for R1C legacy examples that should run only through explicit UAT Technical selection. Both tags are excluded from default CNP functional runs and the standard nightly functional, legacy, and R1A/R1B demo suites.
+
+In nightly, enable `RunUatTech` and select `UAT_TECHNICAL_SUITE=R1C`. `LEGACY_URL` selects the JCDE (`DEV`) or pre-prod examples. The existing R1A/R1B suite choices do not include R1C examples.
+
+For local runs, use `yarn test:functional:uat_legacy_r1c_jcde` or `yarn test:functional:uat_legacy_r1c_preprod`. For a CNP PR run, use `enable_legacy_mode` with `run_tag:@R1CUatTechJCDE`; the JCDE override is enabled automatically for that tag.
+
+### Single feature
+
 Run a single feature file with:
 
 ```
