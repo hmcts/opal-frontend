@@ -20,35 +20,41 @@
     ></div>
     <opal-lib-govuk-radios-conditional conditionalId="individual-payer-conditional">
       @if (form.controls['payerType'].value === 'individual') {
-        <opal-lib-govuk-select
-          labelText="Title"
-          labelClasses="govuk-label--s"
-          selectId="title"
-          selectName="title"
-          [options]="titleOptions"
-          [control]="form.controls['title']"
-          [errors]="formControlErrorMessages['title']"
-        ></opal-lib-govuk-select>
-        <opal-lib-govuk-text-input
-          labelText="First names"
-          inputId="firstNames"
-          inputName="firstNames"
-          inputClasses="govuk-input--width-20"
-          labelClasses="govuk-label--s"
-          hintText="Include their middle names"
-          [control]="form.controls['firstNames']"
-          [errors]="formControlErrorMessages['firstNames']"
-        ></opal-lib-govuk-text-input>
-        <opal-lib-govuk-text-input
-          labelText="Last name"
-          inputId="lastName"
-          inputName="lastName"
-          inputClasses="govuk-input--width-20"
-          labelClasses="govuk-label--s"
-          [control]="form.controls['lastName']"
-          [errors]="formControlErrorMessages['lastName']"
-          [opalLibTrimLeadingTrailingWhitespace]="form.controls['lastName']"
-        ></opal-lib-govuk-text-input>
+        <div class="govuk-form-group">
+          <opal-lib-govuk-select
+            labelText="Title"
+            labelClasses="govuk-label--s"
+            selectId="title"
+            selectName="title"
+            [options]="titleOptions"
+            [control]="form.controls['title']"
+            [errors]="formControlErrorMessages['title']"
+          ></opal-lib-govuk-select>
+        </div>
+        <div class="govuk-form-group">
+          <opal-lib-govuk-text-input
+            labelText="First names"
+            inputId="firstNames"
+            inputName="firstNames"
+            inputClasses="govuk-input--width-20"
+            labelClasses="govuk-label--s"
+            hintText="Include their middle names"
+            [control]="form.controls['firstNames']"
+            [errors]="formControlErrorMessages['firstNames']"
+          ></opal-lib-govuk-text-input>
+        </div>
+        <div class="govuk-form-group">
+          <opal-lib-govuk-text-input
+            labelText="Last name"
+            inputId="lastName"
+            inputName="lastName"
+            inputClasses="govuk-input--width-20"
+            labelClasses="govuk-label--s"
+            [control]="form.controls['lastName']"
+            [errors]="formControlErrorMessages['lastName']"
+            [opalLibTrimLeadingTrailingWhitespace]="form.controls['lastName']"
+          ></opal-lib-govuk-text-input>
+        </div>
       }
     </opal-lib-govuk-radios-conditional>
     <div
