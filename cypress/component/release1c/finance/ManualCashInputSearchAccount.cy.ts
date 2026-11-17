@@ -195,6 +195,24 @@ describe('Manual Cash Input - Search for an Account', () => {
   );
 
   it(
+    '(AC1a) opens Invalid Search Combination when account number and first names are combined without a last name',
+    { tags: [...TAGS, '@JIRA-STORY:PO-3529'] },
+    () => {
+      openCriminalSearch();
+      cy.get(Mci.searchAccount.accountNumber).type('12345678');
+      cy.get(Mci.searchAccount.firstNames).type('John');
+      cy.get(Mci.searchAccount.lastName).should('have.value', '');
+      cy.get(Mci.searchAccount.searchButton).click();
+
+      cy.contains('h1', 'There is a problem').should('be.visible');
+      cy.contains(
+        'Reference data and account information cannot be entered together when searching for an account.',
+      ).should('be.visible');
+      cy.get('@getDefendantAccounts').should('not.have.been.called');
+    },
+  );
+
+  it(
     '(AC6, AC1b) opens Invalid Search Combination when account number and company criteria are combined',
     { tags: [...TAGS, '@JIRA-STORY:PO-3529'] },
     () => {
