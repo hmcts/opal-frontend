@@ -524,7 +524,7 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
     );
 
     it.each([true, false])(
-      'returns Pay into suspense to the landing page and clears the draft only after navigation succeeds: %s',
+      'opens Suspense Details and discards the criminal draft only after navigation succeeds: %s',
       async (navigated) => {
         store.setSelectedCriminalAccountAtAGlance({
           ...store.selectedCriminalAccountAtAGlance()!,
@@ -535,8 +535,15 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
         const { element, fixture } = render();
         element.querySelector<HTMLButtonElement>('#fines-mci-pay-into-suspense')!.click();
         await fixture.whenStable();
-        expect(navigate).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create-allocate']);
-        expect(store.draftJourney()).toBe(navigated ? null : 'criminal');
+        expect(navigate).toHaveBeenCalledWith([
+          '/',
+          'fines',
+          'manual-cash-input',
+          'create',
+          'till',
+          'suspense-details',
+        ]);
+        expect(store.draftJourney()).toBe(navigated ? 'suspense' : 'criminal');
         expect(store.selectedCriminalAccount()?.defendant_account_id ?? null).toBe(navigated ? null : 1);
         expect(store.businessUnit()).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
       },
@@ -729,7 +736,7 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
     });
 
     it.each([true, false])(
-      'returns suspense selection to the MCI landing page and clears the draft only after success: %s',
+      'opens Suspense Details for the suspense selection and discards the criminal draft only after success: %s',
       async (navigated) => {
         store.setDraftJourney('criminal');
         const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(navigated);
@@ -737,9 +744,16 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
         select('suspense');
         submit();
         await fixture.whenStable();
-        expect(navigate).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create-allocate']);
+        expect(navigate).toHaveBeenCalledWith([
+          '/',
+          'fines',
+          'manual-cash-input',
+          'create',
+          'till',
+          'suspense-details',
+        ]);
         expect(store.selectedCriminalAccount() === null).toBe(navigated);
-        expect(store.draftJourney()).toBe(navigated ? null : 'criminal');
+        expect(store.draftJourney()).toBe(navigated ? 'suspense' : 'criminal');
         expect(TestBed.inject(FinesMciCriminalAccountService).loadMasterAccountDetails).not.toHaveBeenCalled();
       },
     );
@@ -827,7 +841,14 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
       expect(element.querySelector('.govuk-error-summary')).toBeNull();
       submit();
       await fixture.whenStable();
-      expect(navigate).toHaveBeenCalledExactlyOnceWith(['/', 'fines', 'manual-cash-input', 'create-allocate']);
+      expect(navigate).toHaveBeenCalledExactlyOnceWith([
+        '/',
+        'fines',
+        'manual-cash-input',
+        'create',
+        'till',
+        'suspense-details',
+      ]);
     });
 
     it('starts a fresh master request if the user switches back to the master option', async () => {
