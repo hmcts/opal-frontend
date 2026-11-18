@@ -14,12 +14,14 @@ import { IFinesMciPaymentMappings } from '../../routing/interfaces/fines-mci-pay
 import { FinesMciCreateTillPaymentSummaryComponent } from '../fines-mci-create-till-payment-summary/fines-mci-create-till-payment-summary.component';
 import { IFinesMciCreateTillPaymentSummaryRow } from '../fines-mci-create-till-payment-summary/interfaces/fines-mci-create-till-payment-summary-row.interface';
 import { compareCourtFeeAmounts, comparePayment, formatPounds } from '../utils/fines-mci-court-fee-payment.utils';
+import { FinesMciCreateTillCourtFeeCheckFormComponent } from './fines-mci-create-till-court-fee-check-form/fines-mci-create-till-court-fee-check-form.component';
 
 @Component({
   selector: 'app-fines-mci-create-till-court-fee-check',
   imports: [
     GovukBackLinkComponent,
     FinesMciCreateTillPaymentSummaryComponent,
+    FinesMciCreateTillCourtFeeCheckFormComponent,
     MojAlertComponent,
     MojAlertContentComponent,
     MojAlertIconComponent,
@@ -36,6 +38,7 @@ export class FinesMciCreateTillCourtFeeCheckComponent implements OnInit {
   protected readonly isNavigating = signal(false);
   protected readonly summaryRows = signal<IFinesMciCreateTillPaymentSummaryRow[] | null>(null);
   protected readonly overpaymentMessage = signal<string | null>(null);
+  protected readonly saveUnavailable = signal(false);
 
   /** Opens an editing screen without discarding the saved payment. */
   private navigateToEdit(destination: string): void {
@@ -140,5 +143,10 @@ export class FinesMciCreateTillCourtFeeCheckComponent implements OnInit {
         ? FINES_MCI_ROUTING_PATHS.children.courtFeeDetails
         : FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,
     );
+  }
+
+  /** Informs users that saving will be available in the next step of this journey. */
+  public handleValidatedNote(): void {
+    this.saveUnavailable.set(true);
   }
 }

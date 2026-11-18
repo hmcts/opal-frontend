@@ -1,0 +1,26 @@
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
+<form (submit)="handleFormSubmit($event)" [formGroup]="form" novalidate>
+  <ng-content></ng-content>
+  <opal-lib-govuk-text-area
+    labelText="Add suspense note"
+    labelClasses="govuk-label--s"
+    inputId="suspenseNote"
+    inputName="suspenseNote"
+    [control]="form.controls['suspenseNote']"
+    [errors]="formControlErrorMessages['suspenseNote']"
+    [characterCountEnabled]="true"
+    [maxCharacterLimit]="1000"
+  ></opal-lib-govuk-text-area>
+  <div class="govuk-button-group">
+    <opal-lib-govuk-button buttonId="save-and-review-till" type="submit">Save and review till</opal-lib-govuk-button>
+    <opal-lib-govuk-button buttonId="save-and-add-payment" type="submit" buttonClasses="govuk-button--secondary"
+      >Save and add another payment</opal-lib-govuk-button
+    >
+  </div>
+  @if (saveUnavailable) {
+    <output class="govuk-body govuk-!-display-block">Saving payments is not available yet.</output>
+  }
+</form>

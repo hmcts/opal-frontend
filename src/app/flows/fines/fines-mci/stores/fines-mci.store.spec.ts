@@ -23,6 +23,7 @@ describe('FinesMciStore', () => {
       store.setDraftJourney('courtFee');
       store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: '25', numberOfItems: '2' });
       store.setCourtFeePaymentOrigin('over-underpayment-confirmation');
+      store.setCourtFeeSuspenseNote('A note');
       store.setCourtFeePaymentDetails({
         paymentReceivedFrom: 'applicant',
         paymentMethod: 'NC',
@@ -39,6 +40,7 @@ describe('FinesMciStore', () => {
       else store.reset();
       expect(store.courtFeePaymentDetails()).toBeNull();
       expect(store.courtFeePaymentOrigin()).toBeNull();
+      expect(store.courtFeeSuspenseNote()).toBe('');
     },
   );
 

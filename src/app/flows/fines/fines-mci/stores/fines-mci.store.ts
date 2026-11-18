@@ -24,6 +24,7 @@ export const FinesMciStore = signalStore(
     courtFeeDraft: null as IFinesMciCourtFeeDraft | null,
     courtFeePaymentDetails: null as IFinesMciCourtFeePaymentDetails | null,
     courtFeePaymentOrigin: null as FinesMciCourtFeePaymentOrigin | null,
+    courtFeeSuspenseNote: '',
   })),
   withMethods((store) => {
     /** Returns the existing till ID or creates the first till for the current business unit. */
@@ -105,6 +106,7 @@ export const FinesMciStore = signalStore(
             courtFeeDraft: null,
             courtFeePaymentDetails: null,
             courtFeePaymentOrigin: null,
+            courtFeeSuspenseNote: '',
           });
           return;
         }
@@ -121,6 +123,7 @@ export const FinesMciStore = signalStore(
             courtFeeDraft: null,
             courtFeePaymentDetails: null,
             courtFeePaymentOrigin: null,
+            courtFeeSuspenseNote: '',
           }),
         });
       },
@@ -139,6 +142,7 @@ export const FinesMciStore = signalStore(
             (!courtFeeDraft || !preservePaymentDetails) && {
               courtFeePaymentDetails: null,
               courtFeePaymentOrigin: null,
+              courtFeeSuspenseNote: '',
             }),
         });
       },
@@ -149,6 +153,10 @@ export const FinesMciStore = signalStore(
       /** Records whether payment details were opened from an exact payment or overpayment confirmation. */
       setCourtFeePaymentOrigin(courtFeePaymentOrigin: FinesMciCourtFeePaymentOrigin | null): void {
         patchState(store, { courtFeePaymentOrigin });
+      },
+      /** Keeps the in-progress suspense note while the user edits the payment. */
+      setCourtFeeSuspenseNote(courtFeeSuspenseNote: string): void {
+        patchState(store, { courtFeeSuspenseNote });
       },
       /** Adds a payment journey to the matching till and returns the new payment ID. */
       addPayment(tillId: string, journey: FinesMciJourney): string {
@@ -173,6 +181,7 @@ export const FinesMciStore = signalStore(
           courtFeeDraft: null,
           courtFeePaymentDetails: null,
           courtFeePaymentOrigin: null,
+          courtFeeSuspenseNote: '',
           criminalSearchResults: null,
           selectedCriminalAccount: null,
           selectedCriminalAccountAtAGlance: null,

@@ -91,6 +91,9 @@ describe('Court fee payment details navigation', () => {
     store.setCourtFeePaymentDetails(details);
     const confirm = vi.spyOn(window, 'confirm');
     const harness = await RouterTestingHarness.create('/till/check-court-fee');
+    const note = harness.routeNativeElement!.querySelector<HTMLTextAreaElement>('#suspenseNote')!;
+    note.value = 'Payment note';
+    note.dispatchEvent(new Event('input', { bubbles: true }));
     const amountRow = Array.from(harness.routeNativeElement!.querySelectorAll('.govuk-summary-list__row')).find(
       (row) => row.querySelector('dt')?.textContent?.trim() === 'Amount',
     )!;
@@ -100,6 +103,7 @@ describe('Court fee payment details navigation', () => {
     expect(router.url).toBe('/till/court-fee-details');
     expect(confirm).not.toHaveBeenCalled();
     expect(store.courtFeePaymentDetails()).toEqual(details);
+    expect(store.courtFeeSuspenseNote()).toBe('Payment note');
     const feeComponent = harness.routeDebugElement!.componentInstance as FinesMciCreateTillCourtFeeDetailsComponent;
     feeComponent.handleSubmit({
       formData: { courtFeeId: 1, amountPaid: '37.50', numberOfItems: '3' },
@@ -109,7 +113,13 @@ describe('Court fee payment details navigation', () => {
     harness.detectChanges();
     expect(router.url).toBe(paymentUrl);
     expect(store.courtFeePaymentDetails()).toEqual(details);
+    expect(store.courtFeeSuspenseNote()).toBe('Payment note');
     expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#companyName')?.value).toBe('Example Ltd');
+    harness.routeNativeElement!.querySelector('form')!.dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(router.url).toBe('/till/check-court-fee');
+    expect(harness.routeNativeElement!.querySelector<HTMLTextAreaElement>('#suspenseNote')?.value).toBe('Payment note');
   });
 
   it.each(['/till/court-fee-details', '/till/over-underpayment-confirmation'])(
