@@ -75,6 +75,18 @@ export class FinesMciCreateTillCourtFeePaymentDetailsComponent
     }
   }
 
+  /** Records the entry screen and restores protection for saved payment details. */
+  private initialisePaymentDetailsState(): void {
+    const confirmation = FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation;
+    const details = FINES_MCI_ROUTING_PATHS.children.courtFeeDetails;
+    if (this.previousUrlPath?.endsWith(`/${confirmation}`))
+      this.finesMciStore.setCourtFeePaymentOrigin('over-underpayment-confirmation');
+    else if (this.previousUrlPath?.endsWith(`/${details}`) || !this.finesMciStore.courtFeePaymentOrigin()) {
+      this.finesMciStore.setCourtFeePaymentOrigin('court-fee-details');
+    }
+    this.stateUnsavedChanges = this.finesMciStore.courtFeePaymentDetails() !== null;
+  }
+
   /** Allows the validated Continue transition while protecting the draft from other route changes. */
   protected override canDeactivate(): boolean {
     const target = this.navigationRouter.currentNavigation()?.finalUrl?.toString().split(/[?#]/)[0];
@@ -84,14 +96,7 @@ export class FinesMciCreateTillCourtFeePaymentDetailsComponent
 
   /** Restores draft protection and records the entry screen for Back navigation. */
   public ngOnInit(): void {
-    const confirmation = FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation;
-    const details = FINES_MCI_ROUTING_PATHS.children.courtFeeDetails;
-    if (this.previousUrlPath?.endsWith(`/${confirmation}`))
-      this.finesMciStore.setCourtFeePaymentOrigin('over-underpayment-confirmation');
-    else if (this.previousUrlPath?.endsWith(`/${details}`) || !this.finesMciStore.courtFeePaymentOrigin()) {
-      this.finesMciStore.setCourtFeePaymentOrigin('court-fee-details');
-    }
-    this.stateUnsavedChanges = this.finesMciStore.courtFeePaymentDetails() !== null;
+    this.initialisePaymentDetailsState();
   }
 
   /** Returns to the screen that led to payment details, keeping the court fee draft. */
