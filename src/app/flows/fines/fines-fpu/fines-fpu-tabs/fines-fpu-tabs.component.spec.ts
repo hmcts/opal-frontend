@@ -166,7 +166,7 @@ describe('FinesFpuTabsComponent', () => {
     expect(store.unsavedChanges()).toBe(false);
   });
 
-  it('should hide the table and empty state until the request completes', async () => {
+  it('should hide the tab heading, table and empty state until the request completes', async () => {
     const pendingResponse = new Subject<IOpalFinesDraftAccountsResponse>();
     opalFines.getDraftAccounts.mockReturnValue(pendingResponse);
     store.setBusinessUnits([{ business_unit_id: 80, business_unit_name: 'Westshire', ticket_count: 1 }]);
@@ -174,6 +174,7 @@ describe('FinesFpuTabsComponent', () => {
     const harness = await RouterTestingHarness.create(uploadsUrl);
 
     expect(harness.routeNativeElement?.querySelector('[role="status"]')).toBeNull();
+    expect(harness.routeNativeElement?.querySelector('h2')).toBeNull();
     expect(harness.routeNativeElement?.querySelector('table')).toBeNull();
     expect(harness.routeNativeElement?.querySelector('#fines-fpu-empty')).toBeNull();
     expect(store.fragment()).toBe('to-publish');
@@ -187,6 +188,7 @@ describe('FinesFpuTabsComponent', () => {
     harness.detectChanges();
 
     expect(harness.routeNativeElement?.querySelector('[role="status"]')).toBeNull();
+    expect(harness.routeNativeElement?.querySelector('h2')?.textContent).toBe('To register and publish');
     expect(harness.routeNativeElement?.querySelector('table')?.textContent).toContain('Eastshire');
     expect(store.tabData()).toEqual([{ business_unit_id: 78, business_unit_name: 'Eastshire', ticket_count: 1 }]);
     expect(store.selectedBusinessUnitIds()).toEqual([]);
