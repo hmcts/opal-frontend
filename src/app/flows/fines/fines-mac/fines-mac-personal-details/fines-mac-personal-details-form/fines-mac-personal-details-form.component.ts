@@ -127,7 +127,9 @@ export class FinesMacPersonalDetailsFormComponent
       fm_personal_details_aliases: new FormArray([]),
       fm_personal_details_add_alias: new FormControl(null),
       fm_personal_details_dob: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
-      fm_personal_details_national_insurance_number: new FormControl(null, [nationalInsuranceNumberValidator()]),
+      fm_personal_details_national_insurance_number: new FormControl(null, [
+        this.release1a1_2Enabled() ? nationalInsuranceNumberValidator(true) : nationalInsuranceNumberValidator(),
+      ]),
       fm_personal_details_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
