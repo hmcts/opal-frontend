@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '../constants/fines-dashboard-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from './constants/fines-routing-paths.constant';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
@@ -73,6 +73,11 @@ describe('fines routes', () => {
   let aecRouting: Routes;
   let autoPaymentInRouting: Routes;
   let childRoutes: Routes;
+
+  afterEach(() => {
+    vi.doUnmock('@hmcts/opal-frontend-common/guards/feature-flag');
+    vi.resetModules();
+  });
 
   beforeEach(async () => {
     vi.resetModules();
