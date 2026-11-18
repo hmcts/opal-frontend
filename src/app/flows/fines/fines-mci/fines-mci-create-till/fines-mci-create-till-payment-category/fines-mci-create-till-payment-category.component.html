@@ -2,10 +2,15 @@
   <span class="govuk-caption-l">{{ finesMciStore.businessUnit()?.business_unit_name }}</span>
   <h1 class="govuk-heading-l">Payment category</h1>
 
-  <app-fines-mci-create-till-payment-category-form
-    [initialPaymentCategory]="finesMciStore.draftJourney()"
-    (formSubmit)="handleSubmit($event)"
-    (unsavedChanges)="handleUnsavedChanges($event)"
-    (cancelRequested)="handleCancel()"
-  ></app-fines-mci-create-till-payment-category-form>
+  @if (isContinuing()) {
+    <output class="govuk-body govuk-!-display-block">Loading next screen</output>
+    <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
+  } @else {
+    <app-fines-mci-create-till-payment-category-form
+      [initialPaymentCategory]="finesMciStore.draftJourney()"
+      (formSubmit)="handleSubmit($event)"
+      (unsavedChanges)="handleUnsavedChanges($event)"
+      (cancelRequested)="handleCancel()"
+    ></app-fines-mci-create-till-payment-category-form>
+  }
 </div>
