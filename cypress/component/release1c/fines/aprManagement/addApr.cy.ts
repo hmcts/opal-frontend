@@ -1,9 +1,19 @@
 import { mount } from 'cypress/angular';
-import { ActivatedRoute, provideRouter } from '@angular/router';
-import { of } from 'rxjs';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
+import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-error';
+import { AppInsightsService } from '@hmcts/opal-frontend-common/services/app-insights-service';
+import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch-darkly-service';
+import { SessionService } from '@hmcts/opal-frontend-common/services/session-service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { NEVER, of } from 'rxjs';
+import { AppComponent } from 'src/app/app.component';
+import { FinesAccAprAddChangeComponent } from 'src/app/flows/fines/fines-acc/fines-acc-apr-add-change/fines-acc-apr-add-change.component';
 import { FinesAccAprAddChangeFormComponent } from 'src/app/flows/fines/fines-acc/fines-acc-apr-add-change/fines-acc-apr-add-change-form/fines-acc-apr-add-change-form.component';
+import { FinesAccountStore } from 'src/app/flows/fines/fines-acc/stores/fines-acc.store';
 
 describe('Add Alternate Payment Reference', () => {
+  const addUrl = '/fines/account/defendant/141/alternate/payment/reference/add';
   const mountAddAprForm = () =>
     mount(FinesAccAprAddChangeFormComponent, {
       providers: [
@@ -15,9 +25,53 @@ describe('Add Alternate Payment Reference', () => {
       ],
       componentProperties: {
         accountCaption: '141A - APR TEST 141',
-        headingText: 'Add Alternate Payment Reference',
+        headingText: 'Add alternate payment reference',
         labelText: 'Enter payment reference',
       },
+    });
+
+  // The global error banner belongs to the app shell, outside the APR form.
+  const mountAddAprPage = () =>
+    mount(AppComponent, {
+      providers: [
+        provideHttpClient(withInterceptors([httpErrorInterceptor])),
+        provideRouter([
+          {
+            path: 'fines/account/defendant/:accountId/alternate/payment/reference/:mode',
+            component: FinesAccAprAddChangeComponent,
+            resolve: { aprs: () => ({ references: [], version: '"7"' }) },
+          },
+        ]),
+        { provide: SessionService, useValue: { getTokenExpiry: () => NEVER } },
+        { provide: AppInsightsService, useValue: { logPageView: () => null, logException: () => null } },
+        {
+          provide: LaunchDarklyService,
+          useValue: {
+            initializeLaunchDarklyClient: () => null,
+            initializeLaunchDarklyFlags: () => Promise.resolve(),
+            initializeLaunchDarklyChangeListener: () => null,
+          },
+        },
+        GlobalStore,
+      ],
+    }).then(({ fixture }) => {
+      const accountStore = fixture.debugElement.injector.get(FinesAccountStore);
+      accountStore.setAccountState({
+        ...accountStore.getAccountState(),
+        account_id: 141,
+        account_number: '141A',
+        party_name: 'APR TEST ACCOUNT',
+        business_unit_id: '77',
+        base_version: '"7"',
+      });
+      fixture.componentInstance.globalStore.setAuthenticated(true);
+      const router = fixture.debugElement.injector.get(Router);
+      cy.wrap(router).as('aprRouter');
+      cy.wrap(accountStore).as('aprAccountStore');
+      return router.navigateByUrl(addUrl).then((success) => {
+        expect(success).to.be.true;
+        fixture.detectChanges();
+      });
     });
 
   it(
@@ -26,7 +80,7 @@ describe('Add Alternate Payment Reference', () => {
     () => {
       mountAddAprForm();
 
-      cy.get('h1').should('contain', 'Add Alternate Payment Reference');
+      cy.get('h1').should('contain', 'Add alternate payment reference');
       cy.contains('141A - APR TEST 141').should('be.visible');
       cy.get('label[for="apr_text"]').should('contain', 'Enter payment reference');
       cy.get('#apr_text').should('be.visible');
@@ -73,6 +127,45 @@ describe('Add Alternate Payment Reference', () => {
           expect(submit.firstCall.args[0].formData.apr_text).to.equal('123456789012345678');
         });
       });
+    },
+  );
+
+  it(
+    'displays the backend duplicate reference error and retains the form without reporting success',
+    { tags: ['@JIRA-STORY:PO-10898', '@JIRA-EPIC:PO-7465'] },
+    () => {
+      const title = 'Alternate Payment Reference text already exists in business unit';
+      const detail = 'Alternate Payment Reference text: 141 already exists in business unit: 77';
+      const operationId = 'APR-DUPLICATE-TEST';
+      const errorBanner = 'div[opal-lib-moj-alert][type="error"]';
+
+      cy.intercept('POST', '/opal-fines-service/defendant-accounts/141/alternate-payment-references', {
+        statusCode: 422,
+        headers: { 'Content-Type': 'application/problem+json' },
+        body: { retriable: true, title, detail, operation_id: operationId },
+      }).as('duplicateApr');
+      mountAddAprPage();
+
+      cy.get(errorBanner).should('not.exist');
+      cy.get('#apr_text').type('141');
+      cy.get('#apr-save').click();
+
+      cy.wait('@duplicateApr').then(({ request, response }) => {
+        expect(request.body).to.deep.equal({ apr_text: '141' });
+        expect(request.headers['if-match']).to.equal('"7"');
+        expect(response?.statusCode).to.equal(422);
+      });
+      cy.get(`${errorBanner} opal-lib-moj-alert-content-heading`).should('have.text', title);
+      cy.get(errorBanner)
+        .should('be.visible')
+        .and('contain.text', detail)
+        .and('contain.text', `Error code: ${operationId}`);
+      cy.get('@aprRouter').its('url').should('equal', addUrl);
+      cy.get('#apr_text').should('have.value', '141').and('be.enabled');
+      cy.get('#apr-save').should('be.enabled');
+      cy.get('@aprAccountStore').invoke('successMessage').should('be.null');
+      cy.get('@aprAccountStore').invoke('base_version').should('equal', '"7"');
+      cy.contains('Alternate payment reference added').should('not.exist');
     },
   );
 });
