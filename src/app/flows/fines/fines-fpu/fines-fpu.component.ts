@@ -11,15 +11,26 @@ import { FinesFpuStore } from './stores/fines-fpu.store';
 export class FinesFpuComponent implements OnDestroy {
   private readonly finesFpuStore = inject(FinesFpuStore);
 
+  /**
+   * Checks whether the browser can unload without discarding journey changes.
+   *
+   * @returns Whether the journey has no unsaved changes.
+   */
   @HostListener('window:beforeunload')
   public handleBeforeUnload(): boolean {
     return !this.finesFpuStore.unsavedChanges();
   }
 
+  /**
+   * Supplies the journey's unsaved state to the route leave guard.
+   *
+   * @returns Whether navigation can proceed without confirmation.
+   */
   public canDeactivate(): boolean {
     return !this.finesFpuStore.unsavedChanges();
   }
 
+  /** Clears journey state when the fixed penalty uploads shell is destroyed. */
   public ngOnDestroy(): void {
     this.finesFpuStore.resetFinesFpuState();
   }

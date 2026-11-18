@@ -29,7 +29,11 @@ export class FinesFpuToPublishFormComponent extends AbstractFormBaseComponent im
     selectedBusinessUnitIds: new FormControl<number[]>([], { nonNullable: true }),
   });
 
-  /** Records checkbox interaction in the form and passes the selection to its parent. */
+  /**
+   * Records checkbox interaction in the form and passes the selection to its parent.
+   *
+   * @param selectedBusinessUnitIds - The table's updated business unit selection.
+   */
   protected handleSelectionChanged(selectedBusinessUnitIds: number[]): void {
     const selectedIds = [...selectedBusinessUnitIds];
     this.form.controls.selectedBusinessUnitIds.markAsDirty();
@@ -37,17 +41,23 @@ export class FinesFpuToPublishFormComponent extends AbstractFormBaseComponent im
     this.selectionChanged.emit(selectedIds);
   }
 
-  /** Restores parent selections without treating refreshed data as user input. */
+  /**
+   * Restores parent selections without treating refreshed data as user input.
+   *
+   * @param changes - Input changes supplied by Angular.
+   */
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes['selectedBusinessUnitIds']) {
       this.form.patchValue({ selectedBusinessUnitIds: [...this.selectedBusinessUnitIds] }, { emitEvent: false });
     }
   }
 
+  /** Starts the inherited form value listener after initial selections have been restored. */
   public override ngOnInit(): void {
     super.ngOnInit();
   }
 
+  /** Disposes the inherited form subscriptions when the tab content is removed. */
   public override ngOnDestroy(): void {
     super.ngOnDestroy();
   }

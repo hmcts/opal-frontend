@@ -60,13 +60,23 @@ export class FinesFpuTabsComponent extends AbstractTabData implements OnInit, On
 
   public tabData$!: Observable<IFinesFpuBusinessUnit[] | null>;
 
+  /**
+   * Resolves empty or unsupported URL fragments to the default tab.
+   *
+   * @param fragment - The URL fragment requested by navigation.
+   * @returns The supported tab fragment to display.
+   */
   private normaliseFragment(fragment: string | null): string {
     return fragment === FINES_FPU_TAB_FRAGMENTS.published || fragment === FINES_FPU_TAB_FRAGMENTS.uploadErrors
       ? fragment
       : FINES_FPU_TAB_FRAGMENTS.toPublish;
   }
 
-  /** Normalises all fragments before deduplication so browser history stays in sync with the displayed tab. */
+  /**
+   * Normalises all fragments before deduplication so browser history stays in sync with the displayed tab.
+   *
+   * @returns Shared business unit summaries, or null while another tab or a request is active.
+   */
   private setupTabDataStream(): Observable<IFinesFpuBusinessUnit[] | null> {
     const fragment$ = this.activatedRoute.fragment.pipe(
       map((fragment) => this.normaliseFragment(fragment)),
@@ -87,7 +97,11 @@ export class FinesFpuTabsComponent extends AbstractTabData implements OnInit, On
     );
   }
 
-  /** Fetches a fresh summary each time To publish is opened, without submitter or date restrictions. */
+  /**
+   * Fetches a fresh summary each time To publish is opened, without submitter or date restrictions.
+   *
+   * @returns Eligible business unit summaries, leaving request errors to the shared HTTP error handler.
+   */
   private loadBusinessUnits(): Observable<IFinesFpuBusinessUnit[]> {
     return defer(() => {
       const userState = this.globalStore.userState();
@@ -104,16 +118,23 @@ export class FinesFpuTabsComponent extends AbstractTabData implements OnInit, On
     }).pipe(catchError(() => EMPTY));
   }
 
+  /**
+   * Requests navigation to a supported tab through the shared tab handler.
+   *
+   * @param fragment - The tab selected by the user.
+   */
   public override handleTabSwitch(fragment: string): void {
     super.handleTabSwitch(this.normaliseFragment(fragment));
   }
 
+  /** Restores the initial tab from the URL and prepares its data stream for the template. */
   public ngOnInit(): void {
     this.activeTab = this.normaliseFragment(this.activatedRoute.snapshot.fragment);
     this.finesFpuStore.setFragment(this.activeTab);
     this.tabData$ = this.setupTabDataStream();
   }
 
+  /** Stops fragment subscriptions and prevents responses from updating a destroyed page. */
   public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();

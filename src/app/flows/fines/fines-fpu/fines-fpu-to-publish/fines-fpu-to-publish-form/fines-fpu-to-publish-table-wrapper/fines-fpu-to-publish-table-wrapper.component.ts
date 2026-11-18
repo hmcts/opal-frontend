@@ -50,11 +50,17 @@ export class FinesFpuToPublishTableWrapperComponent {
   public readonly selectedBusinessUnitIds = input<readonly number[]>([]);
   public readonly selectedBusinessUnitIdsChange = output<number[]>();
 
+  /** Keeps checkbox controls reactive to changes in the supplied rows and selection. */
   constructor() {
     effect(() => this.syncSelectionControls());
   }
 
-  /** Resolves the shared multiselect row identifier. */
+  /**
+   * Resolves the shared multiselect row identifier.
+   *
+   * @param businessUnit - The business unit represented by a table row.
+   * @returns The business unit ID used by the multiselect directives.
+   */
   private getBusinessUnitId(businessUnit: IFinesFpuBusinessUnit): number {
     return businessUnit.business_unit_id;
   }
@@ -83,12 +89,20 @@ export class FinesFpuToPublishTableWrapperComponent {
     this.selectAllControl.setValue(this.allBusinessUnitsSelected(), { emitEvent: false });
   }
 
-  /** Emits the displayed business units in table order without changing the input arrays. */
+  /**
+   * Emits the displayed business units in table order without changing the input arrays.
+   *
+   * @param checked - Whether all displayed business units should be selected.
+   */
   protected toggleAllBusinessUnits(checked: boolean): void {
     this.selectedBusinessUnitIdsChange.emit(checked ? this.businessUnits().map(this.getBusinessUnitId) : []);
   }
 
-  /** Removes stale selections before emitting the updated selection to the parent. */
+  /**
+   * Removes stale selections before emitting the updated selection to the parent.
+   *
+   * @param selection - The row identifier and checked state emitted by the multiselect directive.
+   */
   protected toggleBusinessUnit({ rowId, checked }: { rowId: MultiSelectRowIdentifier; checked: boolean }): void {
     if (typeof rowId !== 'number') {
       return;

@@ -1,5 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { MojMultiSelectBodyDirective } from '@hmcts/opal-frontend-common/directives/moj-multi-select';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { IFinesFpuBusinessUnit } from '../../../interfaces/fines-fpu-business-unit.interface';
 import { FinesFpuToPublishTableWrapperComponent } from './fines-fpu-to-publish-table-wrapper.component';
@@ -157,6 +159,21 @@ describe('FinesFpuToPublishTableWrapperComponent', () => {
     expect(selectedIds).toEqual([999, 56, 56]);
     expect(selectBusinessUnit(12).checked).toBe(true);
     expect(selectBusinessUnit(56).checked).toBe(true);
+  });
+
+  it('ignores non-numeric row identifiers without changing the current business unit selection', () => {
+    host.selectedBusinessUnitIds.set([34]);
+    fixture.detectChanges();
+    const row = fixture.debugElement.query(By.directive(MojMultiSelectBodyDirective));
+
+    row.injector.get(MojMultiSelectBodyDirective).selectionChange.emit({ rowId: '12', checked: true });
+    fixture.detectChanges();
+
+    expect(host.emittedSelections).toEqual([]);
+    expect(host.selectedBusinessUnitIds()).toEqual([34]);
+    expect(selectBusinessUnit(12).checked).toBe(false);
+    expect(selectBusinessUnit(34).checked).toBe(true);
+    expect(selectAll().indeterminate).toBe(true);
   });
 
   it('selects only displayed rows when incoming selection contains stale IDs', () => {

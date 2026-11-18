@@ -14,7 +14,11 @@ export class FinesFpuToPublishComponent extends AbstractFormParentBaseComponent 
 
   public override stateUnsavedChanges = false;
 
-  /** Retains the current selection while publication remains a future action. */
+  /**
+   * Retains the current selection while publication remains a future action.
+   *
+   * @param selectedBusinessUnitIds - Business units selected in the child form.
+   */
   public handleSelectionChanged(selectedBusinessUnitIds: number[]): void {
     this.finesFpuStore.setSelectedBusinessUnitIds(selectedBusinessUnitIds);
   }
