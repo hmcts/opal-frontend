@@ -752,6 +752,23 @@ describe('FinesAccAprAddChangeComponent change mode', () => {
     expect(TestBed.inject(Router).url).toBe(changeUrl);
   });
 
+  it('handles a stale APR version as a concurrency failure without success feedback', async () => {
+    api.updateApr.mockReturnValue(throwError(() => new HttpErrorResponse({ status: 412, error: { retriable: true } })));
+    const { harness, component, input, enter, save } = await render();
+    enter('Concurrent-Edit');
+    save();
+    harness.detectChanges();
+
+    expect(api.updateApr).toHaveBeenCalledExactlyOnceWith(141, 11, { apr_text: 'Concurrent-Edit' }, '"7"');
+    expect(TestBed.inject(Router).url).toBe(changeUrl);
+    expect(component.pending()).toBe(false);
+    expect(component.stateUnsavedChanges).toBe(true);
+    expect(input().value).toBe('Concurrent-Edit');
+    expect(accountStore.successMessage()).toBeNull();
+    expect(api.clearAccountDetailsCache).not.toHaveBeenCalled();
+    expect(utils.scrollToTop).toHaveBeenCalledOnce();
+  });
+
   it.each(['12', '999'])(
     'keeps the selected reference and edits when query-only navigation to %s is declined',
     async (selectedId) => {
