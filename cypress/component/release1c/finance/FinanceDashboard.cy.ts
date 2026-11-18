@@ -1,4 +1,5 @@
 import { FINES_DASHBOARD_ROUTING_PATHS } from 'src/app/flows/fines/constants/fines-dashboard-routing-paths.constant';
+import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant';
 import { PrimaryNavigationLocators as PrimaryNav } from '../../../shared/selectors/primary-navigation.locators';
 import { FinanceLocators } from '../../../shared/selectors/finance.locators';
 import { setupFinancePageComponent } from './setup/SetupComponent';
@@ -6,6 +7,7 @@ import { setupFinancePageComponent } from './setup/SetupComponent';
 const FINANCE_JIRA_LABEL = '@JIRA-LABEL:Auto-Payments Processing Filess';
 const FINANCE_JIRA_EPIC = '@JIRA-EPIC:PO-2468';
 const FINANCE_RELEASE_TAG = '@R1CFinancialMovements';
+const INBOUND_FILES_TAGS = ['@JIRA-STORY:PO-8673', '@JIRA-EPIC:PO-3952', '@JIRA-LABEL:inbound-interface-files'];
 
 const buildTags = (...tags: string[]): string[] => [
   ...tags,
@@ -109,6 +111,35 @@ describe('Finance dashboard', () => {
       });
 
       cy.get(FinanceLocators.manualCashInputLink).should('not.exist');
+    },
+  );
+
+  it(
+    'shows the Inbound files link for a user with View Interface Files permission',
+    { tags: INBOUND_FILES_TAGS },
+    () => {
+      setupFinancePageComponent({
+        dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+        permissionIds: [FINES_PERMISSIONS['view-interface-files']],
+      });
+
+      cy.get(FinanceLocators.inboundFilesLink)
+        .should('be.visible')
+        .and('contain.text', FinanceLocators.labels.inboundFiles)
+        .and('have.attr', 'href', '/fines/finance/inbound-files/search');
+    },
+  );
+
+  it(
+    'hides the Inbound files link when the user lacks View Interface Files permission',
+    { tags: INBOUND_FILES_TAGS },
+    () => {
+      setupFinancePageComponent({
+        dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+        permissionIds: [],
+      });
+
+      cy.get(FinanceLocators.inboundFilesLink).should('not.exist');
     },
   );
 });
