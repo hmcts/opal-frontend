@@ -281,6 +281,39 @@ describe('FinesFpuTabsComponent', () => {
     expect(opalFines.getDraftAccounts).toHaveBeenCalledTimes(2);
   });
 
+  it.each([
+    ['published', 'Published'],
+    ['upload-errors', 'Upload errors'],
+  ])('should restore #%s when revisiting it after the hashless URL', async (fragment, label) => {
+    opalFines.getDraftAccounts
+      .mockReturnValueOnce(of(response(draftAccount(1))))
+      .mockReturnValueOnce(of(response(draftAccount(2, 80, 'Westshire'))));
+    const harness = await RouterTestingHarness.create(uploadsUrl);
+    const router = TestBed.inject(Router);
+    await clickTab(harness, label);
+
+    await harness.navigateByUrl(uploadsUrl);
+
+    expect(router.url).toBe(uploadsUrl);
+    expect(harness.routeNativeElement?.querySelector('h2')?.textContent).toBe('To register and publish');
+    expect(harness.routeNativeElement?.querySelector('[aria-current="page"]')?.textContent?.trim()).toBe('To publish');
+    expect(store.fragment()).toBe('to-publish');
+    expect(store.tabData()).toEqual([{ business_unit_id: 80, business_unit_name: 'Westshire', ticket_count: 1 }]);
+    expect(harness.routeNativeElement?.querySelector('table')?.textContent).toContain('Westshire');
+    expect(opalFines.getDraftAccounts).toHaveBeenCalledTimes(2);
+
+    await harness.navigateByUrl(`${uploadsUrl}#${fragment}`);
+
+    expect(router.url).toBe(`${uploadsUrl}#${fragment}`);
+    expect(harness.routeNativeElement?.querySelector('h2')?.textContent).toBe(label);
+    expect(harness.routeNativeElement?.querySelector('[aria-current="page"]')?.textContent?.trim()).toBe(label);
+    expect(store.fragment()).toBe(fragment);
+    expect(store.tabData()).toBeNull();
+    expect(harness.routeNativeElement?.querySelector('table')).toBeNull();
+    expect(opalFines.getDraftAccounts).toHaveBeenCalledTimes(2);
+    expect(opalFines.clearDraftAccountsCache).toHaveBeenCalledTimes(2);
+  });
+
   it('should stop a pending request from updating the store after the tabs are destroyed', async () => {
     const pendingResponse = new Subject<IOpalFinesDraftAccountsResponse>();
     opalFines.getDraftAccounts.mockReturnValue(pendingResponse);

@@ -13,9 +13,7 @@ import {
   defer,
   distinctUntilChanged,
   EMPTY,
-  filter,
   map,
-  merge,
   Observable,
   of,
   shareReplay,
@@ -62,21 +60,15 @@ export class FinesFpuTabsComponent extends AbstractTabData implements OnInit, On
 
   public tabData$!: Observable<IFinesFpuBusinessUnit[] | null>;
 
-  private normaliseFragment(fragment: string): string {
+  private normaliseFragment(fragment: string | null): string {
     return fragment === FINES_FPU_TAB_FRAGMENTS.published || fragment === FINES_FPU_TAB_FRAGMENTS.uploadErrors
       ? fragment
       : FINES_FPU_TAB_FRAGMENTS.toPublish;
   }
 
-  /** Uses the shared tab lifecycle, including returning to the default tab when a hash is cleared. */
+  /** Normalises all fragments before deduplication so browser history stays in sync with the displayed tab. */
   private setupTabDataStream(): Observable<IFinesFpuBusinessUnit[] | null> {
-    const fragment$ = merge(
-      this.getFragmentStream(FINES_FPU_TAB_FRAGMENTS.toPublish, this.destroy$),
-      this.activatedRoute.fragment.pipe(
-        filter((fragment) => !fragment),
-        map(() => FINES_FPU_TAB_FRAGMENTS.toPublish),
-      ),
-    ).pipe(
+    const fragment$ = this.activatedRoute.fragment.pipe(
       map((fragment) => this.normaliseFragment(fragment)),
       distinctUntilChanged(),
     );
@@ -117,7 +109,7 @@ export class FinesFpuTabsComponent extends AbstractTabData implements OnInit, On
   }
 
   public ngOnInit(): void {
-    this.activeTab = this.normaliseFragment(this.activatedRoute.snapshot.fragment ?? FINES_FPU_TAB_FRAGMENTS.toPublish);
+    this.activeTab = this.normaliseFragment(this.activatedRoute.snapshot.fragment);
     this.finesFpuStore.setFragment(this.activeTab);
     this.tabData$ = this.setupTabDataStream();
   }
