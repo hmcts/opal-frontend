@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, HostListener, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
 import { FinesMciStore } from '../../stores/fines-mci.store';
 
 @Component({
   selector: 'app-fines-mci-create-till-court-fee-check',
-  imports: [GovukBackLinkComponent],
+  imports: [GovukBackLinkComponent, GovukHeadingWithCaptionComponent],
   templateUrl: './fines-mci-create-till-court-fee-check.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

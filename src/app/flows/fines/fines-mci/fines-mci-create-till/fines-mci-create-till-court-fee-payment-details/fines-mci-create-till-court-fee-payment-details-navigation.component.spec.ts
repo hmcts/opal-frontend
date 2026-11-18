@@ -224,6 +224,55 @@ describe('Court fee payment details navigation', () => {
     expect(TestBed.inject(FinesMciStore).courtFeePaymentDetails()).toBeNull();
   });
 
+  it('clears saved payment details after browser Back reaches court fee details', async () => {
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const store = TestBed.inject(FinesMciStore);
+    const router = TestBed.inject(Router);
+    const location = TestBed.inject(Location) as SpyLocation;
+    const harness = await RouterTestingHarness.create('/till/court-fee-details');
+    router.setUpLocationChangeListener();
+    await harness.navigateByUrl(paymentUrl, FinesMciCreateTillCourtFeePaymentDetailsComponent);
+    const page = harness.routeNativeElement!;
+    page.querySelector<HTMLInputElement>('input[value="applicant"]')!.click();
+    page.querySelector<HTMLInputElement>('input[value="NC"]')!.click();
+    page.querySelector<HTMLInputElement>('input[value="company"]')!.click();
+    harness.detectChanges();
+    const company = page.querySelector<HTMLInputElement>('#companyName')!;
+    company.value = 'Example Ltd';
+    company.dispatchEvent(new Event('input', { bubbles: true }));
+    page.querySelector('form')!.dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+    await harness.fixture.whenStable();
+    expect(router.url).toBe('/till/check-court-fee');
+
+    const backToPayment = firstValueFrom(
+      router.events.pipe(
+        filter((event) => event instanceof NavigationEnd),
+        take(1),
+      ),
+    );
+    location.simulateUrlPop(paymentUrl);
+    await backToPayment;
+    harness.detectChanges();
+    expect(store.courtFeePaymentDetails()?.companyName).toBe('Example Ltd');
+
+    confirm.mockReturnValueOnce(false);
+    expect(await router.navigateByUrl('/till/court-fee-details')).toBe(false);
+    expect(store.courtFeePaymentDetails()?.companyName).toBe('Example Ltd');
+
+    const backToFee = firstValueFrom(
+      router.events.pipe(
+        filter((event) => event instanceof NavigationEnd),
+        take(1),
+      ),
+    );
+    location.simulateUrlPop('/till/court-fee-details');
+    await backToFee;
+    expect(confirm).toHaveBeenCalled();
+    expect(router.url).toBe('/till/court-fee-details');
+    expect(store.courtFeePaymentDetails()).toBeNull();
+    expect(store.courtFeeDraft()).toEqual(draft);
+  });
+
   it('retries failed mappings when returning from check and restores the saved form', async () => {
     const router = TestBed.inject(Router);
     const paymentRoute = router.config[0].children!.find((route) => route.path === 'court-fee-payment-details')!;
