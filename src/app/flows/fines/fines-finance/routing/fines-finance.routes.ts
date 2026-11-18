@@ -6,6 +6,7 @@ import { FINES_FINANCE_ROUTING_TITLES } from './constants/fines-finance-routing-
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
+import { fetchBusinessUnitsResolver } from '@routing/fines/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
 import { featureFlagRedirectGuard } from '@hmcts/opal-frontend-common/guards/feature-flag';
 import { RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG } from '../../constants/release-feature-flags.constant';
 
@@ -33,7 +34,7 @@ export const routing: Routes = [
       routePermissionId: [financeRootPermissionIds['view-interface-files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.inbound,
     },
-    resolve: { title: TitleResolver },
+    resolve: { title: TitleResolver, businessUnits: fetchBusinessUnitsResolver },
   },
   {
     path: `${FINES_FINANCE_ROUTING_PATHS.children.outbound}/${FINES_FINANCE_ROUTING_PATHS.children.search}`,
@@ -47,7 +48,7 @@ export const routing: Routes = [
       routePermissionId: [financeRootPermissionIds['view-interface-files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.outbound,
     },
-    resolve: { title: TitleResolver },
+    resolve: { title: TitleResolver, businessUnits: fetchBusinessUnitsResolver },
   },
   {
     path: `${FINES_FINANCE_ROUTING_PATHS.children.variantBankingFiles}/${FINES_FINANCE_ROUTING_PATHS.children.upload}`,
