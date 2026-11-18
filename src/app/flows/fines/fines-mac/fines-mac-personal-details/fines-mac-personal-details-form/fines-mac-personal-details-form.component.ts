@@ -150,6 +150,25 @@ export class FinesMacPersonalDetailsFormComponent
     });
   }
 
+  /** Sets the NI number validation message for the active release. */
+  private setNationalInsuranceNumberErrorMessage(): void {
+    const nationalInsuranceNumberErrors = this.fieldErrors['fm_personal_details_national_insurance_number'];
+    const nationalInsuranceNumberPatternError = nationalInsuranceNumberErrors['nationalInsuranceNumberPattern'];
+
+    this.fieldErrors = {
+      ...this.fieldErrors,
+      fm_personal_details_national_insurance_number: {
+        ...nationalInsuranceNumberErrors,
+        nationalInsuranceNumberPattern: {
+          ...nationalInsuranceNumberPatternError,
+          message: this.release1a1_2Enabled()
+            ? "Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, for example 'QQ 12 34 56 C'"
+            : 'Enter a National Insurance number in the format AANNNNNNA',
+        },
+      },
+    };
+  }
+
   /**
    * Sets up the alias configuration for the personal details form.
    * The alias configuration includes the alias fields and controls validation.
@@ -209,6 +228,7 @@ export class FinesMacPersonalDetailsFormComponent
   private initialPersonalDetailsSetup(): void {
     const { formData } = this.finesMacStore.personalDetails();
     const key = this.defendantType as keyof IFinesMacDefendantTypes;
+    this.setNationalInsuranceNumberErrorMessage();
     this.setupPersonalDetailsForm();
 
     this.setupAliasConfiguration();
