@@ -5,10 +5,13 @@
   @if (feeLoadFailed()) {
     <p class="govuk-error-message" role="alert">Court fees could not be loaded. Try again later.</p>
     <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
-  } @else if (feesLoaded() && courtFeeItems().length === 0) {
+  } @else if (isContinuing()) {
+    <output class="govuk-body govuk-!-display-block">Loading next screen</output>
+    <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
+  } @else if (courtFeeItems().length === 0) {
     <output class="govuk-body govuk-!-display-block">No court fees are available for this business unit.</output>
     <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
-  } @else if (feesLoaded()) {
+  } @else {
     <app-fines-mci-create-till-court-fee-details-form
       [courtFeeItems]="courtFeeItems()"
       [initialDraft]="finesMciStore.courtFeeDraft()"
@@ -16,7 +19,5 @@
       (unsavedChanges)="handleUnsavedChanges($event)"
       (cancelRequested)="handleCancel()"
     ></app-fines-mci-create-till-court-fee-details-form>
-  } @else {
-    <output class="govuk-body govuk-!-display-block">Loading court fees</output>
   }
 </div>
