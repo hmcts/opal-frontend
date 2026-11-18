@@ -84,7 +84,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should apply the seven-character vehicle registration limit only while release-1a-1-2 is enabled', async () => {
+  it('should use the 11-character vehicle registration limit when release-1a-1-2 is disabled', async () => {
     component.partyType = 'individual';
     fixture.detectChanges();
     await fixture.whenStable();
@@ -92,49 +92,27 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     const registrationControl = component.form.get('facc_party_add_amend_convert_vehicle_registration_mark');
     registrationControl?.setValue('12345678901');
     expect(registrationControl?.hasError('maxlength')).toBe(false);
-
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
-    fixture.detectChanges();
-    await fixture.whenStable();
-
-    expect(registrationControl?.hasError('maxlength')).toBe(true);
-    expect(component.fieldErrors.facc_party_add_amend_convert_vehicle_registration_mark['maxlength'].message).toBe(
-      'Vehicle registration must be 7 characters or fewer',
-    );
-
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
-    fixture.detectChanges();
-    await fixture.whenStable();
-
-    expect(registrationControl?.hasError('maxlength')).toBe(false);
     expect(component.fieldErrors.facc_party_add_amend_convert_vehicle_registration_mark['maxlength'].message).toBe(
       'Vehicle registration must be 11 characters or fewer',
     );
   });
 
-  it('should update vehicle registration errors when its control is absent', async () => {
-    component.partyType = 'individual';
-    fixture.detectChanges();
-    await fixture.whenStable();
-
+  it('should apply the seven-character vehicle registration limit when enabled before form creation', () => {
     globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
-    fixture.detectChanges();
-    await fixture.whenStable();
+    const enabledFixture = TestBed.createComponent(FinesAccPartyAddAmendConvertFormComponent);
+    const enabledComponent = enabledFixture.componentInstance;
+    enabledComponent.partyType = 'individual';
+    enabledFixture.detectChanges();
 
-    component.form.removeControl('facc_party_add_amend_convert_vehicle_registration_mark');
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
-    TestBed.flushEffects();
+    const registrationControl = enabledComponent.form.get('facc_party_add_amend_convert_vehicle_registration_mark');
+    registrationControl?.setValue('12345678');
 
-    expect(component.fieldErrors.facc_party_add_amend_convert_vehicle_registration_mark['maxlength'].message).toBe(
-      'Vehicle registration must be 11 characters or fewer',
-    );
-
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
-    TestBed.flushEffects();
-
-    expect(component.fieldErrors.facc_party_add_amend_convert_vehicle_registration_mark['maxlength'].message).toBe(
+    expect(registrationControl?.hasError('maxlength')).toBe(true);
+    expect(enabledComponent.fieldErrors.facc_party_add_amend_convert_vehicle_registration_mark['maxlength'].message).toBe(
       'Vehicle registration must be 7 characters or fewer',
     );
+
+    enabledFixture.destroy();
   });
 
   it.each([

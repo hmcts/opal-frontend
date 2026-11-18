@@ -247,10 +247,5 @@ export class FinesMacPersonalDetailsFormComponent
   public override ngOnInit(): void {
     this.initialPersonalDetailsSetup();
     super.ngOnInit();
-    this.watchOptionalMaxLengthFeatureFlag(
-      this.globalStore.featureFlags,
-      'fm_personal_details_vehicle_registration_mark',
-      () => this.vehicleRegistrationConfig,
-    );
   }
 }

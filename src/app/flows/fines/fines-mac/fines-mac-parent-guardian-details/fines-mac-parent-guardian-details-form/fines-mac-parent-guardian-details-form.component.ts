@@ -185,10 +185,5 @@ export class FinesMacParentGuardianDetailsFormComponent
   public override ngOnInit(): void {
     this.initialParentGuardianDetailsSetup();
     super.ngOnInit();
-    this.watchOptionalMaxLengthFeatureFlag(
-      this.globalStore.featureFlags,
-      'fm_parent_guardian_details_vehicle_registration_mark',
-      () => this.vehicleRegistrationConfig,
-    );
   }
 }
