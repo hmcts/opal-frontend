@@ -64,6 +64,26 @@ describe('FinesMciStore', () => {
     expect(store.courtFeePaymentOrigin()).toBeNull();
   });
 
+  it('retains payment details when a court fee is edited from the check screen', () => {
+    const fee = { courtFeeId: 1, amountPaid: '25', numberOfItems: '2' };
+    const details = {
+      paymentReceivedFrom: 'applicant',
+      paymentMethod: 'NC',
+      payerType: 'company',
+      companyName: 'Example Ltd',
+      addressLine1: null,
+      addressLine2: null,
+      addressLine3: null,
+      postcode: null,
+    };
+    store.setCourtFeeDraft(fee);
+    store.setCourtFeePaymentDetails(details);
+    store.setCourtFeeDraft({ ...fee, amountPaid: '30' }, true);
+    expect(store.courtFeePaymentDetails()).toEqual(details);
+    store.setCourtFeeDraft(null, true);
+    expect(store.courtFeePaymentDetails()).toBeNull();
+  });
+
   it.each(['business unit change', 'reset'] as const)(
     'should clear criminal search and payment drafts on %s',
     (action) => {

@@ -9,6 +9,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesMciStore } from '../../stores/fines-mci.store';
 import { FinesMciCreateTillCourtFeePaymentDetailsComponent } from './fines-mci-create-till-court-fee-payment-details.component';
 import { FinesMciCreateTillCourtFeeCheckComponent } from '../fines-mci-create-till-court-fee-check/fines-mci-create-till-court-fee-check.component';
+import { FinesMciCreateTillCourtFeeDetailsComponent } from '../fines-mci-create-till-court-fee-details/fines-mci-create-till-court-fee-details.component';
 import { finesMciCourtFeeCheckGuard } from '../../routing/guards/fines-mci-court-fee-check.guard';
 import { FinesMciPaymentMappingsService } from '../../services/fines-mci-payment-mappings.service';
 import { finesMciPaymentMappingsResolver } from '../../routing/resolvers/fines-mci-payment-mappings.resolver';
@@ -63,6 +64,53 @@ describe('Court fee payment details navigation', () => {
   });
 
   afterEach(() => vi.restoreAllMocks());
+
+  it('retains payment details when a user changes the court fee from the check screen', async () => {
+    const router = TestBed.inject(Router);
+    const routes = router.config[0].children!;
+    const feeRoute = routes.find((route) => route.path === 'court-fee-details')!;
+    const checkRoute = routes.find((route) => route.path === 'check-court-fee')!;
+    const courtFees = {
+      court_fees: [{ court_fee_id: 1, court_fee_code: 'C01', description: 'Court fee', amount: 12.5 }],
+    };
+    feeRoute.component = FinesMciCreateTillCourtFeeDetailsComponent;
+    feeRoute.canDeactivate = [canDeactivateGuard];
+    feeRoute.data = { courtFees };
+    checkRoute.data = { courtFees, paymentMappings: mappings };
+    const store = TestBed.inject(FinesMciStore);
+    const details = {
+      paymentReceivedFrom: 'applicant',
+      paymentMethod: 'NC',
+      payerType: 'company',
+      companyName: 'Example Ltd',
+      addressLine1: null,
+      addressLine2: null,
+      addressLine3: null,
+      postcode: null,
+    };
+    store.setCourtFeePaymentDetails(details);
+    const confirm = vi.spyOn(window, 'confirm');
+    const harness = await RouterTestingHarness.create('/till/check-court-fee');
+    const amountRow = Array.from(harness.routeNativeElement!.querySelectorAll('.govuk-summary-list__row')).find(
+      (row) => row.querySelector('dt')?.textContent?.trim() === 'Amount',
+    )!;
+    amountRow.querySelector<HTMLAnchorElement>('a')!.click();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(router.url).toBe('/till/court-fee-details');
+    expect(confirm).not.toHaveBeenCalled();
+    expect(store.courtFeePaymentDetails()).toEqual(details);
+    const feeComponent = harness.routeDebugElement!.componentInstance as FinesMciCreateTillCourtFeeDetailsComponent;
+    feeComponent.handleSubmit({
+      formData: { courtFeeId: 1, amountPaid: '37.50', numberOfItems: '3' },
+      nestedFlow: false,
+    });
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(router.url).toBe(paymentUrl);
+    expect(store.courtFeePaymentDetails()).toEqual(details);
+    expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#companyName')?.value).toBe('Example Ltd');
+  });
 
   it.each(['/till/court-fee-details', '/till/over-underpayment-confirmation'])(
     'returns to %s without warning when no payment details were entered',

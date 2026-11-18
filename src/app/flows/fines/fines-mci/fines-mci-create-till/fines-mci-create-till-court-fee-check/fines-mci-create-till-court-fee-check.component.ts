@@ -31,11 +31,27 @@ import { compareCourtFeeAmounts, comparePayment, formatPounds } from '../utils/f
 export class FinesMciCreateTillCourtFeeCheckComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-  private allowBack = false;
+  private intendedDestination: string | null = null;
   protected readonly finesMciStore = inject(FinesMciStore);
   protected readonly isNavigating = signal(false);
   protected readonly summaryRows = signal<IFinesMciCreateTillPaymentSummaryRow[] | null>(null);
   protected readonly overpaymentMessage = signal<string | null>(null);
+
+  /** Opens an editing screen without discarding the saved payment. */
+  private navigateToEdit(destination: string): void {
+    if (this.isNavigating()) return;
+    this.intendedDestination = destination;
+    this.isNavigating.set(true);
+    const state =
+      destination === FINES_MCI_ROUTING_PATHS.children.courtFeeDetails ? { editCourtFeeFromCheck: true } : undefined;
+    void this.router
+      .navigate([`../${destination}`], { relativeTo: this.activatedRoute, ...(state && { state }) })
+      .catch(() => false)
+      .then(() => {
+        this.intendedDestination = null;
+        this.isNavigating.set(false);
+      });
+  }
 
   /** Builds the court fee summary from the saved drafts and resolved reference data. */
   public ngOnInit(): void {
@@ -99,10 +115,10 @@ export class FinesMciCreateTillCourtFeeCheckComponent implements OnInit {
     this.summaryRows.set(rows);
   }
 
-  /** Allows the intentional return to payment details while protecting other route changes. */
+  /** Allows an intentional edit while protecting other route changes. */
   public canDeactivate(): boolean {
     const target = this.router.currentNavigation()?.finalUrl?.toString().split(/[?#]/)[0];
-    return this.allowBack && !!target?.endsWith(`/${FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails}`);
+    return !!this.intendedDestination && !!target?.endsWith(`/${this.intendedDestination}`);
   }
 
   /** Requests a warning before closing or refreshing the tab containing the in-memory till. */
@@ -113,15 +129,16 @@ export class FinesMciCreateTillCourtFeeCheckComponent implements OnInit {
 
   /** Returns to the saved payment details, retaining the draft if navigation fails. */
   public handleBack(): void {
-    if (this.isNavigating()) return;
-    this.allowBack = true;
-    this.isNavigating.set(true);
-    void this.router
-      .navigate([`../${FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails}`], { relativeTo: this.activatedRoute })
-      .catch(() => false)
-      .then(() => {
-        this.allowBack = false;
-        this.isNavigating.set(false);
-      });
+    this.navigateToEdit(FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails);
+  }
+
+  /** Opens the appropriate form for the selected summary row. */
+  public handleChange(rowId: string): void {
+    const feeRows = ['court-fee', 'amount', 'number-of-items'];
+    this.navigateToEdit(
+      feeRows.includes(rowId)
+        ? FINES_MCI_ROUTING_PATHS.children.courtFeeDetails
+        : FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,
+    );
   }
 }

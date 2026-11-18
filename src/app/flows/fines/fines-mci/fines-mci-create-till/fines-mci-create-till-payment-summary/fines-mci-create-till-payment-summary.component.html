@@ -5,9 +5,18 @@
   <div class="govuk-summary-card__content">
     <opal-lib-govuk-summary-list [summaryListId]="summaryId">
       @for (row of rows; track row.id) {
-        <div opal-lib-govuk-summary-list-row [summaryListId]="summaryId" [summaryListRowId]="row.id">
+        <div
+          opal-lib-govuk-summary-list-row
+          [summaryListId]="summaryId"
+          [summaryListRowId]="row.id"
+          [actionEnabled]="canChange"
+          (actionClick)="changeRequested.emit(row.id)"
+        >
           <ng-container name>{{ row.label }}</ng-container>
           <ng-container value>{{ row.value }}</ng-container>
+          <ng-container action
+            >Change<span class="govuk-visually-hidden"> {{ row.label }}</span></ng-container
+          >
         </div>
       }
     </opal-lib-govuk-summary-list>

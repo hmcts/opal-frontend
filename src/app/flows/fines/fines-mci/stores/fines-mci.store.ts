@@ -124,8 +124,8 @@ export const FinesMciStore = signalStore(
           }),
         });
       },
-      /** Holds the court fee draft and invalidates payment details if the fee values change. */
-      setCourtFeeDraft(courtFeeDraft: IFinesMciCourtFeeDraft | null): void {
+      /** Holds the court fee draft and retains payment details when editing from the check screen. */
+      setCourtFeeDraft(courtFeeDraft: IFinesMciCourtFeeDraft | null, preservePaymentDetails = false): void {
         const previous = store.courtFeeDraft();
         const changed =
           !courtFeeDraft ||
@@ -135,7 +135,11 @@ export const FinesMciStore = signalStore(
           courtFeeDraft.numberOfItems !== previous.numberOfItems;
         patchState(store, {
           courtFeeDraft,
-          ...(changed && { courtFeePaymentDetails: null, courtFeePaymentOrigin: null }),
+          ...(changed &&
+            (!courtFeeDraft || !preservePaymentDetails) && {
+              courtFeePaymentDetails: null,
+              courtFeePaymentOrigin: null,
+            }),
         });
       },
       /** Stores validated payment details while the user reviews the court fee. */

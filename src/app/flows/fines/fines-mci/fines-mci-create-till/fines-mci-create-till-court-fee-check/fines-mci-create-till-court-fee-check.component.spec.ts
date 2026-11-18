@@ -64,6 +64,10 @@ describe('FinesMciCreateTillCourtFeeCheckComponent', () => {
       expect.stringContaining('Ms Alex Smith'),
       expect.stringContaining('12 Example Street, London, SW1A 1AA'),
     ]);
+    const links = Array.from(element.querySelectorAll('.govuk-summary-list__actions a'));
+    expect(links).toHaveLength(rows.length);
+    expect(links[0].textContent).toContain('Change Court fee');
+    expect(links[links.length - 1].textContent).toContain('Change Address');
   });
 
   it('shows em dashes for optional fields and omits source for a company cheque payment', () => {
@@ -168,6 +172,56 @@ describe('FinesMciCreateTillCourtFeeCheckComponent', () => {
       relativeTo: TestBed.inject(ActivatedRoute),
     });
     await fixture.whenStable();
+    expect(fixture.componentInstance.canDeactivate()).toBe(false);
+  });
+
+  it.each([
+    ['court-fee', 'court-fee-details'],
+    ['amount', 'court-fee-details'],
+    ['number-of-items', 'court-fee-details'],
+    ['payment-received-from', 'court-fee-payment-details'],
+    ['payment-method', 'court-fee-payment-details'],
+    ['source', 'court-fee-payment-details'],
+    ['payment-reference', 'court-fee-payment-details'],
+    ['payer-type', 'court-fee-payment-details'],
+    ['payer-name', 'court-fee-payment-details'],
+    ['address', 'court-fee-payment-details'],
+  ])('opens the appropriate form when changing %s', async (rowId, destination) => {
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const fixture = TestBed.createComponent(FinesMciCreateTillCourtFeeCheckComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.handleChange(rowId);
+    expect(navigate).toHaveBeenCalledWith([`../${destination}`], {
+      relativeTo: TestBed.inject(ActivatedRoute),
+      ...(destination === 'court-fee-details' && { state: { editCourtFeeFromCheck: true } }),
+    });
+    await fixture.whenStable();
+  });
+
+  it.each(['cancelled', 'rejected'])('retains the saved drafts if Change navigation is %s', async (outcome) => {
+    const store = TestBed.inject(FinesMciStore);
+    const fee = { courtFeeId: 1, amountPaid: '25', numberOfItems: '2' };
+    const details = {
+      paymentReceivedFrom: 'applicant',
+      paymentMethod: 'NC',
+      payerType: 'company',
+      companyName: 'Example Ltd',
+      addressLine1: null,
+      addressLine2: null,
+      addressLine3: null,
+      postcode: null,
+    };
+    store.setCourtFeeDraft(fee);
+    store.setCourtFeePaymentDetails(details);
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
+    if (outcome === 'cancelled') navigate.mockResolvedValue(false);
+    else navigate.mockRejectedValue(new Error('Navigation failed'));
+    const fixture = TestBed.createComponent(FinesMciCreateTillCourtFeeCheckComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.handleChange('amount');
+    await fixture.whenStable();
+    expect(store.courtFeeDraft()).toEqual(fee);
+    expect(store.courtFeePaymentDetails()).toEqual(details);
     expect(fixture.componentInstance.canDeactivate()).toBe(false);
   });
 });

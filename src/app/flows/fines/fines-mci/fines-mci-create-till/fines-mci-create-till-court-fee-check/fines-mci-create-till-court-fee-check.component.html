@@ -19,6 +19,8 @@
       title="Court fee payment"
       summaryId="fines-mci-court-fee-payment-summary"
       [rows]="rows"
+      [canChange]="true"
+      (changeRequested)="handleChange($event)"
     ></app-fines-mci-create-till-payment-summary>
   } @else {
     <p class="govuk-error-message" role="alert">

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import {
   GovukSummaryListComponent,
   GovukSummaryListRowComponent,
@@ -15,4 +15,6 @@ export class FinesMciCreateTillPaymentSummaryComponent {
   @Input({ required: true }) public title = '';
   @Input({ required: true }) public summaryId = '';
   @Input({ required: true }) public rows: IFinesMciCreateTillPaymentSummaryRow[] = [];
+  @Input() public canChange = false;
+  @Output() public changeRequested = new EventEmitter<string>();
 }

@@ -38,6 +38,8 @@ export class FinesMciCreateTillCourtFeeDetailsComponent
   private readonly navigationRouter = inject(Router);
   private readonly currentRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly isEditingFromCheck =
+    this.navigationRouter.currentNavigation()?.extras.state?.['editCourtFeeFromCheck'] === true;
   private readonly courtFees = signal<IOpalFinesCourtFee[]>([]);
   private navigationFailed = false;
 
@@ -80,7 +82,7 @@ export class FinesMciCreateTillCourtFeeDetailsComponent
     const comparison = compareCourtFeeAmounts(amountPaid, selectedFee.amount, numberOfItems);
     if (!comparison) return;
 
-    this.finesMciStore.setCourtFeeDraft(form.formData);
+    this.finesMciStore.setCourtFeeDraft(form.formData, this.isEditingFromCheck);
     let destination = FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation;
     if (comparison.difference === 0n) {
       destination = FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails;
