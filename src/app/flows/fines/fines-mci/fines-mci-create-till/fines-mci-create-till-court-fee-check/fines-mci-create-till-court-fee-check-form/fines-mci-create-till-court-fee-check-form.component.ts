@@ -17,8 +17,8 @@ import { FINES_MCI_COURT_FEE_CHECK_FIELD_ERRORS } from '../constants/fines-mci-c
 export class FinesMciCreateTillCourtFeeCheckFormComponent extends AbstractFormBaseComponent implements OnInit {
   protected override fieldErrors = FINES_MCI_COURT_FEE_CHECK_FIELD_ERRORS;
   @Input() public initialNote = '';
-  @Input() public saveUnavailable = false;
   @Output() public noteChanged = new EventEmitter<string>();
+  @Output() public saveRequested = new EventEmitter<'review' | 'add'>();
 
   /** Initialises the note control and keeps its draft in sync with the parent. */
   private setupForm(): void {
@@ -32,6 +32,14 @@ export class FinesMciCreateTillCourtFeeCheckFormComponent extends AbstractFormBa
     this.form.controls['suspenseNote'].valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe((value: string) => {
       this.noteChanged.emit(value);
     });
+  }
+
+  /** Validates the note and emits the requested destination only for a valid form. */
+  public handleSave(event: SubmitEvent): void {
+    super.handleFormSubmit(event);
+    if (this.form.valid) {
+      this.saveRequested.emit(event.submitter?.id === 'save-and-add-payment' ? 'add' : 'review');
+    }
   }
 
   /** Sets up validation and shared form behaviour. */

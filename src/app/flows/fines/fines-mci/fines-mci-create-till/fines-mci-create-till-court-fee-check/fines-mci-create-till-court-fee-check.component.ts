@@ -15,6 +15,7 @@ import { FinesMciCreateTillPaymentSummaryComponent } from '../fines-mci-create-t
 import { IFinesMciCreateTillPaymentSummaryRow } from '../fines-mci-create-till-payment-summary/interfaces/fines-mci-create-till-payment-summary-row.interface';
 import { compareCourtFeeAmounts, comparePayment, formatPounds } from '../utils/fines-mci-court-fee-payment.utils';
 import { FinesMciCreateTillCourtFeeCheckFormComponent } from './fines-mci-create-till-court-fee-check-form/fines-mci-create-till-court-fee-check-form.component';
+import { IFinesMciCourtFeePayment } from '../../stores/interfaces/fines-mci-court-fee-payment.interface';
 
 @Component({
   selector: 'app-fines-mci-create-till-court-fee-check',
@@ -38,7 +39,43 @@ export class FinesMciCreateTillCourtFeeCheckComponent implements OnInit {
   protected readonly isNavigating = signal(false);
   protected readonly summaryRows = signal<IFinesMciCreateTillPaymentSummaryRow[] | null>(null);
   protected readonly overpaymentMessage = signal<string | null>(null);
-  protected readonly saveUnavailable = signal(false);
+  protected readonly saveFailed = signal(false);
+
+  /** Builds a complete payment snapshot from the validated drafts and displayed summary. */
+  private buildPayment(): IFinesMciCourtFeePayment | null {
+    const draft = this.finesMciStore.courtFeeDraft();
+    const details = this.finesMciStore.courtFeePaymentDetails();
+    const note = this.finesMciStore.courtFeeSuspenseNote();
+    const rows = this.summaryRows();
+    const courtFeeLabel = rows?.find((row) => row.id === 'court-fee')?.value;
+    const amountLabel = rows?.find((row) => row.id === 'amount')?.value;
+    if (
+      draft?.courtFeeId == null ||
+      !draft.amountPaid ||
+      !draft.numberOfItems ||
+      !details?.paymentReceivedFrom ||
+      !details.paymentMethod ||
+      !details.payerType ||
+      !note.trim() ||
+      !courtFeeLabel ||
+      !amountLabel
+    )
+      return null;
+    return {
+      courtFeeId: draft.courtFeeId,
+      amountPaid: draft.amountPaid,
+      numberOfItems: draft.numberOfItems,
+      courtFeeLabel,
+      amountLabel,
+      paymentDetails: {
+        ...details,
+        paymentReceivedFrom: details.paymentReceivedFrom,
+        paymentMethod: details.paymentMethod,
+        payerType: details.payerType,
+      },
+      suspenseNote: note,
+    };
+  }
 
   /** Opens an editing screen without discarding the saved payment. */
   private navigateToEdit(destination: string): void {
@@ -145,8 +182,33 @@ export class FinesMciCreateTillCourtFeeCheckComponent implements OnInit {
     );
   }
 
-  /** Informs users that saving will be available in the next step of this journey. */
-  public handleValidatedNote(): void {
-    this.saveUnavailable.set(true);
+  /** Saves the payment after the requested navigation succeeds, preserving drafts on failure. */
+  public handleSave(destination: 'review' | 'add'): void {
+    if (this.isNavigating()) return;
+    const payment = this.buildPayment();
+    const tillId = this.finesMciStore.tills()[0]?.tillId;
+    if (!payment || !tillId) {
+      this.saveFailed.set(true);
+      return;
+    }
+    const path =
+      destination === 'review'
+        ? FINES_MCI_ROUTING_PATHS.children.details
+        : FINES_MCI_ROUTING_PATHS.children.paymentCategory;
+    this.saveFailed.set(false);
+    this.intendedDestination = path;
+    this.isNavigating.set(true);
+    void this.router
+      .navigate([`../${path}`], {
+        relativeTo: this.activatedRoute,
+        ...(destination === 'add' && { state: { startNewPayment: true } }),
+      })
+      .catch(() => false)
+      .then((navigated) => {
+        if (navigated) this.finesMciStore.saveCourtFeePayment(tillId, payment);
+        else this.saveFailed.set(true);
+        this.intendedDestination = null;
+        this.isNavigating.set(false);
+      });
   }
 }

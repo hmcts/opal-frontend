@@ -10,6 +10,7 @@ import { FinesMciStore } from '../../stores/fines-mci.store';
 import { FinesMciCreateTillCourtFeePaymentDetailsComponent } from './fines-mci-create-till-court-fee-payment-details.component';
 import { FinesMciCreateTillCourtFeeCheckComponent } from '../fines-mci-create-till-court-fee-check/fines-mci-create-till-court-fee-check.component';
 import { FinesMciCreateTillCourtFeeDetailsComponent } from '../fines-mci-create-till-court-fee-details/fines-mci-create-till-court-fee-details.component';
+import { FinesMciCreateTillPaymentCategoryComponent } from '../fines-mci-create-till-payment-category/fines-mci-create-till-payment-category.component';
 import { finesMciCourtFeeCheckGuard } from '../../routing/guards/fines-mci-court-fee-check.guard';
 import { FinesMciPaymentMappingsService } from '../../services/fines-mci-payment-mappings.service';
 import { finesMciPaymentMappingsResolver } from '../../routing/resolvers/fines-mci-payment-mappings.resolver';
@@ -39,6 +40,7 @@ describe('Court fee payment details navigation', () => {
               { path: 'court-fee-details', component: PreviousScreenComponent },
               { path: 'over-underpayment-confirmation', component: PreviousScreenComponent },
               { path: 'details', component: PreviousScreenComponent },
+              { path: 'payment-category', component: PreviousScreenComponent },
               {
                 path: 'check-court-fee',
                 component: FinesMciCreateTillCourtFeeCheckComponent,
@@ -64,6 +66,65 @@ describe('Court fee payment details navigation', () => {
   });
 
   afterEach(() => vi.restoreAllMocks());
+
+  it.each([
+    ['save-and-review-till', '/till/details'],
+    ['save-and-add-payment', '/till/payment-category'],
+  ])('saves the payment and navigates to %s', async (buttonId, destination) => {
+    const router = TestBed.inject(Router);
+    const checkRoute = router.config[0].children!.find((route) => route.path === 'check-court-fee')!;
+    if (destination === '/till/payment-category') {
+      router.config[0].children!.find((route) => route.path === 'payment-category')!.component =
+        FinesMciCreateTillPaymentCategoryComponent;
+    }
+    checkRoute.data = {
+      courtFees: { court_fees: [{ court_fee_id: 1, court_fee_code: 'C01', description: 'Court fee', amount: 12.5 }] },
+      paymentMappings: mappings,
+    };
+    const store = TestBed.inject(FinesMciStore);
+    const details = {
+      paymentReceivedFrom: 'applicant',
+      paymentMethod: 'NC',
+      payerType: 'company',
+      companyName: 'Example Ltd',
+      addressLine1: null,
+      addressLine2: null,
+      addressLine3: null,
+      postcode: null,
+    };
+    store.setCourtFeePaymentDetails(details);
+    const confirm = vi.spyOn(window, 'confirm');
+    const harness = await RouterTestingHarness.create('/till/check-court-fee');
+    const note = harness.routeNativeElement!.querySelector<HTMLTextAreaElement>('#suspenseNote')!;
+    note.value = 'Payment note';
+    note.dispatchEvent(new Event('input', { bubbles: true }));
+    harness.routeNativeElement!.querySelector<HTMLButtonElement>(`#${buttonId}`)!.click();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(router.url).toBe(destination);
+    expect(confirm).not.toHaveBeenCalled();
+    expect(store.tills()[0].payments).toEqual([
+      expect.objectContaining({
+        journey: 'courtFee',
+        courtFee: expect.objectContaining({
+          courtFeeId: 1,
+          amountPaid: '25.00',
+          numberOfItems: '2',
+          paymentDetails: details,
+          suspenseNote: 'Payment note',
+        }),
+      }),
+    ]);
+    expect(store.courtFeeDraft()).toBeNull();
+    expect(store.courtFeePaymentDetails()).toBeNull();
+    expect(store.courtFeeSuspenseNote()).toBe('');
+    if (destination === '/till/payment-category') {
+      expect(
+        (harness.routeDebugElement!.componentInstance as FinesMciCreateTillPaymentCategoryComponent)
+          .stateUnsavedChanges,
+      ).toBe(false);
+    }
+  });
 
   it('retains payment details when a user changes the court fee from the check screen', async () => {
     const router = TestBed.inject(Router);
@@ -115,7 +176,9 @@ describe('Court fee payment details navigation', () => {
     expect(store.courtFeePaymentDetails()).toEqual(details);
     expect(store.courtFeeSuspenseNote()).toBe('Payment note');
     expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#companyName')?.value).toBe('Example Ltd');
-    harness.routeNativeElement!.querySelector('form')!.dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+    harness
+      .routeNativeElement!.querySelector('form')!
+      .dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
     await harness.fixture.whenStable();
     harness.detectChanges();
     expect(router.url).toBe('/till/check-court-fee');

@@ -6,6 +6,34 @@ import { FinesMciStore } from '../../stores/fines-mci.store';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 
 describe('FinesMciCreateTillCourtFeeCheckComponent', () => {
+  const paymentDetails = {
+    paymentReceivedFrom: 'applicant',
+    paymentMethod: 'NC',
+    payerType: 'company',
+    companyName: 'Example Ltd',
+    addressLine1: null,
+    addressLine2: null,
+    addressLine3: null,
+    postcode: null,
+  };
+  /** Prepares a complete payment and its resolved display data. */
+  function preparePayment(): InstanceType<typeof FinesMciStore> {
+    const store = TestBed.inject(FinesMciStore);
+    store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    store.ensureTill();
+    store.setDraftJourney('courtFee');
+    store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: '25', numberOfItems: '2' });
+    store.setCourtFeePaymentDetails(paymentDetails);
+    store.setCourtFeeSuspenseNote('Payment note');
+    TestBed.inject(ActivatedRoute).snapshot.data['courtFees'] = {
+      court_fees: [{ court_fee_id: 1, court_fee_code: 'C01', description: 'Court fee', amount: 12.5 }],
+    };
+    TestBed.inject(ActivatedRoute).snapshot.data['paymentMappings'] = {
+      methods: [{ code: 'NC', display_name: 'Notes and coins' }],
+      sources: [{ code: 'ALLPAY', display_name: 'allpay' }],
+    };
+    return store;
+  }
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [FinesMciCreateTillCourtFeeCheckComponent],
@@ -223,5 +251,40 @@ describe('FinesMciCreateTillCourtFeeCheckComponent', () => {
     expect(store.courtFeeDraft()).toEqual(fee);
     expect(store.courtFeePaymentDetails()).toEqual(details);
     expect(fixture.componentInstance.canDeactivate()).toBe(false);
+  });
+
+  it.each(['cancelled', 'rejected'])('keeps the payment draft when save navigation is %s', async (outcome) => {
+    const store = preparePayment();
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
+    if (outcome === 'cancelled') navigate.mockResolvedValue(false);
+    else navigate.mockRejectedValue(new Error('Navigation failed'));
+    const fixture = TestBed.createComponent(FinesMciCreateTillCourtFeeCheckComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.handleSave('review');
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(store.tills()[0].payments).toEqual([]);
+    expect(store.courtFeePaymentDetails()).toEqual(paymentDetails);
+    expect(store.courtFeeSuspenseNote()).toBe('Payment note');
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain('The payment could not be saved');
+    expect(fixture.componentInstance.canDeactivate()).toBe(false);
+  });
+
+  it('does not create duplicate payments while navigation is pending', async () => {
+    const store = preparePayment();
+    let complete!: (value: boolean) => void;
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockReturnValue(
+      new Promise((resolve) => {
+        complete = resolve;
+      }),
+    );
+    const fixture = TestBed.createComponent(FinesMciCreateTillCourtFeeCheckComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.handleSave('review');
+    fixture.componentInstance.handleSave('review');
+    expect(navigate).toHaveBeenCalledOnce();
+    complete(true);
+    await fixture.whenStable();
+    expect(store.tills()[0].payments).toHaveLength(1);
   });
 });

@@ -39,6 +39,35 @@ describe('FinesMciCreateTillDetailsComponent', () => {
     expect(deleteTillLink?.textContent?.trim()).toBe('Delete till');
   });
 
+  it('shows a saved court fee payment on the till', () => {
+    const store = TestBed.inject(FinesMciStore);
+    const tillId = store.ensureTill();
+    store.saveCourtFeePayment(tillId, {
+      courtFeeId: 1,
+      amountPaid: '25',
+      numberOfItems: '2',
+      courtFeeLabel: 'C01 – Court fee (£12.50)',
+      amountLabel: '£25.00',
+      paymentDetails: {
+        paymentReceivedFrom: 'applicant',
+        paymentMethod: 'NC',
+        payerType: 'company',
+        companyName: 'Example Ltd',
+        addressLine1: null,
+        addressLine2: null,
+        addressLine3: null,
+        postcode: null,
+      },
+      suspenseNote: 'Payment note',
+    });
+    fixture.detectChanges();
+    const content = (fixture.nativeElement as HTMLElement).textContent!;
+    expect(content).toContain('C01 – Court fee (£12.50)');
+    expect(content).toContain('£25.00');
+    expect(content).not.toContain('There are no payments');
+    expect(content).not.toContain('You must add at least 1 payment');
+  });
+
   it('should block navigation away from the till details page', () => {
     expect(fixture.componentInstance.canDeactivate()).toBe(false);
   });

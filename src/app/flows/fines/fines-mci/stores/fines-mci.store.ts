@@ -5,6 +5,7 @@ import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/inter
 import { FinesMciJourney, IFinesMciCourtFeeDraft, IFinesMciTill } from './interfaces/fines-mci.interface';
 import { IFinesMciCriminalSearch } from './interfaces/fines-mci-criminal-search.interface';
 import { IFinesMciCourtFeePaymentDetails } from './interfaces/fines-mci-court-fee-payment-details.interface';
+import { IFinesMciCourtFeePayment } from './interfaces/fines-mci-court-fee-payment.interface';
 import { FinesMciCourtFeePaymentOrigin } from './types/fines-mci-court-fee-payment-origin.type';
 import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
 
@@ -157,6 +158,26 @@ export const FinesMciStore = signalStore(
       /** Keeps the in-progress suspense note while the user edits the payment. */
       setCourtFeeSuspenseNote(courtFeeSuspenseNote: string): void {
         patchState(store, { courtFeeSuspenseNote });
+      },
+      /** Adds a complete court fee payment to the selected till and clears its draft. */
+      saveCourtFeePayment(tillId: string, courtFee: IFinesMciCourtFeePayment): boolean {
+        if (!store.tills().some((till) => till.tillId === tillId)) return false;
+        const paymentId = crypto.randomUUID();
+        patchState(store, {
+          tills: store
+            .tills()
+            .map((till) =>
+              till.tillId === tillId
+                ? { ...till, payments: [...till.payments, { paymentId, journey: 'courtFee', courtFee }] }
+                : till,
+            ),
+          draftJourney: null,
+          courtFeeDraft: null,
+          courtFeePaymentDetails: null,
+          courtFeePaymentOrigin: null,
+          courtFeeSuspenseNote: '',
+        });
+        return true;
       },
       /** Adds a payment journey to the matching till and returns the new payment ID. */
       addPayment(tillId: string, journey: FinesMciJourney): string {

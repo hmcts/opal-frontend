@@ -2,7 +2,7 @@
   [errors]="formErrorSummaryMessage"
   (errorClick)="scrollTo($event)"
 ></opal-lib-govuk-error-summary>
-<form (submit)="handleFormSubmit($event)" [formGroup]="form" novalidate>
+<form (submit)="handleSave($event)" [formGroup]="form" novalidate>
   <ng-content></ng-content>
   <opal-lib-govuk-text-area
     labelText="Add suspense note"
@@ -20,7 +20,4 @@
       >Save and add another payment</opal-lib-govuk-button
     >
   </div>
-  @if (saveUnavailable) {
-    <output class="govuk-body govuk-!-display-block">Saving payments is not available yet.</output>
-  }
 </form>

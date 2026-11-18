@@ -51,13 +51,16 @@ describe('FinesMciCreateTillCourtFeeCheckFormComponent', () => {
     expect((fixture.nativeElement as HTMLElement).querySelector('.govuk-error-summary')).not.toBeNull();
   });
 
-  it('accepts a valid note without claiming the payment was saved', () => {
+  it.each([
+    ['save-and-review-till', 'review'],
+    ['save-and-add-payment', 'add'],
+  ])('emits %s only for a valid note', (buttonId, destination) => {
     const fixture = TestBed.createComponent(FinesMciCreateTillCourtFeeCheckFormComponent);
     fixture.componentRef.setInput('initialNote', 'A valid note');
     const submitted = vi.fn();
-    fixture.componentInstance['formSubmit'].subscribe(submitted);
+    fixture.componentInstance.saveRequested.subscribe(submitted);
     fixture.detectChanges();
-    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('#save-and-review-till')!.click();
-    expect(submitted).toHaveBeenCalledOnce();
+    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>(`#${buttonId}`)!.click();
+    expect(submitted).toHaveBeenCalledWith(destination);
   });
 });

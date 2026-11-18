@@ -9,10 +9,12 @@
   } @else if (summaryRows(); as rows) {
     <app-fines-mci-create-till-court-fee-check-form
       [initialNote]="finesMciStore.courtFeeSuspenseNote()"
-      [saveUnavailable]="saveUnavailable()"
       (noteChanged)="finesMciStore.setCourtFeeSuspenseNote($event)"
-      (formSubmit)="handleValidatedNote()"
+      (saveRequested)="handleSave($event)"
     >
+      @if (saveFailed()) {
+        <p class="govuk-error-message" role="alert">The payment could not be saved. Try again.</p>
+      }
       @if (overpaymentMessage(); as message) {
         <div opal-lib-moj-alert type="information" [ariaLabel]="message">
           <opal-lib-moj-alert-icon icon type="information"></opal-lib-moj-alert-icon>
