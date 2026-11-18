@@ -12,6 +12,7 @@ import {
   RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
   RELEASE_1C_PAYMENT_FEATURE_FLAG,
   RELEASE_1C_SUSPENSE_FEATURE_FLAG,
+  RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
 } from '../constants/release-feature-flags.constant';
 import {
   finesRouting,
@@ -22,6 +23,7 @@ import {
   release1cFinancialMovementsFeatureFlagGuard,
   release1cPaymentFeatureFlagGuard,
   release1cSuspenseFeatureFlagGuard,
+  release1cBankingInterfacesFeatureFlagGuard,
 } from './fines.routes';
 import { finesSectionPermissionsGuard } from './guards/fines-section-permissions/fines-section-permissions.guard';
 import { dashboardTypeGuard } from './guards/dashboard-type/dashboard-type.guard';
@@ -49,6 +51,7 @@ describe('fines routes', () => {
     { flag: RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG, guard: release1cFinancialMovementsFeatureFlagGuard },
     { flag: RELEASE_1C_PAYMENT_FEATURE_FLAG, guard: release1cPaymentFeatureFlagGuard },
     { flag: RELEASE_1C_SUSPENSE_FEATURE_FLAG, guard: release1cSuspenseFeatureFlagGuard },
+    { flag: RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG, guard: release1cBankingInterfacesFeatureFlagGuard },
   ];
   let featureFlags: Record<string, boolean>;
 
@@ -194,7 +197,12 @@ describe('fines routes', () => {
     const financeRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.finance.root);
 
     expect(financeRoute?.children).toBe(finesFinanceRouting);
-    expect(financeRoute?.canActivate).toEqual([authGuard, finesSectionPermissionsGuard]);
+    expect(financeRoute?.canActivate).toEqual([
+      authGuard,
+      release1cBankingInterfacesFeatureFlagGuard,
+      finesSectionPermissionsGuard,
+    ]);
+    expect(financeRoute?.canActivateChild).toEqual([release1cBankingInterfacesFeatureFlagGuard]);
     expect(financeRoute?.data).toEqual({
       sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
     });
