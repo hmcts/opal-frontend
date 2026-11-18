@@ -83,6 +83,10 @@ Then('I see Court Fee Payment Details', () => {
   manualCashInputFlow().assertCourtFeePaymentDetailsIsDisplayed();
 });
 
+Then('the Payment Details screen shows business unit {string}', (businessUnit: string) => {
+  manualCashInputFlow().assertCourtFeePaymentDetailsBusinessUnitIsDisplayed(businessUnit);
+});
+
 Then('I see Court Fee Overpayment\\/Underpayment Confirmation', () => {
   manualCashInputFlow().assertCourtFeeOverUnderpaymentIsDisplayed();
 });

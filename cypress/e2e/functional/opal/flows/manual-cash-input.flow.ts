@@ -138,6 +138,13 @@ export class ManualCashInputFlow {
     this.actions.assertCourtFeePaymentDetailsIsDisplayed();
   }
 
+  /** Verifies the selected business unit is displayed on Court Fee Payment Details.
+   * @param businessUnit - Name of the selected business unit.
+   */
+  public assertCourtFeePaymentDetailsBusinessUnitIsDisplayed(businessUnit: string): void {
+    this.actions.assertCourtFeePaymentDetailsBusinessUnitIsDisplayed(businessUnit);
+  }
+
   /** Verifies the over/underpayment destination. */
   public assertCourtFeeOverUnderpaymentIsDisplayed(): void {
     this.actions.assertCourtFeeOverUnderpaymentIsDisplayed();

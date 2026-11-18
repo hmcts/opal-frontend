@@ -314,7 +314,14 @@ export class ManualCashInputActions {
   /** Confirms an exact payment opens the temporary Court Fee Payment Details screen. */
   public assertCourtFeePaymentDetailsIsDisplayed(): void {
     cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/court-fee-payment-details');
-    cy.contains('h1', 'Payment details – court fee').should('be.visible');
+    cy.contains('h1', 'Payment details').should('be.visible');
+  }
+
+  /** Confirms the selected business unit is displayed on Court Fee Payment Details.
+   * @param businessUnit - Name of the selected business unit.
+   */
+  public assertCourtFeePaymentDetailsBusinessUnitIsDisplayed(businessUnit: string): void {
+    cy.get(ManualCashInputLocators.courtFeePaymentDetailsBusinessUnit).should('have.text', businessUnit);
   }
 
   /** Confirms an overpayment or underpayment opens its confirmation screen. */
