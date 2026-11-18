@@ -2,7 +2,7 @@
   <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
 </div>
 
-<div class="govuk-grid-column-two-thirds" id="fines-mci-create-till-details">
+<div class="govuk-grid-column-full" id="fines-mci-create-till-details">
   <h1 class="govuk-heading-l">Till details</h1>
 
   <opal-lib-govuk-summary-list summaryListId="fines-mci-till-details-summary">
@@ -18,7 +18,190 @@
   </opal-lib-govuk-summary-list>
 
   <h2 class="govuk-heading-m govuk-!-margin-top-7">Payments</h2>
-  <p class="govuk-body">There are no payments</p>
+  @if (finesMciStore.tills()[0]?.payments?.length) {
+    <div id="fines-mci-payments">
+      @for (payment of finesMciStore.tills()[0].payments; track payment.paymentId) {
+        @if (payment.suspensePayment; as suspense) {
+          <div class="govuk-summary-card">
+            <div class="govuk-summary-card__title-wrapper">
+              <h3 class="govuk-summary-card__title">Suspense payment</h3>
+            </div>
+            <div class="govuk-summary-card__content">
+              <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Amount</dt>
+                  <dd class="govuk-summary-list__value">{{ formatAmount(suspense.amount) }}</dd>
+                  <dd class="govuk-summary-list__actions">
+                    <a
+                      href="#"
+                      class="govuk-link"
+                      (click)="$event.preventDefault(); changeSuspensePayment(payment.paymentId)"
+                      >Change <span class="govuk-visually-hidden">amount</span></a
+                    >
+                  </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Payment received from</dt>
+                  <dd class="govuk-summary-list__value">
+                    {{
+                      suspense.payerType === 'defendant'
+                        ? 'Defendant'
+                        : suspense.payerType === 'thirdParty'
+                          ? '3rd party'
+                          : '—'
+                    }}
+                  </dd>
+                  <dd class="govuk-summary-list__actions">
+                    <a
+                      href="#"
+                      class="govuk-link"
+                      (click)="$event.preventDefault(); changeSuspensePayment(payment.paymentId)"
+                      >Change <span class="govuk-visually-hidden">payment received from</span></a
+                    >
+                  </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Method of payment</dt>
+                  <dd class="govuk-summary-list__value">{{ paymentMethod(suspense.methodOfPayment) }}</dd>
+                  <dd class="govuk-summary-list__actions">
+                    <a
+                      href="#"
+                      class="govuk-link"
+                      (click)="$event.preventDefault(); changeSuspensePayment(payment.paymentId)"
+                      >Change <span class="govuk-visually-hidden">method of payment</span></a
+                    >
+                  </dd>
+                </div>
+                @if (suspense.methodOfPayment === 'creditTransfer') {
+                  <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Source</dt>
+                    <dd class="govuk-summary-list__value">{{ suspense.source || '—' }}</dd>
+                    <dd class="govuk-summary-list__actions">
+                      <a
+                        href="#"
+                        class="govuk-link"
+                        (click)="$event.preventDefault(); changeSuspensePayment(payment.paymentId)"
+                        >Change <span class="govuk-visually-hidden">source</span></a
+                      >
+                    </dd>
+                  </div>
+                }
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Payment reference</dt>
+                  <dd class="govuk-summary-list__value">{{ paymentReference(suspense) }}</dd>
+                  <dd class="govuk-summary-list__actions">
+                    <a
+                      href="#"
+                      class="govuk-link"
+                      (click)="$event.preventDefault(); changeSuspensePayment(payment.paymentId)"
+                      >Change <span class="govuk-visually-hidden">payment reference</span></a
+                    >
+                  </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                  <dt class="govuk-summary-list__key">Suspense reason</dt>
+                  <dd class="govuk-summary-list__value">{{ suspenseReason(suspense.reason) }}</dd>
+                  <dd class="govuk-summary-list__actions">
+                    <a
+                      href="#"
+                      class="govuk-link"
+                      (click)="$event.preventDefault(); changeSuspensePayment(payment.paymentId)"
+                      >Change <span class="govuk-visually-hidden">suspense reason</span></a
+                    >
+                  </dd>
+                </div>
+                @if (suspense.reason === 'unidentified') {
+                  <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Relevant details</dt>
+                    <dd class="govuk-summary-list__value">{{ suspense.relevantDetails || '—' }}</dd>
+                    <dd class="govuk-summary-list__actions">
+                      <a
+                        href="#"
+                        class="govuk-link"
+                        (click)="$event.preventDefault(); changeSuspensePayment(payment.paymentId)"
+                        >Change <span class="govuk-visually-hidden">relevant details</span></a
+                      >
+                    </dd>
+                  </div>
+                } @else {
+                  <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Payer type</dt>
+                    <dd class="govuk-summary-list__value">
+                      {{
+                        payment.suspensePayerDetails?.payerType === 'individual'
+                          ? 'Individual'
+                          : payment.suspensePayerDetails?.payerType === 'company'
+                            ? 'Company'
+                            : '—'
+                      }}
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                      <a
+                        href="#"
+                        class="govuk-link"
+                        (click)="$event.preventDefault(); changeSuspensePayment(payment.paymentId)"
+                        >Change <span class="govuk-visually-hidden">payer type</span></a
+                      >
+                    </dd>
+                  </div>
+                  <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Payer name</dt>
+                    <dd class="govuk-summary-list__value">{{ payerName(payment.suspensePayerDetails) }}</dd>
+                    <dd class="govuk-summary-list__actions">
+                      <a
+                        href="#"
+                        class="govuk-link"
+                        (click)="$event.preventDefault(); changeSuspensePayment(payment.paymentId)"
+                        >Change <span class="govuk-visually-hidden">payer name</span></a
+                      >
+                    </dd>
+                  </div>
+                  <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Address</dt>
+                    <dd class="govuk-summary-list__value">
+                      @if (payerAddress(payment.suspensePayerDetails).length) {
+                        @for (line of payerAddress(payment.suspensePayerDetails); track $index) {
+                          {{ line }}<br />
+                        }
+                      } @else {
+                        —
+                      }
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                      <a
+                        href="#"
+                        class="govuk-link"
+                        (click)="$event.preventDefault(); changeSuspensePayment(payment.paymentId)"
+                        >Change <span class="govuk-visually-hidden">payer address</span></a
+                      >
+                    </dd>
+                  </div>
+                }
+              </dl>
+            </div>
+          </div>
+        } @else {
+          <div class="govuk-summary-card">
+            <div class="govuk-summary-card__title-wrapper">
+              <h3 class="govuk-summary-card__title">
+                {{ payment.journey === 'courtFee' ? 'Court fee payment' : 'Criminal payment' }}
+              </h3>
+            </div>
+            <div class="govuk-summary-card__content">
+              <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row govuk-summary-list__row--no-actions">
+                  <dt class="govuk-summary-list__key">Amount</dt>
+                  <dd class="govuk-summary-list__value">—</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  } @else {
+    <p class="govuk-body">There are no payments</p>
+  }
   <opal-lib-govuk-button
     buttonId="fines-mci-add-payment"
     buttonClasses="govuk-button--secondary"
@@ -28,7 +211,9 @@
   </opal-lib-govuk-button>
 
   <h2 class="govuk-heading-m govuk-!-margin-top-7">Create till</h2>
-  <p class="govuk-body">You must add at least 1 payment to the till.</p>
+  @if (!finesMciStore.tills()[0]?.payments?.length) {
+    <p class="govuk-body">You must add at least 1 payment to the till.</p>
+  }
 
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <div class="govuk-!-margin-bottom-7">

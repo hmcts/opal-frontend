@@ -28,6 +28,8 @@ export const FinesMciStore = signalStore(
     courtFeeDraft: null as IFinesMciCourtFeeDraft | null,
     suspensePayment: null as IFinesMciSuspensePayment | null,
     suspensePayerDetails: null as IFinesMciSuspensePayerDetails | null,
+    suspenseNote: '',
+    editingPaymentId: null as string | null,
   })),
   withMethods((store) => {
     /** Returns the existing till ID or creates the first till for the current business unit. */
@@ -103,6 +105,8 @@ export const FinesMciStore = signalStore(
             draftJourney: null,
             suspensePayment: null,
             suspensePayerDetails: null,
+            suspenseNote: '',
+            editingPaymentId: null,
             criminalSearch: null,
             criminalSearchResults: null,
             selectedCriminalAccount: null,
@@ -133,6 +137,66 @@ export const FinesMciStore = signalStore(
       setSuspensePayerDetails(suspensePayerDetails: IFinesMciSuspensePayerDetails | null): void {
         patchState(store, { suspensePayerDetails });
       },
+      setSuspenseNote(suspenseNote: string): void {
+        patchState(store, { suspenseNote });
+      },
+      /** Restores a saved suspense payment for amendment. */
+      editSuspensePayment(paymentId: string): void {
+        const payment = store
+          .tills()
+          .flatMap((till) => till.payments)
+          .find((item) => item.paymentId === paymentId);
+        if (payment?.suspensePayment) {
+          patchState(store, {
+            draftJourney: 'suspense',
+            editingPaymentId: paymentId,
+            suspensePayment: payment.suspensePayment,
+            suspensePayerDetails: payment.suspensePayerDetails ?? null,
+            suspenseNote: payment.suspenseNote ?? '',
+          });
+        }
+      },
+      /** Saves a new suspense payment or replaces the one being amended. */
+      saveSuspensePayment(): void {
+        const suspensePayment = store.suspensePayment();
+        if (!suspensePayment) return;
+        const tillId = ensureTill();
+        const editingPaymentId = store.editingPaymentId();
+        const payment = {
+          paymentId: editingPaymentId ?? crypto.randomUUID(),
+          journey: 'suspense' as const,
+          suspensePayment,
+          suspensePayerDetails: store.suspensePayerDetails(),
+          suspenseNote: store.suspenseNote(),
+        };
+        patchState(store, {
+          tills: store.tills().map((till) =>
+            till.tillId === tillId
+              ? {
+                  ...till,
+                  payments: editingPaymentId
+                    ? till.payments.map((item) => (item.paymentId === editingPaymentId ? payment : item))
+                    : [...till.payments, payment],
+                }
+              : till,
+          ),
+          draftJourney: null,
+          editingPaymentId: null,
+          suspensePayment: null,
+          suspensePayerDetails: null,
+          suspenseNote: '',
+        });
+      },
+      /** Discards an in-progress suspense payment without changing saved payments. */
+      discardSuspensePayment(): void {
+        patchState(store, {
+          draftJourney: null,
+          editingPaymentId: null,
+          suspensePayment: null,
+          suspensePayerDetails: null,
+          suspenseNote: '',
+        });
+      },
       /** Adds a payment journey to the matching till and returns the new payment ID. */
       addPayment(tillId: string, journey: FinesMciJourney): string {
         const paymentId = crypto.randomUUID();
@@ -155,6 +219,8 @@ export const FinesMciStore = signalStore(
           draftJourney: null,
           suspensePayment: null,
           suspensePayerDetails: null,
+          suspenseNote: '',
+          editingPaymentId: null,
           criminalSearch: null,
           courtFeeDraft: null,
           criminalSearchResults: null,

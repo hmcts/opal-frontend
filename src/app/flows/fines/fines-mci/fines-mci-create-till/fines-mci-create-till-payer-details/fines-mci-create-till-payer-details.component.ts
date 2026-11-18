@@ -42,7 +42,9 @@ export class FinesMciCreateTillPayerDetailsComponent extends AbstractFormParentB
         path,
       ])
       .then((navigated) => {
-        if (!navigated) {
+        if (navigated && cancel) {
+          this.finesMciStore.discardSuspensePayment();
+        } else if (!navigated) {
           this.isNavigatingFromPageAction = false;
           this.finesMciStore.setSuspensePayerDetails(payerDetails);
           if (cancel) {
