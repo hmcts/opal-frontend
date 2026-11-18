@@ -1,0 +1,73 @@
+<div class="govuk-grid-column-full govuk-!-margin-bottom-4">
+  <opal-lib-govuk-back-link (clickEvent)="handleBack()"></opal-lib-govuk-back-link>
+</div>
+
+<div class="govuk-grid-column-two-thirds" id="fines-mci-create-till-over-underpayment-confirmation">
+  <span class="govuk-caption-l">{{ finesMciStore.businessUnit()?.business_unit_name }}</span>
+  <h1 class="govuk-heading-l">{{ payment()?.heading ?? 'Overpayment or underpayment' }}</h1>
+
+  @if (payment(); as paymentDetails) {
+    <div opal-lib-moj-alert [type]="paymentDetails.type" [ariaLabel]="paymentDetails.message">
+      <opal-lib-moj-alert-icon icon [type]="paymentDetails.type"></opal-lib-moj-alert-icon>
+      <opal-lib-moj-alert-content content>
+        <opal-lib-moj-alert-content-text>{{ paymentDetails.message }}</opal-lib-moj-alert-content-text>
+      </opal-lib-moj-alert-content>
+    </div>
+
+    <opal-lib-govuk-summary-list summaryListId="fines-mci-court-fee-payment-summary">
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="fines-mci-court-fee-payment-summary"
+        summaryListRowId="court-fee"
+      >
+        <ng-container name>Court fee</ng-container>
+        <ng-container value>{{ paymentDetails.courtFee }}</ng-container>
+      </div>
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="fines-mci-court-fee-payment-summary"
+        summaryListRowId="amount"
+      >
+        <ng-container name>Amount</ng-container>
+        <ng-container value>{{ paymentDetails.amount }}</ng-container>
+      </div>
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="fines-mci-court-fee-payment-summary"
+        summaryListRowId="number-of-items"
+      >
+        <ng-container name>Number of items</ng-container>
+        <ng-container value>{{ paymentDetails.numberOfItems }}</ng-container>
+      </div>
+    </opal-lib-govuk-summary-list>
+
+    @if (paymentDetails.type === 'information') {
+      <div class="govuk-button-group">
+        <opal-lib-govuk-button
+          buttonId="confirm-overpayment"
+          buttonClasses="govuk-!-display-block"
+          (buttonClickEvent)="handleConfirm()"
+        >
+          Confirm
+        </opal-lib-govuk-button>
+        <a
+          id="cancel-overpayment"
+          class="govuk-link govuk-link--no-visited-state"
+          href=""
+          (click)="$event.preventDefault(); handleBack()"
+          >Cancel</a
+        >
+      </div>
+    } @else {
+      <opal-lib-govuk-cancel-link
+        cancelLinkText="Cancel and return to till"
+        (linkClickEvent)="handleReturnToTill()"
+      ></opal-lib-govuk-cancel-link>
+    }
+  } @else {
+    <p class="govuk-error-message" role="alert">Court fee payment details could not be loaded. Try again later.</p>
+  }
+</div>
