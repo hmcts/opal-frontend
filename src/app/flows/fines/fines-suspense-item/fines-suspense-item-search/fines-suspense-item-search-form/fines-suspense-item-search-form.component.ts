@@ -68,13 +68,27 @@ export class FinesSuspenseItemSearchFormComponent extends AbstractFormBaseCompon
       fsis_business_unit_id: businessUnitControl,
       fsis_suspense_reference_number: new FormControl('', {
         nonNullable: true,
-        validators: [Validators.required, patternValidator(NUMERIC_PATTERN, 'numericalTextPattern')],
+        validators: [
+          Validators.required,
+          patternValidator(NUMERIC_PATTERN, 'numericalTextPattern'),
+          patternValidator(/^0*\d{1,18}$/, 'maxlength'),
+        ],
       }),
     });
     this.setInitialErrorMessages();
+    // Reset before the shared listener checks for unsaved changes.
+    this.form.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      this.formSubmitted = false;
+    });
     businessUnitControl.valueChanges
       .pipe(distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe((businessUnitId) => this.businessUnitChange.emit(businessUnitId));
+  }
+
+  /** Restores the leave-page warning when a submitted lookup fails. */
+  public restoreUnsavedChanges(): void {
+    this.formSubmitted = false;
+    this.unsavedChanges.emit(this.hasUnsavedChanges());
   }
 
   /**

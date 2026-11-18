@@ -16,5 +16,9 @@ export const FINES_SUSPENSE_ITEM_SEARCH_FIELD_ERRORS: IFinesSuspenseItemSearchFi
       message: 'Enter suspense reference number in the correct format',
       priority: 2,
     },
+    maxlength: {
+      message: 'Reference number must be 18 characters or fewer',
+      priority: 3,
+    },
   },
 };

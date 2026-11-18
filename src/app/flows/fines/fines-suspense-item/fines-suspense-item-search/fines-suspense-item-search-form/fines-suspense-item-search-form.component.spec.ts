@@ -147,7 +147,7 @@ describe('FinesSuspenseItemSearchFormComponent', () => {
     expect(component.form.get('fsis_suspense_reference_number')?.hasError('required')).toBe(true);
   });
 
-  it.each(['abc', '12a3', '12.3', '-1', '+1', '1e3', '12 34', ' 123', '123 ', ' '])(
+  it.each(['abc', '12a3', '12.3', '-1', '+1', '1e3', '12 34', ' 123', '123 ', ' ', 'a'.repeat(19)])(
     'rejects non-digit reference %s with the specified inline and summary message',
     (reference) => {
       fixture.detectChanges();
@@ -169,12 +169,35 @@ describe('FinesSuspenseItemSearchFormComponent', () => {
     },
   );
 
-  it.each(['0', '7', '0000', '001234', '123456789012345678901234567890', '9'.repeat(100)])(
-    'accepts digits without a length or range restriction: %s',
+  it.each(['0', '7', '0000', '001234', '9'.repeat(18), '0'.repeat(100) + '1234'])(
+    'accepts a reference with at most 18 digits after leading zeroes: %s',
     (reference) => {
       fixture.detectChanges();
       component.form.setValue({ fsis_business_unit_id: 11, fsis_suspense_reference_number: reference });
       expect(component.form.valid).toBe(true);
+    },
+  );
+
+  it.each(['9'.repeat(19), '0'.repeat(20) + '9'.repeat(19)])(
+    'rejects a reference exceeding 18 digits after leading zeroes: %s',
+    (reference) => {
+      fixture.detectChanges();
+      component.form.setValue({ fsis_business_unit_id: 11, fsis_suspense_reference_number: reference });
+      const submitted = vi.fn();
+      component['formSubmit'].subscribe(submitted);
+      fixture.nativeElement
+        .querySelector('form')
+        .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      fixture.detectChanges();
+
+      expect(submitted).not.toHaveBeenCalled();
+      expect(component.form.get('fsis_suspense_reference_number')?.hasError('maxlength')).toBe(true);
+      expect(fixture.nativeElement.querySelector('.govuk-error-message').textContent).toContain(
+        'Reference number must be 18 characters or fewer',
+      );
+      expect(fixture.nativeElement.querySelector('.govuk-error-summary').textContent).toContain(
+        'Reference number must be 18 characters or fewer',
+      );
     },
   );
 

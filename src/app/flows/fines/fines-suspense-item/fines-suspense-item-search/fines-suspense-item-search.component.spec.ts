@@ -162,6 +162,43 @@ describe('FinesSuspenseItemSearchComponent', () => {
     expect(store.unsavedChanges()).toBe(false);
   });
 
+  it.each([
+    ['fsis_business_unit_id', 11],
+    ['fsis_suspense_reference_number', '5678'],
+  ])('restores the leave warning after changing %s following a search', (field, value) => {
+    fixture.detectChanges();
+    const child: FinesSuspenseItemSearchFormComponent = fixture.debugElement.query(
+      By.directive(FinesSuspenseItemSearchFormComponent),
+    ).componentInstance;
+    child.form.markAsDirty();
+    child.form.setValue({ fsis_business_unit_id: 22, fsis_suspense_reference_number: '1234' });
+    fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    expect(component.canDeactivate()).toBe(true);
+
+    child.form.get(field)!.setValue(value);
+
+    expect(component.canDeactivate()).toBe(false);
+    expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(true);
+  });
+
+  it('restores the leave warning when a lookup fails without further edits', () => {
+    const response = new Subject<IOpalFinesSuspenseItemSummary>();
+    getSuspenseItemSummary.mockReturnValue(response);
+    fixture.detectChanges();
+    const child: FinesSuspenseItemSearchFormComponent = fixture.debugElement.query(
+      By.directive(FinesSuspenseItemSearchFormComponent),
+    ).componentInstance;
+    child.form.markAsDirty();
+    child.form.setValue({ fsis_business_unit_id: 22, fsis_suspense_reference_number: '1234' });
+    fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    expect(component.canDeactivate()).toBe(true);
+
+    response.error(new Error('Request failed'));
+
+    expect(component.canDeactivate()).toBe(false);
+    expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(true);
+  });
+
   it('keeps the warning while the dirty page remains and clears it on destruction', () => {
     fixture.detectChanges();
     const store = TestBed.inject(FinesSuspenseItemStore);

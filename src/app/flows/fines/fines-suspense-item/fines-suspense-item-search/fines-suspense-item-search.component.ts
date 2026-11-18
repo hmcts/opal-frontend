@@ -2,7 +2,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, EMPTY } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
-import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, inject, DestroyRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, inject, DestroyRef, viewChild } from '@angular/core';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { FinesSuspenseItemStore } from '../stores/fines-suspense-item.store';
 import { IFinesSuspenseItemSearchFormState } from './interfaces/fines-suspense-item-search-form-state.interface';
@@ -24,6 +24,7 @@ export class FinesSuspenseItemSearchComponent implements OnInit, OnDestroy {
   private readonly suspenseItemStore = inject(FinesSuspenseItemStore);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly searchForm = viewChild.required(FinesSuspenseItemSearchFormComponent);
 
   protected readonly financeDashboardRoute = [
     '/',
@@ -84,14 +85,17 @@ export class FinesSuspenseItemSearchComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Strip leading zeroes as text: references have no length limit, so Number() could lose precision.
+    // Strip leading zeroes as text to avoid losing precision through numeric conversion.
     const reference = criteria.fsis_suspense_reference_number.replace(/^0+(?=\d)/, '');
     this.opalFines.clearCache('suspenseItemSummaryCache$');
     this.opalFines
       .getSuspenseItemSummary(criteria.fsis_business_unit_id, reference)
       .pipe(
-        // The shared HTTP interceptor displays and logs errors; complete without emitting a result.
-        catchError(() => EMPTY),
+        // The shared HTTP interceptor handles the error; restore the warning while the form remains open.
+        catchError(() => {
+          this.searchForm().restoreUnsavedChanges();
+          return EMPTY;
+        }),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
