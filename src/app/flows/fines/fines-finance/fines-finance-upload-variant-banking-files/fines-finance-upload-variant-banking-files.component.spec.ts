@@ -57,7 +57,7 @@ describe('FinesFinanceUploadVariantBankingFilesComponent', () => {
    * @returns A browser file accepted by the selection policy.
    */
   const file = (index = 1, size = 3) =>
-    new File([new Uint8Array(size)], `a121_261027_VB_${String(index).padStart(3, '0')}_AA.dat`);
+    new File([new Uint8Array(size)], `a121_261027_VB_${String(index).padStart(3, '0')}_01.dat`);
   /**
    * Creates the final API event with only the fields relevant to a scenario overridden.
    * @param overrides - Interface-file fields returned for the scenario.
@@ -294,8 +294,30 @@ describe('FinesFinanceUploadVariantBankingFilesComponent', () => {
     expect(component.canDeactivate()).toBe(true);
   });
 
+  it.each(['00', '01', '10', '99'])('uploads a filename with the two-digit sequence %s', (sequence) => {
+    const selected = new File(['banking'], `a121_261027_VB_123_${sequence}.dat`);
+
+    component.selectFiles([selected]);
+
+    expect(component.fileUploads()[0]).toMatchObject({ status: 'uploading', errors: [] });
+    expect(uploadInterfaceFile).toHaveBeenCalledExactlyOnceWith(selected, expect.any(Object));
+  });
+
+  it.each(['AA', 'aa', '1A', 'A1', '1', '001', ''])(
+    'rejects the invalid filename sequence "%s" without uploading',
+    (sequence) => {
+      component.selectFiles([new File(['banking'], `a121_261027_VB_123_${sequence}.dat`)]);
+
+      expect(component.fileUploads()[0]).toMatchObject({
+        status: 'rejected',
+        errors: ['The selected file name must follow the format a121_yymmdd_VB_XXX_nn.dat.'],
+      });
+      expect(uploadInterfaceFile).not.toHaveBeenCalled();
+    },
+  );
+
   it('accepts case-insensitive DAT names at the exact 2 MB boundary', () => {
-    const selected = new File([new Uint8Array(2 * 1024 * 1024)], 'A121_261027_vb_123_aa.DAT');
+    const selected = new File([new Uint8Array(2 * 1024 * 1024)], 'A121_261027_vb_123_01.DAT');
 
     component.selectFiles([selected]);
 

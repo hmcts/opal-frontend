@@ -16,7 +16,8 @@ The [feature configuration](./constants/fines-finance-variant-banking-upload.con
 - DAT files, checked case-insensitively.
 - At most 2 MiB per file (`2 * 1024 * 1024` bytes, including the exact boundary).
 - At most six files per picker/drop selection; this is not a cumulative limit across selections.
-- Ticket filenames matching `/^a121_\d{6}_VB_\d{3}_[A-Z]{2}\.dat$/i`, for example `a121_261027_VB_077_AA.dat`.
+- Ticket filenames matching `/^a121_\d{6}_VB_\d{3}_\d{2}\.dat$/i`, for example `a121_261027_VB_077_01.dat`,
+  with a two-digit numeric sequence suffix.
 
 Rejected files receive explanatory row errors and are not sent to the API. Original filenames are preserved.
 The [route](../routing/fines-finance.routes.ts) requires authentication and `create-interface-files` permission.
@@ -37,7 +38,7 @@ The shared client constructs two parts: `file` contains the original binary file
 
 ```json
 {
-  "file_name": "a121_261027_VB_077_AA.dat",
+  "file_name": "a121_261027_VB_077_01.dat",
   "source": "VARIANT_BANKING",
   "target": "OPAL",
   "type": "SOURCE",
@@ -70,8 +71,8 @@ The inspected `origin/master` commit `a05ccce3` on 9 November 2026 does not yet 
 a backend deployment containing that support is required for this journey.
 
 **Filename mismatch remains open.** The active PO-8745 extractor requires
-`^a121_\d{6}VB\d{3}_\d{2}\.dat$`, such as `a121_003500VB123_13.dat`. This conflicts with the ticket's underscores and
-alphabetic suffix. The agreed frontend decision is to keep the ticket format and flag the backend mismatch, rather
+`^a121_\d{6}VB\d{3}_\d{2}\.dat$`, such as `a121_003500VB123_13.dat`. This conflicts with the ticket's separator
+underscores around `VB`. The agreed frontend decision is to keep the ticket format and flag the backend mismatch, rather
 than rename files or bypass preprocessing. Transaction-bearing files accepted by the frontend can therefore fail
 backend preprocessing until the contracts are aligned. See the
 [Variant Banking extractor](https://github.com/hmcts/opal-file-handler-service/blob/d60cfa4e/src/main/java/uk/gov/hmcts/opal/filehandler/service/extraction/VariantBacsStandard18BaisExtractionService.java).

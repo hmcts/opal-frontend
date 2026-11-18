@@ -96,7 +96,7 @@ describe('fines finance routes', () => {
     const fetchBackend = { handle: fetchHandle };
     const xhrBackend = { handle: xhrHandle };
     const metadata = {
-      file_name: 'a121_261027_VB_123_AA.dat',
+      file_name: 'a121_261027_VB_123_01.dat',
       source: 'VARIANT_BANKING',
       target: 'OPAL',
       type: 'SOURCE',

@@ -14,7 +14,7 @@ describe('FinesFinanceUploadVariantBankingFilesFormComponent', () => {
    * @returns A row retaining its original browser file.
    */
   const row = (overrides: Partial<IAbstractMultiFileUploadItem> = {}): IAbstractMultiFileUploadItem => {
-    const file = new File(['banking'], 'a121_261027_VB_123_AA.dat');
+    const file = new File(['banking'], 'a121_261027_VB_123_01.dat');
     return { id: 'banking-file', file, name: file.name, status: 'success', progress: 100, errors: [], ...overrides };
   };
 
