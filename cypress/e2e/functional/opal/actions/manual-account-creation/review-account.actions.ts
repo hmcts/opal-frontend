@@ -274,6 +274,7 @@ export class ManualReviewAccountActions {
 
         if (accountId) {
           recordCreatedId(accountId);
+          cy.wrap(accountId, { log: false }).as('lastCreatedDraftId');
           log('navigate', 'Manual account ID recorded', { status, accountId });
         }
 
