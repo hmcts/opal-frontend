@@ -323,6 +323,7 @@ describe('fines-acc-payload-build-defendant-data.utils', () => {
         'individual',
         true,
         'party123',
+        true,
       );
 
       expect(result.defendant_account_party_type).toBe('Defendant');
@@ -348,6 +349,12 @@ describe('fines-acc-payload-build-defendant-data.utils', () => {
       expect(result.employer_details?.employer_telephone_number).toBe('01234567890');
       expect(result.language_preferences?.document_language_preference?.language_code).toBe('EN');
       expect(result.language_preferences?.hearing_language_preference?.language_code).toBe('EN');
+
+      const withoutRelease = buildAccountPartyFromFormState(formState, 'individual', true, 'party123', false);
+      expect(withoutRelease.contact_details?.mobile_telephone_number).toBe('07123 456 789');
+      expect(withoutRelease.contact_details?.home_telephone_number).toBe('01234 567 890');
+      expect(withoutRelease.contact_details?.work_telephone_number).toBe('020 1234 5678');
+      expect(withoutRelease.employer_details?.employer_telephone_number).toBe('01234 567 890');
     });
 
     it('should build payload for company party', () => {
@@ -391,6 +398,7 @@ describe('fines-acc-payload-build-defendant-data.utils', () => {
         'company',
         false,
         'party123',
+        false,
       );
 
       expect(result.defendant_account_party_type).toBe('Defendant');
@@ -446,6 +454,7 @@ describe('fines-acc-payload-build-defendant-data.utils', () => {
         'parentGuardian',
         false,
         'party123',
+        false,
       );
 
       expect(result.defendant_account_party_type).toBe('Parent/Guardian');
@@ -501,6 +510,7 @@ describe('fines-acc-payload-build-defendant-data.utils', () => {
         'individual',
         false,
         'party123',
+        false,
       );
 
       expect(result.language_preferences?.document_language_preference?.language_code).toBe('CY');
@@ -547,7 +557,7 @@ describe('fines-acc-payload-build-defendant-data.utils', () => {
         facc_party_add_amend_convert_employer_post_code: null,
       };
 
-      const result = buildAccountPartyFromFormState(formState, 'individual', false, 'party123');
+      const result = buildAccountPartyFromFormState(formState, 'individual', false, 'party123', false);
 
       expect(result.language_preferences?.document_language_preference).toEqual({
         language_code: 'FR',

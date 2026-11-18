@@ -15,6 +15,9 @@ import { IFinesAccPartyAddAmendConvertOrganisationAliasState } from '../../fines
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../../fines-mac/fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
 import { stripTelephoneNumberSpaces } from '../../../utils/fines-telephone-number.utils';
 
+const normalizeTelephoneNumber = (value: string | null, release1A12Enabled: boolean): string | null =>
+  release1A12Enabled ? stripTelephoneNumberSpaces(value) : value;
+
 /**
  * Builds individual aliases array from form state
  * Handles CRUD operations:
@@ -143,17 +146,21 @@ const buildAddressDetails = (formState: IFinesAccPartyAddAmendConvertState): IOp
  */
 const buildContactDetails = (
   formState: IFinesAccPartyAddAmendConvertState,
+  release1A12Enabled: boolean,
 ): IOpalFinesDefendantAccountContactDetails => ({
   primary_email_address: formState.facc_party_add_amend_convert_contact_email_address_1,
   secondary_email_address: formState.facc_party_add_amend_convert_contact_email_address_2,
-  mobile_telephone_number: stripTelephoneNumberSpaces(
+  mobile_telephone_number: normalizeTelephoneNumber(
     formState.facc_party_add_amend_convert_contact_telephone_number_mobile,
+    release1A12Enabled,
   ),
-  home_telephone_number: stripTelephoneNumberSpaces(
+  home_telephone_number: normalizeTelephoneNumber(
     formState.facc_party_add_amend_convert_contact_telephone_number_home,
+    release1A12Enabled,
   ),
-  work_telephone_number: stripTelephoneNumberSpaces(
+  work_telephone_number: normalizeTelephoneNumber(
     formState.facc_party_add_amend_convert_contact_telephone_number_business,
+    release1A12Enabled,
   ),
 });
 
@@ -179,6 +186,7 @@ const buildVehicleDetails = (
 const buildEmployerDetails = (
   formState: IFinesAccPartyAddAmendConvertState,
   isDebtor: boolean,
+  release1A12Enabled: boolean,
 ): IOpalFinesDefendantAccountEmployerDetails | null => {
   if (!isDebtor || !formState.facc_party_add_amend_convert_employer_company_name) {
     return null;
@@ -188,8 +196,9 @@ const buildEmployerDetails = (
     employer_name: formState.facc_party_add_amend_convert_employer_company_name,
     employer_reference: formState.facc_party_add_amend_convert_employer_reference,
     employer_email_address: formState.facc_party_add_amend_convert_employer_email_address,
-    employer_telephone_number: stripTelephoneNumberSpaces(
+    employer_telephone_number: normalizeTelephoneNumber(
       formState.facc_party_add_amend_convert_employer_telephone_number,
+      release1A12Enabled,
     ),
     employer_address: {
       address_line_1: formState.facc_party_add_amend_convert_employer_address_line_1!,
@@ -235,6 +244,7 @@ const buildLanguagePreferences = (
  * @param partyType - The party type (company, individual, parentGuardian)
  * @param isDebtor - Whether this is a debtor party
  * @param partyId - The unique party identifier
+ * @param release1A12Enabled - Whether to remove spaces from telephone numbers
  * @returns The transformed payload object for updating party details
  */
 export const buildAccountPartyFromFormState = (
@@ -242,6 +252,7 @@ export const buildAccountPartyFromFormState = (
   partyType: string,
   isDebtor: boolean,
   partyId: string,
+  release1A12Enabled: boolean,
 ): IOpalFinesAccountPartyDetails => {
   const isOrganisation = partyType === 'company';
 
@@ -255,9 +266,9 @@ export const buildAccountPartyFromFormState = (
       individual_details: isOrganisation ? null : buildIndividualDetails(formState),
     },
     address: buildAddressDetails(formState),
-    contact_details: buildContactDetails(formState),
+    contact_details: buildContactDetails(formState, release1A12Enabled),
     vehicle_details: buildVehicleDetails(formState),
-    employer_details: buildEmployerDetails(formState, isDebtor),
+    employer_details: buildEmployerDetails(formState, isDebtor, release1A12Enabled),
     language_preferences: buildLanguagePreferences(formState),
   };
 };

@@ -34,22 +34,6 @@ import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permiss
 import { stripTelephoneNumberSpaces } from '../../../utils/fines-telephone-number.utils';
 import { IFinesMacPayloadAccountDefendantComplete } from './utils/interfaces/fines-mac-payload-account-defendant-complete.interface';
 
-const normalizeTelephoneNumbers = (defendant: IFinesMacPayloadAccountDefendantComplete): void => {
-  for (const contact of [defendant, defendant.parent_guardian]) {
-    if (contact) {
-      contact.telephone_number_home = stripTelephoneNumberSpaces(contact.telephone_number_home);
-      contact.telephone_number_business = stripTelephoneNumberSpaces(contact.telephone_number_business);
-      contact.telephone_number_mobile = stripTelephoneNumberSpaces(contact.telephone_number_mobile);
-    }
-  }
-
-  for (const debtorDetail of [defendant.debtor_detail, defendant.parent_guardian?.debtor_detail]) {
-    if (debtorDetail) {
-      debtorDetail.employer_telephone_number = stripTelephoneNumberSpaces(debtorDetail.employer_telephone_number);
-    }
-  }
-};
-
 @Injectable({
   providedIn: 'root',
 })
@@ -59,6 +43,22 @@ export class FinesMacPayloadService {
 
   private get release1A12Enabled(): boolean {
     return getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true;
+  }
+
+  private normalizeTelephoneNumbers(defendant: IFinesMacPayloadAccountDefendantComplete): void {
+    for (const contact of [defendant, defendant.parent_guardian]) {
+      if (contact) {
+        contact.telephone_number_home = stripTelephoneNumberSpaces(contact.telephone_number_home);
+        contact.telephone_number_business = stripTelephoneNumberSpaces(contact.telephone_number_business);
+        contact.telephone_number_mobile = stripTelephoneNumberSpaces(contact.telephone_number_mobile);
+      }
+    }
+
+    for (const debtorDetail of [defendant.debtor_detail, defendant.parent_guardian?.debtor_detail]) {
+      if (debtorDetail) {
+        debtorDetail.employer_telephone_number = stripTelephoneNumberSpaces(debtorDetail.employer_telephone_number);
+      }
+    }
   }
 
   /**
@@ -154,7 +154,7 @@ export class FinesMacPayloadService {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
     const accountPayload = this.buildAccountPayload(finesMacState);
     if (this.release1A12Enabled) {
-      normalizeTelephoneNumbers(accountPayload.defendant);
+      this.normalizeTelephoneNumbers(accountPayload.defendant);
     }
 
     const requestPayload: IFinesMacReplaceAccountRequestPayload = {

@@ -74,7 +74,7 @@ export class FinesAccPayloadService {
   private readonly historyDetailsTransformationService = inject(HistoryTransformationService);
   private readonly dateService = inject(DateService);
 
-  private get newSortCodeFunctionalityEnabled(): boolean {
+  private get release1A12Enabled(): boolean {
     return getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true;
   }
 
@@ -468,7 +468,7 @@ export class FinesAccPayloadService {
     let sortCode: string | null = null;
 
     if (hasBacsDetails) {
-      sortCode = this.newSortCodeFunctionalityEnabled
+      sortCode = this.release1A12Enabled
         ? normalizeSortCode(formState.facc_minor_creditor_bank_sort_code)
         : formState.facc_minor_creditor_bank_sort_code;
     }
@@ -570,7 +570,7 @@ export class FinesAccPayloadService {
     partyId: string,
   ): IOpalFinesAccountPartyDetails {
     return this.transformPayload(
-      buildAccountPartyFromFormState(formState, partyType, isDebtor, partyId),
+      buildAccountPartyFromFormState(formState, partyType, isDebtor, partyId, this.release1A12Enabled),
       FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG,
     );
   }
