@@ -7,6 +7,14 @@
   @if (isNavigating()) {
     <output class="govuk-body govuk-!-display-block">Loading payment details</output>
   } @else if (summaryRows(); as rows) {
+    @if (overpaymentMessage(); as message) {
+      <div opal-lib-moj-alert type="information" [ariaLabel]="message">
+        <opal-lib-moj-alert-icon icon type="information"></opal-lib-moj-alert-icon>
+        <opal-lib-moj-alert-content content>
+          <opal-lib-moj-alert-content-text>{{ message }}</opal-lib-moj-alert-content-text>
+        </opal-lib-moj-alert-content>
+      </div>
+    }
     <app-fines-mci-create-till-payment-summary
       title="Court fee payment"
       summaryId="fines-mci-court-fee-payment-summary"

@@ -118,6 +118,43 @@ describe('FinesMciCreateTillCourtFeeCheckComponent', () => {
     );
   });
 
+  it.each([
+    ['30', 'This amount contains a £5.00 overpayment.'],
+    ['25.001', 'This amount contains a £0.001 overpayment.'],
+    ['25', null],
+    ['24.99', null],
+  ])('shows the overpayment information only when the amount is above the total: £%s', (amountPaid, message) => {
+    const store = TestBed.inject(FinesMciStore);
+    store.setCourtFeeDraft({ courtFeeId: 1, amountPaid, numberOfItems: '2' });
+    store.setCourtFeePaymentDetails({
+      paymentReceivedFrom: 'applicant',
+      paymentMethod: 'CQ',
+      payerType: 'company',
+      companyName: 'Example Ltd',
+      addressLine1: null,
+      addressLine2: null,
+      addressLine3: null,
+      postcode: null,
+    });
+    TestBed.inject(ActivatedRoute).snapshot.data['courtFees'] = {
+      court_fees: [{ court_fee_id: 1, court_fee_code: 'C01', description: 'Court fee', amount: 12.5 }],
+    };
+    TestBed.inject(ActivatedRoute).snapshot.data['paymentMappings'] = {
+      methods: [{ code: 'CQ', display_name: 'Cheque' }],
+      sources: [{ code: 'ALLPAY', display_name: 'allpay' }],
+    };
+    const fixture = TestBed.createComponent(FinesMciCreateTillCourtFeeCheckComponent);
+    fixture.detectChanges();
+    const element = fixture.nativeElement as HTMLElement;
+    const alert = element.querySelector('.moj-alert--information');
+    if (message) {
+      expect(alert?.textContent).toContain(message);
+      expect(element.querySelector('.govuk-summary-card')).not.toBeNull();
+    } else {
+      expect(alert).toBeNull();
+    }
+  });
+
   it.each(['cancelled', 'rejected'])('restores leave protection if Back navigation is %s', async (outcome) => {
     const router = TestBed.inject(Router);
     const navigate = vi.spyOn(router, 'navigate');

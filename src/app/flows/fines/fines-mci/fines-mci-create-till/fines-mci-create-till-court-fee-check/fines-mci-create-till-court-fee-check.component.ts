@@ -1,17 +1,30 @@
 import { ChangeDetectionStrategy, Component, HostListener, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+import {
+  MojAlertComponent,
+  MojAlertContentComponent,
+  MojAlertIconComponent,
+  MojAlertTextComponent,
+} from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
 import { FinesMciStore } from '../../stores/fines-mci.store';
 import { IOpalFinesCourtFeesResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-fees.interface';
 import { IFinesMciPaymentMappings } from '../../routing/interfaces/fines-mci-payment-mappings.interface';
 import { FinesMciCreateTillPaymentSummaryComponent } from '../fines-mci-create-till-payment-summary/fines-mci-create-till-payment-summary.component';
 import { IFinesMciCreateTillPaymentSummaryRow } from '../fines-mci-create-till-payment-summary/interfaces/fines-mci-create-till-payment-summary-row.interface';
-import { compareCourtFeeAmounts, formatPounds } from '../utils/fines-mci-court-fee-payment.utils';
+import { compareCourtFeeAmounts, comparePayment, formatPounds } from '../utils/fines-mci-court-fee-payment.utils';
 
 @Component({
   selector: 'app-fines-mci-create-till-court-fee-check',
-  imports: [GovukBackLinkComponent, FinesMciCreateTillPaymentSummaryComponent],
+  imports: [
+    GovukBackLinkComponent,
+    FinesMciCreateTillPaymentSummaryComponent,
+    MojAlertComponent,
+    MojAlertContentComponent,
+    MojAlertIconComponent,
+    MojAlertTextComponent,
+  ],
   templateUrl: './fines-mci-create-till-court-fee-check.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -22,6 +35,7 @@ export class FinesMciCreateTillCourtFeeCheckComponent implements OnInit {
   protected readonly finesMciStore = inject(FinesMciStore);
   protected readonly isNavigating = signal(false);
   protected readonly summaryRows = signal<IFinesMciCreateTillPaymentSummaryRow[] | null>(null);
+  protected readonly overpaymentMessage = signal<string | null>(null);
 
   /** Builds the court fee summary from the saved drafts and resolved reference data. */
   public ngOnInit(): void {
@@ -37,6 +51,8 @@ export class FinesMciCreateTillCourtFeeCheckComponent implements OnInit {
 
     const amount = compareCourtFeeAmounts(draft.amountPaid, fee.amount, draft.numberOfItems);
     if (!amount) return;
+    const comparison = comparePayment(draft, fee);
+    if (comparison?.type === 'information') this.overpaymentMessage.set(comparison.message);
 
     const empty = '—';
     const payerName =
