@@ -13,7 +13,7 @@ export const FinesAccountStore = signalStore(
     party_type: null as string | null,
     party_name: null as string | null,
     base_version: null as string | null,
-    business_unit_id: null as string | null,
+    business_unit_id: null as number | null,
     business_unit_user_id: null as string | null,
     welsh_speaking: null as string | null,
     originator_type: null as string | null,

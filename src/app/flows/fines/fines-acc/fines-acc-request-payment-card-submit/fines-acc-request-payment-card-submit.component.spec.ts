@@ -20,7 +20,7 @@ describe('FinesAccRequestPaymentCardSubmitComponent', () => {
 
   const accountId = 123;
   const baseVersion = '2';
-  const businessUnitId = '61';
+  const businessUnitId = 61;
   const businessUnitUserId = 'USER99';
 
   beforeEach(async () => {

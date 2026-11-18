@@ -6,9 +6,9 @@ import { IOpalFinesReportInstancesResponse } from '@services/fines/opal-fines-se
 import { IFinesReportsSummaryListTableData } from '../interfaces/fines-reports-summary-list-table-data.interface';
 
 type BusinessUnitLike = {
-  business_unit_id?: string | number;
+  business_unit_id?: number;
   business_unit_code?: string | number;
-  businessUnitId?: string | number;
+  businessUnitId?: number;
   businessUnitCode?: string | number;
   business_unit_name?: string;
   businessUnitName?: string;
@@ -16,7 +16,7 @@ type BusinessUnitLike = {
 };
 
 type BusinessUnitsDetailsLike = {
-  business_unit_id?: string | number;
+  business_unit_id?: number;
   business_unit_code?: string | number;
   business_unit_name?: string;
 };
@@ -38,10 +38,8 @@ const getBusinessUnitNameByValue = (
   value: string | number,
   businessUnitRefData?: IOpalFinesBusinessUnit[],
 ): string | number => {
-  const match = businessUnitRefData?.find(
-    (businessUnit) =>
-      businessUnit.business_unit_id.toString() === value.toString() ||
-      businessUnit.business_unit_code.toString() === value.toString(),
+  const match = businessUnitRefData?.find((businessUnit) =>
+    typeof value === 'number' ? businessUnit.business_unit_id === value : businessUnit.business_unit_code === value,
   );
 
   return match?.business_unit_name ?? value;
@@ -63,14 +61,13 @@ const getBusinessUnitValue = (
     return explicitName;
   }
 
-  const explicitId =
-    businessUnitData.business_unit_id ??
-    businessUnitData.businessUnitId ??
-    businessUnitData.business_unit_code ??
-    businessUnitData.businessUnitCode ??
-    null;
+  const explicitId = businessUnitData.business_unit_id ?? businessUnitData.businessUnitId;
+  if (explicitId !== undefined) {
+    return getBusinessUnitNameByValue(explicitId, businessUnitRefData);
+  }
 
-  return explicitId !== null ? getBusinessUnitNameByValue(explicitId, businessUnitRefData) : null;
+  const explicitCode = businessUnitData.business_unit_code ?? businessUnitData.businessUnitCode;
+  return explicitCode !== undefined ? getBusinessUnitNameByValue(String(explicitCode), businessUnitRefData) : null;
 };
 
 const getBusinessUnits = (

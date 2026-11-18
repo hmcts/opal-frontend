@@ -11,15 +11,13 @@ import { FINES_ACCOUNT_ROUTE_TYPES } from '../constants/fines-acc-route-types.co
 import { FinesAccRouteType } from './types/fines-acc-route.type';
 
 /**
- * Normalizes a business unit identifier from store or API state into a positive numeric value.
+ * Validates a business unit identifier from store or API state.
  *
- * @param businessUnitId - The raw business unit identifier to parse.
- * @returns The parsed business unit id, or `null` when the value is missing or invalid.
+ * @param businessUnitId - The numeric business unit identifier to validate.
+ * @returns The business unit id, or `null` when the value is missing or invalid.
  */
-const getBusinessUnitId = (businessUnitId: string | null | undefined): number | null => {
-  const parsedBusinessUnitId = Number(businessUnitId);
-
-  return Number.isFinite(parsedBusinessUnitId) && parsedBusinessUnitId > 0 ? parsedBusinessUnitId : null;
+const getBusinessUnitId = (businessUnitId: number | null | undefined): number | null => {
+  return businessUnitId != null && Number.isInteger(businessUnitId) && businessUnitId > 0 ? businessUnitId : null;
 };
 
 @Injectable({

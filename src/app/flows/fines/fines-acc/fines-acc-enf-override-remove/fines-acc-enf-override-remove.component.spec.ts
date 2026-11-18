@@ -50,7 +50,7 @@ describe('FinesAccEnfOverrideRemoveComponent', () => {
       party_name: signal('Test Person'),
       account_id: signal(1001),
       base_version: signal('1'),
-      business_unit_id: signal('2002'),
+      business_unit_id: signal(2002),
       setSuccessMessage: vi.fn(),
     };
 
@@ -145,7 +145,7 @@ describe('FinesAccEnfOverrideRemoveComponent', () => {
       1001,
       { enforcement_override: {} },
       '1',
-      '2002',
+      2002,
     );
     expect(mockAccountStore.setSuccessMessage).toHaveBeenCalledWith(
       FINES_ACC_ENF_OVERRIDE_ADD_CHANGE_SUCCESS_MESSAGES.remove,

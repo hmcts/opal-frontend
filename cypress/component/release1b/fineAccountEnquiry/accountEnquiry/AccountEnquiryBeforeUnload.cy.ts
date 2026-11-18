@@ -26,7 +26,7 @@ const setupComponent = (targetPath = '/defendant/12345/note/add') => {
   interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
   const header = structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
   header.defendant_account_id = '12345';
-  header.business_unit_summary.business_unit_id = '77';
+  header.business_unit_summary.business_unit_id = 77;
   interceptDefendantHeader(12345, header, '1');
   interceptAtAGlance(12345, structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK), '1');
   setupAccountEnquiryComponent({

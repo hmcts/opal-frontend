@@ -47,7 +47,7 @@ describe('FinesAccRemoveNonPayingPgComponent', () => {
       account_id: signal(123),
       pg_party_id: signal('PG-123'),
       base_version: signal('8'),
-      business_unit_id: signal('61'),
+      business_unit_id: signal(61),
       setSuccessMessage: vi.fn(),
     };
 
@@ -127,7 +127,7 @@ describe('FinesAccRemoveNonPayingPgComponent', () => {
         defendant_account_party_id: 'PG-123',
       },
       '8',
-      '61',
+      61,
     );
     expect(mockOpalFinesService.clearAccountDetailsCache).toHaveBeenCalled();
     expect(mockFinesAccStore.setSuccessMessage).toHaveBeenCalledWith(FINES_ACC_REMOVE_NON_PAYING_PG_SUCCESS_MESSAGE);

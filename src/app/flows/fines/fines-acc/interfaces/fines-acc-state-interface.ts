@@ -6,7 +6,7 @@ export interface IFinesAccountState {
   party_name: string | null;
   party_id: string | null;
   base_version: string | null;
-  business_unit_id: string | null;
+  business_unit_id: number | null;
   business_unit_user_id: string | null;
   welsh_speaking: string | null;
   originator_type: string | null;

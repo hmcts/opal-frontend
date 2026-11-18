@@ -215,7 +215,7 @@ function setupAddEnforcementActionDetailsRoute(
         party_name: 'Mr Robert THOMSON',
         party_type: 'Defendant',
         base_version: '1',
-        business_unit_id: '77',
+        business_unit_id: 77,
         business_unit_user_id: 'L077AO',
         welsh_speaking: 'No',
         ...accountStateOverrides,

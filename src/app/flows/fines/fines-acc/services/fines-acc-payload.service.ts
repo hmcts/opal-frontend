@@ -219,7 +219,7 @@ export class FinesAccPayloadService {
           .join(' ');
 
     const business_unit_user_id = this.getBusinessUnitBusinessUserId(
-      Number(headingData.business_unit_summary.business_unit_id),
+      headingData.business_unit_summary.business_unit_id,
     );
 
     return {
@@ -259,9 +259,7 @@ export class FinesAccPayloadService {
           .filter(Boolean)
           .join(' ');
 
-    const business_unit_user_id = this.getBusinessUnitBusinessUserId(
-      Number(headingData.business_unit.business_unit_id),
-    );
+    const business_unit_user_id = this.getBusinessUnitBusinessUserId(headingData.business_unit.business_unit_id);
 
     return {
       account_number: headingData.creditor.account_number,
@@ -638,7 +636,7 @@ export class FinesAccPayloadService {
     headingData: IOpalFinesAccountMajorCreditorDetailsHeader,
   ): IFinesAccountState {
     const business_unit_user_id = this.getBusinessUnitBusinessUserId(
-      Number(headingData.business_unit_details.business_unit_id),
+      headingData.business_unit_details.business_unit_id,
     );
 
     return {

@@ -82,7 +82,7 @@ describe('finesAccBusinessUnitResolver', () => {
 
   it('should return the stored business unit when the current account matches the route', async () => {
     mockAccountStore.account_id.mockReturnValue(123);
-    mockAccountStore.business_unit_id.mockReturnValue('456');
+    mockAccountStore.business_unit_id.mockReturnValue(456);
     const route = createRoute(123, FINES_ACCOUNT_ROUTE_TYPES.defendant);
 
     const result = await resolveBusinessUnit(route);
@@ -95,12 +95,12 @@ describe('finesAccBusinessUnitResolver', () => {
 
   it('should fetch the defendant heading and hydrate the store when the current account does not match', async () => {
     mockAccountStore.account_id.mockReturnValue(999);
-    mockAccountStore.business_unit_id.mockReturnValue('321');
+    mockAccountStore.business_unit_id.mockReturnValue(321);
     const route = createRoute(123, FINES_ACCOUNT_ROUTE_TYPES.defendant);
 
     const result = await resolveBusinessUnit(route);
 
-    expect(result).toBe(Number(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.business_unit_summary.business_unit_id));
+    expect(result).toBe(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.business_unit_summary.business_unit_id);
     expect(mockOpalFinesService.getDefendantAccountHeadingData).toHaveBeenCalledWith(123);
     expect(mockPayloadService.transformDefendantAccountHeaderForStore).toHaveBeenCalledWith(
       123,
@@ -111,12 +111,12 @@ describe('finesAccBusinessUnitResolver', () => {
 
   it('should fetch the minor creditor heading and hydrate the store when the current account does not match', async () => {
     mockAccountStore.account_id.mockReturnValue(999);
-    mockAccountStore.business_unit_id.mockReturnValue('321');
+    mockAccountStore.business_unit_id.mockReturnValue(321);
     const route = createRoute(123, FINES_ACCOUNT_ROUTE_TYPES.minorCreditor);
 
     const result = await resolveBusinessUnit(route);
 
-    expect(result).toBe(Number(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.business_unit.business_unit_id));
+    expect(result).toBe(FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK.business_unit.business_unit_id);
     expect(mockOpalFinesService.getMinorCreditorAccountHeadingData).toHaveBeenCalledWith(123);
     expect(mockPayloadService.transformMinorCreditorAccountHeaderForStore).toHaveBeenCalledWith(
       123,
@@ -143,5 +143,32 @@ describe('finesAccBusinessUnitResolver', () => {
     expect(result).toBeNull();
     expect(mockOpalFinesService.getDefendantAccountHeadingData).not.toHaveBeenCalled();
     expect(mockOpalFinesService.getMinorCreditorAccountHeadingData).not.toHaveBeenCalled();
+  });
+
+  it.each([null, 0, -1, 1.5, Number.NaN, Number.POSITIVE_INFINITY])(
+    'should fetch the heading when the stored business unit is invalid (%s)',
+    async (businessUnitId) => {
+      mockAccountStore.account_id.mockReturnValue(123);
+      mockAccountStore.business_unit_id.mockReturnValue(businessUnitId);
+
+      expect(await resolveBusinessUnit(createRoute(123, FINES_ACCOUNT_ROUTE_TYPES.defendant))).toBe(
+        FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.business_unit_summary.business_unit_id,
+      );
+      expect(mockOpalFinesService.getDefendantAccountHeadingData).toHaveBeenCalledWith(123);
+    },
+  );
+
+  it('should return null when the API heading has an invalid business unit', async () => {
+    mockOpalFinesService.getDefendantAccountHeadingData.mockReturnValue(
+      of({
+        ...FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK,
+        business_unit_summary: {
+          ...FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.business_unit_summary,
+          business_unit_id: 0,
+        },
+      }),
+    );
+
+    expect(await resolveBusinessUnit(createRoute(123, FINES_ACCOUNT_ROUTE_TYPES.defendant))).toBeNull();
   });
 });

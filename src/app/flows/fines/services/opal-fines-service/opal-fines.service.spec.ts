@@ -248,14 +248,14 @@ describe('OpalFines', () => {
 
   it('should not retry mutation calls after transient timeout failures', () => {
     const error = vi.fn();
-    const businessUnitId = '61';
+    const businessUnitId = 61;
 
     service.addNote(OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK, '1', businessUnitId).subscribe({ error });
 
     const request = httpMock.expectOne(OPAL_FINES_PATHS.notes);
     expect(request.request.method).toBe('POST');
     expect(request.request.headers.get('If-Match')).toBe('1');
-    expect(request.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+    expect(request.request.headers.get('Business-Unit-Id')).toBe(String(businessUnitId));
     request.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
 
     httpMock.expectNone(OPAL_FINES_PATHS.notes);
@@ -1954,7 +1954,7 @@ describe('OpalFines', () => {
   it('should send a POST request to add note API with correct payload and return mock response', () => {
     const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
     const version = '1';
-    const businessUnitId = '78';
+    const businessUnitId = 78;
     const expectedUrl = OPAL_FINES_PATHS.notes;
 
     service.addNote(payload, version, businessUnitId).subscribe((response) => {
@@ -1966,14 +1966,14 @@ describe('OpalFines', () => {
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(payload);
     expect(req.request.headers.get('If-Match')).toBe(version);
-    expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+    expect(req.request.headers.get('Business-Unit-Id')).toBe(String(businessUnitId));
     req.flush(OPAL_FINES_ADD_NOTE_RESPONSE_MOCK);
   });
 
   it('should return a response with server-generated fields when using real API', () => {
     const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
     const version = '1';
-    const businessUnitId = '78';
+    const businessUnitId = 78;
     const mockResponse = OPAL_FINES_ADD_NOTE_RESPONSE_MOCK;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1984,14 +1984,14 @@ describe('OpalFines', () => {
     });
 
     expect(httpPostSpy).toHaveBeenCalledWith(OPAL_FINES_PATHS.notes, payload, {
-      headers: { 'If-Match': version, 'Business-Unit-Id': businessUnitId },
+      headers: { 'If-Match': version, 'Business-Unit-Id': String(businessUnitId) },
     });
   });
 
   it('should generate random note_id and current timestamp in mock response', () => {
     const payload: IOpalFinesAddNotePayload = OPAL_FINES_ADD_NOTE_PAYLOAD_MOCK;
     const version = '1';
-    const businessUnitId = '78';
+    const businessUnitId = 78;
 
     const responses: number[] = [];
     for (let i = 0; i < 5; i++) {
@@ -2004,7 +2004,7 @@ describe('OpalFines', () => {
       const req = httpMock.expectOne(OPAL_FINES_PATHS.notes);
       expect(req.request.method).toBe('POST');
       expect(req.request.headers.get('If-Match')).toBe(version);
-      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(String(businessUnitId));
       req.flush(OPAL_FINES_ADD_NOTE_RESPONSE_MOCK);
     }
 
@@ -2022,7 +2022,7 @@ describe('OpalFines', () => {
       },
     };
     const version = '42';
-    const businessUnitId = '78';
+    const businessUnitId = 78;
 
     service.addNote(payload, version, businessUnitId).subscribe((response) => {
       expect(response.note_id).toBeDefined();
@@ -2032,7 +2032,7 @@ describe('OpalFines', () => {
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(payload);
     expect(req.request.headers.get('If-Match')).toBe(version);
-    expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+    expect(req.request.headers.get('Business-Unit-Id')).toBe(String(businessUnitId));
     req.flush(OPAL_FINES_ADD_NOTE_RESPONSE_MOCK);
   });
 
@@ -2268,7 +2268,7 @@ describe('OpalFines', () => {
         },
       };
       const version = '10';
-      const businessUnitId = '2002';
+      const businessUnitId = 2002;
 
       service.patchDefendantAccount(accountId, payload, version, businessUnitId).subscribe((response) => {
         expect(response).toEqual({ defendant_account_id: accountId });
@@ -2277,7 +2277,7 @@ describe('OpalFines', () => {
       const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`);
       expect(req.request.method).toBe('PATCH');
       expect(req.request.headers.get('If-Match')).toBe(version);
-      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(String(businessUnitId));
       req.flush({ defendant_account_id: accountId });
     });
 
@@ -2292,7 +2292,7 @@ describe('OpalFines', () => {
           free_text_note_3: null,
         },
       };
-      const businessUnitId = '2002';
+      const businessUnitId = 2002;
 
       service.patchDefendantAccount(accountId, payload, undefined, businessUnitId).subscribe((response) => {
         expect(response).toEqual({ defendant_account_id: accountId });
@@ -2301,11 +2301,11 @@ describe('OpalFines', () => {
       const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`);
       expect(req.request.method).toBe('PATCH');
       expect(req.request.headers.has('If-Match')).toBe(false);
-      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(String(businessUnitId));
       req.flush({ defendant_account_id: accountId });
     });
 
-    it('should not include If-Match and should include Business-Unit-Id when version is empty string and business unit is empty string', () => {
+    it('should omit If-Match when the version is empty and serialize a numeric business unit', () => {
       const accountId = 123456;
       const payload = {
         version: 10,
@@ -2317,7 +2317,7 @@ describe('OpalFines', () => {
         },
       };
       const version = '';
-      const businessUnitId = '';
+      const businessUnitId = 77;
 
       service.patchDefendantAccount(accountId, payload, version, businessUnitId).subscribe((response) => {
         expect(response).toEqual({ defendant_account_id: accountId });
@@ -2326,7 +2326,7 @@ describe('OpalFines', () => {
       const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`);
       expect(req.request.method).toBe('PATCH');
       expect(req.request.headers.has('If-Match')).toBe(false);
-      expect(req.request.headers.get('Business-Unit-Id')).toBe('');
+      expect(req.request.headers.get('Business-Unit-Id')).toBe('77');
       req.flush({ defendant_account_id: accountId });
     });
   });
@@ -2334,7 +2334,7 @@ describe('OpalFines', () => {
   describe('putDefendantAccountPaymentTerms', () => {
     it('should send a PUT request to amend payment terms for a defendant account', () => {
       const defendantAccountId = 123456;
-      const businessUnitId = 'TEST_UNIT';
+      const businessUnitId = 77;
       const ifMatch = 'version123';
 
       const mockPayload = OPAL_FINES_AMEND_PAYMENT_TERMS_PAY_IN_FULL_PAYLOAD_MOCK;
@@ -2350,7 +2350,7 @@ describe('OpalFines', () => {
 
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(mockPayload);
-      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(String(businessUnitId));
       expect(req.request.headers.get('If-Match')).toBe(ifMatch);
 
       req.flush(mockPayload);
@@ -2384,7 +2384,7 @@ describe('OpalFines', () => {
       const defendantAccountId = 123456;
       const defendantAccountPartyId = 'PARTY-123';
       const version = '8';
-      const businessUnitId = '61';
+      const businessUnitId = 61;
       const payload = OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.defendant_account_party;
       const expectedResponse = OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK;
 
@@ -2400,7 +2400,7 @@ describe('OpalFines', () => {
       expect(req.request.method).toBe('PUT');
       expect(req.request.body).toEqual(payload);
       expect(req.request.headers.get('If-Match')).toBe(version);
-      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(String(businessUnitId));
 
       req.flush(expectedResponse);
     });
@@ -2431,7 +2431,7 @@ describe('OpalFines', () => {
     it('should send a POST request to add a defendant account party with version and business unit headers', () => {
       const defendantAccountId = 123456;
       const version = '1';
-      const businessUnitId = '61';
+      const businessUnitId = 61;
       const payload = {
         defendant_account_party: OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK.defendant_account_party,
       };
@@ -2447,7 +2447,7 @@ describe('OpalFines', () => {
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(payload);
       expect(req.request.headers.get('If-Match')).toBe(version);
-      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(String(businessUnitId));
 
       req.flush(expectedResponse);
     });
@@ -2480,7 +2480,7 @@ describe('OpalFines', () => {
       const defendantAccountId = 123456;
       const defendantAccountPartyId = 'PARTY-123';
       const version = '8';
-      const businessUnitId = '61';
+      const businessUnitId = 61;
       const payload = {
         defendant_account_party_id: defendantAccountPartyId,
       };
@@ -2495,7 +2495,7 @@ describe('OpalFines', () => {
       expect(req.request.method).toBe('DELETE');
       expect(req.request.body).toEqual(payload);
       expect(req.request.headers.get('If-Match')).toBe(version);
-      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(String(businessUnitId));
 
       req.flush(null);
     });
@@ -2555,7 +2555,7 @@ describe('OpalFines', () => {
   it('should add a defendant account payment card request with headers and context', () => {
     const defendantAccountId = 123456;
     const version = '2';
-    const businessUnitId = '61';
+    const businessUnitId = 61;
     const businessUnitUserId = 'USER99';
 
     service
@@ -2568,7 +2568,7 @@ describe('OpalFines', () => {
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({});
     expect(req.request.headers.get('If-Match')).toBe(version);
-    expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+    expect(req.request.headers.get('Business-Unit-Id')).toBe(String(businessUnitId));
     expect(req.request.headers.get('Business-Unit-User-Id')).toBe(businessUnitUserId);
 
     req.flush({ defendant_account_id: defendantAccountId });
@@ -2577,7 +2577,7 @@ describe('OpalFines', () => {
   it('should add a defendant account payment card request without optional headers', () => {
     const defendantAccountId = 123456;
     const version = '';
-    const businessUnitId = undefined as unknown as string;
+    const businessUnitId = undefined as unknown as number;
     const businessUnitUserId = undefined as unknown as string;
 
     service
@@ -2600,7 +2600,7 @@ describe('OpalFines', () => {
     it('should send a POST request with payload and optional headers', () => {
       const defendantAccountId = 123456;
       const version = '2';
-      const businessUnitId = '61';
+      const businessUnitId = 61;
       const payload = {
         result_id: 'REM',
         enforcement_result_responses: [{ parameter_name: 'reason', response: 'Reason entered' }],
@@ -2614,7 +2614,7 @@ describe('OpalFines', () => {
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(payload);
       expect(req.request.headers.get('If-Match')).toBe(version);
-      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(String(businessUnitId));
 
       req.flush(payload);
     });
@@ -2643,7 +2643,7 @@ describe('OpalFines', () => {
   describe('removeEnforcementHold', () => {
     it('should send a PATCH request with payload and required headers', () => {
       const defendantAccountId = 123456;
-      const businessUnitId = '61';
+      const businessUnitId = 61;
       const version = '2';
       const payload = {
         reason: 'Removed',
@@ -2656,7 +2656,7 @@ describe('OpalFines', () => {
       const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/remove-enf-hold`);
       expect(req.request.method).toBe('PATCH');
       expect(req.request.body).toEqual(payload);
-      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(String(businessUnitId));
       expect(req.request.headers.get('If-Match')).toBe(version);
 
       req.flush(null);
@@ -2669,7 +2669,7 @@ describe('OpalFines', () => {
       };
 
       service
-        .removeEnforcementHold(defendantAccountId, payload, undefined as unknown as string)
+        .removeEnforcementHold(defendantAccountId, payload, undefined as unknown as number)
         .subscribe((response) => {
           expect(response).toBeNull();
         });
@@ -2893,7 +2893,7 @@ describe('OpalFines', () => {
       const accountId = 99000000000800;
       const payload = OPAL_FINES_MINOR_CREDITOR_UPDATE_PAYLOAD_MOCK;
       const version = 'v1';
-      const businessUnitId = '77';
+      const businessUnitId = 77;
       const expectedUrl = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${accountId}`;
 
       service.updateMinorCreditorAccount(accountId, payload, version, businessUnitId).subscribe((response) => {
@@ -2904,7 +2904,7 @@ describe('OpalFines', () => {
       expect(req.request.method).toBe('PATCH');
       expect(req.request.body).toEqual(payload);
       expect(req.request.headers.get('If-Match')).toBe(version);
-      expect(req.request.headers.get('Business-Unit-Id')).toBe(businessUnitId);
+      expect(req.request.headers.get('Business-Unit-Id')).toBe(String(businessUnitId));
 
       req.flush(payload);
     });

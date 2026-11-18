@@ -28,7 +28,7 @@ export const MOCK_FINES_ACCOUNT_STATE: IFinesAccountState = {
   party_id: '456',
   pg_party_id: null,
   base_version: '1',
-  business_unit_id: '77',
+  business_unit_id: 77,
   business_unit_user_id: 'BU-USER-123',
   welsh_speaking: 'Y',
   originator_type: null,

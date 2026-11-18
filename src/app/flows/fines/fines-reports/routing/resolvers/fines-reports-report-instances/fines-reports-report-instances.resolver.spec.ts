@@ -79,7 +79,7 @@ describe('finesReportsReportInstancesResolver', () => {
     store.setAppliedQuery({
       fromDate: '2026-06-01',
       toDate: '2026-06-07',
-      businessUnit: '67',
+      businessUnit: 67,
     });
 
     const result = await runResolver(route);
@@ -87,7 +87,7 @@ describe('finesReportsReportInstancesResolver', () => {
     expect(mockOpalFines.getReportInstances).toHaveBeenCalledWith(
       expect.objectContaining({
         report_id: reportId,
-        business_units: ['67'],
+        business_units: [67],
       }),
     );
     expect(result).toEqual(response);

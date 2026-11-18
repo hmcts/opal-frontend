@@ -76,7 +76,7 @@ describe('fines-reports-summary-list-table.utils', () => {
           instance_id: 1,
           created_at: '2026-06-08T09:15:00Z',
           report_name: 'Operational report',
-          business_units: ['CLAMPO', '77'],
+          business_units: [{ business_unit_code: 'CLAMPO' }, { business_unit_id: 77 }],
           requested_by_name: 'Olivia Smith',
           generation_status: 'READY',
           number_of_records: 0,
@@ -216,5 +216,30 @@ describe('fines-reports-summary-list-table.utils', () => {
         supportsCsv: false,
       }),
     );
+  });
+
+  it('should resolve numeric IDs independently of business unit codes', () => {
+    const referenceData = [
+      { ...businessUnitRefData[0], business_unit_code: '77' },
+      { ...businessUnitRefData[1], business_unit_code: '67' },
+    ];
+    const rows = mapReportInstancesToTableData(
+      [
+        { business_units: [{ business_unit_id: 77 }] },
+        { business_units: [{ business_unit_code: '77' }] },
+        { businessUnits: [{ businessUnitId: 67 }] },
+        { businessUnits: [{ businessUnitCode: '67' }] },
+        { business_units: [{ business_unit_id: 999 }] },
+      ],
+      referenceData,
+    );
+
+    expect(rows.map((row) => row['Business unit'])).toEqual([
+      'London North West',
+      'London Central & South East',
+      'London Central & South East',
+      'London North West',
+      '999',
+    ]);
   });
 });

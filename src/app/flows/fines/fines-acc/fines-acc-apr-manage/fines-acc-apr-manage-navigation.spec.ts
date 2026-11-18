@@ -41,7 +41,7 @@ class PaymentTermsHostComponent {
       map((userState) =>
         this.permissionsService.hasBusinessUnitPermissionAccess(
           FINES_PERMISSIONS['manage-alternate-payment-references'],
-          Number(this.accountStore.business_unit_id()),
+          this.accountStore.business_unit_id()!,
           userState.business_unit_users,
         ),
       ),
@@ -129,7 +129,7 @@ describe('APR Manage navigation from Payment terms', () => {
       ...FINES_ACCOUNT_STATE,
       account_id: 123,
       account_number: '123A',
-      business_unit_id: '77',
+      business_unit_id: 77,
       party_name: 'Mock defendant',
     });
   });
