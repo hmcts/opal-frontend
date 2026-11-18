@@ -234,6 +234,38 @@ describe('FinesMciCreateTillDetailsComponent', () => {
     );
   });
 
+  it('starts a new payment after an abandoned suspense edit without replacing the saved payment', () => {
+    const store = TestBed.inject(FinesMciStore);
+    vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    store.setSuspensePayment(suspensePayment);
+    store.setSuspenseNote('Original note');
+    store.saveSuspensePayment();
+    const original = store.tills()[0].payments[0];
+    store.editSuspensePayment(original.paymentId);
+    store.setSuspenseNote('Abandoned edit');
+    fixture.detectChanges();
+
+    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('#fines-mci-add-payment')!.click();
+
+    expect(store.editingPaymentId()).toBeNull();
+    expect(store.suspensePayment()).toBeNull();
+    expect(store.suspensePayerDetails()).toBeNull();
+    expect(store.suspenseNote()).toBe('');
+    expect(store.draftJourney()).toBeNull();
+
+    store.setSuspensePayment({ ...suspensePayment, amount: '25.00' });
+    store.setSuspenseNote('New payment');
+    store.saveSuspensePayment();
+
+    expect(store.tills()[0].payments).toHaveLength(2);
+    expect(store.tills()[0].payments[0]).toEqual(original);
+    expect(store.tills()[0].payments[1]).toMatchObject({
+      suspensePayment: { ...suspensePayment, amount: '25.00' },
+      suspenseNote: 'New payment',
+    });
+    expect(store.tills()[0].payments[1].paymentId).not.toBe(original.paymentId);
+  });
+
   it('should navigate to cancel till creation when Delete till is selected', () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     fixture.detectChanges();

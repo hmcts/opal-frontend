@@ -137,6 +137,7 @@ export const FinesMciStore = signalStore(
       setSuspensePayerDetails(suspensePayerDetails: IFinesMciSuspensePayerDetails | null): void {
         patchState(store, { suspensePayerDetails });
       },
+      /** Stores the suspense note while the payment is being checked. */
       setSuspenseNote(suspenseNote: string): void {
         patchState(store, { suspenseNote });
       },

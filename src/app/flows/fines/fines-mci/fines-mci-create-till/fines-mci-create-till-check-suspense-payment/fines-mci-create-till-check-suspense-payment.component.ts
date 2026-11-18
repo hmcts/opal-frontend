@@ -49,6 +49,7 @@ export class FinesMciCreateTillCheckSuspensePaymentComponent implements OnInit {
   protected readonly noteControl = new FormControl('', { nonNullable: true });
   protected noteError = false;
 
+  /** Opens a till page and discards the draft only after an accepted cancellation. */
   private navigate(path: string, discard = false): void {
     this.allowNavigation = !discard;
     void this.router
@@ -66,14 +67,17 @@ export class FinesMciCreateTillCheckSuspensePaymentComponent implements OnInit {
       });
   }
 
+  /** Reads the suspense payment being checked from the store. */
   protected get payment(): IFinesMciSuspensePayment | null {
     return this.store.suspensePayment();
   }
 
+  /** Reads the current note, including unsaved edits in the text area. */
   protected get note(): string {
     return this.noteControl.value;
   }
 
+  /** Formats the draft amount in pounds, or shows a dash for a missing or invalid amount. */
   protected get amount(): string {
     const value = Number(this.payment?.amount);
     return this.payment?.amount && Number.isFinite(value)
@@ -81,16 +85,19 @@ export class FinesMciCreateTillCheckSuspensePaymentComponent implements OnInit {
       : '—';
   }
 
+  /** Returns the display name of the selected payment method. */
   protected get paymentMethod(): string {
     const method = this.payment?.methodOfPayment;
     return method ? PAYMENT_METHODS[method] : '—';
   }
 
+  /** Returns the display name of the selected suspense reason. */
   protected get reason(): string {
     const reason = this.payment?.reason;
     return reason ? REASONS[reason] : '—';
   }
 
+  /** Reads the reference for the selected payment method, or shows a dash. */
   protected get reference(): string {
     const payment = this.payment;
     const reference =
@@ -104,6 +111,7 @@ export class FinesMciCreateTillCheckSuspensePaymentComponent implements OnInit {
     return reference || '—';
   }
 
+  /** Returns the company or individual payer name, or a dash when it is missing. */
   protected get payerName(): string {
     const payer = this.store.suspensePayerDetails();
     return payer?.payerType === 'company'
@@ -111,6 +119,7 @@ export class FinesMciCreateTillCheckSuspensePaymentComponent implements OnInit {
       : [payer?.firstNames, payer?.lastName].filter(Boolean).join(' ') || '—';
   }
 
+  /** Returns the populated address lines for the payer. */
   protected get payerAddress(): string[] {
     const payer = this.store.suspensePayerDetails();
     return [payer?.addressLine1, payer?.addressLine2, payer?.addressLine3, payer?.postcode].filter(
@@ -118,19 +127,23 @@ export class FinesMciCreateTillCheckSuspensePaymentComponent implements OnInit {
     );
   }
 
+  /** Saves note edits to the store and clears the error once the note is valid. */
   protected onNoteChange(value: string): void {
     this.store.setSuspenseNote(value);
     if (value.trim() && value.length <= 1000) this.noteError = false;
   }
 
+  /** Opens the suspense payment details form for amendment. */
   protected changePayment(): void {
     this.navigate(FINES_MCI_ROUTING_PATHS.children.suspenseDetails);
   }
 
+  /** Opens the suspense payer details form for amendment. */
   protected changePayer(): void {
     this.navigate(FINES_MCI_ROUTING_PATHS.children.payerDetails);
   }
 
+  /** Validates the note, focuses any error, then saves the payment and opens the requested page. */
   protected save(path: string): void {
     if (!this.note.trim() || this.note.length > 1000) {
       this.noteError = true;
@@ -143,10 +156,12 @@ export class FinesMciCreateTillCheckSuspensePaymentComponent implements OnInit {
     this.navigate(path);
   }
 
+  /** Returns to till details and discards the draft after navigation succeeds. */
   protected cancel(): void {
     this.navigate(FINES_MCI_ROUTING_PATHS.children.details, true);
   }
 
+  /** Restores the saved note and synchronises subsequent edits with the store. */
   public ngOnInit(): void {
     this.noteControl.setValue(this.store.suspenseNote(), { emitEvent: false });
     this.noteControl.valueChanges
@@ -154,10 +169,12 @@ export class FinesMciCreateTillCheckSuspensePaymentComponent implements OnInit {
       .subscribe((value) => this.onNoteChange(value));
   }
 
+  /** Blocks route navigation when a note has been entered and departure was not requested here. */
   public canDeactivate(): CanDeactivateTypes {
     return this.allowNavigation || this.note.length === 0;
   }
 
+  /** Blocks browser unload while the note has content. */
   @HostListener('window:beforeunload')
   public handleBeforeUnload(): boolean {
     return this.note.length === 0;
