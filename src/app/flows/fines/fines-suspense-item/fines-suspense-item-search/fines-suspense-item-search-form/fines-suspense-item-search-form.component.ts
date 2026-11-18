@@ -9,7 +9,6 @@ import {
   Component,
   DestroyRef,
   inject,
-  output,
   EventEmitter,
   Input,
   OnInit,
@@ -54,7 +53,7 @@ export class FinesSuspenseItemSearchFormComponent extends AbstractFormBaseCompon
   @Input({ required: true }) public autoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
   @Input({ required: true }) public initialBusinessUnitId!: number | null;
 
-  public readonly businessUnitChange = output<number | null>();
+  @Output() public businessUnitChange = new EventEmitter<number | null>();
 
   @Output() public cancelSearch = new EventEmitter<void>();
 
