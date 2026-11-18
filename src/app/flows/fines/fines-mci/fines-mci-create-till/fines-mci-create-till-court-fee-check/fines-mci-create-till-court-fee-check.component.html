@@ -11,6 +11,7 @@
       [initialNote]="finesMciStore.courtFeeSuspenseNote()"
       (noteChanged)="finesMciStore.setCourtFeeSuspenseNote($event)"
       (saveRequested)="handleSave($event)"
+      (cancelRequested)="handleCancel()"
     >
       @if (saveFailed()) {
         <p class="govuk-error-message" role="alert">The payment could not be saved. Try again.</p>
@@ -35,5 +36,6 @@
     <p class="govuk-error-message" role="alert">
       Court fee payment details could not be loaded. Go back and try again.
     </p>
+    <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
   }
 </div>

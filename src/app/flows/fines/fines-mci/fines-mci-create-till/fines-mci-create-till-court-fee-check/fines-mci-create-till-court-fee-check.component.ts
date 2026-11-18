@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component, HostListener, OnInit, inject, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { ActivatedRoute, NavigationCancel, NavigationEnd, NavigationError, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
+import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
+import { filter, take } from 'rxjs';
 import {
   MojAlertComponent,
   MojAlertContentComponent,
@@ -21,6 +23,7 @@ import { IFinesMciCourtFeePayment } from '../../stores/interfaces/fines-mci-cour
   selector: 'app-fines-mci-create-till-court-fee-check',
   imports: [
     GovukBackLinkComponent,
+    GovukCancelLinkComponent,
     FinesMciCreateTillPaymentSummaryComponent,
     FinesMciCreateTillCourtFeeCheckFormComponent,
     MojAlertComponent,
@@ -31,7 +34,7 @@ import { IFinesMciCourtFeePayment } from '../../stores/interfaces/fines-mci-cour
   templateUrl: './fines-mci-create-till-court-fee-check.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMciCreateTillCourtFeeCheckComponent implements OnInit {
+export class FinesMciCreateTillCourtFeeCheckComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private intendedDestination: string | null = null;
@@ -182,6 +185,21 @@ export class FinesMciCreateTillCourtFeeCheckComponent implements OnInit {
     );
   }
 
+  /** Requests confirmation before discarding the draft and returning to the till. */
+  public handleCancel(): void {
+    if (this.isNavigating()) return;
+    this.isNavigating.set(true);
+    void this.router
+      .navigate([`../${FINES_MCI_ROUTING_PATHS.children.details}`], { relativeTo: this.activatedRoute })
+      .catch(() => false)
+      .then((navigated) => {
+        if (navigated && this.router.url.split(/[?#]/)[0].endsWith(`/${FINES_MCI_ROUTING_PATHS.children.details}`)) {
+          this.finesMciStore.setDraftJourney(null);
+        }
+        this.isNavigating.set(false);
+      });
+  }
+
   /** Saves the payment after the requested navigation succeeds, preserving drafts on failure. */
   public handleSave(destination: 'review' | 'add'): void {
     if (this.isNavigating()) return;
@@ -209,6 +227,31 @@ export class FinesMciCreateTillCourtFeeCheckComponent implements OnInit {
         else this.saveFailed.set(true);
         this.intendedDestination = null;
         this.isNavigating.set(false);
+      });
+  }
+
+  /** Discards an abandoned draft after successful navigation, including browser history. */
+  public ngOnDestroy(): void {
+    const navigation = this.router.currentNavigation();
+    if (!navigation) return;
+    this.router.events
+      .pipe(
+        filter(
+          (event) =>
+            (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError) &&
+            event.id === navigation.id,
+        ),
+        take(1),
+      )
+      .subscribe((event) => {
+        if (!(event instanceof NavigationEnd)) return;
+        const path = event.urlAfterRedirects.split(/[?#]/)[0];
+        const editRoutes = [
+          FINES_MCI_ROUTING_PATHS.children.courtFeeDetails,
+          FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,
+          FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation,
+        ];
+        if (!editRoutes.some((route) => path.endsWith(`/${route}`))) this.finesMciStore.setDraftJourney(null);
       });
   }
 }

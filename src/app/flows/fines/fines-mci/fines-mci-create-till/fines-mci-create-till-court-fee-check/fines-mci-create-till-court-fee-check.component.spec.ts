@@ -270,6 +270,24 @@ describe('FinesMciCreateTillCourtFeeCheckComponent', () => {
     expect(fixture.componentInstance.canDeactivate()).toBe(false);
   });
 
+  it.each(['cancelled', 'rejected'])('keeps the payment draft when Cancel navigation is %s', async (outcome) => {
+    const store = preparePayment();
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
+    if (outcome === 'cancelled') navigate.mockResolvedValue(false);
+    else navigate.mockRejectedValue(new Error('Navigation failed'));
+    const fixture = TestBed.createComponent(FinesMciCreateTillCourtFeeCheckComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.handleCancel();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(store.courtFeeDraft()).toEqual({ courtFeeId: 1, amountPaid: '25', numberOfItems: '2' });
+    expect(store.courtFeePaymentDetails()).toEqual(paymentDetails);
+    expect(store.courtFeeSuspenseNote()).toBe('Payment note');
+    expect((fixture.nativeElement as HTMLElement).querySelector<HTMLTextAreaElement>('#suspenseNote')?.value).toBe(
+      'Payment note',
+    );
+  });
+
   it('does not create duplicate payments while navigation is pending', async () => {
     const store = preparePayment();
     let complete!: (value: boolean) => void;

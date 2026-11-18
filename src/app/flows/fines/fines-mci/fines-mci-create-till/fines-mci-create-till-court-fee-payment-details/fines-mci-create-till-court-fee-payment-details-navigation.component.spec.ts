@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
+import { provideLocationMocks, SpyLocation } from '@angular/common/testing';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, ResolveStart, Router } from '@angular/router';
+import { NavigationEnd, provideRouter, ResolveStart, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { filter, firstValueFrom, of, Subject, take } from 'rxjs';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
@@ -32,6 +34,7 @@ describe('Court fee payment details navigation', () => {
     TestBed.configureTestingModule({
       providers: [
         FinesMciStore,
+        provideLocationMocks(),
         { provide: FinesMciPaymentMappingsService, useValue: { load: loadMappings } },
         provideRouter([
           {
@@ -66,6 +69,84 @@ describe('Court fee payment details navigation', () => {
   });
 
   afterEach(() => vi.restoreAllMocks());
+
+  it('keeps the draft when Cancel is declined and discards it on confirmation', async () => {
+    const router = TestBed.inject(Router);
+    const checkRoute = router.config[0].children!.find((route) => route.path === 'check-court-fee')!;
+    checkRoute.data = {
+      courtFees: { court_fees: [{ court_fee_id: 1, court_fee_code: 'C01', description: 'Court fee', amount: 12.5 }] },
+      paymentMappings: mappings,
+    };
+    const store = TestBed.inject(FinesMciStore);
+    const tillId = store.tills()[0].tillId;
+    store.addPayment(tillId, 'criminal');
+    store.setDraftJourney('courtFee');
+    const details = {
+      paymentReceivedFrom: 'applicant',
+      paymentMethod: 'NC',
+      payerType: 'company',
+      companyName: 'Example Ltd',
+      addressLine1: null,
+      addressLine2: null,
+      addressLine3: null,
+      postcode: null,
+    };
+    store.setCourtFeePaymentDetails(details);
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const harness = await RouterTestingHarness.create('/till/check-court-fee');
+    const note = harness.routeNativeElement!.querySelector<HTMLTextAreaElement>('#suspenseNote')!;
+    note.value = 'Payment note';
+    note.dispatchEvent(new Event('input', { bubbles: true }));
+    harness.routeNativeElement!.querySelector<HTMLAnchorElement>('.button-link')!.click();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(confirm).toHaveBeenCalledOnce();
+    expect(router.url).toBe('/till/check-court-fee');
+    expect(store.courtFeeDraft()).toEqual(draft);
+    expect(store.courtFeePaymentDetails()).toEqual(details);
+    expect(harness.routeNativeElement!.querySelector<HTMLTextAreaElement>('#suspenseNote')?.value).toBe('Payment note');
+
+    confirm.mockReturnValue(true);
+    harness.routeNativeElement!.querySelector<HTMLAnchorElement>('.button-link')!.click();
+    await harness.fixture.whenStable();
+    expect(router.url).toBe('/till/details');
+    expect(store.courtFeeDraft()).toBeNull();
+    expect(store.courtFeePaymentDetails()).toBeNull();
+    expect(store.courtFeeSuspenseNote()).toBe('');
+    expect(store.tills()[0].payments).toHaveLength(1);
+  });
+
+  it('clears the draft after confirmed browser history navigation to the till', async () => {
+    const router = TestBed.inject(Router);
+    const store = TestBed.inject(FinesMciStore);
+    store.setCourtFeePaymentDetails({
+      paymentReceivedFrom: 'applicant',
+      paymentMethod: 'NC',
+      payerType: 'company',
+      companyName: 'Example Ltd',
+      addressLine1: null,
+      addressLine2: null,
+      addressLine3: null,
+      postcode: null,
+    });
+    store.setCourtFeeSuspenseNote('Payment note');
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const harness = await RouterTestingHarness.create('/till/details');
+    router.setUpLocationChangeListener();
+    await harness.navigateByUrl('/till/check-court-fee', FinesMciCreateTillCourtFeeCheckComponent);
+    const navigated = firstValueFrom(
+      router.events.pipe(
+        filter((event) => event instanceof NavigationEnd),
+        take(1),
+      ),
+    );
+    (TestBed.inject(Location) as SpyLocation).simulateUrlPop('/till/details');
+    await navigated;
+    expect(confirm).toHaveBeenCalledOnce();
+    expect(store.courtFeeDraft()).toBeNull();
+    expect(store.courtFeePaymentDetails()).toBeNull();
+    expect(store.courtFeeSuspenseNote()).toBe('');
+  });
 
   it.each([
     ['save-and-review-till', '/till/details'],

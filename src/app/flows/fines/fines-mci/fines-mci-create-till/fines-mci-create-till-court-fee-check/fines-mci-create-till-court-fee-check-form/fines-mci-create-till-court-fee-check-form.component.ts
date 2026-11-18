@@ -5,12 +5,19 @@ import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/component
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { GovukTextAreaComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-area';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
+import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { requiredTrimmed } from '../../fines-mci-create-till-court-fee-payment-details/validators/fines-mci-payment-details.validators';
 import { FINES_MCI_COURT_FEE_CHECK_FIELD_ERRORS } from '../constants/fines-mci-court-fee-check-field-errors.constant';
 
 @Component({
   selector: 'app-fines-mci-create-till-court-fee-check-form',
-  imports: [ReactiveFormsModule, GovukErrorSummaryComponent, GovukTextAreaComponent, GovukButtonComponent],
+  imports: [
+    ReactiveFormsModule,
+    GovukErrorSummaryComponent,
+    GovukTextAreaComponent,
+    GovukButtonComponent,
+    GovukCancelLinkComponent,
+  ],
   templateUrl: './fines-mci-create-till-court-fee-check-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -19,6 +26,7 @@ export class FinesMciCreateTillCourtFeeCheckFormComponent extends AbstractFormBa
   @Input() public initialNote = '';
   @Output() public noteChanged = new EventEmitter<string>();
   @Output() public saveRequested = new EventEmitter<'review' | 'add'>();
+  @Output() public cancelRequested = new EventEmitter<void>();
 
   /** Initialises the note control and keeps its draft in sync with the parent. */
   private setupForm(): void {
