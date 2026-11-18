@@ -13,6 +13,7 @@ import { IFinesAccPartyAddAmendConvertState } from '../../fines-acc-party-add-am
 import { IFinesAccPartyAddAmendConvertIndividualAliasState } from '../../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-individual-alias-state.interface';
 import { IFinesAccPartyAddAmendConvertOrganisationAliasState } from '../../fines-acc-party-add-amend-convert/interfaces/fines-acc-party-add-amend-convert-organisation-alias-state.interface';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../../fines-mac/fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
+import { stripTelephoneNumberSpaces } from '../../../utils/fines-telephone-number.utils';
 
 /**
  * Builds individual aliases array from form state
@@ -145,9 +146,15 @@ const buildContactDetails = (
 ): IOpalFinesDefendantAccountContactDetails => ({
   primary_email_address: formState.facc_party_add_amend_convert_contact_email_address_1,
   secondary_email_address: formState.facc_party_add_amend_convert_contact_email_address_2,
-  mobile_telephone_number: formState.facc_party_add_amend_convert_contact_telephone_number_mobile,
-  home_telephone_number: formState.facc_party_add_amend_convert_contact_telephone_number_home,
-  work_telephone_number: formState.facc_party_add_amend_convert_contact_telephone_number_business,
+  mobile_telephone_number: stripTelephoneNumberSpaces(
+    formState.facc_party_add_amend_convert_contact_telephone_number_mobile,
+  ),
+  home_telephone_number: stripTelephoneNumberSpaces(
+    formState.facc_party_add_amend_convert_contact_telephone_number_home,
+  ),
+  work_telephone_number: stripTelephoneNumberSpaces(
+    formState.facc_party_add_amend_convert_contact_telephone_number_business,
+  ),
 });
 
 /**
@@ -181,7 +188,9 @@ const buildEmployerDetails = (
     employer_name: formState.facc_party_add_amend_convert_employer_company_name,
     employer_reference: formState.facc_party_add_amend_convert_employer_reference,
     employer_email_address: formState.facc_party_add_amend_convert_employer_email_address,
-    employer_telephone_number: formState.facc_party_add_amend_convert_employer_telephone_number,
+    employer_telephone_number: stripTelephoneNumberSpaces(
+      formState.facc_party_add_amend_convert_employer_telephone_number,
+    ),
     employer_address: {
       address_line_1: formState.facc_party_add_amend_convert_employer_address_line_1!,
       address_line_2: formState.facc_party_add_amend_convert_employer_address_line_2,
