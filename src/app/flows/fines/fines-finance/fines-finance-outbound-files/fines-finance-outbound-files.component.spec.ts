@@ -418,15 +418,19 @@ describe('FinesFinanceOutboundFilesComponent', () => {
   it('applies a named business-unit choice and All business units through the autocomplete', async () => {
     fixture.detectChanges();
     httpMock.expectOne((req) => req.url === searchUrl).flush(FINES_FINANCE_OUTBOUND_FILES_RESPONSE_MOCK);
+    TestBed.tick();
     await fixture.whenStable();
-    await vi.dynamicImportSettled();
-    const input = fixture.nativeElement.querySelector(
-      '#custom-file-interface-viewer-business-unit-autocomplete',
-    ) as HTMLInputElement;
     for (const [name, code] of [
       ['Camberwell Green', '77'],
       ['All business units', ''],
     ]) {
+      const input = await vi.waitFor(() => {
+        const input = fixture.nativeElement.querySelector(
+          '#custom-file-interface-viewer-business-unit-autocomplete',
+        ) as HTMLInputElement | null;
+        expect(input).not.toBeNull();
+        return input!;
+      });
       input.value = '';
       input.dispatchEvent(new Event('input', { bubbles: true }));
       input.click();
