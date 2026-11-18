@@ -52,20 +52,10 @@ describe('FinesMciCreateTillDetailsComponent', () => {
     expect(deleteTillLink?.textContent?.trim()).toBe('Delete till');
   });
 
-  it('shows a saved suspense payment and opens it for amendment', () => {
+  it('shows the saved suspense journey under the payment table headings and opens it for amendment', () => {
     const store = TestBed.inject(FinesMciStore);
     const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
-    store.setSuspensePayment({
-      amount: '12.50',
-      payerType: 'defendant',
-      methodOfPayment: 'notesCoins',
-      paymentReferencePostalOrder: '',
-      paymentReferenceCheque: '',
-      paymentReferenceCreditTransfer: '',
-      source: null,
-      reason: 'overpayment',
-      relevantDetails: '',
-    });
+    store.setSuspensePayment({ ...suspensePayment, amount: '50.00', methodOfPayment: 'cheque' });
     store.setSuspensePayerDetails({
       payerType: 'company',
       title: null,
@@ -80,17 +70,26 @@ describe('FinesMciCreateTillDetailsComponent', () => {
     store.setSuspenseNote('Investigate');
     store.saveSuspensePayment();
     fixture.detectChanges();
-    const nativeElement = fixture.nativeElement as HTMLElement;
-    expect(nativeElement.querySelector('.govuk-summary-card__title')?.textContent).toContain('Suspense payment');
-    expect(nativeElement.querySelectorAll('#fines-mci-payments .govuk-summary-list__row')).toHaveLength(8);
-    expect(nativeElement.textContent).toContain('Suspense');
-    expect(nativeElement.textContent).toContain('£12.50');
-    expect(nativeElement.textContent).toContain('Notes and coins');
-    expect(nativeElement.textContent).toContain('Fines overpayment (OF)');
-    expect(nativeElement.textContent).toContain('Acme Org');
-    expect(nativeElement.textContent).not.toContain('There are no payments');
-    nativeElement.querySelector<HTMLAnchorElement>('#fines-mci-payments a')!.click();
-    expect(store.suspensePayment()?.amount).toBe('12.50');
+
+    const table = (fixture.nativeElement as HTMLElement).querySelector<HTMLTableElement>('#fines-mci-payments')!;
+    expect(Array.from(table.querySelectorAll('thead th'), (header) => header.textContent?.trim())).toEqual([
+      'Category',
+      'Name',
+      'Amount',
+      'Received from',
+      'Method',
+      'Actions',
+    ]);
+    expect(
+      Array.from(table.querySelectorAll('tbody tr:first-child > td'), (cell) => cell.textContent?.trim()).slice(0, 5),
+    ).toEqual(['Suspense', 'Acme Org', '£50.00', 'Defendant', 'Cheque']);
+    expect(Array.from(table.querySelectorAll('tbody a'), (link) => link.textContent?.trim())).toEqual([
+      'Change payment 1',
+      'Remove payment 1',
+    ]);
+
+    table.querySelector<HTMLAnchorElement>('a')!.click();
+    expect(store.suspensePayment()?.amount).toBe('50.00');
     expect(store.suspenseNote()).toBe('Investigate');
     expect(navigate).toHaveBeenCalledWith(
       ['/', 'fines', 'manual-cash-input', 'create', 'till', 'check-suspense-payment'],
@@ -99,43 +98,43 @@ describe('FinesMciCreateTillDetailsComponent', () => {
   });
 
   it.each([
-    { method: 'postalOrder', reference: 'PO123', reason: 'advance', label: 'Fine paid in advance (FA)' },
-    { method: 'cheque', reference: 'CH123', reason: 'miscellaneous', label: 'Miscellaneous payment (MS)' },
-    { method: 'creditTransfer', reference: 'CT123', reason: 'unidentified', label: 'Unidentified amount (UN)' },
-  ] as const)('shows a saved $method payment with its reference and reason', ({ method, reference, reason, label }) => {
+    { methodOfPayment: 'notesCoins', method: 'Notes and coins', payerType: 'thirdParty', receivedFrom: '3rd party' },
+    { methodOfPayment: 'postalOrder', method: 'Postal order', payerType: null, receivedFrom: '—' },
+    { methodOfPayment: 'creditTransfer', method: 'Credit transfer', payerType: 'defendant', receivedFrom: 'Defendant' },
+    { methodOfPayment: null, method: '—', payerType: null, receivedFrom: '—' },
+  ] as const)(
+    'shows the $methodOfPayment payment method and received-from value',
+    ({ methodOfPayment, method, payerType, receivedFrom }) => {
+      const store = TestBed.inject(FinesMciStore);
+      store.setSuspensePayment({ ...suspensePayment, methodOfPayment, payerType });
+      store.saveSuspensePayment();
+      fixture.detectChanges();
+      const cells = (fixture.nativeElement as HTMLElement).querySelectorAll('#fines-mci-payments tbody td');
+      expect(cells[3].textContent?.trim()).toBe(receivedFrom);
+      expect(cells[4].textContent?.trim()).toBe(method);
+    },
+  );
+
+  it('shows an individual payer and a dash for missing payment values', () => {
     const store = TestBed.inject(FinesMciStore);
-    store.setSuspensePayment({
-      ...suspensePayment,
-      methodOfPayment: method,
-      paymentReferencePostalOrder: 'PO123',
-      paymentReferenceCheque: 'CH123',
-      paymentReferenceCreditTransfer: 'CT123',
-      source: 'allpay',
-      reason,
-      relevantDetails: 'Awaiting identification',
+    store.setSuspensePayment({ ...suspensePayment, amount: '', methodOfPayment: null });
+    store.setSuspensePayerDetails({
+      payerType: 'individual',
+      title: null,
+      firstNames: 'Alex',
+      lastName: 'Smith',
+      companyName: '',
+      addressLine1: '',
+      addressLine2: '',
+      addressLine3: '',
+      postcode: '',
     });
     store.saveSuspensePayment();
     fixture.detectChanges();
-    const text = (fixture.nativeElement as HTMLElement).querySelector('#fines-mci-payments')!.textContent ?? '';
-    expect(text).toContain(reference);
-    expect(text).toContain(label);
-    expect(text).toContain(method === 'creditTransfer' ? 'allpay' : 'Payment reference');
+    const cells = (fixture.nativeElement as HTMLElement).querySelectorAll('#fines-mci-payments tbody td');
+    expect(cells[1].textContent?.trim()).toBe('Alex Smith');
+    expect(cells[2].textContent?.trim()).toBe('—');
   });
-
-  it.each(['postalOrder', 'cheque', 'creditTransfer'] as const)(
-    'shows a dash when a %s payment has no reference',
-    (methodOfPayment) => {
-      const store = TestBed.inject(FinesMciStore);
-      store.setSuspensePayment({ ...suspensePayment, methodOfPayment });
-      store.saveSuspensePayment();
-      fixture.detectChanges();
-      const rows = Array.from(
-        (fixture.nativeElement as HTMLElement).querySelectorAll('#fines-mci-payments .govuk-summary-list__row'),
-      );
-      const referenceRow = rows.find((row) => row.querySelector('dt')?.textContent === 'Payment reference');
-      expect(referenceRow?.querySelector('dd')?.textContent?.trim()).toBe('—');
-    },
-  );
 
   it('shows a dash when a company payer has no name', () => {
     const store = TestBed.inject(FinesMciStore);
@@ -153,55 +152,48 @@ describe('FinesMciCreateTillDetailsComponent', () => {
     });
     store.saveSuspensePayment();
     fixture.detectChanges();
-    const rows = Array.from(
-      (fixture.nativeElement as HTMLElement).querySelectorAll('#fines-mci-payments .govuk-summary-list__row'),
-    );
-    const nameRow = rows.find((row) => row.querySelector('dt')?.textContent === 'Payer name');
-    expect(nameRow?.querySelector('.govuk-summary-list__value')?.textContent?.trim()).toBe('—');
-  });
-
-  it('shows missing suspense and payer values as dashes', () => {
-    const store = TestBed.inject(FinesMciStore);
-    store.setSuspensePayment({ ...suspensePayment, amount: '', methodOfPayment: null, reason: null });
-    store.saveSuspensePayment();
-    fixture.detectChanges();
-    const values = Array.from(
-      (fixture.nativeElement as HTMLElement).querySelectorAll('#fines-mci-payments .govuk-summary-list__value'),
-    ).map((element) => element.textContent?.trim());
-    expect(values.filter((value) => value === '—').length).toBeGreaterThanOrEqual(5);
-  });
-
-  it('shows an individual payer without a name or address as dashes', () => {
-    const store = TestBed.inject(FinesMciStore);
-    store.setSuspensePayment(suspensePayment);
-    store.setSuspensePayerDetails({
-      payerType: 'individual',
-      title: null,
-      firstNames: '',
-      lastName: '',
-      companyName: '',
-      addressLine1: '',
-      addressLine2: '',
-      addressLine3: '',
-      postcode: '',
-    });
-    store.saveSuspensePayment();
-    fixture.detectChanges();
-    const page = fixture.nativeElement as HTMLElement;
-    expect(page.textContent).toContain('Individual');
-    expect(page.querySelectorAll('#fines-mci-payments .govuk-summary-list__value')).toHaveLength(8);
     expect(
-      page
-        .querySelector('#fines-mci-payments .govuk-summary-list__row:last-child .govuk-summary-list__value')
+      (fixture.nativeElement as HTMLElement)
+        .querySelector('#fines-mci-payments tbody td:nth-child(2)')
         ?.textContent?.trim(),
     ).toBe('—');
   });
 
-  it('shows non-suspense payments while their journeys are still in progress', () => {
+  it('removes only the selected payment and shows the empty state after the last removal', () => {
     const store = TestBed.inject(FinesMciStore);
-    store.addPayment(store.ensureTill(), 'courtFee');
+    store.setSuspensePayment(suspensePayment);
+    store.saveSuspensePayment();
+    store.setSuspensePayment({ ...suspensePayment, amount: '25.00' });
+    store.saveSuspensePayment();
     fixture.detectChanges();
-    expect((fixture.nativeElement as HTMLElement).textContent).toContain('Court fee payment');
+    const page = fixture.nativeElement as HTMLElement;
+    expect(page.querySelectorAll('#fines-mci-payments tbody tr')).toHaveLength(2);
+
+    page.querySelector<HTMLAnchorElement>('#fines-mci-payments tbody tr:first-child a:last-of-type')!.click();
+    fixture.detectChanges();
+    expect(store.tills()[0].payments).toHaveLength(1);
+    expect(page.querySelectorAll('#fines-mci-payments tbody tr')).toHaveLength(1);
+    expect(page.querySelector('#fines-mci-payments')?.textContent).toContain('£25.00');
+
+    page.querySelector<HTMLAnchorElement>('#fines-mci-payments tbody tr a:last-of-type')!.click();
+    fixture.detectChanges();
+    expect(store.tills()[0].payments).toHaveLength(0);
+    expect(page.querySelector('#fines-mci-payments')).toBeNull();
+    expect(page.textContent).toContain('There are no payments');
+  });
+
+  it.each([
+    { journey: 'criminal', category: 'Criminal' },
+    { journey: 'courtFee', category: 'Court fee' },
+  ] as const)('shows a $category payment while its journey is in progress', ({ journey, category }) => {
+    const store = TestBed.inject(FinesMciStore);
+    store.addPayment(store.ensureTill(), journey);
+    fixture.detectChanges();
+    const row = (fixture.nativeElement as HTMLElement).querySelector('#fines-mci-payments tbody tr')!;
+    expect(row.querySelectorAll('td')[0].textContent).toBe(category);
+    expect(row.querySelectorAll('td')[1].textContent?.trim()).toBe('—');
+    expect(row.querySelectorAll('a')).toHaveLength(1);
+    expect(row.querySelector('a')?.textContent).toContain('Remove');
   });
 
   it('should block navigation away from the till details page', () => {

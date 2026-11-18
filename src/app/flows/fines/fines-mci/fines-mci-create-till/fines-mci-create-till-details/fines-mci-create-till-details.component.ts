@@ -10,7 +10,11 @@ import {
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
 import { FinesMciStore } from '../../stores/fines-mci.store';
-import { IFinesMciSuspensePayerDetails, IFinesMciSuspensePayment } from '../../stores/interfaces/fines-mci.interface';
+import {
+  FinesMciJourney,
+  IFinesMciSuspensePayerDetails,
+  IFinesMciSuspensePayment,
+} from '../../stores/interfaces/fines-mci.interface';
 
 @Component({
   selector: 'app-fines-mci-create-till-details',
@@ -42,7 +46,22 @@ export class FinesMciCreateTillDetailsComponent {
     return amount ? new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(Number(amount)) : '—';
   }
 
-  protected paymentMethod(method: IFinesMciSuspensePayment['methodOfPayment']): string {
+  protected paymentCategory(journey: FinesMciJourney): string {
+    const categories: Record<FinesMciJourney, string> = {
+      criminal: 'Criminal',
+      courtFee: 'Court fee',
+      suspense: 'Suspense',
+    };
+    return categories[journey];
+  }
+
+  protected receivedFrom(payerType: IFinesMciSuspensePayment['payerType'] | undefined): string {
+    if (payerType === 'defendant') return 'Defendant';
+    if (payerType === 'thirdParty') return '3rd party';
+    return '—';
+  }
+
+  protected paymentMethod(method: IFinesMciSuspensePayment['methodOfPayment'] | undefined): string {
     if (!method) return '—';
     const methods: Record<NonNullable<IFinesMciSuspensePayment['methodOfPayment']>, string> = {
       notesCoins: 'Notes and coins',
@@ -53,34 +72,10 @@ export class FinesMciCreateTillDetailsComponent {
     return methods[method];
   }
 
-  protected paymentReference(payment: IFinesMciSuspensePayment): string {
-    if (payment.methodOfPayment === 'postalOrder') return payment.paymentReferencePostalOrder || '—';
-    if (payment.methodOfPayment === 'cheque') return payment.paymentReferenceCheque || '—';
-    if (payment.methodOfPayment === 'creditTransfer') return payment.paymentReferenceCreditTransfer || '—';
-    return '—';
-  }
-
-  protected suspenseReason(reason: IFinesMciSuspensePayment['reason']): string {
-    if (!reason) return '—';
-    const reasons: Record<NonNullable<IFinesMciSuspensePayment['reason']>, string> = {
-      overpayment: 'Fines overpayment (OF)',
-      advance: 'Fine paid in advance (FA)',
-      miscellaneous: 'Miscellaneous payment (MS)',
-      unidentified: 'Unidentified amount (UN)',
-    };
-    return reasons[reason];
-  }
-
   protected payerName(payer: IFinesMciSuspensePayerDetails | null | undefined): string {
     return payer?.payerType === 'company'
       ? payer.companyName || '—'
       : [payer?.firstNames, payer?.lastName].filter(Boolean).join(' ') || '—';
-  }
-
-  protected payerAddress(payer: IFinesMciSuspensePayerDetails | null | undefined): string[] {
-    return [payer?.addressLine1, payer?.addressLine2, payer?.addressLine3, payer?.postcode].filter(
-      (line): line is string => !!line,
-    );
   }
 
   public canDeactivate(): CanDeactivateTypes {
@@ -103,6 +98,10 @@ export class FinesMciCreateTillDetailsComponent {
   public changeSuspensePayment(paymentId: string): void {
     this.finesMciStore.editSuspensePayment(paymentId);
     this.navigateTo(FINES_MCI_ROUTING_PATHS.children.checkSuspensePayment);
+  }
+
+  public removePayment(paymentId: string): void {
+    this.finesMciStore.removePayment(paymentId);
   }
 
   public cancel(event: Event): void {

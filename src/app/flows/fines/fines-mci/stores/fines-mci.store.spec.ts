@@ -232,6 +232,16 @@ describe('FinesMciStore', () => {
     expect(store.draftJourney()).toBe('courtFee');
   });
 
+  it('removes the selected payment while preserving the till and its other payments', () => {
+    const tillId = store.ensureTill();
+    const firstPaymentId = store.addPayment(tillId, 'criminal');
+    const secondPaymentId = store.addPayment(tillId, 'courtFee');
+
+    store.removePayment(firstPaymentId);
+
+    expect(store.tills()).toEqual([{ tillId, payments: [{ paymentId: secondPaymentId, journey: 'courtFee' }] }]);
+  });
+
   it('should clear the previous account selection when replacing or clearing search results without changing till state', () => {
     const businessUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
     store.setBusinessUnit(businessUnit);
