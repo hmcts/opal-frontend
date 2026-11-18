@@ -29,7 +29,7 @@ Feature: Finance Landing Page
     Then I see the following text on the page "<placeholder>"
 
     Examples:
-      | link                         | placeholder                    |
-      | Inbound files                | Placeholder for Inbound Files  |
-      | Outbound files               | Placeholder for Outbound Files |
+      | link                         | placeholder              |
+      | Inbound files                | Inbound interface files  |
+      | Outbound files               | Outbound interface files |
       | Upload variant banking files | Placeholder for File Upload    |
