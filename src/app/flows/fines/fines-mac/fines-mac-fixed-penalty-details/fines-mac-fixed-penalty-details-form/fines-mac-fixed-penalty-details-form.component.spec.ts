@@ -956,4 +956,38 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
       component.form = originalForm;
     }
   });
+
+  it('should update the fixed penalty remaining character counter when the feature flag changes', () => {
+    const notesControl = component.form.get('fm_fp_account_comments_notes_notes');
+
+    expect(notesControl).toBeTruthy();
+
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+    });
+
+    notesControl!.setValue('A'.repeat(100));
+    fixture.detectChanges();
+
+    const getRemainingCount = () => {
+      const textarea = fixture.nativeElement.querySelector(
+        '#fm_fp_account_comments_notes_notes',
+      ) as HTMLTextAreaElement;
+
+      const counter = textarea.closest('.govuk-character-count')?.querySelector('.govuk-character-count__status');
+
+      return counter?.textContent?.trim();
+    };
+
+    expect(getRemainingCount()).toContain('900 characters remaining');
+
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+    });
+
+    fixture.detectChanges();
+
+    expect(getRemainingCount()).toContain('400 characters remaining');
+    expect(notesControl!.value).toBe('A'.repeat(100));
+  });
 });
