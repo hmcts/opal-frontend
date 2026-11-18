@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostListener, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
@@ -22,12 +22,6 @@ export class FinesMciCreateTillCourtFeeCheckComponent {
   public canDeactivate(): boolean {
     const target = this.router.currentNavigation()?.finalUrl?.toString().split(/[?#]/)[0];
     return this.allowBack && !!target?.endsWith(`/${FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails}`);
-  }
-
-  /** Requests a warning before closing or refreshing the tab containing the in-memory till. */
-  @HostListener('window:beforeunload')
-  public handleBeforeUnload(): boolean {
-    return false;
   }
 
   /** Returns to the saved payment details, retaining the draft if navigation fails. */

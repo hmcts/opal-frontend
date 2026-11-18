@@ -11,11 +11,10 @@ describe('FinesMciCreateTillCourtFeeCheckComponent', () => {
     }).compileComponents();
   });
 
-  it('protects the in-memory till from unintended navigation and browser unload', () => {
+  it('protects the in-memory till from unintended navigation', () => {
     const fixture = TestBed.createComponent(FinesMciCreateTillCourtFeeCheckComponent);
     fixture.detectChanges();
     expect(fixture.componentInstance.canDeactivate()).toBe(false);
-    expect(fixture.componentInstance.handleBeforeUnload()).toBe(false);
   });
 
   it.each(['cancelled', 'rejected'])('restores leave protection if Back navigation is %s', async (outcome) => {

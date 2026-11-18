@@ -137,11 +137,10 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsComponent', () => {
     expect(fixture.componentInstance['canDeactivate']()).toBe(false);
   });
 
-  it('protects the till on refresh and warns before leaving after entering data', () => {
+  it('warns before leaving after entering data', () => {
     const fixture = TestBed.createComponent(FinesMciCreateTillCourtFeePaymentDetailsComponent);
     fixture.detectChanges();
     const component = fixture.componentInstance;
-    expect(component.handleBeforeUnload()).toBe(false);
     expect(component['canDeactivate']()).toBe(true);
 
     (fixture.nativeElement as HTMLElement).querySelector<HTMLInputElement>('input[value="applicant"]')!.click();
@@ -182,7 +181,6 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsComponent', () => {
     expect(element.textContent).toContain('Loading next screen');
     expect(element.querySelector('form')?.parentElement?.parentElement?.hasAttribute('hidden')).toBe(true);
     expect(element.querySelector<HTMLInputElement>('input[value="applicant"]')!.checked).toBe(true);
-    expect(fixture.componentInstance.handleBeforeUnload()).toBe(false);
 
     finishNavigation(false);
     await fixture.whenStable();

@@ -3,7 +3,6 @@ import {
   Component,
   DestroyRef,
   ElementRef,
-  HostListener,
   OnInit,
   OnDestroy,
   ViewChild,
@@ -141,12 +140,6 @@ export class FinesMciCreateTillCourtFeePaymentDetailsComponent
   /** Tracks entered payment details for the route leave warning. */
   public handleUnsavedChanges(unsavedChanges: boolean): void {
     this.stateUnsavedChanges = unsavedChanges || this.finesMciStore.courtFeePaymentDetails() !== null;
-  }
-
-  /** Requests a warning before refreshing or closing the tab containing the in-memory till. */
-  @HostListener('window:beforeunload')
-  public handleBeforeUnload(): boolean {
-    return false;
   }
 
   /** Discards saved payment details only after a successful departure from the review journey. */
