@@ -1,0 +1,5 @@
+<app-fines-fpu-to-publish-form
+  [businessUnits]="finesFpuStore.businessUnits()"
+  [selectedBusinessUnitIds]="finesFpuStore.selectedBusinessUnitIds()"
+  (selectionChanged)="handleSelectionChanged($event)"
+></app-fines-fpu-to-publish-form>

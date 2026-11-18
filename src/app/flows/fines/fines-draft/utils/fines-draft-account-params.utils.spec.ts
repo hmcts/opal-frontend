@@ -4,6 +4,23 @@ import { describe, expect, it } from 'vitest';
 import { buildFinesDraftAccountParams } from './fines-draft-account-params.utils';
 
 describe('buildFinesDraftAccountParams', () => {
+  it.each([true, false, undefined])('includes MAC source only when requested (%s)', (includeMacSource) => {
+    const params = buildFinesDraftAccountParams(OPAL_USER_STATE_MOCK, {
+      statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
+      includeSubmittedBy: true,
+      includeNotSubmittedBy: false,
+      includeMacSource,
+    });
+
+    expect(params).toEqual({
+      businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((user) => user.business_unit_id),
+      submittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((user) => user.business_unit_user_id),
+      statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
+      ...(includeMacSource ? { source: 'MAC' } : {}),
+    });
+    expect(Object.hasOwn(params, 'source')).toBe(includeMacSource === true);
+  });
+
   it('should build params scoped to the current user business units', () => {
     const statuses = [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.submitted];
 

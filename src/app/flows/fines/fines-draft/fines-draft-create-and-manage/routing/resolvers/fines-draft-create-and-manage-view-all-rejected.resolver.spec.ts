@@ -80,4 +80,22 @@ describe('finesDraftCreateAndManageViewAllRejectedResolver', () => {
 
     FINES_DRAFT_TAB_STATUSES.push(...originalStatuses); // restore original
   });
+  it.each([true, false, undefined])(
+    'preserves other-user rejected filters with the banking flag (%s)',
+    async (enabled) => {
+      globalStoreMock.setFeatureFlags(enabled === undefined ? {} : { 'release-1c-banking-interfaces': enabled });
+      opalFinesServiceMock.getDraftAccounts.mockReturnValue(of(OPAL_FINES_DRAFT_ACCOUNTS_MOCK));
+
+      await lastValueFrom(
+        executeResolver({} as ActivatedRouteSnapshot, {} as Parameters<ResolveFn<unknown>>[1]) as Observable<unknown>,
+      );
+
+      expect(opalFinesServiceMock.getDraftAccounts).toHaveBeenCalledWith({
+        businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((user) => user.business_unit_id),
+        notSubmittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((user) => user.business_unit_user_id),
+        statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
+        ...(enabled ? { source: 'MAC' } : {}),
+      });
+    },
+  );
 });

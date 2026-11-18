@@ -1,0 +1,10 @@
+<div class="govuk-form-group" [formGroup]="form">
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-visually-hidden">Select business units</legend>
+    <app-fines-fpu-to-publish-table-wrapper
+      [businessUnits]="businessUnits"
+      [selectedBusinessUnitIds]="form.controls.selectedBusinessUnitIds.value"
+      (selectedBusinessUnitIdsChange)="handleSelectionChanged($event)"
+    ></app-fines-fpu-to-publish-table-wrapper>
+  </fieldset>
+</div>

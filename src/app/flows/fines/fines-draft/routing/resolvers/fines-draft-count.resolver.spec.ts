@@ -83,4 +83,23 @@ describe('finesDraftCountResolver', () => {
       statuses,
     });
   });
+  it.each([true, false, undefined])('scopes MAC counts to the banking flag (%s)', async (enabled) => {
+    globalStoreMock.setFeatureFlags(enabled === undefined ? {} : { 'release-1c-banking-interfaces': enabled });
+    const resolver = executeResolver({
+      statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
+      includeSubmittedBy: true,
+      includeNotSubmittedBy: false,
+    });
+    const result = await lastValueFrom(
+      resolver({} as ActivatedRouteSnapshot, {} as Parameters<ResolveFn<number>>[1]) as Observable<number>,
+    );
+
+    expect(result).toBe(OPAL_FINES_DRAFT_ACCOUNTS_MOCK.count);
+    expect(opalFinesServiceMock.getDraftAccounts).toHaveBeenCalledWith({
+      businessUnitIds: OPAL_USER_STATE_MOCK.business_unit_users.map((user) => user.business_unit_id),
+      submittedBy: OPAL_USER_STATE_MOCK.business_unit_users.map((user) => user.business_unit_user_id),
+      statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
+      ...(enabled ? { source: 'MAC' } : {}),
+    });
+  });
 });
