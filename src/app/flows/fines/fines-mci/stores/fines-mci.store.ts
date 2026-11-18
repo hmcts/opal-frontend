@@ -6,6 +6,7 @@ import { FinesMciJourney, IFinesMciCourtFeeDraft, IFinesMciTill } from './interf
 import { IFinesMciCriminalSearch } from './interfaces/fines-mci-criminal-search.interface';
 import { IFinesMciCourtFeePaymentDetails } from './interfaces/fines-mci-court-fee-payment-details.interface';
 import { IFinesMciCourtFeePayment } from './interfaces/fines-mci-court-fee-payment.interface';
+import { IFinesMciCourtFeeDraftState } from './interfaces/fines-mci-court-fee-draft-state.interface';
 import { FinesMciCourtFeePaymentOrigin } from './types/fines-mci-court-fee-payment-origin.type';
 import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
 
@@ -26,6 +27,7 @@ export const FinesMciStore = signalStore(
     courtFeePaymentDetails: null as IFinesMciCourtFeePaymentDetails | null,
     courtFeePaymentOrigin: null as FinesMciCourtFeePaymentOrigin | null,
     courtFeeSuspenseNote: '',
+    editingCourtFeePaymentId: null as string | null,
   })),
   withMethods((store) => {
     /** Returns the existing till ID or creates the first till for the current business unit. */
@@ -108,6 +110,7 @@ export const FinesMciStore = signalStore(
             courtFeePaymentDetails: null,
             courtFeePaymentOrigin: null,
             courtFeeSuspenseNote: '',
+            editingCourtFeePaymentId: null,
           });
           return;
         }
@@ -125,6 +128,7 @@ export const FinesMciStore = signalStore(
             courtFeePaymentDetails: null,
             courtFeePaymentOrigin: null,
             courtFeeSuspenseNote: '',
+            editingCourtFeePaymentId: null,
           }),
         });
       },
@@ -143,7 +147,9 @@ export const FinesMciStore = signalStore(
             (!courtFeeDraft || !preservePaymentDetails) && {
               courtFeePaymentDetails: null,
               courtFeePaymentOrigin: null,
-              courtFeeSuspenseNote: '',
+              ...(!courtFeeDraft || !store.editingCourtFeePaymentId()
+                ? { courtFeeSuspenseNote: '', editingCourtFeePaymentId: null }
+                : {}),
             }),
         });
       },
@@ -159,23 +165,66 @@ export const FinesMciStore = signalStore(
       setCourtFeeSuspenseNote(courtFeeSuspenseNote: string): void {
         patchState(store, { courtFeeSuspenseNote });
       },
-      /** Adds a complete court fee payment to the selected till and clears its draft. */
-      saveCourtFeePayment(tillId: string, courtFee: IFinesMciCourtFeePayment): boolean {
-        if (!store.tills().some((till) => till.tillId === tillId)) return false;
-        const paymentId = crypto.randomUUID();
+      /** Restores a saved court fee payment into a separate editable draft. */
+      beginCourtFeePaymentEdit(tillId: string, paymentId: string): boolean {
+        const saved = store
+          .tills()
+          .find((till) => till.tillId === tillId)
+          ?.payments.find((payment) => payment.paymentId === paymentId && payment.journey === 'courtFee')?.courtFee;
+        if (!saved) return false;
         patchState(store, {
-          tills: store
-            .tills()
-            .map((till) =>
-              till.tillId === tillId
-                ? { ...till, payments: [...till.payments, { paymentId, journey: 'courtFee', courtFee }] }
-                : till,
-            ),
+          draftJourney: 'courtFee',
+          courtFeeDraft: {
+            courtFeeId: saved.courtFeeId,
+            amountPaid: saved.amountPaid,
+            numberOfItems: saved.numberOfItems,
+          },
+          courtFeePaymentDetails: { ...saved.paymentDetails },
+          courtFeePaymentOrigin: null,
+          courtFeeSuspenseNote: saved.suspenseNote,
+          editingCourtFeePaymentId: paymentId,
+        });
+        return true;
+      },
+      /** Restores the previous draft when opening a saved payment does not succeed. */
+      restoreCourtFeeDraftState(state: IFinesMciCourtFeeDraftState): void {
+        patchState(store, state);
+      },
+      /** Adds or updates a complete court fee payment on the selected till and clears its draft. */
+      saveCourtFeePayment(
+        tillId: string,
+        courtFee: IFinesMciCourtFeePayment,
+        editingPaymentId: string | null = null,
+      ): boolean {
+        const till = store.tills().find((item) => item.tillId === tillId);
+        if (
+          !till ||
+          (editingPaymentId &&
+            !till.payments.some(
+              (payment) => payment.paymentId === editingPaymentId && payment.journey === 'courtFee' && payment.courtFee,
+            ))
+        )
+          return false;
+        const paymentId = editingPaymentId ?? crypto.randomUUID();
+        patchState(store, {
+          tills: store.tills().map((till) =>
+            till.tillId === tillId
+              ? {
+                  ...till,
+                  payments: editingPaymentId
+                    ? till.payments.map((payment) =>
+                        payment.paymentId === editingPaymentId ? { ...payment, courtFee } : payment,
+                      )
+                    : [...till.payments, { paymentId, journey: 'courtFee', courtFee }],
+                }
+              : till,
+          ),
           draftJourney: null,
           courtFeeDraft: null,
           courtFeePaymentDetails: null,
           courtFeePaymentOrigin: null,
           courtFeeSuspenseNote: '',
+          editingCourtFeePaymentId: null,
         });
         return true;
       },
@@ -203,6 +252,7 @@ export const FinesMciStore = signalStore(
           courtFeePaymentDetails: null,
           courtFeePaymentOrigin: null,
           courtFeeSuspenseNote: '',
+          editingCourtFeePaymentId: null,
           criminalSearchResults: null,
           selectedCriminalAccount: null,
           selectedCriminalAccountAtAGlance: null,

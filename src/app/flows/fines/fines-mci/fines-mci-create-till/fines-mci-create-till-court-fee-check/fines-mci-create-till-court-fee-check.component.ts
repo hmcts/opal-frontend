@@ -205,6 +205,7 @@ export class FinesMciCreateTillCourtFeeCheckComponent implements OnInit, OnDestr
     if (this.isNavigating()) return;
     const payment = this.buildPayment();
     const tillId = this.finesMciStore.tills()[0]?.tillId;
+    const editingPaymentId = this.finesMciStore.editingCourtFeePaymentId();
     if (!payment || !tillId) {
       this.saveFailed.set(true);
       return;
@@ -223,8 +224,9 @@ export class FinesMciCreateTillCourtFeeCheckComponent implements OnInit, OnDestr
       })
       .catch(() => false)
       .then((navigated) => {
-        if (navigated) this.finesMciStore.saveCourtFeePayment(tillId, payment);
-        else this.saveFailed.set(true);
+        if (navigated && this.router.url.split(/[?#]/)[0].endsWith(`/${path}`)) {
+          this.finesMciStore.saveCourtFeePayment(tillId, payment, editingPaymentId);
+        } else this.saveFailed.set(true);
         this.intendedDestination = null;
         this.isNavigating.set(false);
       });
@@ -246,6 +248,7 @@ export class FinesMciCreateTillCourtFeeCheckComponent implements OnInit, OnDestr
       .subscribe((event) => {
         if (!(event instanceof NavigationEnd)) return;
         const path = event.urlAfterRedirects.split(/[?#]/)[0];
+        if (this.intendedDestination && !path.endsWith(`/${this.intendedDestination}`)) return;
         const editRoutes = [
           FINES_MCI_ROUTING_PATHS.children.courtFeeDetails,
           FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,

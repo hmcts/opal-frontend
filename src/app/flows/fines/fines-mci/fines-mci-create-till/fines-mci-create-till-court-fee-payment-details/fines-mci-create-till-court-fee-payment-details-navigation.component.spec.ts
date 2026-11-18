@@ -13,6 +13,7 @@ import { FinesMciCreateTillCourtFeePaymentDetailsComponent } from './fines-mci-c
 import { FinesMciCreateTillCourtFeeCheckComponent } from '../fines-mci-create-till-court-fee-check/fines-mci-create-till-court-fee-check.component';
 import { FinesMciCreateTillCourtFeeDetailsComponent } from '../fines-mci-create-till-court-fee-details/fines-mci-create-till-court-fee-details.component';
 import { FinesMciCreateTillPaymentCategoryComponent } from '../fines-mci-create-till-payment-category/fines-mci-create-till-payment-category.component';
+import { FinesMciCreateTillDetailsComponent } from '../fines-mci-create-till-details/fines-mci-create-till-details.component';
 import { finesMciCourtFeeCheckGuard } from '../../routing/guards/fines-mci-court-fee-check.guard';
 import { FinesMciPaymentMappingsService } from '../../services/fines-mci-payment-mappings.service';
 import { finesMciPaymentMappingsResolver } from '../../routing/resolvers/fines-mci-payment-mappings.resolver';
@@ -69,6 +70,102 @@ describe('Court fee payment details navigation', () => {
   });
 
   afterEach(() => vi.restoreAllMocks());
+
+  it('opens a saved court fee and updates it without adding another payment', async () => {
+    const router = TestBed.inject(Router);
+    const routes = router.config[0].children!;
+    const tillRoute = routes.find((route) => route.path === 'details')!;
+    tillRoute.component = FinesMciCreateTillDetailsComponent;
+    tillRoute.canDeactivate = [canDeactivateGuard];
+    routes.find((route) => route.path === 'check-court-fee')!.data = {
+      courtFees: { court_fees: [{ court_fee_id: 1, court_fee_code: 'C01', description: 'Court fee', amount: 12.5 }] },
+      paymentMappings: mappings,
+    };
+    router.resetConfig([{ path: 'fines/manual-cash-input/create/till', children: routes }]);
+    const store = TestBed.inject(FinesMciStore);
+    const tillId = store.tills()[0].tillId;
+    const payment = {
+      courtFeeId: 1,
+      amountPaid: '25.00',
+      numberOfItems: '2',
+      courtFeeLabel: 'C01 – Court fee (£12.50)',
+      amountLabel: '£25.00',
+      paymentDetails: {
+        paymentReceivedFrom: 'applicant',
+        paymentMethod: 'NC',
+        payerType: 'company',
+        companyName: 'Example Ltd',
+        addressLine1: null,
+        addressLine2: null,
+        addressLine3: null,
+        postcode: null,
+      },
+      suspenseNote: 'Original note',
+    };
+    store.saveCourtFeePayment(tillId, payment);
+    const paymentId = store.tills()[0].payments[0].paymentId;
+    const confirm = vi.spyOn(window, 'confirm');
+    const harness = await RouterTestingHarness.create('/fines/manual-cash-input/create/till/details');
+    harness.routeNativeElement!.querySelector<HTMLAnchorElement>('.govuk-summary-list__actions a')!.click();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(router.url).toBe('/fines/manual-cash-input/create/till/check-court-fee');
+    expect(confirm).not.toHaveBeenCalled();
+    expect(harness.routeNativeElement!.querySelector<HTMLTextAreaElement>('#suspenseNote')?.value).toBe(
+      'Original note',
+    );
+    const note = harness.routeNativeElement!.querySelector<HTMLTextAreaElement>('#suspenseNote')!;
+    note.value = 'Updated note';
+    note.dispatchEvent(new Event('input', { bubbles: true }));
+    expect(store.tills()[0].payments[0].courtFee?.suspenseNote).toBe('Original note');
+    harness.routeNativeElement!.querySelector<HTMLButtonElement>('#save-and-review-till')!.click();
+    await harness.fixture.whenStable();
+    expect(router.url).toBe('/fines/manual-cash-input/create/till/details');
+    expect(store.tills()[0].payments).toHaveLength(1);
+    expect(store.tills()[0].payments[0].paymentId).toBe(paymentId);
+    expect(store.tills()[0].payments[0].courtFee?.suspenseNote).toBe('Updated note');
+  });
+
+  it('keeps the original saved payment when an edit is cancelled', async () => {
+    const router = TestBed.inject(Router);
+    router.config[0].children!.find((route) => route.path === 'check-court-fee')!.data = {
+      courtFees: { court_fees: [{ court_fee_id: 1, court_fee_code: 'C01', description: 'Court fee', amount: 12.5 }] },
+      paymentMappings: mappings,
+    };
+    const store = TestBed.inject(FinesMciStore);
+    const tillId = store.tills()[0].tillId;
+    const payment = {
+      courtFeeId: 1,
+      amountPaid: '25.00',
+      numberOfItems: '2',
+      courtFeeLabel: 'C01 – Court fee (£12.50)',
+      amountLabel: '£25.00',
+      paymentDetails: {
+        paymentReceivedFrom: 'applicant',
+        paymentMethod: 'NC',
+        payerType: 'company',
+        companyName: 'Example Ltd',
+        addressLine1: null,
+        addressLine2: null,
+        addressLine3: null,
+        postcode: null,
+      },
+      suspenseNote: 'Original note',
+    };
+    store.saveCourtFeePayment(tillId, payment);
+    const paymentId = store.tills()[0].payments[0].paymentId;
+    store.beginCourtFeePaymentEdit(tillId, paymentId);
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const harness = await RouterTestingHarness.create('/till/check-court-fee');
+    const note = harness.routeNativeElement!.querySelector<HTMLTextAreaElement>('#suspenseNote')!;
+    note.value = 'Discarded edit';
+    note.dispatchEvent(new Event('input', { bubbles: true }));
+    harness.routeNativeElement!.querySelector<HTMLAnchorElement>('.button-link')!.click();
+    await harness.fixture.whenStable();
+    expect(router.url).toBe('/till/details');
+    expect(store.tills()[0].payments).toEqual([{ paymentId, journey: 'courtFee', courtFee: payment }]);
+    expect(store.editingCourtFeePaymentId()).toBeNull();
+  });
 
   it('keeps the draft when Cancel is declined and discards it on confirmation', async () => {
     const router = TestBed.inject(Router);

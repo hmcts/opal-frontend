@@ -18,6 +18,9 @@
   </opal-lib-govuk-summary-list>
 
   <h2 class="govuk-heading-m govuk-!-margin-top-7">Payments</h2>
+  @if (editPaymentFailed()) {
+    <p class="govuk-error-message" role="alert">The payment could not be opened. Try again.</p>
+  }
   @if (finesMciStore.tills()[0]?.payments?.length) {
     <opal-lib-govuk-summary-list summaryListId="fines-mci-till-payments">
       @for (payment of finesMciStore.tills()[0].payments; track payment.paymentId) {
@@ -25,9 +28,14 @@
           opal-lib-govuk-summary-list-row
           summaryListId="fines-mci-till-payments"
           [summaryListRowId]="payment.paymentId"
+          [actionEnabled]="!!payment.courtFee"
+          (actionClick)="handleEditPayment(payment.paymentId)"
         >
           <ng-container name>{{ payment.courtFee?.courtFeeLabel ?? payment.journey }}</ng-container>
           <ng-container value>{{ payment.courtFee?.amountLabel ?? '' }}</ng-container>
+          <ng-container action
+            >Change<span class="govuk-visually-hidden"> {{ payment.courtFee?.courtFeeLabel }}</span></ng-container
+          >
         </div>
       }
     </opal-lib-govuk-summary-list>

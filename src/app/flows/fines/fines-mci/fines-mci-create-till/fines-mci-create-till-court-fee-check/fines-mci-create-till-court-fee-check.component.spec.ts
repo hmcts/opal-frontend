@@ -291,6 +291,7 @@ describe('FinesMciCreateTillCourtFeeCheckComponent', () => {
   it('does not create duplicate payments while navigation is pending', async () => {
     const store = preparePayment();
     let complete!: (value: boolean) => void;
+    vi.spyOn(TestBed.inject(Router), 'url', 'get').mockReturnValue('/till/details');
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockReturnValue(
       new Promise((resolve) => {
         complete = resolve;
