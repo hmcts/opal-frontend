@@ -64,6 +64,10 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
   public readonly selectPaymentTermsFragment = FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS.selectPaymentTerms;
   public readonly paymentCardRequestedTodayWarningMessage = PAYMENT_CARD_REQUESTED_TODAY_WARNING_MESSAGE;
 
+  /**
+   * Checks whether the last payment card request date matches today's date in dd/MM/yyyy format.
+   * @returns true when a payment card was requested today; false when the date is missing or does not match
+   */
   public get paymentCardRequestedToday(): boolean {
     const lastRequested = this.tabData.payment_card_last_requested;
     return !!lastRequested && lastRequested === this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
