@@ -5,6 +5,18 @@
     </div>
   </div>
   <hr [class]="style.hr" />
+  @if (paymentCardRequestedToday) {
+    <opal-lib-moj-alert
+      id="payment-card-requested-today-warning"
+      type="warning"
+      [ariaLabel]="paymentCardRequestedTodayWarningMessage"
+    >
+      <opal-lib-moj-alert-icon icon type="warning"></opal-lib-moj-alert-icon>
+      <opal-lib-moj-alert-content content>
+        <opal-lib-moj-alert-content-text>{{ paymentCardRequestedTodayWarningMessage }}</opal-lib-moj-alert-content-text>
+      </opal-lib-moj-alert-content>
+    </opal-lib-moj-alert>
+  }
   <ng-container content>
     <opal-lib-govuk-summary-card-list [cardTitle]="cardTitle()" summaryCardListId="payment-terms">
       @if (hasAmendPaymentTermsPermission && accountAllowsPaymentTermsActions) {

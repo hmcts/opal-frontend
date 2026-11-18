@@ -1,10 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FinesAccDefendantDetailsPaymentTermsTabComponent } from './fines-acc-defendant-details-payment-terms-tab.component';
+import { PAYMENT_CARD_REQUESTED_TODAY_WARNING_MESSAGE } from './constants/fines-acc-defendant-details-payment-terms-tab-warning-message.constant';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-details-payment-terms-latest.mock';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS } from '../../fines-acc-payment-terms-amend/constants/fines-acc-payment-terms-amend-fragments.constant';
 import { provideRouter, Router } from '@angular/router';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccDefendantDetailsPaymentTermsTabComponent', () => {
@@ -66,6 +68,26 @@ describe('FinesAccDefendantDetailsPaymentTermsTabComponent', () => {
 
     expect(getLinkByText('Change')).toBeUndefined();
     expect(getLinkByText('Request payment card')).toBeUndefined();
+  });
+
+  it('should show a warning when a payment card was requested today', () => {
+    const dateService = TestBed.inject(DateService);
+    component.tabData.payment_card_last_requested = dateService.toFormat(dateService.getDateNow(), 'dd/MM/yyyy');
+
+    fixture.detectChanges();
+
+    const warning = fixture.nativeElement.querySelector('#payment-card-requested-today-warning');
+    expect(warning).toBeTruthy();
+    expect(warning.textContent).toContain(PAYMENT_CARD_REQUESTED_TODAY_WARNING_MESSAGE);
+    expect(warning.getAttribute('type')).toBe('warning');
+  });
+
+  it.each([null, '01/01/2000'])('should not show a warning when the last request date is %s', (date) => {
+    component.tabData.payment_card_last_requested = date;
+
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('#payment-card-requested-today-warning')).toBeNull();
   });
 
   it.each([

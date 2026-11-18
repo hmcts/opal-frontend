@@ -30,6 +30,7 @@ export class FinesAccRequestPaymentCardSubmitComponent {
       .addDefendantAccountPaymentCardRequest(account_id!, base_version!, business_unit_id!, business_unit_user_id!)
       .subscribe({
         next: () => {
+          this.opalFinesService.clearCache('defendantAccountPaymentTermsLatestCache$');
           this.accountStore.setSuccessMessage('Payment card request submitted successfully');
           this.navigateBackToAccountSummary();
         },
