@@ -21,7 +21,6 @@ import { takeUntil } from 'rxjs';
 import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../../fines-mac/constants/fines-mac-title-dropdown-options.constant';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../../fines-mac/fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS } from '../../fines-acc-defendant-details/constants/fines-acc-defendant-details-tabs-keys.constant';
 import { type TFinesAccDefendantDetailsTabKey } from '../../fines-acc-defendant-details/types/fines-acc-defendant-details-tab-key.type';
@@ -62,8 +61,7 @@ import { FinesAccPartyAddAmendConvertDobNi } from './components/fines-acc-party-
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../constants/fines-acc-party-add-amend-convert-modes.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS } from '../constants/fines-acc-party-add-amend-convert-fragments.constant';
-import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
-import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
+import { FinesVehicleRegistrationConfigService } from '../../../utils/fines-vehicle-registration-config.utils';
 import {
   MojAlertComponent,
   MojAlertContentComponent,
@@ -113,14 +111,10 @@ export class FinesAccPartyAddAmendConvertFormComponent
   implements OnInit, OnDestroy
 {
   private readonly finesAccountStore = inject(FinesAccountStore);
-  private readonly globalStore = inject(GlobalStore);
+  private readonly vehicleRegistrationConfigService = inject(FinesVehicleRegistrationConfigService);
 
-  private get vehicleRegistrationConfig(): { maxLength: number; errorMessage: string } {
-    if (getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true) {
-      return { maxLength: 7, errorMessage: 'Vehicle registration must be 7 characters or fewer' };
-    } else {
-      return { maxLength: 11, errorMessage: 'Vehicle registration must be 11 characters or fewer' };
-    }
+  private get vehicleRegistrationConfig() {
+    return this.vehicleRegistrationConfigService.getConfig('Vehicle registration', 11);
   }
 
   @Output() protected override formSubmit = new EventEmitter<IFinesAccPartyAddAmendConvertForm>();

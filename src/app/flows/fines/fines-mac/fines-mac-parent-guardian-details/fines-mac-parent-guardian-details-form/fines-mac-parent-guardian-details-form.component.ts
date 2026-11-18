@@ -13,6 +13,7 @@ import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Va
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
+import { FinesVehicleRegistrationConfigService } from '../../../utils/fines-vehicle-registration-config.utils';
 import { IFinesMacParentGuardianDetailsFieldErrors } from '../interfaces/fines-mac-parent-guardian-details-field-errors.interface';
 import { IFinesMacParentGuardianDetailsForm } from '../interfaces/fines-mac-parent-guardian-details-form.interface';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS } from '../constants/fines-mac-parent-guardian-details-alias';
@@ -75,13 +76,10 @@ export class FinesMacParentGuardianDetailsFormComponent
 {
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly globalStore = inject(GlobalStore);
+  private readonly vehicleRegistrationConfigService = inject(FinesVehicleRegistrationConfigService);
 
-  private get vehicleRegistrationConfig(): { maxLength: number; errorMessage: string } {
-    if (getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true) {
-      return { maxLength: 7, errorMessage: 'Registration number must be 7 characters or fewer' };
-    } else {
-      return { maxLength: 10, errorMessage: 'Registration number must be 11 characters or fewer' };
-    }
+  private get vehicleRegistrationConfig() {
+    return this.vehicleRegistrationConfigService.getConfig('Registration number', 10);
   }
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacParentGuardianDetailsForm>();
