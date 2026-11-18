@@ -1,7 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormArray } from '@angular/forms';
-import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { FinesMacPersonalDetailsFormComponent } from './fines-mac-personal-details-form.component';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { IFinesMacPersonalDetailsForm } from '../interfaces/fines-mac-personal-details-form.interface';
@@ -655,6 +653,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   });
 
   it('should render remove alias link with href and call removeAlias', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
     component.form.get('fm_personal_details_add_alias')?.setValue(true);
     while (component.aliasControls.length < 2) {
       component.addAlias(component.aliasControls.length, 'fm_personal_details_aliases');
