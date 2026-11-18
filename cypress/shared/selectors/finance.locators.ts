@@ -65,6 +65,17 @@ export const ManualCashInputLocators = {
   paymentCategoryForm: '#fines-mci-create-till-payment-category form',
   paymentCategoryRadio: (value: string): string => `input[name="paymentCategory"][value="${value}"]`,
   courtFeeDetailsPage: '#fines-mci-create-till-court-fee-details',
+  courtFeeOverUnderpaymentPage: '#fines-mci-create-till-over-underpayment-confirmation',
+  courtFeeOverpaymentBanner: '#fines-mci-create-till-over-underpayment-confirmation .moj-alert--information',
+  courtFeeUnderpaymentBanner: '#fines-mci-create-till-over-underpayment-confirmation .moj-alert--warning',
+  courtFeeConfirmationCourtFeeRow:
+    '#fines-mci-create-till-over-underpayment-confirmation [summaryListRowId="court-fee"]',
+  courtFeeConfirmationAmountRow: '#fines-mci-create-till-over-underpayment-confirmation [summaryListRowId="amount"]',
+  courtFeeConfirmationNumberOfItemsRow:
+    '#fines-mci-create-till-over-underpayment-confirmation [summaryListRowId="number-of-items"]',
+  courtFeeConfirmOverpaymentButton: '#confirm-overpayment',
+  courtFeeCancelOverpaymentLink: '#cancel-overpayment',
+  courtFeeReturnToTillLink: 'opal-lib-govuk-cancel-link a',
   courtFeeDetailsHeading: '#fines-mci-create-till-court-fee-details h1',
   courtFeeErrorSummaryTitle: '#fines-mci-create-till-court-fee-details .govuk-error-summary__title',
   courtFeeBusinessUnitCaption: '#fines-mci-create-till-court-fee-details .govuk-caption-l',
