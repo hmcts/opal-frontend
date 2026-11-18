@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { provideRouter, RouterOutlet } from '@angular/router';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesFpuComponent } from './fines-fpu.component';
 import { FinesFpuStore } from './stores/fines-fpu.store';
@@ -9,11 +10,13 @@ describe('FinesFpuComponent', () => {
   let fixture: ComponentFixture<FinesFpuComponent>;
   let component: FinesFpuComponent;
   let store: InstanceType<typeof FinesFpuStore>;
+  let opalFines: { clearDraftAccountsCache: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
+    opalFines = { clearDraftAccountsCache: vi.fn() };
     await TestBed.configureTestingModule({
       imports: [FinesFpuComponent],
-      providers: [provideRouter([])],
+      providers: [provideRouter([]), { provide: OpalFines, useValue: opalFines }],
     }).compileComponents();
 
     store = TestBed.inject(FinesFpuStore);
@@ -57,11 +60,19 @@ describe('FinesFpuComponent', () => {
     expect(beforeUnload).toHaveBeenCalledOnce();
   });
 
-  it('should reset the journey state when the shell is destroyed', () => {
+  it('should reset the journey state and clear cached draft accounts when the shell is destroyed', () => {
+    store.setFragment('published');
+    store.setBusinessUnits([{ business_unit_id: 78, business_unit_name: 'Eastshire', ticket_count: 2 }]);
+    store.setSelectedBusinessUnitIds([78]);
     store.setUnsavedChanges(true);
 
     fixture.destroy();
 
+    expect(store.fragment()).toBe('to-publish');
+    expect(store.tabData()).toBeNull();
+    expect(store.businessUnits()).toEqual([]);
+    expect(store.selectedBusinessUnitIds()).toEqual([]);
     expect(store.unsavedChanges()).toBe(false);
+    expect(opalFines.clearDraftAccountsCache).toHaveBeenCalledOnce();
   });
 });

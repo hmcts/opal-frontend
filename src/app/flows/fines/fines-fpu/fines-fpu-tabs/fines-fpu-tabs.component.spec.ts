@@ -14,6 +14,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesFpuToPublishTableWrapperComponent } from '../fines-fpu-to-publish/fines-fpu-to-publish-form/fines-fpu-to-publish-table-wrapper/fines-fpu-to-publish-table-wrapper.component';
 import { FinesFpuStore } from '../stores/fines-fpu.store';
 import { FinesFpuTabsComponent } from './fines-fpu-tabs.component';
+import { FINES_FPU_ROUTE_DATA_KEYS } from '../constants/fines-fpu-route-data-keys.constant';
 
 describe('FinesFpuTabsComponent', () => {
   const uploadsUrl = '/fines/accounts/fixed-penalty-uploads';
@@ -89,6 +90,53 @@ describe('FinesFpuTabsComponent', () => {
     await harness.fixture.whenStable();
     harness.detectChanges();
   };
+
+  const provideResolvedDraftAccounts = (draftAccounts: IOpalFinesDraftAccountsResponse): void => {
+    TestBed.inject(Router).resetConfig([
+      {
+        path: 'fines/accounts/fixed-penalty-uploads',
+        children: [
+          {
+            path: '',
+            component: FinesFpuTabsComponent,
+            resolve: { [FINES_FPU_ROUTE_DATA_KEYS.draftAccounts]: () => of(draftAccounts) },
+          },
+        ],
+      },
+    ]);
+  };
+
+  it('should use resolved draft accounts once and request fresh data when returning to To publish', async () => {
+    provideResolvedDraftAccounts(response(draftAccount(1)));
+    opalFines.getDraftAccounts.mockReturnValue(of(response(draftAccount(2, 80, 'Westshire'))));
+    const harness = await RouterTestingHarness.create(uploadsUrl);
+
+    expect(harness.routeNativeElement?.querySelector('table')?.textContent).toContain('Eastshire');
+    expect(store.tabData()).toEqual([{ business_unit_id: 78, business_unit_name: 'Eastshire', ticket_count: 1 }]);
+    expect(opalFines.getDraftAccounts).not.toHaveBeenCalled();
+    expect(opalFines.clearDraftAccountsCache).not.toHaveBeenCalled();
+
+    await clickTab(harness, 'Published');
+    await clickTab(harness, 'To publish');
+
+    expect(store.tabData()).toEqual([{ business_unit_id: 80, business_unit_name: 'Westshire', ticket_count: 1 }]);
+    expect(harness.routeNativeElement?.querySelector('table')?.textContent).toContain('Westshire');
+    expect(opalFines.getDraftAccounts).toHaveBeenCalledOnce();
+    expect(opalFines.clearDraftAccountsCache).toHaveBeenCalledOnce();
+  });
+
+  it('should display a resolved empty response without making a second request', async () => {
+    provideResolvedDraftAccounts(response());
+    const harness = await RouterTestingHarness.create(uploadsUrl);
+
+    expect(harness.routeNativeElement?.querySelector('h2')?.textContent).toBe('To register and publish');
+    expect(harness.routeNativeElement?.querySelector('#fines-fpu-empty')?.textContent).toBe(
+      'There are no tickets to register or publish.',
+    );
+    expect(store.tabData()).toEqual([]);
+    expect(opalFines.getDraftAccounts).not.toHaveBeenCalled();
+    expect(opalFines.clearDraftAccountsCache).not.toHaveBeenCalled();
+  });
 
   it('should open To publish by default and request current Submitted fixed penalties for eligible business units', async () => {
     const harness = await RouterTestingHarness.create(uploadsUrl);

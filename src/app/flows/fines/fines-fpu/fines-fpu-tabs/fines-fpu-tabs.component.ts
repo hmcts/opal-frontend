@@ -7,6 +7,7 @@ import {
   MojSubNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { IOpalFinesDraftAccountsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-data.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import {
   catchError,
@@ -26,6 +27,7 @@ import {
 import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { FINES_FPU_TAB_FRAGMENTS } from '../constants/fines-fpu-tab-fragments.constant';
+import { FINES_FPU_ROUTE_DATA_KEYS } from '../constants/fines-fpu-route-data-keys.constant';
 import { FinesFpuToPublishComponent } from '../fines-fpu-to-publish/fines-fpu-to-publish.component';
 import { IFinesFpuBusinessUnit } from '../interfaces/fines-fpu-business-unit.interface';
 import { FinesFpuPayloadService } from '../services/fines-fpu-payload.service';
@@ -73,11 +75,14 @@ export class FinesFpuTabsComponent extends AbstractTabData implements OnInit, On
   }
 
   /**
-   * Normalises all fragments before deduplication so browser history stays in sync with the displayed tab.
+   * Reuses the initial resolver response and normalises fragments before deduplication to preserve browser navigation.
    *
    * @returns Shared business unit summaries, or null while another tab or a request is active.
    */
   private setupTabDataStream(): Observable<IFinesFpuBusinessUnit[] | null> {
+    let pendingResolvedDraftAccounts = this.activatedRoute.snapshot.data[FINES_FPU_ROUTE_DATA_KEYS.draftAccounts] as
+      | IOpalFinesDraftAccountsResponse
+      | undefined;
     const fragment$ = this.activatedRoute.fragment.pipe(
       map((fragment) => this.normaliseFragment(fragment)),
       distinctUntilChanged(),
@@ -85,11 +90,22 @@ export class FinesFpuTabsComponent extends AbstractTabData implements OnInit, On
 
     return fragment$.pipe(
       switchMap((fragment): Observable<IFinesFpuBusinessUnit[] | null> => {
+        const resolvedDraftAccounts = pendingResolvedDraftAccounts;
+        pendingResolvedDraftAccounts = undefined;
         this.activeTab = fragment;
         this.finesFpuStore.setFragment(fragment);
-        return fragment === FINES_FPU_TAB_FRAGMENTS.toPublish
-          ? this.loadBusinessUnits().pipe(startWith(null))
-          : of(null);
+
+        if (fragment !== FINES_FPU_TAB_FRAGMENTS.toPublish) {
+          return of(null);
+        }
+
+        if (resolvedDraftAccounts) {
+          return of(
+            this.payloadService.mapDraftAccountsToBusinessUnits(resolvedDraftAccounts, this.globalStore.userState()),
+          );
+        }
+
+        return this.loadBusinessUnits().pipe(startWith(null));
       }),
       tap((tabData) => this.finesFpuStore.setTabData(tabData)),
       takeUntil(this.destroy$),

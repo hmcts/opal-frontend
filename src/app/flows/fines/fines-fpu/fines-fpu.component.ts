@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { FinesFpuStore } from './stores/fines-fpu.store';
 
 @Component({
@@ -10,6 +11,7 @@ import { FinesFpuStore } from './stores/fines-fpu.store';
 })
 export class FinesFpuComponent implements OnDestroy {
   private readonly finesFpuStore = inject(FinesFpuStore);
+  private readonly opalFines = inject(OpalFines);
 
   /**
    * Checks whether the browser can unload without discarding journey changes.
@@ -30,8 +32,9 @@ export class FinesFpuComponent implements OnDestroy {
     return !this.finesFpuStore.unsavedChanges();
   }
 
-  /** Clears journey state when the fixed penalty uploads shell is destroyed. */
+  /** Clears journey state and cached draft accounts so the next visit resolves current data. */
   public ngOnDestroy(): void {
     this.finesFpuStore.resetFinesFpuState();
+    this.opalFines.clearDraftAccountsCache();
   }
 }
