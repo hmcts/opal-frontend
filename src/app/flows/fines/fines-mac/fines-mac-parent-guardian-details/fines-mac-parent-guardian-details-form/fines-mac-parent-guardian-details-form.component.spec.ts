@@ -373,6 +373,10 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
   });
 
   it('should refresh parent guardian alias validation errors after removing the first alias', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+    });
+
     component.form.get('fm_parent_guardian_details_add_alias')?.setValue(true);
 
     while (component.aliasControls.length < 3) {
@@ -380,16 +384,58 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     }
 
     const aliases = component.form.get('fm_parent_guardian_details_aliases') as FormArray;
-    component.formErrorSummaryMessage = [
-      { fieldId: 'fm_parent_guardian_details_alias_forenames_1', message: 'Enter alias 2 first name(s)' },
-    ];
-    const componentWithErrorHandler = component as unknown as { handleErrorMessages: () => void };
-    const refreshErrorsSpy = vi.spyOn(componentWithErrorHandler, 'handleErrorMessages');
 
-    component.removeAndRenumberAlias(0);
+    aliases.at(0).get('fm_parent_guardian_details_alias_forenames_0')?.setValue('JOHN');
+    aliases.at(0).get('fm_parent_guardian_details_alias_surname_0')?.setValue('SMITH');
+
+    aliases.at(1).get('fm_parent_guardian_details_alias_forenames_1')?.setValue('');
+    aliases.at(1).get('fm_parent_guardian_details_alias_surname_1')?.setValue('JONES');
+
+    aliases.at(2).get('fm_parent_guardian_details_alias_forenames_2')?.setValue('PETER');
+    aliases.at(2).get('fm_parent_guardian_details_alias_surname_2')?.setValue('');
+
+    component.handleFormSubmit({ submitter: { className: '' } } as SubmitEvent);
+    fixture.detectChanges();
+
+    expect(component.formErrorSummaryMessage).toContainEqual({
+      fieldId: 'fm_parent_guardian_details_alias_forenames_1',
+      message: 'Enter alias 2 first name(s)',
+    });
+
+    expect(component.formErrorSummaryMessage).toContainEqual({
+      fieldId: 'fm_parent_guardian_details_alias_surname_2',
+      message: 'Enter alias 3 last name',
+    });
+
+    const container = fixture.nativeElement.querySelector(
+      '[formArrayName="fm_parent_guardian_details_aliases"]',
+    ) as HTMLElement;
+    const buttons = container.querySelectorAll<HTMLButtonElement>('button.moj-add-another__remove-button');
+    buttons[0].click();
+    fixture.detectChanges();
 
     expect(aliases).toHaveLength(2);
-    expect(refreshErrorsSpy).toHaveBeenCalledOnce();
+    expect(component.formErrorSummaryMessage).toContainEqual({
+      fieldId: 'fm_parent_guardian_details_alias_forenames_0',
+      message: 'Enter alias 1 first name(s)',
+    });
+    expect(component.formErrorSummaryMessage).toContainEqual({
+      fieldId: 'fm_parent_guardian_details_alias_surname_1',
+      message: 'Enter alias 2 last name',
+    });
+    expect(
+      component.formErrorSummaryMessage.some(
+        ({ fieldId }) =>
+          fieldId === 'fm_parent_guardian_details_alias_forenames_2' ||
+          fieldId === 'fm_parent_guardian_details_alias_surname_2',
+      ),
+    ).toBe(false);
+    expect(component.formControlErrorMessages['fm_parent_guardian_details_alias_forenames_0']).toBe(
+      'Enter alias 1 first name(s)',
+    );
+    expect(component.formControlErrorMessages['fm_parent_guardian_details_alias_surname_1']).toBe(
+      'Enter alias 2 last name',
+    );
   });
 
   it('should not display validation errors when removing a parent guardian alias before submission', () => {
