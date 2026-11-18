@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
 import { FinesMacAccountCommentsNotesFormComponent } from './fines-mac-account-comments-notes-form.component';
 import { IFinesMacAccountCommentsNotesForm } from '../interfaces/fines-mac-account-comments-notes-form.interface';
 import { ActivatedRoute } from '@angular/router';
@@ -169,11 +170,11 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
   });
 
   it.each([
-    [true, 500],
-    [false, 1000],
+    [500, true],
+    [1000, false],
   ] as const)(
-    'should set account notes maximum length to %i when release-1a-1-2 is %s',
-    (releaseEnabled, expectedMaxLength) => {
+    'should set account notes maximum length to %i when release-1a-1-2 enabled is %s',
+    (expectedMaxLength, releaseEnabled) => {
       globalStore.setFeatureFlags({
         [RELEASE_1A_1_2_FEATURE_FLAG]: releaseEnabled,
       });
@@ -302,5 +303,17 @@ describe('FinesMacAccountCommentsNotesFormComponent', () => {
         (error: { fieldId: string }) => error.fieldId === 'fm_account_comments_notes_notes',
       ),
     ).toBe(false);
+  });
+
+  it('should safely return when the account notes control is missing', () => {
+    const originalForm = component.form;
+
+    try {
+      component.form = new FormGroup({});
+
+      expect(() => component['updateAccountNotesValidation'](500)).not.toThrow();
+    } finally {
+      component.form = originalForm;
+    }
   });
 });

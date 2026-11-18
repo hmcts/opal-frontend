@@ -150,11 +150,7 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     super();
 
     effect(() => {
-      const maxLength = this.accountNotesMaxLength();
-
-      if (this.form) {
-        this.updateAccountNotesValidation(maxLength);
-      }
+      this.updateAccountNotesValidation(this.accountNotesMaxLength());
     });
   }
 

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
@@ -942,5 +943,17 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
         (error: { fieldId: string }) => error.fieldId === 'fm_fp_account_comments_notes_notes',
       ),
     ).toBe(false);
+  });
+
+  it('should safely return when the fixed penalty account notes control is missing', () => {
+    const originalForm = component.form;
+
+    try {
+      component.form = new FormGroup({});
+
+      expect(() => component['updateAccountNotesValidation'](500)).not.toThrow();
+    } finally {
+      component.form = originalForm;
+    }
   });
 });

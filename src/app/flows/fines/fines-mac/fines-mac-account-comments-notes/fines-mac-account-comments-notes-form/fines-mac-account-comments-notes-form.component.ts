@@ -79,11 +79,7 @@ export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseC
     super();
 
     effect(() => {
-      const maxLength = this.accountNotesMaxLength();
-
-      if (this.form) {
-        this.updateAccountNotesValidation(maxLength);
-      }
+      this.updateAccountNotesValidation(this.accountNotesMaxLength());
     });
   }
 
@@ -109,7 +105,7 @@ export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseC
    * @param maxLength - The maximum number of characters allowed for account notes.
    */
   private updateAccountNotesValidation(maxLength: number): void {
-    const notesControl = this.form.get('fm_account_comments_notes_notes');
+    const notesControl = this.form?.get('fm_account_comments_notes_notes');
 
     if (!notesControl) return;
 
