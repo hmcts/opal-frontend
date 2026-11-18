@@ -151,14 +151,14 @@ describe('FinesSuspenseItemSearchComponent', () => {
     fixture.detectChanges();
     const store = TestBed.inject(FinesSuspenseItemStore);
     expect(store.unsavedChanges()).toBe(false);
-    expect(component.canDeactivate()).toBe(true);
+    expect(component['canDeactivate']()).toBe(true);
     const child = fixture.debugElement.query(By.directive(FinesSuspenseItemSearchFormComponent)).componentInstance;
     child.form.markAsDirty();
     child.form.setValue({ fsis_business_unit_id: 22, fsis_suspense_reference_number: '1234' });
-    expect(component.canDeactivate()).toBe(false);
+    expect(component['canDeactivate']()).toBe(false);
     expect(store.unsavedChanges()).toBe(true);
     fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-    expect(component.canDeactivate()).toBe(true);
+    expect(component['canDeactivate']()).toBe(true);
     expect(store.unsavedChanges()).toBe(false);
   });
 
@@ -173,11 +173,11 @@ describe('FinesSuspenseItemSearchComponent', () => {
     child.form.markAsDirty();
     child.form.setValue({ fsis_business_unit_id: 22, fsis_suspense_reference_number: '1234' });
     fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-    expect(component.canDeactivate()).toBe(true);
+    expect(component['canDeactivate']()).toBe(true);
 
     child.form.get(field)!.setValue(value);
 
-    expect(component.canDeactivate()).toBe(false);
+    expect(component['canDeactivate']()).toBe(false);
     expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(true);
   });
 
@@ -191,11 +191,11 @@ describe('FinesSuspenseItemSearchComponent', () => {
     child.form.markAsDirty();
     child.form.setValue({ fsis_business_unit_id: 22, fsis_suspense_reference_number: '1234' });
     fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-    expect(component.canDeactivate()).toBe(true);
+    expect(component['canDeactivate']()).toBe(true);
 
     response.error(new Error('Request failed'));
 
-    expect(component.canDeactivate()).toBe(false);
+    expect(component['canDeactivate']()).toBe(false);
     expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(true);
   });
 
@@ -203,7 +203,7 @@ describe('FinesSuspenseItemSearchComponent', () => {
     fixture.detectChanges();
     const store = TestBed.inject(FinesSuspenseItemStore);
     component.handleUnsavedChanges(true);
-    expect(component.canDeactivate()).toBe(false);
+    expect(component['canDeactivate']()).toBe(false);
     expect(store.unsavedChanges()).toBe(true);
 
     fixture.destroy();

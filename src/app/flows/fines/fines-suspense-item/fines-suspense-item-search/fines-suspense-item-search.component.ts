@@ -4,6 +4,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, inject, DestroyRef, viewChild } from '@angular/core';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
+import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { FinesSuspenseItemStore } from '../stores/fines-suspense-item.store';
 import { IFinesSuspenseItemSearchFormState } from './interfaces/fines-suspense-item-search-form-state.interface';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,12 +19,12 @@ import { FinesSuspenseItemSearchFormComponent } from './fines-suspense-item-sear
   templateUrl: './fines-suspense-item-search.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesSuspenseItemSearchComponent implements OnInit, OnDestroy {
+export class FinesSuspenseItemSearchComponent extends AbstractFormParentBaseComponent implements OnInit, OnDestroy {
   private readonly opalFines = inject(OpalFines);
   private readonly destroyRef = inject(DestroyRef);
   private readonly suspenseItemStore = inject(FinesSuspenseItemStore);
-  private readonly router = inject(Router);
-  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly navigationRouter = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly searchForm = viewChild.required(FinesSuspenseItemSearchFormComponent);
 
   protected readonly financeDashboardRoute = [
@@ -35,14 +36,14 @@ export class FinesSuspenseItemSearchComponent implements OnInit, OnDestroy {
 
   public businessUnitAutoCompleteItems: IAlphagovAccessibleAutocompleteItem[] = [];
   public initialBusinessUnitId: number | null = null;
-  public stateUnsavedChanges = false;
+  public override stateUnsavedChanges = false;
 
   /**
    * Uses the BUs already loaded by the route resolver. Build the options before
    * restoring the selection so a sole BU can be selected on the first visit.
    */
   private initialiseBusinessUnits(): void {
-    const businessUnits: IOpalFinesBusinessUnitRefData = this.activatedRoute.snapshot.data['businessUnits'];
+    const businessUnits: IOpalFinesBusinessUnitRefData = this.route.snapshot.data['businessUnits'];
     this.businessUnitAutoCompleteItems = businessUnits.refData.map((businessUnit) => ({
       value: businessUnit.business_unit_id,
       name: businessUnit.business_unit_name,
@@ -113,11 +114,6 @@ export class FinesSuspenseItemSearchComponent implements OnInit, OnDestroy {
     this.suspenseItemStore.setUnsavedChanges(unsavedChanges);
   }
 
-  /** Allows the shared route guard to confirm leaving after the user edits the form. */
-  public canDeactivate(): boolean {
-    return !this.stateUnsavedChanges;
-  }
-
   public ngOnInit(): void {
     this.initialiseBusinessUnits();
   }
@@ -131,6 +127,6 @@ export class FinesSuspenseItemSearchComponent implements OnInit, OnDestroy {
    * Returns to the Finance dashboard when the search is cancelled.
    */
   public handleCancel(): void {
-    void this.router.navigate(this.financeDashboardRoute);
+    void this.navigationRouter.navigate(this.financeDashboardRoute);
   }
 }
