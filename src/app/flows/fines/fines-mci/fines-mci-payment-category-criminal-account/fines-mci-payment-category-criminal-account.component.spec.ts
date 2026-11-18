@@ -316,7 +316,7 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
         party_details: { party_id: 'test', organisation_flag: false, individual_details: individual },
         payment_terms: {
           ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK.payment_terms,
-          payment_terms_type: { payment_terms_type_code: 'I', payment_terms_type_display_name: 'Instalments' },
+          payment_terms_type: { payment_terms_type_code: 'B', payment_terms_type_display_name: 'By date' },
           lump_sum_amount: 10,
           instalment_amount: 25,
           effective_date: '05/07/2025',
@@ -427,12 +427,12 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
       },
     );
 
-    it('uses by-date terms without instalment-only rows', () => {
+    it.each([null, 0])('uses by-date terms without instalment-only rows when the lump sum is %s', (lumpSum) => {
       store.setSelectedCriminalAccountAtAGlance({
         ...store.selectedCriminalAccountAtAGlance()!,
         payment_terms: {
           payment_terms_type: { payment_terms_type_code: 'B', payment_terms_type_display_name: 'By date' },
-          lump_sum_amount: null,
+          lump_sum_amount: lumpSum,
           instalment_amount: null,
           instalment_period: null,
           effective_date: '2025-07-05',
@@ -451,13 +451,17 @@ describe('FinesMciPaymentCategoryCriminalAccountComponent', () => {
         ...store.selectedCriminalAccountAtAGlance()!,
         payment_terms: {
           ...store.selectedCriminalAccountAtAGlance()!.payment_terms,
+          payment_terms_type: { payment_terms_type_code: 'I', payment_terms_type_display_name: 'Instalments' },
           lump_sum_amount: null,
           instalment_amount: null,
         },
       });
       const { value } = render();
       expect(value('Payment terms')).toBe('Instalments');
+      expect(value('Frequency')).toBe('Monthly');
       expect(value('Instalments')).toBe('—');
+      expect(value('Start date')).toBe('05 July 2025');
+      expect(value('Pay by date')).toBeUndefined();
     });
 
     it.each(['CS', 'WO', 'TO', 'TA', 'TS'])(

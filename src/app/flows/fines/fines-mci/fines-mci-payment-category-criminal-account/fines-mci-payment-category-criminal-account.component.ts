@@ -36,6 +36,7 @@ import {
 } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { DateFormatPipe } from '@hmcts/opal-frontend-common/pipes/date-format';
 import { MonetaryPipe } from '@hmcts/opal-frontend-common/pipes/monetary';
+import { FINES_PAYMENT_TERMS_TYPE_CODE_MAP } from '../../constants/fines-payment-terms-type-code-map.constant';
 import { FINES_ROUTING_PATHS } from '../../routing/constants/fines-routing-paths.constant';
 import { FINES_ACC_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
@@ -131,7 +132,12 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
           : this.joinName([alias.forenames, alias.surname?.toUpperCase()]),
       );
     const terms = account?.payment_terms;
-    const instalmentBased = terms?.payment_terms_type?.payment_terms_type_code === 'I';
+    const paymentTermsCode = terms?.payment_terms_type?.payment_terms_type_code;
+    const lumpSumPlusInstalments =
+      paymentTermsCode === FINES_PAYMENT_TERMS_TYPE_CODE_MAP.lumpSumPlusInstalments &&
+      (terms?.lump_sum_amount ?? 0) > 0;
+    const instalmentBased =
+      paymentTermsCode === FINES_PAYMENT_TERMS_TYPE_CODE_MAP.instalmentsOnly || lumpSumPlusInstalments;
     const address = account?.address;
     const notes = account?.comments_and_notes;
     const balance =
@@ -167,7 +173,7 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
       {
         label: 'Payment terms',
         values: [
-          instalmentBased && terms?.lump_sum_amount
+          lumpSumPlusInstalments
             ? 'Lump sum plus instalments'
             : terms?.payment_terms_type?.payment_terms_type_display_name,
         ],
