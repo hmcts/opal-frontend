@@ -30,6 +30,7 @@ export const OPAL_FINES_PATHS: IOpalFinesPaths = {
   businessUnitOutstandingAutoPaymentCount: `${baseUrl}${businessUnit}${outstandingAutoPaymentCount}`,
   localJusticeAreaRefData: `${baseUrl}${localJusticeArea}`,
   courtRefData: `${baseUrl}${courtPath}`,
+  courtFees: `${baseUrl}court-fees`,
   offencesRefData: `${baseUrl}${offences}`,
   resultsRefData: `${baseUrl}${results}`,
   majorCreditorRefData: `${baseUrl}${majorCreditor}`,

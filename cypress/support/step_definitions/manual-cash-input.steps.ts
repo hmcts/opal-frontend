@@ -75,6 +75,64 @@ Then('I see Court Fee Details', () => {
   manualCashInputFlow().assertPaymentCategoryDetailsAreDisplayed('courtFee');
 });
 
+When('I submit a CF001 court fee payment of {string} for {string} items', (amount: string, numberOfItems: string) => {
+  manualCashInputFlow().submitCourtFeePayment(amount, numberOfItems);
+});
+
+Then('I see Court Fee Payment Details', () => {
+  manualCashInputFlow().assertCourtFeePaymentDetailsIsDisplayed();
+});
+
+Then('I see Court Fee Overpayment\\/Underpayment Confirmation', () => {
+  manualCashInputFlow().assertCourtFeeOverUnderpaymentIsDisplayed();
+});
+
+Then('the confirmation identifies the payment as an {string}', (type: 'overpayment' | 'underpayment') => {
+  manualCashInputFlow().assertCourtFeePaymentTypeIsDisplayed(type);
+});
+
+Then(
+  'the {string} confirmation banner shows a {string} {word}',
+  (banner: 'information' | 'warning', amount: string, type: 'overpayment' | 'underpayment') => {
+    manualCashInputFlow().assertCourtFeeDifferenceBannerIsDisplayed(banner, amount, type);
+  },
+);
+
+Then(
+  'the confirmation shows court fee {string}, amount {string}, and {string} items',
+  (courtFee: string, amount: string, numberOfItems: string) => {
+    manualCashInputFlow().assertCourtFeePaymentSummaryIsDisplayed(courtFee, amount, numberOfItems);
+  },
+);
+
+Then('the overpayment confirmation offers Confirm and Cancel', () => {
+  manualCashInputFlow().assertOverpaymentConfirmationActionsAreDisplayed();
+});
+
+When('I confirm the overpayment', () => {
+  manualCashInputFlow().confirmOverpayment();
+});
+
+When('I cancel the overpayment', () => {
+  manualCashInputFlow().cancelOverpayment();
+});
+
+Then('the underpayment confirmation offers Cancel and return to till and Go back', () => {
+  manualCashInputFlow().assertUnderpaymentConfirmationActionsAreDisplayed();
+});
+
+When('I cancel the underpayment and return to the till', () => {
+  manualCashInputFlow().cancelUnderpaymentAndReturnToTill();
+});
+
+When('I go back from the Court Fee confirmation', () => {
+  manualCashInputFlow().goBackFromCourtFeeConfirmation();
+});
+
+Then('the Court Fee Details form is blank', () => {
+  manualCashInputFlow().assertCourtFeeDetailsFormIsBlank();
+});
+
 Then('I see Suspense Details', () => {
   manualCashInputFlow().assertPaymentCategoryDetailsAreDisplayed('suspense');
 });
