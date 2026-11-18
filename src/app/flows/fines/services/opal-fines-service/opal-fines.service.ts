@@ -1458,6 +1458,25 @@ export class OpalFines {
     return this.http.delete<void>(url, { headers, body: payload });
   }
 
+  /** Removes an APR using the current defendant-account version for optimistic locking. */
+  public deleteApr(
+    accountId: number,
+    alternatePaymentReferenceId: number,
+    version: string,
+  ): Observable<IOpalFinesAprResponse> {
+    return this.http
+      .delete<IOpalFinesApr>(
+        `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/alternate-payment-references/${alternatePaymentReferenceId}`,
+        { ...this.buildIfMatchHeader(version), observe: 'response' },
+      )
+      .pipe(
+        map((response) => ({
+          reference: response.body!,
+          version: this.extractEtagVersion(response.headers),
+        })),
+      );
+  }
+
   /**
    * Retrieves the minor creditor account header data for a specific account ID.
    * This method makes an HTTP GET request to fetch the header summary for the specified minor creditor account.
