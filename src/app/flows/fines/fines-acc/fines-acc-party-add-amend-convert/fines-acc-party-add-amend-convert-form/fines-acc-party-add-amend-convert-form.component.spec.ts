@@ -108,9 +108,9 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     registrationControl?.setValue('12345678');
 
     expect(registrationControl?.hasError('maxlength')).toBe(true);
-    expect(enabledComponent.fieldErrors.facc_party_add_amend_convert_vehicle_registration_mark['maxlength'].message).toBe(
-      'Vehicle registration must be 7 characters or fewer',
-    );
+    expect(
+      enabledComponent.fieldErrors.facc_party_add_amend_convert_vehicle_registration_mark['maxlength'].message,
+    ).toBe('Vehicle registration must be 7 characters or fewer');
 
     enabledFixture.destroy();
   });

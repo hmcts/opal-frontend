@@ -99,9 +99,9 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     registrationControl?.setValue('12345678');
 
     expect(registrationControl?.hasError('maxlength')).toBe(true);
-    expect(
-      enabledComponent.fieldErrors.fm_parent_guardian_details_vehicle_registration_mark['maxlength'].message,
-    ).toBe('Registration number must be 7 characters or fewer');
+    expect(enabledComponent.fieldErrors.fm_parent_guardian_details_vehicle_registration_mark['maxlength'].message).toBe(
+      'Registration number must be 7 characters or fewer',
+    );
 
     enabledFixture.destroy();
   });
