@@ -8,6 +8,7 @@ import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constan
 import { fetchBusinessUnitsResolver } from '@app/flows/fines/routing/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
 import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.constant';
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
+import { finesMciCriminalAccountStateGuard } from './guards/fines-mci-criminal-account-state.guard';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
 import { finesMciCourtFeesResolver } from './resolvers/fines-mci-court-fees.resolver';
 import { finesMciCriminalAccountsResolver } from './resolvers/fines-mci-criminal-accounts/fines-mci-criminal-accounts.resolver';
@@ -156,7 +157,12 @@ export const routing: Routes = [
                           import('../fines-mci-payment-category-criminal-account/fines-mci-payment-category-criminal-account.component').then(
                             (c) => c.FinesMciPaymentCategoryCriminalAccountComponent,
                           ),
-                        canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+                        canActivate: [
+                          authGuard,
+                          routePermissionsGuard,
+                          finesMciFlowStateGuard,
+                          finesMciCriminalAccountStateGuard,
+                        ],
                         data: {
                           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
                           title: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalAccount,
