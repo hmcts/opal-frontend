@@ -132,7 +132,7 @@ export const FinesMciStore = signalStore(
           }),
         });
       },
-      /** Holds the court fee draft and retains payment details when editing from the check screen. */
+      /** Holds the court fee draft and retains payment details during a saved-payment edit. */
       setCourtFeeDraft(courtFeeDraft: IFinesMciCourtFeeDraft | null, preservePaymentDetails = false): void {
         const previous = store.courtFeeDraft();
         const changed =
@@ -144,12 +144,11 @@ export const FinesMciStore = signalStore(
         patchState(store, {
           courtFeeDraft,
           ...(changed &&
-            (!courtFeeDraft || !preservePaymentDetails) && {
+            (!courtFeeDraft || (!preservePaymentDetails && !store.editingCourtFeePaymentId())) && {
               courtFeePaymentDetails: null,
               courtFeePaymentOrigin: null,
-              ...(!courtFeeDraft || !store.editingCourtFeePaymentId()
-                ? { courtFeeSuspenseNote: '', editingCourtFeePaymentId: null }
-                : {}),
+              courtFeeSuspenseNote: '',
+              editingCourtFeePaymentId: null,
             }),
         });
       },

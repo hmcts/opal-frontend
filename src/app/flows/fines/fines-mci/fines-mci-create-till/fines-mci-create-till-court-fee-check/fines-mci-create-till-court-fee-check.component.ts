@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit, in
 import { ActivatedRoute, NavigationCancel, NavigationEnd, NavigationError, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
+import { GovukHeadingWithCaptionComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-heading-with-caption';
 import { filter, take } from 'rxjs';
 import {
   MojAlertComponent,
@@ -18,12 +19,14 @@ import { IFinesMciCreateTillPaymentSummaryRow } from '../fines-mci-create-till-p
 import { compareCourtFeeAmounts, comparePayment, formatPounds } from '../utils/fines-mci-court-fee-payment.utils';
 import { FinesMciCreateTillCourtFeeCheckFormComponent } from './fines-mci-create-till-court-fee-check-form/fines-mci-create-till-court-fee-check-form.component';
 import { IFinesMciCourtFeePayment } from '../../stores/interfaces/fines-mci-court-fee-payment.interface';
+import { IFinesMciCourtFeePaymentDetails } from '../../stores/interfaces/fines-mci-court-fee-payment-details.interface';
 
 @Component({
   selector: 'app-fines-mci-create-till-court-fee-check',
   imports: [
     GovukBackLinkComponent,
     GovukCancelLinkComponent,
+    GovukHeadingWithCaptionComponent,
     FinesMciCreateTillPaymentSummaryComponent,
     FinesMciCreateTillCourtFeeCheckFormComponent,
     MojAlertComponent,
@@ -96,23 +99,11 @@ export class FinesMciCreateTillCourtFeeCheckComponent implements OnInit, OnDestr
       });
   }
 
-  /** Builds the court fee summary from the saved drafts and resolved reference data. */
-  public ngOnInit(): void {
-    const draft = this.finesMciStore.courtFeeDraft();
-    const details = this.finesMciStore.courtFeePaymentDetails();
-    const fees = this.activatedRoute.snapshot.data['courtFees'] as IOpalFinesCourtFeesResponse | null | undefined;
-    const mappings = this.activatedRoute.snapshot.data['paymentMappings'] as
-      | IFinesMciPaymentMappings
-      | null
-      | undefined;
-    const fee = fees?.court_fees.find((item) => item.court_fee_id === draft?.courtFeeId);
-    if (!draft || !details || !fee || !mappings || !draft.amountPaid || !draft.numberOfItems) return;
-
-    const amount = compareCourtFeeAmounts(draft.amountPaid, fee.amount, draft.numberOfItems);
-    if (!amount) return;
-    const comparison = comparePayment(draft, fee);
-    if (comparison?.type === 'information') this.overpaymentMessage.set(comparison.message);
-
+  /** Builds the payment and payer rows from the draft and reference mappings. */
+  private buildPaymentDetailsRows(
+    details: IFinesMciCourtFeePaymentDetails,
+    mappings: IFinesMciPaymentMappings,
+  ): IFinesMciCreateTillPaymentSummaryRow[] {
     const empty = '—';
     const payerName =
       details.payerType === 'individual'
@@ -124,13 +115,6 @@ export class FinesMciCreateTillCourtFeeCheckComponent implements OnInit, OnDestr
     const receivedFrom = details.paymentReceivedFrom === 'applicant' ? 'Applicant' : 'Third party';
     const payerType = details.payerType === 'individual' ? 'Individual' : 'Company';
     const rows: IFinesMciCreateTillPaymentSummaryRow[] = [
-      {
-        id: 'court-fee',
-        label: 'Court fee',
-        value: `${fee.court_fee_code} – ${fee.description} (${formatPounds(BigInt(Math.round(fee.amount * 100)), 2)})`,
-      },
-      { id: 'amount', label: 'Amount', value: formatPounds(amount.paid, amount.decimalPlaces) },
-      { id: 'number-of-items', label: 'Number of items', value: draft.numberOfItems.trim() },
       {
         id: 'payment-received-from',
         label: 'Payment received from',
@@ -155,7 +139,39 @@ export class FinesMciCreateTillCourtFeeCheckComponent implements OnInit, OnDestr
       { id: 'payer-name', label: 'Payer name', value: payerName?.trim() || empty },
       { id: 'address', label: 'Address', value: address || empty },
     );
-    this.summaryRows.set(rows);
+    return rows;
+  }
+
+  /** Builds the court fee summary from the saved drafts and resolved reference data. */
+  private setupPaymentSummary(): void {
+    const draft = this.finesMciStore.courtFeeDraft();
+    const details = this.finesMciStore.courtFeePaymentDetails();
+    const fees = this.activatedRoute.snapshot.data['courtFees'] as IOpalFinesCourtFeesResponse | null | undefined;
+    const mappings = this.activatedRoute.snapshot.data['paymentMappings'] as
+      | IFinesMciPaymentMappings
+      | null
+      | undefined;
+    const fee = fees?.court_fees.find((item) => item.court_fee_id === draft?.courtFeeId);
+    if (!draft || !details || !fee || !mappings || !draft.amountPaid || !draft.numberOfItems) return;
+    const amount = compareCourtFeeAmounts(draft.amountPaid, fee.amount, draft.numberOfItems);
+    if (!amount) return;
+    const comparison = comparePayment(draft, fee);
+    if (comparison?.type === 'information') this.overpaymentMessage.set(comparison.message);
+    this.summaryRows.set([
+      {
+        id: 'court-fee',
+        label: 'Court fee',
+        value: `${fee.court_fee_code} – ${fee.description} (${formatPounds(BigInt(Math.round(fee.amount * 100)), 2)})`,
+      },
+      { id: 'amount', label: 'Amount', value: formatPounds(amount.paid, amount.decimalPlaces) },
+      { id: 'number-of-items', label: 'Number of items', value: draft.numberOfItems.trim() },
+      ...this.buildPaymentDetailsRows(details, mappings),
+    ]);
+  }
+
+  /** Sets up the payment review when the screen opens. */
+  public ngOnInit(): void {
+    this.setupPaymentSummary();
   }
 
   /** Allows an intentional edit while protecting other route changes. */

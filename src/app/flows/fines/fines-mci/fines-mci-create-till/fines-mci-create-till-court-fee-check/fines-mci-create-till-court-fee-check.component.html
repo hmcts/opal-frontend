@@ -2,8 +2,10 @@
   <opal-lib-govuk-back-link (clickEvent)="handleBack()"></opal-lib-govuk-back-link>
 </div>
 <div class="govuk-grid-column-two-thirds">
-  <span class="govuk-caption-l">{{ finesMciStore.businessUnit()?.business_unit_name }}</span>
-  <h1 class="govuk-heading-l">Check payment</h1>
+  <opal-lib-govuk-heading-with-caption
+    [captionText]="finesMciStore.businessUnit()?.business_unit_name ?? ''"
+    headingText="Check payment"
+  ></opal-lib-govuk-heading-with-caption>
   @if (isNavigating()) {
     <output class="govuk-body govuk-!-display-block">Loading payment details</output>
   } @else if (summaryRows(); as rows) {

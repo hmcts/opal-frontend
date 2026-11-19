@@ -4,10 +4,11 @@ import {
   GovukSummaryListRowComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { IFinesMciCreateTillPaymentSummaryRow } from './interfaces/fines-mci-create-till-payment-summary-row.interface';
+import { GovukSummaryCardListComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
 
 @Component({
   selector: 'app-fines-mci-create-till-payment-summary',
-  imports: [GovukSummaryListComponent, GovukSummaryListRowComponent],
+  imports: [GovukSummaryCardListComponent, GovukSummaryListComponent, GovukSummaryListRowComponent],
   templateUrl: './fines-mci-create-till-payment-summary.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

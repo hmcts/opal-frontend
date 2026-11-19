@@ -266,6 +266,7 @@ describe('FinesMciStore', () => {
     store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: '30', numberOfItems: '2' });
     expect(store.editingCourtFeePaymentId()).toBe(paymentId);
     expect(store.courtFeeSuspenseNote()).toBe('Original note');
+    expect(store.courtFeePaymentDetails()).toEqual(payment.paymentDetails);
     const updated = { ...payment, suspenseNote: 'Updated note' };
     expect(store.saveCourtFeePayment(tillId, updated, 'missing')).toBe(false);
     expect(store.tills()[0].payments).toEqual([{ paymentId, journey: 'courtFee', courtFee: payment }]);
