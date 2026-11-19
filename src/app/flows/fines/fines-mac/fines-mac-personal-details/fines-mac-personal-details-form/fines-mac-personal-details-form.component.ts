@@ -194,7 +194,9 @@ export class FinesMacPersonalDetailsFormComponent
       this.age = this.dateService.calculateAge(dateOfBirth);
       this.ageLabel = this.age >= 18 ? 'Adult' : 'Youth';
 
-      this.finesMacStore.resetPaymentTermsDaysInDefault();
+      if (getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] !== true) {
+        this.finesMacStore.resetPaymentTermsDaysInDefault();
+      }
     }
   }
 

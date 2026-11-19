@@ -13,4 +13,19 @@ export class ManualCashInputSearchResultsFlow {
   public openFirstAccountResultInNewTab(): void {
     this.actions.openFirstAccountResultInNewTab();
   }
+
+  /** Submits conflicting account-number and company criteria to open the Invalid Search Combination screen. */
+  public submitCombinedCompanySearch(): void {
+    this.actions.submitCombinedCompanySearch();
+  }
+
+  /** Selects Go back from Invalid Search Combination and confirms company criteria are restored. */
+  public returnToSearchFromInvalidCombination(): void {
+    this.actions.returnToSearchFromInvalidCombination();
+  }
+
+  /** Confirms Search for an account returns with the submitted company criteria and tab retained. */
+  public assertCompanySearchCriteriaRetained(): void {
+    this.actions.assertCompanySearchCriteriaRetained();
+  }
 }
