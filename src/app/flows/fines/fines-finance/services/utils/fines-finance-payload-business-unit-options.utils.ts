@@ -1,12 +1,12 @@
 import type { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common/components/alphagov/alphagov-accessible-autocomplete/interfaces';
 import type { IOpalUserBusinessUnitUser } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { FINES_PERMISSIONS } from '@constants/fines-permissions.constant';
-import type { IOpalFinesBusinessUnit } from '../../../services/opal-fines-service/interfaces/opal-fines-business-unit.interface';
+import type { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 
 /**
  * Maps business-unit reference data to alphabetic name/ID options without mutating it.
  * @param businessUnits - Business units used for filter choices or display labels.
- * @returns Name/ID options using string values for the filter controls.
+ * @returns Name/ID options using string IDs for the autocomplete.
  */
 export function mapBusinessUnitsToOptions(
   businessUnits: IOpalFinesBusinessUnit[],

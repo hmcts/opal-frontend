@@ -506,7 +506,7 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
       let tillsCall = 0;
 
       cy.intercept('GET', '/opal-fines-service/interface-jobs/summary*', (request) => {
-        if (request.query.statuses === 'IGNORED') {
+        if (request.query['statuses'] === 'IGNORED') {
           request.reply({ interface_jobs: [] });
           return;
         }
@@ -618,7 +618,7 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
     },
     () => {
       cy.intercept({ method: 'GET', pathname: '/opal-fines-service/interface-jobs/summary' }, (request) => {
-        if (request.query.statuses === 'IGNORED') {
+        if (request.query['statuses'] === 'IGNORED') {
           request.reply({ interface_jobs: [] });
           return;
         }
@@ -945,7 +945,7 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
     },
     () => {
       cy.intercept({ method: 'GET', pathname: '/opal-fines-service/interface-jobs/summary' }, (request) => {
-        if (request.query.statuses === 'IGNORED') {
+        if (request.query['statuses'] === 'IGNORED') {
           request.alias = 'getIgnoredFiles';
           request.reply({
             interface_jobs: [
@@ -1092,7 +1092,7 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
     },
     () => {
       cy.intercept({ method: 'GET', pathname: '/opal-fines-service/interface-jobs/summary' }, (request) => {
-        if (request.query.statuses === 'IGNORED') {
+        if (request.query['statuses'] === 'IGNORED') {
           request.alias = 'getIgnoredFiles';
           request.reply({
             interface_jobs: [
