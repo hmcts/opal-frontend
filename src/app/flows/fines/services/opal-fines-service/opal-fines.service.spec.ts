@@ -181,7 +181,7 @@ describe('OpalFines', () => {
     httpMock.expectOne(url).flush(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
     service.clearCache('suspenseItemSummaryCache$');
     const received = vi.fn();
-    const freshSummary = { ...OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK, balance: 42 };
+    const freshSummary = { ...OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK, balance: '42.00' };
     service.getSuspenseItemSummary(22, '001234').subscribe(received);
     httpMock.expectOne(url).flush(freshSummary);
     expect(received).toHaveBeenCalledWith(freshSummary);

@@ -1,6 +1,6 @@
 export interface IOpalFinesSuspenseItemSummary {
   suspense_item_id: number;
-  suspense_item_number: number;
+  suspense_item_number: string;
   business_unit_details: {
     business_unit_id: number;
     business_unit_name: string;
@@ -10,5 +10,5 @@ export interface IOpalFinesSuspenseItemSummary {
     item_type: string;
     item_type_display_name: string;
   };
-  balance: number;
+  balance: string;
 }

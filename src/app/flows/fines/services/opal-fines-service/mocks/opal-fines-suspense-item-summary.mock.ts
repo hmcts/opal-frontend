@@ -2,7 +2,7 @@ import { IOpalFinesSuspenseItemSummary } from '../interfaces/opal-fines-suspense
 
 export const OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK: IOpalFinesSuspenseItemSummary = {
   suspense_item_id: 1001,
-  suspense_item_number: 1234,
+  suspense_item_number: '1234',
   business_unit_details: {
     business_unit_id: 22,
     business_unit_name: 'Camden and Islington',
@@ -12,5 +12,5 @@ export const OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK: IOpalFinesSuspenseItemSummar
     item_type: 'UN',
     item_type_display_name: 'Unidentified',
   },
-  balance: 125.5,
+  balance: '125.50',
 };
