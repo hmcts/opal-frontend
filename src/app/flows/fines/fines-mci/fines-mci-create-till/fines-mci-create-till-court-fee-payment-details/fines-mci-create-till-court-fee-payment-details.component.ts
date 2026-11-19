@@ -97,7 +97,7 @@ export class FinesMciCreateTillCourtFeePaymentDetailsComponent
           FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation,
         ];
         if (previousScreens.some((route) => path.endsWith(`/${route}`))) {
-          this.finesMciStore.setCourtFeePaymentDetails(null);
+          if (!this.finesMciStore.courtFeeReviewStarted()) this.finesMciStore.setCourtFeePaymentDetails(null);
         } else {
           this.finesMciStore.setDraftJourney(null);
         }
@@ -131,9 +131,7 @@ export class FinesMciCreateTillCourtFeePaymentDetailsComponent
   /** Returns to the screen that led to payment details, keeping the court fee draft. */
   public handleBack(): void {
     const destination = this.finesMciStore.courtFeePaymentOrigin() ?? FINES_MCI_ROUTING_PATHS.children.courtFeeDetails;
-    void this.navigateTo(destination).then((navigated) => {
-      if (navigated) this.finesMciStore.setCourtFeePaymentDetails(null);
-    });
+    void this.navigateTo(destination);
   }
 
   /** Returns to the till and discards the court fee draft only after navigation succeeds. */
