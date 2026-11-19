@@ -212,15 +212,6 @@ export const FinesMciStore = signalStore(
         });
         return paymentId;
       },
-      /** Removes a saved payment from its till. */
-      removePayment(paymentId: string): void {
-        patchState(store, {
-          tills: store.tills().map((till) => ({
-            ...till,
-            payments: till.payments.filter((payment) => payment.paymentId !== paymentId),
-          })),
-        });
-      },
       /** Clears the business unit, tills, payment drafts and submitted search criteria. */
       reset(): void {
         patchState(store, {

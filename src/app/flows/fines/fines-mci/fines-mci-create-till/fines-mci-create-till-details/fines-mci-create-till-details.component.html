@@ -53,11 +53,7 @@
                   (click)="$event.preventDefault(); changeSuspensePayment(payment.paymentId)"
                   >Change <span class="govuk-visually-hidden">payment {{ $index + 1 }}</span></a
                 >
-                <span aria-hidden="true" class="govuk-!-margin-left-2 govuk-!-margin-right-2">|</span>
               }
-              <a href="#" class="govuk-link" (click)="$event.preventDefault(); removePayment(payment.paymentId)"
-                >Remove <span class="govuk-visually-hidden">payment {{ $index + 1 }}</span></a
-              >
             </td>
           </tr>
         }

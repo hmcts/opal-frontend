@@ -112,11 +112,6 @@ export class FinesMciCreateTillDetailsComponent {
     this.navigateTo(FINES_MCI_ROUTING_PATHS.children.checkSuspensePayment);
   }
 
-  /** Removes the selected payment from the current till. */
-  public removePayment(paymentId: string): void {
-    this.finesMciStore.removePayment(paymentId);
-  }
-
   /** Opens the cancel journey after suppressing the link's default navigation. */
   public cancel(event: Event): void {
     event.preventDefault();

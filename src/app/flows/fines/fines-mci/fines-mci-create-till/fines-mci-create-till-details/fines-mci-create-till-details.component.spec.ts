@@ -85,7 +85,6 @@ describe('FinesMciCreateTillDetailsComponent', () => {
     ).toEqual(['Suspense', 'Acme Org', '£50.00', 'Defendant', 'Cheque']);
     expect(Array.from(table.querySelectorAll('tbody a'), (link) => link.textContent?.trim())).toEqual([
       'Change payment 1',
-      'Remove payment 1',
     ]);
 
     table.querySelector<HTMLAnchorElement>('a')!.click();
@@ -159,27 +158,16 @@ describe('FinesMciCreateTillDetailsComponent', () => {
     ).toBe('—');
   });
 
-  it('removes only the selected payment and shows the empty state after the last removal', () => {
+  it('shows suspense and court fee payments without a Remove action', () => {
     const store = TestBed.inject(FinesMciStore);
     store.setSuspensePayment(suspensePayment);
     store.saveSuspensePayment();
-    store.setSuspensePayment({ ...suspensePayment, amount: '25.00' });
-    store.saveSuspensePayment();
+    store.addPayment(store.ensureTill(), 'courtFee');
     fixture.detectChanges();
     const page = fixture.nativeElement as HTMLElement;
     expect(page.querySelectorAll('#fines-mci-payments tbody tr')).toHaveLength(2);
-
-    page.querySelector<HTMLAnchorElement>('#fines-mci-payments tbody tr:first-child a:last-of-type')!.click();
-    fixture.detectChanges();
-    expect(store.tills()[0].payments).toHaveLength(1);
-    expect(page.querySelectorAll('#fines-mci-payments tbody tr')).toHaveLength(1);
-    expect(page.querySelector('#fines-mci-payments')?.textContent).toContain('£25.00');
-
-    page.querySelector<HTMLAnchorElement>('#fines-mci-payments tbody tr a:last-of-type')!.click();
-    fixture.detectChanges();
-    expect(store.tills()[0].payments).toHaveLength(0);
-    expect(page.querySelector('#fines-mci-payments')).toBeNull();
-    expect(page.textContent).toContain('There are no payments');
+    expect(page.querySelector('#fines-mci-payments')?.textContent).not.toContain('Remove');
+    expect(page.querySelectorAll('#fines-mci-payments tbody a')).toHaveLength(1);
   });
 
   it.each([
@@ -192,8 +180,7 @@ describe('FinesMciCreateTillDetailsComponent', () => {
     const row = (fixture.nativeElement as HTMLElement).querySelector('#fines-mci-payments tbody tr')!;
     expect(row.querySelectorAll('td')[0].textContent).toBe(category);
     expect(row.querySelectorAll('td')[1].textContent?.trim()).toBe('—');
-    expect(row.querySelectorAll('a')).toHaveLength(1);
-    expect(row.querySelector('a')?.textContent).toContain('Remove');
+    expect(row.querySelectorAll('a')).toHaveLength(0);
   });
 
   it('should block navigation away from the till details page', () => {
