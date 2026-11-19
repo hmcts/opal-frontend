@@ -276,6 +276,11 @@ function reachAddAnotherEnforcementActionPrompt(
   cy.get(ENF_ACTION_ADD.addEnforcementActionButton).click();
 
   cy.wait('@postAddEnforcementAction');
+  cy.get(ENF_ACTION_SELECT.newEnforcementActionPageTitle).should(
+    'contain.text',
+    'Do you want to add a new enforcement action?',
+  );
+  cy.get(ENF_ACTION_SELECT.newEnforcementActionRadioGroup).should('be.visible');
 }
 
 const EMPLOYMENT_REQUIRED_ACTION = {
@@ -603,9 +608,9 @@ describe(
           globalStoreFactory: () => buildSeededGlobalStore(USER_STATE_MOCK_PERMISSION_BU77),
         });
 
+        cy.wait('@getDefendantHeaderSummary');
         cy.wait('@getEnforcementStatus').its('response.statusCode').should('eq', 200);
         cy.get(ENF.enforcementOverviewList).should('be.visible');
-
         cy.get(ENF.addEnforcementActionLink).should('exist').click();
 
         cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
@@ -2126,11 +2131,9 @@ describe(
 
         cy.get(ENF_ACTION_SELECT.newEnforcementActionContinueButton).click();
 
-        cy.get(ENF_ACTION_SELECT.newEnforcementActionErrorSummary).should('be.visible');
-        cy.get(ENF_ACTION_SELECT.newEnforcementActionErrorSummary).should(
-          'contain.text',
-          'Select whether you want to add a new enforcement action',
-        );
+        cy.get(ENF_ACTION_SELECT.errorSummary)
+          .should('be.visible')
+          .and('contain.text', 'Select whether you want to add a new enforcement action');
 
         cy.get(ENF_ACTION_SELECT.newEnforcementActionErrorMessage).should(
           'contain.text',
@@ -2161,8 +2164,11 @@ describe(
         cy.get(ENF_ACTION_SELECT.newEnforcementActionYesRadio).check({ force: true });
         cy.get(ENF_ACTION_SELECT.newEnforcementActionContinueButton).click();
 
-        cy.get('@routerNavigate').should('have.been.calledWithMatch', ['enforcement/action/select']);
-        cy.wait('@getNextPermittedEnfActions').its('response.statusCode').should('eq', 200);
+        cy.get('@routerNavigate')
+          .should('have.been.calledWithMatch', ['enforcement/action/select'])
+          .its('lastCall.returnValue')
+          .then((navigation) => navigation as Promise<boolean>)
+          .should('equal', true);
         cy.get(ENF_ACTION_SELECT.pageTitle).should('contain.text', 'Add enforcement action');
         cy.get(ENF_ACTION_SELECT.actionDropdown).should('be.visible');
       },
@@ -2190,7 +2196,11 @@ describe(
 
         cy.get('@routerNavigate').should('have.been.calledWithMatch', ['details'], { fragment: 'enforcement' });
         cy.get(ENF.enforcementOverviewList).should('be.visible');
-        cy.get(ENF.enforcementActionValue).should('contain.text', 'WDN');
+        cy.get(ENF.enforcementActionValue)
+          .should('be.visible')
+          .and('contain.text', 'Warrant of detention')
+          .and('contain.text', '(WDN)');
+        cy.get(ENF.addEnforcementActionLink).should('be.visible');
       },
     );
   },
@@ -2234,7 +2244,7 @@ describe(
         }).as('getWarrantOfControlResult');
 
         setupAccountEnquiryComponent({ ...COMPONENT_PROPERTIES, accountId });
-
+        cy.wait('@getDefendantHeaderSummary');
         cy.wait('@getEnforcementStatus').its('response.statusCode').should('eq', 200);
         cy.get(ENF.enforcementOverviewList).should('be.visible');
         cy.get(ENF.addEnforcementActionLink).click();
