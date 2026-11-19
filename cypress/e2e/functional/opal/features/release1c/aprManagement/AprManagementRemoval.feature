@@ -37,7 +37,8 @@ Feature: Remove alternate payment references
   Rule: Read-only alternate payment reference
     # Requires the AprReadOnlyFixture test account with a consolidated ACC reference in the deployment.
     @skip
-    Scenario: A read-only consolidated reference has no Remove action
+    Scenario: A read-only consolidated reference is unavailable for removal
       When the Payment terms tab is displayed for defendant account with last name "AprReadOnlyFixture"
-      And I open APR Management from Payment terms
-      Then consolidated reference "APRREADONLY" is visible without a Remove action
+      And I open APR Management for the read-only reference
+      Then I should see the header containing text "Manage alternate payment references"
+      And the read-only consolidated reference "APRREADONLY" cannot be removed

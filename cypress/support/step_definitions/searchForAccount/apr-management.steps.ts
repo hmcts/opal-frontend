@@ -68,6 +68,10 @@ When('I cancel removal of the alternate payment reference', () => {
   aprManagementActions().cancelRemoval();
 });
 
-Then('consolidated reference {string} is visible without a Remove action', (reference: string) => {
-  aprManagementActions().assertConsolidatedReferenceCannotBeRemoved(reference);
+When('I open APR Management for the read-only reference', () => {
+  aprManagementActions().openWithReferences();
+});
+
+Then('the read-only consolidated reference {string} cannot be removed', (reference: string) => {
+  aprManagementActions().assertReadOnlyReferenceCannotBeRemoved(reference);
 });

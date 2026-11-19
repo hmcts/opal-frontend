@@ -80,12 +80,19 @@ export class AprManagementActions {
     cy.get(APR.cancelRemoval).should('be.visible').click();
   }
 
-  public assertConsolidatedReferenceCannotBeRemoved(reference: string): void {
-    cy.get(APR.consolidatedTable)
-      .contains(APR.referenceCell, reference)
-      .should('be.visible')
-      .closest('tr')
-      .find(APR.removeLink)
-      .should('not.exist');
+  public openWithReferences(): void {
+    cy.intercept('GET', '**/defendant-accounts/*/alternate-payment-references').as('listAprs');
+    this.openFromPaymentTerms();
+  }
+
+  public assertReadOnlyReferenceCannotBeRemoved(reference: string): void {
+    cy.wait('@listAprs')
+      .its('response.body')
+      .should((references) => {
+        expect(Cypress._.find(references, { apr_text: reference, relationship: 'CONSOLIDATED', category: 'ACC' })).to
+          .exist;
+      });
+    cy.contains(APR.referenceCell, reference).should('not.exist');
+    cy.contains(APR.removeLink, reference).should('not.exist');
   }
 }
