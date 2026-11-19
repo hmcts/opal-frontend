@@ -364,11 +364,11 @@ Feature: Defendant Adult Youth Search And Matches Journeys
     When I view the first child account record
     Then I am presented with the details of the selected child account
     And I am notified that the selected child account is closed because it was consolidated
-    @R1CUatTechJCDE
+    @R1BDrop3UatTechJCDE
     Examples:
       | LEGACY_CONSOLIDATED_ACCOUNT_NUMBER | LEGACY_CONSOLIDATED_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_CONSOLIDATED_VALIDATION_FIXTURE                        |
       | 26000289W                          | Mr Henry CPGB-ADULT-B-H            | West London   | accountEnquiry/legacyDefendant/jcde/consolidated-account.json |
-    @R1CUatTechPreprod
+    @R1BDrop3UatTechPreprod
     Examples:
       | LEGACY_CONSOLIDATED_ACCOUNT_NUMBER | LEGACY_CONSOLIDATED_SUMMARY_HEADER | BUSINESS_UNIT | LEGACY_CONSOLIDATED_VALIDATION_FIXTURE                           |
       | 26000060B                          | Mr Steve Consolidate-sub           | West London   | accountEnquiry/legacyDefendant/preprod/consolidated-account.json |
