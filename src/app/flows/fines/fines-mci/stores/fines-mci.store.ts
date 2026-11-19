@@ -32,6 +32,7 @@ export const FinesMciStore = signalStore(
     courtFeePaymentDetails: null as IFinesMciCourtFeePaymentDetails | null,
     courtFeePaymentOrigin: null as FinesMciCourtFeePaymentOrigin | null,
     courtFeeSuspenseNote: '',
+    courtFeeReviewStarted: false,
     editingCourtFeePaymentId: null as string | null,
     suspensePayment: null as IFinesMciSuspensePayment | null,
   })),
@@ -116,6 +117,7 @@ export const FinesMciStore = signalStore(
             courtFeePaymentDetails: null,
             courtFeePaymentOrigin: null,
             courtFeeSuspenseNote: '',
+            courtFeeReviewStarted: false,
             editingCourtFeePaymentId: null,
             suspensePayment: null,
           });
@@ -135,12 +137,13 @@ export const FinesMciStore = signalStore(
             courtFeePaymentDetails: null,
             courtFeePaymentOrigin: null,
             courtFeeSuspenseNote: '',
+            courtFeeReviewStarted: false,
             editingCourtFeePaymentId: null,
           }),
         });
       },
-      /** Holds the court fee draft and retains payment details during a saved-payment edit. */
-      setCourtFeeDraft(courtFeeDraft: IFinesMciCourtFeeDraft | null, preservePaymentDetails = false): void {
+      /** Holds the court fee draft and retains payment details throughout edits after review has started. */
+      setCourtFeeDraft(courtFeeDraft: IFinesMciCourtFeeDraft | null): void {
         const previous = store.courtFeeDraft();
         const changed =
           !courtFeeDraft ||
@@ -151,13 +154,18 @@ export const FinesMciStore = signalStore(
         patchState(store, {
           courtFeeDraft,
           ...(changed &&
-            (!courtFeeDraft || (!preservePaymentDetails && !store.editingCourtFeePaymentId())) && {
+            (!courtFeeDraft || !store.courtFeeReviewStarted()) && {
               courtFeePaymentDetails: null,
               courtFeePaymentOrigin: null,
               courtFeeSuspenseNote: '',
+              courtFeeReviewStarted: false,
               editingCourtFeePaymentId: null,
             }),
         });
+      },
+      /** Keeps review context across repeated court fee edits and confirmation-screen navigation. */
+      startCourtFeeReview(): void {
+        patchState(store, { courtFeeReviewStarted: true });
       },
       /** Stores validated payment details while the user reviews the court fee. */
       setCourtFeePaymentDetails(courtFeePaymentDetails: IFinesMciCourtFeePaymentDetails | null): void {
@@ -188,6 +196,7 @@ export const FinesMciStore = signalStore(
           courtFeePaymentDetails: { ...saved.paymentDetails },
           courtFeePaymentOrigin: null,
           courtFeeSuspenseNote: saved.suspenseNote,
+          courtFeeReviewStarted: true,
           editingCourtFeePaymentId: paymentId,
         });
         return true;
@@ -230,6 +239,7 @@ export const FinesMciStore = signalStore(
           courtFeePaymentDetails: null,
           courtFeePaymentOrigin: null,
           courtFeeSuspenseNote: '',
+          courtFeeReviewStarted: false,
           editingCourtFeePaymentId: null,
         });
         return true;
@@ -262,6 +272,7 @@ export const FinesMciStore = signalStore(
           courtFeePaymentDetails: null,
           courtFeePaymentOrigin: null,
           courtFeeSuspenseNote: '',
+          courtFeeReviewStarted: false,
           editingCourtFeePaymentId: null,
           criminalSearchResults: null,
           selectedCriminalAccount: null,

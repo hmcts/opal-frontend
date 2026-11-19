@@ -78,6 +78,7 @@ export class FinesMciCreateTillDetailsComponent {
       courtFeePaymentDetails: this.finesMciStore.courtFeePaymentDetails(),
       courtFeePaymentOrigin: this.finesMciStore.courtFeePaymentOrigin(),
       courtFeeSuspenseNote: this.finesMciStore.courtFeeSuspenseNote(),
+      courtFeeReviewStarted: this.finesMciStore.courtFeeReviewStarted(),
       editingCourtFeePaymentId: this.finesMciStore.editingCourtFeePaymentId(),
     };
     if (!tillId || !this.finesMciStore.beginCourtFeePaymentEdit(tillId, paymentId)) {

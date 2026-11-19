@@ -75,6 +75,153 @@ describe('Court fee payment details navigation', () => {
 
   afterEach(() => vi.restoreAllMocks());
 
+  /** Configures the real fee, confirmation and review screens for multi-page draft regression tests. */
+  function configureCourtFeeJourney(): Router {
+    const router = TestBed.inject(Router);
+    const routes = router.config[0].children!;
+    const courtFees = {
+      court_fees: [{ court_fee_id: 1, court_fee_code: 'C01', description: 'Court fee', amount: 12.5 }],
+    };
+    Object.assign(routes.find((route) => route.path === 'court-fee-details')!, {
+      component: FinesMciCreateTillCourtFeeDetailsComponent,
+      canDeactivate: [canDeactivateGuard],
+      data: { courtFees },
+    });
+    Object.assign(routes.find((route) => route.path === 'over-underpayment-confirmation')!, {
+      component: FinesMciCreateTillOverUnderpaymentConfirmationComponent,
+      canDeactivate: [canDeactivateGuard],
+      data: { courtFees },
+    });
+    routes.find((route) => route.path === 'check-court-fee')!.data = { courtFees, paymentMappings: mappings };
+    router.resetConfig(router.config);
+    return router;
+  }
+
+  it.each(['direct URL', 'browser history'])(
+    'blocks an underpayment from review via %s without changing the saved payment',
+    async (entry) => {
+      const router = configureCourtFeeJourney();
+      const store = TestBed.inject(FinesMciStore);
+      const tillId = store.tills()[0].tillId;
+      const payment = {
+        ...draft,
+        courtFeeLabel: 'C01 – Court fee (£12.50)',
+        amountLabel: '£25.00',
+        paymentDetails: {
+          paymentReceivedFrom: 'applicant',
+          paymentMethod: 'NC',
+          payerType: 'company',
+          companyName: 'Example Ltd',
+          addressLine1: null,
+          addressLine2: null,
+          addressLine3: null,
+          postcode: null,
+        },
+        suspenseNote: 'Saved note',
+      };
+      store.saveCourtFeePayment(tillId, payment);
+      const paymentId = store.tills()[0].payments[0].paymentId;
+      store.beginCourtFeePaymentEdit(tillId, paymentId);
+      vi.spyOn(window, 'confirm').mockReturnValue(true);
+      const harness = await RouterTestingHarness.create('/till/check-court-fee');
+      (harness.routeDebugElement!.componentInstance as FinesMciCreateTillCourtFeeCheckComponent).handleChange('amount');
+      await harness.fixture.whenStable();
+      harness.detectChanges();
+      (harness.routeDebugElement!.componentInstance as FinesMciCreateTillCourtFeeDetailsComponent).handleSubmit({
+        formData: { ...draft, amountPaid: '1.00' },
+        nestedFlow: false,
+      });
+      await harness.fixture.whenStable();
+      harness.detectChanges();
+      expect(router.url).toBe('/till/over-underpayment-confirmation');
+      if (entry === 'browser history') {
+        router.setUpLocationChangeListener();
+        const navigated = firstValueFrom(
+          router.events.pipe(
+            filter((event) => event instanceof NavigationEnd),
+            take(1),
+          ),
+        );
+        (TestBed.inject(Location) as SpyLocation).simulateUrlPop('/till/check-court-fee');
+        await navigated;
+        // Render the history-activated review screen before waiting for its underpayment redirect.
+        harness.detectChanges();
+      } else {
+        await harness.navigateByUrl('/till/check-court-fee');
+      }
+      await harness.fixture.whenStable();
+      harness.detectChanges();
+      expect(router.url).toBe('/till/over-underpayment-confirmation');
+      expect(harness.routeNativeElement!.querySelector('h1')?.textContent).toContain('You cannot add an underpayment');
+      expect(harness.routeNativeElement!.querySelector('#save-and-review-till')).toBeNull();
+      expect(store.tills()[0].payments).toEqual([{ paymentId, journey: 'courtFee', courtFee: payment }]);
+      expect(store.courtFeeDraft()?.amountPaid).toBe('1.00');
+      expect(store.courtFeePaymentDetails()).toEqual(payment.paymentDetails);
+      expect(store.courtFeeSuspenseNote()).toBe('Saved note');
+    },
+  );
+
+  it.each(['20.00', '30.00'])(
+    'retains an unsaved payment after editing to £%s, going Back and editing again',
+    async (firstAmount) => {
+      const router = configureCourtFeeJourney();
+      const store = TestBed.inject(FinesMciStore);
+      const details = {
+        paymentReceivedFrom: 'applicant',
+        paymentMethod: 'NC',
+        payerType: 'company',
+        companyName: 'Example Ltd',
+        addressLine1: null,
+        addressLine2: null,
+        addressLine3: null,
+        postcode: null,
+      };
+      store.setCourtFeePaymentDetails(details);
+      store.setCourtFeeSuspenseNote('Unsaved note');
+      const confirm = vi.spyOn(window, 'confirm');
+      const harness = await RouterTestingHarness.create('/till/check-court-fee');
+      (harness.routeDebugElement!.componentInstance as FinesMciCreateTillCourtFeeCheckComponent).handleChange('amount');
+      await harness.fixture.whenStable();
+      harness.detectChanges();
+      (harness.routeDebugElement!.componentInstance as FinesMciCreateTillCourtFeeDetailsComponent).handleSubmit({
+        formData: { ...draft, amountPaid: firstAmount },
+        nestedFlow: false,
+      });
+      await harness.fixture.whenStable();
+      harness.detectChanges();
+      expect(router.url).toBe('/till/over-underpayment-confirmation');
+      harness.routeNativeElement!.querySelector<HTMLAnchorElement>('.govuk-back-link')!.click();
+      await harness.fixture.whenStable();
+      harness.detectChanges();
+      expect(router.url).toBe('/till/court-fee-details');
+      (harness.routeDebugElement!.componentInstance as FinesMciCreateTillCourtFeeDetailsComponent).handleSubmit({
+        formData: { ...draft, amountPaid: '40.00' },
+        nestedFlow: false,
+      });
+      await harness.fixture.whenStable();
+      harness.detectChanges();
+      harness.routeNativeElement!.querySelector<HTMLButtonElement>('#confirm-overpayment')!.click();
+      await harness.fixture.whenStable();
+      harness.detectChanges();
+      expect(router.url).toBe(paymentUrl);
+      expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#companyName')?.value).toBe('Example Ltd');
+      expect(store.courtFeePaymentDetails()).toEqual(details);
+      expect(store.courtFeeSuspenseNote()).toBe('Unsaved note');
+      expect(store.editingCourtFeePaymentId()).toBeNull();
+      expect(store.tills()[0].payments).toEqual([]);
+      harness
+        .routeNativeElement!.querySelector('form')!
+        .dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+      await harness.fixture.whenStable();
+      harness.detectChanges();
+      expect(router.url).toBe('/till/check-court-fee');
+      expect(harness.routeNativeElement!.querySelector<HTMLTextAreaElement>('#suspenseNote')?.value).toBe(
+        'Unsaved note',
+      );
+      expect(confirm).not.toHaveBeenCalled();
+    },
+  );
+
   it.each([
     ['37.50', '3', false],
     ['30.00', '2', true],

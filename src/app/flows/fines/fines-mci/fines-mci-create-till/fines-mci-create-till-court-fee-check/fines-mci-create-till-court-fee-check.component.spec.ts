@@ -153,7 +153,6 @@ describe('FinesMciCreateTillCourtFeeCheckComponent', () => {
     ['30', 'This amount contains a £5.00 overpayment.'],
     ['25.001', 'This amount contains a £0.001 overpayment.'],
     ['25', null],
-    ['24.99', null],
   ])('shows the overpayment information only when the amount is above the total: £%s', (amountPaid, message) => {
     const store = TestBed.inject(FinesMciStore);
     store.setCourtFeeDraft({ courtFeeId: 1, amountPaid, numberOfItems: '2' });
@@ -184,6 +183,47 @@ describe('FinesMciCreateTillCourtFeeCheckComponent', () => {
     } else {
       expect(alert).toBeNull();
     }
+  });
+
+  it.each(['24.99', '24.999'])(
+    'blocks review of an underpayment of £%s and retains the draft if redirection fails',
+    async (amountPaid) => {
+      const store = preparePayment();
+      store.setCourtFeeDraft({ courtFeeId: 1, amountPaid, numberOfItems: '2' });
+      store.setCourtFeePaymentDetails(paymentDetails);
+      store.setCourtFeeSuspenseNote('Payment note');
+      const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(false);
+      const fixture = TestBed.createComponent(FinesMciCreateTillCourtFeeCheckComponent);
+      fixture.detectChanges();
+      await fixture.whenStable();
+      expect(navigate).toHaveBeenCalledWith(['../over-underpayment-confirmation'], {
+        relativeTo: TestBed.inject(ActivatedRoute),
+      });
+      expect((fixture.nativeElement as HTMLElement).querySelector('#save-and-review-till')).toBeNull();
+      expect(store.courtFeeDraft()?.amountPaid).toBe(amountPaid);
+      expect(store.courtFeeSuspenseNote()).toBe('Payment note');
+      expect(store.courtFeePaymentDetails()).toEqual(paymentDetails);
+      expect(store.tills()[0].payments).toEqual([]);
+      expect(fixture.componentInstance.canDeactivate()).toBe(false);
+    },
+  );
+
+  it.each(['review', 'add'] as const)('rechecks the current amount before saving to %s', async (destination) => {
+    const store = preparePayment();
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(false);
+    const fixture = TestBed.createComponent(FinesMciCreateTillCourtFeeCheckComponent);
+    fixture.detectChanges();
+    store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: '1', numberOfItems: '2' });
+    fixture.componentInstance.handleSave(destination);
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(navigate).toHaveBeenCalledExactlyOnceWith(['../over-underpayment-confirmation'], {
+      relativeTo: TestBed.inject(ActivatedRoute),
+    });
+    expect(store.tills()[0].payments).toEqual([]);
+    expect(store.courtFeePaymentDetails()).toEqual(paymentDetails);
+    expect(store.courtFeeSuspenseNote()).toBe('Payment note');
+    expect((fixture.nativeElement as HTMLElement).querySelector('#save-and-review-till')).toBeNull();
   });
 
   it.each(['cancelled', 'rejected'])('restores leave protection if Back navigation is %s', async (outcome) => {
@@ -220,7 +260,6 @@ describe('FinesMciCreateTillCourtFeeCheckComponent', () => {
     fixture.componentInstance.handleChange(rowId);
     expect(navigate).toHaveBeenCalledWith([`../${destination}`], {
       relativeTo: TestBed.inject(ActivatedRoute),
-      ...(destination === 'court-fee-details' && { state: { editCourtFeeFromCheck: true } }),
     });
     await fixture.whenStable();
   });

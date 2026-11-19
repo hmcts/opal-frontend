@@ -47,6 +47,7 @@ describe('FinesMciStore', () => {
         addressLine3: null,
         postcode: null,
       });
+      store.startCourtFeeReview();
       if (action === 'cancel') store.setDraftJourney(null);
       else if (action === 'clear fee') store.setCourtFeeDraft(null);
       else if (action === 'change business unit') store.setBusinessUnit(nextUnit);
@@ -54,6 +55,7 @@ describe('FinesMciStore', () => {
       expect(store.courtFeePaymentDetails()).toBeNull();
       expect(store.courtFeePaymentOrigin()).toBeNull();
       expect(store.courtFeeSuspenseNote()).toBe('');
+      expect(store.courtFeeReviewStarted()).toBe(false);
     },
   );
 
@@ -93,9 +95,15 @@ describe('FinesMciStore', () => {
     };
     store.setCourtFeeDraft(fee);
     store.setCourtFeePaymentDetails(details);
-    store.setCourtFeeDraft({ ...fee, amountPaid: '30' }, true);
+    store.setCourtFeeSuspenseNote('Review note');
+    store.startCourtFeeReview();
+    store.setCourtFeeDraft({ ...fee, amountPaid: '30' });
+    store.setCourtFeeDraft({ ...fee, amountPaid: '40' });
     expect(store.courtFeePaymentDetails()).toEqual(details);
-    store.setCourtFeeDraft(null, true);
+    expect(store.courtFeeSuspenseNote()).toBe('Review note');
+    expect(store.courtFeeReviewStarted()).toBe(true);
+    store.setCourtFeeDraft(null);
+    expect(store.courtFeeReviewStarted()).toBe(false);
     expect(store.courtFeePaymentDetails()).toBeNull();
   });
 
@@ -286,6 +294,7 @@ describe('FinesMciStore', () => {
     expect(store.courtFeePaymentDetails()).toEqual(payment.paymentDetails);
     expect(store.courtFeeSuspenseNote()).toBe('Original note');
     expect(store.editingCourtFeePaymentId()).toBe(paymentId);
+    expect(store.courtFeeReviewStarted()).toBe(true);
     store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: '30', numberOfItems: '2' });
     expect(store.editingCourtFeePaymentId()).toBe(paymentId);
     expect(store.courtFeeSuspenseNote()).toBe('Original note');
@@ -296,6 +305,7 @@ describe('FinesMciStore', () => {
     expect(store.saveCourtFeePayment(tillId, updated, paymentId)).toBe(true);
     expect(store.tills()[0].payments).toEqual([{ paymentId, journey: 'courtFee', courtFee: updated }]);
     expect(store.editingCourtFeePaymentId()).toBeNull();
+    expect(store.courtFeeReviewStarted()).toBe(false);
   });
 
   it('does not alter drafts or add a payment when the requested saved payment is missing', () => {

@@ -8,5 +8,6 @@ export interface IFinesMciCourtFeeDraftState {
   courtFeePaymentDetails: IFinesMciCourtFeePaymentDetails | null;
   courtFeePaymentOrigin: FinesMciCourtFeePaymentOrigin | null;
   courtFeeSuspenseNote: string;
+  courtFeeReviewStarted: boolean;
   editingCourtFeePaymentId: string | null;
 }
