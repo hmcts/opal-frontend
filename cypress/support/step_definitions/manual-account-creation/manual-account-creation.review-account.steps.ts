@@ -70,6 +70,16 @@ Then('I see the manual review {string} summary:', (section: string, table: DataT
   reviewAccount().assertSummaryList(summaryListId, rows);
 });
 
+Then('the submitted manual account has telephone numbers without spaces', () => {
+  cy.get('@manualAccountSubmitBody').should((body: any) => {
+    const defendant = body.account.defendant;
+    expect(defendant.telephone_number_mobile).to.equal('07123456789');
+    expect(defendant.telephone_number_home).to.equal('07123456789');
+    expect(defendant.telephone_number_business).to.equal('07123456789');
+    expect(defendant.debtor_detail.employer_telephone_number).to.equal('01234567890');
+  });
+});
+
 /**
  * Asserts the offences and impositions table on the review page.
  */

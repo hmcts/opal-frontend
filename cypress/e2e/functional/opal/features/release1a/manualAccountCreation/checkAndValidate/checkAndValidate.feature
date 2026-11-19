@@ -128,7 +128,7 @@ Feature: Check And Validate
       | Employer details           | Employer name                            | Test Corp                           |
       | Employer details           | Employee reference                       | ab123456c                           |
       | Employer details           | Employer email address                   | employer@example.com                |
-      | Employer details           | Employer telephone                       | 01234567890                         |
+      | Employer details           | Employer telephone                       | 012 3456 7890                       |
       | Employer details           | Address line 1                           | Addr1                               |
       | Employer details           | Address line 2                           | Addr2                               |
       | Employer details           | Address line 3                           | Addr3                               |
@@ -188,16 +188,23 @@ Feature: Check And Validate
       | Employer name          | Test Corp                     |
       | Employee reference     | AB123456C                     |
       | Employer email address | employer@example.com          |
-      | Employer telephone     | 01234567890                   |
+      | Employer telephone     | 012 3456 7890                 |
       | Employer address       | Addr1  Addr2  Addr3  TE12 3ST |
     And I see the manual review "Account comments and notes" summary:
       | Comment | This is a test comment |
 
     When I submit the manual account for review
-    Then I should see the header containing text "Create accounts"
+    Then the submitted manual account has telephone numbers without spaces
+    And I should see the header containing text "Create accounts"
     And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "LNAME{uniq}, FNAME" and see header "Mr FNAME LNAME{uniq}"
+    And I see the manual review "Contact details" summary:
+      | Mobile telephone number | 07123456789 |
+      | Home telephone number   | 07123456789 |
+      | Work telephone number   | 07123456789 |
+    And I see the manual review "Employer details" summary:
+      | Employer telephone | 01234567890 |
     And the draft review history contains the status "Submitted"
 
   @JIRA-EPIC:PO-2220 @R1A @JIRA-STORY:PO-640 @JIRA-TEST-KEY:PO-3881

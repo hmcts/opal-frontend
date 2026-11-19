@@ -201,6 +201,19 @@ describe('FinesMacPayloadService', () => {
       if (defendantType !== FINES_MAC_DEFENDANT_TYPES_KEYS.company) {
         expect(debtorDetail?.employer_telephone_number).toBe(enabled ? '02072345678' : '0207 234 56 78');
       }
+
+      if (enabled) {
+        const displayedState = service.mapAccountPayload(result, null, null);
+        expect(displayedState.contactDetails.formData.fm_contact_details_telephone_number_mobile).toBe('07898456789');
+        expect(displayedState.contactDetails.formData.fm_contact_details_telephone_number_home).toBe('02081234567');
+        expect(displayedState.contactDetails.formData.fm_contact_details_telephone_number_business).toBe('02071234567');
+        if (defendantType !== FINES_MAC_DEFENDANT_TYPES_KEYS.company) {
+          expect(displayedState.employerDetails.formData.fm_employer_details_employer_telephone_number).toBe(
+            '02072345678',
+          );
+        }
+      }
+
       expect(finesMacState.contactDetails.formData.fm_contact_details_telephone_number_mobile).toBe('07 898 45 67 89');
       expect(finesMacState.employerDetails.formData.fm_employer_details_employer_telephone_number).toBe(
         '0207 234 56 78',
