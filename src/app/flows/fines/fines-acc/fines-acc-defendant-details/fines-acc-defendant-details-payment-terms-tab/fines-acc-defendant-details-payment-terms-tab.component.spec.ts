@@ -7,6 +7,12 @@ import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines
 import { FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS } from '../../fines-acc-payment-terms-amend/constants/fines-acc-payment-terms-amend-fragments.constant';
 import { provideRouter, Router } from '@angular/router';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { APP_MODE_FEATURE_FLAG } from '@app/flows/fines/constants/environment-feature-flags.constant';
+import {
+  RELEASE_1B_FEATURE_FLAG,
+  RELEASE_1B_1_1_FEATURE_FLAG,
+} from '@app/flows/fines/constants/release-feature-flags.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccDefendantDetailsPaymentTermsTabComponent', () => {
@@ -24,6 +30,7 @@ describe('FinesAccDefendantDetailsPaymentTermsTabComponent', () => {
       providers: [provideRouter([])],
     }).compileComponents();
 
+    TestBed.inject(GlobalStore).setFeatureFlags({});
     fixture = TestBed.createComponent(FinesAccDefendantDetailsPaymentTermsTabComponent);
     component = fixture.componentInstance;
     component.tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
@@ -70,7 +77,12 @@ describe('FinesAccDefendantDetailsPaymentTermsTabComponent', () => {
     expect(getLinkByText('Request payment card')).toBeUndefined();
   });
 
-  it('should show a warning when a payment card was requested today', () => {
+  it('should show a warning when a payment card was requested today with R1B 1.1 enabled in legacy mode', () => {
+    TestBed.inject(GlobalStore).setFeatureFlags({
+      [RELEASE_1B_FEATURE_FLAG]: false,
+      'release-1b-1.1': true,
+      [APP_MODE_FEATURE_FLAG]: 'legacy',
+    });
     const dateService = TestBed.inject(DateService);
     component.tabData.payment_card_last_requested = dateService.toFormat(dateService.getDateNow(), 'dd/MM/yyyy');
 
@@ -83,7 +95,32 @@ describe('FinesAccDefendantDetailsPaymentTermsTabComponent', () => {
   });
 
   it.each([null, '01/01/2000'])('should not show a warning when the last request date is %s', (date) => {
+    TestBed.inject(GlobalStore).setFeatureFlags({
+      [RELEASE_1B_1_1_FEATURE_FLAG]: true,
+      [APP_MODE_FEATURE_FLAG]: 'legacy',
+    });
     component.tabData.payment_card_last_requested = date;
+
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('#payment-card-requested-today-warning')).toBeNull();
+  });
+
+  it.each([
+    { enabled: false, mode: 'legacy' },
+    { enabled: undefined, mode: 'legacy' },
+    { enabled: true, mode: 'opal' },
+    { enabled: true, mode: undefined },
+    { enabled: true, mode: 'unknown' },
+    { enabled: undefined, mode: undefined },
+  ])('should hide the warning for a request today when R1B 1.1=$enabled and app mode=$mode', ({ enabled, mode }) => {
+    TestBed.inject(GlobalStore).setFeatureFlags({
+      [RELEASE_1B_FEATURE_FLAG]: true,
+      ...(enabled === undefined ? {} : { [RELEASE_1B_1_1_FEATURE_FLAG]: enabled }),
+      ...(mode === undefined ? {} : { [APP_MODE_FEATURE_FLAG]: mode }),
+    });
+    const dateService = TestBed.inject(DateService);
+    component.tabData.payment_card_last_requested = dateService.toFormat(dateService.getDateNow(), 'dd/MM/yyyy');
 
     fixture.detectChanges();
 
