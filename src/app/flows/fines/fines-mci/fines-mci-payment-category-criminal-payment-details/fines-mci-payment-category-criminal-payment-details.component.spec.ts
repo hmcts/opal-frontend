@@ -1,0 +1,113 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router, provideRouter } from '@angular/router';
+import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { FinesMciStore } from '../stores/fines-mci.store';
+import { IFinesMciCriminalPayment } from '../stores/interfaces/fines-mci.interface';
+import { FinesMciPaymentCategoryCriminalPaymentDetailsComponent } from './fines-mci-payment-category-criminal-payment-details.component';
+
+const CRIMINAL_PAYMENT: IFinesMciCriminalPayment = {
+  amount: '25.00',
+  payerType: 'defendant',
+  methodOfPayment: 'creditTransfer',
+  paymentReferencePostalOrder: '',
+  paymentReferenceCheque: '',
+  paymentReferenceCreditTransfer: 'ref-02',
+  source: 'allpay',
+  thirdPartyName: '',
+};
+
+describe('FinesMciPaymentCategoryCriminalPaymentDetailsComponent', () => {
+  let fixture: ComponentFixture<FinesMciPaymentCategoryCriminalPaymentDetailsComponent>;
+  let router: Router;
+  let store: InstanceType<typeof FinesMciStore>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [FinesMciPaymentCategoryCriminalPaymentDetailsComponent],
+      providers: [provideRouter([]), FinesMciStore, { provide: UtilsService, useValue: { scrollToTop: vi.fn() } }],
+    }).compileComponents();
+
+    store = TestBed.inject(FinesMciStore);
+    router = TestBed.inject(Router);
+    store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    fixture = TestBed.createComponent(FinesMciPaymentCategoryCriminalPaymentDetailsComponent);
+  });
+
+  it('shows the selected business unit and form title', () => {
+    fixture.detectChanges();
+
+    const element = fixture.nativeElement as HTMLElement;
+    expect(element.textContent).toContain(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name);
+    expect(element.querySelector('h1')?.textContent).toContain('Payment details');
+  });
+
+  it('starts without leave protection when no criminal payment data is stored', () => {
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance['canDeactivate']()).toBe(true);
+    expect(fixture.componentInstance.handleBeforeUnload()).toBe(true);
+  });
+
+  it('restores leave protection for saved criminal payment details', () => {
+    store.setCriminalPayment(CRIMINAL_PAYMENT);
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance['canDeactivate']()).toBe(false);
+    expect(fixture.componentInstance.handleBeforeUnload()).toBe(false);
+  });
+
+  it('stores validated details and retains protection while onward navigation is out of scope', () => {
+    const navigate = vi.spyOn(router, 'navigate');
+    fixture.componentInstance.handleSubmit({ formData: CRIMINAL_PAYMENT, nestedFlow: false });
+    expect(store.criminalPayment()).toEqual(CRIMINAL_PAYMENT);
+    expect(fixture.componentInstance.stateUnsavedChanges).toBe(true);
+    expect(navigate).not.toHaveBeenCalled();
+  });
+
+  it('tracks unsaved child form values for route and browser leave protection', () => {
+    const component = fixture.componentInstance;
+    component.handleUnsavedChanges(true);
+    const beforeUnloadEvent = new Event('beforeunload', { cancelable: true });
+
+    expect(component['canDeactivate']()).toBe(false);
+    expect(component.handleBeforeUnload()).toBe(false);
+    expect(window.dispatchEvent(beforeUnloadEvent)).toBe(false);
+    expect(beforeUnloadEvent.defaultPrevented).toBe(true);
+  });
+
+  it('retains leave protection when criminal payment state is present even if the child is pristine', () => {
+    store.setCriminalPayment(CRIMINAL_PAYMENT);
+    fixture.detectChanges();
+
+    fixture.componentInstance.handleUnsavedChanges(false);
+
+    expect(fixture.componentInstance.stateUnsavedChanges).toBe(true);
+  });
+
+  it('clears criminal payment data after Cancel navigation succeeds', async () => {
+    store.setDraftJourney('criminal');
+    store.setCriminalPayment(CRIMINAL_PAYMENT);
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    fixture.componentInstance.handleCancel();
+    await fixture.whenStable();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create', 'till', 'details']);
+    expect(store.draftJourney()).toBeNull();
+    expect(store.criminalPayment()).toBeNull();
+  });
+
+  it('retains criminal payment data when Cancel navigation is rejected', async () => {
+    store.setDraftJourney('criminal');
+    store.setCriminalPayment(CRIMINAL_PAYMENT);
+    vi.spyOn(router, 'navigate').mockResolvedValue(false);
+
+    fixture.componentInstance.handleCancel();
+    await fixture.whenStable();
+
+    expect(store.draftJourney()).toBe('criminal');
+    expect(store.criminalPayment()).toEqual(CRIMINAL_PAYMENT);
+  });
+});

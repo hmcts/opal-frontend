@@ -3,7 +3,7 @@ import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fin
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-defendant-account-response-individual.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesMciStore } from './fines-mci.store';
-import { IFinesMciSuspensePayment } from './interfaces/fines-mci.interface';
+import { IFinesMciSuspensePayment, IFinesMciCriminalPayment } from './interfaces/fines-mci.interface';
 
 import { IFinesMciCriminalSearch } from './interfaces/fines-mci-criminal-search.interface';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
@@ -27,6 +27,45 @@ describe('FinesMciStore', () => {
     TestBed.configureTestingModule({ providers: [FinesMciStore] });
     store = TestBed.inject(FinesMciStore);
   });
+
+  it.each(['account selection', 'search results', 'search reset', 'business unit', 'journey', 'reset'])(
+    'clears the criminal payment draft when changing %s',
+    (action) => {
+      store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+      const draft: IFinesMciCriminalPayment = {
+        amount: '10.01',
+        payerType: 'defendant',
+        thirdPartyName: '',
+        methodOfPayment: 'notesCoins',
+        paymentReferencePostalOrder: '',
+        paymentReferenceCheque: '',
+        paymentReferenceCreditTransfer: '',
+        source: null,
+      };
+      store.setCriminalPayment(draft);
+      expect(store.criminalPayment()).toEqual(draft);
+      switch (action) {
+        case 'account selection':
+          store.setSelectedCriminalAccount(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0]);
+          break;
+        case 'search results':
+          store.setCriminalSearchResults(null);
+          break;
+        case 'search reset':
+          store.resetCriminalSearch();
+          break;
+        case 'business unit':
+          store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1]);
+          break;
+        case 'journey':
+          store.setDraftJourney('suspense');
+          break;
+        default:
+          store.reset();
+      }
+      expect(store.criminalPayment()).toBeNull();
+    },
+  );
 
   it.each(['business unit change', 'reset'] as const)(
     'should clear criminal search and payment drafts on %s',

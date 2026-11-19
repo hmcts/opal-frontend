@@ -21,6 +21,7 @@ import { finesMciCriminalAccountsResolver } from './resolvers/fines-mci-criminal
 import { routing } from './fines-mci.routes';
 import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.constant';
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
+import { finesMciCriminalPaymentAccountGuard } from './guards/fines-mci-criminal-payment-account.guard';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
 import { finesMciCourtFeesResolver } from './resolvers/fines-mci-court-fees.resolver';
 import { FinesMciCreateTillCourtFeeDetailsComponent } from '../fines-mci-create-till/fines-mci-create-till-court-fee-details/fines-mci-create-till-court-fee-details.component';
@@ -325,10 +326,16 @@ describe('finesMci routes', () => {
       expect(harness.routeNativeElement?.querySelector('#fines-mci-confirm-account')).toBeTruthy();
     },
   );
-  it('protects the payment details placeholder with the same guards as confirmation', async () => {
+  it('protects the payment details screen with the same guards as confirmation', async () => {
     const route = criminalRoute!.children!.find((route) => route.path === 'payment-details/:accountId')!;
-    expect(route.canActivate).toEqual([authGuard, routePermissionsGuard, finesMciFlowStateGuard]);
+    expect(route.canActivate).toEqual([
+      authGuard,
+      routePermissionsGuard,
+      finesMciFlowStateGuard,
+      finesMciCriminalPaymentAccountGuard,
+    ]);
     expect(route.data?.['routePermissionId']).toEqual([FINES_PERMISSIONS['process-and-allocate-payments']]);
+    expect(route.canDeactivate).toEqual([canDeactivateGuard]);
     expect(route.resolve).toEqual({ title: TitleResolver });
     TestBed.configureTestingModule({ providers: [provideRouter([{ ...route, canActivate: [], resolve: {} }])] });
     const harness = await RouterTestingHarness.create();

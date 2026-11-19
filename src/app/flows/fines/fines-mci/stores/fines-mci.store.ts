@@ -4,6 +4,7 @@ import { IFinesMciCriminalAccountsResponse } from '../interfaces/fines-mci-crimi
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import {
   FinesMciJourney,
+  IFinesMciCriminalPayment,
   IFinesMciCourtFeeDraft,
   IFinesMciSuspensePayment,
   IFinesMciTill,
@@ -25,6 +26,7 @@ export const FinesMciStore = signalStore(
     selectedCriminalAccountAtAGlance: null as IOpalFinesAccountDefendantAtAGlance | null,
     draftJourney: null as FinesMciJourney | null,
     courtFeeDraft: null as IFinesMciCourtFeeDraft | null,
+    criminalPayment: null as IFinesMciCriminalPayment | null,
     suspensePayment: null as IFinesMciSuspensePayment | null,
   })),
   withMethods((store) => {
@@ -51,6 +53,7 @@ export const FinesMciStore = signalStore(
         patchState(store, {
           criminalSearch,
           criminalSearchResults: null,
+          criminalPayment: null,
           selectedCriminalAccount: null,
           selectedCriminalAccountAtAGlance: null,
           selectedCriminalAccountHeader: null,
@@ -60,6 +63,7 @@ export const FinesMciStore = signalStore(
       setCriminalSearchResults(criminalSearchResults: IFinesMciCriminalAccountsResponse | null): void {
         patchState(store, {
           criminalSearchResults,
+          criminalPayment: null,
           selectedCriminalAccount: null,
           selectedCriminalAccountAtAGlance: null,
           selectedCriminalAccountHeader: null,
@@ -68,6 +72,7 @@ export const FinesMciStore = signalStore(
       /** Sets or clears the selected account, invalidating both detail responses even when reselecting an account. */
       setSelectedCriminalAccount(selectedCriminalAccount: IFinesMciCriminalAccount | null): void {
         patchState(store, {
+          criminalPayment: null,
           selectedCriminalAccount,
           selectedCriminalAccountAtAGlance: null,
           selectedCriminalAccountHeader: null,
@@ -86,6 +91,7 @@ export const FinesMciStore = signalStore(
         patchState(store, {
           criminalSearch: null,
           criminalSearchResults: null,
+          criminalPayment: null,
           selectedCriminalAccount: null,
           selectedCriminalAccountAtAGlance: null,
           selectedCriminalAccountHeader: null,
@@ -100,6 +106,7 @@ export const FinesMciStore = signalStore(
             tills: [],
             criminalSearch: null,
             criminalSearchResults: null,
+            criminalPayment: null,
             selectedCriminalAccount: null,
             selectedCriminalAccountAtAGlance: null,
             selectedCriminalAccountHeader: null,
@@ -116,11 +123,19 @@ export const FinesMciStore = signalStore(
       ensureTill,
       /** Stores the selected payment journey until its details are completed. */
       setDraftJourney(draftJourney: FinesMciJourney | null): void {
-        patchState(store, { draftJourney, ...(draftJourney !== 'courtFee' && { courtFeeDraft: null }) });
+        patchState(store, {
+          draftJourney,
+          ...(draftJourney !== 'criminal' && { criminalPayment: null }),
+          ...(draftJourney !== 'courtFee' && { courtFeeDraft: null }),
+        });
       },
       /** Holds court fee form values while the payment journey is in progress. */
       setCourtFeeDraft(courtFeeDraft: IFinesMciCourtFeeDraft | null): void {
         patchState(store, { courtFeeDraft });
+      },
+      /** Stores validated criminal payment details in application memory for the selected account. */
+      setCriminalPayment(criminalPayment: IFinesMciCriminalPayment | null): void {
+        patchState(store, { criminalPayment });
       },
       /** Stores validated suspense details in application memory. */
       setSuspensePayment(suspensePayment: IFinesMciSuspensePayment | null): void {
@@ -148,6 +163,7 @@ export const FinesMciStore = signalStore(
           criminalSearch: null,
           courtFeeDraft: null,
           criminalSearchResults: null,
+          criminalPayment: null,
           selectedCriminalAccount: null,
           selectedCriminalAccountAtAGlance: null,
           selectedCriminalAccountHeader: null,
