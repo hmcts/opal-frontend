@@ -3807,9 +3807,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/opal-frontend-common@npm:0.0.122":
+"@hmcts/opal-frontend-common@file:/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.122.tgz::locator=opal-frontend%40workspace%3A.":
   version: 0.0.122
-  resolution: "@hmcts/opal-frontend-common@npm:0.0.122"
+  resolution: "@hmcts/opal-frontend-common@file:/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.122.tgz#/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.122.tgz::hash=55a70c&locator=opal-frontend%40workspace%3A."
   dependencies:
     "@microsoft/applicationinsights-web": "npm:^3.3.6"
     "@ministryofjustice/frontend": "npm:^12.0.0"
@@ -3831,7 +3831,7 @@ __metadata:
   peerDependenciesMeta:
     "@ngrx/signals":
       optional: true
-  checksum: 10/4ad497eb50de2c9d8107e871cf98114347f29b1ca655ed97657a774d09e7b9fdcdb837a4ca888af489d27edf4d25ee5c9ed68c6e715f3cf7fa2a2e5a2b6809c5
+  checksum: 10/65c0046937dc108096a415785cc6d72c519efe73161a0027db9ff72c975d02483ef480da0a7ed6383cfabb37854e6d521d00a46b837c2a9ef233c6388f1e08eb
   languageName: node
   linkType: hard
 
@@ -4701,17 +4701,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-analytics-js@npm:3.4.5":
-  version: 3.4.5
-  resolution: "@microsoft/applicationinsights-analytics-js@npm:3.4.5"
+"@microsoft/applicationinsights-analytics-js@npm:3.4.6":
+  version: 3.4.6
+  resolution: "@microsoft/applicationinsights-analytics-js@npm:3.4.6"
   dependencies:
-    "@microsoft/applicationinsights-core-js": "npm:3.4.5"
+    "@microsoft/applicationinsights-core-js": "npm:3.4.6"
     "@microsoft/applicationinsights-shims": "npm:3.0.1"
     "@microsoft/dynamicproto-js": "npm:^2.0.3"
     "@nevware21/ts-utils": "npm:>= 0.14.0 < 2.x"
   peerDependencies:
     tslib: ">= 1.0.0"
-  checksum: 10/97217610db4a1cc5dca85066aa201388da925e3ead7e158ab696e6f5a3d1ee3a3d82764355587f120fe9c9309a07792644abdabb825346152f2833c8d72e1e72
+  checksum: 10/b97d79c3524b823bec08670b6fc4ceb0d9d6405350d7f2ef1387511a22dab5cc1162cbbe77811835478ee06f2606224c5b6effa9d0f1d52fc0a003b71888725f
   languageName: node
   linkType: hard
 
@@ -4730,18 +4730,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-cfgsync-js@npm:3.4.5":
-  version: 3.4.5
-  resolution: "@microsoft/applicationinsights-cfgsync-js@npm:3.4.5"
+"@microsoft/applicationinsights-cfgsync-js@npm:3.4.6":
+  version: 3.4.6
+  resolution: "@microsoft/applicationinsights-cfgsync-js@npm:3.4.6"
   dependencies:
-    "@microsoft/applicationinsights-core-js": "npm:3.4.5"
+    "@microsoft/applicationinsights-core-js": "npm:3.4.6"
     "@microsoft/applicationinsights-shims": "npm:3.0.1"
     "@microsoft/dynamicproto-js": "npm:^2.0.3"
     "@nevware21/ts-async": "npm:>= 0.5.5 < 0.6.0"
     "@nevware21/ts-utils": "npm:>= 0.14.0 < 2.x"
   peerDependencies:
     tslib: ">= 1.0.0"
-  checksum: 10/17680627255b78cee2bf45f7e150f3e9fcafbbc3e4a410e045bda3d06f8f2efc300123b098228d20550c4df992d903aa1fcf147ea07054ae4bc579d9835b13d7
+  checksum: 10/34d7ab2d090f10664187ee60942dd743dbd1294b1e1cd5cfb2d7867682c48713b8e7c9c1f5b9dba546148ebcec2f7e98eaecf0e6340e54c93b8766d693ec9250
   languageName: node
   linkType: hard
 
@@ -4760,18 +4760,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-channel-js@npm:3.4.5":
-  version: 3.4.5
-  resolution: "@microsoft/applicationinsights-channel-js@npm:3.4.5"
+"@microsoft/applicationinsights-channel-js@npm:3.4.6":
+  version: 3.4.6
+  resolution: "@microsoft/applicationinsights-channel-js@npm:3.4.6"
   dependencies:
-    "@microsoft/applicationinsights-core-js": "npm:3.4.5"
+    "@microsoft/applicationinsights-core-js": "npm:3.4.6"
     "@microsoft/applicationinsights-shims": "npm:3.0.1"
     "@microsoft/dynamicproto-js": "npm:^2.0.3"
     "@nevware21/ts-async": "npm:>= 0.5.5 < 0.6.0"
     "@nevware21/ts-utils": "npm:>= 0.14.0 < 2.x"
   peerDependencies:
     tslib: ">= 1.0.0"
-  checksum: 10/e45f7c7fe7bace69a4612831c28aee2abeab7d51624ccb0d4ce1240a746474d1f89cf702eff823b95a214fa0e1d5079b62160b983b996cbbbb52cb1db5fd6f6a
+  checksum: 10/88a691bd107ea4fce5aed899bfe49acb09ed452a39c953897287d102800bc9d51939f610d9b326c133c0cdc4ec3969e13ac47869811c1e42543e9494bfd186cd
   languageName: node
   linkType: hard
 
@@ -4789,9 +4789,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-core-js@npm:3.4.5":
-  version: 3.4.5
-  resolution: "@microsoft/applicationinsights-core-js@npm:3.4.5"
+"@microsoft/applicationinsights-core-js@npm:3.4.6":
+  version: 3.4.6
+  resolution: "@microsoft/applicationinsights-core-js@npm:3.4.6"
   dependencies:
     "@microsoft/applicationinsights-shims": "npm:3.0.1"
     "@microsoft/dynamicproto-js": "npm:^2.0.3"
@@ -4799,7 +4799,7 @@ __metadata:
     "@nevware21/ts-utils": "npm:>= 0.14.0 < 2.x"
   peerDependencies:
     tslib: ">= 1.0.0"
-  checksum: 10/f7f717a2446026a224112c62258357b2e977adbdf2aeecb69461ba7ed5cc603df640d9eb635227d593d0225a80afea446c73f2644a041e820bb3e89d930fc865
+  checksum: 10/a1cedaea5c3f18d2961bde8d18b735f09a769c40a1ac8be34ac9d87697c8d0bcc1817411882381c34259e8539ba5c3f2033e7ad7ad16b3070b79f0d7eb15b885
   languageName: node
   linkType: hard
 
@@ -4818,18 +4818,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-dependencies-js@npm:3.4.5":
-  version: 3.4.5
-  resolution: "@microsoft/applicationinsights-dependencies-js@npm:3.4.5"
+"@microsoft/applicationinsights-dependencies-js@npm:3.4.6":
+  version: 3.4.6
+  resolution: "@microsoft/applicationinsights-dependencies-js@npm:3.4.6"
   dependencies:
-    "@microsoft/applicationinsights-core-js": "npm:3.4.5"
+    "@microsoft/applicationinsights-core-js": "npm:3.4.6"
     "@microsoft/applicationinsights-shims": "npm:3.0.1"
     "@microsoft/dynamicproto-js": "npm:^2.0.3"
     "@nevware21/ts-async": "npm:>= 0.5.5 < 0.6.0"
     "@nevware21/ts-utils": "npm:>= 0.14.0 < 2.x"
   peerDependencies:
     tslib: ">= 1.0.0"
-  checksum: 10/02bc18c763baa35e6988d50aedd879756a2150b4c863526ec6ee1a823430315b55283eab00917870b9812116ab29e1d168b218ed711c655cfe7b9dcdc7705c68
+  checksum: 10/ff8af1c7f7843d3ebe7ee79bf7f2c1e5c8b91c6dc5bf1035d347d0b3fc12a2c9129de50e08e36597f6a2249187a70ecd410fd8f4b0ead764e3d8eacdb8c97d6a
   languageName: node
   linkType: hard
 
@@ -4847,17 +4847,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/applicationinsights-properties-js@npm:3.4.5":
-  version: 3.4.5
-  resolution: "@microsoft/applicationinsights-properties-js@npm:3.4.5"
+"@microsoft/applicationinsights-properties-js@npm:3.4.6":
+  version: 3.4.6
+  resolution: "@microsoft/applicationinsights-properties-js@npm:3.4.6"
   dependencies:
-    "@microsoft/applicationinsights-core-js": "npm:3.4.5"
+    "@microsoft/applicationinsights-core-js": "npm:3.4.6"
     "@microsoft/applicationinsights-shims": "npm:3.0.1"
     "@microsoft/dynamicproto-js": "npm:^2.0.3"
     "@nevware21/ts-utils": "npm:>= 0.14.0 < 2.x"
   peerDependencies:
     tslib: ">= 1.0.0"
-  checksum: 10/8cba775578170d531f2f618d3a8e91f1662822ca75c788694afa6bed36dbf7a35d0ab8b1312f86db023968b7856bde9b865086ab5cb6a939be4aa38df19f71bb
+  checksum: 10/d0f0b78a5f73e6ed91cb0a0798b0208bca21bd1ee87a6bd1af45d0df24901fe200909857561584a5cfa6325732731250adee8dfbec1b9702d432687ca8bf3f97
   languageName: node
   linkType: hard
 
@@ -4898,22 +4898,22 @@ __metadata:
   linkType: hard
 
 "@microsoft/applicationinsights-web@npm:^3.3.6":
-  version: 3.4.5
-  resolution: "@microsoft/applicationinsights-web@npm:3.4.5"
+  version: 3.4.6
+  resolution: "@microsoft/applicationinsights-web@npm:3.4.6"
   dependencies:
-    "@microsoft/applicationinsights-analytics-js": "npm:3.4.5"
-    "@microsoft/applicationinsights-cfgsync-js": "npm:3.4.5"
-    "@microsoft/applicationinsights-channel-js": "npm:3.4.5"
-    "@microsoft/applicationinsights-core-js": "npm:3.4.5"
-    "@microsoft/applicationinsights-dependencies-js": "npm:3.4.5"
-    "@microsoft/applicationinsights-properties-js": "npm:3.4.5"
+    "@microsoft/applicationinsights-analytics-js": "npm:3.4.6"
+    "@microsoft/applicationinsights-cfgsync-js": "npm:3.4.6"
+    "@microsoft/applicationinsights-channel-js": "npm:3.4.6"
+    "@microsoft/applicationinsights-core-js": "npm:3.4.6"
+    "@microsoft/applicationinsights-dependencies-js": "npm:3.4.6"
+    "@microsoft/applicationinsights-properties-js": "npm:3.4.6"
     "@microsoft/applicationinsights-shims": "npm:3.0.1"
     "@microsoft/dynamicproto-js": "npm:^2.0.3"
     "@nevware21/ts-async": "npm:>= 0.5.5 < 0.6.0"
     "@nevware21/ts-utils": "npm:>= 0.14.0 < 2.x"
   peerDependencies:
     tslib: ">= 1.0.0"
-  checksum: 10/b828e017c8312cb934813e90289fb710d8320ae62d757e0bec6b4f41f8f63232bf71bf1ce4fe967f4f69477e1a931f77834f0787a9d9805f8a5ae8dfdd9fbebf
+  checksum: 10/025c471309a67644aa1cebe833ef877a69ca25e8d2c81d0ed7f975c12ab092bb1ad946c31f247a8257c3c354d42ece8acec9611c53c8bc1d5fd026afc59fe8f3
   languageName: node
   linkType: hard
 
@@ -4937,12 +4937,12 @@ __metadata:
   linkType: hard
 
 "@ministryofjustice/frontend@npm:^12.0.0":
-  version: 12.0.0
-  resolution: "@ministryofjustice/frontend@npm:12.0.0"
+  version: 12.0.1
+  resolution: "@ministryofjustice/frontend@npm:12.0.1"
   peerDependencies:
     govuk-frontend: ^6.2.0
-    moment: ^2.30.1
-  checksum: 10/ae4cc8645aacd9b0003f988ceaae6a6e419dd3e766bb7b9dd77d54fd0290dc47fd0d4363b9ef609394f0ce75bed75a83f722e5297ae111948da13103f0f255ce
+    moment: ^2.31.0
+  checksum: 10/8035af5294858bb53bcb704c2332dbf9f283e1b4d38e1f659b0d036c6c65cbc859b00791605afc3793304ac8d4497fbe449e52dd1cff460f6125982c25273580
   languageName: node
   linkType: hard
 
@@ -15671,7 +15671,7 @@ __metadata:
     "@hmcts/info-provider": "npm:^1.1.0"
     "@hmcts/nodejs-healthcheck": "npm:^1.8.5"
     "@hmcts/nodejs-logging": "npm:^4.0.4"
-    "@hmcts/opal-frontend-common": "npm:0.0.122"
+    "@hmcts/opal-frontend-common": "file:/Users/arnabsubedi/Repos/opal-frontend-common-ui-lib/hmcts-opal-frontend-common-0.0.122.tgz"
     "@hmcts/opal-frontend-common-cypress": "npm:0.0.5"
     "@hmcts/opal-frontend-common-node": "npm:^0.0.47"
     "@hmcts/properties-volume": "npm:^1.1.0"

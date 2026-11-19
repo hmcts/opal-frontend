@@ -92,6 +92,18 @@ describe('FinesFinanceUploadVariantBankingFilesComponent', () => {
     requests[index].next(response(overrides));
     requests[index].complete();
   };
+  /** Sends a browser selection through the real shared picker or drop zone. */
+  const chooseFiles = (files: readonly File[], method: 'picker' | 'drop' = 'picker'): void => {
+    if (method === 'picker') {
+      const input: HTMLInputElement = fixture.nativeElement.querySelector('#files');
+      Object.defineProperty(input, 'files', { value: files, configurable: true });
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+      return;
+    }
+    const drop = new Event('drop', { bubbles: true, cancelable: true });
+    Object.defineProperty(drop, 'dataTransfer', { value: { files } });
+    fixture.nativeElement.querySelector('.moj-multi-file-upload__dropzone').dispatchEvent(drop);
+  };
   beforeEach(async () => {
     requests = [];
     setPermissions([FINES_PERMISSIONS['upload-variant-banking-files'], FINES_PERMISSIONS['view-interface-files']]);
@@ -335,43 +347,118 @@ describe('FinesFinanceUploadVariantBankingFilesComponent', () => {
     expect(uploadInterfaceFile).not.toHaveBeenCalled();
   });
 
-  it('uploads the first six valid files in a selection and rejects the seventh', () => {
-    component.selectFiles(Array.from({ length: 7 }, (_, index) => file(index)));
+  it.each(['picker', 'drop'] as const)(
+    'rejects an entire seven-file %s batch and shows the limit error above the page heading',
+    async (method) => {
+      fixture.detectChanges();
 
-    expect(component.fileUploads().map((item) => item.status)).toEqual([
-      'uploading',
-      'pending',
-      'pending',
-      'pending',
-      'pending',
-      'pending',
-      'rejected',
-    ]);
-    expect(component.fileUploads()[6]).toMatchObject({
-      status: 'rejected',
-      errors: ['You can only select up to 6 files at the same time.'],
-    });
+      chooseFiles(
+        Array.from({ length: 7 }, (_, index) => file(index)),
+        method,
+      );
+      fixture.detectChanges();
+      await fixture.whenStable();
+
+      const summary: HTMLElement = fixture.nativeElement.querySelector('.govuk-error-summary');
+      const heading: HTMLElement = fixture.nativeElement.querySelector('#fines-finance-upload-heading');
+      expect(summary.textContent).toContain('You can only select up to 6 files at the same time.');
+      expect(summary.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+      expect(summary.querySelectorAll('li')).toHaveLength(1);
+      expect(fixture.nativeElement.querySelector('#files-error').textContent).toContain(
+        'You can only select up to 6 files at the same time.',
+      );
+      expect(component.fileUploads()).toEqual([]);
+      expect(component.canDeactivate()).toBe(true);
+      expect(uploadInterfaceFile).not.toHaveBeenCalled();
+      expect(fixture.nativeElement.querySelector('.moj-multi-file-upload__filename')).toBeNull();
+      expect(fixture.nativeElement.querySelector('#files').disabled).toBe(false);
+    },
+  );
+
+  it('uploads all six files at the permitted selection boundary', () => {
+    const selected = Array.from({ length: 6 }, (_, index) => file(index));
+    fixture.detectChanges();
+
+    chooseFiles(selected);
+
+    expect(component.fileUploads()).toHaveLength(6);
+    expect(component.fileUploads().some((item) => item.status === 'rejected')).toBe(false);
     for (let index = 0; index < 6; index++) {
       finish(index);
     }
     expect(uploadInterfaceFile).toHaveBeenCalledTimes(6);
-    expect(
-      component
-        .fileUploads()
-        .slice(0, 6)
-        .every((item) => item.status === 'success'),
-    ).toBe(true);
+    expect(uploadInterfaceFile.mock.calls.map(([selectedFile]) => selectedFile)).toEqual(selected);
+    expect(component.fileUploads().every((item) => item.status === 'success')).toBe(true);
     expect(component.canDeactivate()).toBe(true);
   });
 
   it('allows later selections of six files without treating six as a cumulative limit', () => {
-    component.selectFiles(Array.from({ length: 6 }, (_, index) => file(index)));
-    component.selectFiles(Array.from({ length: 6 }, (_, index) => file(index + 6)));
+    fixture.detectChanges();
+
+    chooseFiles(Array.from({ length: 6 }, (_, index) => file(index)));
+    fixture.detectChanges();
+    chooseFiles(Array.from({ length: 6 }, (_, index) => file(index + 6)));
+    fixture.detectChanges();
 
     expect(component.fileUploads()).toHaveLength(12);
     expect(component.fileUploads().some((item) => item.status === 'rejected')).toBe(false);
     expect(new Set(component.fileUploads().map((item) => item.id)).size).toBe(12);
     expect(uploadInterfaceFile).toHaveBeenCalledTimes(1);
+    expect(fixture.nativeElement.querySelector('.govuk-error-summary')).toBeNull();
+    expect(fixture.nativeElement.querySelector('#files-error')).toBeNull();
+  });
+
+  it('keeps prior uploads and the count error while an oversized new batch is rejected', async () => {
+    const previousFiles = [file(), file(2)];
+    fixture.detectChanges();
+    chooseFiles(previousFiles);
+    fixture.detectChanges();
+    const previousRows = component.fileUploads();
+
+    chooseFiles(Array.from({ length: 7 }, (_, index) => file(index + 3)));
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(component.fileUploads()).toBe(previousRows);
+    expect(uploadInterfaceFile).toHaveBeenCalledOnce();
+    requests[0].next({ type: HttpEventType.UploadProgress, loaded: 1, total: 3 });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('.govuk-error-summary').textContent).toContain(
+      'You can only select up to 6 files at the same time.',
+    );
+    finish();
+    fixture.detectChanges();
+    expect(component.fileUploads().map((item) => item.status)).toEqual(['success', 'uploading']);
+    expect(fixture.nativeElement.querySelector('.govuk-error-summary').textContent).toContain(
+      'You can only select up to 6 files at the same time.',
+    );
+    finish(1);
+    fixture.detectChanges();
+
+    expect(component.fileUploads()).toHaveLength(2);
+    expect(component.fileUploads().every((item) => item.status === 'success')).toBe(true);
+    expect(uploadInterfaceFile.mock.calls.map(([selectedFile]) => selectedFile)).toEqual(previousFiles);
+    expect(fixture.nativeElement.querySelector('.govuk-error-summary').textContent).toContain(
+      'You can only select up to 6 files at the same time.',
+    );
+  });
+
+  it('clears the count summary and uploads a valid selection after an oversized batch', async () => {
+    fixture.detectChanges();
+    chooseFiles(Array.from({ length: 7 }, (_, index) => file(index)));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(fixture.nativeElement.querySelector('.govuk-error-summary')).not.toBeNull();
+    const selected = file();
+
+    chooseFiles([selected]);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('.govuk-error-summary')).toBeNull();
+    expect(fixture.nativeElement.querySelector('#files-error')).toBeNull();
+    expect(component.fileUploads()).toHaveLength(1);
+    expect(uploadInterfaceFile).toHaveBeenCalledExactlyOnceWith(selected, expect.any(Object));
   });
 
   it.each([

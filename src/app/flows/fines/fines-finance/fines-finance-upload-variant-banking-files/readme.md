@@ -1,9 +1,9 @@
 # Variant Banking file upload
 
 The route `/fines/finance/variant-banking-files/upload` uploads valid selections immediately, one file at a time.
-The [page component](./fines-finance-upload-variant-banking-files.component.ts) owns validation, queued requests,
+The [page component](./fines-finance-upload-variant-banking-files.component.ts) owns per-file validation, queued requests,
 progress, row outcomes and cancellation. Its [child form](./fines-finance-upload-variant-banking-files-form/fines-finance-upload-variant-banking-files-form.component.ts)
-composes the shared MoJ picker and file list and supplies an accessible live region.
+configures the shared MoJ picker's selection limit, composes the file list and supplies an accessible live region.
 
 Completed and rejected rows remain visible while later selections can be added. Back returns to Finance; the route
 and browser leave-page guards warn while files are pending or uploading. Destroying the page cancels the active
@@ -15,11 +15,23 @@ The [feature configuration](./constants/fines-finance-variant-banking-upload.con
 
 - DAT files, checked case-insensitively.
 - At most 2 MiB per file (`2 * 1024 * 1024` bytes, including the exact boundary).
-- At most six files per picker/drop selection; this is not a cumulative limit across selections.
+- At most six files per picker/drop selection, enforced by the shared picker's `[maxFiles]` input; this is not a
+  cumulative limit across selections.
 - Ticket filenames matching `/^a121_\d{6}_VB_\d{3}_\d{2}\.dat$/i`, for example `a121_261027_VB_077_01.dat`,
   with a two-digit numeric sequence suffix.
 
-Rejected files receive explanatory row errors and are not sent to the API. Original filenames are preserved.
+The child passes its `maxFiles` value of `6` to the shared input and supplies matching `maxFilesErrorMessage` and
+`fieldErrors.files.maxFiles` text. Selecting or dropping seven files rejects the whole batch before `filesSelected`:
+none of those files creates a row or API request, and no accepted prefix is uploaded. Existing rows and the previous
+file-control value are preserved. The parent validates the types, sizes and filenames of batches emitted by the picker.
+
+The frontend renders its standard `GovukErrorSummaryComponent` above the page heading. The child's `statusChanges`
+listener detects the `maxFiles` error and immediately displays and focuses the summary. Its link targets `#files` and
+focuses the native picker. A new selection within the limit or a reset clears the count summary. Selections within the
+limit proceed immediately to parent validation and the upload queue.
+
+Type, size and filename failures receive explanatory row errors and are not sent to the API. Upload errors also stay
+in their file rows; these per-file errors are not added to the page summary. Original filenames are preserved.
 The [route](../routing/fines-finance.routes.ts) requires authentication and `upload-variant-banking-files` permission
 (`Upload Variant Banking Files`, ID `27`). `view-interface-files` (ID `18`) is independently required for the
 inbound-files link and destination; upload permission alone does not grant that navigation.
@@ -94,8 +106,10 @@ corepack yarn test \
   --include='src/app/flows/fines/fines-finance/routing/fines-finance.routes.spec.ts'
 ```
 
-The feature specs cover validation, sequential mixed outcomes, response-status handling, progress, permissions and
-leaving the page. Routing specs cover the isolated HTTP client and browser/SSR transports. In the sibling common UI
+The feature specs cover whole-batch count rejection without rows or requests, immediate count-summary display/focus
+and clearing, per-file validation, sequential mixed outcomes, response-status handling, progress, permissions and
+leaving the page. Per-file validation and upload errors remain in their rows. Routing specs cover the isolated HTTP
+client and browser/SSR transports. In the sibling common UI
 checkout, the [shared service HTTP tests](https://github.com/hmcts/opal-frontend-common-ui-lib/blob/PO-8684/projects/opal-frontend-common/services/opal-file-handling-service/opal-file-handling.service.spec.ts)
 cover multipart bytes/metadata, progress and response/error forwarding; the
 [transport helper tests](https://github.com/hmcts/opal-frontend-common-ui-lib/blob/PO-8684/projects/opal-frontend-common/interceptors/helpers/upload-progress-http-backend.spec.ts)

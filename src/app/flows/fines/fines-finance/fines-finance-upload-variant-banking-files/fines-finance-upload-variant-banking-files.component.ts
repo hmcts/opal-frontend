@@ -47,10 +47,9 @@ export class FinesFinanceUploadVariantBankingFilesComponent
   /**
    * Validates a file against the Variant Banking selection policy.
    * @param file - Original browser file selected by the user.
-   * @param index - Zero-based position within this picker or dropped selection.
    * @returns All local rejection messages, or an empty array for a valid file.
    */
-  private validateFile(file: File, index: number): readonly string[] {
+  private validateFile(file: File): readonly string[] {
     const errors: string[] = [];
     if (!this.fileService.hasFileExtension(file.name, FINES_FINANCE_VARIANT_BANKING_UPLOAD.acceptedTypes[0])) {
       errors.push('The selected file must be a .DAT.');
@@ -59,9 +58,6 @@ export class FinesFinanceUploadVariantBankingFilesComponent
     }
     if (!this.fileService.isFileWithinSizeLimit(file, FINES_FINANCE_VARIANT_BANKING_UPLOAD.maxFileSize)) {
       errors.push('The selected file must be smaller than 2MB.');
-    }
-    if (index >= FINES_FINANCE_VARIANT_BANKING_UPLOAD.maxFiles) {
-      errors.push('You can only select up to 6 files at the same time.');
     }
     return errors;
   }
@@ -209,15 +205,15 @@ export class FinesFinanceUploadVariantBankingFilesComponent
 
   /**
    * Appends a picker or dropped selection and immediately queues its valid files.
-   * @param files - Original files from this selection; the six-file limit applies to this batch.
+   * @param files - Original files from a selection accepted by the shared picker.
    * @returns void
    */
   public selectFiles(files: readonly File[]): void {
     if (!files.length) {
       return;
     }
-    const added = files.map<IAbstractMultiFileUploadItem>((file, index) => {
-      const errors = this.validateFile(file, index);
+    const added = files.map<IAbstractMultiFileUploadItem>((file) => {
+      const errors = this.validateFile(file);
       return {
         id: `variant-banking-file-${this.nextId++}`,
         name: file.name,

@@ -1,3 +1,8 @@
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
+<h1 id="fines-finance-upload-heading" class="govuk-heading-l">Upload variant banking files</h1>
 <div [formGroup]="form">
   <opal-lib-moj-multi-file-upload>
     @if (fileUploads().length === 0) {
@@ -12,6 +17,8 @@
       labelText="Choose Variant Banking files"
       [hintText]="null"
       [acceptedTypes]="acceptedTypes"
+      [maxFiles]="maxFiles"
+      [maxFilesErrorMessage]="maxFilesErrorMessage"
       (filesSelected)="onFilesSelected($event)"
     ></opal-lib-moj-multi-file-upload-input>
   </opal-lib-moj-multi-file-upload>

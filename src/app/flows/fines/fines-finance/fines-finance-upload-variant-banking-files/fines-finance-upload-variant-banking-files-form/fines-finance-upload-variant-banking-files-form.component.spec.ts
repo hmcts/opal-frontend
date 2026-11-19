@@ -17,6 +17,18 @@ describe('FinesFinanceUploadVariantBankingFilesFormComponent', () => {
     const file = new File(['banking'], 'a121_261027_VB_123_01.dat');
     return { id: 'banking-file', file, name: file.name, status: 'success', progress: 100, errors: [], ...overrides };
   };
+  const maxFilesMessage = 'You can only select up to 6 files at the same time.';
+  const selection = (count: number): File[] =>
+    Array.from(
+      { length: count },
+      (_, index) => new File(['banking'], `a121_261027_VB_123_${String(index).padStart(2, '0')}.dat`),
+    );
+  /** Exercises a native picker selection through the shared control. */
+  const chooseFiles = (files: readonly File[]): void => {
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('#files');
+    Object.defineProperty(input, 'files', { value: files, configurable: true });
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -113,6 +125,84 @@ describe('FinesFinanceUploadVariantBankingFilesFormComponent', () => {
     expect(filesSelected).toHaveBeenCalledExactlyOnceWith([selected]);
     expect(component.form.controls.files.value).toEqual([selected]);
     expect(fixture.nativeElement.querySelector('[role="status"]').textContent).toBe('One file is uploading.');
+  });
+
+  it('shows and clears the count summary independently of existing per-file errors', async () => {
+    const failed = row({ status: 'failed', errors: ['Server rejected this file.'] });
+    const filesSelected = vi.spyOn(component.filesSelected, 'emit');
+    fixture.componentRef.setInput('files', [failed]);
+    fixture.detectChanges();
+    expect(component.form.controls.files.hasError('fileUpload')).toBe(true);
+
+    chooseFiles(selection(7));
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('#files');
+    const summary: HTMLElement = fixture.nativeElement.querySelector('.govuk-error-summary');
+    expect(component.maxFiles).toBe(6);
+    expect(component.maxFilesErrorMessage).toBe(maxFilesMessage);
+    expect(component.form.controls.files.getError('maxFiles')).toEqual({ maxFiles: 6, actualFiles: 7 });
+    expect(component.form.controls.files.value).toEqual([failed.file]);
+    expect(component.fileUploads()).toEqual([failed]);
+    expect(filesSelected).not.toHaveBeenCalled();
+    expect(summary.querySelectorAll('li')).toHaveLength(1);
+    expect(summary.textContent).toContain(maxFilesMessage);
+    expect(summary.textContent).not.toContain('Server rejected this file.');
+    expect(fixture.nativeElement.querySelector('#files-error').textContent).toContain(maxFilesMessage);
+    expect(input.getAttribute('aria-invalid')).toBe('true');
+    expect(input.getAttribute('aria-describedby')?.split(' ')).toContain('files-error');
+    const validFiles = selection(1);
+
+    chooseFiles(validFiles);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(component.form.controls.files.hasError('maxFiles')).toBe(false);
+    expect(component.form.controls.files.hasError('fileUpload')).toBe(true);
+    expect(fixture.nativeElement.querySelector('.govuk-error-summary')).toBeNull();
+    expect(fixture.nativeElement.querySelector('#files-error')).toBeNull();
+    expect(filesSelected).toHaveBeenCalledExactlyOnceWith(validFiles);
+  });
+
+  it('focuses the count summary and lets its error link focus the upload control', async () => {
+    fixture.componentRef.setInput('files', []);
+    fixture.detectChanges();
+    chooseFiles(selection(7));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    const summary: HTMLElement = fixture.nativeElement.querySelector('.govuk-error-summary');
+    const link: HTMLAnchorElement = summary.querySelector('.govuk-error-summary__list a')!;
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('#files');
+    const label: HTMLLabelElement = fixture.nativeElement.querySelector('label[for="files"]');
+    // JSDOM has no layout; this test checks the native focus target after the summary link is selected.
+    label.scrollIntoView = vi.fn();
+    expect(document.activeElement).toBe(summary);
+
+    link.click();
+
+    expect(label.scrollIntoView).toHaveBeenCalled();
+    expect(document.activeElement).toBe(input);
+  });
+
+  it('clears the count summary when the file control is reset without emitting files', async () => {
+    const filesSelected = vi.spyOn(component.filesSelected, 'emit');
+    fixture.componentRef.setInput('files', []);
+    fixture.detectChanges();
+    chooseFiles(selection(7));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    expect(fixture.nativeElement.querySelector('.govuk-error-summary')).not.toBeNull();
+
+    component.form.controls.files.reset();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(component.form.controls.files.value).toEqual([]);
+    expect(component.form.controls.files.hasError('maxFiles')).toBe(false);
+    expect(fixture.nativeElement.querySelector('.govuk-error-summary')).toBeNull();
+    expect(fixture.nativeElement.querySelector('#files-error')).toBeNull();
+    expect(filesSelected).not.toHaveBeenCalled();
   });
 
   it('keeps cumulative original files in the control as parent upload statuses change', () => {
