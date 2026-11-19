@@ -8,9 +8,10 @@ import {
   OnInit,
   Output,
   computed,
+  effect,
   inject,
 } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AbstractFormAliasBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-alias-base';
 import { IFinesMacFixedPenaltyDetailsForm } from '../interfaces/fines-mac-fixed-penalty-details-form.interface';
 import { FINES_MAC_ROUTING_NESTED_ROUTES } from '../../routing/constants/fines-mac-routing-nested-routes.constant';
@@ -59,6 +60,7 @@ import { FinesMacOffenceCodeHintComponent } from '../../components/fines-mac-off
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
+import { getAccountNotesMaxLengthError } from '../../fines-mac-account-comments-notes/constants/fines-mac-account-comments-notes-field-errors.constant';
 @Component({
   selector: 'app-fines-mac-fixed-penalty-details-form',
   imports: [
@@ -116,6 +118,8 @@ export class FinesMacFixedPenaltyDetailsFormComponent
     () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
   );
 
+  public readonly accountNotesMaxLength = computed(() => (this.release1a1_2Enabled() ? 500 : 1000));
+
   @Input() public defendantType!: string;
   @Input({ required: true }) public enforcingCourtAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
   @Input({ required: true }) public issuingAuthorityAutoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
@@ -136,7 +140,19 @@ export class FinesMacFixedPenaltyDetailsFormComponent
 
   override fieldErrors: IFinesMacFixedPenaltyDetailsFieldErrors = {
     ...FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS,
+    fm_fp_account_comments_notes_notes: {
+      ...FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS.fm_fp_account_comments_notes_notes,
+      ...getAccountNotesMaxLengthError(this.accountNotesMaxLength()),
+    },
   };
+
+  constructor() {
+    super();
+
+    effect(() => {
+      this.updateAccountNotesValidation(this.accountNotesMaxLength());
+    });
+  }
 
   /**
    * Replaced during listener setup with a callback that retries the current offence-code lookup.
@@ -169,7 +185,10 @@ export class FinesMacFixedPenaltyDetailsFormComponent
       fm_fp_court_details_imposing_court_id: new FormControl(null),
       // Comments and Notes
       fm_fp_account_comments_notes_comments: new FormControl(null),
-      fm_fp_account_comments_notes_notes: new FormControl(null),
+      fm_fp_account_comments_notes_notes: new FormControl(null, [
+        ...FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS.fm_fp_account_comments_notes_notes!,
+        Validators.maxLength(this.accountNotesMaxLength()),
+      ]),
       fm_fp_account_comments_notes_system_notes: new FormControl(null),
       // Language Preferences
       fm_fp_language_preferences_document_language: new FormControl(null),
@@ -192,12 +211,41 @@ export class FinesMacFixedPenaltyDetailsFormComponent
   }
 
   /**
+   * Updates the account notes validators and error message based on the maximum character limit.
+   *
+   * @param maxLength - The maximum number of characters allowed for account notes.
+   */
+  private updateAccountNotesValidation(maxLength: number): void {
+    const notesControl = this.form?.get('fm_fp_account_comments_notes_notes');
+
+    if (!notesControl) return;
+
+    notesControl.setValidators([
+      ...FINES_MAC_FIXED_PENALTY_DETAILS_FORM_VALIDATORS.fm_fp_account_comments_notes_notes!,
+      Validators.maxLength(maxLength),
+    ]);
+
+    notesControl.updateValueAndValidity({ emitEvent: false });
+
+    this.fieldErrors = {
+      ...this.fieldErrors,
+      fm_fp_account_comments_notes_notes: {
+        ...this.fieldErrors.fm_fp_account_comments_notes_notes,
+        ...getAccountNotesMaxLengthError(maxLength),
+      },
+    };
+
+    if (this.formErrorSummaryMessage?.length) {
+      this.handleErrorMessages();
+    }
+  }
+
+  /**
    * Sets the validators for the fixed penalty details form controls.
    */
   private setValidators(): void {
     this.addValidatorsToControl(`${this.fixedPenaltyPrefix}court_details_imposing_court_id`);
     this.addValidatorsToControl(`${this.fixedPenaltyPrefix}account_comments_notes_comments`);
-    this.addValidatorsToControl(`${this.fixedPenaltyPrefix}account_comments_notes_notes`);
     this.addValidatorsToControl(`${this.fixedPenaltyPrefix}account_comments_notes_system_notes`);
     this.addValidatorsToControl(`${this.fixedPenaltyPrefix}language_preferences_document_language`);
     this.addValidatorsToControl(`${this.fixedPenaltyPrefix}language_preferences_hearing_language`);
