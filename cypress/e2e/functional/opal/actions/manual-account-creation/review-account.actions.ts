@@ -46,6 +46,13 @@ export class ManualReviewAccountActions {
     cy.get(L.checkAccountButton, this.common.getTimeoutOptions()).should('be.visible').click();
   }
 
+  /** Returns to the Account details task list from Check account details. */
+  returnToAccountDetails(): void {
+    log('navigate', 'Returning to Account details from Check account details');
+    cy.get(L.backLink, this.common.getTimeoutOptions()).should('be.visible').click();
+    cy.location('pathname', { timeout: this.pathTimeout }).should('include', '/account-details');
+  }
+
   /**
    * Asserts the review page header contains the expected text.
    * @param expectedHeader - Header fragment to assert.
@@ -267,6 +274,7 @@ export class ManualReviewAccountActions {
 
         if (accountId) {
           recordCreatedId(accountId);
+          cy.wrap(accountId, { log: false }).as('lastCreatedDraftId');
           log('navigate', 'Manual account ID recorded', { status, accountId });
         }
 
