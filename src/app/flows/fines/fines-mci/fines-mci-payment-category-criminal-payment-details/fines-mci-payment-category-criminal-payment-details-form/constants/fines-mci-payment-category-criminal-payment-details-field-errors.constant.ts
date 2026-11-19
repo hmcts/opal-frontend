@@ -2,8 +2,9 @@ import { IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/compon
 
 export const FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_PAYMENT_DETAILS_FIELD_ERRORS: IAbstractFormBaseFieldErrors = {
   amount: {
-    required: { message: 'Enter an amount', priority: 1 },
-    invalidAmountValue: { message: 'Enter a valid amount', priority: 2 },
+    required: { message: 'Enter amount', priority: 1 },
+    invalidAmountValue: { message: 'Enter only numbers and decimals', priority: 2 },
+    pattern: { message: 'Enter only numbers and decimals', priority: 2 },
     invalidAmount: {
       message: 'Enter an amount with no more than 18 digits before the decimal and 2 or fewer after.',
       priority: 3,

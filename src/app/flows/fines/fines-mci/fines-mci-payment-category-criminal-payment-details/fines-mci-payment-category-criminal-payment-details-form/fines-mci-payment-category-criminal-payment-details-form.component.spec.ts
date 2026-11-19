@@ -63,11 +63,26 @@ describe('FinesMciPaymentCategoryCriminalPaymentDetailsFormComponent', () => {
   it('reports required fields on Continue and links the amount error to its input', () => {
     initialise();
     submit();
-    expect(fixture.nativeElement.textContent).toContain('Enter an amount');
+    expect(fixture.nativeElement.textContent).toContain('Enter amount');
     expect(fixture.nativeElement.textContent).toContain('Select who payment was received from');
     expect(fixture.nativeElement.textContent).toContain('Select a method of payment');
     expect(fixture.nativeElement.querySelector('#amount').getAttribute('aria-describedby')).toBe('amount-error');
   });
+  it.each(['abc', '12x', '£10', '1,000', '1.2.3', '1e3', '0x10', 'Infinity'])(
+    'shows the non-numeric error on Continue for %s without submitting',
+    (amount) => {
+      initialise({ ...PAYMENT, amount });
+      const emit = vi.spyOn(component['formSubmit'], 'emit');
+
+      submit();
+
+      expect(fixture.nativeElement.querySelector('#amount-error')?.textContent).toBe('Enter only numbers and decimals');
+      expect(fixture.nativeElement.querySelector('.govuk-error-summary__list')?.textContent).toContain(
+        'Enter only numbers and decimals',
+      );
+      expect(emit).not.toHaveBeenCalled();
+    },
+  );
   it.each(['12x', '1.234', '1234567890123456789.12'])('rejects invalid amount %s', (value) => {
     initialise(PAYMENT);
     component.form.get('amount')?.setValue(value);

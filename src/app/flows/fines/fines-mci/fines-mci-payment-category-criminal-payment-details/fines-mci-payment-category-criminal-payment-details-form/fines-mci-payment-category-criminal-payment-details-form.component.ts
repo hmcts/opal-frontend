@@ -66,7 +66,11 @@ export class FinesMciPaymentCategoryCriminalPaymentDetailsFormComponent
       thirdPartyName: '',
     };
     this.form = new FormGroup({
-      amount: new FormControl(initial.amount, [Validators.required, amountValidator(18, 2)]),
+      amount: new FormControl(initial.amount, [
+        Validators.required,
+        Validators.pattern(/^-?\d*(?:\.\d*)?$/),
+        amountValidator(18, 2),
+      ]),
       payerType: new FormControl<IFinesMciCriminalPayment['payerType']>(initial.payerType, Validators.required),
       methodOfPayment: new FormControl<IFinesMciCriminalPayment['methodOfPayment']>(
         initial.methodOfPayment,

@@ -50,6 +50,27 @@ describe('FinesMciPaymentCategoryCriminalPaymentDetailsComponent', () => {
     expect(fixture.componentInstance.handleBeforeUnload()).toBe(true);
   });
 
+  it.each([
+    ['', 'Enter amount'],
+    ['12x', 'Enter only numbers and decimals'],
+  ])('keeps the user on Payment details with the amount error for %s', (amount, message) => {
+    store.setCriminalPayment(CRIMINAL_PAYMENT);
+    fixture.detectChanges();
+    const navigate = vi.spyOn(router, 'navigate');
+    const input = fixture.nativeElement.querySelector('#amount') as HTMLInputElement;
+    input.value = amount;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+
+    fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('h1')?.textContent).toBe('Payment details');
+    expect(fixture.nativeElement.querySelector('#amount-error')?.textContent).toBe(message);
+    expect(fixture.nativeElement.querySelector('.govuk-error-summary__list')?.textContent).toContain(message);
+    expect(navigate).not.toHaveBeenCalled();
+    expect(store.criminalPayment()).toEqual(CRIMINAL_PAYMENT);
+  });
+
   it('restores leave protection for saved criminal payment details', () => {
     store.setCriminalPayment(CRIMINAL_PAYMENT);
     fixture.detectChanges();
