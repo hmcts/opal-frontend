@@ -259,7 +259,13 @@ describe('APR Add/Change route', () => {
   it('uses one mode parameter after every static APR page', () => {
     expect(aprRouting.filter((entry) => entry.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/:mode`)).toHaveLength(1);
     expect(aprRouting.at(-1)).toBe(route);
-    expect(aprRouting.some((entry) => entry.path === `${FINES_ACC_APR_ROUTING_PATHS.root}/add`)).toBe(false);
+    expect(
+      aprRouting.some((entry) =>
+        [`${FINES_ACC_APR_ROUTING_PATHS.root}/add`, `${FINES_ACC_APR_ROUTING_PATHS.root}/change`].includes(
+          entry.path ?? '',
+        ),
+      ),
+    ).toBe(false);
     expect(aprRouting.slice(0, -1).map((entry) => entry.path)).toEqual(
       expect.arrayContaining([`${FINES_ACC_APR_ROUTING_PATHS.root}/manage`]),
     );
