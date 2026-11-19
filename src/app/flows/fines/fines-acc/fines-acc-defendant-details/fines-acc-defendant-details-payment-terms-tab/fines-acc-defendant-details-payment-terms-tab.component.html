@@ -5,7 +5,7 @@
     </div>
   </div>
   <hr [class]="style.hr" />
-  @if (paymentCardRequestedToday) {
+  @if (paymentCardRequestWarningEnabled() && paymentCardRequestedToday) {
     <opal-lib-moj-alert
       id="payment-card-requested-today-warning"
       type="warning"

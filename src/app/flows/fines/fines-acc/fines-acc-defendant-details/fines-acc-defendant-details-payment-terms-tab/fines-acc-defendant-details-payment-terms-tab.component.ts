@@ -1,4 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, Input } from '@angular/core';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { APP_MODE_FEATURE_FLAG } from '@app/flows/fines/constants/environment-feature-flags.constant';
+import { RELEASE_1B_1_1_FEATURE_FLAG } from '@app/flows/fines/constants/release-feature-flags.constant';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../../fines-mac/fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
@@ -48,6 +51,15 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly dateService = inject(DateService);
+  private readonly globalStore = inject(GlobalStore);
+
+  /**
+   * Enables the payment card request warning when R1B 1.1 is enabled in legacy mode.
+   */
+  protected readonly paymentCardRequestWarningEnabled = computed(() => {
+    const flags = this.globalStore.featureFlags() as Record<string, unknown>;
+    return flags[RELEASE_1B_1_1_FEATURE_FLAG] === true && flags[APP_MODE_FEATURE_FLAG] === 'legacy';
+  });
 
   @Input({ required: true }) tabData!: IOpalFinesAccountDefendantDetailsPaymentTermsLatest;
   @Input() hasAmendPaymentTermsPermission: boolean = false;
