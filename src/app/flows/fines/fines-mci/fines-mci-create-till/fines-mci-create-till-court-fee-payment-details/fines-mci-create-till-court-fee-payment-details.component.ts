@@ -3,20 +3,20 @@ import {
   Component,
   DestroyRef,
   ElementRef,
-  HostListener,
   OnInit,
+  OnDestroy,
   ViewChild,
   inject,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationCancel, NavigationEnd, NavigationError, Router } from '@angular/router';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
-import { finalize } from 'rxjs';
+import { filter, finalize, take } from 'rxjs';
 import { FinesMciStore } from '../../stores/fines-mci.store';
 import { IFinesMciPaymentMappings } from '../../routing/interfaces/fines-mci-payment-mappings.interface';
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
@@ -37,7 +37,7 @@ import { FinesMciPaymentMappingsService } from '../../services/fines-mci-payment
 })
 export class FinesMciCreateTillCourtFeePaymentDetailsComponent
   extends AbstractFormParentBaseComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   private readonly navigationRouter = inject(Router);
   private readonly currentRoute = inject(ActivatedRoute);
@@ -75,6 +75,18 @@ export class FinesMciCreateTillCourtFeePaymentDetailsComponent
     }
   }
 
+  /** Records the entry screen and restores protection for saved payment details. */
+  private initialisePaymentDetailsState(): void {
+    const confirmation = FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation;
+    const details = FINES_MCI_ROUTING_PATHS.children.courtFeeDetails;
+    if (this.previousUrlPath?.endsWith(`/${confirmation}`))
+      this.finesMciStore.setCourtFeePaymentOrigin('over-underpayment-confirmation');
+    else if (this.previousUrlPath?.endsWith(`/${details}`) || !this.finesMciStore.courtFeePaymentOrigin()) {
+      this.finesMciStore.setCourtFeePaymentOrigin('court-fee-details');
+    }
+    this.stateUnsavedChanges = this.finesMciStore.courtFeePaymentDetails() !== null;
+  }
+
   /** Allows the validated Continue transition while protecting the draft from other route changes. */
   protected override canDeactivate(): boolean {
     const target = this.navigationRouter.currentNavigation()?.finalUrl?.toString().split(/[?#]/)[0];
@@ -84,14 +96,7 @@ export class FinesMciCreateTillCourtFeePaymentDetailsComponent
 
   /** Restores draft protection and records the entry screen for Back navigation. */
   public ngOnInit(): void {
-    const confirmation = FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation;
-    const details = FINES_MCI_ROUTING_PATHS.children.courtFeeDetails;
-    if (this.previousUrlPath?.endsWith(`/${confirmation}`))
-      this.finesMciStore.setCourtFeePaymentOrigin('over-underpayment-confirmation');
-    else if (this.previousUrlPath?.endsWith(`/${details}`) || !this.finesMciStore.courtFeePaymentOrigin()) {
-      this.finesMciStore.setCourtFeePaymentOrigin('court-fee-details');
-    }
-    this.stateUnsavedChanges = this.finesMciStore.courtFeePaymentDetails() !== null;
+    this.initialisePaymentDetailsState();
   }
 
   /** Returns to the screen that led to payment details, keeping the court fee draft. */
@@ -142,9 +147,26 @@ export class FinesMciCreateTillCourtFeePaymentDetailsComponent
     this.stateUnsavedChanges = unsavedChanges || this.finesMciStore.courtFeePaymentDetails() !== null;
   }
 
-  /** Requests a warning before refreshing or closing the tab containing the in-memory till. */
-  @HostListener('window:beforeunload')
-  public handleBeforeUnload(): boolean {
-    return false;
+  /** Discards saved payment details only after a successful departure from the review journey. */
+  public ngOnDestroy(): void {
+    const navigation = this.navigationRouter.currentNavigation();
+    if (!navigation) return;
+    this.navigationRouter.events
+      .pipe(
+        filter(
+          (event) =>
+            (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError) &&
+            event.id === navigation.id,
+        ),
+        take(1),
+      )
+      .subscribe((event) => {
+        if (
+          event instanceof NavigationEnd &&
+          !event.urlAfterRedirects.split(/[?#]/)[0].endsWith(`/${FINES_MCI_ROUTING_PATHS.children.checkCourtFee}`)
+        ) {
+          this.finesMciStore.setCourtFeePaymentDetails(null);
+        }
+      });
   }
 }

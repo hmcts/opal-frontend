@@ -314,13 +314,111 @@ export class ManualCashInputActions {
   /** Confirms an exact payment opens the temporary Court Fee Payment Details screen. */
   public assertCourtFeePaymentDetailsIsDisplayed(): void {
     cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/court-fee-payment-details');
-    cy.contains('h1', 'Payment details – court fee').should('be.visible');
+    cy.contains('h1', 'Payment details').should('be.visible');
   }
 
-  /** Confirms an overpayment or underpayment opens its temporary confirmation screen. */
+  /** Confirms the selected business unit is displayed on Court Fee Payment Details.
+   * @param businessUnit - Name of the selected business unit.
+   */
+  public assertCourtFeePaymentDetailsBusinessUnitIsDisplayed(businessUnit: string): void {
+    cy.get(ManualCashInputLocators.courtFeePaymentDetailsBusinessUnit).should('have.text', businessUnit);
+  }
+
+  /** Confirms an overpayment or underpayment opens its confirmation screen. */
   public assertCourtFeeOverUnderpaymentIsDisplayed(): void {
     cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/over-underpayment-confirmation');
-    cy.contains('h1', 'Overpayment/underpayment confirmation').should('be.visible');
+  }
+
+  /** Confirms the screen identifies the payment as the expected type.
+   * @param type - Whether the payment is an overpayment or underpayment.
+   */
+  public assertCourtFeePaymentTypeIsDisplayed(type: 'overpayment' | 'underpayment'): void {
+    const heading = type === 'overpayment' ? 'Confirm overpayment' : 'You cannot add an underpayment';
+    cy.contains('h1', heading).should('be.visible');
+  }
+
+  /** Confirms the warning or information banner shows the expected payment difference.
+   * @param banner - Alert style expected for the payment difference.
+   * @param amount - Difference amount displayed in pounds.
+   * @param type - Whether the payment is an overpayment or underpayment.
+   */
+  public assertCourtFeeDifferenceBannerIsDisplayed(
+    banner: 'information' | 'warning',
+    amount: string,
+    type: 'overpayment' | 'underpayment',
+  ): void {
+    const selector =
+      banner === 'information'
+        ? ManualCashInputLocators.courtFeeOverpaymentBanner
+        : ManualCashInputLocators.courtFeeUnderpaymentBanner;
+    cy.get(selector).should('be.visible').and('contain.text', `This amount contains a £${amount} ${type}.`);
+  }
+
+  /** Confirms the summary displays the court fee, entered amount, and item count.
+   * @param courtFee - Selected court fee code, description, and value.
+   * @param amount - Entered payment amount.
+   * @param numberOfItems - Entered number of items.
+   */
+  public assertCourtFeePaymentSummaryIsDisplayed(courtFee: string, amount: string, numberOfItems: string): void {
+    cy.get(ManualCashInputLocators.courtFeeConfirmationCourtFeeRow)
+      .should('be.visible')
+      .and('contain.text', 'Court fee')
+      .and('contain.text', courtFee);
+    cy.get(ManualCashInputLocators.courtFeeConfirmationAmountRow)
+      .should('be.visible')
+      .and('contain.text', 'Amount')
+      .and('contain.text', amount);
+    cy.get(ManualCashInputLocators.courtFeeConfirmationNumberOfItemsRow)
+      .should('be.visible')
+      .and('contain.text', 'Number of items')
+      .and('contain.text', numberOfItems);
+  }
+
+  /** Confirms the overpayment screen displays the Confirm button and Cancel link. */
+  public assertOverpaymentConfirmationActionsAreDisplayed(): void {
+    cy.get(ManualCashInputLocators.courtFeeConfirmOverpaymentButton)
+      .should('be.visible')
+      .and('contain.text', 'Confirm');
+    cy.get(ManualCashInputLocators.courtFeeCancelOverpaymentLink).should('be.visible').and('contain.text', 'Cancel');
+  }
+
+  /** Selects Confirm for an overpayment. */
+  public confirmOverpayment(): void {
+    cy.get(ManualCashInputLocators.courtFeeConfirmOverpaymentButton).should('be.visible').click();
+  }
+
+  /** Selects Cancel for an overpayment. */
+  public cancelOverpayment(): void {
+    cy.get(ManualCashInputLocators.courtFeeCancelOverpaymentLink).should('be.visible').click();
+  }
+
+  /** Confirms the underpayment screen displays Cancel and return to till and Go back. */
+  public assertUnderpaymentConfirmationActionsAreDisplayed(): void {
+    cy.get(ManualCashInputLocators.courtFeeReturnToTillLink)
+      .should('be.visible')
+      .and('contain.text', 'Cancel and return to till');
+    cy.get(ManualCashInputLocators.backLink).should('be.visible');
+  }
+
+  /** Selects Cancel and return to till for an underpayment. */
+  public cancelUnderpaymentAndReturnToTill(): void {
+    cy.get(ManualCashInputLocators.courtFeeReturnToTillLink)
+      .should('be.visible')
+      .and('contain.text', 'Cancel and return to till')
+      .click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/details');
+  }
+
+  /** Confirms a new Court Fee Details form is blank after the underpayment is discarded. */
+  public assertCourtFeeDetailsFormIsBlank(): void {
+    cy.get(ManualCashInputLocators.courtFeeCodeInput).should('have.value', '');
+    cy.get(ManualCashInputLocators.courtFeeAmountInput).should('have.value', '');
+    cy.get(ManualCashInputLocators.courtFeeNumberOfItemsInput).should('have.value', '');
+  }
+
+  /** Selects Back from the overpayment or underpayment confirmation. */
+  public goBackFromCourtFeeConfirmation(): void {
+    cy.get(ManualCashInputLocators.backLink).should('be.visible').click();
   }
 
   /** Confirms an out-of-scope payment category leaves the user on Payment Category. */

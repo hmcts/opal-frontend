@@ -12,10 +12,13 @@ import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { GovukSelectComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-select';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
+import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
 import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '@app/flows/fines/fines-mac/constants/fines-mac-title-dropdown-options.constant';
 import { IOpalFinesMapping } from '@services/fines/opal-fines-service/interfaces/opal-fines-mapping.interface';
 import {
   GovukRadioComponent,
+  GovukRadiosConditionalComponent,
   GovukRadiosItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 import { FINES_MCI_CREATE_TILL_COURT_FEE_PAYMENT_DETAILS_FIELD_ERRORS } from '../constants/fines-mci-create-till-court-fee-payment-details-field-errors.constant';
@@ -30,6 +33,7 @@ import { IFinesMciCourtFeePaymentDetails } from '../../../stores/interfaces/fine
     GovukCancelLinkComponent,
     GovukButtonComponent,
     GovukRadioComponent,
+    GovukRadiosConditionalComponent,
     GovukRadiosItemComponent,
     GovukTextInputComponent,
     GovukSelectComponent,
@@ -96,8 +100,8 @@ export class FinesMciCreateTillCourtFeePaymentDetailsFormComponent extends Abstr
         Validators.maxLength(30),
       ]),
       postcode: new FormControl<string | null>(initial?.postcode ?? null, [
-        Validators.pattern(FINES_MCI_PAYMENT_DETAILS_PATTERNS.alphanumeric),
-        Validators.maxLength(8),
+        patternValidator(FINES_MCI_PAYMENT_DETAILS_PATTERNS.alphanumeric, 'pattern'),
+        optionalMaxLengthValidator(8),
       ]),
     });
   }

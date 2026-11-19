@@ -6,8 +6,7 @@ Feature: Major Creditor Search And Matches Journeys
   Background:
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
 
-  # Legacy-data scenarios are scaffolds.
-  # Replace the LEGACY_* placeholders with real seeded data values before executing them.
+  # JCDE examples still require seeded data. PreProd example values are populated from the supplied legacy accounts.
 
   @LegacyData @JIRA-STORY:PO-2350 @JIRA-EPIC:PO-1286
   # Minimum data set required: one major creditor available for business unit LEGACY_MAJOR_CREDITOR_BUSINESS_UNIT, searchable as LEGACY_MAJOR_CREDITOR_NAME, and opening a details page whose header contains LEGACY_MAJOR_CREDITOR_HEADER.
@@ -29,5 +28,5 @@ Feature: Major Creditor Search And Matches Journeys
       | placeholder                         | placeholder                | placeholder                  |
     @R1BDrop2UatTechPreprod
     Examples:
-      | LEGACY_MAJOR_CREDITOR_BUSINESS_UNIT | LEGACY_MAJOR_CREDITOR_NAME | LEGACY_MAJOR_CREDITOR_HEADER |
-      | placeholder                         | placeholder                | placeholder                  |
+      | LEGACY_MAJOR_CREDITOR_BUSINESS_UNIT | LEGACY_MAJOR_CREDITOR_NAME      | LEGACY_MAJOR_CREDITOR_HEADER    |
+      | West London                         | Crown Prosecution Service (CPS) | Crown Prosecution Service (CPS) |

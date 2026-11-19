@@ -89,7 +89,10 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
     void this.navigationRouter
       .navigate([FINES_MCI_ROUTING_PATHS.children.details], { relativeTo: this.currentRoute.parent })
       .then((navigated) => {
-        if (navigated) this.finesMciStore.setDraftJourney(null);
+        if (navigated) {
+          this.finesMciStore.setDraftJourney(null);
+          this.finesMciStore.setSuspensePayment(null);
+        }
       });
   }
 

@@ -16,6 +16,7 @@ import { FinesMciCreateTillPaymentCategoryComponent } from '../fines-mci-create-
 import { FinesMciCreateTillOverUnderpaymentConfirmationComponent } from '../fines-mci-create-till-over-underpayment-confirmation/fines-mci-create-till-over-underpayment-confirmation.component';
 import { FinesMciCreateTillDetailsComponent } from '../fines-mci-create-till-details/fines-mci-create-till-details.component';
 import { finesMciCourtFeeCheckGuard } from '../../routing/guards/fines-mci-court-fee-check.guard';
+import { finesMciCourtFeeDraftGuard } from '../../routing/guards/fines-mci-court-fee-draft.guard';
 import { FinesMciPaymentMappingsService } from '../../services/fines-mci-payment-mappings.service';
 import { finesMciPaymentMappingsResolver } from '../../routing/resolvers/fines-mci-payment-mappings.resolver';
 
@@ -55,11 +56,13 @@ describe('Court fee payment details navigation', () => {
               {
                 path: 'court-fee-payment-details',
                 component: FinesMciCreateTillCourtFeePaymentDetailsComponent,
+                canActivate: [finesMciCourtFeeDraftGuard],
                 canDeactivate: [canDeactivateGuard],
                 data: { paymentMappings: mappings },
               },
             ],
           },
+          { path: 'fines/manual-cash-input/create/till/court-fee-details', component: PreviousScreenComponent },
         ]),
       ],
     });
@@ -482,6 +485,31 @@ describe('Court fee payment details navigation', () => {
     expect(store.tills()[0].payments).toHaveLength(1);
   });
 
+  it('redirects a browser history navigation to payment details after Cancel clears the draft', async () => {
+    const harness = await RouterTestingHarness.create('/till/court-fee-details');
+    await harness.navigateByUrl(paymentUrl, FinesMciCreateTillCourtFeePaymentDetailsComponent);
+    harness.routeNativeElement!.querySelector<HTMLAnchorElement>('.button-link')!.click();
+    await harness.fixture.whenStable();
+
+    expect(TestBed.inject(FinesMciStore).courtFeeDraft()).toBeNull();
+    expect(TestBed.inject(Router).url).toBe('/till/details');
+
+    const router = TestBed.inject(Router);
+    router.setUpLocationChangeListener();
+    const redirected = firstValueFrom(
+      router.events.pipe(
+        filter((event) => event instanceof NavigationEnd),
+        take(1),
+      ),
+    );
+    (TestBed.inject(Location) as SpyLocation).simulateUrlPop(paymentUrl);
+    await redirected;
+    harness.detectChanges();
+
+    expect(router.url).toBe('/fines/manual-cash-input/create/till/court-fee-details');
+    expect(harness.routeNativeElement?.textContent).toContain('Previous screen');
+  });
+
   it.each(['/till/court-fee-details', '/till/over-underpayment-confirmation'])(
     'saves validated details and restores them after returning from the check screen for %s',
     async (previousUrl) => {
@@ -542,6 +570,55 @@ describe('Court fee payment details navigation', () => {
     await harness.fixture.whenStable();
     expect(TestBed.inject(Router).url).toBe(paymentUrl);
     expect(TestBed.inject(FinesMciStore).courtFeePaymentDetails()).toBeNull();
+  });
+
+  it('clears saved payment details after browser Back reaches court fee details', async () => {
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true);
+    const store = TestBed.inject(FinesMciStore);
+    const router = TestBed.inject(Router);
+    const location = TestBed.inject(Location) as SpyLocation;
+    const harness = await RouterTestingHarness.create('/till/court-fee-details');
+    router.setUpLocationChangeListener();
+    await harness.navigateByUrl(paymentUrl, FinesMciCreateTillCourtFeePaymentDetailsComponent);
+    const page = harness.routeNativeElement!;
+    page.querySelector<HTMLInputElement>('input[value="applicant"]')!.click();
+    page.querySelector<HTMLInputElement>('input[value="NC"]')!.click();
+    page.querySelector<HTMLInputElement>('input[value="company"]')!.click();
+    harness.detectChanges();
+    const company = page.querySelector<HTMLInputElement>('#companyName')!;
+    company.value = 'Example Ltd';
+    company.dispatchEvent(new Event('input', { bubbles: true }));
+    page.querySelector('form')!.dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+    await harness.fixture.whenStable();
+    expect(router.url).toBe('/till/check-court-fee');
+
+    const backToPayment = firstValueFrom(
+      router.events.pipe(
+        filter((event) => event instanceof NavigationEnd),
+        take(1),
+      ),
+    );
+    location.simulateUrlPop(paymentUrl);
+    await backToPayment;
+    harness.detectChanges();
+    expect(store.courtFeePaymentDetails()?.companyName).toBe('Example Ltd');
+
+    confirm.mockReturnValueOnce(false);
+    expect(await router.navigateByUrl('/till/court-fee-details')).toBe(false);
+    expect(store.courtFeePaymentDetails()?.companyName).toBe('Example Ltd');
+
+    const backToFee = firstValueFrom(
+      router.events.pipe(
+        filter((event) => event instanceof NavigationEnd),
+        take(1),
+      ),
+    );
+    location.simulateUrlPop('/till/court-fee-details');
+    await backToFee;
+    expect(confirm).toHaveBeenCalled();
+    expect(router.url).toBe('/till/court-fee-details');
+    expect(store.courtFeePaymentDetails()).toBeNull();
+    expect(store.courtFeeDraft()).toEqual(draft);
   });
 
   it('retries failed mappings when returning from check and restores the saved form', async () => {

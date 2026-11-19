@@ -15,6 +15,7 @@ import { routing } from './fines-mci.routes';
 import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.constant';
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
+import { finesMciCourtFeeDraftGuard } from './guards/fines-mci-court-fee-draft.guard';
 import { finesMciCourtFeesResolver } from './resolvers/fines-mci-court-fees.resolver';
 import { finesMciPaymentMappingsResolver } from './resolvers/fines-mci-payment-mappings.resolver';
 import { finesMciCourtFeeCheckGuard } from './guards/fines-mci-court-fee-check.guard';
@@ -163,11 +164,17 @@ describe('finesMci routes', () => {
   });
 
   it('loads the Court Fee Payment Details screen', async () => {
+    expect(
+      createTillRoute?.children?.filter(
+        (child) => child.path === FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,
+      ),
+    ).toHaveLength(1);
     const route = createTillRoute?.children?.find(
       (child) => child.path === FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,
     );
 
     expect(await route?.loadComponent?.()).toBe(FinesMciCreateTillCourtFeePaymentDetailsComponent);
+    expect(route?.canActivate).toContain(finesMciCourtFeeDraftGuard);
     expect(route?.canDeactivate).toEqual([canDeactivateGuard]);
     expect(route?.resolve?.['paymentMappings']).toBe(finesMciPaymentMappingsResolver);
     expect(route?.data?.['heading']).toBe(FINES_MCI_ROUTING_TITLES.children.createTillCourtFeePaymentDetails);
@@ -185,6 +192,11 @@ describe('finesMci routes', () => {
   });
 
   it('loads the overpayment and underpayment confirmation screen', async () => {
+    expect(
+      createTillRoute?.children?.filter(
+        (child) => child.path === FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation,
+      ),
+    ).toHaveLength(1);
     const route = createTillRoute?.children?.find(
       (child) => child.path === FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation,
     );
@@ -193,6 +205,14 @@ describe('finesMci routes', () => {
     expect(route?.canDeactivate).toEqual([canDeactivateGuard]);
     expect(route?.resolve?.['courtFees']).toBe(finesMciCourtFeesResolver);
     expect(route?.data?.['heading']).toBe(FINES_MCI_ROUTING_TITLES.children.createTillOverUnderpaymentConfirmation);
+  });
+
+  it('should guard navigation away from suspense details when form data has been entered', () => {
+    const suspenseDetailsRoute = createTillRoute?.children?.find(
+      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.suspenseDetails,
+    );
+
+    expect(suspenseDetailsRoute?.canDeactivate).toEqual([canDeactivateGuard]);
   });
 
   it.each([
@@ -216,7 +236,7 @@ describe('finesMci routes', () => {
     expect(childRoute).toEqual(
       expect.objectContaining({
         path,
-        canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+        canActivate: expect.arrayContaining([authGuard, routePermissionsGuard, finesMciFlowStateGuard]),
         data: expect.objectContaining({
           permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],

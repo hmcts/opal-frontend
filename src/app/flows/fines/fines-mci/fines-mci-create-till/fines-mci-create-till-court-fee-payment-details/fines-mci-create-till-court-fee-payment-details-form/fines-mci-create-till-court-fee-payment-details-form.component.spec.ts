@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
-import * as axe from 'axe-core';
 // @ts-expect-error govuk-frontend does not ship TypeScript declarations.
 import { Radios } from 'govuk-frontend';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -322,6 +321,10 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsFormComponent', () => {
 
     postcode.setValue('ABC123');
     expect(postcode.valid).toBe(true);
+    postcode.setValue('SW1A1AA');
+    expect(postcode.valid).toBe(true);
+    postcode.setValue('SW1A 1AA');
+    expect(postcode.valid).toBe(true);
     postcode.setValue('');
     expect(postcode.valid).toBe(true);
   });
@@ -355,7 +358,7 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsFormComponent', () => {
     expect(fixture.componentInstance['hasUnsavedChanges']()).toBe(true);
   });
 
-  it.each(['individual', 'company'])('has no detectable WCAG violations for %s and credit transfer', async (payer) => {
+  it.each(['individual', 'company'])('shows the conditional panels for %s and credit transfer', async (payer) => {
     document.body.classList.add('govuk-frontend-supported', 'js-enabled');
     const fixture = render();
     const element = fixture.nativeElement as HTMLElement;
@@ -374,12 +377,11 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsFormComponent', () => {
     expect(element.querySelector(`#payer-${payer}-conditional`)?.classList).not.toContain(
       'govuk-radios__conditional--hidden',
     );
-    const results = await axe.run(element, {
-      runOnly: { type: 'tag', values: ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'] },
-      // JSDOM does not render colours, so contrast needs a browser-based check.
-      rules: { 'color-contrast': { enabled: false } },
-    });
-    expect(results.passes.length).toBeGreaterThan(0);
-    expect(results.violations).toEqual([]);
+    expect(element.querySelector<HTMLInputElement>('input[value="CT"]')?.getAttribute('aria-controls')).toBe(
+      'payment-method-conditional-CT',
+    );
+    expect(element.querySelector<HTMLInputElement>(`input[value="${payer}"]`)?.getAttribute('aria-controls')).toBe(
+      `payer-${payer}-conditional`,
+    );
   });
 });

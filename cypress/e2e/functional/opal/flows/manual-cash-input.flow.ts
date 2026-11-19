@@ -138,9 +138,80 @@ export class ManualCashInputFlow {
     this.actions.assertCourtFeePaymentDetailsIsDisplayed();
   }
 
+  /** Verifies the selected business unit is displayed on Court Fee Payment Details.
+   * @param businessUnit - Name of the selected business unit.
+   */
+  public assertCourtFeePaymentDetailsBusinessUnitIsDisplayed(businessUnit: string): void {
+    this.actions.assertCourtFeePaymentDetailsBusinessUnitIsDisplayed(businessUnit);
+  }
+
   /** Verifies the over/underpayment destination. */
   public assertCourtFeeOverUnderpaymentIsDisplayed(): void {
     this.actions.assertCourtFeeOverUnderpaymentIsDisplayed();
+  }
+
+  /** Verifies whether the confirmation identifies an overpayment or underpayment.
+   * @param type - Whether the payment is an overpayment or underpayment.
+   */
+  public assertCourtFeePaymentTypeIsDisplayed(type: 'overpayment' | 'underpayment'): void {
+    this.actions.assertCourtFeePaymentTypeIsDisplayed(type);
+  }
+
+  /** Verifies the confirmation banner type and difference amount.
+   * @param banner - Alert style expected for the payment difference.
+   * @param amount - Difference amount displayed in pounds.
+   * @param type - Whether the payment is an overpayment or underpayment.
+   */
+  public assertCourtFeeDifferenceBannerIsDisplayed(
+    banner: 'information' | 'warning',
+    amount: string,
+    type: 'overpayment' | 'underpayment',
+  ): void {
+    this.actions.assertCourtFeeDifferenceBannerIsDisplayed(banner, amount, type);
+  }
+
+  /** Verifies the court fee, amount, and number of items shown on confirmation.
+   * @param courtFee - Selected court fee code, description, and value.
+   * @param amount - Entered payment amount.
+   * @param numberOfItems - Entered number of items.
+   */
+  public assertCourtFeePaymentSummaryIsDisplayed(courtFee: string, amount: string, numberOfItems: string): void {
+    this.actions.assertCourtFeePaymentSummaryIsDisplayed(courtFee, amount, numberOfItems);
+  }
+
+  /** Verifies Confirm and Cancel are available for an overpayment. */
+  public assertOverpaymentConfirmationActionsAreDisplayed(): void {
+    this.actions.assertOverpaymentConfirmationActionsAreDisplayed();
+  }
+
+  /** Selects Confirm for an overpayment. */
+  public confirmOverpayment(): void {
+    this.actions.confirmOverpayment();
+  }
+
+  /** Selects Cancel for an overpayment. */
+  public cancelOverpayment(): void {
+    this.actions.cancelOverpayment();
+  }
+
+  /** Verifies the underpayment screen offers Cancel and return to till and Go back. */
+  public assertUnderpaymentConfirmationActionsAreDisplayed(): void {
+    this.actions.assertUnderpaymentConfirmationActionsAreDisplayed();
+  }
+
+  /** Cancels an underpayment and returns to Till Details. */
+  public cancelUnderpaymentAndReturnToTill(): void {
+    this.actions.cancelUnderpaymentAndReturnToTill();
+  }
+
+  /** Verifies the court fee form has no values after the underpayment draft is discarded. */
+  public assertCourtFeeDetailsFormIsBlank(): void {
+    this.actions.assertCourtFeeDetailsFormIsBlank();
+  }
+
+  /** Selects Back from the overpayment or underpayment confirmation. */
+  public goBackFromCourtFeeConfirmation(): void {
+    this.actions.goBackFromCourtFeeConfirmation();
   }
 
   /** Verifies the Payment Category page remains displayed. */

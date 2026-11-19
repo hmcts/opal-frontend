@@ -255,6 +255,12 @@ describe('DashboardComponent', () => {
     expect(renderedText).toContain('Inbound files');
     expect(renderedText).toContain('Outbound files');
     expect(renderedText).not.toContain('Upload variant banking files');
+    expect(fixture.nativeElement.querySelector('#finesFinanceInboundFilesLink').getAttribute('href')).toBe(
+      '/fines/finance/inbound-files/search',
+    );
+    expect(fixture.nativeElement.querySelector('#finesFinanceOutboundFilesLink').getAttribute('href')).toBe(
+      '/fines/finance/outbound-files/search',
+    );
   });
 
   it('should render all banking interface links when the user has both banking interface permissions', () => {
@@ -271,6 +277,9 @@ describe('DashboardComponent', () => {
     expect(renderedText).toContain('Inbound files');
     expect(renderedText).toContain('Outbound files');
     expect(renderedText).toContain('Upload variant banking files');
+    expect(fixture.nativeElement.querySelector('#finesFinanceUploadVariantBankingFilesLink').getAttribute('href')).toBe(
+      '/fines/finance/variant-banking-files/upload',
+    );
   });
 
   it('should hide the inbound, outbound and upload variant banking files links when the user lacks view-interface-files and create-interface-files permission', () => {

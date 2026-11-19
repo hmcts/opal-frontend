@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostListener, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, NavigationCancel, NavigationEnd, NavigationError, Router } from '@angular/router';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
@@ -178,12 +178,6 @@ export class FinesMciCreateTillCourtFeeCheckComponent implements OnInit, OnDestr
   public canDeactivate(): boolean {
     const target = this.router.currentNavigation()?.finalUrl?.toString().split(/[?#]/)[0];
     return !!this.intendedDestination && !!target?.endsWith(`/${this.intendedDestination}`);
-  }
-
-  /** Requests a warning before closing or refreshing the tab containing the in-memory till. */
-  @HostListener('window:beforeunload')
-  public handleBeforeUnload(): boolean {
-    return false;
   }
 
   /** Returns to the saved payment details, retaining the draft if navigation fails. */

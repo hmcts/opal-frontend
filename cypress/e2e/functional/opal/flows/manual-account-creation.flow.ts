@@ -466,6 +466,25 @@ export class ManualAccountCreationFlow {
   }
 
   /**
+   * Completes the standard manual fine account fixture with a unique defendant name.
+   * @param rows - Standard manual account fixture rows.
+   */
+  completeManualAccountWithUniqueDefendantName(rows: string[][]): void {
+    const uniqueRows = rows.map((row) => {
+      const [section, field] = row;
+      if (section === 'Personal' && field === 'First names') {
+        return [section, field, 'FNAME{uniq}', row[3] ?? ''];
+      }
+      if (section === 'Personal' && field === 'Last name') {
+        return [section, field, 'LNAME{uniq}', row[3] ?? ''];
+      }
+      return row;
+    });
+
+    this.completeManualAccountWithDefaults(uniqueRows);
+  }
+
+  /**
    * Parses a composite data table into normalized entries with section/field/value/imposition.
    * @param rows - Raw DataTable rows including headers.
    * @returns Array of composite entries with parsed values.
