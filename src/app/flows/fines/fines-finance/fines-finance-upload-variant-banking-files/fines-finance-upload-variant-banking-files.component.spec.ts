@@ -94,7 +94,7 @@ describe('FinesFinanceUploadVariantBankingFilesComponent', () => {
   };
   beforeEach(async () => {
     requests = [];
-    setPermissions([FINES_PERMISSIONS['create-interface-files'], FINES_PERMISSIONS['view-interface-files']]);
+    setPermissions([FINES_PERMISSIONS['upload-variant-banking-files'], FINES_PERMISSIONS['view-interface-files']]);
     uploadInterfaceFile.mockReset().mockImplementation(() => {
       const request = new Subject<HttpEvent<IOpalFileHandlingInterfaceFile>>();
       requests.push(request);
@@ -145,12 +145,12 @@ describe('FinesFinanceUploadVariantBankingFilesComponent', () => {
   it.each([
     {
       user: 'upload-only',
-      permissions: [FINES_PERMISSIONS['create-interface-files']],
+      permissions: [FINES_PERMISSIONS['upload-variant-banking-files']],
       canView: false,
     },
     {
       user: 'upload and view',
-      permissions: [FINES_PERMISSIONS['create-interface-files'], FINES_PERMISSIONS['view-interface-files']],
+      permissions: [FINES_PERMISSIONS['upload-variant-banking-files'], FINES_PERMISSIONS['view-interface-files']],
       canView: true,
     },
   ])('shows inbound navigation only with view permission for an $user user', ({ permissions, canView }) => {
@@ -181,7 +181,7 @@ describe('FinesFinanceUploadVariantBankingFilesComponent', () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('#fines-finance-upload-view-files')).not.toBeNull();
 
-    setPermissions([FINES_PERMISSIONS['create-interface-files']]);
+    setPermissions([FINES_PERMISSIONS['upload-variant-banking-files']]);
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('#fines-finance-upload-view-files')).toBeNull();

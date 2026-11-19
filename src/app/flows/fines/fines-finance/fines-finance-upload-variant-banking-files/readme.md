@@ -20,9 +20,12 @@ The [feature configuration](./constants/fines-finance-variant-banking-upload.con
   with a two-digit numeric sequence suffix.
 
 Rejected files receive explanatory row errors and are not sent to the API. Original filenames are preserved.
-The [route](../routing/fines-finance.routes.ts) requires authentication and `create-interface-files` permission.
-`view-interface-files` is independently required for the inbound-files link and destination; upload permission alone
-does not grant that navigation.
+The [route](../routing/fines-finance.routes.ts) requires authentication and `upload-variant-banking-files` permission
+(`Upload Variant Banking Files`, ID `27`). `view-interface-files` (ID `18`) is independently required for the
+inbound-files link and destination; upload permission alone does not grant that navigation.
+
+The inspected File Handler backend still checks `CREATE_INTERFACE_FILES` when adding a file. Its Variant Banking
+authorisation must be aligned to `Upload Variant Banking Files` for end-to-end access with permission `27` alone.
 
 ## Upload API and transport
 

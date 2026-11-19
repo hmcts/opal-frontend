@@ -54,7 +54,7 @@ export const routing: Routes = [
     canActivate: [authGuard, routePermissionsGuard],
     canDeactivate: [canDeactivateGuard],
     data: {
-      routePermissionId: [FINES_PERMISSIONS['create-interface-files']],
+      routePermissionId: [FINES_PERMISSIONS['upload-variant-banking-files']],
       title: FINES_FINANCE_ROUTING_TITLES.children.upload,
     },
     resolve: { title: TitleResolver },

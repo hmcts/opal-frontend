@@ -15,14 +15,16 @@ import {
 } from '@angular/common/http';
 import { createEnvironmentInjector, EnvironmentInjector, PLATFORM_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { ActivatedRouteSnapshot, provideRouter, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { appConfig } from '@app/app.config';
 import { AppInitializerService } from '@hmcts/opal-frontend-common/services/app-initializer-service';
 import { AppInsightsService } from '@hmcts/opal-frontend-common/services/app-insights-service';
 import { OpalFileHandlingService } from '@hmcts/opal-frontend-common/services/opal-file-handling-service';
+import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
+import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
-import { Observable, of, Subject, throwError } from 'rxjs';
+import { firstValueFrom, Observable, of, Subject, throwError } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_FINANCE_ROUTING_PATHS } from './constants/fines-finance-routing-paths.constant';
 import { FinesFinanceInboundFilesComponent } from '../fines-finance-inbound-files/fines-finance-inbound-files.component';
@@ -69,7 +71,7 @@ describe('fines finance routes', () => {
     {
       path: `${FINES_FINANCE_ROUTING_PATHS.children.variantBankingFiles}/${FINES_FINANCE_ROUTING_PATHS.children.upload}`,
       title: FINES_FINANCE_ROUTING_TITLES.children.upload,
-      routePermissionId: FINES_PERMISSIONS['create-interface-files'],
+      routePermissionId: FINES_PERMISSIONS['upload-variant-banking-files'],
       component: FinesFinanceUploadVariantBankingFilesComponent,
       expectedResolvers: { title: TitleResolver },
     },
@@ -84,6 +86,49 @@ describe('fines finance routes', () => {
       await expect(route?.loadComponent?.()).resolves.toBe(component);
     },
   );
+
+  describe('upload-route access', () => {
+    it.each([
+      { permissions: [27], allowed: true },
+      { permissions: [18, 27], allowed: true },
+      { permissions: [19], allowed: false },
+      { permissions: [18, 19], allowed: false },
+      { permissions: [18], allowed: false },
+      { permissions: [], allowed: false },
+    ])('checks upload permission 27 for a user with $permissions', async ({ permissions, allowed }) => {
+      const userState = {
+        ...OPAL_USER_STATE_MOCK,
+        business_unit_users: [
+          {
+            ...OPAL_USER_STATE_MOCK.business_unit_users[0],
+            permissions: permissions.map((permissionId) => ({
+              permission_id: permissionId,
+              permission_name: 'Test permission',
+            })),
+          },
+        ],
+      };
+      TestBed.configureTestingModule({
+        providers: [
+          provideRouter([]),
+          { provide: OpalUserService, useValue: { getLoggedInUserState: () => of(userState) } },
+        ],
+      });
+      const uploadRoute = routing.find((route) => route.path === 'variant-banking-files/upload')!;
+      const result = await firstValueFrom(
+        TestBed.runInInjectionContext(() =>
+          routePermissionsGuard({ data: uploadRoute.data } as ActivatedRouteSnapshot, {} as RouterStateSnapshot),
+        ) as Observable<boolean | UrlTree>,
+      );
+
+      if (allowed) {
+        expect(result).toBe(true);
+      } else {
+        expect(result).toBeInstanceOf(UrlTree);
+        expect(TestBed.inject(Router).serializeUrl(result as UrlTree)).toBe('/access-denied');
+      }
+    });
+  });
 
   describe('upload-route HTTP providers', () => {
     let routeInjectors: EnvironmentInjector[];
