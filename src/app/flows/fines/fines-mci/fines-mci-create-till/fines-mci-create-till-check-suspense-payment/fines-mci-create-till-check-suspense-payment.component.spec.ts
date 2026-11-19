@@ -126,8 +126,8 @@ describe('FinesMciCreateTillCheckSuspensePaymentComponent', () => {
   it('retains the draft when cancellation is declined', async () => {
     vi.spyOn(router, 'navigate').mockResolvedValue(false);
     fixture.detectChanges();
-    expect(fixture.componentInstance.canDeactivate()).toBe(true);
-    expect(fixture.componentInstance.handleBeforeUnload()).toBe(true);
+    expect(fixture.componentInstance.canDeactivate()).toBe(false);
+    expect(fixture.componentInstance.handleBeforeUnload()).toBe(false);
     const textarea = (fixture.nativeElement as HTMLElement).querySelector<HTMLTextAreaElement>('#suspenseNote')!;
     textarea.value = 'Draft note';
     textarea.dispatchEvent(new Event('input'));
@@ -140,10 +140,11 @@ describe('FinesMciCreateTillCheckSuspensePaymentComponent', () => {
     expect(store.suspensePayment()).toEqual(payment);
   });
 
-  it('blocks browser unload only while a note has been entered', () => {
+  it('blocks browser unload while payment data exists, even when the note is empty', () => {
     fixture.detectChanges();
-    const emptyUnload = new Event('beforeunload', { cancelable: true });
-    expect(window.dispatchEvent(emptyUnload)).toBe(true);
+    const paymentUnload = new Event('beforeunload', { cancelable: true });
+    expect(window.dispatchEvent(paymentUnload)).toBe(false);
+    expect(paymentUnload.defaultPrevented).toBe(true);
     const textarea = (fixture.nativeElement as HTMLElement).querySelector<HTMLTextAreaElement>('#suspenseNote')!;
     textarea.value = 'Draft note';
     textarea.dispatchEvent(new Event('input'));
@@ -153,13 +154,50 @@ describe('FinesMciCreateTillCheckSuspensePaymentComponent', () => {
     expect(draftUnload.defaultPrevented).toBe(true);
   });
 
-  it('allows cancel without a leave warning when the note is empty', async () => {
-    vi.spyOn(router, 'navigate').mockResolvedValue(true);
+  it('requires confirmation to cancel a completed payment even when the note is empty', async () => {
+    let guardedDeparture: unknown = true;
+    vi.spyOn(router, 'navigate').mockImplementation(() => {
+      guardedDeparture = fixture.componentInstance.canDeactivate();
+      return Promise.resolve(true);
+    });
     fixture.detectChanges();
     (fixture.nativeElement as HTMLElement).querySelector<HTMLAnchorElement>('#cancel-suspense-payment')!.click();
-    expect(fixture.componentInstance.canDeactivate()).toBe(true);
+    expect(guardedDeparture).toBe(false);
     await Promise.resolve();
     expect(store.suspensePayment()).toBeNull();
+  });
+
+  it('allows leaving without a warning when payment, payer and note drafts are empty', () => {
+    store.setSuspensePayment(null);
+    fixture.detectChanges();
+    expect(fixture.componentInstance.canDeactivate()).toBe(true);
+    expect(fixture.componentInstance.handleBeforeUnload()).toBe(true);
+  });
+
+  it('protects payer details even when payment and note drafts are empty', () => {
+    store.setSuspensePayment(null);
+    store.setSuspensePayerDetails({
+      payerType: 'individual',
+      title: null,
+      firstNames: 'Alex',
+      lastName: 'Smith',
+      companyName: '',
+      addressLine1: '',
+      addressLine2: '',
+      addressLine3: '',
+      postcode: '',
+    });
+    fixture.detectChanges();
+    expect(fixture.componentInstance.canDeactivate()).toBe(false);
+    expect(fixture.componentInstance.handleBeforeUnload()).toBe(false);
+  });
+
+  it('protects a note even when payment and payer drafts are empty', () => {
+    store.setSuspensePayment(null);
+    store.setSuspenseNote('Draft note');
+    fixture.detectChanges();
+    expect(fixture.componentInstance.canDeactivate()).toBe(false);
+    expect(fixture.componentInstance.handleBeforeUnload()).toBe(false);
   });
 
   it.each([

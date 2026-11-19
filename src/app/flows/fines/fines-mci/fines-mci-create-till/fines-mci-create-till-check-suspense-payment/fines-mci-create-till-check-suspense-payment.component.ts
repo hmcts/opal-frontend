@@ -49,6 +49,11 @@ export class FinesMciCreateTillCheckSuspensePaymentComponent implements OnInit {
   protected readonly noteControl = new FormControl('', { nonNullable: true });
   protected noteError = false;
 
+  /** Includes payment and payer drafts even when the note has not been entered. */
+  private get hasUnsavedData(): boolean {
+    return !!this.store.suspensePayment() || !!this.store.suspensePayerDetails() || this.note.length > 0;
+  }
+
   /** Opens a till page and discards the draft only after an accepted cancellation. */
   private navigate(path: string, discard = false): void {
     this.allowNavigation = !discard;
@@ -169,14 +174,14 @@ export class FinesMciCreateTillCheckSuspensePaymentComponent implements OnInit {
       .subscribe((value) => this.onNoteChange(value));
   }
 
-  /** Blocks route navigation when a note has been entered and departure was not requested here. */
+  /** Blocks route navigation while any suspense data remains unless this page requested the transition. */
   public canDeactivate(): CanDeactivateTypes {
-    return this.allowNavigation || this.note.length === 0;
+    return this.allowNavigation || !this.hasUnsavedData;
   }
 
-  /** Blocks browser unload while the note has content. */
+  /** Blocks browser unload while any suspense payment data remains. */
   @HostListener('window:beforeunload')
   public handleBeforeUnload(): boolean {
-    return this.note.length === 0;
+    return !this.hasUnsavedData;
   }
 }
