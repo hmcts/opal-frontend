@@ -7,7 +7,7 @@
     <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
   } @else {
     <app-fines-mci-create-till-payment-category-form
-      [initialPaymentCategory]="finesMciStore.draftJourney()"
+      [initialPaymentCategory]="startNewPayment ? null : finesMciStore.draftJourney()"
       (formSubmit)="handleSubmit($event)"
       (unsavedChanges)="handleUnsavedChanges($event)"
       (cancelRequested)="handleCancel()"

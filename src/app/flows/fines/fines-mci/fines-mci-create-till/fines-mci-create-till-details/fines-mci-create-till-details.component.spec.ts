@@ -150,9 +150,53 @@ describe('FinesMciCreateTillDetailsComponent', () => {
 
     expect(navigateSpy).toHaveBeenCalledWith(
       ['/', 'fines', 'manual-cash-input', 'create', 'till', 'payment-category'],
-      undefined,
+      { state: { startNewPayment: true } },
     );
   });
+
+  it.each(['succeeded', 'cancelled', 'rejected', 'redirected'])(
+    'clears stale court fee edit context only when Add payment navigation has succeeded: %s',
+    async (outcome) => {
+      const store = TestBed.inject(FinesMciStore);
+      const tillId = store.ensureTill();
+      store.saveCourtFeePayment(tillId, {
+        courtFeeId: 1,
+        amountPaid: '25',
+        numberOfItems: '2',
+        courtFeeLabel: 'C01',
+        amountLabel: '£25.00',
+        paymentDetails: {
+          paymentReceivedFrom: 'applicant',
+          paymentMethod: 'NC',
+          payerType: 'company',
+          companyName: 'Original company',
+          addressLine1: null,
+          addressLine2: null,
+          addressLine3: null,
+          postcode: null,
+        },
+        suspenseNote: 'Original note',
+      });
+      const paymentId = store.tills()[0].payments[0].paymentId;
+      store.beginCourtFeePaymentEdit(tillId, paymentId);
+      const navigate = vi.spyOn(router, 'navigate');
+      if (outcome === 'rejected') navigate.mockRejectedValue(new Error('Navigation failed'));
+      else navigate.mockResolvedValue(outcome !== 'cancelled');
+      vi.spyOn(router, 'url', 'get').mockReturnValue(
+        outcome === 'succeeded'
+          ? '/fines/manual-cash-input/create/till/payment-category'
+          : '/fines/manual-cash-input/create/till/details',
+      );
+      fixture.componentInstance.addPayment();
+      expect(store.editingCourtFeePaymentId()).toBe(paymentId);
+      await fixture.whenStable();
+      expect(store.editingCourtFeePaymentId()).toBe(outcome === 'succeeded' ? null : paymentId);
+      expect(store.courtFeeReviewStarted()).toBe(outcome !== 'succeeded');
+      expect(store.courtFeeDraft() === null).toBe(outcome === 'succeeded');
+      expect(store.tills()[0].payments[0].paymentId).toBe(paymentId);
+      expect(store.tills()[0].payments[0].courtFee?.paymentDetails.companyName).toBe('Original company');
+    },
+  );
 
   it('should navigate to cancel till creation when Delete till is selected', () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);

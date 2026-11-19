@@ -75,6 +75,35 @@ export class FinesMciCreateTillCourtFeePaymentDetailsComponent
     }
   }
 
+  /** Clears the abandoned draft after successful navigation, preserving context within the court fee journey. */
+  private setupDraftCleanup(): void {
+    const navigation = this.navigationRouter.currentNavigation();
+    if (!navigation) return;
+    this.navigationRouter.events
+      .pipe(
+        filter(
+          (event) =>
+            (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError) &&
+            event.id === navigation.id,
+        ),
+        take(1),
+      )
+      .subscribe((event) => {
+        if (!(event instanceof NavigationEnd)) return;
+        const path = event.urlAfterRedirects.split(/[?#]/)[0];
+        if (path.endsWith(`/${FINES_MCI_ROUTING_PATHS.children.checkCourtFee}`)) return;
+        const previousScreens = [
+          FINES_MCI_ROUTING_PATHS.children.courtFeeDetails,
+          FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation,
+        ];
+        if (previousScreens.some((route) => path.endsWith(`/${route}`))) {
+          this.finesMciStore.setCourtFeePaymentDetails(null);
+        } else {
+          this.finesMciStore.setDraftJourney(null);
+        }
+      });
+  }
+
   /** Records the entry screen and restores protection for saved payment details. */
   private initialisePaymentDetailsState(): void {
     const confirmation = FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation;
@@ -147,26 +176,8 @@ export class FinesMciCreateTillCourtFeePaymentDetailsComponent
     this.stateUnsavedChanges = unsavedChanges || this.finesMciStore.courtFeePaymentDetails() !== null;
   }
 
-  /** Discards saved payment details only after a successful departure from the review journey. */
+  /** Discards abandoned payment state after successful navigation, including browser history. */
   public ngOnDestroy(): void {
-    const navigation = this.navigationRouter.currentNavigation();
-    if (!navigation) return;
-    this.navigationRouter.events
-      .pipe(
-        filter(
-          (event) =>
-            (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError) &&
-            event.id === navigation.id,
-        ),
-        take(1),
-      )
-      .subscribe((event) => {
-        if (
-          event instanceof NavigationEnd &&
-          !event.urlAfterRedirects.split(/[?#]/)[0].endsWith(`/${FINES_MCI_ROUTING_PATHS.children.checkCourtFee}`)
-        ) {
-          this.finesMciStore.setCourtFeePaymentDetails(null);
-        }
-      });
+    this.setupDraftCleanup();
   }
 }

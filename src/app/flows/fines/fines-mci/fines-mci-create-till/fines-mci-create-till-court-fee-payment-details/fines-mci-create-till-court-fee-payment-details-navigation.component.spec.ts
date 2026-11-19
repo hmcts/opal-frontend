@@ -97,6 +97,112 @@ describe('Court fee payment details navigation', () => {
     return router;
   }
 
+  it('adds a separate payment after abandoning a saved payer edit through browser history', async () => {
+    const router = configureCourtFeeJourney();
+    const routes = router.config[0].children!;
+    Object.assign(routes.find((route) => route.path === 'details')!, {
+      component: FinesMciCreateTillDetailsComponent,
+      canDeactivate: [canDeactivateGuard],
+    });
+    routes.find((route) => route.path === 'payment-category')!.component = FinesMciCreateTillPaymentCategoryComponent;
+    const root = '/fines/manual-cash-input/create/till';
+    router.resetConfig([{ path: 'fines/manual-cash-input/create/till', children: routes }]);
+    const store = TestBed.inject(FinesMciStore);
+    const tillId = store.tills()[0].tillId;
+    const payment = {
+      ...draft,
+      courtFeeLabel: 'C01 – Court fee (£12.50)',
+      amountLabel: '£25.00',
+      paymentDetails: {
+        paymentReceivedFrom: 'applicant',
+        paymentMethod: 'NC',
+        payerType: 'company',
+        companyName: 'Original company',
+        addressLine1: null,
+        addressLine2: null,
+        addressLine3: null,
+        postcode: null,
+      },
+      suspenseNote: 'Original note',
+    };
+    store.saveCourtFeePayment(tillId, payment);
+    const originalId = store.tills()[0].payments[0].paymentId;
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const harness = await RouterTestingHarness.create(`${root}/details`);
+    harness.routeNativeElement!.querySelector<HTMLAnchorElement>('.govuk-summary-list__actions a')!.click();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    (harness.routeDebugElement!.componentInstance as FinesMciCreateTillCourtFeeCheckComponent).handleChange(
+      'payer-name',
+    );
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(router.url).toBe(`${root}/court-fee-payment-details`);
+    expect(await router.navigateByUrl(`${root}/details`)).toBe(false);
+    expect(store.editingCourtFeePaymentId()).toBe(originalId);
+    expect(store.courtFeeReviewStarted()).toBe(true);
+    expect(store.courtFeePaymentDetails()).toEqual(payment.paymentDetails);
+    expect(store.courtFeeSuspenseNote()).toBe('Original note');
+
+    confirm.mockReturnValue(true);
+    router.setUpLocationChangeListener();
+    const navigated = firstValueFrom(
+      router.events.pipe(
+        filter((event) => event instanceof NavigationEnd),
+        take(1),
+      ),
+    );
+    (TestBed.inject(Location) as SpyLocation).simulateUrlPop(`${root}/details`);
+    await navigated;
+    harness.detectChanges();
+    expect(router.url).toBe(`${root}/details`);
+    expect(store.editingCourtFeePaymentId()).toBeNull();
+    expect(store.courtFeeReviewStarted()).toBe(false);
+    expect(store.courtFeeDraft()).toBeNull();
+    expect(store.courtFeeSuspenseNote()).toBe('');
+    expect(store.courtFeePaymentDetails()).toBeNull();
+
+    harness.routeNativeElement!.querySelector<HTMLButtonElement>('#fines-mci-add-payment')!.click();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(harness.routeNativeElement!.querySelector('input:checked')).toBeNull();
+    harness.routeNativeElement!.querySelector<HTMLInputElement>('input[value="courtFee"]')!.click();
+    harness.routeNativeElement!.querySelector<HTMLButtonElement>('#submitForm')!.click();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    (harness.routeDebugElement!.componentInstance as FinesMciCreateTillCourtFeeDetailsComponent).handleSubmit({
+      formData: { courtFeeId: 1, amountPaid: '12.50', numberOfItems: '1' },
+      nestedFlow: false,
+    });
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    const page = harness.routeNativeElement!;
+    page.querySelector<HTMLInputElement>('input[value="applicant"]')!.click();
+    page.querySelector<HTMLInputElement>('input[value="NC"]')!.click();
+    page.querySelector<HTMLInputElement>('input[value="company"]')!.click();
+    harness.detectChanges();
+    const company = page.querySelector<HTMLInputElement>('#companyName')!;
+    company.value = 'New company';
+    company.dispatchEvent(new Event('input', { bubbles: true }));
+    page.querySelector('form')!.dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    const note = harness.routeNativeElement!.querySelector<HTMLTextAreaElement>('#suspenseNote')!;
+    note.value = 'New note';
+    note.dispatchEvent(new Event('input', { bubbles: true }));
+    harness.routeNativeElement!.querySelector<HTMLButtonElement>('#save-and-review-till')!.click();
+    await harness.fixture.whenStable();
+    expect(router.url).toBe(`${root}/details`);
+    expect(store.tills()[0].payments).toHaveLength(2);
+    expect(store.tills()[0].payments[0]).toEqual({ paymentId: originalId, journey: 'courtFee', courtFee: payment });
+    expect(store.tills()[0].payments[1].paymentId).not.toBe(originalId);
+    expect(store.tills()[0].payments[1].courtFee).toMatchObject({
+      amountPaid: '12.50',
+      suspenseNote: 'New note',
+      paymentDetails: { companyName: 'New company' },
+    });
+  });
+
   it.each(['direct URL', 'browser history'])(
     'blocks an underpayment from review via %s without changing the saved payment',
     async (entry) => {

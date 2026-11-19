@@ -59,8 +59,16 @@ export class FinesMciCreateTillDetailsComponent {
     });
   }
 
+  /** Starts a fresh payment draft after the payment category screen opens successfully. */
   public addPayment(): void {
-    void this.navigateTo(FINES_MCI_ROUTING_PATHS.children.paymentCategory);
+    const destination = FINES_MCI_ROUTING_PATHS.children.paymentCategory;
+    void this.navigateTo(destination, { state: { startNewPayment: true } }).then((navigated) => {
+      if (navigated && this.router.url.split(/[?#]/)[0].endsWith(`/${destination}`)) {
+        this.finesMciStore.setDraftJourney(null);
+      } else {
+        this.allowIntendedNavigation = false;
+      }
+    });
   }
 
   public cancel(event: Event): void {
