@@ -49,6 +49,10 @@ When('I check the manual account details for account header {string}', (header: 
   macFlow().checkManualAccountDetails(normalizedHeader);
 });
 
+When('I return to account details from check account details', () => {
+  reviewAccount().returnToAccountDetails();
+});
+
 /**
  * Asserts the review account "Entry type" row value in Account details.
  */
