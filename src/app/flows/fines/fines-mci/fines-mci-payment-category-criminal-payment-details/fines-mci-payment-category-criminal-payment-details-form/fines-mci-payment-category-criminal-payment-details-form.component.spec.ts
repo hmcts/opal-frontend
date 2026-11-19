@@ -64,7 +64,7 @@ describe('FinesMciPaymentCategoryCriminalPaymentDetailsFormComponent', () => {
     initialise();
     submit();
     expect(fixture.nativeElement.textContent).toContain('Enter amount');
-    expect(fixture.nativeElement.textContent).toContain('Select who payment was received from');
+    expect(fixture.nativeElement.textContent).toContain('Select who the payment was received from');
     expect(fixture.nativeElement.textContent).toContain('Select a method of payment');
     expect(fixture.nativeElement.querySelector('#amount').getAttribute('aria-describedby')).toBe('amount-error');
   });
@@ -132,12 +132,9 @@ describe('FinesMciPaymentCategoryCriminalPaymentDetailsFormComponent', () => {
     ['postalOrder', 'paymentReferencePostalOrder'],
     ['cheque', 'paymentReferenceCheque'],
     ['creditTransfer', 'paymentReferenceCreditTransfer'],
-    ['thirdParty', 'thirdPartyName'],
   ])('validates the selected %s text field only', (choice, field) => {
     initialise(PAYMENT);
-    component.form.patchValue(
-      choice === 'thirdParty' ? { payerType: choice } : { methodOfPayment: choice, source: 'allpay' },
-    );
+    component.form.patchValue({ methodOfPayment: choice, source: 'allpay' });
     const control = component.form.controls[field];
     control.setValue('A'.repeat(50));
     expect(control.valid).toBe(true);
@@ -150,6 +147,36 @@ describe('FinesMciPaymentCategoryCriminalPaymentDetailsFormComponent', () => {
     control.setValue('!');
     component.form.patchValue({ payerType: 'defendant', methodOfPayment: 'notesCoins' });
     expect(control.valid).toBe(true);
+  });
+  it.each(['Payer 123', "Payer-1 O'Brien", 'Payer-1 O\u2019Brien', 'A'.repeat(50)])(
+    'accepts the permitted third-party name %s',
+    (thirdPartyName) => {
+      initialise({ ...PAYMENT, payerType: 'thirdParty', thirdPartyName });
+      const emit = vi.spyOn(component['formSubmit'], 'emit');
+
+      submit();
+
+      expect(component.form.valid).toBe(true);
+      expect(emit).toHaveBeenCalledWith({
+        formData: { ...PAYMENT, payerType: 'thirdParty', thirdPartyName },
+        nestedFlow: false,
+      });
+    },
+  );
+  it('removes the name requirement and errors when the payer changes to Defendant', () => {
+    initialise({ ...PAYMENT, payerType: 'thirdParty' });
+    submit();
+    expect(component.form.controls['thirdPartyName'].hasError('required')).toBe(true);
+    expect(fixture.nativeElement.querySelector('#thirdPartyName-error')?.textContent).toBe('Enter name');
+
+    component.form.controls['payerType'].setValue('defendant');
+    submit();
+
+    expect(component.form.valid).toBe(true);
+    expect(fixture.nativeElement.querySelector('#thirdPartyName-error')).toBeNull();
+    expect(fixture.nativeElement.querySelector('.govuk-error-summary__list')?.textContent ?? '').not.toContain(
+      'Enter name',
+    );
   });
   it('emits validated values and clears values belonging to hidden fields', () => {
     initialise(PAYMENT);

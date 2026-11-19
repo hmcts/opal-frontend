@@ -79,6 +79,63 @@ describe('FinesMciPaymentCategoryCriminalPaymentDetailsComponent', () => {
     expect(fixture.componentInstance.handleBeforeUnload()).toBe(false);
   });
 
+  it.each([
+    {
+      scenario: 'no payer selected',
+      payerType: null,
+      name: '',
+      errorId: 'payerType-error-message',
+      message: 'Select who the payment was received from',
+    },
+    {
+      scenario: 'third-party name missing',
+      payerType: 'thirdParty',
+      name: '',
+      errorId: 'thirdPartyName-error',
+      message: 'Enter name',
+    },
+    {
+      scenario: 'third-party name contains unsupported characters',
+      payerType: 'thirdParty',
+      name: 'Payer@123',
+      errorId: 'thirdPartyName-error',
+      message: 'Name must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    },
+    {
+      scenario: 'third-party name exceeds 50 characters',
+      payerType: 'thirdParty',
+      name: 'A'.repeat(51),
+      errorId: 'thirdPartyName-error',
+      message: 'Name must be 50 characters or fewer',
+    },
+  ])('blocks Continue when $scenario', ({ payerType, name, errorId, message }) => {
+    fixture.detectChanges();
+    const navigate = vi.spyOn(router, 'navigate');
+    const element = fixture.nativeElement as HTMLElement;
+    const amount = element.querySelector<HTMLInputElement>('#amount')!;
+    amount.value = '25.00';
+    amount.dispatchEvent(new Event('input', { bubbles: true }));
+    element.querySelector<HTMLInputElement>('input[name="methodOfPayment"][value="notesCoins"]')!.click();
+    if (payerType) {
+      element.querySelector<HTMLInputElement>(`input[name="payerType"][value="${payerType}"]`)!.click();
+      const input = element.querySelector<HTMLInputElement>('#thirdPartyName')!;
+      input.value = name;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
+    element.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    fixture.detectChanges();
+
+    expect(element.querySelector(`#${errorId}`)?.textContent).toContain(message);
+    expect(element.querySelector('.govuk-error-summary__list')?.textContent).toContain(message);
+    if (payerType) {
+      expect(element.querySelector('#thirdPartyName')?.getAttribute('aria-describedby')).toBe('thirdPartyName-error');
+    }
+    expect(element.querySelector('h1')?.textContent).toBe('Payment details');
+    expect(navigate).not.toHaveBeenCalled();
+    expect(store.criminalPayment()).toBeNull();
+  });
+
   it('stores validated details and retains protection while onward navigation is out of scope', () => {
     const navigate = vi.spyOn(router, 'navigate');
     fixture.componentInstance.handleSubmit({ formData: CRIMINAL_PAYMENT, nestedFlow: false });

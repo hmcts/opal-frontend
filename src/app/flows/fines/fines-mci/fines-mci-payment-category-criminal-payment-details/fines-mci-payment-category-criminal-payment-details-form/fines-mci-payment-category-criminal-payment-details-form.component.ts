@@ -97,7 +97,7 @@ export class FinesMciPaymentCategoryCriminalPaymentDetailsFormComponent
     creditTransferReference.setValidators(method === 'creditTransfer' ? referenceValidators : []);
     this.form.controls['source'].setValidators(method === 'creditTransfer' ? [Validators.required] : []);
     this.form.controls['thirdPartyName'].setValidators(
-      this.form.controls['payerType'].value === 'thirdParty' ? referenceValidators : [],
+      this.form.controls['payerType'].value === 'thirdParty' ? [Validators.required, ...referenceValidators] : [],
     );
     postalOrderReference.updateValueAndValidity({ emitEvent: false });
     chequeReference.updateValueAndValidity({ emitEvent: false });

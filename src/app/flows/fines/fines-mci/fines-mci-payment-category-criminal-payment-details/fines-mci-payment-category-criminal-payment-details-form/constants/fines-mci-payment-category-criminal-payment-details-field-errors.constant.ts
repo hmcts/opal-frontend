@@ -10,7 +10,7 @@ export const FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_PAYMENT_DETAILS_FIELD_ERRORS: I
       priority: 3,
     },
   },
-  payerType: { required: { message: 'Select who payment was received from', priority: 1 } },
+  payerType: { required: { message: 'Select who the payment was received from', priority: 1 } },
   methodOfPayment: { required: { message: 'Select a method of payment', priority: 1 } },
   paymentReferencePostalOrder: {
     maxlength: { message: 'Payment reference (Postal order) must be 50 characters or fewer', priority: 1 },
@@ -37,10 +37,11 @@ export const FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_PAYMENT_DETAILS_FIELD_ERRORS: I
   },
   source: { required: { message: 'Select a source', priority: 1 } },
   thirdPartyName: {
-    maxlength: { message: 'Name must be 50 characters or fewer', priority: 1 },
+    required: { message: 'Enter name', priority: 1 },
+    maxlength: { message: 'Name must be 50 characters or fewer', priority: 2 },
     pattern: {
       message: 'Name must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-      priority: 2,
+      priority: 3,
     },
   },
 };
