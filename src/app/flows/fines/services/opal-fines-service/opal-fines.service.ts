@@ -1,3 +1,4 @@
+import { IOpalFinesDefendantAccountMaster } from './interfaces/opal-fines-defendant-account-master.interface';
 import { IOpalFinesSourceMapping } from './interfaces/opal-fines-source-mapping.interface';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
@@ -1223,6 +1224,16 @@ export class OpalFines {
     }
 
     return this.http.post<IOpalFinesAmendPaymentTermsPayload>(url, payload, { headers });
+  }
+
+  /**
+   * Retrieves the master-account lookup response for a consolidated child without caching it.
+   *
+   * @param accountId The child account ID, preserving digit strings without numeric conversion.
+   * @returns The lookup response; the calling flow validates the returned master ID before using it.
+   */
+  public getDefendantAccountMaster(accountId: string | number): Observable<IOpalFinesDefendantAccountMaster> {
+    return this.http.get<IOpalFinesDefendantAccountMaster>(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/master`);
   }
 
   /**

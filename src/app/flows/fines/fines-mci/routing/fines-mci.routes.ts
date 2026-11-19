@@ -137,6 +137,20 @@ export const routing: Routes = [
                         },
                       },
                       {
+                        path: `${FINES_MCI_ROUTING_PATHS.children.paymentDetails}/:accountId`,
+                        loadComponent: () =>
+                          import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
+                            (c) => c.FinesMciPlaceholderComponent,
+                          ),
+                        canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+                        data: {
+                          heading: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalPaymentDetails,
+                          routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+                          title: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalPaymentDetails,
+                        },
+                        resolve: { title: TitleResolver },
+                      },
+                      {
                         path: `${FINES_MCI_ROUTING_PATHS.children.account}/:accountId/:type`,
                         loadComponent: () =>
                           import('../fines-mci-payment-category-criminal-account/fines-mci-payment-category-criminal-account.component').then(
