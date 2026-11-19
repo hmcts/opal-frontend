@@ -32,8 +32,13 @@ export class AprManagementActions {
     cy.intercept('POST', '**/defendant-accounts/*/alternate-payment-references').as('createApr');
   }
 
-  public assertDuplicateRejected(): void {
-    cy.wait('@createApr')
+  public attemptDuplicateUpdate(reference: string): void {
+    cy.intercept('PATCH', '**/defendant-accounts/*/alternate-payment-references/*').as('updateApr');
+    this.saveReference(reference);
+  }
+
+  public assertDuplicateRejected(operation: 'create' | 'update'): void {
+    cy.wait(`@${operation}Apr`)
       .its('response')
       .should('include', { statusCode: 422 })
       .its('body.title')
@@ -56,5 +61,31 @@ export class AprManagementActions {
 
   public assertNoCurrentReferences(): void {
     cy.get(APR.currentEmpty).should('be.visible');
+  }
+
+  public startRemovingReference(reference: string): void {
+    cy.get(APR.currentTable)
+      .contains(APR.referenceCell, reference)
+      .closest('tr')
+      .find(APR.removeLink)
+      .should('be.visible')
+      .click();
+  }
+
+  public confirmRemoval(): void {
+    cy.get(APR.confirmRemoval).should('be.visible').click();
+  }
+
+  public cancelRemoval(): void {
+    cy.get(APR.cancelRemoval).should('be.visible').click();
+  }
+
+  public assertConsolidatedReferenceCannotBeRemoved(reference: string): void {
+    cy.get(APR.consolidatedTable)
+      .contains(APR.referenceCell, reference)
+      .should('be.visible')
+      .closest('tr')
+      .find(APR.removeLink)
+      .should('not.exist');
   }
 }

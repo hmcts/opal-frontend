@@ -100,3 +100,26 @@ Feature: View, add and change alternate payment references
     When I change alternate payment reference "OLD{uniqUpper}"
     And I save alternate payment reference "ABCDEFGHIJKLMNOPQRS"
     Then I see the alternate payment reference length error
+
+  Scenario: Reject changing an alternate payment reference to a duplicate in the same business unit
+    When the Payment terms tab is displayed for defendant account with last name "AprMain{uniq}"
+    And I open APR Management from Payment terms
+    And I add an alternate payment reference
+    And I save alternate payment reference "TAKEN{uniqUpper}"
+    Then the current alternate payment references include "TAKEN{uniqUpper}"
+    Given a published adult or youth defendant account exists:
+      | first name                | Casey           |
+      | last name                 | AprOther{uniq}  |
+      | prosecutor case reference | APRO{uniqUpper} |
+    When the Payment terms tab is displayed for defendant account with last name "AprOther{uniq}"
+    And I open APR Management from Payment terms
+    And I add an alternate payment reference
+    And I save alternate payment reference "ORIGINAL{uniqUpper}"
+    Then the current alternate payment references include "ORIGINAL{uniqUpper}"
+    When I change alternate payment reference "ORIGINAL{uniqUpper}"
+    And I try to update to the duplicate alternate payment reference "TAKEN{uniqUpper}"
+    Then the duplicate alternate payment reference update is rejected
+    When the Payment terms tab is displayed for defendant account with last name "AprOther{uniq}"
+    And I open APR Management from Payment terms
+    Then the current alternate payment references include "ORIGINAL{uniqUpper}"
+    And the current alternate payment references exclude "TAKEN{uniqUpper}"

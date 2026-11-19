@@ -29,7 +29,7 @@ Given('I watch for alternate payment reference creation', () => {
 });
 
 Then('creation of the duplicate alternate payment reference is rejected', () => {
-  aprManagementActions().assertDuplicateRejected();
+  aprManagementActions().assertDuplicateRejected('create');
 });
 
 Then('I see the alternate payment reference length error', () => {
@@ -46,4 +46,28 @@ Then('the current alternate payment references exclude {string}', (reference: st
 
 Then('there are no alternate payment references for the current account', () => {
   aprManagementActions().assertNoCurrentReferences();
+});
+
+When('I try to update to the duplicate alternate payment reference {string}', (reference: string) => {
+  aprManagementActions().attemptDuplicateUpdate(applyUniqPlaceholder(reference));
+});
+
+Then('the duplicate alternate payment reference update is rejected', () => {
+  aprManagementActions().assertDuplicateRejected('update');
+});
+
+When('I remove alternate payment reference {string}', (reference: string) => {
+  aprManagementActions().startRemovingReference(applyUniqPlaceholder(reference));
+});
+
+When('I confirm removal of the alternate payment reference', () => {
+  aprManagementActions().confirmRemoval();
+});
+
+When('I cancel removal of the alternate payment reference', () => {
+  aprManagementActions().cancelRemoval();
+});
+
+Then('consolidated reference {string} is visible without a Remove action', (reference: string) => {
+  aprManagementActions().assertConsolidatedReferenceCannotBeRemoved(reference);
 });
