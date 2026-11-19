@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { provideRouter, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRouteSnapshot, provideRouter, Router, RouterOutlet } from '@angular/router';
 import { mount } from 'cypress/angular';
 import { of } from 'rxjs';
 import { FinesAccAprManageComponent } from 'src/app/flows/fines/fines-acc/fines-acc-apr-manage/fines-acc-apr-manage.component';
@@ -58,7 +58,7 @@ describe('Manage Alternate Payment References', () => {
             path: 'fines/account/defendant/:accountId/alternate/payment/reference/manage',
             component: FinesAccAprManageComponent,
             resolve: {
-              aprs: (route) => opalFines.getAprs(Number(route.paramMap.get('accountId'))),
+              aprs: (route: ActivatedRouteSnapshot) => opalFines.getAprs(Number(route.paramMap.get('accountId'))),
             },
           },
           {
@@ -123,7 +123,7 @@ describe('Manage Alternate Payment References', () => {
   );
 
   it(
-    'provides Add and Change navigation with the selected account and APR context',
+    'provides Add, Change and Remove navigation with the selected account and APR context',
     { tags: ['@JIRA-STORY:PO-10896', '@JIRA-EPIC:PO-7465'] },
     () => {
       mountManageApr([{ ...reference, relationship: 'CONSOLIDATED' }]).then(({ router }) => {
@@ -142,7 +142,20 @@ describe('Manage Alternate Payment References', () => {
           '/fines/account/defendant/141/alternate/payment/reference/change?alternatePaymentReferenceId=11',
         );
         cy.get('#apr-change-11').should('contain', 'CURRENT-REFERENCE');
-        cy.get('#apr-remove-11').should('not.exist');
+        cy.get('#apr-remove-11')
+          .should('be.visible')
+          .and(
+            'have.attr',
+            'href',
+            '/fines/account/defendant/141/alternate/payment/reference/delete?alternatePaymentReferenceId=11',
+          );
+        cy.get('#apr-remove-11').should('contain', 'CURRENT-REFERENCE').click();
+        cy.get('h1').should('have.text', 'Remove alternate payment reference');
+        cy.then(() => {
+          expect(router.url).to.equal(
+            '/fines/account/defendant/141/alternate/payment/reference/delete?alternatePaymentReferenceId=11',
+          );
+        });
       });
     },
   );
