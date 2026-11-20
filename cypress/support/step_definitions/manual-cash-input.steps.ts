@@ -121,6 +121,10 @@ When('I cancel the overpayment', () => {
   manualCashInputFlow().cancelOverpayment();
 });
 
+Then('the underpayment cannot continue to Payment Details', () => {
+  manualCashInputFlow().assertUnderpaymentCannotContinueToPaymentDetails();
+});
+
 Then('the underpayment confirmation offers Cancel and return to till and Go back', () => {
   manualCashInputFlow().assertUnderpaymentConfirmationActionsAreDisplayed();
 });

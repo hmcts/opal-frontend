@@ -194,6 +194,11 @@ export class ManualCashInputFlow {
     this.actions.cancelOverpayment();
   }
 
+  /** Verifies that an underpayment cannot continue to Payment Details. */
+  public assertUnderpaymentCannotContinueToPaymentDetails(): void {
+    this.actions.assertUnderpaymentCannotContinueToPaymentDetails();
+  }
+
   /** Verifies the underpayment screen offers Cancel and return to till and Go back. */
   public assertUnderpaymentConfirmationActionsAreDisplayed(): void {
     this.actions.assertUnderpaymentConfirmationActionsAreDisplayed();
