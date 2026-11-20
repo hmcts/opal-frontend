@@ -173,7 +173,7 @@ describe('FinesMacPayloadService', () => {
   )(
     'normalizes telephone numbers for $defendantType on $requestType when release 1A 1.2 is $enabled',
     ({ defendantType, requestType, enabled }) => {
-      if (!finesMacState || !service) {
+      if (!finesMacState || !finesMacPayloadAddAccount || !service) {
         throw new Error('Required mock states are not properly initialised');
       }
 
@@ -203,7 +203,11 @@ describe('FinesMacPayloadService', () => {
       }
 
       if (enabled) {
-        const displayedState = service.mapAccountPayload(result, null, null);
+        const displayedState = service.mapAccountPayload(
+          { ...finesMacPayloadAddAccount, account: result.account },
+          null,
+          null,
+        );
         expect(displayedState.contactDetails.formData.fm_contact_details_telephone_number_mobile).toBe('07898456789');
         expect(displayedState.contactDetails.formData.fm_contact_details_telephone_number_home).toBe('02081234567');
         expect(displayedState.contactDetails.formData.fm_contact_details_telephone_number_business).toBe('02071234567');
