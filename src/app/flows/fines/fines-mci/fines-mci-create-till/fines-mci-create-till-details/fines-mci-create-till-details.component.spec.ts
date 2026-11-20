@@ -39,6 +39,86 @@ describe('FinesMciCreateTillDetailsComponent', () => {
     expect(deleteTillLink?.textContent?.trim()).toBe('Delete till');
   });
 
+  it('shows a saved court fee payment on the till', () => {
+    const store = TestBed.inject(FinesMciStore);
+    const tillId = store.ensureTill();
+    store.saveCourtFeePayment(tillId, {
+      courtFeeId: 1,
+      amountPaid: '25',
+      numberOfItems: '2',
+      courtFeeLabel: 'C01 – Court fee (£12.50)',
+      amountLabel: '£25.00',
+      paymentDetails: {
+        paymentReceivedFrom: 'applicant',
+        paymentMethod: 'NC',
+        payerType: 'company',
+        companyName: 'Example Ltd',
+        addressLine1: null,
+        addressLine2: null,
+        addressLine3: null,
+        postcode: null,
+      },
+      suspenseNote: 'Payment note',
+    });
+    fixture.detectChanges();
+    const content = (fixture.nativeElement as HTMLElement).textContent!;
+    expect(content).toContain('C01 – Court fee (£12.50)');
+    expect(content).toContain('£25.00');
+    expect(content).not.toContain('There are no payments');
+    expect(content).not.toContain('You must add at least 1 payment');
+    expect(
+      (fixture.nativeElement as HTMLElement).querySelector('.govuk-summary-list__actions a')?.textContent,
+    ).toContain('Change');
+  });
+
+  it.each([
+    ['cancelled', false],
+    ['rejected', false],
+    ['cancelled', true],
+    ['rejected', true],
+  ] as const)(
+    'restores the previous draft when opening a payment is %s (review started: %s)',
+    async (outcome, reviewStarted) => {
+      const store = TestBed.inject(FinesMciStore);
+      const tillId = store.ensureTill();
+      store.saveCourtFeePayment(tillId, {
+        courtFeeId: 1,
+        amountPaid: '25',
+        numberOfItems: '2',
+        courtFeeLabel: 'C01',
+        amountLabel: '£25.00',
+        paymentDetails: {
+          paymentReceivedFrom: 'applicant',
+          paymentMethod: 'NC',
+          payerType: 'company',
+          companyName: 'Example Ltd',
+          addressLine1: null,
+          addressLine2: null,
+          addressLine3: null,
+          postcode: null,
+        },
+        suspenseNote: 'Saved note',
+      });
+      const paymentId = store.tills()[0].payments[0].paymentId;
+      store.setDraftJourney('courtFee');
+      store.setCourtFeeDraft({ courtFeeId: 2, amountPaid: '10', numberOfItems: '1' });
+      store.setCourtFeeSuspenseNote('Previous draft');
+      if (reviewStarted) store.startCourtFeeReview();
+      const navigate = vi.spyOn(router, 'navigate');
+      if (outcome === 'cancelled') navigate.mockResolvedValue(false);
+      else navigate.mockRejectedValue(new Error('Navigation failed'));
+      fixture.componentInstance.handleEditPayment(paymentId);
+      await fixture.whenStable();
+      fixture.detectChanges();
+      expect(store.courtFeeDraft()).toEqual({ courtFeeId: 2, amountPaid: '10', numberOfItems: '1' });
+      expect(store.courtFeeSuspenseNote()).toBe('Previous draft');
+      expect(store.courtFeeReviewStarted()).toBe(reviewStarted);
+      expect(store.editingCourtFeePaymentId()).toBeNull();
+      expect(store.tills()[0].payments[0].courtFee?.suspenseNote).toBe('Saved note');
+      expect((fixture.nativeElement as HTMLElement).textContent).toContain('The payment could not be opened');
+    },
+  );
+
   it('should block navigation away from the till details page', () => {
     expect(fixture.componentInstance.canDeactivate()).toBe(false);
   });
@@ -70,9 +150,53 @@ describe('FinesMciCreateTillDetailsComponent', () => {
 
     expect(navigateSpy).toHaveBeenCalledWith(
       ['/', 'fines', 'manual-cash-input', 'create', 'till', 'payment-category'],
-      undefined,
+      { state: { startNewPayment: true } },
     );
   });
+
+  it.each(['succeeded', 'cancelled', 'rejected', 'redirected'])(
+    'clears stale court fee edit context only when Add payment navigation has succeeded: %s',
+    async (outcome) => {
+      const store = TestBed.inject(FinesMciStore);
+      const tillId = store.ensureTill();
+      store.saveCourtFeePayment(tillId, {
+        courtFeeId: 1,
+        amountPaid: '25',
+        numberOfItems: '2',
+        courtFeeLabel: 'C01',
+        amountLabel: '£25.00',
+        paymentDetails: {
+          paymentReceivedFrom: 'applicant',
+          paymentMethod: 'NC',
+          payerType: 'company',
+          companyName: 'Original company',
+          addressLine1: null,
+          addressLine2: null,
+          addressLine3: null,
+          postcode: null,
+        },
+        suspenseNote: 'Original note',
+      });
+      const paymentId = store.tills()[0].payments[0].paymentId;
+      store.beginCourtFeePaymentEdit(tillId, paymentId);
+      const navigate = vi.spyOn(router, 'navigate');
+      if (outcome === 'rejected') navigate.mockRejectedValue(new Error('Navigation failed'));
+      else navigate.mockResolvedValue(outcome !== 'cancelled');
+      vi.spyOn(router, 'url', 'get').mockReturnValue(
+        outcome === 'succeeded'
+          ? '/fines/manual-cash-input/create/till/payment-category'
+          : '/fines/manual-cash-input/create/till/details',
+      );
+      fixture.componentInstance.addPayment();
+      expect(store.editingCourtFeePaymentId()).toBe(paymentId);
+      await fixture.whenStable();
+      expect(store.editingCourtFeePaymentId()).toBe(outcome === 'succeeded' ? null : paymentId);
+      expect(store.courtFeeReviewStarted()).toBe(outcome !== 'succeeded');
+      expect(store.courtFeeDraft() === null).toBe(outcome === 'succeeded');
+      expect(store.tills()[0].payments[0].paymentId).toBe(paymentId);
+      expect(store.tills()[0].payments[0].courtFee?.paymentDetails.companyName).toBe('Original company');
+    },
+  );
 
   it('should navigate to cancel till creation when Delete till is selected', () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);

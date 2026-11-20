@@ -24,10 +24,12 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
 
   protected readonly finesMciStore = inject(FinesMciStore);
   protected readonly isContinuing = signal(false);
+  protected readonly startNewPayment =
+    this.navigationRouter.currentNavigation()?.extras.state?.['startNewPayment'] === true;
 
   /** Restores category draft protection and keeps it active while the destination's resolvers are pending. */
   public ngOnInit(): void {
-    this.stateUnsavedChanges = this.finesMciStore.draftJourney() !== null;
+    this.stateUnsavedChanges = !this.startNewPayment && this.finesMciStore.draftJourney() !== null;
     this.navigationRouter.events
       .pipe(
         filter((event): event is ResolveStart => event instanceof ResolveStart),
