@@ -10,12 +10,10 @@ Feature: Alternate Payment Reference Management accessibility
       | account.defendant.surname                          | AprA11y{uniq}      |
       | account.prosecutor_case_reference                  | APRA11Y{uniqUpper} |
       | account.offences.0.impositions.0.major_creditor_id | 730000000083       |
-    When the Payment terms tab is displayed for defendant account with last name "AprA11y{uniq}"
-    And I open APR Management from Payment terms
+    When I open APR Management for defendant "AprA11y{uniq}"
     Then I should see the header containing text "Manage Alternate Payment References"
     And I check the page for accessibility
     Given I am logged in with email "opal-test-10@dev.platform.hmcts.net"
-    When the Payment terms tab is displayed for defendant account with last name "AprA11y{uniq}"
-    And I open APR Management from Payment terms
+    When I open APR Management for defendant "AprA11y{uniq}"
     Then I should see the header containing text "You cannot manage alternate payment references"
     And I check the page for accessibility

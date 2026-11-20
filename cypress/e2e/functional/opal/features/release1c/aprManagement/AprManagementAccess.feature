@@ -18,8 +18,7 @@ Feature: Alternate Payment Reference Management access
 
     @R1CBankingInterfaces
     Scenario: A user with APR permission in the account's business unit can open APR Management
-      When the Payment terms tab is displayed for defendant account with last name "AprAccess{uniq}"
-      And I open APR Management from Payment terms
+      When I open APR Management for defendant "AprAccess{uniq}"
       Then I should see the header containing text "Manage Alternate Payment References"
 
   Rule: User has APR permission only in another business unit
@@ -32,6 +31,5 @@ Feature: Alternate Payment Reference Management access
         | account.prosecutor_case_reference                  | APRAD{uniqUpper} |
         | account.offences.0.impositions.0.major_creditor_id | 730000000083     |
       And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
-      When the Payment terms tab is displayed for defendant account with last name "AprDenied{uniq}"
-      And I open APR Management from Payment terms
+      When I open APR Management for defendant "AprDenied{uniq}"
       Then I should see the header containing text "You cannot manage alternate payment references"

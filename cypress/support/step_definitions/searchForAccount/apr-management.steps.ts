@@ -1,31 +1,33 @@
-import { Given, Then, When } from '@badeball/cypress-cucumber-preprocessor';
+import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
 import { AprManagementActions } from '../../../e2e/functional/opal/actions/account-enquiry/apr-management.actions';
+import { AprManagementFlow } from '../../../e2e/functional/opal/flows/apr-management.flow';
 import { applyUniqPlaceholder } from '../../utils/stringUtils';
 
 const aprManagementActions = () => new AprManagementActions();
 
-When('I open APR Management from Payment terms', () => {
-  aprManagementActions().openFromPaymentTerms();
+const aprManagementFlow = () => new AprManagementFlow();
+
+When('I open APR Management for defendant {string}', (surname: string) => {
+  aprManagementFlow().openForDefendant(applyUniqPlaceholder(surname));
 });
 
 Then('the APR Management link is hidden', () => {
   aprManagementActions().assertLinkHidden();
 });
 
-When('I add an alternate payment reference', () => {
-  aprManagementActions().startAddingReference();
+When('I submit alternate payment reference {string}', (reference: string) => {
+  aprManagementFlow().addReference(applyUniqPlaceholder(reference));
 });
 
-When('I change alternate payment reference {string}', (reference: string) => {
-  aprManagementActions().startChangingReference(applyUniqPlaceholder(reference));
-});
+When(
+  'I submit a change from alternate payment reference {string} to {string}',
+  (current: string, replacement: string) => {
+    aprManagementFlow().changeReference(applyUniqPlaceholder(current), applyUniqPlaceholder(replacement));
+  },
+);
 
-When('I save alternate payment reference {string}', (reference: string) => {
-  aprManagementActions().saveReference(applyUniqPlaceholder(reference));
-});
-
-Given('I watch for alternate payment reference creation', () => {
-  aprManagementActions().watchReferenceCreation();
+When('I attempt to add duplicate alternate payment reference {string}', (reference: string) => {
+  aprManagementFlow().attemptDuplicateCreation(applyUniqPlaceholder(reference));
 });
 
 Then('creation of the duplicate alternate payment reference is rejected', () => {
@@ -48,9 +50,12 @@ Then('there are no alternate payment references for the current account', () => 
   aprManagementActions().assertNoCurrentReferences();
 });
 
-When('I try to update to the duplicate alternate payment reference {string}', (reference: string) => {
-  aprManagementActions().attemptDuplicateUpdate(applyUniqPlaceholder(reference));
-});
+When(
+  'I attempt to change alternate payment reference {string} to duplicate {string}',
+  (current: string, replacement: string) => {
+    aprManagementFlow().attemptDuplicateUpdate(applyUniqPlaceholder(current), applyUniqPlaceholder(replacement));
+  },
+);
 
 Then('the duplicate alternate payment reference update is rejected', () => {
   aprManagementActions().assertDuplicateRejected('update');

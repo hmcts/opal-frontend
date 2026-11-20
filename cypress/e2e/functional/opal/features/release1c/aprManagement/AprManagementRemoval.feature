@@ -10,10 +10,8 @@ Feature: Remove alternate payment references
         | first name                | Jordan          |
         | last name                 | AprRemove{uniq} |
         | prosecutor case reference | APRR{uniqUpper} |
-      When the Payment terms tab is displayed for defendant account with last name "AprRemove{uniq}"
-      And I open APR Management from Payment terms
-      And I add an alternate payment reference
-      And I save alternate payment reference "REMOVE{uniqUpper}"
+      When I open APR Management for defendant "AprRemove{uniq}"
+      And I submit alternate payment reference "REMOVE{uniqUpper}"
       Then the current alternate payment references include "REMOVE{uniqUpper}"
 
     Scenario: Confirm removal and verify the reference stays absent
@@ -21,8 +19,7 @@ Feature: Remove alternate payment references
       Then I should see the header containing text "Are you sure you want to remove this alternate payment reference?"
       When I confirm removal of the alternate payment reference
       Then there are no alternate payment references for the current account
-      When the Payment terms tab is displayed for defendant account with last name "AprRemove{uniq}"
-      And I open APR Management from Payment terms
+      When I open APR Management for defendant "AprRemove{uniq}"
       Then there are no alternate payment references for the current account
 
     Scenario: Cancel removal and keep the reference
@@ -30,8 +27,7 @@ Feature: Remove alternate payment references
       Then I should see the header containing text "Are you sure you want to remove this alternate payment reference?"
       When I cancel removal of the alternate payment reference
       Then the current alternate payment references include "REMOVE{uniqUpper}"
-      When the Payment terms tab is displayed for defendant account with last name "AprRemove{uniq}"
-      And I open APR Management from Payment terms
+      When I open APR Management for defendant "AprRemove{uniq}"
       Then the current alternate payment references include "REMOVE{uniqUpper}"
 
   Rule: Read-only alternate payment reference
