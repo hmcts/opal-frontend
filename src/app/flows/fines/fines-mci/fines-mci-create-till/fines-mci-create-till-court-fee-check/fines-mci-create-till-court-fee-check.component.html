@@ -1,0 +1,12 @@
+<div class="govuk-grid-column-full govuk-!-margin-bottom-4" [hidden]="isNavigating()">
+  <opal-lib-govuk-back-link (clickEvent)="handleBack()"></opal-lib-govuk-back-link>
+</div>
+<div class="govuk-grid-column-two-thirds">
+  <opal-lib-govuk-heading-with-caption
+    [captionText]="finesMciStore.businessUnit()?.business_unit_name ?? ''"
+    headingText="Check court fee"
+  ></opal-lib-govuk-heading-with-caption>
+  @if (isNavigating()) {
+    <output class="govuk-body govuk-!-display-block">Loading payment details</output>
+  }
+</div>

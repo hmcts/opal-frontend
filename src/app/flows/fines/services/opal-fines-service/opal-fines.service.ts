@@ -1,5 +1,6 @@
 import { IOpalFinesAprPayload } from './interfaces/opal-fines-apr-payload.interface';
 import { IOpalFinesSourceMapping } from './interfaces/opal-fines-source-mapping.interface';
+import { IOpalFinesMapping } from './interfaces/opal-fines-mapping.interface';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/opal-fines-paths.constant';
@@ -435,13 +436,24 @@ export class OpalFines {
   }
 
   /**
+   * Retrieves payment method codes and display names from the mappings endpoint.
+   *
+   * @returns The payment method mappings supplied by the backend.
+   */
+  public getMethodOfPaymentMappings(): Observable<IOpalFinesMapping[]> {
+    return this.http.get<IOpalFinesMapping[]>(OPAL_FINES_PATHS.methodOfPaymentMappings, this.retrySafeReadOptions());
+  }
+
+  /**
    * Retrieves source display names, sharing one request and caching a successful response for the session.
    * Eligible transient failures receive one automatic retry through the safe-read policy.
    * Failed requests can be retried by a later subscriber. Clearing reference caches resets this response.
    *
+   * @param forceRefresh Whether to replace the cached response with a new request.
    * @returns The source mapping array supplied by the backend.
    */
-  public getSourceMappings(): Observable<IOpalFinesSourceMapping[]> {
+  public getSourceMappings(forceRefresh = false): Observable<IOpalFinesSourceMapping[]> {
+    if (forceRefresh) this.cache.sourceMappingsCache$ = null;
     this.cache.sourceMappingsCache$ ??= this.http
       .get<IOpalFinesSourceMapping[]>(OPAL_FINES_PATHS.sourceMappings, this.retrySafeReadOptions())
       .pipe(shareReplay({ bufferSize: 1, refCount: false }));
