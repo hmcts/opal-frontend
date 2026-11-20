@@ -1,3 +1,4 @@
+import { OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK } from './mocks/opal-fines-suspense-item-summary.mock';
 import { OPAL_FINES_SOURCE_MAPPINGS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-source-mappings.mock';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -140,6 +141,55 @@ describe('OpalFines', () => {
 
   afterEach(() => {
     httpMock.verify();
+  });
+
+  it('requests a suspense summary with its BU and encoded reference, preserving the response', () => {
+    const received = vi.fn();
+    service.getSuspenseItemSummary(22, '001234/5').subscribe(received);
+    const request = httpMock.expectOne('/opal-fines-service/suspense-accounts/22/suspense-items/001234%2F5/summary');
+    expect(request.request.method).toBe('GET');
+    request.flush(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
+    expect(received).toHaveBeenCalledWith(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
+  });
+
+  it('propagates a missing suspense summary', () => {
+    const failed = vi.fn();
+    service.getSuspenseItemSummary(22, '001234').subscribe({ error: failed });
+    httpMock
+      .expectOne('/opal-fines-service/suspense-accounts/22/suspense-items/001234/summary')
+      .flush({}, { status: 404, statusText: 'Not Found' });
+    expect(failed).toHaveBeenCalledWith(expect.objectContaining({ status: 404 }));
+  });
+
+  it('reuses a summary for the same BU/reference and separates different searches', () => {
+    service.getSuspenseItemSummary(22, '001234').subscribe();
+    httpMock
+      .expectOne('/opal-fines-service/suspense-accounts/22/suspense-items/001234/summary')
+      .flush(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
+    const received = vi.fn();
+    service.getSuspenseItemSummary(22, '001234').subscribe(received);
+    httpMock.expectNone('/opal-fines-service/suspense-accounts/22/suspense-items/001234/summary');
+    expect(received).toHaveBeenCalledWith(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
+    service.getSuspenseItemSummary(11, '001234').subscribe();
+    httpMock
+      .expectOne('/opal-fines-service/suspense-accounts/11/suspense-items/001234/summary')
+      .flush(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
+    service.getSuspenseItemSummary(22, '5678').subscribe();
+    httpMock
+      .expectOne('/opal-fines-service/suspense-accounts/22/suspense-items/5678/summary')
+      .flush(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
+  });
+
+  it('fetches a fresh summary after its cache is cleared', () => {
+    const url = '/opal-fines-service/suspense-accounts/22/suspense-items/001234/summary';
+    service.getSuspenseItemSummary(22, '001234').subscribe();
+    httpMock.expectOne(url).flush(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
+    service.clearCache('suspenseItemSummaryCache$');
+    const received = vi.fn();
+    const freshSummary = { ...OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK, balance: '42.00' };
+    service.getSuspenseItemSummary(22, '001234').subscribe(received);
+    httpMock.expectOne(url).flush(freshSummary);
+    expect(received).toHaveBeenCalledWith(freshSummary);
   });
 
   it('should be created', () => {
