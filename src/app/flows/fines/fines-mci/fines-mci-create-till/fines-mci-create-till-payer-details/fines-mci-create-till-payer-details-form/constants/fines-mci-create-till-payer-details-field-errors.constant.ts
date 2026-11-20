@@ -42,6 +42,9 @@ export const FINES_MCI_CREATE_TILL_PAYER_DETAILS_FIELD_ERRORS: IFinesMciCreateTi
   },
   postcode: {
     maxlength: { message: 'Post code must be 8 characters or fewer', priority: 1 },
-    alphanumericTextPattern: { message: 'Post code must only include letters a to z, numbers and spaces', priority: 2 },
+    alphanumericTextPattern: {
+      message: 'Post code must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      priority: 2,
+    },
   },
 };

@@ -104,7 +104,7 @@ describe('Manual Cash Input - Suspense Details', () => {
         cy.get(Mci.errorSummary).should('contain.text', message);
         cy.get(Mci.errorMessage).filter(':visible').should('contain.text', message);
       });
-      cy.get(Mci.suspenseAmount).should('have.attr', 'aria-describedby', 'amount-error');
+      cy.get(Mci.suspenseAmount).should('have.attr', 'aria-describedby', 'amount-error-message');
       cy.get('@financeRouter').its('url').should('eq', `${TILL_PATH}suspense-details`);
     },
   );
@@ -154,18 +154,20 @@ describe('Manual Cash Input - Suspense Details', () => {
     { method: 'cheque', suffix: 'Cheque', label: 'Cheque' },
     { method: 'creditTransfer', suffix: 'CreditTransfer', label: 'Credit transfer' },
   ].forEach(({ method, suffix, label }) => {
-    it(`(AC4c) reveals and validates the ${label} reference`, { tags: TAGS }, () => {
+    it(`(AC4c, AC4d) reveals and validates the ${label} reference`, { tags: TAGS }, () => {
       openSuspenseDetails();
       const reference = Mci.suspenseReference(suffix);
       cy.get(reference).should('not.be.visible');
       select('methodOfPayment', method);
-      cy.get(reference).should('be.visible').and('have.attr', 'maxlength', '50').type('invalid!');
+      cy.get(reference).should('be.visible').type('invalid!');
       cy.get(Mci.continueButton).click();
       assertError(
         `paymentReference${suffix}`,
         `Payment reference (${label}) must only include letters a to z, numbers, hyphens, spaces and apostrophes`,
       );
-      cy.get(reference).clear().type('a'.repeat(51)).should('have.value', 'a'.repeat(50));
+      cy.get(reference).clear().type('a'.repeat(51)).should('have.value', 'a'.repeat(51));
+      cy.get(Mci.continueButton).click();
+      assertError(`paymentReference${suffix}`, `Payment reference (${label}) must be 50 characters or fewer`);
       cy.get(reference).clear().type("Valid-123 O'Brien");
       cy.get(Mci.continueButton).click();
       cy.get(Mci.fieldError(`paymentReference${suffix}`)).should('not.exist');
@@ -192,23 +194,29 @@ describe('Manual Cash Input - Suspense Details', () => {
     cy.get(Mci.suspenseRadio('source', 'Other')).should('not.be.visible');
   });
 
-  it('(AC6, AC6b) reveals unidentified-payment details and validates their characters', { tags: TAGS }, () => {
-    openSuspenseDetails();
-    cy.get(Mci.suspenseRelevantDetails).should('not.be.visible');
-    select('reason', 'unidentified');
-    cy.get(Mci.suspenseRelevantDetails).should('be.visible').and('have.attr', 'maxlength', '50').type('invalid!');
-    cy.get(Mci.continueButton).click();
-    assertError(
-      'relevantDetails',
-      'Add Relevant Details must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-    );
-    cy.get(Mci.suspenseRelevantDetails).clear().type('a'.repeat(51)).should('have.value', 'a'.repeat(50));
-    cy.get(Mci.suspenseRelevantDetails).clear().type("Payment-123 O'Brien");
-    cy.get(Mci.continueButton).click();
-    cy.get(Mci.fieldError('relevantDetails')).should('not.exist');
-    select('reason', 'overpayment');
-    cy.get(Mci.suspenseRelevantDetails).should('not.be.visible');
-  });
+  it(
+    '(AC6, AC6a, AC6b) reveals unidentified-payment details and validates their characters and length',
+    { tags: TAGS },
+    () => {
+      openSuspenseDetails();
+      cy.get(Mci.suspenseRelevantDetails).should('not.be.visible');
+      select('reason', 'unidentified');
+      cy.get(Mci.suspenseRelevantDetails).should('be.visible').type('invalid!');
+      cy.get(Mci.continueButton).click();
+      assertError(
+        'relevantDetails',
+        'Add Relevant Details must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      );
+      cy.get(Mci.suspenseRelevantDetails).clear().type('a'.repeat(51)).should('have.value', 'a'.repeat(51));
+      cy.get(Mci.continueButton).click();
+      assertError('relevantDetails', 'Add relevant details must be 50 characters or fewer');
+      cy.get(Mci.suspenseRelevantDetails).clear().type("Payment-123 O'Brien");
+      cy.get(Mci.continueButton).click();
+      cy.get(Mci.fieldError('relevantDetails')).should('not.exist');
+      select('reason', 'overpayment');
+      cy.get(Mci.suspenseRelevantDetails).should('not.be.visible');
+    },
+  );
 
   [
     { method: 'postalOrder', suffix: 'PostalOrder', label: 'Postal order' },
@@ -216,7 +224,7 @@ describe('Manual Cash Input - Suspense Details', () => {
     { method: 'creditTransfer', suffix: 'CreditTransfer', label: 'Credit transfer' },
   ].forEach(({ method, suffix, label }) => {
     it(`(AC4d) rejects a restored ${label} reference longer than 50 characters`, { tags: TAGS }, () => {
-      // Restored application state can exceed the input's native maxlength restriction.
+      // Validate restored payment data as well as newly entered values.
       openSuspenseDetails({
         ...VALID_PAYMENT,
         methodOfPayment: method as IFinesMciSuspensePayment['methodOfPayment'],
