@@ -268,7 +268,8 @@ export class ManualReviewAccountActions {
     cy.get(L.submitButton, this.common.getTimeoutOptions()).should('be.visible').click();
 
     return (cy.wait('@manualAccountSubmit') as unknown as Cypress.Chainable<void>).then(() => {
-      cy.get<Interception>('@manualAccountSubmit').then(({ response }) => {
+      cy.get<Interception>('@manualAccountSubmit').then(({ request, response }) => {
+        cy.wrap(request.body, { log: false }).as('manualAccountSubmitBody');
         const status = response?.statusCode ?? 0;
         const accountId = readDraftIdFromBody(response?.body);
 
