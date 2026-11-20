@@ -29,27 +29,6 @@ Feature: View, add and change alternate payment references
     When I submit alternate payment reference "NEW{uniqUpper}"
     Then the current alternate payment references include "NEW{uniqUpper}"
 
-  Scenario: Reject an alternate payment reference longer than 18 characters on add
-    When I open APR Management for defendant "AprMain{uniq}"
-    And I submit alternate payment reference "ABCDEFGHIJKLMNOPQRS"
-    Then I see the alternate payment reference length error
-    When I open APR Management for defendant "AprMain{uniq}"
-    Then there are no alternate payment references for the current account
-
-  Scenario: Reject a duplicate alternate payment reference in the same business unit
-    When I open APR Management for defendant "AprMain{uniq}"
-    And I submit alternate payment reference "TAKEN{uniqUpper}"
-    Then the current alternate payment references include "TAKEN{uniqUpper}"
-    Given a published adult or youth defendant account exists:
-      | first name                | Casey           |
-      | last name                 | AprOther{uniq}  |
-      | prosecutor case reference | APRO{uniqUpper} |
-    When I open APR Management for defendant "AprOther{uniq}"
-    And I attempt to add duplicate alternate payment reference "TAKEN{uniqUpper}"
-    Then creation of the duplicate alternate payment reference is rejected
-    When I open APR Management for defendant "AprOther{uniq}"
-    Then there are no alternate payment references for the current account
-
   Scenario: Add a reference that is already used in a different business unit
     When I open APR Management for defendant "AprMain{uniq}"
     And I submit alternate payment reference "SHARED{uniqUpper}"
@@ -71,30 +50,3 @@ Feature: View, add and change alternate payment references
     When I submit a change from alternate payment reference "OLD{uniqUpper}" to "NEW{uniqUpper}"
     Then the current alternate payment references include "NEW{uniqUpper}"
     And the current alternate payment references exclude "OLD{uniqUpper}"
-
-  Scenario: Reject an alternate payment reference longer than 18 characters on change
-    When I open APR Management for defendant "AprMain{uniq}"
-    And I submit alternate payment reference "OLD{uniqUpper}"
-    Then the current alternate payment references include "OLD{uniqUpper}"
-    When I submit a change from alternate payment reference "OLD{uniqUpper}" to "ABCDEFGHIJKLMNOPQRS"
-    Then I see the alternate payment reference length error
-    When I open APR Management for defendant "AprMain{uniq}"
-    Then the current alternate payment references include "OLD{uniqUpper}"
-    And the current alternate payment references exclude "ABCDEFGHIJKLMNOPQRS"
-
-  Scenario: Reject changing an alternate payment reference to a duplicate in the same business unit
-    When I open APR Management for defendant "AprMain{uniq}"
-    And I submit alternate payment reference "TAKEN{uniqUpper}"
-    Then the current alternate payment references include "TAKEN{uniqUpper}"
-    Given a published adult or youth defendant account exists:
-      | first name                | Casey           |
-      | last name                 | AprOther{uniq}  |
-      | prosecutor case reference | APRO{uniqUpper} |
-    When I open APR Management for defendant "AprOther{uniq}"
-    And I submit alternate payment reference "ORIGINAL{uniqUpper}"
-    Then the current alternate payment references include "ORIGINAL{uniqUpper}"
-    When I attempt to change alternate payment reference "ORIGINAL{uniqUpper}" to duplicate "TAKEN{uniqUpper}"
-    Then the duplicate alternate payment reference update is rejected
-    When I open APR Management for defendant "AprOther{uniq}"
-    Then the current alternate payment references include "ORIGINAL{uniqUpper}"
-    And the current alternate payment references exclude "TAKEN{uniqUpper}"

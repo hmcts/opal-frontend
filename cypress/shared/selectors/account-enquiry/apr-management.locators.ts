@@ -9,5 +9,4 @@ export const APR_MANAGEMENT_ELEMENTS = {
   referenceCell: 'th[scope="row"]',
   input: '#apr_text',
   saveButton: '#apr-save',
-  errorSummary: '.govuk-error-summary',
 };

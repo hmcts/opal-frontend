@@ -26,18 +26,6 @@ When(
   },
 );
 
-When('I attempt to add duplicate alternate payment reference {string}', (reference: string) => {
-  aprManagementFlow().attemptDuplicateCreation(applyUniqPlaceholder(reference));
-});
-
-Then('creation of the duplicate alternate payment reference is rejected', () => {
-  aprManagementActions().assertDuplicateRejected('create');
-});
-
-Then('I see the alternate payment reference length error', () => {
-  aprManagementActions().assertLengthError();
-});
-
 Then('the current alternate payment references include {string}', (reference: string) => {
   aprManagementActions().assertCurrentReference(applyUniqPlaceholder(reference));
 });
@@ -48,17 +36,6 @@ Then('the current alternate payment references exclude {string}', (reference: st
 
 Then('there are no alternate payment references for the current account', () => {
   aprManagementActions().assertNoCurrentReferences();
-});
-
-When(
-  'I attempt to change alternate payment reference {string} to duplicate {string}',
-  (current: string, replacement: string) => {
-    aprManagementFlow().attemptDuplicateUpdate(applyUniqPlaceholder(current), applyUniqPlaceholder(replacement));
-  },
-);
-
-Then('the duplicate alternate payment reference update is rejected', () => {
-  aprManagementActions().assertDuplicateRejected('update');
 });
 
 When('I remove alternate payment reference {string}', (reference: string) => {

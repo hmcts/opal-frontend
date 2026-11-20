@@ -1,7 +1,8 @@
 @JIRA-LABEL:account-enquiry @JIRA-EPIC:PO-7465 @JIRA-STORY:PO-10906
 Feature: Alternate Payment Reference Management accessibility
 
-  # Requires the West London draft validator role for opal-test-10 in CI.
+  # Before enabling, provision a separate test user with draft validation in business unit 73.
+  # Use that user for draft publication. Keep opal-test-10 as the APR access-denied user.
   @R1CBankingInterfaces @skip
   Scenario: APR Management and access-denied pages are accessible
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"

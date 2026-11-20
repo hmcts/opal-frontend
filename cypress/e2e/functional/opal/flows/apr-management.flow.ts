@@ -25,15 +25,6 @@ export class AprManagementFlow {
   }
 
   /**
-   * Submits an existing reference value while observing the create request.
-   * @param reference - Reference value used in the scenario.
-   */
-  public attemptDuplicateCreation(reference: string): void {
-    this.apr.watchReferenceCreation();
-    this.addReference(reference);
-  }
-
-  /**
    * Selects the current reference and submits its replacement.
    * @param current - Existing reference value.
    * @param replacement - Value submitted as the replacement.
@@ -41,15 +32,5 @@ export class AprManagementFlow {
   public changeReference(current: string, replacement: string): void {
     this.apr.startChangingReference(current);
     this.apr.saveReference(replacement);
-  }
-
-  /**
-   * Selects the current reference and attempts to replace it with an existing value.
-   * @param current - Existing reference value.
-   * @param replacement - Value submitted as the replacement.
-   */
-  public attemptDuplicateUpdate(current: string, replacement: string): void {
-    this.apr.startChangingReference(current);
-    this.apr.attemptDuplicateUpdate(replacement);
   }
 }

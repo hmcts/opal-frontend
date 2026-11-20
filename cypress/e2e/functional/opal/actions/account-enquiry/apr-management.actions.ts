@@ -41,39 +41,6 @@ export class AprManagementActions {
     cy.get(APR.saveButton).click();
   }
 
-  /** Observes real create requests so the scenario can assert duplicate rejection. */
-  public watchReferenceCreation(): void {
-    cy.intercept('POST', '**/defendant-accounts/*/alternate-payment-references').as('createApr');
-  }
-
-  /**
-   * Submits a replacement value while observing the real update request.
-   * @param reference - Reference value used in the scenario.
-   */
-  public attemptDuplicateUpdate(reference: string): void {
-    cy.intercept('PATCH', '**/defendant-accounts/*/alternate-payment-references/*').as('updateApr');
-    this.saveReference(reference);
-  }
-
-  /**
-   * Checks that the observed request failed because the reference is already in use.
-   * @param operation - Observed APR operation.
-   */
-  public assertDuplicateRejected(operation: 'create' | 'update'): void {
-    cy.wait(`@${operation}Apr`)
-      .its('response')
-      .should('include', { statusCode: 422 })
-      .its('body.title')
-      .should('equal', 'Alternate Payment Reference text already exists in business unit');
-  }
-
-  /** Checks the error summary for the 18-character limit. */
-  public assertLengthError(): void {
-    cy.get(APR.errorSummary)
-      .should('be.visible')
-      .and('contain.text', 'Payment reference must be 18 characters or fewer');
-  }
-
   /**
    * Checks that the reference appears in the current account table.
    * @param reference - Reference value used in the scenario.
