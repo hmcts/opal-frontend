@@ -110,7 +110,7 @@ describe('FinesMciCreateTillPayerDetailsFormComponent', () => {
     expect(text).toContain('First names must only include letters a to z');
     expect(text).toContain('Last name must only include letters a to z');
     expect(text).toContain('Address line 1 must only include letters a to z');
-    expect(text).toContain('Post code must only include letters a to z, numbers, hyphens, spaces and apostrophes');
+    expect(text).toContain('Post code must only include letters a to z, numbers and spaces');
 
     component.form.controls['payerType'].setValue('company');
     component.form.controls['companyName'].setValue('Company!');
@@ -120,9 +120,9 @@ describe('FinesMciCreateTillPayerDetailsFormComponent', () => {
     );
   });
 
-  it.each(['ABC 123', "A-1 O'C"])('accepts optional post code %s with the permitted characters', (postcode) => {
+  it('accepts an optional alphanumeric post code using the shared postcode rules', () => {
     fixture.detectChanges();
-    component.form.patchValue({ payerType: 'individual', lastName: 'Smith', postcode });
+    component.form.patchValue({ payerType: 'individual', lastName: 'Smith', postcode: 'ABC 123' });
 
     expect(component.form.controls['postcode'].valid).toBe(true);
     expect(component.form.valid).toBe(true);
