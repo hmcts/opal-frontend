@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRouteSnapshot, provideRouter, Router, RouterStateSnapshot } from '@angular/router';
+import { provideRouter, Router, UrlSegment } from '@angular/router';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-defendant-account-response-individual.mock';
 import { FinesMciStore } from '../../stores/fines-mci.store';
@@ -23,11 +23,9 @@ describe('finesMciCriminalAccountStateGuard', () => {
         });
       }
       store.setDraftJourney('suspense');
-      const route = new ActivatedRouteSnapshot();
-      route.params = { accountId: '9007199254740993' };
-      const result = TestBed.runInInjectionContext(() =>
-        finesMciCriminalAccountStateGuard(route, {} as RouterStateSnapshot),
-      );
+      const route = { path: 'account/:accountId/:type' };
+      const segments = ['account', '9007199254740993', 'individual'].map((path) => new UrlSegment(path, {}));
+      const result = TestBed.runInInjectionContext(() => finesMciCriminalAccountStateGuard(route, segments));
       if (allowed) {
         expect(result).toBe(true);
       } else {

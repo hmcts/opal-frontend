@@ -1,13 +1,14 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
+import { CanMatchFn, Router } from '@angular/router';
 import { FINES_ROUTING_PATHS } from '../../../routing/constants/fines-routing-paths.constant';
 import { FinesMciStore } from '../../stores/fines-mci.store';
 import { FINES_MCI_ROUTING_PATHS } from '../constants/fines-mci-routing-paths.constant';
 
-/** Returns stale account history entries to Till Details after criminal payment state has been discarded. */
-export const finesMciCriminalAccountStateGuard: CanActivateFn = (route) => {
+/** Returns stale account history entries to Till Details after criminal payment state has been discarded, before leave guards run. */
+export const finesMciCriminalAccountStateGuard: CanMatchFn = (route, segments) => {
   const account = inject(FinesMciStore).selectedCriminalAccount();
-  if (account && String(account.defendant_account_id) === route.paramMap.get('accountId')) {
+  const accountIdIndex = route.path?.split('/').indexOf(':accountId') ?? -1;
+  if (account && String(account.defendant_account_id) === segments[accountIdIndex]?.path) {
     return true;
   }
 

@@ -5,7 +5,7 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { filter, firstValueFrom, of, take } from 'rxjs';
 import { FinesMciCriminalAccountService } from '../services/fines-mci-criminal-account.service';
 import { EMPTY } from 'rxjs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import {
@@ -58,6 +58,7 @@ const routesForRecognition = (routes: Routes): Routes =>
   }));
 
 describe('finesMci routes', () => {
+  afterEach(() => vi.restoreAllMocks());
   beforeEach(() =>
     TestBed.configureTestingModule({
       providers: [{ provide: FinesMciCriminalAccountService, useValue: { loadMasterAccountDetails: () => EMPTY } }],
@@ -305,12 +306,8 @@ describe('finesMci routes', () => {
       const accountRoute = criminalRoute!.children!.find(
         (route) => route.path === `${FINES_MCI_ROUTING_PATHS.children.account}/:accountId/:type`,
       )!;
-      expect(accountRoute.canActivate).toEqual([
-        authGuard,
-        routePermissionsGuard,
-        finesMciFlowStateGuard,
-        finesMciCriminalAccountStateGuard,
-      ]);
+      expect(accountRoute.canActivate).toEqual([authGuard, routePermissionsGuard, finesMciFlowStateGuard]);
+      expect(accountRoute.canMatch).toEqual([finesMciCriminalAccountStateGuard]);
       expect(accountRoute.data?.['routePermissionId']).toEqual([FINES_PERMISSIONS['process-and-allocate-payments']]);
       expect(accountRoute.resolve).toEqual({ title: TitleResolver });
       TestBed.configureTestingModule({
@@ -411,7 +408,7 @@ describe('finesMci routes', () => {
                     children: [
                       {
                         ...accountRoute,
-                        canActivate: [finesMciFlowStateGuard, finesMciCriminalAccountStateGuard],
+                        canActivate: [finesMciFlowStateGuard],
                         resolve: {},
                       },
                     ],
@@ -510,7 +507,7 @@ describe('finesMci routes', () => {
         expect(harness.routeDebugElement!.componentInstance).toBe(suspenseComponent);
         expect(amount.value).toBe('25.00');
         expect(store.draftJourney()).toBe('suspense');
-        expect(confirmLeave).toHaveBeenCalled();
+        expect(confirmLeave).toHaveBeenCalledTimes(1);
         confirmLeave.mockReturnValue(true);
       }
       const returned = firstValueFrom(
@@ -527,7 +524,10 @@ describe('finesMci routes', () => {
       expect(harness.routeNativeElement!.querySelector('h1')!.textContent!.trim()).toBe('Till details');
       expect(store.selectedCriminalAccount()).toBeNull();
       expect(store.tills()).toEqual(tills);
-      if (editSuspense) vi.mocked(window.confirm).mockRestore();
+      if (editSuspense) {
+        expect(window.confirm).toHaveBeenCalledTimes(2);
+        vi.mocked(window.confirm).mockRestore();
+      }
     },
   );
   it.each([
