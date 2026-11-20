@@ -7,12 +7,14 @@ import {
   OnInit,
   Output,
   computed,
+  effect,
   inject,
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
+import { FinesVehicleRegistrationConfigService } from '../../../services/fines-vehicle-registration-config.service';
 import { FinesMacAbstractAliasFormComponent } from '../../abstracts/fines-mac-abstract-alias-form.component';
 import { FinesMacAliasRowComponent } from '../../components/fines-mac-alias-row/fines-mac-alias-row.component';
 import { IFinesMacPersonalDetailsFieldErrors } from '../interfaces/fines-mac-personal-details-field-errors.interface';
@@ -24,7 +26,6 @@ import { FINES_MAC_ROUTING_PATHS } from '../../routing/constants/fines-mac-routi
 import { MojTicketPanelComponent } from '@hmcts/opal-frontend-common/components/moj/moj-ticket-panel';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 import { takeUntil } from 'rxjs';
-import { FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS as FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS } from '../constants/fines-mac-personal-details-vehicle-details-fields';
 import { IFinesMacDefendantTypes } from '../../interfaces/fines-mac-defendant-types.interface';
 import { FINES_MAC_TITLE_DROPDOWN_OPTIONS } from '../../constants/fines-mac-title-dropdown-options.constant';
 import { FinesMacStore } from '../../stores/fines-mac.store';
@@ -86,6 +87,11 @@ export class FinesMacPersonalDetailsFormComponent
 {
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly globalStore = inject(GlobalStore);
+  private readonly vehicleRegistrationConfigService = inject(FinesVehicleRegistrationConfigService);
+
+  private get vehicleRegistrationConfig() {
+    return this.vehicleRegistrationConfigService.getConfig('Registration number', 11);
+  }
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacPersonalDetailsForm>();
   protected readonly dateService = inject(DateService);
@@ -96,6 +102,13 @@ export class FinesMacPersonalDetailsFormComponent
   @Input() public defendantType!: string;
   override fieldErrors: IFinesMacPersonalDetailsFieldErrors = {
     ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS,
+    fm_personal_details_vehicle_registration_mark: {
+      ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS.fm_personal_details_vehicle_registration_mark,
+      maxlength: {
+        ...FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS.fm_personal_details_vehicle_registration_mark['maxlength'],
+        message: this.vehicleRegistrationConfig.errorMessage,
+      },
+    },
   };
 
   public readonly release1a1_2Enabled = computed(
@@ -107,6 +120,20 @@ export class FinesMacPersonalDetailsFormComponent
   public age!: number;
   public ageLabel!: string;
   public readonly defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
+
+  constructor() {
+    super();
+    effect(() => {
+      const { errorMessage } = this.vehicleRegistrationConfig;
+      const controlName = 'fm_personal_details_vehicle_registration_mark';
+      this.fieldErrors[controlName]['maxlength'].message = errorMessage;
+      const control = this.form?.get(controlName);
+      if (!control) return;
+
+      control.updateValueAndValidity({ emitEvent: false });
+      if (this.formControlErrorMessages?.[controlName]) this.handleErrorMessages();
+    });
+  }
 
   /**
    * Sets up the personal details form.
@@ -159,12 +186,11 @@ export class FinesMacPersonalDetailsFormComponent
 
   /**
    * Adds vehicle details controls to the form.
-   * Iterates over the FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS array and creates a control for each field.
+   * Creates the vehicle controls with the current registration limit.
    */
   private addVehicleDetailsControls(): void {
-    for (const control of FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS) {
-      this.createControl(control.controlName, control.validators);
-    }
+    this.createControl('fm_personal_details_vehicle_make', [optionalMaxLengthValidator(30)]);
+    this.createControl('fm_personal_details_vehicle_registration_mark', [this.vehicleRegistrationConfig.validator]);
   }
 
   /**

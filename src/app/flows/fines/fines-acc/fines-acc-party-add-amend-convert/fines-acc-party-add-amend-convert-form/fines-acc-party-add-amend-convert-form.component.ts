@@ -7,6 +7,7 @@ import {
   OnInit,
   Output,
   computed,
+  effect,
   inject,
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -61,6 +62,7 @@ import { FinesAccPartyAddAmendConvertDobNi } from './components/fines-acc-party-
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../constants/fines-acc-party-add-amend-convert-modes.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS } from '../constants/fines-acc-party-add-amend-convert-fragments.constant';
+import { FinesVehicleRegistrationConfigService } from '../../../services/fines-vehicle-registration-config.service';
 import {
   MojAlertComponent,
   MojAlertContentComponent,
@@ -110,6 +112,11 @@ export class FinesAccPartyAddAmendConvertFormComponent
   implements OnInit, OnDestroy
 {
   private readonly finesAccountStore = inject(FinesAccountStore);
+  private readonly vehicleRegistrationConfigService = inject(FinesVehicleRegistrationConfigService);
+
+  private get vehicleRegistrationConfig() {
+    return this.vehicleRegistrationConfigService.getConfig('Vehicle registration', 11);
+  }
 
   @Output() protected override formSubmit = new EventEmitter<IFinesAccPartyAddAmendConvertForm>();
   protected readonly dateService = inject(DateService);
@@ -124,6 +131,15 @@ export class FinesAccPartyAddAmendConvertFormComponent
     FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM;
   override fieldErrors: IFinesAccPartyAddAmendConvertFieldErrors = {
     ...FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS,
+    facc_party_add_amend_convert_vehicle_registration_mark: {
+      ...FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS.facc_party_add_amend_convert_vehicle_registration_mark,
+      maxlength: {
+        ...FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS.facc_party_add_amend_convert_vehicle_registration_mark[
+          'maxlength'
+        ],
+        message: this.vehicleRegistrationConfig.errorMessage,
+      },
+    },
   };
   public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
   public yesterday!: string;
@@ -135,6 +151,20 @@ export class FinesAccPartyAddAmendConvertFormComponent
   ).map(([key, value]) => ({ key, value }));
   public readonly FINES_ACC_SECTION_BREAK = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES.hr2;
   public readonly sectionFragments = FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS;
+
+  constructor() {
+    super();
+    effect(() => {
+      const { errorMessage } = this.vehicleRegistrationConfig;
+      const controlName = 'facc_party_add_amend_convert_vehicle_registration_mark';
+      this.fieldErrors[controlName]['maxlength'].message = errorMessage;
+      const control = this.form?.get(controlName);
+      if (!control) return;
+
+      control.updateValueAndValidity({ emitEvent: false });
+      if (this.formControlErrorMessages?.[controlName]) this.handleErrorMessages();
+    });
+  }
 
   /**
    * Creates the base form group with fields shared by all party types.
@@ -185,7 +215,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_vehicle_registration_mark: new FormControl(null, [
-        optionalMaxLengthValidator(11),
+        this.vehicleRegistrationConfig.validator,
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_language_preferences_document_language: new FormControl(null),
