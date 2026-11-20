@@ -23,7 +23,7 @@ Feature: Alternate Payment Reference Management access
 
   Rule: User has APR permission only in another business unit
     # PO-11694: Verify opal-test-11 can approve drafts in BU 73 in Jenkins before enabling.
-    @R1CBankingInterfaces @skip
+    @R1CBankingInterfaces @APRWestLondonCheck
     Scenario: A user with APR permission in another business unit is denied access
       Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-11@dev.platform.hmcts.net":
         | business_unit_id                                   | 73               |
