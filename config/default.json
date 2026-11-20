@@ -102,6 +102,10 @@
   "application-insights": {
     "cloudRoleName": "opal-frontend"
   },
+  "dynatrace": {
+    "enabled": false,
+    "scriptUrl": ""
+  },
   "microsoft": {
     "url": "https://login.microsoftonline.com/"
   },
