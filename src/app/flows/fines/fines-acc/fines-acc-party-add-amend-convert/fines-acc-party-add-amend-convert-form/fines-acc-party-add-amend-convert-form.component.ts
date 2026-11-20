@@ -7,6 +7,7 @@ import {
   OnInit,
   Output,
   computed,
+  effect,
   inject,
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -61,7 +62,7 @@ import { FinesAccPartyAddAmendConvertDobNi } from './components/fines-acc-party-
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../constants/fines-acc-party-add-amend-convert-modes.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS } from '../constants/fines-acc-party-add-amend-convert-fragments.constant';
-import { FinesVehicleRegistrationConfigService } from '../../../utils/fines-vehicle-registration-config.utils';
+import { FinesVehicleRegistrationConfigService } from '../../../services/fines-vehicle-registration-config.service';
 import {
   MojAlertComponent,
   MojAlertContentComponent,
@@ -151,6 +152,20 @@ export class FinesAccPartyAddAmendConvertFormComponent
   public readonly FINES_ACC_SECTION_BREAK = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES.hr2;
   public readonly sectionFragments = FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS;
 
+  constructor() {
+    super();
+    effect(() => {
+      const { errorMessage } = this.vehicleRegistrationConfig;
+      const controlName = 'facc_party_add_amend_convert_vehicle_registration_mark';
+      this.fieldErrors[controlName]['maxlength'].message = errorMessage;
+      const control = this.form?.get(controlName);
+      if (!control) return;
+
+      control.updateValueAndValidity({ emitEvent: false });
+      if (this.formControlErrorMessages?.[controlName]) this.handleErrorMessages();
+    });
+  }
+
   /**
    * Creates the base form group with fields shared by all party types.
    * @returns The shared form group with the address limit for the current party type.
@@ -200,7 +215,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_vehicle_registration_mark: new FormControl(null, [
-        optionalMaxLengthValidator(this.vehicleRegistrationConfig.maxLength),
+        this.vehicleRegistrationConfig.validator,
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_language_preferences_document_language: new FormControl(null),

@@ -6,6 +6,7 @@ import {
   OnInit,
   Output,
   computed,
+  effect,
   inject,
 } from '@angular/core';
 import { FinesMacAbstractAliasFormComponent } from '../../abstracts/fines-mac-abstract-alias-form.component';
@@ -13,7 +14,7 @@ import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Va
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
-import { FinesVehicleRegistrationConfigService } from '../../../utils/fines-vehicle-registration-config.utils';
+import { FinesVehicleRegistrationConfigService } from '../../../services/fines-vehicle-registration-config.service';
 import { IFinesMacParentGuardianDetailsFieldErrors } from '../interfaces/fines-mac-parent-guardian-details-field-errors.interface';
 import { IFinesMacParentGuardianDetailsForm } from '../interfaces/fines-mac-parent-guardian-details-form.interface';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS } from '../constants/fines-mac-parent-guardian-details-alias';
@@ -108,6 +109,20 @@ export class FinesMacParentGuardianDetailsFormComponent
   public age!: number;
   public ageLabel!: string;
 
+  constructor() {
+    super();
+    effect(() => {
+      const { errorMessage } = this.vehicleRegistrationConfig;
+      const controlName = 'fm_parent_guardian_details_vehicle_registration_mark';
+      this.fieldErrors[controlName]['maxlength'].message = errorMessage;
+      const control = this.form?.get(controlName);
+      if (!control) return;
+
+      control.updateValueAndValidity({ emitEvent: false });
+      if (this.formControlErrorMessages?.[controlName]) this.handleErrorMessages();
+    });
+  }
+
   /**
    * Sets up the parent/guardian details form with the necessary form controls.
    */
@@ -146,7 +161,7 @@ export class FinesMacParentGuardianDetailsFormComponent
       ]),
       fm_parent_guardian_details_vehicle_make: new FormControl(null, [optionalMaxLengthValidator(30)]),
       fm_parent_guardian_details_vehicle_registration_mark: new FormControl(null, [
-        optionalMaxLengthValidator(this.vehicleRegistrationConfig.maxLength),
+        this.vehicleRegistrationConfig.validator,
       ]),
     });
   }

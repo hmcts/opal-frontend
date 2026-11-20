@@ -1,4 +1,6 @@
+import { type ValidatorFn } from '@angular/forms';
+
 export interface IFinesVehicleRegistrationConfig {
-  maxLength: number;
   errorMessage: string;
+  validator: ValidatorFn;
 }

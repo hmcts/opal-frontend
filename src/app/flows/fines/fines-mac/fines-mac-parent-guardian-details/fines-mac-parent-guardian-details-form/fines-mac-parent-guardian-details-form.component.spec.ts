@@ -96,6 +96,8 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     enabledFixture.detectChanges();
 
     const registrationControl = enabledComponent.form.get('fm_parent_guardian_details_vehicle_registration_mark');
+    registrationControl?.setValue('XY21 ABC');
+    expect(registrationControl?.hasError('maxlength')).toBe(false);
     registrationControl?.setValue('12345678');
 
     expect(registrationControl?.hasError('maxlength')).toBe(true);
@@ -104,6 +106,26 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     );
 
     enabledFixture.destroy();
+  });
+
+  it('should refresh registration validation and its message when the release flag changes', () => {
+    const registrationControl = component.form.get('fm_parent_guardian_details_vehicle_registration_mark');
+    registrationControl?.setValue('12345678');
+    expect(registrationControl?.hasError('maxlength')).toBe(false);
+
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+    fixture.detectChanges();
+    expect(registrationControl?.hasError('maxlength')).toBe(true);
+    expect(component.fieldErrors.fm_parent_guardian_details_vehicle_registration_mark['maxlength'].message).toBe(
+      'Registration number must be 7 characters or fewer',
+    );
+
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+    fixture.detectChanges();
+    expect(registrationControl?.hasError('maxlength')).toBe(false);
+    expect(component.fieldErrors.fm_parent_guardian_details_vehicle_registration_mark['maxlength'].message).toBe(
+      'Registration number must be 11 characters or fewer',
+    );
   });
 
   it('should display numbered Remove buttons when release-1a-1-2 is enabled', () => {

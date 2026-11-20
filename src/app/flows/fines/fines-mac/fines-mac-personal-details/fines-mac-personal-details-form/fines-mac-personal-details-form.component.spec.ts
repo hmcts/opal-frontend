@@ -8,7 +8,6 @@ import { IFinesMacPersonalDetailsForm } from '../interfaces/fines-mac-personal-d
 import { FINES_MAC_PERSONAL_DETAILS_ALIAS } from '../constants/fines-mac-personal-details-alias';
 import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../mocks/fines-mac-personal-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
-import { FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS as FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS } from '../constants/fines-mac-personal-details-vehicle-details-fields';
 import { of } from 'rxjs';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
@@ -107,6 +106,10 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     enabledFixture.detectChanges();
 
     const registrationControl = enabledComponent.form.get('fm_personal_details_vehicle_registration_mark');
+    registrationControl?.setValue('XY21 ABC');
+    expect(registrationControl?.hasError('maxlength')).toBe(false);
+    registrationControl?.setValue('XY21 ABCD');
+    expect(registrationControl?.hasError('maxlength')).toBe(true);
     registrationControl?.setValue('12345678');
 
     expect(registrationControl?.hasError('maxlength')).toBe(true);
@@ -115,6 +118,31 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     );
 
     enabledFixture.destroy();
+  });
+
+  it('should refresh registration validation and its message when the release flag changes', () => {
+    const registrationControl = component.form.get('fm_personal_details_vehicle_registration_mark');
+    registrationControl?.setValue('12345678');
+    expect(registrationControl?.hasError('maxlength')).toBe(false);
+
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+    fixture.detectChanges();
+    expect(registrationControl?.hasError('maxlength')).toBe(true);
+    expect(component.fieldErrors.fm_personal_details_vehicle_registration_mark['maxlength'].message).toBe(
+      'Registration number must be 7 characters or fewer',
+    );
+    component['handleErrorMessages']();
+    expect(component.formControlErrorMessages['fm_personal_details_vehicle_registration_mark']).toBe(
+      'Registration number must be 7 characters or fewer',
+    );
+
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+    fixture.detectChanges();
+    expect(registrationControl?.hasError('maxlength')).toBe(false);
+    expect(component.formControlErrorMessages['fm_personal_details_vehicle_registration_mark']).toBeUndefined();
+    expect(component.fieldErrors.fm_personal_details_vehicle_registration_mark['maxlength'].message).toBe(
+      'Registration number must be 11 characters or fewer',
+    );
   });
 
   it('should display Remove alias buttons when release-1a-1-2 is enabled', () => {
@@ -889,9 +917,8 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   it('should add vehicle details controls', () => {
     component['addVehicleDetailsControls']();
 
-    FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS.forEach((control) => {
-      expect(component.form.get(control.controlName)).toBeTruthy();
-    });
+    expect(component.form.get('fm_personal_details_vehicle_make')).toBeTruthy();
+    expect(component.form.get('fm_personal_details_vehicle_registration_mark')).toBeTruthy();
   });
 
   it('should validate postcode format using alphanumericTextPattern', () => {
