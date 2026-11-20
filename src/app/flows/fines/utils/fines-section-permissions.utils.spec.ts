@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { type INavigationBarConfiguration } from '@app/interfaces/navigation-bar-configuration.interface';
 import { DASHBOARD_PAGE_CONFIGURATION_MAP } from '@app/pages/dashboard/constants/dashboard-config.constant';
 import { DASHBOARD_PAGE_DEFAULT_TAB } from '@app/pages/dashboard/constants/dashboard-config-default-tab.constant';
@@ -246,12 +247,14 @@ describe('fines-section-permissions.utils', () => {
       expect(getRequiredPermissionIdsForSection('accounts', release1aEnabledWithWriteOffDisabled)).toEqual([
         ACCOUNTS_PERMISSIONS[0],
         ACCOUNTS_PERMISSIONS[1],
+        FINES_PERMISSIONS['publish-fixed-penalty'],
       ]);
     });
 
     it('should keep consolidation Accounts permissions when release-1a is disabled and release-1c-write-off is enabled', () => {
       expect(getRequiredPermissionIdsForSection('accounts', release1aDisabledWithWriteOffEnabled)).toEqual([
         ACCOUNTS_PERMISSIONS[2],
+        FINES_PERMISSIONS['publish-fixed-penalty'],
       ]);
     });
 
@@ -309,6 +312,13 @@ describe('fines-section-permissions.utils', () => {
   });
 
   describe('canAccessFinesPrimaryNavigationSection', () => {
+    it('should allow Accounts for a fixed penalty publisher when other releases are disabled', () => {
+      const userState = createUserStateWithPermissions([FINES_PERMISSIONS['publish-fixed-penalty']]);
+
+      expect(canAccessFinesPrimaryNavigationSection('accounts', userState, {})).toBe(true);
+      expect(getDashboardLandingType(navigationItems, userState, {})).toBe('accounts');
+    });
+
     it('should allow unrestricted dashboard sections when their availability flags are enabled', () => {
       expect(canAccessFinesPrimaryNavigationSection('finance', null, release1cFinancialMovementsEnabled)).toBe(true);
     });
@@ -575,6 +585,16 @@ describe('fines-section-permissions.utils', () => {
   });
 
   describe('filterDashboardConfigByFeatureFlags', () => {
+    it('should retain the single Fixed Penalty Uploads entry point when other releases are disabled', () => {
+      const filteredConfig = filterDashboardConfigByFeatureFlags(DASHBOARD_PAGE_CONFIGURATION_MAP.accounts, {});
+      const fixedPenaltyLinks = filteredConfig.groups
+        .flatMap((group) => group.links)
+        .filter((link) => link.text === 'Fixed Penalty Uploads');
+
+      expect(fixedPenaltyLinks).toHaveLength(1);
+      expect(fixedPenaltyLinks[0].permissionIds).toEqual([FINES_PERMISSIONS['publish-fixed-penalty']]);
+    });
+
     it('should keep feature flag dashboard groups when the matching releases are enabled', () => {
       expect(
         filterDashboardConfigByFeatureFlags(DASHBOARD_PAGE_CONFIGURATION_MAP.accounts, allReleaseFlagsEnabled),
