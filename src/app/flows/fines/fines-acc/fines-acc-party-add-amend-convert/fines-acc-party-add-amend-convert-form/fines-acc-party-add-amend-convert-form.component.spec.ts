@@ -130,12 +130,33 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(component.fieldErrors.facc_party_add_amend_convert_vehicle_registration_mark['maxlength'].message).toBe(
       'Vehicle registration must be 7 characters or fewer',
     );
+    component['handleErrorMessages']();
+    expect(component.formControlErrorMessages['facc_party_add_amend_convert_vehicle_registration_mark']).toBe(
+      'Vehicle registration must be 7 characters or fewer',
+    );
 
     globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
     fixture.detectChanges();
     expect(registrationControl?.hasError('maxlength')).toBe(false);
+    expect(
+      component.formControlErrorMessages['facc_party_add_amend_convert_vehicle_registration_mark'],
+    ).toBeUndefined();
     expect(component.fieldErrors.facc_party_add_amend_convert_vehicle_registration_mark['maxlength'].message).toBe(
       'Vehicle registration must be 11 characters or fewer',
+    );
+  });
+
+  it('should update the registration message when its control is absent', () => {
+    component.partyType = 'individual';
+    fixture.detectChanges();
+    fixture.changeDetectorRef.detach();
+    component.form.removeControl('facc_party_add_amend_convert_vehicle_registration_mark');
+
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+    TestBed.flushEffects();
+
+    expect(component.fieldErrors.facc_party_add_amend_convert_vehicle_registration_mark['maxlength'].message).toBe(
+      'Vehicle registration must be 7 characters or fewer',
     );
   });
 

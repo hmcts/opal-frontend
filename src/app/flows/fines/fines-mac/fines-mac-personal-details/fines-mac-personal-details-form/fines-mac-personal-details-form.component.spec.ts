@@ -145,6 +145,22 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     );
   });
 
+  it('should update the registration message when its control is absent', () => {
+    const parentGuardianFixture = TestBed.createComponent(FinesMacPersonalDetailsFormComponent);
+    const parentGuardianComponent = parentGuardianFixture.componentInstance;
+    parentGuardianComponent.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
+    parentGuardianFixture.detectChanges();
+    expect(parentGuardianComponent.form.get('fm_personal_details_vehicle_registration_mark')).toBeNull();
+
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+    parentGuardianFixture.detectChanges();
+
+    expect(parentGuardianComponent.fieldErrors.fm_personal_details_vehicle_registration_mark['maxlength'].message).toBe(
+      'Registration number must be 7 characters or fewer',
+    );
+    parentGuardianFixture.destroy();
+  });
+
   it('should display Remove alias buttons when release-1a-1-2 is enabled', () => {
     globalStore.setFeatureFlags({
       [RELEASE_1A_1_2_FEATURE_FLAG]: true,
