@@ -30,4 +30,17 @@ export const routing: Routes = [
       businessUnits: finesSuspenseBusinessUnitsResolver,
     },
   },
+  {
+    path: FINES_SUSPENSE_ITEM_ROUTING_PATHS.children.results,
+    loadComponent: () =>
+      import('../fines-suspense-item-results/fines-suspense-item-results.component').then(
+        (c) => c.FinesSuspenseItemResultsComponent,
+      ),
+    data: {
+      title: FINES_SUSPENSE_ITEM_ROUTING_TITLES.children.results,
+    },
+    resolve: {
+      title: TitleResolver,
+    },
+  },
 ];

@@ -98,6 +98,43 @@ describe('Suspense item navigation', () => {
     );
   });
 
+  it('opens the parameterised results URL with its page title and shell', async () => {
+    const harness = await RouterTestingHarness.create();
+
+    await harness.navigateByUrl('/fines/suspense-item/1234/results');
+
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/1234/results');
+    expect(TestBed.inject(Router).routerState.snapshot.root.firstChild?.firstChild?.params['suspenseItemId']).toBe(
+      '1234',
+    );
+    expect(TestBed.inject(Title).getTitle()).toBe('OPAL - Suspense item results');
+    expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('Suspense item results');
+    expect(harness.routeNativeElement?.querySelector('opal-lib-govuk-back-link a')?.textContent?.trim()).toBe('Back');
+    expect(getBusinessUnitsByPermission).not.toHaveBeenCalled();
+  });
+
+  it('returns from results to a fresh search with the selected business unit retained', async () => {
+    const store = TestBed.inject(FinesSuspenseItemStore);
+    const unit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
+    store.setSelectedBusinessUnitId(unit.business_unit_id);
+    const harness = await RouterTestingHarness.create('/fines/suspense-item/1234/results');
+
+    harness.routeNativeElement!.querySelector<HTMLAnchorElement>('opal-lib-govuk-back-link a')!.click();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/search');
+    expect(TestBed.inject(Title).getTitle()).toBe('OPAL - Search for suspense item');
+    expect(store.selectedBusinessUnitId()).toBe(unit.business_unit_id);
+    const search: FinesSuspenseItemSearchComponent = harness.routeDebugElement!.query(
+      By.directive(FinesSuspenseItemSearchComponent),
+    ).componentInstance;
+    expect(search.initialBusinessUnitId).toBe(unit.business_unit_id);
+    const reference = harness.routeNativeElement!.querySelector<HTMLInputElement>('#fsis_suspense_reference_number')!;
+    expect(reference.value).toBe('');
+    expect(clearCache).not.toHaveBeenCalled();
+  });
+
   it('passes resolved business units to the search component', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/fines/suspense-item/search');
