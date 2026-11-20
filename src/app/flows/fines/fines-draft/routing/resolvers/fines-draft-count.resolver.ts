@@ -1,3 +1,5 @@
+import { RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG } from '@app/flows/fines/constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '@app/flows/fines/utils/fines-section-permissions.utils';
 import { inject } from '@angular/core';
 import { ResolveFn } from '@angular/router';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
@@ -17,7 +19,12 @@ export function finesDraftCountResolver(options: IFinesDraftCountResolverOptions
   return () => {
     const opalFinesService = inject(OpalFines);
     const globalStore = inject(GlobalStore);
-    const params: IOpalFinesDraftAccountParams = buildFinesDraftAccountParams(globalStore.userState(), options);
+    const params: IOpalFinesDraftAccountParams = buildFinesDraftAccountParams(globalStore.userState(), {
+      ...options,
+      includeMacSource: getFeatureFlagReleaseState(globalStore.featureFlags())[
+        RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG
+      ],
+    });
 
     return opalFinesService.getDraftAccounts(params).pipe(map((res) => res.count));
   };

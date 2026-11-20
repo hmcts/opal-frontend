@@ -37,7 +37,10 @@ import { CustomPageHeaderComponent } from '@hmcts/opal-frontend-common/component
 import { GovukButtonDirective } from '@hmcts/opal-frontend-common/directives/govuk-button';
 import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
-import { RELEASE_1B_FEATURE_FLAG } from '@app/flows/fines/constants/release-feature-flags.constant';
+import {
+  RELEASE_1B_FEATURE_FLAG,
+  RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
+} from '@app/flows/fines/constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '@app/flows/fines/utils/fines-section-permissions.utils';
 import { FINES_DRAFT_TAB_FRAGMENT } from '../../constants/fines-draft-tab-fragments.constant';
 import { FINES_DRAFT_ROUTE_DATA_KEYS } from '../../constants/fines-draft-route-data-keys.constant';
@@ -98,6 +101,9 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
       activatedRoute: this.activatedRoute,
       userState: this.userState,
       accountParamOptions: {
+        includeMacSource: getFeatureFlagReleaseState(this.globalStore.featureFlags())[
+          RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG
+        ],
         includeSubmittedBy: true,
         includeNotSubmittedBy: false,
       },
@@ -144,6 +150,9 @@ export class FinesDraftCreateAndManageTabsComponent extends AbstractTabData impl
       countTab: FINES_DRAFT_TAB_FRAGMENT.rejected,
       userState: this.userState,
       accountParamOptions: {
+        includeMacSource: getFeatureFlagReleaseState(this.globalStore.featureFlags())[
+          RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG
+        ],
         statuses: [OPAL_FINES_DRAFT_ACCOUNT_STATUSES.rejected],
         includeSubmittedBy: true,
         includeNotSubmittedBy: false,

@@ -21,6 +21,10 @@ export function buildFinesDraftAccountParams(
     statuses: options.statuses,
   };
 
+  if (options.includeMacSource) {
+    params.source = 'MAC';
+  }
+
   if (options.includeSubmittedBy) {
     params.submittedBy = businessUnitUserIds;
   }

@@ -1367,6 +1367,42 @@ describe('OpalFines', () => {
     httpMock.expectNone(OPAL_FINES_PATHS.draftAccounts);
   });
 
+  it.each(['MAC', 'CPP', 'VPFPO', undefined] as const)(
+    'serializes the draft account source (%s) alongside existing filters',
+    (source) => {
+      const filters = {
+        ...OPAL_FINES_DRAFT_ACCOUNT_PARAMS_MOCK,
+        source,
+        accountStatusDateFrom: ['2026-01-01'],
+        accountStatusDateTo: ['2026-01-07'],
+      };
+      service.getDraftAccounts(filters).subscribe();
+
+      const request = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.draftAccounts);
+      expect(request.request.params.getAll('source')).toEqual(source ? [source] : null);
+      expect(request.request.params.getAll('business_unit')).toEqual(['1', '2']);
+      expect(request.request.params.getAll('status')).toEqual(['Submitted', 'Resubmitted']);
+      expect(request.request.params.getAll('submitted_by')).toEqual(['user1', 'user2']);
+      expect(request.request.params.getAll('not_submitted_by')).toEqual(['user3', 'user4']);
+      expect(request.request.params.getAll('account_status_date_from')).toEqual(['2026-01-01']);
+      expect(request.request.params.getAll('account_status_date_to')).toEqual(['2026-01-07']);
+      request.flush(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
+    },
+  );
+
+  it('keeps draft account caches separate for each source and the legacy request', () => {
+    for (const [index, source] of ([undefined, 'MAC', 'CPP', 'VPFPO'] as const).entries()) {
+      const filters = { ...OPAL_FINES_DRAFT_ACCOUNT_PARAMS_MOCK, source };
+      const response = { count: index, summaries: [] };
+      service.getDraftAccounts(filters).subscribe((result) => expect(result).toEqual(response));
+      const request = httpMock.expectOne((request) => request.url === OPAL_FINES_PATHS.draftAccounts);
+      expect(request.request.params.get('source')).toBe(source ?? null);
+      request.flush(response);
+      service.getDraftAccounts(filters).subscribe((result) => expect(result).toEqual(response));
+      httpMock.expectNone((request) => request.url === OPAL_FINES_PATHS.draftAccounts);
+    }
+  });
+
   it('should clear the draft accounts cache', () => {
     const filters = OPAL_FINES_DRAFT_ACCOUNT_PARAMS_MOCK;
 
