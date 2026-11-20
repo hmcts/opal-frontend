@@ -2,7 +2,7 @@
 Feature: Alternate Payment Reference Management accessibility
 
   # PO-11694: Verify opal-test-11 can approve drafts in BU 73 in Jenkins before enabling.
-  @R1CBankingInterfaces @skip
+  @R1CBankingInterfaces @APRWestLondonCheck
   Scenario: APR Management and access-denied pages are accessible
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-11@dev.platform.hmcts.net":
