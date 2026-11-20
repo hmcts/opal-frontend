@@ -135,6 +135,33 @@ export class ManualCashInputSearchResultsActions {
     cy.contains('h1', 'Search results').should('be.visible');
   }
 
+  /** Submits account-number and company criteria together, opening the invalid-combination outcome. */
+  public submitCombinedCompanySearch(): void {
+    const search = ManualCashInputLocators.searchAccount;
+
+    cy.get(search.companiesTab).click();
+    cy.get(search.accountNumber).type('12345678');
+    cy.get(search.companyName).type('Acme Ltd');
+    cy.get(search.searchButton).click();
+    cy.contains('h1', 'There is a problem').should('be.visible');
+  }
+
+  /** Selects Go back from the invalid-combination outcome. */
+  public returnToSearchFromInvalidCombination(): void {
+    cy.contains('.govuk-grid-column-two-thirds a.govuk-link', 'Go back').should('be.visible').click();
+  }
+
+  /** Confirms the search page, active company tab, and submitted company criteria are restored. */
+  public assertCompanySearchCriteriaRetained(): void {
+    const search = ManualCashInputLocators.searchAccount;
+
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/payment/category/criminal/search');
+    cy.get(search.heading).should('be.visible').and('have.text', 'Search for an account');
+    cy.get(search.companiesTab).should('be.visible').and('have.attr', 'aria-selected', 'true');
+    cy.get(search.accountNumber).should('have.value', '12345678');
+    cy.get(search.companyName).should('have.value', 'Acme Ltd');
+  }
+
   /** Follows the result link and verifies its new-tab destination renders Account Enquiry. */
   public openFirstAccountResultInNewTab(): void {
     cy.intercept('GET', '**/defendant-accounts/1/header-summary', {

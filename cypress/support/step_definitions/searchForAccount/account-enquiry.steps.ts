@@ -1312,6 +1312,16 @@ Then('I should see the account header summary values:', (table: DataTable) => {
 });
 
 /**
+ * @step Asserts selected enforcement status values shown on the At a glance tab.
+ */
+Then('I should see the following enforcement status values on the At a glance tab:', (table: DataTable) => {
+  const expectedValues = normalizeHash(table);
+
+  log('assert', 'Asserting At a glance enforcement status values', { expectedValues });
+  atAGlanceDetails().assertEnforcementStatusValues(expectedValues);
+});
+
+/**
  * @step Asserts the fixed-penalty detail values shown on the Fixed penalty tab.
  */
 Then('I should see the fixed penalty details:', (table: DataTable) => {
