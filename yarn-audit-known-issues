@@ -1,2 +1,9 @@
-{"value":"@angular/platform-browser-dynamic","children":{"ID":"@angular/platform-browser-dynamic (deprecation)","Issue":"@angular/platform-browser-dynamic is deprecated. Use `@angular/platform-browser` instead.","Severity":"moderate","Vulnerable Versions":"21.2.26","Tree Versions":["21.2.26"],"Dependents":["opal-frontend@workspace:."]}}
-{"value":"body-parser","children":{"ID":1243074,"Issue":"body-parser vulnerable to Denial of Service via trailing bytes after a compressed request body","URL":"https://github.com/advisories/GHSA-27r3-jxmh-p828","Severity":"high","Vulnerable Versions":">=2.0.0 <2.4.0","Tree Versions":["2.3.0"],"Dependents":["opal-frontend@workspace:."]}}
+➤ YN0001: Error [ERR_SOCKET_CLOSED_BEFORE_CONNECTION]: Socket closed before the connection was established
+    at TLSSocket.onClose (node:net:1243:10)
+    at TLSSocket.wrapper (node:events:639:12)
+    at TLSSocket.emit (node:events:526:24)
+    at node:net:362:12
+    at TCP.done (node:internal/tls/wrap:769:7)
+
+➤ Errors happened when preparing the environment required to run this command.
+➤ This might be caused by packages being missing from the lockfile, in which case running "yarn install" might help.
