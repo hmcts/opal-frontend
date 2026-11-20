@@ -10,7 +10,7 @@ export class VariantBankingUploadActions {
     cy.contains('No files uploaded').should('be.visible');
     cy.get(L.fileList).should('not.exist');
     cy.get(L.fileInput).should('have.attr', 'accept', '.dat');
-    cy.contains('label', 'Choose Variant Banking files').should('be.visible');
+    cy.contains('label', 'Add files').should('be.visible');
     cy.get(L.dropZone).should('be.visible');
   }
 
