@@ -11,7 +11,7 @@ const SEARCH_RESULTS_RESPONSE = {
     {
       organisation_flag: false,
       business_unit_name: 'Bury St. Edmunds',
-      business_unit_id: 'BU001',
+      business_unit_id: 1,
       prosecutor_case_reference: 'PCR19274548',
       last_enforcement_action: 'bwtd',
       organisation_name: null,
@@ -45,7 +45,7 @@ const ACCOUNT_HEADER_RESPONSE = {
   fixed_penalty_ticket_number: null,
   account_status_reference: { account_status_code: 'L', account_status_display_name: 'Live' },
   business_unit_summary: {
-    business_unit_id: 'BU001',
+    business_unit_id: 1,
     business_unit_code: '0001',
     business_unit_name: 'Bury St. Edmunds',
     welsh_speaking: 'N',

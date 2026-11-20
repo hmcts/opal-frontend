@@ -55,7 +55,7 @@ describe('FinesAccEnfActionAddComponent', () => {
 
     mockFinesAccStore.account_id.set(12345);
     mockFinesAccStore.base_version.set('1');
-    mockFinesAccStore.business_unit_id.set('78');
+    mockFinesAccStore.business_unit_id.set(78);
     mockFinesAccStore.welsh_speaking.set('Y');
     mockFinesAccStore.setAccountState.mockImplementation(
       (accountState: typeof FINES_ACC_ENF_ACTION_ADD_ACCOUNT_STATE_MOCK) => {
@@ -232,7 +232,7 @@ describe('FinesAccEnfActionAddComponent', () => {
         enforcement_result_responses: [{ parameter_name: 'courtcode', response: '101' }],
       },
       '1',
-      '78',
+      78,
     );
   });
 
@@ -307,7 +307,7 @@ describe('FinesAccEnfActionAddComponent', () => {
       12345,
       FINES_ACC_ENF_ACTION_ADD_PAYLOAD_MOCK,
       '1',
-      '78',
+      78,
     );
     expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('defendantAccountEnforcementCache$');
     expect(routerNavigateSpy).toHaveBeenCalledWith(

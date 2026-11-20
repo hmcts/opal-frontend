@@ -46,6 +46,7 @@ import {
   mapReportInstancesToTableData,
 } from './utils/fines-reports-summary-list-table.utils';
 import { FINES_REPORTS_ROUTING_PATHS } from '../routing/constants/fines-reports-routing-paths.constant';
+import { getFinesReportsBusinessUnitId } from '../utils/fines-reports-business-unit.utils';
 
 type FinesReportsSummaryListFilterForm = FormGroup<{
   businessUnit: FormControl<string | null>;
@@ -282,10 +283,7 @@ export class FinesReportsSummaryListComponent
     filters: IFinesReportsSummaryListFilterState,
   ): IFinesReportsSummaryListQueryState {
     const dateQuery = this.getReportQueryFromFilters(filters);
-    const businessUnit =
-      filters.businessUnit && filters.businessUnit !== FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS
-        ? filters.businessUnit
-        : null;
+    const businessUnit = getFinesReportsBusinessUnitId(filters.businessUnit);
 
     return {
       ...dateQuery,

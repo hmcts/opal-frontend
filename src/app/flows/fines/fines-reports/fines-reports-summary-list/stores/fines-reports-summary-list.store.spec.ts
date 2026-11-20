@@ -57,7 +57,7 @@ describe('FinesReportsSummaryListStore', () => {
     store.setAppliedQuery({
       fromDate: '2026-06-01',
       toDate: '2026-06-10',
-      businessUnit: '67',
+      businessUnit: 67,
     });
 
     store.resetForReportType('report-b');

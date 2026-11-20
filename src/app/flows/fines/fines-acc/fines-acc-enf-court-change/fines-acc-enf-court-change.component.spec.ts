@@ -26,7 +26,7 @@ describe('FinesAccEnfCourtChangeComponent', () => {
     party_name: signal<string | null>('Mr Test PERSON'),
     account_id: signal(1001),
     base_version: signal('1'),
-    business_unit_id: signal('2002'),
+    business_unit_id: signal(2002),
     setSuccessMessage: vi.fn(),
   };
 
@@ -133,7 +133,7 @@ describe('FinesAccEnfCourtChangeComponent', () => {
       1001,
       { enforcement_court: { court_id: selectedCourt.court_id } },
       '1',
-      '2002',
+      2002,
     );
     expect(mockAccountStore.setSuccessMessage).toHaveBeenCalledWith(FINES_ACC_ENF_COURT_CHANGE_SUCCESS_MESSAGE);
     expect(routerNavigateSpy).toHaveBeenCalledWith(

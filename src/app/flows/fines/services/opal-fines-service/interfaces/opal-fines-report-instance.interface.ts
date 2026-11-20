@@ -29,23 +29,23 @@ export interface IOpalFinesReportInstance {
   business_units?: (
     | string
     | {
-        business_unit_id?: string | number;
+        business_unit_id?: number;
         business_unit_code?: string | number;
         business_unit_name?: string;
         name?: string;
       }
   )[];
   businessUnits?: {
-    businessUnitId?: string | number;
+    businessUnitId?: number;
     businessUnitCode?: string | number;
-    business_unit_id?: string | number;
+    business_unit_id?: number;
     business_unit_code?: string | number;
     name?: string;
     businessUnitName?: string;
     business_unit_name?: string;
   }[];
   business_units_details?: {
-    business_unit_id?: string | number;
+    business_unit_id?: number;
     business_unit_code?: string | number;
     business_unit_name?: string;
   }[];

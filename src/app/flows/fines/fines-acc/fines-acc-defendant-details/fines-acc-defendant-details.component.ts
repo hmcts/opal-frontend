@@ -368,10 +368,7 @@ export class FinesAccDefendantDetailsComponent
    * @returns True if the user has the permission, false otherwise.
    */
   public hasBusinessUnitPermissionKey(permissionKey: string): boolean {
-    return super.hasBusinessUnitPermission(
-      FINES_PERMISSIONS[permissionKey],
-      Number(this.accountStore.business_unit_id()!),
-    );
+    return super.hasBusinessUnitPermission(FINES_PERMISSIONS[permissionKey], this.accountStore.business_unit_id()!);
   }
 
   /**

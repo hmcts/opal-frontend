@@ -60,7 +60,7 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
     ]);
     mockFinesAccountStore = {
       account_id: vi.fn().mockReturnValue(123456),
-      business_unit_id: vi.fn().mockReturnValue('TEST_UNIT'),
+      business_unit_id: vi.fn().mockReturnValue(77),
       base_version: vi.fn().mockReturnValue('version123'),
       account_number: vi.fn().mockReturnValue('TEST123456'),
       party_name: vi.fn().mockReturnValue('John Doe'),
@@ -159,7 +159,7 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
       expect(mockOpalFinesService['postDefendantAccountPaymentTerms']).toHaveBeenCalledWith(
         123456,
         FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK,
-        'TEST_UNIT',
+        77,
         'version123',
       );
     });
@@ -245,7 +245,7 @@ describe('FinesAccPaymentTermsAmendComponent', () => {
       expect(mockOpalFinesService['postDefendantAccountPaymentTerms']).toHaveBeenCalledWith(
         123456,
         FINES_ACC_PAYMENT_TERMS_AMEND_PAYLOAD_MOCK,
-        'TEST_UNIT',
+        77,
         'version123',
       );
       expect(mockOpalFinesService['clearCache']).toHaveBeenCalledWith('defendantAccountPaymentTermsLatestCache$');

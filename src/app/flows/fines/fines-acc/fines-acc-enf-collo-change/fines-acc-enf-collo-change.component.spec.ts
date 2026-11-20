@@ -49,7 +49,7 @@ describe('FinesAccEnfColloChangeComponent', () => {
       party_name: signal('Mr Robert THOMSON'),
       account_id: signal(1001),
       base_version: signal('1'),
-      business_unit_id: signal('2002'),
+      business_unit_id: signal(2002),
       setSuccessMessage: vi.fn(),
     };
 
@@ -149,7 +149,7 @@ describe('FinesAccEnfColloChangeComponent', () => {
         },
       },
       '1',
-      '2002',
+      2002,
     );
     expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('defendantAccountEnforcementCache$');
     expect(mockAccountStore.setSuccessMessage).toHaveBeenCalledWith(FINES_ACC_ENF_COLLO_CHANGE_SUCCESS_MESSAGE);

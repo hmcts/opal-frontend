@@ -23,7 +23,7 @@ describe('fetchAccCourtsResolver', () => {
         {
           provide: FinesAccountStore,
           useValue: {
-            business_unit_id: vi.fn().mockReturnValue('123'),
+            business_unit_id: vi.fn().mockReturnValue(123),
           },
         },
       ],

@@ -23,7 +23,7 @@ describe('FinesAccEnfActionAddNewComponent', () => {
     party_type: 'Defendant',
     party_name: 'Ms Anna GRAHAM',
     base_version: '1',
-    business_unit_id: '78',
+    business_unit_id: 78,
     business_unit_user_id: 'user-1',
     welsh_speaking: 'Y',
     originator_type: null,

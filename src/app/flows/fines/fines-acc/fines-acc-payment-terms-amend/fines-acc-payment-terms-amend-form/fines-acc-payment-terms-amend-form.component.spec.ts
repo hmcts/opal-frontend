@@ -60,7 +60,7 @@ describe('FinesAccPaymentTermsAmendFormComponent', () => {
       paymentTerms: signal({}),
       account_number: signal('ACC123'),
       party_name: signal('John Doe'),
-      business_unit_id: signal('61'),
+      business_unit_id: signal(61),
     };
 
     mockOpalFinesService = createSpyObj('OpalFines', ['getBusinessUnitById']);

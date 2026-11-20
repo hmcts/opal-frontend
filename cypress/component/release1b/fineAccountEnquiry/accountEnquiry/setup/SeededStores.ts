@@ -19,7 +19,7 @@ export const buildSeededAccountStore = (
     party_type: 'Defendant',
     party_name: 'Mr Anna GRAHAM',
     base_version: '1',
-    business_unit_id: '77',
+    business_unit_id: 77,
     business_unit_user_id: 'L077AO',
     welsh_speaking: 'No',
     ...overrides,

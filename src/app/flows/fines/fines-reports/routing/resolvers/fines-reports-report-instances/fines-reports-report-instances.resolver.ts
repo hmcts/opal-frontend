@@ -12,7 +12,7 @@ import {
   getFinesReportsRouteReportTypeId,
 } from '../../../utils/fines-reports-route.utils';
 import { FinesReportsSummaryListStore } from '../../../fines-reports-summary-list/stores/fines-reports-summary-list.store';
-import { FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS } from '../../../fines-reports-summary-list/constants/fines-reports-summary-list-state.constant';
+import { getFinesReportsBusinessUnitId } from '../../../utils/fines-reports-business-unit.utils';
 import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '../../../fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 
 export type FinesReportsReportInstancesResolverData = IOpalFinesReportInstancesResponse & {
@@ -45,10 +45,7 @@ export const finesReportsReportInstancesResolver: ResolveFn<FinesReportsReportIn
   store.resetForReportType(reportTypeId);
 
   const filters = store.filters();
-  const businessUnit =
-    filters.businessUnit && filters.businessUnit !== FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS
-      ? filters.businessUnit
-      : null;
+  const businessUnit = getFinesReportsBusinessUnitId(filters.businessUnit);
 
   const query = store.appliedQuery() ?? {
     ...AbstractReportSummaryListBaseComponent.getReportQueryFromFilters(filters, dateService),

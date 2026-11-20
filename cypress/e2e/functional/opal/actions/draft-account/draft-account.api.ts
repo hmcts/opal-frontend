@@ -305,8 +305,11 @@ const buildDraftPatchPayload = (
   status: string,
   reasonText: string | null = null,
 ): Record<string, unknown> => {
-  // Draft business unit id, normalized from either snake_case or camelCase fields.
-  const business_unit_id = Number(draftBody['business_unit_id'] ?? draftBody['businessUnitId']);
+  // Read the numeric business unit id from either supported API field name.
+  const business_unit_id = draftBody['business_unit_id'] ?? draftBody['businessUnitId'];
+  if (typeof business_unit_id !== 'number' || !Number.isInteger(business_unit_id) || business_unit_id <= 0) {
+    throw new Error('The draft account response did not contain a valid numeric business unit ID.');
+  }
   // Existing validated_by value used as a fallback when user-state lookup fails.
   const existingValidatedBy = isNonEmptyString(draftBody['validated_by']) ? draftBody['validated_by'] : null;
   // Current checker's business-unit user id for the draft business unit.
@@ -328,8 +331,8 @@ const applyCurrentSubmitterToDraftRequest = (
   draftBody: Record<string, unknown>,
   userStateBody: UserStateRecord,
 ): void => {
-  const businessUnitId = Number(draftBody['business_unit_id'] ?? draftBody['businessUnitId']);
-  if (!Number.isFinite(businessUnitId)) return;
+  const businessUnitId = draftBody['business_unit_id'] ?? draftBody['businessUnitId'];
+  if (typeof businessUnitId !== 'number' || !Number.isInteger(businessUnitId) || businessUnitId <= 0) return;
 
   const submittedBy = readBusinessUnitUserId(userStateBody, businessUnitId, null);
   if (submittedBy) {

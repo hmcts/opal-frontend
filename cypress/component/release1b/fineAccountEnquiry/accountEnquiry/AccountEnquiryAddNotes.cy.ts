@@ -30,7 +30,7 @@ describe('FinesAccNoteAddFormComponent', () => {
     party_name: 'Mr John, Peter DOE',
     base_version: '1',
     account_id: 12345,
-    business_unit_id: '77',
+    business_unit_id: 77,
     business_unit_user_id: 'test.user',
     welsh_speaking: null,
     originator_type: null,
