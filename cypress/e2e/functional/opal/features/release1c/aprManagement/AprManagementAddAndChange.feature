@@ -33,6 +33,8 @@ Feature: View, add and change alternate payment references
     When I open APR Management for defendant "AprMain{uniq}"
     And I submit alternate payment reference "ABCDEFGHIJKLMNOPQRS"
     Then I see the alternate payment reference length error
+    When I open APR Management for defendant "AprMain{uniq}"
+    Then there are no alternate payment references for the current account
 
   Scenario: Reject a duplicate alternate payment reference in the same business unit
     When I open APR Management for defendant "AprMain{uniq}"
@@ -76,6 +78,9 @@ Feature: View, add and change alternate payment references
     Then the current alternate payment references include "OLD{uniqUpper}"
     When I submit a change from alternate payment reference "OLD{uniqUpper}" to "ABCDEFGHIJKLMNOPQRS"
     Then I see the alternate payment reference length error
+    When I open APR Management for defendant "AprMain{uniq}"
+    Then the current alternate payment references include "OLD{uniqUpper}"
+    And the current alternate payment references exclude "ABCDEFGHIJKLMNOPQRS"
 
   Scenario: Reject changing an alternate payment reference to a duplicate in the same business unit
     When I open APR Management for defendant "AprMain{uniq}"

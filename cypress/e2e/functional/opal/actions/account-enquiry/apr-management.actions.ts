@@ -10,6 +10,7 @@ export class AprManagementActions {
 
   /** Checks that Payment terms does not expose the APR Management link. */
   public assertLinkHidden(): void {
+    cy.get(L.effectiveDate).should('be.visible');
     cy.get(L.aprManagementLink).should('not.exist');
   }
 
