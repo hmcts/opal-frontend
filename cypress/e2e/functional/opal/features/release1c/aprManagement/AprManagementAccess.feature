@@ -22,7 +22,8 @@ Feature: Alternate Payment Reference Management access
       Then I should see the header containing text "Manage Alternate Payment References"
 
   Rule: User has APR permission only in another business unit
-    @R1CBankingInterfaces
+    # Requires the West London draft validator role for opal-test-10 in CI.
+    @R1CBankingInterfaces @skip
     Scenario: A user with APR permission in another business unit is denied access
       Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
         | business_unit_id                                   | 73               |
