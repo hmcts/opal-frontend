@@ -88,7 +88,11 @@ describe('fines finance routes', () => {
 
       expect(route?.data).toEqual({ title, routePermissionId: [FINES_PERMISSIONS['view-interface-files']] });
       expect(route?.resolve).toEqual({ title: TitleResolver, businessUnits: fetchBusinessUnitsResolver });
-      expect(route?.canActivate).toEqual([authGuard, routePermissionsGuard, release1cBankingInterfacesFeatureFlagGuard]);
+      expect(route?.canActivate).toEqual([
+        authGuard,
+        routePermissionsGuard,
+        release1cBankingInterfacesFeatureFlagGuard,
+      ]);
       await expect(route?.loadComponent?.()).resolves.toBe(component);
     },
   );
@@ -166,7 +170,11 @@ describe('fines finance routes', () => {
       routePermissionId: [FINES_PERMISSIONS['upload-variant-banking-files']],
     });
     expect(uploadRoute?.resolve).toEqual({ title: TitleResolver });
-    expect(uploadRoute?.canActivate).toEqual([authGuard, routePermissionsGuard, release1cBankingInterfacesFeatureFlagGuard]);
+    expect(uploadRoute?.canActivate).toEqual([
+      authGuard,
+      routePermissionsGuard,
+      release1cBankingInterfacesFeatureFlagGuard,
+    ]);
     await expect(uploadRoute?.loadComponent?.()).resolves.toBe(FinesFinanceUploadVariantBankingFilesComponent);
   });
 
