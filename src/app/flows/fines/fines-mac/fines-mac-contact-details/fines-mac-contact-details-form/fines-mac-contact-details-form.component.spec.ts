@@ -8,6 +8,8 @@ import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
 import { of } from 'rxjs';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesMacContactDetailsFormComponent', () => {
@@ -77,6 +79,79 @@ describe('FinesMacContactDetailsFormComponent', () => {
       expect.objectContaining({
         formData: formSubmit.formData,
         nestedFlow: false,
+      }),
+    );
+  });
+
+  it('should remove spaces from telephone numbers before emitting the form value', () => {
+    const event = {} as SubmitEvent;
+    const telephoneNumbers = {
+      fm_contact_details_telephone_number_mobile: '01234 567 890',
+      fm_contact_details_telephone_number_home: '0123 456 7890',
+      fm_contact_details_telephone_number_business: '01234 567890',
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+
+    Object.entries(telephoneNumbers).forEach(([controlName, value]) => {
+      component.form.get(controlName)?.setValue(value);
+    });
+
+    component.handleFormSubmit(event);
+
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formData: expect.objectContaining({
+          fm_contact_details_telephone_number_mobile: '01234567890',
+          fm_contact_details_telephone_number_home: '01234567890',
+          fm_contact_details_telephone_number_business: '01234567890',
+        }),
+      }),
+    );
+  });
+
+  it('should preserve spaces in telephone numbers when the release 1A 1.2 feature flag is disabled', () => {
+    const event = {} as SubmitEvent;
+    const telephoneNumbers = {
+      fm_contact_details_telephone_number_mobile: '01234 567 890',
+      fm_contact_details_telephone_number_home: '0123 456 7890',
+      fm_contact_details_telephone_number_business: '01234 567890',
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
+
+    Object.entries(telephoneNumbers).forEach(([controlName, value]) => {
+      component.form.get(controlName)?.setValue(value);
+    });
+
+    component.handleFormSubmit(event);
+
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formData: expect.objectContaining(telephoneNumbers),
+      }),
+    );
+  });
+
+  it('should submit when the telephone numbers are empty', () => {
+    const event = {} as SubmitEvent;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.spyOn<any, any>(component['formSubmit'], 'emit');
+
+    component.form.get('fm_contact_details_telephone_number_mobile')?.setValue(null);
+    component.form.get('fm_contact_details_telephone_number_home')?.setValue(null);
+    component.form.get('fm_contact_details_telephone_number_business')?.setValue(null);
+
+    component.handleFormSubmit(event);
+
+    expect(component['formSubmit'].emit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formData: expect.objectContaining({
+          fm_contact_details_telephone_number_mobile: null,
+          fm_contact_details_telephone_number_home: null,
+          fm_contact_details_telephone_number_business: null,
+        }),
       }),
     );
   });
