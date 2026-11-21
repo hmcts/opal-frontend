@@ -712,7 +712,12 @@ if (legacyEnabled && isPR && !baseTags) {
 
 env.RELEASE_SUITE = releaseSuite
 
-if (releaseSuite) {
+if (isPR) {
+    env.TAGS = '@APRBU77Check and not @skip'
+    env.CYPRESS_TAGS = env.TAGS
+    env.SKIP_SMOKE = stringTrue
+    echo "Running the two BU 77 APR scenarios (TAGS=${env.TAGS})"
+} else if (releaseSuite) {
     env.TAGS = releaseSuiteTagExpression(releaseSuite)
     env.CYPRESS_TAGS = env.TAGS
     env.SKIP_SMOKE = stringTrue
@@ -808,7 +813,9 @@ withPipeline(type, product, component) {
         script {
             List<String> labels = projectLabels
             String releaseSuiteSelection = selectedReleaseSuite()
-            if (labels.contains(skipLabelComponent)) {
+            if (isPR) {
+                echo "Skipping component tests for the BU 77 APR verification"
+            } else if (labels.contains(skipLabelComponent)) {
                 echo "Skipping opal component tests due to label: ${skipLabelComponent}"
             } else if (releaseSuiteSelection && !releaseSuiteRunsComponentStage(releaseSuiteSelection)) {
                 echo "Skipping opal component tests for release-scoped run: ${releaseSuiteSelection}"

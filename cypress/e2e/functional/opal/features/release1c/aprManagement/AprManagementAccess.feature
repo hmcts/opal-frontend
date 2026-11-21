@@ -22,15 +22,13 @@ Feature: Alternate Payment Reference Management access
       Then I should see the header containing text "Manage Alternate Payment References"
 
   Rule: User has APR permission only in another business unit
-    # PO-11694: Verify opal-test-11 can approve drafts in BU 73 in Jenkins before enabling.
-    @R1CBankingInterfaces @skip
+    # The published fixture uses BU 77. opal-test-4 has APR permission in another unit.
+    @R1CBankingInterfaces @APRBU77Check
     Scenario: A user with APR permission in another business unit is denied access
-      Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-11@dev.platform.hmcts.net":
-        | business_unit_id                                   | 73               |
-        | account.defendant.forenames                        | Jordan           |
-        | account.defendant.surname                          | AprDenied{uniq}  |
-        | account.prosecutor_case_reference                  | APRAD{uniqUpper} |
-        | account.offences.0.impositions.0.major_creditor_id | 730000000083     |
-      And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
+      Given a published adult or youth defendant account exists:
+        | first name                | Jordan           |
+        | last name                 | AprDenied{uniq}  |
+        | prosecutor case reference | APRAD{uniqUpper} |
+      And I am logged in with email "opal-test-4@dev.platform.hmcts.net"
       When I open APR Management for defendant "AprDenied{uniq}"
       Then I should see the header containing text "You cannot manage alternate payment references"
