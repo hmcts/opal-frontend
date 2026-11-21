@@ -1,5 +1,127 @@
-<div class="govuk-grid-column-two-thirds">
-  <h1 class="govuk-heading-l">Report summary</h1>
-  <p class="govuk-body">This page is not available yet.</p>
-  <a class="govuk-back-link" routerLink="../../summary-list">Back to reports</a>
+<div class="govuk-grid-column-full">
+  <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
+  <h1 class="govuk-heading-l govuk-!-margin-bottom-7">{{ pageHeading }}</h1>
 </div>
+
+@if (reportSummary; as summary) {
+  <div class="govuk-grid-column-two-thirds">
+    <h2 class="govuk-heading-m">General</h2>
+    <opal-lib-govuk-summary-list summaryListId="reportSummaryGeneral">
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="reportSummaryGeneral"
+        summaryListRowId="general-status"
+      >
+        <ng-container name>Status</ng-container
+        ><ng-container value
+          ><p class="govuk-body">{{ summary.general.status }}</p></ng-container
+        >
+      </div>
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="reportSummaryGeneral"
+        summaryListRowId="general-date-created"
+      >
+        <ng-container name>Date Created</ng-container
+        ><ng-container value>
+          @if (summary.general.dateCreated === null) {
+            <app-fines-not-provided />
+          } @else {
+            <p class="govuk-body">{{ summary.general.dateCreated | date: "dd MMM yyyy 'at' HH:mm" }}</p>
+          }
+        </ng-container>
+      </div>
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="reportSummaryGeneral"
+        summaryListRowId="general-business-units"
+      >
+        <ng-container name>Business Units</ng-container
+        ><ng-container value>
+          @if (summary.general.businessUnits === null) {
+            <app-fines-not-provided />
+          } @else {
+            <p class="govuk-body">{{ summary.general.businessUnits }}</p>
+          }
+        </ng-container>
+      </div>
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="reportSummaryGeneral"
+        summaryListRowId="general-number-of-records"
+      >
+        <ng-container name>No. of Records</ng-container
+        ><ng-container value>
+          @if (summary.general.numberOfRecords === null) {
+            <app-fines-not-provided />
+          } @else {
+            <p class="govuk-body">{{ summary.general.numberOfRecords | number }}</p>
+          }
+        </ng-container>
+      </div>
+      <div
+        opal-lib-govuk-summary-list-row
+        class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+        summaryListId="reportSummaryGeneral"
+        summaryListRowId="general-created-by"
+      >
+        <ng-container name>Created By</ng-container
+        ><ng-container value>
+          @if (summary.general.createdBy === null) {
+            <app-fines-not-provided />
+          } @else {
+            <p class="govuk-body">{{ summary.general.createdBy }}</p>
+          }
+        </ng-container>
+      </div>
+    </opal-lib-govuk-summary-list>
+
+    @if (summary.criteriaRows.length > 0) {
+      <h2 class="govuk-heading-m">Report criteria</h2>
+      <opal-lib-govuk-summary-list summaryListId="reportSummaryCriteria">
+        @for (row of summary.criteriaRows; track row.key) {
+          <div
+            opal-lib-govuk-summary-list-row
+            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+            summaryListId="reportSummaryCriteria"
+            [summaryListRowId]="'criteria-' + $index"
+          >
+            <ng-container name>{{ row.key }}</ng-container>
+            <ng-container value>
+              <p class="govuk-body">
+                @if (row.isCurrency) {
+                  {{ row.value | currency: 'GBP' }}
+                } @else {
+                  {{ row.value }}
+                }
+              </p>
+            </ng-container>
+          </div>
+        }
+      </opal-lib-govuk-summary-list>
+    }
+
+    @if (summary.errorRows.length > 0) {
+      <h2 class="govuk-heading-m">Errors</h2>
+      <opal-lib-govuk-summary-list summaryListId="reportSummaryErrors">
+        @for (row of summary.errorRows; track $index) {
+          <div
+            opal-lib-govuk-summary-list-row
+            class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+            summaryListId="reportSummaryErrors"
+            [summaryListRowId]="'errors-' + $index"
+          >
+            <ng-container name>{{ row.key }}</ng-container>
+            <ng-container value
+              ><p class="govuk-body">{{ row.value }}</p></ng-container
+            >
+          </div>
+        }
+      </opal-lib-govuk-summary-list>
+    }
+  </div>
+}
