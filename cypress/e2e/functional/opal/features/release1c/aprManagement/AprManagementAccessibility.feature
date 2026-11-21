@@ -2,7 +2,7 @@
 Feature: Alternate Payment Reference Management accessibility
 
   # The published fixture uses BU 77. opal-test-4 has APR permission in another unit.
-  @R1CBankingInterfaces @APRBU77Check
+  @R1CBankingInterfaces
   Scenario: APR Management and access-denied pages are accessible
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And a published adult or youth defendant account exists:

@@ -23,7 +23,7 @@ Feature: Alternate Payment Reference Management access
 
   Rule: User has APR permission only in another business unit
     # The published fixture uses BU 77. opal-test-4 has APR permission in another unit.
-    @R1CBankingInterfaces @APRBU77Check
+    @R1CBankingInterfaces
     Scenario: A user with APR permission in another business unit is denied access
       Given a published adult or youth defendant account exists:
         | first name                | Jordan           |
