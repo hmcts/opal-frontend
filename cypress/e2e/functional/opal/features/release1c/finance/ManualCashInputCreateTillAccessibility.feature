@@ -94,14 +94,32 @@ Feature: Manual Cash Input - Create Till Accessibility
   # PO-3671 AC9: axe-core coverage for Payment Details (Court Fee).
   @JIRA-STORY:PO-3671
   Scenario: AC9 - Court Fee Payment Details screen accessibility
+    And I add a payment to the till
+    And I continue with payment category "courtFee"
+    And I submit a CF001 court fee payment of "25.00" for "2" items
+    Then I see Court Fee Payment Details
     When I select the Fines primary navigation item "Finance"
     And I am taken to the "Finance" Fines landing page
     And I open Manual Cash Input
     And I create a till
     And I select "Camden and Islington"
     And I continue
-    And I add a payment to the till
-    And I continue with payment category "courtFee"
-    And I submit a CF001 court fee payment of "25.00" for "2" items
-    Then I see Court Fee Payment Details
+
+  @JIRA-STORY:PO-3674
+  Scenario: Suspense Payer Details accessibility across payer types and required validation
+    And I record a suspense payment for reason "overpayment"
+    Then the suspense payer form is displayed
+    And I check the page for accessibility
+    When I continue with the suspense payer details
+    Then a suspense payer type is required
+    And I check the page for accessibility
+    When the suspense payer type is "individual"
+    Then I check the page for accessibility
+    When I continue with the suspense payer details
+    Then the suspense payer field "lastName" has error "Enter last name"
+    And I check the page for accessibility
+    When the suspense payer type is "company"
+    Then I check the page for accessibility
+    When I continue with the suspense payer details
+    Then the suspense payer field "companyName" has error "Enter company name"
     And I check the page for accessibility
