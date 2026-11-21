@@ -204,7 +204,7 @@
     "@vitest/coverage-v8": "^4.0.8",
     "axe-core": "^4.8.4",
     "browser-sync": "^3.0.2",
-    "cypress": "^15.0.0",
+    "cypress": "^15.21.2",
     "cypress-axe": "^1.5.0",
     "cypress-mochawesome-reporter": "^4.0.0",
     "cypress-multi-reporters": "^2.0.0",

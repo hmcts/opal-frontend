@@ -162,15 +162,19 @@ describe('Manual Cash Input - Payer Details (Suspense)', () => {
     it(`(AC2d, AC2e) rejects invalid characters in ${field} and accepts permitted characters`, { tags: TAGS }, () => {
       openPayer();
       fillRequired(type);
-      const suffix = namesOnly
-        ? 'letters a to z, hyphens, spaces and apostrophes'
-        : 'letters a to z, numbers, hyphens, spaces and apostrophes';
-      (namesOnly ? ['A1', 'A!'] : ['A!']).forEach((invalidValue) => {
+      const suffix =
+        field === 'postcode'
+          ? 'letters a to z, numbers and spaces'
+          : namesOnly
+            ? 'letters a to z, hyphens, spaces and apostrophes'
+            : 'letters a to z, numbers, hyphens, spaces and apostrophes';
+      const invalidValues = field === 'postcode' ? ['A!', 'A-1', "A'1"] : namesOnly ? ['A1', 'A!'] : ['A!'];
+      invalidValues.forEach((invalidValue) => {
         cy.get(Mci.payerField(field)).clear().type(invalidValue);
         cy.get(Mci.continueButton).click();
         assertError(field, `${label} must only include ${suffix}`);
       });
-      const value = namesOnly ? "A-B O'C" : "A-1 O'C";
+      const value = field === 'postcode' ? 'AB1 2CD' : namesOnly ? "A-B O'C" : "A-1 O'C";
       cy.get(Mci.payerField(field)).clear().type(value);
       cy.get(Mci.continueButton).click();
       assertRoute('check-suspense-payment');
