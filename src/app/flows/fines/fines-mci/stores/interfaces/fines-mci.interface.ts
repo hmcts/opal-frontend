@@ -33,6 +33,9 @@ export interface IFinesMciSuspensePayerDetails {
 export interface IFinesMciPayment {
   paymentId: string;
   journey: FinesMciJourney;
+  suspensePayment?: IFinesMciSuspensePayment;
+  suspensePayerDetails?: IFinesMciSuspensePayerDetails | null;
+  suspenseNote?: string;
 }
 
 export interface IFinesMciTill {

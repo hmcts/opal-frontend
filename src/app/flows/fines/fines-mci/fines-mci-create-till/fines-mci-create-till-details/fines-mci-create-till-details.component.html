@@ -2,23 +2,66 @@
   <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
 </div>
 
-<div class="govuk-grid-column-two-thirds" id="fines-mci-create-till-details">
+<div class="govuk-grid-column-full" id="fines-mci-create-till-details">
   <h1 class="govuk-heading-l">Till details</h1>
 
-  <opal-lib-govuk-summary-list summaryListId="fines-mci-till-details-summary">
-    <div
-      opal-lib-govuk-summary-list-row
-      class="govuk-summary-list__row govuk-summary-list__row--no-actions"
-      summaryListId="fines-mci-till-details-summary"
-      summaryListRowId="business-unit"
-    >
-      <ng-container name>Business unit</ng-container>
-      <ng-container value>{{ finesMciStore.businessUnit()?.business_unit_name }}</ng-container>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <opal-lib-govuk-summary-list summaryListId="fines-mci-till-details-summary">
+        <div
+          opal-lib-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="fines-mci-till-details-summary"
+          summaryListRowId="business-unit"
+        >
+          <ng-container name>Business unit</ng-container>
+          <ng-container value>{{ finesMciStore.businessUnit()?.business_unit_name }}</ng-container>
+        </div>
+      </opal-lib-govuk-summary-list>
     </div>
-  </opal-lib-govuk-summary-list>
+  </div>
 
   <h2 class="govuk-heading-m govuk-!-margin-top-7">Payments</h2>
-  <p class="govuk-body">There are no payments</p>
+  @if (finesMciStore.tills()[0]?.payments?.length) {
+    <table class="govuk-table" id="fines-mci-payments">
+      <caption class="govuk-visually-hidden">
+        Payments
+      </caption>
+      <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+          <th scope="col" class="govuk-table__header">Category</th>
+          <th scope="col" class="govuk-table__header">Name</th>
+          <th scope="col" class="govuk-table__header">Amount</th>
+          <th scope="col" class="govuk-table__header">Received from</th>
+          <th scope="col" class="govuk-table__header">Method</th>
+          <th scope="col" class="govuk-table__header govuk-!-text-align-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="govuk-table__body">
+        @for (payment of finesMciStore.tills()[0].payments; track payment.paymentId) {
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">{{ paymentCategory(payment.journey) }}</td>
+            <td class="govuk-table__cell">{{ payerName(payment.suspensePayerDetails) }}</td>
+            <td class="govuk-table__cell">{{ formatAmount(payment.suspensePayment?.amount) }}</td>
+            <td class="govuk-table__cell">{{ receivedFrom(payment.suspensePayment?.payerType) }}</td>
+            <td class="govuk-table__cell">{{ paymentMethod(payment.suspensePayment?.methodOfPayment) }}</td>
+            <td class="govuk-table__cell govuk-!-text-align-right">
+              @if (payment.suspensePayment) {
+                <a
+                  href="#"
+                  class="govuk-link"
+                  (click)="$event.preventDefault(); changeSuspensePayment(payment.paymentId)"
+                  >Change <span class="govuk-visually-hidden">payment {{ $index + 1 }}</span></a
+                >
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else {
+    <p class="govuk-body">There are no payments</p>
+  }
   <opal-lib-govuk-button
     buttonId="fines-mci-add-payment"
     buttonClasses="govuk-button--secondary"
@@ -28,9 +71,10 @@
   </opal-lib-govuk-button>
 
   <h2 class="govuk-heading-m govuk-!-margin-top-7">Create till</h2>
-  <p class="govuk-body">You must add at least 1 payment to the till.</p>
+  @if (!finesMciStore.tills()[0]?.payments?.length) {
+    <p class="govuk-body">You must add at least 1 payment to the till.</p>
+  }
 
-  <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible" />
   <div class="govuk-!-margin-bottom-7">
     <a
       id="fines-mci-delete-till"

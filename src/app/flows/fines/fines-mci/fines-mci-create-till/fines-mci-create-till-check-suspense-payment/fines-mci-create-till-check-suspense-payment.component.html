@@ -1,0 +1,179 @@
+<div class="govuk-grid-column-full" id="fines-mci-check-suspense-payment">
+  <span class="govuk-caption-l">{{ store.businessUnit()?.business_unit_name }}</span>
+  <h1 class="govuk-heading-l">Check suspense payment</h1>
+
+  @if (noteError) {
+    <div #errorSummary class="govuk-error-summary" role="alert" aria-labelledby="suspense-error-title" tabindex="-1">
+      <h2 class="govuk-error-summary__title" id="suspense-error-title">There is a problem</h2>
+      <div class="govuk-error-summary__body">
+        <ul class="govuk-list govuk-error-summary__list">
+          <li>
+            <a href="#suspenseNote">{{
+              note.length > 1000 ? 'Suspense note must be 1000 characters or fewer' : 'Add a suspense note'
+            }}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  }
+
+  <opal-lib-govuk-summary-card-list summaryCardListId="check-suspense-payment" cardTitle="Suspense payment">
+    <ng-container content>
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Amount</dt>
+          <dd class="govuk-summary-list__value">{{ amount }}</dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="#" (click)="$event.preventDefault(); changePayment()"
+              >Change <span class="govuk-visually-hidden">amount</span></a
+            >
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Payment received from</dt>
+          <dd class="govuk-summary-list__value">
+            {{
+              payment?.payerType === 'defendant' ? 'Defendant' : payment?.payerType === 'thirdParty' ? '3rd party' : '—'
+            }}
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="#" (click)="$event.preventDefault(); changePayment()"
+              >Change <span class="govuk-visually-hidden">payment received from</span></a
+            >
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Method of payment</dt>
+          <dd class="govuk-summary-list__value">{{ paymentMethod }}</dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="#" (click)="$event.preventDefault(); changePayment()"
+              >Change <span class="govuk-visually-hidden">method of payment</span></a
+            >
+          </dd>
+        </div>
+        @if (payment?.methodOfPayment === 'creditTransfer') {
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Source</dt>
+            <dd class="govuk-summary-list__value">{{ payment?.source || '—' }}</dd>
+            <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" href="#" (click)="$event.preventDefault(); changePayment()"
+                >Change <span class="govuk-visually-hidden">source</span></a
+              >
+            </dd>
+          </div>
+        }
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Payment reference</dt>
+          <dd class="govuk-summary-list__value">{{ reference }}</dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="#" (click)="$event.preventDefault(); changePayment()"
+              >Change <span class="govuk-visually-hidden">payment reference</span></a
+            >
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">Suspense reason</dt>
+          <dd class="govuk-summary-list__value">{{ reason }}</dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="#" (click)="$event.preventDefault(); changePayment()"
+              >Change <span class="govuk-visually-hidden">suspense reason</span></a
+            >
+          </dd>
+        </div>
+        @if (payment?.reason === 'unidentified') {
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Relevant details</dt>
+            <dd class="govuk-summary-list__value">{{ payment?.relevantDetails || '—' }}</dd>
+            <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" href="#" (click)="$event.preventDefault(); changePayment()"
+                >Change <span class="govuk-visually-hidden">relevant details</span></a
+              >
+            </dd>
+          </div>
+        } @else {
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Payer type</dt>
+            <dd class="govuk-summary-list__value">
+              {{
+                store.suspensePayerDetails()?.payerType === 'individual'
+                  ? 'Individual'
+                  : store.suspensePayerDetails()?.payerType === 'company'
+                    ? 'Company'
+                    : '—'
+              }}
+            </dd>
+            <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" href="#" (click)="$event.preventDefault(); changePayer()"
+                >Change <span class="govuk-visually-hidden">payer type</span></a
+              >
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Payer name</dt>
+            <dd class="govuk-summary-list__value">{{ payerName }}</dd>
+            <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" href="#" (click)="$event.preventDefault(); changePayer()"
+                >Change <span class="govuk-visually-hidden">payer name</span></a
+              >
+            </dd>
+          </div>
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Address</dt>
+            <dd class="govuk-summary-list__value">
+              @if (payerAddress.length) {
+                @for (line of payerAddress; track $index) {
+                  {{ line }}<br />
+                }
+              } @else {
+                —
+              }
+            </dd>
+            <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" href="#" (click)="$event.preventDefault(); changePayer()"
+                >Change <span class="govuk-visually-hidden">payer address</span></a
+              >
+            </dd>
+          </div>
+        }
+      </dl>
+    </ng-container>
+  </opal-lib-govuk-summary-card-list>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <opal-lib-govuk-text-area
+        labelText="Add suspense note"
+        labelClasses="govuk-label--m"
+        inputId="suspenseNote"
+        inputName="suspenseNote"
+        [control]="noteControl"
+        [errors]="
+          noteError
+            ? note.length > 1000
+              ? 'Suspense note must be 1000 characters or fewer'
+              : 'Add a suspense note'
+            : null
+        "
+        [characterCountEnabled]="true"
+        [maxCharacterLimit]="1000"
+      ></opal-lib-govuk-text-area>
+    </div>
+  </div>
+
+  <div class="govuk-button-group">
+    <button type="button" class="govuk-button" id="save-review-till" (click)="save('details')">
+      Save and review till
+    </button>
+    <button
+      type="button"
+      class="govuk-button govuk-button--secondary"
+      id="save-add-payment"
+      (click)="save('payment-category')"
+    >
+      Save and add another payment
+    </button>
+  </div>
+  <div class="govuk-!-margin-top-4 govuk-!-margin-bottom-7">
+    <a href="#" class="govuk-link" id="cancel-suspense-payment" (click)="$event.preventDefault(); cancel()">Cancel</a>
+  </div>
+</div>
