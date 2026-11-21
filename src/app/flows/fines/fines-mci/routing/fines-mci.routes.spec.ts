@@ -15,6 +15,7 @@ import { routing } from './fines-mci.routes';
 import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.constant';
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
+import { FinesMciCreateTillPayerDetailsComponent } from '../fines-mci-create-till/fines-mci-create-till-payer-details/fines-mci-create-till-payer-details.component';
 import { finesMciCourtFeesResolver } from './resolvers/fines-mci-court-fees.resolver';
 import { FinesMciCreateTillCourtFeeDetailsComponent } from '../fines-mci-create-till/fines-mci-create-till-court-fee-details/fines-mci-create-till-court-fee-details.component';
 import { FinesMciCreateTillOverUnderpaymentConfirmationComponent } from '../fines-mci-create-till/fines-mci-create-till-over-underpayment-confirmation/fines-mci-create-till-over-underpayment-confirmation.component';
@@ -197,10 +198,25 @@ describe('finesMci routes', () => {
     expect(suspenseDetailsRoute?.canDeactivate).toEqual([canDeactivateGuard]);
   });
 
+  it('should guard navigation away from payer details when form data has been entered', () => {
+    const payerDetailsRoute = createTillRoute?.children?.find(
+      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.payerDetails,
+    );
+    expect(payerDetailsRoute?.canDeactivate).toEqual([canDeactivateGuard]);
+  });
+
+  it('loads the payer details screen after suspense details', async () => {
+    const payerDetailsRoute = createTillRoute?.children?.find(
+      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.payerDetails,
+    );
+    expect(await payerDetailsRoute?.loadComponent?.()).toBe(FinesMciCreateTillPayerDetailsComponent);
+  });
+
   it.each([
     [FINES_MCI_ROUTING_PATHS.children.details, FINES_MCI_ROUTING_TITLES.children.createTillDetails],
     [FINES_MCI_ROUTING_PATHS.children.paymentCategory, FINES_MCI_ROUTING_TITLES.children.createTillPaymentCategory],
     [FINES_MCI_ROUTING_PATHS.children.suspenseDetails, FINES_MCI_ROUTING_TITLES.children.createTillSuspenseDetails],
+    [FINES_MCI_ROUTING_PATHS.children.payerDetails, FINES_MCI_ROUTING_TITLES.children.createTillPayerDetails],
     [FINES_MCI_ROUTING_PATHS.children.courtFeeDetails, FINES_MCI_ROUTING_TITLES.children.createTillCourtFeeDetails],
     [
       FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,

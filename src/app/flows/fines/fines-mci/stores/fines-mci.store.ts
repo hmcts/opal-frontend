@@ -4,6 +4,7 @@ import { IFinesMciCriminalAccountsResponse } from '../interfaces/fines-mci-crimi
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
 import {
   FinesMciJourney,
+  IFinesMciSuspensePayerDetails,
   IFinesMciCourtFeeDraft,
   IFinesMciSuspensePayment,
   IFinesMciTill,
@@ -26,6 +27,7 @@ export const FinesMciStore = signalStore(
     draftJourney: null as FinesMciJourney | null,
     courtFeeDraft: null as IFinesMciCourtFeeDraft | null,
     suspensePayment: null as IFinesMciSuspensePayment | null,
+    suspensePayerDetails: null as IFinesMciSuspensePayerDetails | null,
   })),
   withMethods((store) => {
     /** Returns the existing till ID or creates the first till for the current business unit. */
@@ -98,14 +100,15 @@ export const FinesMciStore = signalStore(
           patchState(store, {
             businessUnit,
             tills: [],
+            draftJourney: null,
+            suspensePayment: null,
+            suspensePayerDetails: null,
             criminalSearch: null,
             criminalSearchResults: null,
             selectedCriminalAccount: null,
             selectedCriminalAccountAtAGlance: null,
             selectedCriminalAccountHeader: null,
-            draftJourney: null,
             courtFeeDraft: null,
-            suspensePayment: null,
           });
           return;
         }
@@ -126,6 +129,10 @@ export const FinesMciStore = signalStore(
       setSuspensePayment(suspensePayment: IFinesMciSuspensePayment | null): void {
         patchState(store, { suspensePayment });
       },
+      /** Stores payer details until the suspense payment is confirmed. */
+      setSuspensePayerDetails(suspensePayerDetails: IFinesMciSuspensePayerDetails | null): void {
+        patchState(store, { suspensePayerDetails });
+      },
       /** Adds a payment journey to the matching till and returns the new payment ID. */
       addPayment(tillId: string, journey: FinesMciJourney): string {
         const paymentId = crypto.randomUUID();
@@ -145,14 +152,15 @@ export const FinesMciStore = signalStore(
         patchState(store, {
           businessUnit: null,
           tills: [],
+          draftJourney: null,
+          suspensePayment: null,
+          suspensePayerDetails: null,
           criminalSearch: null,
           courtFeeDraft: null,
           criminalSearchResults: null,
           selectedCriminalAccount: null,
           selectedCriminalAccountAtAGlance: null,
           selectedCriminalAccountHeader: null,
-          draftJourney: null,
-          suspensePayment: null,
         });
       },
     };
