@@ -9,6 +9,7 @@ const sourceLabels = new Map(OPAL_FINES_SOURCE_MAPPINGS_MOCK.map(({ code, displa
 
 const buildTill = (overrides: Partial<IOpalFinesTill> = {}): IOpalFinesTill => ({
   till_id: 101,
+  business_unit_id: 77,
   till_number: 7,
   errors: 0,
   file_name: 'payments.dat',
@@ -78,6 +79,7 @@ describe('mapAllocateData', () => {
   it('maps supplied values and formats the till creation timestamp using the existing date convention', () => {
     expect(map([buildTill()]).tills[0]).toEqual({
       tillId: '101',
+      businessUnitId: 77,
       'Till number': 7,
       Errors: 0,
       Filename: 'payments.dat',

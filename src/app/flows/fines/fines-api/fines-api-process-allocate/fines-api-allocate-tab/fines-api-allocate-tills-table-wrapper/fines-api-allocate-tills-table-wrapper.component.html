@@ -9,7 +9,8 @@
   [defaultSort]="defaultSort"
   [cellTemplate]="cell"
   [selectedIds]="selectedIds()"
-  (selectedIdsChange)="selectedIds.set($event)"
+  [selectionErrorId]="selectionErrorId"
+  (selectedIdsChange)="updateSelection($event)"
 />
 <ng-template #cell let-row let-column="column">
   @switch (column.key) {

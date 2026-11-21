@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CustomAccessibleMonetaryComponent } from '@hmcts/opal-frontend-common/components/custom/custom-accessible-monetary';
 import { FinesApiSelectableTableComponent } from '../../../fines-api-selectable-table/fines-api-selectable-table.component';
@@ -36,6 +36,9 @@ export class FinesApiAllocateTillsTableWrapperComponent {
     }),
   );
   protected readonly tillSummaryRoute = `/${FINES_ROUTING_PATHS.root}/${FINES_API_ROUTING_PATHS.root}/${FINES_API_ROUTING_PATHS.children.tillSummary}`;
+  @Input() public selectionErrorId: string | null = null;
+  @Output() public readonly selectionChanged = new EventEmitter<void>();
+
   /**
    * Returns the stable till identifier used for selection.
    *
@@ -78,6 +81,17 @@ export class FinesApiAllocateTillsTableWrapperComponent {
   @Input({ required: true }) public set tableData(rows: IFinesApiAllocateTillsTableWrapperTableData[]) {
     this.rows.set(rows);
     this.clearSelection();
+  }
+
+  /** Updates local selection and clears parent validation feedback. */
+  protected updateSelection(selectedIds: string[]): void {
+    this.selectedIds.set(selectedIds);
+    this.selectionChanged.emit();
+  }
+
+  /** Returns an independent snapshot for submission without adding navigation-guard state. */
+  public getSelectedIds(): string[] {
+    return [...this.selectedIds()];
   }
 
   /**
