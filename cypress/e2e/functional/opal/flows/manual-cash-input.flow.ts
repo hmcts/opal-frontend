@@ -124,6 +124,120 @@ export class ManualCashInputFlow {
     this.actions.assertPaymentCategoryDetailsAreDisplayed(category);
   }
 
+  /** Completes Suspense Details for an unidentified credit-transfer payment. */
+  public submitUnidentifiedCreditTransferSuspensePayment(): void {
+    this.actions.submitUnidentifiedCreditTransferSuspensePayment();
+  }
+
+  /** Verifies the Check Suspense Payment summary. */
+  public assertCheckSuspensePaymentIsDisplayed(): void {
+    this.actions.assertCheckSuspensePaymentIsDisplayed();
+  }
+
+  /**
+   * Verifies that a suspense note is mandatory for the selected save action.
+   * @param action - Save destination selected by the user.
+   */
+  public assertSuspenseNoteIsRequired(action: 'reviewTill' | 'addAnother'): void {
+    this.actions.assertSuspenseNoteIsRequired(action);
+  }
+
+  /** Verifies whitespace cannot satisfy the suspense note requirement. */
+  public assertWhitespaceSuspenseNoteIsRejected(): void {
+    this.actions.assertWhitespaceSuspenseNoteIsRejected();
+  }
+
+  /** Saves the suspense payment and returns to Till Details. */
+  public saveSuspensePaymentAndReviewTill(): void {
+    this.actions.saveSuspensePaymentAndReviewTill();
+  }
+
+  /** Saves a suspense payment then returns to Payment Category to add another payment. */
+  public saveSuspensePaymentAndAddAnotherPayment(): void {
+    this.actions.saveSuspensePaymentAndAddAnotherPayment();
+  }
+
+  /** Opens the saved suspense payment from Till Details. */
+  public changeSavedSuspensePayment(): void {
+    this.actions.changeSavedSuspensePayment();
+  }
+
+  /** Updates a saved suspense payment and returns to Till Details. */
+  public updateSavedSuspensePayment(): void {
+    this.actions.updateSavedSuspensePayment();
+  }
+
+  /** Opens the suspense details form from the summary. */
+  public changeSuspensePaymentDetails(): void {
+    this.actions.changeSuspensePaymentDetails();
+  }
+
+  /**
+   * Opens the Suspense Details screen from an individual payment-detail Change link.
+   * @param changeLabel - Visually-hidden detail name included in the Change link.
+   */
+  public openPaymentDetailChangeLink(changeLabel: string): void {
+    this.actions.openPaymentDetailChangeLink(changeLabel);
+  }
+
+  /**
+   * Changes the credit-transfer source and verifies it in the summary.
+   * @param source - Credit-transfer source selected by the user.
+   */
+  public changeCreditTransferSource(source: string): void {
+    this.actions.changeCreditTransferSource(source);
+  }
+
+  /**
+   * Changes the payment method and verifies its summary data.
+   * @param method - Payment-method radio value.
+   * @param methodLabel - User-facing payment method displayed in the summary.
+   * @param reference - Optional reference required by postal-order and cheque payments.
+   */
+  public changeSuspensePaymentMethod(method: string, methodLabel: string, reference = ''): void {
+    this.actions.changeSuspensePaymentMethod(method, methodLabel, reference);
+  }
+
+  /** Changes the payment to an identified payer and enters payer details. */
+  public amendSuspensePaymentWithPayerDetails(): void {
+    this.actions.amendSuspensePaymentWithPayerDetails();
+  }
+
+  /**
+   * Changes to an identified reason and verifies it in the summary.
+   * @param reason - Suspense-reason radio value.
+   * @param reasonLabel - User-facing reason displayed in the summary.
+   */
+  public amendSuspensePaymentWithReason(reason: string, reasonLabel: string): void {
+    this.actions.amendSuspensePaymentWithReason(reason, reasonLabel);
+  }
+
+  /** Opens payer details from the summary. */
+  public changeSuspensePayerDetails(): void {
+    this.actions.changeSuspensePayerDetails();
+  }
+
+  /**
+   * Opens Payer Details from an individual payer-detail Change link.
+   * @param changeLabel - Visually-hidden detail name included in the Change link.
+   */
+  public openPayerDetailChangeLink(changeLabel: string): void {
+    this.actions.openPayerDetailChangeLink(changeLabel);
+  }
+
+  /**
+   * Cancels a suspense draft and accepts or declines the route-guard warning.
+   * @param acceptLeave - Whether to discard the draft and leave the page.
+   */
+  public cancelSuspensePayment(acceptLeave: boolean): void {
+    this.actions.cancelSuspensePayment(acceptLeave);
+  }
+
+  /** Saves a suspense payment with the 1,000-character note boundary. */
+  public saveMaximumLengthSuspenseNote(): void {
+    this.actions.saveMaximumLengthSuspenseNote();
+  }
+
   /**
    * Submits a Court Fee payment with the specified amount and item count.
    * @param amount - Amount paid for the court fee.

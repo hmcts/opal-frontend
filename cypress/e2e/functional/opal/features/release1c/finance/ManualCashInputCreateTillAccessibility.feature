@@ -87,6 +87,20 @@ Feature: Manual Cash Input - Create Till Accessibility
     And I check the page for accessibility
 
     Examples:
-      | type          | amount |
-      | overpayment   | 25.01  |
-      | underpayment  | 24.99  |
+      | type         | amount |
+      | overpayment  | 25.01  |
+      | underpayment | 24.99  |
+
+  # PO-3675 AC1a: axe-core coverage for Check Suspense Payment.
+  @JIRA-STORY:PO-3675 @JIRA-EPIC:PO-2660 @AC1a
+  Scenario: AC1a - Check Suspense Payment screen accessibility
+    When I select the Fines primary navigation item "Finance"
+    And I am taken to the "Finance" Fines landing page
+    And I open Manual Cash Input
+    And I create a till
+    And I select "Camden and Islington"
+    And I continue
+    And I add a payment to the till
+    And I continue with payment category "suspense"
+    And I submit an unidentified credit transfer suspense payment
+    Then I check the page for accessibility
