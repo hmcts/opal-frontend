@@ -1,4 +1,4 @@
-@JIRA-LABEL:manual-cash-input @JIRA-EPIC:PO-2439 @JIRA-STORY:PO-3674 @R1CFinancialMovements
+@JIRA-LABEL:manual-cash-input @JIRA-EPIC:PO-2660 @JIRA-STORY:PO-3674 @R1CFinancialMovements
 Feature: Manual Cash Input - Suspense payer details
 
   Background:
@@ -40,15 +40,21 @@ Feature: Manual Cash Input - Suspense payer details
       | company    | companyName | Enter company name |
 
   @AC2
-  Scenario: AC2e - invalid postcode characters must be corrected before continuing
+  Scenario Outline: Current postcode validation requires punctuation in <postcode> to be corrected before continuing
     When I record a suspense payment for reason "overpayment"
     And the suspense payer has type "individual" and "minimal" details
-    And the suspense payer field "postcode" is "AB1-2CD"
+    And the suspense payer field "postcode" is "<postcode>"
     And I continue with the suspense payer details
     Then the suspense payer field "postcode" has error "Post code must only include letters a to z, numbers and spaces"
     When the suspense payer field "postcode" is "AB1 2CD"
     And I continue with the suspense payer details
     Then the suspense payment is ready for checking
+
+    Examples:
+      | postcode |
+      | AB1-2CD  |
+      | AB1'2CD  |
+      | AB1’2CD  |
 
   @AC2
   Scenario: AC2f - a postcode must not exceed eight characters
