@@ -384,21 +384,7 @@ ${browser.toUpperCase()}-SPECIFIC RUNS WILL NOT BE AVAILABLE ON THIS AGENT
 """.stripIndent()
 }
 
-// Read the installed Edge major version on the Jenkins Linux agent.
-int installedEdgeMajorVersion() {
-    String version = sh(returnStdout: true, script: '''
-      for executable in microsoft-edge microsoft-edge-stable msedge; do
-        if command -v "$executable" >/dev/null 2>&1; then
-          "$executable" --version
-          break
-        fi
-      done
-    ''').trim()
-    String major = version.find(/\d+(?=\.)/)
-    return major ? major.toInteger() : 0
-}
-
-// Choose a supported browser for this run.
+// Choose the browser for this run, falling back from Edge to Chrome when needed.
 String resolvePipelineBrowser() {
     String requestedBrowser = resolvedBrowserToRun()
 
@@ -415,15 +401,6 @@ CHROME IS ALSO NOT AVAILABLE AS A FALLBACK
 INSTALL A SUPPORTED BROWSER OR SET BROWSER_TO_RUN EXPLICITLY
 ========================================================================
 '''.stripIndent()
-    }
-
-    // Cypress 15 cannot clear browser storage between specs on Chromium 158+.
-    if (requestedBrowser == browserEdge && installedEdgeMajorVersion() >= 158) {
-        if (!isBrowserInstalled(browserFirefox)) {
-            error 'Edge 158+ is incompatible with Cypress 15. Install Firefox on this Jenkins agent.'
-        }
-        echo 'Edge 158+ is incompatible with Cypress 15. Running Cypress with Firefox.'
-        return browserFirefox
     }
 
     return requestedBrowser
