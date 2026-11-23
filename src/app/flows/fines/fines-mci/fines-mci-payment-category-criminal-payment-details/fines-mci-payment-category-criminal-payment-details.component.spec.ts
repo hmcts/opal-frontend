@@ -136,11 +136,89 @@ describe('FinesMciPaymentCategoryCriminalPaymentDetailsComponent', () => {
     expect(store.criminalPayment()).toBeNull();
   });
 
-  it('stores validated details and retains protection while onward navigation is out of scope', () => {
+  it('stores validated details and continues to Check Payment without leave protection', async () => {
+    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    await fixture.componentInstance.handleSubmit({ formData: CRIMINAL_PAYMENT, nestedFlow: false });
+    expect(store.criminalPayment()).toEqual(CRIMINAL_PAYMENT);
+    expect(fixture.componentInstance.stateUnsavedChanges).toBe(false);
+    expect(navigate).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create', 'till', 'check-payment']);
+  });
+
+  it.each(['cancelled', 'failed'])('restores draft protection when Continue navigation is %s', async (outcome) => {
     const navigate = vi.spyOn(router, 'navigate');
-    fixture.componentInstance.handleSubmit({ formData: CRIMINAL_PAYMENT, nestedFlow: false });
+    if (outcome === 'failed') navigate.mockRejectedValue(new Error('Navigation failed'));
+    else navigate.mockResolvedValue(false);
+
+    await fixture.componentInstance.handleSubmit({ formData: CRIMINAL_PAYMENT, nestedFlow: false });
+
     expect(store.criminalPayment()).toEqual(CRIMINAL_PAYMENT);
     expect(fixture.componentInstance.stateUnsavedChanges).toBe(true);
+    expect(fixture.componentInstance.handleBeforeUnload()).toBe(false);
+  });
+
+  it('ignores duplicate Continue submissions while navigation is pending', async () => {
+    let completeNavigation!: (success: boolean) => void;
+    const navigate = vi.spyOn(router, 'navigate').mockReturnValue(
+      new Promise<boolean>((resolve) => {
+        completeNavigation = resolve;
+      }),
+    );
+    const pending = fixture.componentInstance.handleSubmit({ formData: CRIMINAL_PAYMENT, nestedFlow: false });
+    await fixture.componentInstance.handleSubmit({ formData: CRIMINAL_PAYMENT, nestedFlow: false });
+    expect(navigate).toHaveBeenCalledOnce();
+    expect(fixture.componentInstance.handleBeforeUnload()).toBe(false);
+    completeNavigation(true);
+    await pending;
+  });
+
+  it.each([
+    { method: null, source: null, field: null, value: '', message: 'Select a method of payment' },
+    { method: 'creditTransfer', source: null, field: null, value: '', message: 'Select a source' },
+    ...[
+      ['postalOrder', 'paymentReferencePostalOrder'],
+      ['cheque', 'paymentReferenceCheque'],
+      ['creditTransfer', 'paymentReferenceCreditTransfer'],
+    ].flatMap(([method, field]) => [
+      {
+        method,
+        source: 'allpay',
+        field,
+        value: 'Ref@123',
+        message: 'Payment reference must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      },
+      {
+        method,
+        source: 'allpay',
+        field,
+        value: 'A'.repeat(51),
+        message: 'Payment reference must be 50 characters or fewer',
+      },
+    ]),
+  ])('blocks Continue for $method with $message', ({ method, source, field, value, message }) => {
+    fixture.detectChanges();
+    const navigate = vi.spyOn(router, 'navigate');
+    const element = fixture.nativeElement as HTMLElement;
+    const amount = element.querySelector<HTMLInputElement>('#amount')!;
+    amount.value = '25.00';
+    amount.dispatchEvent(new Event('input', { bubbles: true }));
+    element.querySelector<HTMLInputElement>('input[name="payerType"][value="defendant"]')!.click();
+    if (method) element.querySelector<HTMLInputElement>(`input[name="methodOfPayment"][value="${method}"]`)!.click();
+    if (source && method === 'creditTransfer')
+      element.querySelector<HTMLInputElement>(`input[name="source"][value="${source}"]`)!.click();
+    if (field) {
+      const input = element.querySelector<HTMLInputElement>(`#${field}`)!;
+      input.value = value;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+
+    element.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    fixture.detectChanges();
+
+    expect(element.querySelector('.govuk-error-summary__list')?.textContent).toContain(message);
+    const errorId = field ? `${field}-error` : `${method ? 'source' : 'methodOfPayment'}-error-message`;
+    expect(element.querySelector(`#${errorId}`)?.textContent).toContain(message);
+    expect(element.querySelector('h1')?.textContent).toBe('Payment details');
+    expect(store.criminalPayment()).toBeNull();
     expect(navigate).not.toHaveBeenCalled();
   });
 
@@ -169,7 +247,7 @@ describe('FinesMciPaymentCategoryCriminalPaymentDetailsComponent', () => {
     store.setCriminalPayment(CRIMINAL_PAYMENT);
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
 
-    fixture.componentInstance.handleCancel();
+    await fixture.componentInstance.handleCancel();
     await fixture.whenStable();
 
     expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create', 'till', 'details']);
@@ -182,7 +260,7 @@ describe('FinesMciPaymentCategoryCriminalPaymentDetailsComponent', () => {
     store.setCriminalPayment(CRIMINAL_PAYMENT);
     vi.spyOn(router, 'navigate').mockResolvedValue(false);
 
-    fixture.componentInstance.handleCancel();
+    await fixture.componentInstance.handleCancel();
     await fixture.whenStable();
 
     expect(store.draftJourney()).toBe('criminal');

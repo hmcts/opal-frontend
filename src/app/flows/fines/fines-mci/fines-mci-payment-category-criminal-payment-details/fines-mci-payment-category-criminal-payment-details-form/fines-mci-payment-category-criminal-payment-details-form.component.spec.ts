@@ -178,6 +178,29 @@ describe('FinesMciPaymentCategoryCriminalPaymentDetailsFormComponent', () => {
       'Enter name',
     );
   });
+  it.each([
+    ['postalOrder', 'paymentReferencePostalOrder'],
+    ['cheque', 'paymentReferenceCheque'],
+    ['creditTransfer', 'paymentReferenceCreditTransfer'],
+  ] as const)('accepts optional and valid %s references', (methodOfPayment, field) => {
+    initialise({ ...PAYMENT, methodOfPayment, source: methodOfPayment === 'creditTransfer' ? 'allpay' : null });
+    const emit = vi.spyOn(component['formSubmit'], 'emit');
+    for (const reference of ['', "Ref-123 O'Brien", 'A'.repeat(50)]) {
+      component.form.controls[field].setValue(reference);
+      submit();
+      expect(component.form.valid).toBe(true);
+      expect(emit).toHaveBeenLastCalledWith({
+        formData: {
+          ...PAYMENT,
+          methodOfPayment,
+          source: methodOfPayment === 'creditTransfer' ? 'allpay' : null,
+          [field]: reference,
+        },
+        nestedFlow: false,
+      });
+    }
+  });
+
   it('emits validated values and clears values belonging to hidden fields', () => {
     initialise(PAYMENT);
     const emit = vi.spyOn(component['formSubmit'], 'emit');

@@ -21,6 +21,7 @@ export class FinesMciPaymentCategoryCriminalPaymentDetailsComponent
 {
   private readonly navigationRouter = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private isContinuing = false;
   protected readonly finesMciStore = inject(FinesMciStore);
 
   protected get accountBalance(): number | null {
@@ -32,16 +33,19 @@ export class FinesMciPaymentCategoryCriminalPaymentDetailsComponent
   }
 
   /** Returns to account confirmation using the selected account type. */
-  public handleBack(): void {
+  public async handleBack(): Promise<void> {
     const account = this.finesMciStore.selectedCriminalAccount();
-    void this.navigationRouter.navigate(
-      [
-        FINES_MCI_ROUTING_PATHS.children.account,
-        this.route.snapshot.paramMap.get('accountId'),
-        account?.organisation_flag ? 'company' : 'individual',
-      ],
-      { relativeTo: this.route.parent },
-    );
+    const navigated = await this.navigationRouter
+      .navigate(
+        [
+          FINES_MCI_ROUTING_PATHS.children.account,
+          this.route.snapshot.paramMap.get('accountId'),
+          account?.organisation_flag ? 'company' : 'individual',
+        ],
+        { relativeTo: this.route.parent },
+      )
+      .catch(() => false);
+    if (navigated) this.finesMciStore.setCriminalPayment(null);
   }
 
   /** Restores leave protection when criminal payment details were saved before returning to this screen. */
@@ -49,15 +53,32 @@ export class FinesMciPaymentCategoryCriminalPaymentDetailsComponent
     this.stateUnsavedChanges = this.finesMciStore.criminalPayment() !== null;
   }
 
-  /** Stores the validated draft; onward navigation belongs to the next acceptance criteria. */
-  public handleSubmit(form: IAbstractFormBaseForm<IFinesMciCriminalPayment>): void {
+  /** Saves validated payment details and opens Check Payment without a data-loss warning. */
+  public async handleSubmit(form: IAbstractFormBaseForm<IFinesMciCriminalPayment>): Promise<void> {
+    if (this.isContinuing) return;
+    this.isContinuing = true;
     this.finesMciStore.setCriminalPayment(form.formData);
-    this.stateUnsavedChanges = true;
+    this.stateUnsavedChanges = false;
+    try {
+      const navigated = await this.navigationRouter.navigate([
+        '/',
+        FINES_ROUTING_PATHS.root,
+        FINES_MCI_ROUTING_PATHS.root,
+        FINES_MCI_ROUTING_PATHS.children.create,
+        FINES_MCI_ROUTING_PATHS.children.till,
+        FINES_MCI_ROUTING_PATHS.children.checkPayment,
+      ]);
+      if (!navigated) this.stateUnsavedChanges = true;
+    } catch {
+      this.stateUnsavedChanges = true;
+    } finally {
+      this.isContinuing = false;
+    }
   }
 
   /** Returns to Till Details and clears the payment draft after navigation is accepted. */
-  public handleCancel(): void {
-    void this.navigationRouter
+  public async handleCancel(): Promise<void> {
+    const navigated = await this.navigationRouter
       .navigate([
         '/',
         FINES_ROUTING_PATHS.root,
@@ -66,12 +87,11 @@ export class FinesMciPaymentCategoryCriminalPaymentDetailsComponent
         FINES_MCI_ROUTING_PATHS.children.till,
         FINES_MCI_ROUTING_PATHS.children.details,
       ])
-      .then((navigated) => {
-        if (navigated) {
-          this.finesMciStore.setDraftJourney(null);
-          this.finesMciStore.resetCriminalSearch();
-        }
-      });
+      .catch(() => false);
+    if (navigated) {
+      this.finesMciStore.setDraftJourney(null);
+      this.finesMciStore.resetCriminalSearch();
+    }
   }
 
   /** Keeps leave protection enabled for child form input or previously stored details. */
@@ -82,6 +102,6 @@ export class FinesMciPaymentCategoryCriminalPaymentDetailsComponent
   @HostListener('window:beforeunload')
   /** Prevents closing the browser tab while criminal payment details have been entered. */
   public handleBeforeUnload(): boolean {
-    return !this.stateUnsavedChanges;
+    return !this.isContinuing && !this.stateUnsavedChanges;
   }
 }

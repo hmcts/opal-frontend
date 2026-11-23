@@ -8,6 +8,7 @@ export const FINES_MCI_ROUTING_TITLES = {
     paymentCategoryCriminalSearch: 'Search for criminal accounts',
     createTillSelectBusinessUnit: 'Select business unit',
     createTillDetails: 'Till details',
+    createTillCheckPayment: 'Check payment',
     createTillPaymentCategory: 'Payment category',
     createTillSuspenseDetails: 'Suspense details',
     createTillCourtFeeDetails: 'Court fee',

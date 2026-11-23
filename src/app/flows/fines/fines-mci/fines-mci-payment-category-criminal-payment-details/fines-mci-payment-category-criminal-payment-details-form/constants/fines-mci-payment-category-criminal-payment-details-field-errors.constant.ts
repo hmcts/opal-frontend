@@ -13,25 +13,23 @@ export const FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_PAYMENT_DETAILS_FIELD_ERRORS: I
   payerType: { required: { message: 'Select who the payment was received from', priority: 1 } },
   methodOfPayment: { required: { message: 'Select a method of payment', priority: 1 } },
   paymentReferencePostalOrder: {
-    maxlength: { message: 'Payment reference (Postal order) must be 50 characters or fewer', priority: 1 },
+    maxlength: { message: 'Payment reference must be 50 characters or fewer', priority: 1 },
     pattern: {
-      message:
-        'Payment reference (Postal order) must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      message: 'Payment reference must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 2,
     },
   },
   paymentReferenceCheque: {
-    maxlength: { message: 'Payment reference (Cheque) must be 50 characters or fewer', priority: 1 },
+    maxlength: { message: 'Payment reference must be 50 characters or fewer', priority: 1 },
     pattern: {
-      message: 'Payment reference (Cheque) must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      message: 'Payment reference must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 2,
     },
   },
   paymentReferenceCreditTransfer: {
-    maxlength: { message: 'Payment reference (Credit transfer) must be 50 characters or fewer', priority: 1 },
+    maxlength: { message: 'Payment reference must be 50 characters or fewer', priority: 1 },
     pattern: {
-      message:
-        'Payment reference (Credit transfer) must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      message: 'Payment reference must only include letters a to z, numbers, hyphens, spaces and apostrophes',
       priority: 2,
     },
   },

@@ -217,6 +217,7 @@ export const routing: Routes = [
             },
           },
           ...[
+            [FINES_MCI_ROUTING_PATHS.children.checkPayment, FINES_MCI_ROUTING_TITLES.children.createTillCheckPayment],
             [FINES_MCI_ROUTING_PATHS.children.checkSuspensePayment, 'Check suspense payment'],
             [FINES_MCI_ROUTING_PATHS.children.payerDetails, 'Payer details'],
           ].map(([path, heading]) => ({
