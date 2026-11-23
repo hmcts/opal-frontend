@@ -106,7 +106,7 @@ describe('Account Enquiry - Major Creditor Header', () => {
   ['MJ', 'CF'].forEach((accountType) => {
     it(
       `renders the ${accountType} header when the optional account display name is omitted`,
-      { tags: buildTags('@JIRA-STORY:PO-11639') },
+      { tags: [...buildTags('@JIRA-STORY:PO-11639'), '@JIRA-EPIC:PO-1286'] },
       () => {
         const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
         header.major_creditor.account_reference = { creditor_account_type: accountType };
