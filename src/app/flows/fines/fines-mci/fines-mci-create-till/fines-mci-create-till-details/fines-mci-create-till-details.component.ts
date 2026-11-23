@@ -15,6 +15,7 @@ import {
   IFinesMciSuspensePayerDetails,
   IFinesMciSuspensePayment,
 } from '../../stores/interfaces/fines-mci.interface';
+import { formatPoundsFromDecimal } from '../utils/fines-mci-currency.utils';
 
 @Component({
   selector: 'app-fines-mci-create-till-details',
@@ -45,7 +46,7 @@ export class FinesMciCreateTillDetailsComponent {
 
   /** Formats a saved amount in pounds, or shows a dash when it is missing. */
   protected formatAmount(amount: string | undefined): string {
-    return amount ? new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(Number(amount)) : '—';
+    return formatPoundsFromDecimal(amount);
   }
 
   /** Returns the label shown in the Category column for a payment journey. */

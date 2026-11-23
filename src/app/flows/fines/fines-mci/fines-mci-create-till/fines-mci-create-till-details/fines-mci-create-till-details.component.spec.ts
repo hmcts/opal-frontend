@@ -96,6 +96,19 @@ describe('FinesMciCreateTillDetailsComponent', () => {
     );
   });
 
+  it('preserves the exact pence value in the saved payment table', () => {
+    const store = TestBed.inject(FinesMciStore);
+    store.setSuspensePayment({ ...suspensePayment, amount: '123456789012345678.12' });
+    store.saveSuspensePayment();
+    fixture.detectChanges();
+
+    const amountCell = (fixture.nativeElement as HTMLElement).querySelector(
+      '#fines-mci-payments tbody td:nth-child(3)',
+    );
+    expect(amountCell?.textContent?.trim()).toBe('£123,456,789,012,345,678.12');
+    expect(store.tills()[0].payments[0].suspensePayment?.amount).toBe('123456789012345678.12');
+  });
+
   it.each([
     { methodOfPayment: 'notesCoins', method: 'Notes and coins', payerType: 'thirdParty', receivedFrom: '3rd party' },
     { methodOfPayment: 'postalOrder', method: 'Postal order', payerType: null, receivedFrom: '—' },

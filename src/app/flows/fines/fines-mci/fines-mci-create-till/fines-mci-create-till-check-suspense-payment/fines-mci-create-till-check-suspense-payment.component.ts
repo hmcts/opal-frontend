@@ -19,6 +19,7 @@ import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deact
 import { FINES_MCI_ROUTING_PATHS } from '../../routing/constants/fines-mci-routing-paths.constant';
 import { FinesMciStore } from '../../stores/fines-mci.store';
 import { IFinesMciSuspensePayment } from '../../stores/interfaces/fines-mci.interface';
+import { formatPoundsFromDecimal } from '../utils/fines-mci-currency.utils';
 
 const PAYMENT_METHODS: Record<NonNullable<IFinesMciSuspensePayment['methodOfPayment']>, string> = {
   notesCoins: 'Notes and coins',
@@ -84,10 +85,7 @@ export class FinesMciCreateTillCheckSuspensePaymentComponent implements OnInit {
 
   /** Formats the draft amount in pounds, or shows a dash for a missing or invalid amount. */
   protected get amount(): string {
-    const value = Number(this.payment?.amount);
-    return this.payment?.amount && Number.isFinite(value)
-      ? new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(value)
-      : '—';
+    return formatPoundsFromDecimal(this.payment?.amount);
   }
 
   /** Returns the display name of the selected payment method. */

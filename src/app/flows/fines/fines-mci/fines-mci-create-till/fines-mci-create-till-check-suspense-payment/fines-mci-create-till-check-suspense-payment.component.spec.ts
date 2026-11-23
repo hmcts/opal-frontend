@@ -93,6 +93,16 @@ describe('FinesMciCreateTillCheckSuspensePaymentComponent', () => {
     expect(text).not.toContain('Relevant details');
   });
 
+  it('preserves the pennies and all 18 integer digits in the amount summary', () => {
+    store.setSuspensePayment({ ...payment, amount: '123456789012345678.12' });
+    fixture.detectChanges();
+    const amountRow = Array.from(
+      (fixture.nativeElement as HTMLElement).querySelectorAll('.govuk-summary-list__row'),
+    ).find((row) => row.querySelector('dt')?.textContent === 'Amount');
+
+    expect(amountRow?.querySelector('.govuk-summary-list__value')?.textContent).toBe('£123,456,789,012,345,678.12');
+  });
+
   it('requires a note for either save action and keeps the payment draft', () => {
     const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     fixture.detectChanges();
