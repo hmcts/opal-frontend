@@ -24,4 +24,5 @@ export const FINES_PERMISSIONS: IFinesPermissions = {
   'manage-alternate-payment-references': 24,
   'view-suspense-items': 25,
   'manage-suspense-items': 26,
+  'upload-variant-banking-files': 27,
 };

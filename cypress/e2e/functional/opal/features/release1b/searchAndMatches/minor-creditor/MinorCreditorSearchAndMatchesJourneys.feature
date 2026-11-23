@@ -91,5 +91,5 @@ Feature: Minor Creditor Search And Matches Journeys
       | MinCredAccUniB                  | placeholder                | Unique MinCred CT                    |
     @R1BDrop2UatTechPreprod
     Examples:
-      | LEGACY_MINOR_CREDITOR_LAST_NAME | LEGACY_MINOR_CREDITOR_NAME   | LEGACY_MINOR_CREDITOR_ADDRESS_LINE_1 |
-      | Kaspian JFmicred-k              | Kaspian JFmicred-k, Katarina | 123 asdf                             |
+      | LEGACY_MINOR_CREDITOR_LAST_NAME | LEGACY_MINOR_CREDITOR_NAME    | LEGACY_MINOR_CREDITOR_ADDRESS_LINE_1 |
+      | JFMincred-TFO-A                 | JFMincred-TFO-A, Annie Angela | 123 Road AAAA                        |

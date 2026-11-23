@@ -329,11 +329,10 @@ describe('DashboardComponent', () => {
   it('should render all banking interface links when the user has both banking interface permissions', () => {
     permissionsServiceMock.getUniquePermissions.mockReturnValue([
       FINES_PERMISSIONS['view-interface-files'],
-      FINES_PERMISSIONS['create-interface-files'],
+      FINES_PERMISSIONS['upload-variant-banking-files'],
     ]);
-    setupComponent();
     dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
-    fixture.detectChanges();
+    setupComponent();
 
     const renderedText = fixture.nativeElement.textContent as string;
 
@@ -345,11 +344,10 @@ describe('DashboardComponent', () => {
     );
   });
 
-  it('should hide the inbound, outbound and upload variant banking files links when the user lacks view-interface-files and create-interface-files permission', () => {
+  it('should hide banking interface links when the user lacks view and upload variant banking files permissions', () => {
     permissionsServiceMock.getUniquePermissions.mockReturnValue([]);
-    setupComponent();
     dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
-    fixture.detectChanges();
+    setupComponent();
 
     const renderedText = fixture.nativeElement.textContent as string;
 
@@ -358,11 +356,10 @@ describe('DashboardComponent', () => {
     expect(renderedText).not.toContain('Upload variant banking files');
   });
 
-  it('should render only the upload variant banking files link when the user has create-interface-files permission only', () => {
-    permissionsServiceMock.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['create-interface-files']]);
-    setupComponent();
+  it('should render only the upload variant banking files link when the user has permission 27 only', () => {
+    permissionsServiceMock.getUniquePermissions.mockReturnValue([27]);
     dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
-    fixture.detectChanges();
+    setupComponent();
 
     const renderedText = fixture.nativeElement.textContent as string;
 
@@ -370,6 +367,25 @@ describe('DashboardComponent', () => {
     expect(renderedText).not.toContain('Outbound files');
     expect(renderedText).toContain('Upload variant banking files');
   });
+
+  it.each([
+    { permissionIds: [FINES_PERMISSIONS['create-interface-files']], canViewFiles: false },
+    {
+      permissionIds: [FINES_PERMISSIONS['view-interface-files'], FINES_PERMISSIONS['create-interface-files']],
+      canViewFiles: true,
+    },
+  ])(
+    'should hide upload for legacy Create Interface Files permissions $permissionIds',
+    ({ permissionIds, canViewFiles }) => {
+      permissionsServiceMock.getUniquePermissions.mockReturnValue(permissionIds);
+      dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'finance' }));
+      setupComponent();
+
+      expect(fixture.nativeElement.querySelector('#finesFinanceUploadVariantBankingFilesLink')).toBeNull();
+      expect(fixture.nativeElement.querySelector('#finesFinanceInboundFilesLink') !== null).toBe(canViewFiles);
+      expect(fixture.nativeElement.querySelector('#finesFinanceOutboundFilesLink') !== null).toBe(canViewFiles);
+    },
+  );
 
   it('should render the manual cash input link when the user has process and allocate payments permission', () => {
     permissionsServiceMock.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['process-and-allocate-payments']]);

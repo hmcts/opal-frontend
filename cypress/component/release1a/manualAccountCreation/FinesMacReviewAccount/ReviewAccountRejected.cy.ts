@@ -19,6 +19,7 @@ import { ACCOUNT_SESSION_USER_STATE_MOCK } from './mocks/user_state_mock';
 import { MacReviewAccountLocators as DOM_ELEMENTS } from '../../../../shared/selectors/manual-account-creation/mac.review-account.locators';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { FINES_ACCOUNT_TYPES } from 'src/app/flows/fines/constants/fines-account-types.constant';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from 'src/app/flows/fines/constants/release-feature-flags.constant';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
@@ -50,6 +51,7 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
               title: null,
               operationId: null,
             });
+            globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
             return globalStore;
           },
         },
@@ -145,6 +147,30 @@ describe('FinesMacReviewAccountComponent - Rejected Account view', () => {
         expect(request.body).to.have.property('account_status', 'Resubmitted');
         expect(request.body).not.to.have.property('timeline_data');
       });
+    },
+  );
+
+  it(
+    'removes spaces from telephone numbers when a rejected account is resubmitted',
+    { tags: [...buildTags('@JIRA-STORY:PO-964', '@JIRA-DEFECT:PO-11223'), '@JIRA-EPIC:PO-2220'] },
+    () => {
+      finesMacState.contactDetails.formData.fm_contact_details_telephone_number_mobile = '07 898 45 67 89';
+      finesMacState.contactDetails.formData.fm_contact_details_telephone_number_home = '0 208 123 45 67';
+      finesMacState.contactDetails.formData.fm_contact_details_telephone_number_business = '0207 123 4567';
+      finesMacState.employerDetails.formData.fm_employer_details_employer_telephone_number = '0207 234 56 78';
+      cy.intercept('PUT', '**/opal-fines-service/draft-accounts/**', { statusCode: 201 }).as('putDraftAccount');
+
+      setupComponent(false);
+      cy.get(DOM_ELEMENTS.submitButton).click();
+
+      cy.wait('@putDraftAccount')
+        .its('request.body.account.defendant')
+        .should((defendant) => {
+          expect(defendant.telephone_number_mobile).to.equal('07898456789');
+          expect(defendant.telephone_number_home).to.equal('02081234567');
+          expect(defendant.telephone_number_business).to.equal('02071234567');
+          expect(defendant.debtor_detail.employer_telephone_number).to.equal('02072345678');
+        });
     },
   );
 
