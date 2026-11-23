@@ -70,7 +70,7 @@ export const FIXED_PENALTY_AY_MOCK = {
       { note_type: 'AC', account_note_text: 'Scenario 10 account comment', account_note_serial: 3 },
       { note_type: 'AA', account_note_text: 'Scenario 10 account note', account_note_serial: 2 },
     ],
-    originator_id: 1223,
+    originator_id: '123',
     payment_terms: {
       enforcements: null,
       effective_date: null,

@@ -104,9 +104,7 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
    * @returns {string | null}
    */
   private getProsecutor(): string | null {
-    const prosecutor = this.prosecutorsData.ref_data.find(
-      (p: IOpalFinesProsecutor) => p.prosecutor_id === +this.courtDetails.fm_court_details_originator_id!,
-    )!;
+    const prosecutor = this.findProsecutor(this.courtDetails.fm_court_details_originator_id);
 
     if (!prosecutor) {
       return null;
@@ -115,7 +113,16 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   }
 
   /**
-   * Resolves an originator when its numeric ID exists in both the prosecutor and LJA datasets.
+   * Finds a prosecutor using its code, preserving the exact value supplied by the API.
+   * @param originatorId - The persisted prosecutor code.
+   * @returns The matching prosecutor, or undefined when no record matches.
+   */
+  private findProsecutor(originatorId: string | null): IOpalFinesProsecutor | undefined {
+    return this.prosecutorsData.ref_data.find((prosecutor) => prosecutor.prosecutor_code === originatorId);
+  }
+
+  /**
+   * Resolves an originator when its identifier exists in both the prosecutor and LJA datasets.
    * The persisted originator name identifies which dataset supplied the original selection.
    *
    * @param originatorId - The persisted originator ID.
@@ -131,9 +138,7 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
     }
 
     const originatorIdNumber = +originatorId;
-    const prosecutor = this.prosecutorsData.ref_data.find(
-      (item: IOpalFinesProsecutor) => item.prosecutor_id === originatorIdNumber,
-    );
+    const prosecutor = this.findProsecutor(originatorId);
     const localJusticeArea = this.localJusticeAreasData.refData.find(
       (item: IOpalFinesLocalJusticeArea) => item.local_justice_area_id === originatorIdNumber,
     );

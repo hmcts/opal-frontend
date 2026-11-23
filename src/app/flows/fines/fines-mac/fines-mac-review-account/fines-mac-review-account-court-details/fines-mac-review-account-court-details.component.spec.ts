@@ -52,11 +52,11 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     component.enforcementCourtsData = structuredClone(OPAL_FINES_COURT_REF_DATA_MOCK);
     component.prosecutorsData = structuredClone(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK);
     component.release1a1_1Enabled = true;
-
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    fixture.detectChanges();
+
     expect(component).toBeTruthy();
   });
 
@@ -92,11 +92,73 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     expect(component['getCourtDetailsData']).toHaveBeenCalled();
   });
 
-  it('should get prosecutors prettyname from getProsecutor if id found', () => {
-    component.courtDetails.fm_court_details_originator_id = '1865';
+  it('should get prosecutors prettyname from getProsecutor if its code is found', () => {
+    component.courtDetails.fm_court_details_originator_id = '998';
 
     expect(component['getProsecutor']()).toBe('Police force (101)');
   });
+
+  it.each(['001X', '0998'])('should review a prosecutor using code %s', (code) => {
+    const prosecutor = { ...component.prosecutorsData.ref_data[0], prosecutor_code: code };
+    component.prosecutorsData = { count: 1, ref_data: [prosecutor] };
+    component.courtDetails.fm_court_details_originator_id = code;
+    component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
+
+    fixture.detectChanges();
+
+    expect(mockOpalFinesService.getProsecutorPrettyName).toHaveBeenCalledWith(prosecutor);
+    expect(component.issuingAuthority).toBe(OPAL_FINES_PROSECUTOR_PRETTY_NAME_MOCK);
+  });
+
+  it('should select the matching prosecutor when codes differ only by leading zeros', () => {
+    const prosecutor = { ...component.prosecutorsData.ref_data[0], prosecutor_code: '0998' };
+    const otherProsecutor = { ...component.prosecutorsData.ref_data[1], prosecutor_code: '998' };
+    component.prosecutorsData = { count: 2, ref_data: [otherProsecutor, prosecutor] };
+    component.courtDetails.fm_court_details_originator_id = '0998';
+
+    expect(component['getProsecutor']()).toBe(OPAL_FINES_PROSECUTOR_PRETTY_NAME_MOCK);
+    expect(mockOpalFinesService.getProsecutorPrettyName).toHaveBeenCalledWith(prosecutor);
+  });
+
+  it('should not match a prosecutor code with different leading zeros', () => {
+    component.prosecutorsData = {
+      count: 1,
+      ref_data: [{ ...component.prosecutorsData.ref_data[0], prosecutor_code: '998' }],
+    };
+    component.courtDetails.fm_court_details_originator_id = '0998';
+
+    expect(component['getProsecutor']()).toBeNull();
+    expect(mockOpalFinesService.getProsecutorPrettyName).not.toHaveBeenCalled();
+  });
+
+  it.each([true, false])(
+    'should disambiguate an overlapping prosecutor code and LJA ID using the stored prosecutor name: %s',
+    (storedProsecutorName) => {
+      const localJusticeArea = component.localJusticeAreasData.refData[0];
+      const prosecutor = {
+        ...component.prosecutorsData.ref_data[0],
+        prosecutor_code: localJusticeArea.local_justice_area_id.toString(),
+      };
+      component.prosecutorsData = { count: 1, ref_data: [prosecutor] };
+      component.courtDetails.fm_court_details_originator_id = prosecutor.prosecutor_code;
+      component.courtDetails.fm_court_details_originator_name = storedProsecutorName
+        ? prosecutor.name
+        : localJusticeArea.name;
+      component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
+
+      fixture.detectChanges();
+
+      if (storedProsecutorName) {
+        expect(mockOpalFinesService.getProsecutorPrettyName).toHaveBeenCalledWith(prosecutor);
+        expect(mockOpalFinesService.getLocalJusticeAreaPrettyName).not.toHaveBeenCalled();
+        expect(component.issuingAuthority).toBe(OPAL_FINES_PROSECUTOR_PRETTY_NAME_MOCK);
+      } else {
+        expect(mockOpalFinesService.getLocalJusticeAreaPrettyName).toHaveBeenCalledWith(localJusticeArea);
+        expect(mockOpalFinesService.getProsecutorPrettyName).not.toHaveBeenCalled();
+        expect(component.issuingAuthority).toBe(OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK);
+      }
+    },
+  );
 
   it('should get court data and set issuingAuthority from getCourtDetailsData for a fixed penalty account when issuing authority is a prosecutor', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -105,7 +167,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     vi.spyOn<any, any>(component, 'getProsecutor');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'getSendingCourt');
-    component.courtDetails.fm_court_details_originator_id = '1865';
+    component.courtDetails.fm_court_details_originator_id = '998';
     component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
 
     component['getCourtDetailsData']();
@@ -140,7 +202,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'getSendingCourt');
     component.release1a1_1Enabled = false;
-    component.courtDetails.fm_court_details_originator_id = '1865';
+    component.courtDetails.fm_court_details_originator_id = '998';
     component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
 
     component['getCourtDetailsData']();
@@ -172,7 +234,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     const localJusticeArea = component.localJusticeAreasData.refData[0];
     component.prosecutorsData.ref_data.push({
       ...component.prosecutorsData.ref_data[0],
-      prosecutor_id: localJusticeArea.local_justice_area_id,
+      prosecutor_code: localJusticeArea.local_justice_area_id.toString(),
       name: 'Unrelated prosecutor',
     });
     component.courtDetails.fm_court_details_originator_id = localJusticeArea.local_justice_area_id.toString();
@@ -210,7 +272,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     vi.spyOn<any, any>(component, 'getProsecutor');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'getSendingCourt');
-    component.courtDetails.fm_court_details_originator_id = '1865';
+    component.courtDetails.fm_court_details_originator_id = '998';
     component.accountType = FINES_ACCOUNT_TYPES['Conditional Caution'];
 
     component['getCourtDetailsData']();
@@ -263,12 +325,12 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'getSendingCourt');
     component.release1a1_1Enabled = false;
-    component.courtDetails.fm_court_details_originator_id = '1865';
+    component.courtDetails.fm_court_details_originator_id = '998';
     component.accountType = FINES_ACCOUNT_TYPES['Conditional Caution'];
 
     component['getCourtDetailsData']();
 
-    expect(component['getSendingCourt']).toHaveBeenCalledWith('1865');
+    expect(component['getSendingCourt']).toHaveBeenCalledWith('998');
     expect(component['getProsecutor']).toHaveBeenCalledTimes(1);
     expect(component.sendingCourt).toBe('Police force (101)');
   });
@@ -277,11 +339,11 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     const prosecutor = component.prosecutorsData.ref_data[0];
     component.localJusticeAreasData.refData.push({
       ...component.localJusticeAreasData.refData[0],
-      local_justice_area_id: prosecutor.prosecutor_id!,
+      local_justice_area_id: Number(prosecutor.prosecutor_code),
       name: 'Unrelated court',
     });
     component.release1a1_1Enabled = false;
-    component.courtDetails.fm_court_details_originator_id = prosecutor.prosecutor_id!.toString();
+    component.courtDetails.fm_court_details_originator_id = prosecutor.prosecutor_code;
     component.courtDetails.fm_court_details_originator_name = prosecutor.name;
     component.accountType = FINES_ACCOUNT_TYPES['Conditional Caution'];
     vi.clearAllMocks();
@@ -297,7 +359,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     const localJusticeArea = component.localJusticeAreasData.refData[0];
     component.prosecutorsData.ref_data.push({
       ...component.prosecutorsData.ref_data[0],
-      prosecutor_id: localJusticeArea.local_justice_area_id,
+      prosecutor_code: localJusticeArea.local_justice_area_id.toString(),
       name: 'Unrelated prosecutor',
     });
     component.courtDetails.fm_court_details_originator_id = localJusticeArea.local_justice_area_id.toString();
@@ -316,11 +378,11 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     const prosecutor = component.prosecutorsData.ref_data[0];
     component.localJusticeAreasData.refData.push({
       ...component.localJusticeAreasData.refData[0],
-      local_justice_area_id: prosecutor.prosecutor_id!,
+      local_justice_area_id: Number(prosecutor.prosecutor_code),
       name: 'Unrelated court',
     });
     component.release1a1_1Enabled = false;
-    component.courtDetails.fm_court_details_originator_id = prosecutor.prosecutor_id!.toString();
+    component.courtDetails.fm_court_details_originator_id = prosecutor.prosecutor_code;
     component.courtDetails.fm_court_details_originator_name = 'Unknown originator';
     component.accountType = FINES_ACCOUNT_TYPES['Conditional Caution'];
     vi.clearAllMocks();
@@ -333,7 +395,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
   });
 
   it('should retain flag-based lookup when an originator name has not been stored', () => {
-    component.courtDetails.fm_court_details_originator_id = '1865';
+    component.courtDetails.fm_court_details_originator_id = '998';
     component.courtDetails.fm_court_details_originator_name = null;
     component.accountType = FINES_ACCOUNT_TYPES['Conditional Caution'];
     vi.clearAllMocks();

@@ -1591,7 +1591,6 @@ describe('OpalFines', () => {
       ...OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[0],
       prosecutor_code: code,
     };
-    delete prosecutor.prosecutor_id;
     const response = { count: 1, ref_data: [prosecutor] };
     let received: IOpalFinesProsecutor | undefined;
 

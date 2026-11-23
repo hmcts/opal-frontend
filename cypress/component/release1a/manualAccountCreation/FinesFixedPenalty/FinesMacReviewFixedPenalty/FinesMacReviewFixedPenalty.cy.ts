@@ -219,7 +219,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       cy.wait('@postDraftAccount')
         .its('request.body.account')
         .should((account) => {
-          expect(account.originator_id).to.equal('1223');
+          expect(account.originator_id).to.equal('123');
           expect(account.originator_name).to.equal('Police force');
         });
     },
@@ -354,7 +354,7 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
       cy.wait('@postDraftAccount')
         .its('request.body.account')
         .should((account) => {
-          expect(account.originator_id).to.equal('1223');
+          expect(account.originator_id).to.equal('123');
           expect(account.originator_name).to.equal('Police force');
         });
     },

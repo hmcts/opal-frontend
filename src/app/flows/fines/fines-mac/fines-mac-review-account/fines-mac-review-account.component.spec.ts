@@ -39,6 +39,10 @@ import { createSpyObj } from '@app/testing/create-spy-obj.helper';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../constants/fines-mac-defendant-types-keys';
 import { IFinesMacAddAccountRequestPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-add-account-request.interface';
 import { IFinesMacReplaceAccountRequestPayload } from '../services/fines-mac-payload/interfaces/fines-mac-payload-replace-account-request.interface';
+import { IFinesMacState } from '../interfaces/fines-mac-state.interface';
+import { FINES_MAC_PAYLOAD_FINES_MAC_STATE } from '../services/fines-mac-payload/mocks/fines-mac-payload-fines-mac-state.mock';
+import { FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK } from '../services/fines-mac-payload/mocks/fines-mac-payload-add-account-fixed-penalty.mock';
+import { FINES_MAC_PAYMENT_TERMS_FORM } from '../fines-mac-payment-terms/constants/fines-mac-payment-terms-form';
 
 const ADD_ACCOUNT_REQUEST: IFinesMacAddAccountRequestPayload = {
   business_unit_id: FINES_MAC_PAYLOAD_ADD_ACCOUNT.business_unit_id!,
@@ -57,12 +61,18 @@ const REPLACE_ACCOUNT_REQUEST: IFinesMacReplaceAccountRequestPayload = {
 };
 
 // Shared factory for setting up the test module
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function createTestModule(snapshotData?: any) {
+function createTestModule(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  snapshotData?: any,
+  options: { useRealPayloadService?: boolean; finesMacState?: IFinesMacState } = {},
+) {
   const mockOpalFinesService = {
     getCourtPrettyName: vi.fn().mockReturnValue(OPAL_FINES_COURT_PRETTY_NAME_MOCK),
     getLocalJusticeAreaPrettyName: vi.fn().mockReturnValue(OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK),
     getOffenceByCjsCode: vi.fn().mockReturnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK)),
+    getProsecutorPrettyName: vi.fn(OpalFines.prototype.getProsecutorPrettyName),
+    getResultPrettyName: vi.fn(OpalFines.prototype.getResultPrettyName),
+    getMajorCreditorPrettyName: vi.fn(OpalFines.prototype.getMajorCreditorPrettyName),
     postDraftAddAccountPayload: vi.fn().mockReturnValue(of(structuredClone(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK))),
     putDraftAddAccountPayload: vi.fn().mockReturnValue(of(structuredClone(OPAL_FINES_DRAFT_ADD_ACCOUNT_PAYLOAD_MOCK))),
   };
@@ -103,9 +113,11 @@ function createTestModule(snapshotData?: any) {
     imports: [FinesMacReviewAccountComponent],
     providers: [
       { provide: OpalFines, useValue: mockOpalFinesService },
-      { provide: FinesMacPayloadService, useValue: mockFinesMacPayloadService },
-      { provide: UtilsService, useValue: mockUtilsService },
-      { provide: DateService, useValue: mockDateService },
+      options.useRealPayloadService
+        ? FinesMacPayloadService
+        : { provide: FinesMacPayloadService, useValue: mockFinesMacPayloadService },
+      options.useRealPayloadService ? UtilsService : { provide: UtilsService, useValue: mockUtilsService },
+      options.useRealPayloadService ? DateService : { provide: DateService, useValue: mockDateService },
       provideRouter([]),
       provideHttpClient(withInterceptorsFromDi()),
       provideHttpClientTesting(),
@@ -127,17 +139,17 @@ function createTestModule(snapshotData?: any) {
     ],
   }).compileComponents();
 
-  const fixture = TestBed.createComponent(FinesMacReviewAccountComponent);
-  const component = fixture.componentInstance;
   const globalStore = TestBed.inject(GlobalStore);
   globalStore.setUserState(OPAL_USER_STATE_MOCK);
   globalStore.setBannerError({
     ...GLOBAL_ERROR_STATE,
   });
   const finesMacStore = TestBed.inject(FinesMacStore);
-  finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
+  finesMacStore.setFinesMacStore(options.finesMacState ?? FINES_MAC_STATE_MOCK);
   const finesDraftStore = TestBed.inject(FinesDraftStore);
   finesDraftStore.setFinesDraftState(FINES_DRAFT_STATE);
+  const fixture = TestBed.createComponent(FinesMacReviewAccountComponent);
+  const component = fixture.componentInstance;
   fixture.detectChanges();
   return {
     fixture,
@@ -153,6 +165,68 @@ function createTestModule(snapshotData?: any) {
 }
 
 describe('FinesMacReviewAccountComponent', () => {
+  describe('prosecutor codes in account submission', () => {
+    it.each(
+      [FINES_ACCOUNT_TYPES['Fixed Penalty'], FINES_ACCOUNT_TYPES['Conditional Caution']].flatMap((accountType) =>
+        ['001X', '0998'].flatMap((code) =>
+          [false, true].map((amend) => ({ accountType, code, amend, request: amend ? 'resubmitting' : 'submitting' })),
+        ),
+      ),
+    )(
+      'should retain prosecutor code $code and account details when $request $accountType',
+      ({ accountType, code, amend }) => {
+        const finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
+        finesMacState.accountDetails.formData.fm_create_account_account_type = accountType;
+        finesMacState.courtDetails.formData.fm_court_details_originator_id = code;
+        finesMacState.courtDetails.formData.fm_court_details_originator_name = 'Police force';
+        const isFixedPenalty = accountType === FINES_ACCOUNT_TYPES['Fixed Penalty'];
+        if (isFixedPenalty) {
+          finesMacState.originatorType.formData.fm_originator_type_originator_type = 'FP';
+          finesMacState.paymentTerms = structuredClone(FINES_MAC_PAYMENT_TERMS_FORM);
+        }
+        const prosecutors = {
+          count: 1,
+          ref_data: [{ ...OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[1], prosecutor_code: code }],
+        };
+        const majorCreditors = {
+          count: 1,
+          refData: [{ ...OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData[0], major_creditor_id: 3999 }],
+        };
+        const setup = createTestModule({ prosecutors, majorCreditors }, { useRealPayloadService: true, finesMacState });
+        setup.finesDraftStore.setAmend(amend);
+        setup.finesDraftStore.setDraftAccountId(42);
+        const expectedAccount = structuredClone(
+          isFixedPenalty
+            ? FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK.account
+            : FINES_MAC_PAYLOAD_ADD_ACCOUNT.account,
+        );
+        expectedAccount.originator_id = code;
+        expectedAccount.originator_name = 'Police force';
+        expectedAccount.defendant.parent_guardian = null;
+
+        expect(setup.fixture.nativeElement.textContent).toContain(`Police force (${code})`);
+
+        setup.component.submitForReview();
+
+        if (amend) {
+          expect(setup.mockOpalFinesService.putDraftAddAccountPayload).toHaveBeenCalledWith(
+            42,
+            expect.objectContaining({ account: expectedAccount, account_type: accountType }),
+            setup.finesDraftStore.version(),
+          );
+          expect(setup.mockOpalFinesService.postDraftAddAccountPayload).not.toHaveBeenCalled();
+        } else {
+          expect(setup.mockOpalFinesService.postDraftAddAccountPayload).toHaveBeenCalledWith(
+            expect.objectContaining({ account: expectedAccount, account_type: accountType }),
+          );
+          expect(setup.mockOpalFinesService.putDraftAddAccountPayload).not.toHaveBeenCalled();
+        }
+        expect(setup.finesMacStore.courtDetails().formData.fm_court_details_originator_id).toBe(code);
+        expect(setup.finesMacStore.courtDetails().formData.fm_court_details_originator_name).toBe('Police force');
+      },
+    );
+  });
+
   describe('when snapshot has localJusticeAreas, courts, results, and major creditors only', () => {
     let component: FinesMacReviewAccountComponent;
     let fixture: ComponentFixture<FinesMacReviewAccountComponent>;

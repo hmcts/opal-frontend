@@ -153,14 +153,10 @@ describe('fetchOriginatorsResolver', () => {
       setAccountType(FINES_ACCOUNT_TYPES['Fixed Penalty']);
       const response: IOpalFinesProsecutorRefData = {
         count: 2,
-        ref_data: ['001X', '0998'].map((code) => {
-          const prosecutor: IOpalFinesProsecutor = {
-            ...OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[0],
-            prosecutor_code: code,
-          };
-          delete prosecutor.prosecutor_id;
-          return prosecutor;
-        }),
+        ref_data: ['001X', '0998'].map((code) => ({
+          ...OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[0],
+          prosecutor_code: code,
+        })),
       };
       mockOpalFinesService.getProsecutors.mockReturnValue(of(response));
 
@@ -179,7 +175,6 @@ describe('fetchOriginatorsResolver', () => {
     globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: true });
     setAccountType(FINES_ACCOUNT_TYPES['Conditional Caution']);
     const prosecutor: IOpalFinesProsecutor = { ...OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[0] };
-    delete prosecutor.prosecutor_id;
     mockOpalFinesService.getProsecutors.mockReturnValue(of({ count: 1, ref_data: [prosecutor] }));
 
     const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
