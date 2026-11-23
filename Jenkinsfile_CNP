@@ -783,7 +783,7 @@ withPipeline(type, product, component) {
         withEnv([
             'TEST_URL=https://opal-frontend.staging.apps.hmcts.net/',
             'TAGS=@E2E15StagingCheck and not @skip',
-            'TEST_SPECS=cypress/e2e/functional/opal/features/release1c/aprManagement/AprManagementRemoval.feature'
+            'TEST_SPECS=cypress/e2e/functional/opal/features/release1c/aprManagement/*.feature'
         ]) {
             yarnBuilder.yarn('test:functional:tags')
         }
