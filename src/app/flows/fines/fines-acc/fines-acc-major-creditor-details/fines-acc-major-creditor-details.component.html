@@ -10,7 +10,7 @@
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter govuk-!-padding-left-0">
       <h2 opal-lib-custom-account-information-item-label>Account type:</h2>
       <p opal-lib-custom-account-information-item-value id="major-creditor-account-type">
-        {{ accountData.major_creditor.account_reference.display_name }}
+        {{ accountData.major_creditor.account_reference.creditor_account_display_name }}
       </p>
     </opal-lib-custom-account-information-item>
     <opal-lib-custom-account-information-item itemClasses="govuk-grid-column-one-quarter govuk-!-padding-left-0">
@@ -62,7 +62,9 @@
       <app-fines-acc-major-creditor-details-at-a-glance-tab
         [tabData]="tabData"
         [style]="tabContentStyles"
-        [centralFund]="accountData.major_creditor.account_reference.account_type === majorCreditorAccountTypes.CF"
+        [centralFund]="
+          accountData.major_creditor.account_reference.creditor_account_type === majorCreditorAccountTypes.CF
+        "
       ></app-fines-acc-major-creditor-details-at-a-glance-tab>
     }
   }

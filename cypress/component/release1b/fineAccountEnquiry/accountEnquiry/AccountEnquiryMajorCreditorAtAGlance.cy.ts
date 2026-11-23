@@ -48,7 +48,7 @@ describe('Major Creditor Account Summary - At a Glance Tab', () => {
       const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
       const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
 
-      header.major_creditor.account_reference.display_name = 'Major Creditor';
+      header.major_creditor.account_reference.creditor_account_display_name = 'Major Creditor';
       atAGlance.major_creditor.name = 'CPS Crown Prosecution Service';
       atAGlance.major_creditor.code = '9001';
       atAGlance.major_creditor.address.line_1 = '1 Test Road';
@@ -132,8 +132,8 @@ describe('Major Creditor Account Summary - At a Glance Tab', () => {
       const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
       const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
 
-      header.major_creditor.account_reference.account_type = 'CF';
-      header.major_creditor.account_reference.display_name = 'Central Fund';
+      header.major_creditor.account_reference.creditor_account_type = 'CF';
+      header.major_creditor.account_reference.creditor_account_display_name = 'Central Fund';
       atAGlance.major_creditor.name = 'Central Fund';
       atAGlance.major_creditor.code = '9001';
       atAGlance.major_creditor.address.line_1 = '1 Test Road';
