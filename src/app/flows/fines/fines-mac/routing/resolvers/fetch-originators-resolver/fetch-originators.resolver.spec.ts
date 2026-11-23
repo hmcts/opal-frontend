@@ -246,14 +246,14 @@ describe('fetchOriginatorsResolver', () => {
   );
 
   it.each([undefined, null, true, false, '', 'unexpected'])(
-    'should retain Legacy identifiers when app-mode is %s',
+    'should use Prosecutor Codes when app-mode is %s',
     async (appMode) => {
       globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: appMode, [RELEASE_1A_1_1_FEATURE_FLAG]: true });
       setAccountType(FINES_ACCOUNT_TYPES['Fixed Penalty']);
 
       const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
 
-      expect(result.refData.map((originator) => originator.originatorId)).toEqual([1865, 1223, 3523]);
+      expect(result.refData.map((originator) => originator.originatorId)).toEqual(['998', '123', '433']);
     },
   );
 
@@ -276,22 +276,6 @@ describe('fetchOriginatorsResolver', () => {
       expect(mockOpalFinesService.getProsecutorPrettyName).not.toHaveBeenCalled();
     },
   );
-
-  it('should load app mode before fetching and selecting prosecutor reference data', async () => {
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: true });
-    setAccountType(FINES_ACCOUNT_TYPES['Fixed Penalty']);
-    vi.mocked(TestBed.inject(LaunchDarklyService).initializeLaunchDarklyFlags).mockImplementationOnce(async () => {
-      globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: 'opal', [RELEASE_1A_1_1_FEATURE_FLAG]: true });
-    });
-    mockOpalFinesService.getProsecutors.mockImplementation(() => {
-      expect((globalStore.featureFlags() as Record<string, unknown>)[APP_MODE_FEATURE_FLAG]).toBe('opal');
-      return of(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK);
-    });
-
-    const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
-
-    expect(result).toEqual(FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK);
-  });
 
   it('should resolve local justice areas without filters when the originator type is not set', async () => {
     const originatorTypeForm = structuredClone(FINES_MAC_ORIGINATOR_TYPE_FORM);
