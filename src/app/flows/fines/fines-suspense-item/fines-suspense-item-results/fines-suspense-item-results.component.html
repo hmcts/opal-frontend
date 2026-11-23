@@ -1,5 +1,34 @@
-<opal-lib-govuk-back-link (clickEvent)="navigateBackToSearch()"></opal-lib-govuk-back-link>
+<div class="govuk-light-grey-background-colour govuk-!-padding-bottom-3 govuk-!-margin-bottom-6">
+  <opal-lib-govuk-back-link (clickEvent)="navigateBackToSearch()"></opal-lib-govuk-back-link>
+
+  <div class="govuk-!-padding-left-3 govuk-!-padding-right-3">
+    <div class="moj-search govuk-!-margin-bottom-3">
+      <opal-lib-govuk-text-input
+        class="govuk-!-display-inline-block"
+        labelText="Find suspense item"
+        labelClasses="govuk-label--s"
+        inputId="fsir_suspense_reference_number"
+        inputName="fsir_suspense_reference_number"
+        inputClasses="govuk-input--width-10 moj-search__input"
+        [control]="referenceControl"
+      ></opal-lib-govuk-text-input>
+      <opal-lib-govuk-button
+        buttonId="searchSuspenseItem"
+        type="button"
+        buttonClasses="moj-search__button govuk-!-static-margin-top-6"
+      >
+        Search
+      </opal-lib-govuk-button>
+    </div>
+
+    <p class="govuk-body-s govuk-!-margin-bottom-0">
+      Searching items for <strong>{{ businessUnitName() }}</strong>
+    </p>
+  </div>
+</div>
 
 <div class="govuk-grid-column-two-thirds">
-  <h1 class="govuk-heading-l">Suspense item results</h1>
+  <app-fines-suspense-item-results-not-found
+    [businessUnitName]="businessUnitName()"
+  ></app-fines-suspense-item-results-not-found>
 </div>

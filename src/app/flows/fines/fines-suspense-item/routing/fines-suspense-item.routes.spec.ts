@@ -98,7 +98,7 @@ describe('Suspense item navigation', () => {
     );
   });
 
-  it('opens the parameterised results URL with its page title and shell', async () => {
+  it('opens the parameterised results URL with its page title and not-found screen', async () => {
     const harness = await RouterTestingHarness.create();
 
     await harness.navigateByUrl('/fines/suspense-item/1234/results');
@@ -108,7 +108,7 @@ describe('Suspense item navigation', () => {
       '1234',
     );
     expect(TestBed.inject(Title).getTitle()).toBe('OPAL - Suspense item results');
-    expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('Suspense item results');
+    expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('Suspense item not found');
     expect(harness.routeNativeElement?.querySelector('opal-lib-govuk-back-link a')?.textContent?.trim()).toBe('Back');
     expect(getBusinessUnitsByPermission).not.toHaveBeenCalled();
   });
