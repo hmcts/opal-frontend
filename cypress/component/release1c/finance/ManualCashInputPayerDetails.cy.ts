@@ -4,7 +4,7 @@ import { IFinesMciSuspensePayment } from 'src/app/flows/fines/fines-mci/stores/i
 import { ManualCashInputLocators as Mci } from '../../../shared/selectors/finance.locators';
 import { setupFinancePageComponent } from './setup/SetupComponent';
 
-const TAGS = ['@JIRA-STORY:PO-3674', '@JIRA-LABEL:manual-cash-input', '@JIRA-EPIC:PO-2439', '@R1CFinancialMovements'];
+const TAGS = ['@JIRA-STORY:PO-3674', '@JIRA-LABEL:manual-cash-input', '@JIRA-EPIC:PO-2660', '@R1CFinancialMovements'];
 const PATH = '/fines/manual-cash-input/create/till/';
 const WARNING = 'WARNING: Are you sure you want to leave this page? Any information you entered will be lost.';
 const PAYMENT: IFinesMciSuspensePayment = {
@@ -168,7 +168,7 @@ describe('Manual Cash Input - Payer Details (Suspense)', () => {
           : namesOnly
             ? 'letters a to z, hyphens, spaces and apostrophes'
             : 'letters a to z, numbers, hyphens, spaces and apostrophes';
-      const invalidValues = field === 'postcode' ? ['A!', 'A-1', "A'1"] : namesOnly ? ['A1', 'A!'] : ['A!'];
+      const invalidValues = field === 'postcode' ? ['A!', 'A-1', "A'1", 'A’1'] : namesOnly ? ['A1', 'A!'] : ['A!'];
       invalidValues.forEach((invalidValue) => {
         cy.get(Mci.payerField(field)).clear().type(invalidValue);
         cy.get(Mci.continueButton).click();

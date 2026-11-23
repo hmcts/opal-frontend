@@ -87,9 +87,9 @@ Feature: Manual Cash Input - Create Till Accessibility
     And I check the page for accessibility
 
     Examples:
-      | type         | amount |
-      | overpayment  | 25.01  |
-      | underpayment | 24.99  |
+      | type          | amount |
+      | overpayment   | 25.01  |
+      | underpayment  | 24.99  |
 
   # PO-3675 AC1a: axe-core coverage for Check Suspense Payment.
   @JIRA-STORY:PO-3675 @JIRA-EPIC:PO-2660 @AC1a
