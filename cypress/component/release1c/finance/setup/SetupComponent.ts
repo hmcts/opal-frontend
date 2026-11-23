@@ -39,6 +39,7 @@ import { FinesMciCreateTillPayerDetailsComponent } from 'src/app/flows/fines/fin
 import { FinesMciPaymentCategoryCriminalSearchComponent } from 'src/app/flows/fines/fines-mci/fines-mci-payment-category-criminal-search/fines-mci-payment-category-criminal-search.component';
 import { FinesMciPaymentCategoryCriminalMatchesComponent } from 'src/app/flows/fines/fines-mci/fines-mci-payment-category-criminal-matches/fines-mci-payment-category-criminal-matches.component';
 import { finesMciCriminalAccountsResolver } from 'src/app/flows/fines/fines-mci/routing/resolvers/fines-mci-criminal-accounts/fines-mci-criminal-accounts.resolver';
+import { FinesMciCreateTillPayerDetailsComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-payer-details/fines-mci-create-till-payer-details.component';
 import { FinesMciPlaceholderComponent } from 'src/app/flows/fines/fines-mci/fines-mci-placeholder/fines-mci-placeholder.component';
 import { FinesMciStore } from 'src/app/flows/fines/fines-mci/stores/fines-mci.store';
 import { FinesApiStore } from 'src/app/flows/fines/fines-api/stores/fines-api.store';
