@@ -21,15 +21,23 @@ Feature: Finance Landing Page
     And I see the External banking interfaces section and its available links
 
   @JIRA-STORY:PO-8691 @JIRA-EPIC:PO-2439 @R1CBankingInterfaces
-  Scenario Outline: An authorised user can navigate to each banking interface journey
+  Scenario Outline: An authorised user can navigate to each banking file viewer
     # AC2, AC3, AC4 and AC6: each visible link opens its intended same-tab destination.
     When I select the Fines primary navigation item "Finance"
     Then I am taken to the "Finance" Fines landing page
     When I open the Finance banking interface link "<link>"
-    Then I see the following text on the page "<placeholder>"
+    Then I see the following text on the page "<heading>"
 
     Examples:
-      | link                         | placeholder              |
-      | Inbound files                | Inbound interface files  |
-      | Outbound files               | Outbound interface files |
-      | Upload variant banking files | Placeholder for File Upload    |
+      | link                         | heading                      |
+      | Inbound files                | Inbound interface files      |
+      | Outbound files               | Outbound interface files     |
+      | Upload variant banking files | Upload variant banking files |
+
+  @JIRA-STORY:PO-8684 @JIRA-EPIC:PO-3952 @R1CBankingInterfaces
+  Scenario: An authorised user can navigate to Variant Banking file upload
+    # PO-8684 AC1a: an authorised Finance user opens the real Variant Banking upload screen.
+    When I select the Fines primary navigation item "Finance"
+    Then I am taken to the "Finance" Fines landing page
+    When I open the Finance banking interface link "Upload variant banking files"
+    Then I see the following text on the page "Upload variant banking files"
