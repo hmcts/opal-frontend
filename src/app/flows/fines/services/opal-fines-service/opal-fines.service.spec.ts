@@ -37,6 +37,7 @@ import { IFinesMacReplaceAccountRequestPayload } from '../../fines-mac/services/
 import { OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK } from './mocks/opal-fines-patch-delete-account-payload.mock';
 import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD_MOCK } from './mocks/opal-fines-draft-accounts-patch-payload.mock';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from './mocks/opal-fines-prosecutor-ref-data.mock';
+import { IOpalFinesProsecutor } from './interfaces/opal-fines-prosecutor.interface';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from './mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from './mocks/opal-fines-account-minor-creditor-at-a-glance-with-defendant.mock';
@@ -1583,6 +1584,27 @@ describe('OpalFines', () => {
     const result = service.getProsecutorPrettyName(prosecutor);
 
     expect(result).toEqual(expectedPrettyName);
+  });
+
+  it.each(['001X', '0998'])('should retrieve and display prosecutor code %s without an ID', (code) => {
+    const prosecutor: IOpalFinesProsecutor = {
+      ...OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[0],
+      prosecutor_code: code,
+    };
+    delete prosecutor.prosecutor_id;
+    const response = { count: 1, ref_data: [prosecutor] };
+    let received: IOpalFinesProsecutor | undefined;
+
+    service.getProsecutors(77).subscribe((result) => {
+      received = result.ref_data[0];
+    });
+    const request = httpMock.expectOne(`${OPAL_FINES_PATHS.prosecutorRefData}?business_unit=77`);
+    expect(request.request.method).toBe('GET');
+    request.flush(response);
+
+    expect(received).toEqual(prosecutor);
+    expect(received).not.toHaveProperty('prosecutor_id');
+    expect(service.getProsecutorPrettyName(received!)).toBe(`Central ticket office (${code})`);
   });
 
   it.each([

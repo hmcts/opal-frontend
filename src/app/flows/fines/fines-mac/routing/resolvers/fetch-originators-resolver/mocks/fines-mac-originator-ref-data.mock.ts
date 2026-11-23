@@ -14,7 +14,7 @@ export const FINES_MAC_LJA_ORIGINATOR_REF_DATA_MOCK: IFinesMacOriginatorRefData 
 export const FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK: IFinesMacOriginatorRefData = {
   count: OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.count,
   refData: OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data.map((prosecutor) => ({
-    originatorId: prosecutor.prosecutor_id,
+    originatorId: prosecutor.prosecutor_code,
     name: prosecutor.name,
     displayName: `${prosecutor.name} (${prosecutor.prosecutor_code})`,
   })),

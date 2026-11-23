@@ -29,7 +29,7 @@ export const fetchOriginatorsResolver: ResolveFn<IFinesMacOriginatorRefData> = (
       map((prosecutors) => ({
         count: prosecutors.count,
         refData: prosecutors.ref_data.map((prosecutor) => ({
-          originatorId: prosecutor.prosecutor_id,
+          originatorId: prosecutor.prosecutor_code,
           name: prosecutor.name,
           displayName: opalFinesService.getProsecutorPrettyName(prosecutor),
         })),

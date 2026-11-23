@@ -124,8 +124,7 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
    * @returns The name of the originator if found, otherwise an empty string.
    */
   private getOriginatorName(originatorId: string | null): string {
-    const originatorIdNumber = Number(originatorId); // Convert string to number
-    const originator = this.originators.refData.find((item) => item.originatorId === originatorIdNumber);
+    const originator = this.originators.refData.find((item) => String(item.originatorId) === String(originatorId));
     return originator ? originator.name : '';
   }
 
@@ -137,7 +136,7 @@ export class FinesMacCourtDetailsFormComponent extends AbstractFormBaseComponent
     const originatorIdControl = this.form.get('fm_court_details_originator_id');
     const originatorId = originatorIdControl?.value;
 
-    if (originatorId && !this.originators.refData.some((item) => item.originatorId === Number(originatorId))) {
+    if (originatorId && !this.originators.refData.some((item) => String(item.originatorId) === String(originatorId))) {
       originatorIdControl.setValue(null);
       this.form.get('fm_court_details_originator_name')?.setValue(null);
     }

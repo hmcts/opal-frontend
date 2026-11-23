@@ -61,13 +61,41 @@ describe('FinesMacFixedPenaltyDetailsComponent', () => {
     finesMacStore.setFinesMacStore(FINES_MAC_STATE_MOCK);
 
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
-
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
+
+  it.each(['001X', '0998'])(
+    'should retain prosecutor code %s from the issuing authority through submission',
+    (code) => {
+      const issuingAuthority = {
+        originatorId: code,
+        name: 'Central ticket office',
+        displayName: `Central ticket office (${code})`,
+      };
+      TestBed.inject(ActivatedRoute).snapshot.data['originators'] = { count: 1, refData: [issuingAuthority] };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      vi.spyOn<any, any>(component, 'routerNavigate').mockImplementation(() => {});
+
+      fixture.detectChanges();
+
+      expect(component.issuingAuthoritiesData).toEqual([{ value: code, name: issuingAuthority.displayName }]);
+
+      formSubmit.formData.fm_fp_court_details_originator_id = code;
+      formSubmit.formData.fm_fp_court_details_originator_name = issuingAuthority.name;
+      component.handleFixedPenaltyDetailsSubmit(formSubmit);
+
+      expect(finesMacStore.courtDetails().formData).toMatchObject({
+        fm_court_details_originator_id: code,
+        fm_court_details_originator_name: issuingAuthority.name,
+        fm_court_details_imposing_court_id: formSubmit.formData.fm_fp_court_details_imposing_court_id,
+      });
+      expect(component['routerNavigate']).toHaveBeenCalledWith(FINES_MAC_ROUTING_PATHS.children.reviewAccount);
+    },
+  );
 
   it('should handlefixedPenaltyDetailsSubmit and navigate to account details', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

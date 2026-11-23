@@ -146,6 +146,34 @@ describe('FinesMacPayloadService', () => {
     expect(result).toEqual(buildExpectedAddRequest(finesMacPayloadAddAccountFixedPenalty));
   });
 
+  it.each(['001X', '0998', '1865'])(
+    'should preserve originator identifier %s when submitting, replacing and reopening a Fixed Penalty draft',
+    (originatorId) => {
+      if (!finesMacState || !service) {
+        throw new Error('Required mock states are not properly initialised');
+      }
+
+      finesMacState.originatorType.formData.fm_originator_type_originator_type = 'FP';
+      finesMacState.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES['Fixed Penalty'];
+      finesMacState.fixedPenaltyDetails.formData = structuredClone(FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK);
+      finesMacState.paymentTerms = structuredClone(FINES_MAC_PAYMENT_TERMS_FORM);
+      finesMacState.courtDetails.formData.fm_court_details_originator_id = originatorId;
+      const expectedAccount = { ...finesMacPayloadAddAccountFixedPenalty.account, originator_id: originatorId };
+
+      const submitted = service.buildAddAccountPayload(finesMacState);
+      const replaced = service.buildReplaceAccountPayload(finesMacState);
+      const restored = service.mapAccountPayload(
+        { ...finesMacPayloadAddAccountFixedPenalty, account: submitted.account },
+        null,
+        null,
+      );
+
+      expect(submitted.account).toEqual(expectedAccount);
+      expect(replaced.account).toEqual(expectedAccount);
+      expect(restored.courtDetails.formData.fm_court_details_originator_id).toBe(originatorId);
+    },
+  );
+
   it('should create a replace account payload', () => {
     if (!finesMacState || !finesMacPayloadAddAccount || !service) {
       throw new Error('Required mock states are not properly initialised');

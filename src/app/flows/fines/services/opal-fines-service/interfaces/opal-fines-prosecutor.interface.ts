@@ -1,5 +1,5 @@
 export interface IOpalFinesProsecutor {
-  prosecutor_id: number;
+  prosecutor_id?: number;
   name: string;
   prosecutor_code: string;
   address_line_1: string | null;

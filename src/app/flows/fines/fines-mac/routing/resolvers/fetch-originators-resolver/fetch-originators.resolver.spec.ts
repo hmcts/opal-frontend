@@ -8,6 +8,7 @@ import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types
 import { OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-local-justice-area-ref-data.mock';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-ref-data.mock';
 import { IOpalFinesProsecutor } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor.interface';
+import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
 import { IOpalFinesLocalJusticeArea } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area.interface';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { firstValueFrom, Observable, of } from 'rxjs';
@@ -143,6 +144,48 @@ describe('fetchOriginatorsResolver', () => {
     expect(mockOpalFinesService.getLocalJusticeAreas).toHaveBeenCalledWith(FETCH_SENDING_COURTS_LJA_TYPE_MAP.NEW.Fine);
     expect(mockOpalFinesService.getProsecutors).not.toHaveBeenCalled();
     expect(result).toEqual(FINES_MAC_LJA_ORIGINATOR_REF_DATA_MOCK);
+  });
+
+  it.each([true, false])(
+    'should use code-only prosecutors for Fixed Penalty when release-1a-1-1 is %s',
+    async (releaseEnabled) => {
+      globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: releaseEnabled });
+      setAccountType(FINES_ACCOUNT_TYPES['Fixed Penalty']);
+      const response: IOpalFinesProsecutorRefData = {
+        count: 2,
+        ref_data: ['001X', '0998'].map((code) => {
+          const prosecutor: IOpalFinesProsecutor = {
+            ...OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[0],
+            prosecutor_code: code,
+          };
+          delete prosecutor.prosecutor_id;
+          return prosecutor;
+        }),
+      };
+      mockOpalFinesService.getProsecutors.mockReturnValue(of(response));
+
+      const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
+
+      expect(result.refData.slice(0, 2)).toEqual([
+        { originatorId: '001X', name: 'Central ticket office', displayName: 'Central ticket office (001X)' },
+        { originatorId: '0998', name: 'Central ticket office', displayName: 'Central ticket office (0998)' },
+      ]);
+      expect(result.count).toBe(2 + (releaseEnabled ? 0 : FINES_MAC_LJA_ORIGINATOR_REF_DATA_MOCK.count));
+      expect(result.refData.slice(2)).toEqual(releaseEnabled ? [] : FINES_MAC_LJA_ORIGINATOR_REF_DATA_MOCK.refData);
+    },
+  );
+
+  it('should use prosecutor codes for Conditional Caution through the shared API integration', async () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: true });
+    setAccountType(FINES_ACCOUNT_TYPES['Conditional Caution']);
+    const prosecutor: IOpalFinesProsecutor = { ...OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[0] };
+    delete prosecutor.prosecutor_id;
+    mockOpalFinesService.getProsecutors.mockReturnValue(of({ count: 1, ref_data: [prosecutor] }));
+
+    const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
+
+    expect(result.refData[0].originatorId).toBe('998');
+    expect(mockOpalFinesService.getLocalJusticeAreas).not.toHaveBeenCalled();
   });
 
   it('should resolve local justice areas without filters when the originator type is not set', async () => {
