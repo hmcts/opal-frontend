@@ -767,6 +767,14 @@ withPipeline(type, product, component) {
         }
         env.BROWSER_TO_RUN = resolvePipelineBrowser()
         echo "Using browser for this pipeline run: ${env.BROWSER_TO_RUN}"
+        // Opt in to browser startup and spec compilation diagnostics for PR builds.
+        if (isPR && cachedPrLabels.contains('debug_cypress')) {
+            env.DEBUG = [
+              env.DEBUG,
+              'cypress:server:browsers*,cypress:launcher:*,cypress:server:preprocessor,cypress:webpack',
+            ].findAll { it }.join(commaSeparator)
+            echo 'Cypress startup diagnostics enabled by the debug_cypress PR label.'
+        }
         performArtifactOperations()
         setupTestSpecifications()
         script {

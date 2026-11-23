@@ -436,6 +436,7 @@ PR labels supported by the CNP pipeline:
 - `run_release:r1c_enforcement_operational_reporting_off`: run the `release-1c-enforcement-operational-reporting` disabled technical scenarios only
 - `run_tag:<expression>`: run a tagged functional subset; the pipeline always appends `not @skip`
 - `enable_legacy_mode`: switch the dev environment to legacy mode and point the legacy gateway at JCDE
+- `debug_cypress`: enable browser-startup and spec-compilation diagnostics in the Jenkins console for PR builds; preserves any existing `DEBUG` setting. Add or remove the label before rebuilding to enable or disable these extra diagnostics.
 - `test_authorisation`: route the default CNP functional selection to the `authorisation` functional area
 - `test_enq`: route the default CNP functional selection to the `accountEnquiry` / `fineAccountEnquiry` functional area
 - `test_remo`: route the default CNP functional selection to the `reciprocalMaintenance` functional area
