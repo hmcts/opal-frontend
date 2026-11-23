@@ -1,6 +1,17 @@
+import { Location } from '@angular/common';
+import { provideLocationMocks } from '@angular/common/testing';
+import { firstValueFrom, filter, take } from 'rxjs';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, Router, Routes } from '@angular/router';
+import {
+  NavigationEnd,
+  NavigationCancel,
+  NavigationSkipped,
+  provideRouter,
+  Router,
+  Routes,
+  withRouterConfig,
+} from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
@@ -57,7 +68,7 @@ async function openPaymentDetails(saved: IFinesMciCriminalPayment | null = null,
             {
               path: 'account/:accountId/:type',
               component: NavigationDestinationComponent,
-              canActivate: [finesMciCriminalAccountStateGuard],
+              canMatch: [finesMciCriminalAccountStateGuard],
             },
           ],
         },
@@ -66,7 +77,12 @@ async function openPaymentDetails(saved: IFinesMciCriminalPayment | null = null,
       ],
     },
   ];
-  TestBed.configureTestingModule({ providers: [provideRouter(routes)] });
+  TestBed.configureTestingModule({
+    providers: [
+      provideLocationMocks(),
+      provideRouter(routes, withRouterConfig({ canceledNavigationResolution: 'computed' })),
+    ],
+  });
   const store = TestBed.inject(FinesMciStore);
   store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
   store.ensureTill();
@@ -78,6 +94,8 @@ async function openPaymentDetails(saved: IFinesMciCriminalPayment | null = null,
   store.setSelectedCriminalAccountAtAGlance({ ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK, account_balance: 100 });
   store.setCriminalPayment(saved);
   const harness = await RouterTestingHarness.create();
+  TestBed.inject(Router).setUpLocationChangeListener();
+  await harness.navigateByUrl(`${TILL_ROOT}/${CRIMINAL_PATH}/account/1/${company ? 'company' : 'individual'}`);
   const component = await harness.navigateByUrl(PAYMENT_URL, FinesMciPaymentCategoryCriminalPaymentDetailsComponent);
   return { harness, component, store, router: TestBed.inject(Router) };
 }
@@ -179,6 +197,69 @@ describe('Criminal payment details navigation', () => {
       expect(confirm).not.toHaveBeenCalled();
     });
   }
+
+  it.each([true, false])('handles browser Back after Check Payment with leave confirmation %s', async (accepted) => {
+    const { harness, store, router } = await openPaymentDetails(PAYMENT);
+    const account = store.selectedCriminalAccount();
+    const tills = store.tills();
+    const businessUnit = store.businessUnit();
+    harness.routeNativeElement!.querySelector<HTMLButtonElement>('#submitForm')!.click();
+    await harness.fixture.whenStable();
+    expect(router.url).toBe(`${TILL_ROOT}/check-payment`);
+    expect(store.criminalPayment()).toEqual(PAYMENT);
+
+    const returned = firstValueFrom(
+      router.events.pipe(
+        filter((event) => event instanceof NavigationEnd),
+        take(1),
+      ),
+    );
+    TestBed.inject(Location).back();
+    await returned;
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(router.url).toBe(PAYMENT_URL);
+    expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#amount')!.value).toBe(PAYMENT.amount);
+
+    const page = harness.routeDebugElement!.componentInstance;
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(accepted);
+    const completed = firstValueFrom(
+      router.events.pipe(
+        filter((event) => event instanceof NavigationEnd || event instanceof NavigationCancel),
+        take(1),
+      ),
+    );
+    const restored = accepted
+      ? Promise.resolve()
+      : firstValueFrom(
+          router.events.pipe(
+            filter((event) => event instanceof NavigationSkipped),
+            take(1),
+          ),
+        );
+    TestBed.inject(Location).back();
+    await completed;
+    await restored;
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    expect(confirm).toHaveBeenCalledOnce();
+    expect(store.selectedCriminalAccount()).toEqual(account);
+    expect(store.tills()).toEqual(tills);
+    expect(store.businessUnit()).toEqual(businessUnit);
+    if (accepted) {
+      expect(router.url).toBe(`${TILL_ROOT}/${CRIMINAL_PATH}/account/1/individual`);
+      expect(store.criminalPayment()).toBeNull();
+      await harness.navigateByUrl(PAYMENT_URL);
+      expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#amount')!.value).toBe('');
+      expect(harness.routeNativeElement!.querySelector('input:checked')).toBeNull();
+    } else {
+      expect(router.url).toBe(PAYMENT_URL);
+      expect(harness.routeDebugElement!.componentInstance).toBe(page);
+      expect(store.criminalPayment()).toEqual(PAYMENT);
+      expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#amount')!.value).toBe(PAYMENT.amount);
+    }
+  });
 
   it('returns a company to its company confirmation screen', async () => {
     const { harness, component, router } = await openPaymentDetails(null, true);

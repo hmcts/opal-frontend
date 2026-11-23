@@ -116,7 +116,6 @@ export class FinesMciPaymentCategoryCriminalPaymentDetailsFormComponent
     const control = this.form.controls['amount'];
     const amount = String(control.value ?? '');
     if (control.invalid || this.accountBalance === null || !Number.isFinite(this.accountBalance)) return null;
-    if (!/^-?\d+(?:\.\d{0,2})?$/.test(amount)) return null;
     const [pounds, pence = ''] = amount.replace('-', '').split('.');
     const paid = (BigInt(pounds) * 100n + BigInt(pence.padEnd(2, '0'))) * (amount.startsWith('-') ? -1n : 1n);
     const difference = paid - BigInt(Math.round(this.accountBalance * 100));

@@ -545,4 +545,20 @@ describe('FinesMciCreateTillCourtFeeDetailsComponent', () => {
     expect(store.courtFeeDraft()).toBeNull();
     expect(store.draftJourney()).toBeNull();
   });
+
+  it('ignores resolver events when no Continue navigation is pending', () => {
+    const events = new Subject<ResolveStart>();
+    vi.spyOn(router, 'events', 'get').mockReturnValue(events.asObservable());
+    const component = render();
+    events.next(new ResolveStart(1, '/previous', '/next', {} as RouterStateSnapshot));
+    expect(component.stateUnsavedChanges).toBe(false);
+    expect(component.handleBeforeUnload()).toBe(true);
+  });
+
+  it('does not save or navigate when the entered amount cannot be compared', () => {
+    const component = render();
+    component.handleSubmit({ formData: { courtFeeId: 1, amountPaid: '-1', numberOfItems: '1' }, nestedFlow: false });
+    expect(router.navigate).not.toHaveBeenCalled();
+    expect(store.courtFeeDraft()).toBeNull();
+  });
 });

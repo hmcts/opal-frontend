@@ -290,4 +290,12 @@ describe('FinesMciCreateTillOverUnderpaymentConfirmationComponent', () => {
 
     expect(router.navigate).not.toHaveBeenCalled();
   });
+
+  it('ignores the underpayment return action when displaying an overpayment', () => {
+    store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: '30', numberOfItems: '2' });
+    render();
+    fixture.componentInstance.handleReturnToTill();
+    expect(router.navigate).not.toHaveBeenCalled();
+    expect(store.courtFeeDraft()?.amountPaid).toBe('30');
+  });
 });

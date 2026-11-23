@@ -210,4 +210,14 @@ describe('FinesFinanceInterfaceFilesBaseDirective', () => {
     expect(component.tableData()).toBeNull();
     expect(component.mapFilesToTableData).not.toHaveBeenCalled();
   });
+
+  it('uses empty reference data when no business units were resolved', () => {
+    fixture.destroy();
+    delete TestBed.inject(ActivatedRoute).snapshot.data['businessUnits'];
+    fixture = TestBed.createComponent(TestInterfaceFilesComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    expect(component.businessUnits).toEqual(permittedOptions);
+    expect(getPermittedBusinessUnitOptions).toHaveBeenLastCalledWith([]);
+  });
 });

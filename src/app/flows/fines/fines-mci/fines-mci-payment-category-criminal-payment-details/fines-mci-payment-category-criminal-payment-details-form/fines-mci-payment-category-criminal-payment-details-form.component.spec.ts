@@ -96,6 +96,7 @@ describe('FinesMciPaymentCategoryCriminalPaymentDetailsFormComponent', () => {
   });
   it.each([
     ['99.99', null],
+    ['-1.00', null],
     ['100', null],
     ['100.01', '£0.01'],
     ['110.10', '£10.10'],
@@ -111,6 +112,16 @@ describe('FinesMciPaymentCategoryCriminalPaymentDetailsFormComponent', () => {
     if (expected)
       expect(fixture.nativeElement.textContent).toContain(`This amount contains a ${expected} overpayment.`);
     else expect(fixture.nativeElement.textContent).not.toContain('overpayment');
+  });
+  it('hides the overpayment after the Amount control is reset', () => {
+    initialise(PAYMENT);
+    expect(component['overpayment']).toBe('£23.45');
+
+    component.form.controls['amount'].reset();
+    fixture.detectChanges();
+
+    expect(component.form.controls['amount'].hasError('required')).toBe(true);
+    expect(component['overpayment']).toBeNull();
   });
   it.each([null, NaN, Infinity])('hides overpayment when balance is unavailable: %s', (balance) => {
     initialise(PAYMENT);

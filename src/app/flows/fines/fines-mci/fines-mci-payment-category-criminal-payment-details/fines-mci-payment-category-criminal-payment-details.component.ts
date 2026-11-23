@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostListener, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
@@ -17,7 +17,7 @@ import { FinesMciPaymentCategoryCriminalPaymentDetailsFormComponent } from './fi
 })
 export class FinesMciPaymentCategoryCriminalPaymentDetailsComponent
   extends AbstractFormParentBaseComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   private readonly navigationRouter = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -68,11 +68,13 @@ export class FinesMciPaymentCategoryCriminalPaymentDetailsComponent
         FINES_MCI_ROUTING_PATHS.children.till,
         FINES_MCI_ROUTING_PATHS.children.checkPayment,
       ]);
-      if (!navigated) this.stateUnsavedChanges = true;
+      if (!navigated) {
+        this.isContinuing = false;
+        this.stateUnsavedChanges = true;
+      }
     } catch {
-      this.stateUnsavedChanges = true;
-    } finally {
       this.isContinuing = false;
+      this.stateUnsavedChanges = true;
     }
   }
 
@@ -103,5 +105,10 @@ export class FinesMciPaymentCategoryCriminalPaymentDetailsComponent
   /** Prevents closing the browser tab while criminal payment details have been entered. */
   public handleBeforeUnload(): boolean {
     return !this.isContinuing && !this.stateUnsavedChanges;
+  }
+
+  /** Discards abandoned drafts, including browser-history exits, while preserving payments passed to Check Payment. */
+  public ngOnDestroy(): void {
+    if (!this.isContinuing) this.finesMciStore.setCriminalPayment(null);
   }
 }

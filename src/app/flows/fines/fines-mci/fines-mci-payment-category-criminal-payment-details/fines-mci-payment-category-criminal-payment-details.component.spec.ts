@@ -77,6 +77,8 @@ describe('FinesMciPaymentCategoryCriminalPaymentDetailsComponent', () => {
 
     expect(fixture.componentInstance['canDeactivate']()).toBe(false);
     expect(fixture.componentInstance.handleBeforeUnload()).toBe(false);
+    fixture.destroy();
+    expect(store.criminalPayment()).toBeNull();
   });
 
   it.each([
@@ -161,6 +163,8 @@ describe('FinesMciPaymentCategoryCriminalPaymentDetailsComponent', () => {
     expect(store.criminalPayment()).toEqual(CRIMINAL_PAYMENT);
     expect(fixture.componentInstance.stateUnsavedChanges).toBe(true);
     expect(fixture.componentInstance.handleBeforeUnload()).toBe(false);
+    fixture.destroy();
+    expect(store.criminalPayment()).toBeNull();
   });
 
   it('ignores duplicate Continue submissions while navigation is pending', async () => {
@@ -273,4 +277,23 @@ describe('FinesMciPaymentCategoryCriminalPaymentDetailsComponent', () => {
     expect(store.draftJourney()).toBe('criminal');
     expect(store.criminalPayment()).toEqual(CRIMINAL_PAYMENT);
   });
+
+  it.each(['Back', 'Cancel'] as const)(
+    'retains the draft and leave protection when %s navigation fails',
+    async (action) => {
+      store.setDraftJourney('criminal');
+      store.setCriminalPayment(CRIMINAL_PAYMENT);
+      fixture.detectChanges();
+      vi.spyOn(router, 'navigate').mockRejectedValue(new Error('Navigation failed'));
+
+      if (action === 'Back') await fixture.componentInstance.handleBack();
+      else await fixture.componentInstance.handleCancel();
+
+      expect(store.criminalPayment()).toEqual(CRIMINAL_PAYMENT);
+      expect(store.draftJourney()).toBe('criminal');
+      expect(fixture.componentInstance['canDeactivate']()).toBe(false);
+      expect(fixture.componentInstance.handleBeforeUnload()).toBe(false);
+      expect(fixture.nativeElement.querySelector('#amount').value).toBe(CRIMINAL_PAYMENT.amount);
+    },
+  );
 });
