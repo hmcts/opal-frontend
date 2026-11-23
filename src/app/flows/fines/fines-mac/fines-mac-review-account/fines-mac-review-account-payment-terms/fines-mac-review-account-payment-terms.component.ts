@@ -67,6 +67,18 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
   public collectionOrderDate!: string;
 
   /**
+   * Returns the overall collection-order status shown in the summary.
+   * In read-only review, an order made today is an order that has been made,
+   * while the editable form keeps the separate answers unchanged.
+   */
+  public get isCollectionOrderMadeForSummary(): boolean {
+    return (
+      this.paymentTermsState.fm_payment_terms_collection_order_made === true ||
+      (this.isReadOnly && this.paymentTermsState.fm_payment_terms_collection_order_made_today === true)
+    );
+  }
+
+  /**
    * Sets up permissions for the component based on the user's state roles and business unit.
    *
    * This method extracts the business unit ID from the `businessUnit` object and checks if the

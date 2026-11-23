@@ -53,6 +53,9 @@ Feature: Adult Youth View Defendant Account Summary Journeys
     And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     And I open Check and Validate Draft Accounts
     And I open the draft account for "LNAME{uniq}, FNAME{uniq}" and see header "Mr FNAME{uniq} LNAME{uniq}"
+    Then I see the manual review "Payment terms" summary:
+      | Has a collection order been made? | Yes |
+      | Make collection order today       | Yes |
     And I record the following decision on the draft account:
       | Decision | Approve |
     Then the draft success banner is "You have approved FNAME{uniq} LNAME{uniqUpper}'s account"
