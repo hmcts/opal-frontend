@@ -14,6 +14,9 @@ import {
 } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { IComponentProperties } from '../setup/setupComponent.interface';
 import { setupAccountEnquiryComponent } from '../setup/SetupComponent';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { APP_MODE_FEATURE_FLAG } from '@app/flows/fines/constants/environment-feature-flags.constant';
+import { RELEASE_1B_1_1_FEATURE_FLAG } from '@app/flows/fines/constants/release-feature-flags.constant';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
@@ -121,6 +124,49 @@ describe('Account Enquiry Payment Terms - Payment card', () => {
       cy.get('h1').should('contain.text', 'Do you want to request a payment card for the defendant?');
       cy.contains('button', 'Yes - request a payment card').should('exist');
       cy.contains('a', 'No - cancel').should('exist');
+    },
+  );
+
+  it(
+    'shows a warning when a payment card has already been requested today',
+    { tags: [...buildTags('@JIRA-STORY:PO-11120')] },
+    () => {
+      const testDate = new Date();
+      const today = [
+        testDate.getFullYear(),
+        String(testDate.getMonth() + 1).padStart(2, '0'),
+        String(testDate.getDate()).padStart(2, '0'),
+      ].join('-');
+
+      const headerMock = structuredClone(createDefendantHeaderMockWithName('Robert', 'Thomson'));
+      headerMock.debtor_type = 'individual';
+      headerMock.payment_state_summary.account_balance = -500.58;
+      const paymentTermsMock = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_PAYMENT_TERMS_LATEST_MOCK);
+      paymentTermsMock.last_enforcement = 'REM';
+      paymentTermsMock.payment_card_last_requested = today;
+
+      const accountId = headerMock.defendant_account_party_id;
+      interceptAuthenticatedUser();
+      interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+      interceptDefendantHeader(accountId, headerMock, '123');
+      interceptPaymentTerms(accountId, paymentTermsMock, '123');
+      interceptResultByCode('REM');
+      setupAccountEnquiryComponent({
+        ...componentProperties,
+        accountId,
+        globalStoreFactory: () => {
+          const store = new GlobalStore();
+          store.setFeatureFlags({
+            [RELEASE_1B_1_1_FEATURE_FLAG]: true,
+            [APP_MODE_FEATURE_FLAG]: 'legacy',
+          });
+          return store;
+        },
+      });
+
+      cy.get('#payment-card-requested-today-warning')
+        .should('be.visible')
+        .and('contain.text', 'A payment card has already been requested today. You can still request another payment card if needed.');
     },
   );
 
