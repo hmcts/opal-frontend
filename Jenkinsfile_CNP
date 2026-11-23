@@ -152,6 +152,7 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
   (releaseSuiteR1aOff)                              : r1aOffTagExpression,
   (releaseSuiteR1a1_1Off)                           : r1a1_1OffTagExpression,
   (releaseSuiteR1a1_2Off)                           : r1a1_2OffTagExpression,
+  (releaseSuiteR1a1_3Off)                           : r1a1_3OffTagExpression,
   (releaseSuiteR1bOff)                              : r1bOffTagExpression,
   (releaseSuiteR1cWriteOffOff)                      : r1cWriteOffOffTagExpression,
   (releaseSuiteR1cEnforcementOperationalReportingOff): r1cEnforcementOperationalReportingOffTagExpression,
