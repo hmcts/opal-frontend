@@ -6,6 +6,12 @@ import { MCI_CONFIRM_INDIVIDUAL_MOCK, MCI_CONFIRM_COMPANY_MOCK } from './mocks/m
 import { MCI_CRIMINAL_URL, openMciAccount, mciAccountHeader, mciSearchAccount } from './setup/SetupMciAccount';
 
 const TAGS = ['@JIRA-STORY:PO-3530', '@JIRA-LABEL:manual-cash-input', '@JIRA-EPIC:PO-2439', '@R1CFinancialMovements'];
+const PO_3682_TAGS = [
+  '@JIRA-STORY:PO-3682',
+  '@JIRA-LABEL:manual-cash-input',
+  '@JIRA-EPIC:PO-2439',
+  '@R1CFinancialMovements',
+];
 const BUSINESS_UNIT = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
 const INHIBITED_BU = {
   ...BUSINESS_UNIT,
@@ -96,8 +102,7 @@ describe('Manual Cash Input - Non-consolidated restrictions', () => {
       cy.get(Mci.account.suspense).should('be.visible');
       cy.get(Mci.account.nextSteps).should('not.exist');
       cy.get(Mci.account.suspense).click();
-      cy.get('@financeRouter').its('url').should('eq', '/fines/manual-cash-input/create-allocate');
-      cy.contains('h1', 'Manual cash input').should('be.visible');
+      cy.get('@financeRouter').its('url').should('eq', '/fines/manual-cash-input/create/till/suspense-details');
     });
   });
 
@@ -186,13 +191,54 @@ describe('Manual Cash Input - Consolidated next steps and master', () => {
     cy.get(Mci.account.inlineError).should('not.exist');
   });
 
-  it('(AC9) returns the child suspense choice to landing without loading a master', { tags: TAGS }, () => {
+  it('(AC9) opens Suspense Details for the child suspense choice without loading a master', { tags: TAGS }, () => {
     openMciAccount(childAccount());
     cy.get(Mci.account.suspenseRadio).check();
     cy.get(Mci.account.continue).click();
-    cy.get('@financeRouter').its('url').should('eq', '/fines/manual-cash-input/create-allocate');
+    cy.get('@financeRouter').its('url').should('eq', '/fines/manual-cash-input/create/till/suspense-details');
     cy.get('@getMaster').should('not.have.been.called');
   });
+
+  it(
+    '(AC1a) clears criminal payment data from memory when a consolidated child continues to suspense',
+    { tags: PO_3682_TAGS },
+    () => {
+      openMciAccount(childAccount());
+      cy.get(Mci.account.suspenseRadio).check();
+      cy.get(Mci.account.continue).click();
+      cy.get('@financeRouter').its('url').should('eq', '/fines/manual-cash-input/create/till/suspense-details');
+      cy.get('@finesMciStore').should((store) => {
+        const state = store as InstanceType<typeof FinesMciStore>;
+        expect(state.criminalSearch()).to.be.null;
+        expect(state.criminalSearchResults()).to.be.null;
+        expect(state.selectedCriminalAccount()).to.be.null;
+        expect(state.selectedCriminalAccountAtAGlance()).to.be.null;
+        expect(state.selectedCriminalAccountHeader()).to.be.null;
+        expect(state.draftJourney()).to.equal('suspense');
+      });
+      cy.get('@getMaster').should('not.have.been.called');
+    },
+  );
+
+  it(
+    '(AC2a) clears criminal payment data from memory when a restricted account continues to suspense',
+    { tags: PO_3682_TAGS },
+    () => {
+      openMciAccount({ ...structuredClone(MCI_CONFIRM_INDIVIDUAL_MOCK), account_status_code: 'WO' });
+      cy.get(Mci.account.suspense).click();
+      cy.get('@financeRouter').its('url').should('eq', '/fines/manual-cash-input/create/till/suspense-details');
+      cy.get('@finesMciStore').should((store) => {
+        const state = store as InstanceType<typeof FinesMciStore>;
+        expect(state.criminalSearch()).to.be.null;
+        expect(state.criminalSearchResults()).to.be.null;
+        expect(state.selectedCriminalAccount()).to.be.null;
+        expect(state.selectedCriminalAccountAtAGlance()).to.be.null;
+        expect(state.selectedCriminalAccountHeader()).to.be.null;
+        expect(state.draftJourney()).to.equal('suspense');
+      });
+      cy.get('@getMaster').should('not.have.been.called');
+    },
+  );
 
   it(
     '(AC3, AC8a, AC12) replaces child details with an eligible company master and confirms its ID',

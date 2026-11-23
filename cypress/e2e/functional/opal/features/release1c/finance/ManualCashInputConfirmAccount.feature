@@ -7,7 +7,6 @@ Feature: Manual Cash Input - Confirm account and payment restrictions
     And I am taken to the "Finance" Fines landing page
     And I open Manual Cash Input
     And I create a till for account confirmation
-    And I select "Camden and Islington"
     And I continue
     And I add a payment to the till
     And I continue with payment category "criminal"
@@ -47,6 +46,18 @@ Feature: Manual Cash Input - Confirm account and payment restrictions
   Scenario: A consolidated child can pay into suspense
     When I select a Manual Cash Input account that is "consolidated"
     And I pay the consolidated Manual Cash Input account into suspense
+
+  @JIRA-STORY:PO-3682 @AC1
+  Scenario: AC1 - a consolidated child can continue to Suspense Details
+    When I select a Manual Cash Input account that is "consolidated"
+    And I pay the consolidated Manual Cash Input account into suspense
+    Then I see Suspense Details
+
+  @JIRA-STORY:PO-3682 @AC2
+  Scenario: AC2 - a payment-restricted account can continue to Suspense Details
+    When I select a Manual Cash Input account that is "written off"
+    And I pay the restricted Manual Cash Input account into suspense
+    Then I see Suspense Details
 
   @AC11
   Scenario: Back retains the original search results
