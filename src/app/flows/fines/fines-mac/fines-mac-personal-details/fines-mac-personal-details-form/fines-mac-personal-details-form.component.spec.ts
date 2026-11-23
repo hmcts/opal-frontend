@@ -104,6 +104,8 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   });
 
   it('should use the 11-character vehicle registration limit when release-1a-1-2 is disabled', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+    fixture.detectChanges();
     const registrationControl = component.form.get('fm_personal_details_vehicle_registration_mark');
     registrationControl?.setValue('12345678901');
     expect(registrationControl?.hasError('maxlength')).toBe(false);
@@ -135,6 +137,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   });
 
   it('should refresh registration validation and its message when the release flag changes', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
     const registrationControl = component.form.get('fm_personal_details_vehicle_registration_mark');
     registrationControl?.setValue('12345678');
     expect(registrationControl?.hasError('maxlength')).toBe(false);
@@ -744,6 +747,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   });
 
   it('should emit nested flow form submit event with form value', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
     const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
     formSubmit.nestedFlow = true;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -761,6 +765,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   });
 
   it('should emit standard flow form submit event with form value', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
     const event = {} as SubmitEvent;
     formSubmit.nestedFlow = false;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
