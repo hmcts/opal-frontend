@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormGroup } from '@angular/forms';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
@@ -792,5 +793,201 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     component['setIssuingAuthorityName']();
 
     expect(component.form.get('fm_fp_court_details_originator_name')?.value).toBe('');
+  });
+
+  it.each([
+    [true, 500],
+    [false, 1000],
+  ] as const)(
+    'should set fixed penalty account notes maximum length to %i when release-1a-1-2 is %s',
+    (releaseEnabled, expectedMaxLength) => {
+      globalStore.setFeatureFlags({
+        [RELEASE_1A_1_2_FEATURE_FLAG]: releaseEnabled,
+      });
+
+      fixture.detectChanges();
+
+      const notesTextarea: HTMLTextAreaElement = fixture.debugElement.query(
+        By.css('textarea[id="fm_fp_account_comments_notes_notes"]'),
+      ).nativeElement;
+
+      expect(notesTextarea.maxLength).toBe(expectedMaxLength);
+    },
+  );
+
+  it('should reject fixed penalty account notes exceeding 500 characters when release-1a-1-2 is enabled', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+    });
+
+    const testFixture = TestBed.createComponent(FinesMacFixedPenaltyDetailsFormComponent);
+    const testComponent = testFixture.componentInstance;
+
+    testFixture.detectChanges();
+
+    const notesControl = testComponent.form.get('fm_fp_account_comments_notes_notes');
+
+    notesControl?.setValue('A'.repeat(500));
+    expect(notesControl?.hasError('maxlength')).toBe(false);
+
+    notesControl?.setValue('A'.repeat(501));
+    expect(notesControl?.hasError('maxlength')).toBe(true);
+
+    testFixture.destroy();
+  });
+
+  it('should allow 1000 characters and reject 1001 when release-1a-1-2 is disabled', () => {
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+    });
+
+    const testFixture = TestBed.createComponent(FinesMacFixedPenaltyDetailsFormComponent);
+    const testComponent = testFixture.componentInstance;
+
+    testComponent.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
+    testComponent.enforcingCourtAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
+    testComponent.issuingAuthorityAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
+
+    testFixture.detectChanges();
+
+    const notesControl = testComponent.form.get('fm_fp_account_comments_notes_notes');
+
+    notesControl?.setValue('A'.repeat(1000));
+    expect(notesControl?.hasError('maxlength')).toBe(false);
+
+    notesControl?.setValue('A'.repeat(1001));
+    expect(notesControl?.hasError('maxlength')).toBe(true);
+
+    testFixture.destroy();
+  });
+
+  it('should update fixed penalty account notes validation when the feature flag changes', () => {
+    const notesControl = component.form.get('fm_fp_account_comments_notes_notes');
+
+    expect(notesControl).toBeTruthy();
+
+    // Initially enabled: 500 characters
+    notesControl!.setValue('A'.repeat(750));
+    expect(notesControl!.hasError('maxlength')).toBe(true);
+
+    // Change the flag without recreating the component
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+    });
+
+    fixture.detectChanges();
+
+    // Disabled: 1000 characters
+    expect(notesControl!.hasError('maxlength')).toBe(false);
+
+    const notesTextarea: HTMLTextAreaElement = fixture.debugElement.query(
+      By.css('textarea[id="fm_fp_account_comments_notes_notes"]'),
+    ).nativeElement;
+
+    expect(notesTextarea.maxLength).toBe(1000);
+
+    expect(component['fieldErrors'].fm_fp_account_comments_notes_notes['maxlength']?.message).toBe(
+      'Add account note must be 1000 characters or fewer',
+    );
+  });
+
+  it('should preserve ASCII and maximum-length validation for fixed penalty account notes', () => {
+    const notesControl = component.form.get('fm_fp_account_comments_notes_notes');
+
+    expect(notesControl).toBeTruthy();
+
+    // Invalid character, within the 500-character limit
+    notesControl!.setValue('Café');
+    expect(notesControl!.hasError('singleAsciiCharacters')).toBe(true);
+
+    // Valid characters, exceeding the 500-character limit
+    notesControl!.setValue('A'.repeat(501));
+    expect(notesControl!.hasError('maxlength')).toBe(true);
+
+    // Valid characters, within the limit
+    notesControl!.setValue('A'.repeat(500));
+    expect(notesControl!.valid).toBe(true);
+  });
+
+  it('should clear displayed fixed penalty account note errors when the feature flag increases the limit', () => {
+    const notesControl = component.form.get('fm_fp_account_comments_notes_notes');
+
+    expect(notesControl).toBeTruthy();
+
+    // Initially enabled: 500 characters
+    notesControl!.setValue('A'.repeat(750));
+
+    // Simulate an unsuccessful submission displaying validation errors
+    component['handleErrorMessages']();
+
+    expect(component['formErrorSummaryMessage']).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          fieldId: 'fm_fp_account_comments_notes_notes',
+          message: 'Add account note must be 500 characters or fewer',
+        }),
+      ]),
+    );
+
+    // Disable the feature flag: maximum increases to 1000
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+    });
+
+    fixture.detectChanges();
+
+    expect(notesControl!.valid).toBe(true);
+
+    expect(
+      component['formErrorSummaryMessage'].some(
+        (error: { fieldId: string }) => error.fieldId === 'fm_fp_account_comments_notes_notes',
+      ),
+    ).toBe(false);
+  });
+
+  it('should safely return when the fixed penalty account notes control is missing', () => {
+    const originalForm = component.form;
+
+    try {
+      component.form = new FormGroup({});
+
+      expect(() => component['updateAccountNotesValidation'](500)).not.toThrow();
+    } finally {
+      component.form = originalForm;
+    }
+  });
+
+  it('should update the fixed penalty remaining character counter when the feature flag changes', () => {
+    const notesControl = component.form.get('fm_fp_account_comments_notes_notes');
+
+    expect(notesControl).toBeTruthy();
+
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+    });
+
+    notesControl!.setValue('A'.repeat(100));
+    fixture.detectChanges();
+
+    const getRemainingCount = () => {
+      const textarea = fixture.nativeElement.querySelector(
+        '#fm_fp_account_comments_notes_notes',
+      ) as HTMLTextAreaElement;
+
+      const counter = textarea.closest('.govuk-character-count')?.querySelector('.govuk-character-count__status');
+
+      return counter?.textContent?.trim();
+    };
+
+    expect(getRemainingCount()).toContain('900 characters remaining');
+
+    globalStore.setFeatureFlags({
+      [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+    });
+
+    fixture.detectChanges();
+
+    expect(getRemainingCount()).toContain('400 characters remaining');
+    expect(notesControl!.value).toBe('A'.repeat(100));
   });
 });
