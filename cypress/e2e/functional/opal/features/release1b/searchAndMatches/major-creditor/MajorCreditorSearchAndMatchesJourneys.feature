@@ -28,5 +28,5 @@ Feature: Major Creditor Search And Matches Journeys
       | placeholder                         | placeholder                | placeholder                  |
     @R1BDrop2UatTechPreprod
     Examples:
-      | LEGACY_MAJOR_CREDITOR_BUSINESS_UNIT | LEGACY_MAJOR_CREDITOR_NAME      | LEGACY_MAJOR_CREDITOR_HEADER    |
-      | West London                         | Crown Prosecution Service (CPS) | Crown Prosecution Service (CPS) |
+      | LEGACY_MAJOR_CREDITOR_BUSINESS_UNIT | LEGACY_MAJOR_CREDITOR_NAME      | LEGACY_MAJOR_CREDITOR_HEADER |
+      | West London                         | Crown Prosecution Service (CPS) | Crown Prosecution Service    |
