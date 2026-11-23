@@ -80,7 +80,7 @@ describe('FinesAccDefendantDetailsPaymentTermsTabComponent', () => {
   it('should show a warning when a payment card was requested today with R1B 1.1 enabled in legacy mode', () => {
     TestBed.inject(GlobalStore).setFeatureFlags({
       [RELEASE_1B_FEATURE_FLAG]: false,
-      'release-1b-1.1': true,
+      'release-1b-1-1': true,
       [APP_MODE_FEATURE_FLAG]: 'legacy',
     });
     const dateService = TestBed.inject(DateService);
