@@ -1655,14 +1655,14 @@ describe('OpalFines', () => {
   });
 
   it.each([undefined, null, true, false, '', 'unexpected'])(
-    'should reuse the Legacy prosecutor cache when app-mode is %s',
+    'should reuse the Opal prosecutor cache when app-mode is %s',
     (appMode) => {
       const globalStore = TestBed.inject(GlobalStore);
       const prosecutor: IOpalFinesProsecutor = { ...OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[0] };
-      delete prosecutor.prosecutor_code;
+      delete prosecutor.prosecutor_id;
       const response = { count: 1, ref_data: [prosecutor] };
       const apiUrl = `${OPAL_FINES_PATHS.prosecutorRefData}?business_unit=77`;
-      globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: 'legacy' });
+      globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: 'opal' });
       service.getProsecutors(77).subscribe();
       httpMock.expectOne(apiUrl).flush(response);
       globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: appMode });

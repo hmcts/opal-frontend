@@ -7,7 +7,6 @@ import { IFetchMapFinesMacPayload } from './interfaces/fetch-map-fines-mac-paylo
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_MAC_OFFENCE_DETAILS_RESULTS_CODES } from '../../../fines-mac-offence-details/constants/fines-mac-offence-details-result-codes.constant';
 import { GLOBAL_ERROR_STATE } from '@hmcts/opal-frontend-common/stores/global/constants';
-import { resolveAppMode } from '@app/flows/fines/routing/guards/helpers/resolve-app-mode.helper';
 
 export const fetchMapFinesMacPayloadResolver: ResolveFn<IFetchMapFinesMacPayload> = async (
   route: ActivatedRouteSnapshot,
@@ -15,7 +14,6 @@ export const fetchMapFinesMacPayloadResolver: ResolveFn<IFetchMapFinesMacPayload
   const globalStore = inject(GlobalStore);
   const opalFinesService = inject(OpalFines);
   const finesMacPayloadService = inject(FinesMacPayloadService);
-  const appModeReady = resolveAppMode();
 
   // Extract the `draftAccountId` from the route parameters
   const draftAccountId = Number(route.paramMap.get('draftAccountId'));
@@ -44,7 +42,6 @@ export const fetchMapFinesMacPayloadResolver: ResolveFn<IFetchMapFinesMacPayload
     const finesMacState = finesMacPayloadService.mapAccountPayload(draftAccount, businessUnit, offencesData);
 
     // Fetch courts, major creditors, local justice areas, results, and prosecutors data
-    await appModeReady;
     const [courts, majorCreditors, localJusticeAreas, results, prosecutors] = await firstValueFrom(
       forkJoin([
         opalFinesService.getCourts(businessUnitId),

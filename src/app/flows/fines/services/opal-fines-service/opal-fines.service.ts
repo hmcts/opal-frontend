@@ -894,7 +894,7 @@ export class OpalFines {
    */
   public getProsecutors(business_unit: number): Observable<IOpalFinesProsecutorRefData> {
     const flags = this.globalStore.featureFlags() as Record<string, unknown>;
-    const appMode = flags[APP_MODE_FEATURE_FLAG] === 'opal' ? 'opal' : 'legacy';
+    const appMode = flags[APP_MODE_FEATURE_FLAG] === 'legacy' ? 'legacy' : 'opal';
     const cacheKey = `${appMode}:${business_unit}`;
 
     if (!this.cache.prosecutorDataCache$[cacheKey]) {
