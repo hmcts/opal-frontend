@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { ResolveFn } from '@angular/router';
 import { FINES_ACCOUNT_TYPES } from '@app/flows/fines/constants/fines-account-types.constant';
+import { APP_MODE_FEATURE_FLAG } from '@app/flows/fines/constants/environment-feature-flags.constant';
 import { RELEASE_1A_1_1_FEATURE_FLAG } from '@app/flows/fines/constants/release-feature-flags.constant';
 import { LaunchDarklyService } from '@hmcts/opal-frontend-common/services/launch-darkly-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
@@ -59,9 +60,7 @@ describe('fetchOriginatorsResolver', () => {
     mockOpalFinesService = {
       getProsecutors: vi.fn().mockReturnValue(of(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK)),
       getLocalJusticeAreas: vi.fn().mockReturnValue(of(OPAL_FINES_LOCAL_JUSTICE_AREA_REF_DATA_MOCK)),
-      getProsecutorPrettyName: vi.fn(
-        (prosecutor: IOpalFinesProsecutor) => `${prosecutor.name} (${prosecutor.prosecutor_code})`,
-      ),
+      getProsecutorPrettyName: vi.fn(OpalFines.prototype.getProsecutorPrettyName),
       getLocalJusticeAreaPrettyName: vi.fn(
         (localJusticeArea: IOpalFinesLocalJusticeArea) =>
           `${localJusticeArea.name} (${localJusticeArea.local_justice_area_id})`,
@@ -89,7 +88,7 @@ describe('fetchOriginatorsResolver', () => {
   });
 
   it('should resolve prosecutors only for a Conditional Caution account when release-1a-1-1 is enabled', async () => {
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: true });
+    globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: 'opal', [RELEASE_1A_1_1_FEATURE_FLAG]: true });
     setAccountType(FINES_ACCOUNT_TYPES['Conditional Caution']);
 
     const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
@@ -100,7 +99,7 @@ describe('fetchOriginatorsResolver', () => {
   });
 
   it('should resolve local justice areas for a Conditional Caution account when release-1a-1-1 is disabled', async () => {
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: false });
+    globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: 'opal', [RELEASE_1A_1_1_FEATURE_FLAG]: false });
     setAccountType(FINES_ACCOUNT_TYPES['Conditional Caution']);
 
     const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
@@ -113,7 +112,7 @@ describe('fetchOriginatorsResolver', () => {
   });
 
   it('should resolve prosecutors only for a Fixed Penalty account when release-1a-1-1 is enabled', async () => {
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: true });
+    globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: 'opal', [RELEASE_1A_1_1_FEATURE_FLAG]: true });
     setAccountType(FINES_ACCOUNT_TYPES['Fixed Penalty']);
 
     const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
@@ -124,7 +123,7 @@ describe('fetchOriginatorsResolver', () => {
   });
 
   it('should combine prosecutors and local justice areas for a Fixed Penalty account when release-1a-1-1 is disabled', async () => {
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: false });
+    globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: 'opal', [RELEASE_1A_1_1_FEATURE_FLAG]: false });
     setAccountType(FINES_ACCOUNT_TYPES['Fixed Penalty']);
 
     const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
@@ -149,7 +148,7 @@ describe('fetchOriginatorsResolver', () => {
   it.each([true, false])(
     'should use code-only prosecutors for Fixed Penalty when release-1a-1-1 is %s',
     async (releaseEnabled) => {
-      globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: releaseEnabled });
+      globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: 'opal', [RELEASE_1A_1_1_FEATURE_FLAG]: releaseEnabled });
       setAccountType(FINES_ACCOUNT_TYPES['Fixed Penalty']);
       const response: IOpalFinesProsecutorRefData = {
         count: 2,
@@ -175,17 +174,123 @@ describe('fetchOriginatorsResolver', () => {
     },
   );
 
-  it('should use prosecutor codes for Conditional Caution through the shared API integration', async () => {
+  it.each(['legacy', 'opal'])(
+    'should use the %s prosecutor contract for Conditional Caution through the shared API integration',
+    async (appMode) => {
+      globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: appMode, [RELEASE_1A_1_1_FEATURE_FLAG]: true });
+      setAccountType(FINES_ACCOUNT_TYPES['Conditional Caution']);
+      const prosecutor: IOpalFinesProsecutor = { ...OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[0] };
+      if (appMode === 'opal') {
+        delete prosecutor.prosecutor_id;
+      } else {
+        delete prosecutor.prosecutor_code;
+      }
+      mockOpalFinesService.getProsecutors.mockReturnValue(of({ count: 1, ref_data: [prosecutor] }));
+
+      const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
+
+      expect(result.refData[0].originatorId).toBe(appMode === 'opal' ? '998' : 1865);
+      expect(result.refData[0].displayName).toBe(
+        appMode === 'opal' ? 'Central ticket office (998)' : 'Central ticket office (1865)',
+      );
+      expect(mockOpalFinesService.getLocalJusticeAreas).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each(
+    ['legacy', 'opal'].flatMap((appMode) => [true, false].map((releaseEnabled) => ({ appMode, releaseEnabled }))),
+  )(
+    'should select the $appMode identifier when both fields exist and release-1a-1-1 is $releaseEnabled',
+    async ({ appMode, releaseEnabled }) => {
+      globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: appMode, [RELEASE_1A_1_1_FEATURE_FLAG]: releaseEnabled });
+      setAccountType(FINES_ACCOUNT_TYPES['Fixed Penalty']);
+      mockOpalFinesService.getProsecutors.mockReturnValue(
+        of({
+          count: 1,
+          ref_data: [
+            { ...OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[0], prosecutor_id: 1865, prosecutor_code: '0998' },
+          ],
+        }),
+      );
+
+      const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
+
+      expect(result.refData[0]).toEqual({
+        originatorId: appMode === 'opal' ? '0998' : 1865,
+        name: 'Central ticket office',
+        displayName: 'Central ticket office (0998)',
+      });
+      expect(result.refData.slice(1)).toEqual(releaseEnabled ? [] : FINES_MAC_LJA_ORIGINATOR_REF_DATA_MOCK.refData);
+      expect(result.count).toBe(result.refData.length);
+    },
+  );
+
+  it.each([true, false])(
+    'should use ID-only prosecutors in Legacy mode when release-1a-1-1 is %s',
+    async (releaseEnabled) => {
+      globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: 'legacy', [RELEASE_1A_1_1_FEATURE_FLAG]: releaseEnabled });
+      setAccountType(FINES_ACCOUNT_TYPES['Fixed Penalty']);
+      const prosecutor: IOpalFinesProsecutor = { ...OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[0] };
+      delete prosecutor.prosecutor_code;
+      mockOpalFinesService.getProsecutors.mockReturnValue(of({ count: 1, ref_data: [prosecutor] }));
+
+      const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
+
+      expect(result.refData[0]).toEqual({
+        originatorId: 1865,
+        name: 'Central ticket office',
+        displayName: 'Central ticket office (1865)',
+      });
+      expect(result.refData.slice(1)).toEqual(releaseEnabled ? [] : FINES_MAC_LJA_ORIGINATOR_REF_DATA_MOCK.refData);
+    },
+  );
+
+  it.each([undefined, null, true, false, '', 'unexpected'])(
+    'should retain Legacy identifiers when app-mode is %s',
+    async (appMode) => {
+      globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: appMode, [RELEASE_1A_1_1_FEATURE_FLAG]: true });
+      setAccountType(FINES_ACCOUNT_TYPES['Fixed Penalty']);
+
+      const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
+
+      expect(result.refData.map((originator) => originator.originatorId)).toEqual([1865, 1223, 3523]);
+    },
+  );
+
+  it.each(['legacy', 'opal'])(
+    'should not fall back to the other identifier when the %s identifier is absent',
+    async (appMode) => {
+      globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: appMode, [RELEASE_1A_1_1_FEATURE_FLAG]: true });
+      setAccountType(FINES_ACCOUNT_TYPES['Fixed Penalty']);
+      const prosecutor: IOpalFinesProsecutor = { ...OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[0] };
+      if (appMode === 'opal') {
+        delete prosecutor.prosecutor_code;
+      } else {
+        delete prosecutor.prosecutor_id;
+      }
+      mockOpalFinesService.getProsecutors.mockReturnValue(of({ count: 1, ref_data: [prosecutor] }));
+
+      const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
+
+      expect(result).toEqual({ count: 0, refData: [] });
+      expect(mockOpalFinesService.getProsecutorPrettyName).not.toHaveBeenCalled();
+    },
+  );
+
+  it('should load app mode before fetching and selecting prosecutor reference data', async () => {
     globalStore.setFeatureFlags({ [RELEASE_1A_1_1_FEATURE_FLAG]: true });
-    setAccountType(FINES_ACCOUNT_TYPES['Conditional Caution']);
-    const prosecutor: IOpalFinesProsecutor = { ...OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[0] };
-    delete prosecutor.prosecutor_id;
-    mockOpalFinesService.getProsecutors.mockReturnValue(of({ count: 1, ref_data: [prosecutor] }));
+    setAccountType(FINES_ACCOUNT_TYPES['Fixed Penalty']);
+    vi.mocked(TestBed.inject(LaunchDarklyService).initializeLaunchDarklyFlags).mockImplementationOnce(async () => {
+      globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: 'opal', [RELEASE_1A_1_1_FEATURE_FLAG]: true });
+    });
+    mockOpalFinesService.getProsecutors.mockImplementation(() => {
+      expect((globalStore.featureFlags() as Record<string, unknown>)[APP_MODE_FEATURE_FLAG]).toBe('opal');
+      return of(OPAL_FINES_PROSECUTOR_REF_DATA_MOCK);
+    });
 
     const result = await firstValueFrom(executeResolver(route, state) as Observable<IFinesMacOriginatorRefData>);
 
-    expect(result.refData[0].originatorId).toBe('998');
-    expect(mockOpalFinesService.getLocalJusticeAreas).not.toHaveBeenCalled();
+    expect(result).toEqual(FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK);
   });
 
   it('should resolve local justice areas without filters when the originator type is not set', async () => {

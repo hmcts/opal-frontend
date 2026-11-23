@@ -1,7 +1,7 @@
 import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
 
-export const OPAL_FINES_PROSECUTOR_REF_DATA_MOCK: IOpalFinesProsecutorRefData = {
-  count: 4,
+export const OPAL_FINES_PROSECUTOR_REF_DATA_MOCK = {
+  count: 3,
   ref_data: [
     {
       prosecutor_id: 1865,
@@ -40,4 +40,4 @@ export const OPAL_FINES_PROSECUTOR_REF_DATA_MOCK: IOpalFinesProsecutorRefData = 
       end_date: null,
     },
   ],
-};
+} satisfies IOpalFinesProsecutorRefData;
