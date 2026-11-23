@@ -15,11 +15,17 @@ import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from '@services/fines/opal-fines-
 import { OPAL_FINES_PROSECUTOR_PRETTY_NAME_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-prosecutor-pretty-name.mock';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
+import { APP_MODE_FEATURE_FLAG } from '../../../constants/environment-feature-flags.constant';
+import { IOpalFinesProsecutor } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor.interface';
 
 describe('FinesMacReviewAccountCourtDetailsComponent', () => {
   let component: FinesMacReviewAccountCourtDetailsComponent;
   let fixture: ComponentFixture<FinesMacReviewAccountCourtDetailsComponent>;
   let mockOpalFinesService: Partial<OpalFines>;
+  let globalStore: GlobalStoreType;
+  const prosecutorAccountTypes = [FINES_ACCOUNT_TYPES['Fixed Penalty'], FINES_ACCOUNT_TYPES['Conditional Caution']];
 
   beforeEach(async () => {
     mockOpalFinesService = {
@@ -44,6 +50,8 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
       ],
     }).compileComponents();
 
+    globalStore = TestBed.inject(GlobalStore);
+    globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: 'opal' });
     fixture = TestBed.createComponent(FinesMacReviewAccountCourtDetailsComponent);
     component = fixture.componentInstance;
 
@@ -100,6 +108,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
 
   it.each(['001X', '0998'])('should review a prosecutor using code %s', (code) => {
     const prosecutor = { ...component.prosecutorsData.ref_data[0], prosecutor_code: code };
+    delete prosecutor.prosecutor_id;
     component.prosecutorsData = { count: 1, ref_data: [prosecutor] };
     component.courtDetails.fm_court_details_originator_id = code;
     component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
@@ -131,31 +140,123 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     expect(mockOpalFinesService.getProsecutorPrettyName).not.toHaveBeenCalled();
   });
 
-  it.each([true, false])(
-    'should disambiguate an overlapping prosecutor code and LJA ID using the stored prosecutor name: %s',
-    (storedProsecutorName) => {
+  it.each(
+    prosecutorAccountTypes.flatMap((accountType) =>
+      ['1865', '01865'].map((originatorId) => ({ accountType, originatorId })),
+    ),
+  )(
+    'should review an ID-only Legacy prosecutor for $accountType with ID $originatorId',
+    ({ accountType, originatorId }) => {
+      globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: 'legacy' });
+      const prosecutor = { ...component.prosecutorsData.ref_data[0], prosecutor_id: 1865 };
+      delete prosecutor.prosecutor_code;
+      component.prosecutorsData = { count: 1, ref_data: [prosecutor] };
+      component.courtDetails.fm_court_details_originator_id = originatorId;
+      component.accountType = accountType;
+
+      fixture.detectChanges();
+
+      expect(mockOpalFinesService.getProsecutorPrettyName).toHaveBeenCalledWith(prosecutor);
+      expect(
+        accountType === FINES_ACCOUNT_TYPES['Fixed Penalty'] ? component.issuingAuthority : component.sendingCourt,
+      ).toBe(OPAL_FINES_PROSECUTOR_PRETTY_NAME_MOCK);
+    },
+  );
+
+  it.each(
+    prosecutorAccountTypes.flatMap((accountType) => ['legacy', 'opal'].map((appMode) => ({ accountType, appMode }))),
+  )(
+    'should select the $appMode identifier when prosecutor IDs and codes conflict for $accountType',
+    ({ accountType, appMode }) => {
+      globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: appMode });
+      const prosecutors = [
+        { ...component.prosecutorsData.ref_data[0], prosecutor_id: 1865, prosecutor_code: '998' },
+        { ...component.prosecutorsData.ref_data[1], prosecutor_id: 998, prosecutor_code: '1865' },
+      ];
+      component.prosecutorsData = { count: 2, ref_data: prosecutors };
+      component.courtDetails.fm_court_details_originator_id = '1865';
+      component.courtDetails.fm_court_details_originator_name = null;
+      component.accountType = accountType;
+
+      fixture.detectChanges();
+
+      expect(mockOpalFinesService.getProsecutorPrettyName).toHaveBeenCalledWith(
+        prosecutors[appMode === 'legacy' ? 0 : 1],
+      );
+      expect(
+        accountType === FINES_ACCOUNT_TYPES['Fixed Penalty'] ? component.issuingAuthority : component.sendingCourt,
+      ).toBe(OPAL_FINES_PROSECUTOR_PRETTY_NAME_MOCK);
+      expect(component.courtDetails.fm_court_details_originator_id).toBe('1865');
+    },
+  );
+
+  it.each(['legacy', 'opal'])('should not use the other identifier when the %s identifier is absent', (appMode) => {
+    globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: appMode });
+    const prosecutor: IOpalFinesProsecutor = {
+      ...component.prosecutorsData.ref_data[0],
+      prosecutor_id: 1865,
+      prosecutor_code: '1865',
+    };
+    if (appMode === 'legacy') {
+      delete prosecutor.prosecutor_id;
+    } else {
+      delete prosecutor.prosecutor_code;
+    }
+    component.prosecutorsData = { count: 1, ref_data: [prosecutor] };
+    component.courtDetails.fm_court_details_originator_id = '1865';
+
+    expect(component['getProsecutor']()).toBeNull();
+    expect(mockOpalFinesService.getProsecutorPrettyName).not.toHaveBeenCalled();
+  });
+
+  it.each([undefined, null, 'unknown', 'OPAL', false])(
+    'should retain Opal code matching when app mode is %s',
+    (appMode) => {
+      globalStore.setFeatureFlags(appMode === undefined ? {} : { [APP_MODE_FEATURE_FLAG]: appMode });
+      component.courtDetails.fm_court_details_originator_id = '998';
+
+      expect(component['getProsecutor']()).toBe(OPAL_FINES_PROSECUTOR_PRETTY_NAME_MOCK);
+      expect(mockOpalFinesService.getProsecutorPrettyName).toHaveBeenCalledWith(component.prosecutorsData.ref_data[0]);
+    },
+  );
+
+  it.each(
+    prosecutorAccountTypes.flatMap((accountType) =>
+      ['legacy', 'opal'].flatMap((appMode) =>
+        [true, false].map((storedProsecutorName) => ({ accountType, appMode, storedProsecutorName })),
+      ),
+    ),
+  )(
+    'should disambiguate $appMode $accountType originators using the stored prosecutor name: $storedProsecutorName',
+    ({ accountType, appMode, storedProsecutorName }) => {
+      globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: appMode });
       const localJusticeArea = component.localJusticeAreasData.refData[0];
       const prosecutor = {
         ...component.prosecutorsData.ref_data[0],
-        prosecutor_code: localJusticeArea.local_justice_area_id.toString(),
+        prosecutor_id: appMode === 'legacy' ? localJusticeArea.local_justice_area_id : 1865,
+        prosecutor_code: appMode === 'opal' ? localJusticeArea.local_justice_area_id.toString() : '998',
       };
       component.prosecutorsData = { count: 1, ref_data: [prosecutor] };
-      component.courtDetails.fm_court_details_originator_id = prosecutor.prosecutor_code;
+      component.courtDetails.fm_court_details_originator_id = localJusticeArea.local_justice_area_id.toString();
       component.courtDetails.fm_court_details_originator_name = storedProsecutorName
         ? prosecutor.name
         : localJusticeArea.name;
-      component.accountType = FINES_ACCOUNT_TYPES['Fixed Penalty'];
+      component.accountType = accountType;
 
       fixture.detectChanges();
 
       if (storedProsecutorName) {
         expect(mockOpalFinesService.getProsecutorPrettyName).toHaveBeenCalledWith(prosecutor);
         expect(mockOpalFinesService.getLocalJusticeAreaPrettyName).not.toHaveBeenCalled();
-        expect(component.issuingAuthority).toBe(OPAL_FINES_PROSECUTOR_PRETTY_NAME_MOCK);
+        expect(
+          accountType === FINES_ACCOUNT_TYPES['Fixed Penalty'] ? component.issuingAuthority : component.sendingCourt,
+        ).toBe(OPAL_FINES_PROSECUTOR_PRETTY_NAME_MOCK);
       } else {
         expect(mockOpalFinesService.getLocalJusticeAreaPrettyName).toHaveBeenCalledWith(localJusticeArea);
         expect(mockOpalFinesService.getProsecutorPrettyName).not.toHaveBeenCalled();
-        expect(component.issuingAuthority).toBe(OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK);
+        expect(
+          accountType === FINES_ACCOUNT_TYPES['Fixed Penalty'] ? component.issuingAuthority : component.sendingCourt,
+        ).toBe(OPAL_FINES_LOCAL_JUSTICE_AREA_PRETTY_NAME_MOCK);
       }
     },
   );
@@ -336,7 +437,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
   });
 
   it('should use the stored prosecutor name when a conditional caution originator ID overlaps with an LJA', () => {
-    const prosecutor = component.prosecutorsData.ref_data[0];
+    const prosecutor = { ...component.prosecutorsData.ref_data[0], prosecutor_code: '998' };
     component.localJusticeAreasData.refData.push({
       ...component.localJusticeAreasData.refData[0],
       local_justice_area_id: Number(prosecutor.prosecutor_code),
@@ -375,7 +476,7 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
   });
 
   it('should retain flag-based lookup order when an overlapping originator ID does not match the stored name', () => {
-    const prosecutor = component.prosecutorsData.ref_data[0];
+    const prosecutor = { ...component.prosecutorsData.ref_data[0], prosecutor_code: '998' };
     component.localJusticeAreasData.refData.push({
       ...component.localJusticeAreasData.refData[0],
       local_justice_area_id: Number(prosecutor.prosecutor_code),

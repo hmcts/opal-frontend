@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { GovukSummaryCardListComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
 import {
   GovukSummaryListRowComponent,
@@ -17,6 +26,8 @@ import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.cons
 import { FINES_MAC_COURT_DETAILS_COPY_BY_ACCOUNT_TYPE } from '../../constants/fines-mac-court-details-copy.constant';
 import { IFinesMacCourtDetailsCopy } from '../../interfaces/fines-mac-court-details-copy.interface';
 import { IFinesAccountTypes } from '../../../interfaces/fines-account-types.interface';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { APP_MODE_FEATURE_FLAG } from '../../../constants/environment-feature-flags.constant';
 
 @Component({
   selector: 'app-fines-mac-review-account-court-details',
@@ -31,6 +42,11 @@ import { IFinesAccountTypes } from '../../../interfaces/fines-account-types.inte
 })
 export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   private readonly opalFinesService = inject(OpalFines);
+  private readonly globalStore = inject(GlobalStore);
+  private readonly isLegacyMode = computed(() => {
+    const flags = this.globalStore.featureFlags() as Record<string, unknown>;
+    return flags[APP_MODE_FEATURE_FLAG] === 'legacy';
+  });
 
   @Input({ required: true }) public courtDetails!: IFinesMacCourtDetailsState;
   @Input({ required: true }) public enforcementCourtsData!: IOpalFinesCourtRefData;
@@ -113,12 +129,16 @@ export class FinesMacReviewAccountCourtDetailsComponent implements OnInit {
   }
 
   /**
-   * Finds a prosecutor using its code, preserving the exact value supplied by the API.
-   * @param originatorId - The persisted prosecutor code.
+   * Finds a prosecutor using the identifier for the current app mode, preserving exact Opal codes.
+   * @param originatorId - The persisted prosecutor code or legacy ID.
    * @returns The matching prosecutor, or undefined when no record matches.
    */
   private findProsecutor(originatorId: string | null): IOpalFinesProsecutor | undefined {
-    return this.prosecutorsData.ref_data.find((prosecutor) => prosecutor.prosecutor_code === originatorId);
+    return this.prosecutorsData.ref_data.find((prosecutor) =>
+      this.isLegacyMode()
+        ? prosecutor.prosecutor_id !== undefined && prosecutor.prosecutor_id === +originatorId!
+        : prosecutor.prosecutor_code !== undefined && prosecutor.prosecutor_code === originatorId,
+    );
   }
 
   /**

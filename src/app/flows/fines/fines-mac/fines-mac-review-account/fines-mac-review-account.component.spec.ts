@@ -43,6 +43,8 @@ import { IFinesMacState } from '../interfaces/fines-mac-state.interface';
 import { FINES_MAC_PAYLOAD_FINES_MAC_STATE } from '../services/fines-mac-payload/mocks/fines-mac-payload-fines-mac-state.mock';
 import { FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK } from '../services/fines-mac-payload/mocks/fines-mac-payload-add-account-fixed-penalty.mock';
 import { FINES_MAC_PAYMENT_TERMS_FORM } from '../fines-mac-payment-terms/constants/fines-mac-payment-terms-form';
+import { APP_MODE_FEATURE_FLAG } from '../../constants/environment-feature-flags.constant';
+import { IOpalFinesProsecutor } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor.interface';
 
 const ADD_ACCOUNT_REQUEST: IFinesMacAddAccountRequestPayload = {
   business_unit_id: FINES_MAC_PAYLOAD_ADD_ACCOUNT.business_unit_id!,
@@ -64,7 +66,7 @@ const REPLACE_ACCOUNT_REQUEST: IFinesMacReplaceAccountRequestPayload = {
 function createTestModule(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   snapshotData?: any,
-  options: { useRealPayloadService?: boolean; finesMacState?: IFinesMacState } = {},
+  options: { useRealPayloadService?: boolean; finesMacState?: IFinesMacState; appMode?: 'legacy' | 'opal' } = {},
 ) {
   const mockOpalFinesService = {
     getCourtPrettyName: vi.fn().mockReturnValue(OPAL_FINES_COURT_PRETTY_NAME_MOCK),
@@ -140,6 +142,7 @@ function createTestModule(
   }).compileComponents();
 
   const globalStore = TestBed.inject(GlobalStore);
+  globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: options.appMode ?? 'opal' });
   globalStore.setUserState(OPAL_USER_STATE_MOCK);
   globalStore.setBannerError({
     ...GLOBAL_ERROR_STATE,
@@ -165,34 +168,57 @@ function createTestModule(
 }
 
 describe('FinesMacReviewAccountComponent', () => {
-  describe('prosecutor codes in account submission', () => {
+  describe('mode-specific prosecutor identifiers in account submission', () => {
     it.each(
-      [FINES_ACCOUNT_TYPES['Fixed Penalty'], FINES_ACCOUNT_TYPES['Conditional Caution']].flatMap((accountType) =>
-        ['001X', '0998'].flatMap((code) =>
-          [false, true].map((amend) => ({ accountType, code, amend, request: amend ? 'resubmitting' : 'submitting' })),
+      (['legacy', 'opal'] as const).flatMap((appMode) =>
+        [FINES_ACCOUNT_TYPES['Fixed Penalty'], FINES_ACCOUNT_TYPES['Conditional Caution']].flatMap((accountType) =>
+          [
+            { code: '001X', prosecutorId: 1865 },
+            { code: '0998', prosecutorId: 1223 },
+          ].flatMap(({ code, prosecutorId }) =>
+            [false, true].map((amend) => ({
+              accountType,
+              appMode,
+              code,
+              prosecutorId,
+              originatorId: appMode === 'opal' ? code : String(prosecutorId),
+              amend,
+              request: amend ? 'resubmitting' : 'submitting',
+            })),
+          ),
         ),
       ),
     )(
-      'should retain prosecutor code $code and account details when $request $accountType',
-      ({ accountType, code, amend }) => {
+      'should retain $appMode prosecutor identifier $originatorId and account details when $request $accountType',
+      ({ accountType, appMode, code, prosecutorId, originatorId, amend }) => {
         const finesMacState = structuredClone(FINES_MAC_PAYLOAD_FINES_MAC_STATE);
         finesMacState.accountDetails.formData.fm_create_account_account_type = accountType;
-        finesMacState.courtDetails.formData.fm_court_details_originator_id = code;
+        finesMacState.courtDetails.formData.fm_court_details_originator_id = originatorId;
         finesMacState.courtDetails.formData.fm_court_details_originator_name = 'Police force';
         const isFixedPenalty = accountType === FINES_ACCOUNT_TYPES['Fixed Penalty'];
         if (isFixedPenalty) {
           finesMacState.originatorType.formData.fm_originator_type_originator_type = 'FP';
           finesMacState.paymentTerms = structuredClone(FINES_MAC_PAYMENT_TERMS_FORM);
         }
-        const prosecutors = {
-          count: 1,
-          ref_data: [{ ...OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[1], prosecutor_code: code }],
+        const prosecutor: IOpalFinesProsecutor = {
+          ...OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[1],
+          prosecutor_id: prosecutorId,
+          prosecutor_code: code,
         };
+        if (appMode === 'opal') {
+          delete prosecutor.prosecutor_id;
+        } else {
+          delete prosecutor.prosecutor_code;
+        }
+        const prosecutors = { count: 1, ref_data: [prosecutor] };
         const majorCreditors = {
           count: 1,
           refData: [{ ...OPAL_FINES_MAJOR_CREDITOR_REF_DATA_MOCK.refData[0], major_creditor_id: 3999 }],
         };
-        const setup = createTestModule({ prosecutors, majorCreditors }, { useRealPayloadService: true, finesMacState });
+        const setup = createTestModule(
+          { prosecutors, majorCreditors },
+          { useRealPayloadService: true, finesMacState, appMode },
+        );
         setup.finesDraftStore.setAmend(amend);
         setup.finesDraftStore.setDraftAccountId(42);
         const expectedAccount = structuredClone(
@@ -200,11 +226,11 @@ describe('FinesMacReviewAccountComponent', () => {
             ? FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK.account
             : FINES_MAC_PAYLOAD_ADD_ACCOUNT.account,
         );
-        expectedAccount.originator_id = code;
+        expectedAccount.originator_id = originatorId;
         expectedAccount.originator_name = 'Police force';
         expectedAccount.defendant.parent_guardian = null;
 
-        expect(setup.fixture.nativeElement.textContent).toContain(`Police force (${code})`);
+        expect(setup.fixture.nativeElement.textContent).toContain(`Police force (${originatorId})`);
 
         setup.component.submitForReview();
 
@@ -221,7 +247,7 @@ describe('FinesMacReviewAccountComponent', () => {
           );
           expect(setup.mockOpalFinesService.putDraftAddAccountPayload).not.toHaveBeenCalled();
         }
-        expect(setup.finesMacStore.courtDetails().formData.fm_court_details_originator_id).toBe(code);
+        expect(setup.finesMacStore.courtDetails().formData.fm_court_details_originator_id).toBe(originatorId);
         expect(setup.finesMacStore.courtDetails().formData.fm_court_details_originator_name).toBe('Police force');
       },
     );
