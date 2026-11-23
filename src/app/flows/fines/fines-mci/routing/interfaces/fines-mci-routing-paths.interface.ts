@@ -13,8 +13,13 @@ export interface IFinesMciRoutingPaths extends IChildRoutingPaths {
     criminal: string;
     search: string;
     matches: string;
+    account: string;
     suspenseDetails: string;
+    checkSuspensePayment: string;
+    payerDetails: string;
     courtFeeDetails: string;
+    courtFeePaymentDetails: string;
+    overUnderpaymentConfirmation: string;
     searchAccount: string;
     cancel: string;
   };

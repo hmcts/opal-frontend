@@ -10,6 +10,8 @@ import { provideHttpClient } from '@angular/common/http';
 import { calculateWeeksInFuture } from '../../../../../support/utils/dateUtils';
 import { interceptOffences } from 'cypress/component/CommonIntercepts/CommonIntercepts';
 import { FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK } from '../../../../../../src/app/flows/fines/fines-mac/routing/resolvers/fetch-originators-resolver/mocks/fines-mac-originator-ref-data.mock';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../../../../src/app/flows/fines/constants/release-feature-flags.constant';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 const ADD_COMMENT_ALLOWED_CHARACTERS_ERROR =
@@ -35,6 +37,16 @@ describe('FinesMacManualFixedPenalty', () => {
           useFactory: () => {
             const store = new FinesMacStore();
             store.setFinesMacStore(fixedPenaltyMock);
+            return store;
+          },
+        },
+        {
+          provide: GlobalStore,
+          useFactory: () => {
+            const store = new GlobalStore();
+            store.setFeatureFlags({
+              [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+            });
             return store;
           },
         },
@@ -1159,8 +1171,8 @@ describe('FinesMacManualFixedPenalty', () => {
     '(AC23) Validation will exist for the Add account note field - max length',
     { tags: [...buildTags('@JIRA-STORY:PO-857'), '@JIRA-EPIC:PO-855', '@JIRA-TEST-KEY:PO-4818'] },
     () => {
-      // User enters more than 1000 characters
-      fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_notes = 'A'.repeat(1000);
+      // User enters 500 characters
+      fixedPenaltyMock.accountCommentsNotes.formData.fm_account_comments_notes_notes = 'A'.repeat(500);
       setupComponent();
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.characterCountHint).should('contain', 'You have 0 characters remaining');

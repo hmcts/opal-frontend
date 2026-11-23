@@ -5,6 +5,8 @@ import {
   BUSINESS_UNIT_ID_RESOLVER,
   businessUnitRoutePermissionsGuard,
 } from '@hmcts/opal-frontend-common/guards/business-unit-route-permissions';
+import { featureFlagRedirectGuard } from '@hmcts/opal-frontend-common/guards/feature-flag';
+import { RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG } from '../../constants/release-feature-flags.constant';
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
@@ -47,12 +49,21 @@ import { FINES_ACC_MAJOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS } from '../fines-acc-m
 import { FINES_ACC_MINOR_CREDITOR_DETAILS_ROUTE_DATA_KEYS } from '../fines-acc-minor-creditor-details/constants/fines-acc-minor-creditor-details-route-data-keys.constant';
 import { FinesAccBusinessUnitResolver } from './resolvers/fines-acc-business-unit.resolver';
 import { FINES_ACCOUNT_ROUTE_TYPES } from './constants/fines-acc-route-types.constant';
+import { FINES_ACC_APR_ROUTING_PATHS } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';
+import { FINES_ACC_APR_ROUTING_TITLES } from '../fines-acc-apr-manage/constants/fines-acc-apr-routing-titles.constant';
+import { finesAccAprResolver } from './resolvers/fines-acc-apr/fines-acc-apr.resolver';
+import { finesAccAprAddChangeModeGuard } from './guards/fines-acc-apr-add-change-mode.guard';
+import { finesAccAprAddChangeTitleResolver } from './resolvers/fines-acc-apr/fines-acc-apr-add-change-title.resolver';
 
 const accRootPermissionIds = FINES_PERMISSIONS;
 const finesAccountBusinessUnitResolverProvider = {
   provide: BUSINESS_UNIT_ID_RESOLVER,
   useExisting: FinesAccBusinessUnitResolver,
 };
+
+export const release1cBankingInterfacesFeatureFlagGuard = featureFlagRedirectGuard(
+  RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
+);
 
 export const routing: Routes = [
   {
@@ -94,6 +105,72 @@ export const routing: Routes = [
           ...PRIMARY_NAV_HIDDEN_ROUTE_DATA,
         },
         children: [
+          {
+            path: `${FINES_ACC_APR_ROUTING_PATHS.root}/${FINES_ACC_APR_ROUTING_PATHS.children.denied}`,
+            loadComponent: () =>
+              import('../fines-acc-apr-access-denied/fines-acc-apr-access-denied.component').then(
+                (c) => c.FinesAccAprAccessDeniedComponent,
+              ),
+            canActivate: [finesAccStateGuard],
+            data: {
+              title: FINES_ACC_APR_ROUTING_TITLES.children.denied,
+            },
+            resolve: { title: TitleResolver },
+          },
+          {
+            path: `${FINES_ACC_APR_ROUTING_PATHS.root}/${FINES_ACC_APR_ROUTING_PATHS.children.manage}`,
+            loadComponent: () =>
+              import('../fines-acc-apr-manage/fines-acc-apr-manage.component').then(
+                (c) => c.FinesAccAprManageComponent,
+              ),
+            canActivate: [
+              release1cBankingInterfacesFeatureFlagGuard,
+              businessUnitRoutePermissionsGuard,
+              finesAccStateGuard,
+            ],
+            data: {
+              title: FINES_ACC_APR_ROUTING_TITLES.children.manage,
+              routePermissionId: [FINES_PERMISSIONS['manage-alternate-payment-references']],
+            },
+            resolve: { title: TitleResolver, aprs: finesAccAprResolver },
+          },
+          {
+            path: `${FINES_ACC_APR_ROUTING_PATHS.root}/${FINES_ACC_APR_ROUTING_PATHS.children.delete}`,
+            loadComponent: () =>
+              import('../fines-acc-apr-delete/fines-acc-apr-delete.component').then(
+                (c) => c.FinesAccAprDeleteComponent,
+              ),
+            canActivate: [
+              release1cBankingInterfacesFeatureFlagGuard,
+              businessUnitRoutePermissionsGuard,
+              finesAccStateGuard,
+            ],
+            data: {
+              title: FINES_ACC_APR_ROUTING_TITLES.children.delete,
+              routePermissionId: [FINES_PERMISSIONS['manage-alternate-payment-references']],
+            },
+            resolve: { title: TitleResolver, aprs: finesAccAprResolver },
+          },
+          {
+            path: `${FINES_ACC_APR_ROUTING_PATHS.root}/:mode`,
+            title: finesAccAprAddChangeTitleResolver,
+            runGuardsAndResolvers: 'paramsOrQueryParamsChange',
+            loadComponent: () =>
+              import('../fines-acc-apr-add-change/fines-acc-apr-add-change.component').then(
+                (c) => c.FinesAccAprAddChangeComponent,
+              ),
+            canActivate: [
+              release1cBankingInterfacesFeatureFlagGuard,
+              finesAccAprAddChangeModeGuard,
+              businessUnitRoutePermissionsGuard,
+              finesAccStateGuard,
+            ],
+            canDeactivate: [canDeactivateGuard],
+            data: {
+              routePermissionId: [FINES_PERMISSIONS['manage-alternate-payment-references']],
+            },
+            resolve: { aprs: finesAccAprResolver },
+          },
           {
             path: `${FINES_ACC_DEFENDANT_ROUTING_PATHS.children.convert}/:partyType`,
 

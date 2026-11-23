@@ -3,4 +3,5 @@ import { IOpalFinesConfigurationItems } from '@services/fines/opal-fines-service
 export const OPAL_FINES_CONFIGURATION_ITEMS: IOpalFinesConfigurationItems = {
   defaultDocumentLanguagePreference: 'DEFAULT_DOCUMENT_LANGUAGE_PREFERENCE',
   defaultDocumentCourtHearingPreference: 'DEFAULT_HEARING_LANGUAGE_PREFERENCE',
+  resultsToInhibitPayments: 'RESULTS_TO_INHIBIT_PAYMENTS',
 };

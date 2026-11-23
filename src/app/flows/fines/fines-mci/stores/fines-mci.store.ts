@@ -1,7 +1,17 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import { IFinesMciCriminalAccount } from '../interfaces/fines-mci-criminal-account.interface';
+import { IFinesMciCriminalAccountsResponse } from '../interfaces/fines-mci-criminal-accounts-response.interface';
 import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit.interface';
-import { FinesMciJourney, IFinesMciTill } from './interfaces/fines-mci.interface';
+import {
+  FinesMciJourney,
+  IFinesMciCourtFeeDraft,
+  IFinesMciSuspensePayment,
+  IFinesMciTill,
+} from './interfaces/fines-mci.interface';
 import { IFinesMciCriminalSearch } from './interfaces/fines-mci-criminal-search.interface';
+import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
+
+import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
 
 export const FinesMciStore = signalStore(
   { providedIn: 'root' },
@@ -9,7 +19,13 @@ export const FinesMciStore = signalStore(
     businessUnit: null as IOpalFinesBusinessUnit | null,
     tills: [] as IFinesMciTill[],
     criminalSearch: null as IFinesMciCriminalSearch | null,
+    criminalSearchResults: null as IFinesMciCriminalAccountsResponse | null,
+    selectedCriminalAccount: null as IFinesMciCriminalAccount | null,
+    selectedCriminalAccountHeader: null as IOpalFinesAccountDefendantDetailsHeader | null,
+    selectedCriminalAccountAtAGlance: null as IOpalFinesAccountDefendantAtAGlance | null,
     draftJourney: null as FinesMciJourney | null,
+    courtFeeDraft: null as IFinesMciCourtFeeDraft | null,
+    suspensePayment: null as IFinesMciSuspensePayment | null,
   })),
   withMethods((store) => {
     /** Returns the existing till ID or creates the first till for the current business unit. */
@@ -32,17 +48,65 @@ export const FinesMciStore = signalStore(
        * @param criminalSearch The submitted criminal account search state.
        */
       setCriminalSearch(criminalSearch: IFinesMciCriminalSearch): void {
-        patchState(store, { criminalSearch });
+        patchState(store, {
+          criminalSearch,
+          criminalSearchResults: null,
+          selectedCriminalAccount: null,
+          selectedCriminalAccountAtAGlance: null,
+          selectedCriminalAccountHeader: null,
+        });
+      },
+      /** Replaces search results and clears the previous selection and its fetched details. */
+      setCriminalSearchResults(criminalSearchResults: IFinesMciCriminalAccountsResponse | null): void {
+        patchState(store, {
+          criminalSearchResults,
+          selectedCriminalAccount: null,
+          selectedCriminalAccountAtAGlance: null,
+          selectedCriminalAccountHeader: null,
+        });
+      },
+      /** Sets or clears the selected account, invalidating both detail responses even when reselecting an account. */
+      setSelectedCriminalAccount(selectedCriminalAccount: IFinesMciCriminalAccount | null): void {
+        patchState(store, {
+          selectedCriminalAccount,
+          selectedCriminalAccountAtAGlance: null,
+          selectedCriminalAccountHeader: null,
+        });
+      },
+      /** Stores the selected account's at-a-glance response for the subsequent payment page. */
+      setSelectedCriminalAccountAtAGlance(selectedCriminalAccountAtAGlance: IOpalFinesAccountDefendantAtAGlance): void {
+        patchState(store, { selectedCriminalAccountAtAGlance });
+      },
+      /** Stores the selected account's header, including the status used to choose the account placeholder. */
+      setSelectedCriminalAccountHeader(selectedCriminalAccountHeader: IOpalFinesAccountDefendantDetailsHeader): void {
+        patchState(store, { selectedCriminalAccountHeader });
       },
       /** Clears submitted search state while preserving the selected business unit, tills and category draft. */
       resetCriminalSearch(): void {
-        patchState(store, { criminalSearch: null });
+        patchState(store, {
+          criminalSearch: null,
+          criminalSearchResults: null,
+          selectedCriminalAccount: null,
+          selectedCriminalAccountAtAGlance: null,
+          selectedCriminalAccountHeader: null,
+        });
       },
-      /** Sets the business unit, clearing tills, the category draft and search criteria when the unit changes. */
+      /** Sets the business unit, clearing payment and search state when the unit changes. */
       setBusinessUnit(businessUnit: IOpalFinesBusinessUnit): void {
         const currentBusinessUnit = store.businessUnit();
         if (currentBusinessUnit && currentBusinessUnit.business_unit_id !== businessUnit.business_unit_id) {
-          patchState(store, { businessUnit, tills: [], criminalSearch: null, draftJourney: null });
+          patchState(store, {
+            businessUnit,
+            tills: [],
+            criminalSearch: null,
+            criminalSearchResults: null,
+            selectedCriminalAccount: null,
+            selectedCriminalAccountAtAGlance: null,
+            selectedCriminalAccountHeader: null,
+            draftJourney: null,
+            courtFeeDraft: null,
+            suspensePayment: null,
+          });
           return;
         }
 
@@ -52,7 +116,15 @@ export const FinesMciStore = signalStore(
       ensureTill,
       /** Stores the selected payment journey until its details are completed. */
       setDraftJourney(draftJourney: FinesMciJourney | null): void {
-        patchState(store, { draftJourney });
+        patchState(store, { draftJourney, ...(draftJourney !== 'courtFee' && { courtFeeDraft: null }) });
+      },
+      /** Holds court fee form values while the payment journey is in progress. */
+      setCourtFeeDraft(courtFeeDraft: IFinesMciCourtFeeDraft | null): void {
+        patchState(store, { courtFeeDraft });
+      },
+      /** Stores validated suspense details in application memory. */
+      setSuspensePayment(suspensePayment: IFinesMciSuspensePayment | null): void {
+        patchState(store, { suspensePayment });
       },
       /** Adds a payment journey to the matching till and returns the new payment ID. */
       addPayment(tillId: string, journey: FinesMciJourney): string {
@@ -68,9 +140,20 @@ export const FinesMciStore = signalStore(
         });
         return paymentId;
       },
-      /** Clears the business unit, tills, category draft and submitted search criteria. */
+      /** Clears the business unit, tills, payment drafts and submitted search criteria. */
       reset(): void {
-        patchState(store, { businessUnit: null, tills: [], criminalSearch: null, draftJourney: null });
+        patchState(store, {
+          businessUnit: null,
+          tills: [],
+          criminalSearch: null,
+          courtFeeDraft: null,
+          criminalSearchResults: null,
+          selectedCriminalAccount: null,
+          selectedCriminalAccountAtAGlance: null,
+          selectedCriminalAccountHeader: null,
+          draftJourney: null,
+          suspensePayment: null,
+        });
       },
     };
   }),
