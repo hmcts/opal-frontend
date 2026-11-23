@@ -150,6 +150,20 @@ export class FinesMacPersonalDetailsFormComponent
     });
   }
 
+  /** Removes NI number spaces before the form base emits the submitted value when R1A-1-2 is enabled. */
+  private normalizeNationalInsuranceNumberInput(): void {
+    if (!this.release1a1_2Enabled()) {
+      return;
+    }
+
+    const nationalInsuranceNumberControl = this.form.get('fm_personal_details_national_insurance_number');
+    const nationalInsuranceNumber = nationalInsuranceNumberControl?.value;
+
+    if (typeof nationalInsuranceNumber === 'string') {
+      nationalInsuranceNumberControl?.setValue(nationalInsuranceNumber.replace(/\s+/g, ''));
+    }
+  }
+
   /** Sets the NI number validation message for the active release. */
   private setNationalInsuranceNumberErrorMessage(): void {
     const nationalInsuranceNumberErrors = this.fieldErrors['fm_personal_details_national_insurance_number'];
@@ -249,5 +263,10 @@ export class FinesMacPersonalDetailsFormComponent
   public override ngOnInit(): void {
     this.initialPersonalDetailsSetup();
     super.ngOnInit();
+  }
+
+  public override handleFormSubmit(event: SubmitEvent): void {
+    this.normalizeNationalInsuranceNumberInput();
+    super.handleFormSubmit(event);
   }
 }
