@@ -778,6 +778,17 @@ withPipeline(type, product, component) {
         }
     }
 
+    // Run the tagged read-only APR check against staging with the existing Jenkins test credentials.
+    before(stageTest) {
+        withEnv([
+            'TEST_URL=https://opal-frontend.staging.apps.hmcts.net/',
+            'TAGS=@E2E15StagingCheck and not @skip',
+            'TEST_SPECS=cypress/e2e/functional/opal/features/release1c/aprManagement/AprManagementRemoval.feature'
+        ]) {
+            yarnBuilder.yarn('test:functional:tags')
+        }
+    }
+
     // Build frontend bundle after checkout when previous steps succeed
     afterSuccess(stageBuild) {
         yarnBuilder.yarn('rebuild puppeteer')
