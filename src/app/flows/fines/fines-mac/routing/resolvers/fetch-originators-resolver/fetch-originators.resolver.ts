@@ -4,6 +4,8 @@ import { FINES_ACCOUNT_TYPES } from '@app/flows/fines/constants/fines-account-ty
 import { RELEASE_1A_1_1_FEATURE_FLAG } from '@app/flows/fines/constants/release-feature-flags.constant';
 import { resolveFeatureFlagGuard } from '@hmcts/opal-frontend-common/guards/feature-flag';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { getProsecutorIdentifier } from '@services/fines/opal-fines-service/utils/opal-fines-prosecutor.utils';
+import { resolveAppMode } from '@app/flows/fines/routing/guards/helpers/resolve-app-mode.helper';
 import { forkJoin, from, map, Observable, switchMap } from 'rxjs';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { getFetchSendingCourtsLjaTypes } from '../fetch-sending-courts-resolver/helpers/fetch-sending-courts-lja-type.helper';
@@ -24,16 +26,25 @@ export const fetchOriginatorsResolver: ResolveFn<IFinesMacOriginatorRefData> = (
   const finesMacStore = inject(FinesMacStore);
   const accountType = finesMacStore.accountDetails().formData.fm_create_account_account_type;
 
-  const fetchProsecutorOriginators = (): Observable<IFinesMacOriginatorRefData> =>
+  const fetchProsecutorOriginators = (appMode: string): Observable<IFinesMacOriginatorRefData> =>
     opalFinesService.getProsecutors(finesMacStore.businessUnit().business_unit_id).pipe(
-      map((prosecutors) => ({
-        count: prosecutors.count,
-        refData: prosecutors.ref_data.map((prosecutor) => ({
-          originatorId: prosecutor.prosecutor_code,
-          name: prosecutor.name,
-          displayName: opalFinesService.getProsecutorPrettyName(prosecutor),
-        })),
-      })),
+      map((prosecutors) => {
+        const refData = prosecutors.ref_data.flatMap((prosecutor) => {
+          const originatorId = getProsecutorIdentifier(prosecutor, appMode);
+
+          return originatorId === undefined
+            ? []
+            : [
+                {
+                  originatorId,
+                  name: prosecutor.name,
+                  displayName: opalFinesService.getProsecutorPrettyName(prosecutor),
+                },
+              ];
+        });
+
+        return { count: refData.length, refData };
+      }),
     );
 
   const fetchLocalJusticeAreaOriginators = (): Observable<IFinesMacOriginatorRefData> => {
@@ -59,18 +70,21 @@ export const fetchOriginatorsResolver: ResolveFn<IFinesMacOriginatorRefData> = (
     return fetchLocalJusticeAreaOriginators();
   }
 
-  return from(resolveFeatureFlagGuard(RELEASE_1A_1_1_FEATURE_FLAG, route, state)).pipe(
-    switchMap((release1a1_1Enabled) => {
+  return forkJoin({
+    release1a1_1Enabled: from(resolveFeatureFlagGuard(RELEASE_1A_1_1_FEATURE_FLAG, route, state)),
+    appMode: from(resolveAppMode()),
+  }).pipe(
+    switchMap(({ release1a1_1Enabled, appMode }) => {
       if (
         release1a1_1Enabled &&
         (accountType === FINES_ACCOUNT_TYPES['Conditional Caution'] ||
           accountType === FINES_ACCOUNT_TYPES['Fixed Penalty'])
       ) {
-        return fetchProsecutorOriginators();
+        return fetchProsecutorOriginators(appMode);
       }
 
       if (accountType === FINES_ACCOUNT_TYPES['Fixed Penalty']) {
-        return forkJoin([fetchProsecutorOriginators(), fetchLocalJusticeAreaOriginators()]).pipe(
+        return forkJoin([fetchProsecutorOriginators(appMode), fetchLocalJusticeAreaOriginators()]).pipe(
           map(([prosecutors, localJusticeAreas]) => ({
             count: prosecutors.count + localJusticeAreas.count,
             refData: [...prosecutors.refData, ...localJusticeAreas.refData],
