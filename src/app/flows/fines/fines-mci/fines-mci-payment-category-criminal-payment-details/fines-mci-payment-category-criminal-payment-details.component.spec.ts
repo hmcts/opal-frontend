@@ -95,6 +95,13 @@ describe('FinesMciPaymentCategoryCriminalPaymentDetailsComponent', () => {
       message: 'Enter name',
     },
     {
+      scenario: 'third-party name contains only spaces',
+      payerType: 'thirdParty',
+      name: '   ',
+      errorId: 'thirdPartyName-error',
+      message: 'Enter name',
+    },
+    {
       scenario: 'third-party name contains unsupported characters',
       payerType: 'thirdParty',
       name: 'Payer@123',

@@ -12,6 +12,7 @@ import {
   GovukRadiosItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 import { amountValidator } from '@hmcts/opal-frontend-common/validators/amount';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { IFinesMciCriminalPayment } from '../../stores/interfaces/fines-mci.interface';
 import { FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_PAYMENT_DETAILS_FIELD_ERRORS } from './constants/fines-mci-payment-category-criminal-payment-details-field-errors.constant';
 import { IAbstractFormBaseFieldErrors } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
@@ -22,6 +23,8 @@ import {
   MojAlertTextComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-alert';
 import { formatPounds } from '../../fines-mci-create-till/utils/fines-mci-court-fee-payment.utils';
+
+const NON_WHITESPACE_PATTERN_VALIDATOR = patternValidator(/\S/, 'required');
 
 @Component({
   selector: 'app-fines-mci-payment-category-criminal-payment-details-form',
@@ -97,7 +100,9 @@ export class FinesMciPaymentCategoryCriminalPaymentDetailsFormComponent
     creditTransferReference.setValidators(method === 'creditTransfer' ? referenceValidators : []);
     this.form.controls['source'].setValidators(method === 'creditTransfer' ? [Validators.required] : []);
     this.form.controls['thirdPartyName'].setValidators(
-      this.form.controls['payerType'].value === 'thirdParty' ? [Validators.required, ...referenceValidators] : [],
+      this.form.controls['payerType'].value === 'thirdParty'
+        ? [Validators.required, NON_WHITESPACE_PATTERN_VALIDATOR, ...referenceValidators]
+        : [],
     );
     postalOrderReference.updateValueAndValidity({ emitEvent: false });
     chequeReference.updateValueAndValidity({ emitEvent: false });

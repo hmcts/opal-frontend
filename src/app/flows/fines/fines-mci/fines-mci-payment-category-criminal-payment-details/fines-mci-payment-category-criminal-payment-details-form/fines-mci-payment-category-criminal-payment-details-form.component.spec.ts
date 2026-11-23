@@ -148,7 +148,21 @@ describe('FinesMciPaymentCategoryCriminalPaymentDetailsFormComponent', () => {
     component.form.patchValue({ payerType: 'defendant', methodOfPayment: 'notesCoins' });
     expect(control.valid).toBe(true);
   });
-  it.each(['Payer 123', "Payer-1 O'Brien", 'Payer-1 O\u2019Brien', 'A'.repeat(50)])(
+  it.each([' ', '   ', '\t', '\u00a0'])(
+    'shows Enter name for a whitespace-only third-party name %j without requiring blur',
+    (thirdPartyName) => {
+      initialise({ ...PAYMENT, payerType: 'thirdParty', thirdPartyName });
+      const emit = vi.spyOn(component['formSubmit'], 'emit');
+
+      submit();
+
+      expect(component.form.controls['thirdPartyName'].hasError('required')).toBe(true);
+      expect(fixture.nativeElement.querySelector('#thirdPartyName-error')?.textContent).toBe('Enter name');
+      expect(fixture.nativeElement.querySelector('.govuk-error-summary__list')?.textContent).toContain('Enter name');
+      expect(emit).not.toHaveBeenCalled();
+    },
+  );
+  it.each(['Payer 123', '  Payer  123  ', "Payer-1 O'Brien", 'Payer-1 O\u2019Brien', 'A'.repeat(50)])(
     'accepts the permitted third-party name %s',
     (thirdPartyName) => {
       initialise({ ...PAYMENT, payerType: 'thirdParty', thirdPartyName });
