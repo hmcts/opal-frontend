@@ -6,6 +6,7 @@ import { IFinesMacOffenceDetailsImpositionsState } from '../../../../fines-mac-o
 import { IFinesMacPayloadAccountOffences } from '../interfaces/fines-mac-payload-account-offences.interface';
 import { IFinesMacPayloadAccountOffencesImposition } from '../interfaces/fines-mac-payload-account-offences-imposition.interface';
 import { IFinesMacPayloadAccountOffencesMinorCreditor } from '../interfaces/fines-mac-payload-account-offences-minor-creditor.interface';
+import { normalizeSortCode } from '../../../../../validators/sort-code.validator';
 
 /**
  * Determines if the payout is on hold based on the payment method.
@@ -31,6 +32,7 @@ const getCompanyFlag = (creditorType: string | null): boolean => {
  * Builds the payload for account offences impositions for a minor creditor.
  *
  * @param {IFinesMacOffenceDetailsMinorCreditorForm | null} childFormData - The form data containing details of the minor creditor offence.
+ * @param isR1A12Enabled - Is feature flag R1A12 enabled
  * @returns {IFinesMacPayloadAccountOffencesMinorCreditor} The payload for account offences impositions for a minor creditor.
  *
  * @remarks
@@ -41,6 +43,7 @@ const getCompanyFlag = (creditorType: string | null): boolean => {
  */
 const buildAccountOffencesImpositionsMinorCreditorPayload = (
   childFormData: IFinesMacOffenceDetailsMinorCreditorForm | null,
+  isR1A12Enabled: boolean,
 ): IFinesMacPayloadAccountOffencesMinorCreditor | null => {
   if (!childFormData) {
     return null;
@@ -67,7 +70,9 @@ const buildAccountOffencesImpositionsMinorCreditorPayload = (
     payout_hold: payoutOnHold,
     pay_by_bacs: payByBacs,
     bank_account_type: '1',
-    bank_sort_code: childFormData?.formData.fm_offence_details_minor_creditor_bank_sort_code ?? null,
+    bank_sort_code: isR1A12Enabled
+      ? normalizeSortCode(childFormData?.formData.fm_offence_details_minor_creditor_bank_sort_code)
+      : (childFormData?.formData.fm_offence_details_minor_creditor_bank_sort_code ?? null),
     bank_account_number: childFormData?.formData.fm_offence_details_minor_creditor_bank_account_number ?? null,
     bank_account_name: childFormData?.formData.fm_offence_details_minor_creditor_bank_account_name ?? null,
     bank_account_ref: childFormData?.formData.fm_offence_details_minor_creditor_bank_account_ref ?? null,
@@ -79,11 +84,13 @@ const buildAccountOffencesImpositionsMinorCreditorPayload = (
  *
  * @param impositions - An array of imposition state objects containing details about the offences.
  * @param childFormData - An array of form data objects for minor creditors associated with the offences.
+ * @param isR1A12Enabled - Is the feature flag R1A12 enabled
  * @returns An array of payload objects for account offences impositions.
  */
 const buildAccountOffencesImpositionsPayload = (
   impositions: IFinesMacOffenceDetailsImpositionsState[],
   childFormData: IFinesMacOffenceDetailsMinorCreditorForm[],
+  isR1A12Enabled: boolean,
 ): IFinesMacPayloadAccountOffencesImposition[] => {
   return impositions.map(
     ({
@@ -98,7 +105,10 @@ const buildAccountOffencesImpositionsPayload = (
           ? null
           : (childFormData.find((child) => child.formData.fm_offence_details_imposition_position === impositionId) ??
             null);
-      const minorCreditor = buildAccountOffencesImpositionsMinorCreditorPayload(impositionMinorCreditor);
+      const minorCreditor = buildAccountOffencesImpositionsMinorCreditorPayload(
+        impositionMinorCreditor,
+        isR1A12Enabled,
+      );
 
       return {
         result_id: resultId ?? null,
@@ -118,6 +128,7 @@ const buildAccountOffencesImpositionsPayload = (
  * @param offenceDetailsState - An array of offence details forms representing the state of offences.
  * @param fixedPenaltyDetails - (Optional) The fixed penalty details store state, used to build a single offence payload.
  * @param accountType - (Optional) The type of account, used to determine if fixed penalty details should be used.
+ * @param isR1A12Enabled - Is feature flag R1A12 enabled
  *
  * @returns An array of account offences payload objects. If fixed penalty details are provided and the account type
  *          matches "Fixed Penalty", a single offence payload is returned. Otherwise, the payload is built from the
@@ -127,6 +138,7 @@ export const finesMacPayloadBuildAccountOffences = (
   offenceDetailsState: IFinesMacOffenceDetailsForm[],
   fixedPenaltyDetails?: IFinesMacFixedPenaltyDetailsStoreState,
   accountType?: string | null,
+  isR1A12Enabled = false,
 ): IFinesMacPayloadAccountOffences[] => {
   // If fixed penalty details are provided, use them to build and return a single offence payload
   if (fixedPenaltyDetails && accountType && accountType === FINES_ACCOUNT_TYPES['Fixed Penalty']) {
@@ -155,6 +167,7 @@ export const finesMacPayloadBuildAccountOffences = (
     const impositions = buildAccountOffencesImpositionsPayload(
       offence.formData.fm_offence_details_impositions,
       childFormData,
+      isR1A12Enabled,
     );
     return {
       date_of_sentence: offence.formData.fm_offence_details_date_of_sentence ?? null,

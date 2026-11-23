@@ -12,6 +12,8 @@ import { FINES_MAC_OFFENCE_DETAILS_DRAFT_STATE_MOCK } from 'src/app/flows/fines/
 import { MacOffenceDetailsMinorCreditorLocators as DOM_ELEMENTS } from '../../../../../shared/selectors/manual-account-creation/mac.offence-details.locators';
 import { REQUIRED_FIELDS, FORMAT_CHECK, LENGTH_CHECK } from './constants/minor_creditor_errors';
 import { of } from 'rxjs';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from 'src/app/flows/fines/constants/release-feature-flags.constant';
 
 const MANUAL_ACCOUNT_CREATION_JIRA_LABEL = '@JIRA-LABEL:manual-account-creation';
 
@@ -65,6 +67,14 @@ describe('FinesMacMinorCreditor', () => {
         provideHttpClient(),
         OpalFines,
         DateService,
+        {
+          provide: GlobalStore,
+          useFactory: () => {
+            const store = new GlobalStore();
+            store.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+            return store;
+          },
+        },
         {
           provide: FinesMacStore,
           useFactory: () => {
@@ -244,8 +254,8 @@ describe('FinesMacMinorCreditor', () => {
       formData[0].formData.fm_offence_details_minor_creditor_address_line_2 = 'Müller Street';
       formData[0].formData.fm_offence_details_minor_creditor_address_line_1 = '£ Building';
       formData[0].formData.fm_offence_details_minor_creditor_company_name = '123$£!*';
-      formData[0].formData.fm_offence_details_minor_creditor_surname = '123$£!*';
-      formData[0].formData.fm_offence_details_minor_creditor_forenames = '123$£!*';
+      formData[0].formData.fm_offence_details_minor_creditor_surname = '日本123$£!*§';
+      formData[0].formData.fm_offence_details_minor_creditor_forenames = '日本123$£!*±';
 
       cy.get(DOM_ELEMENTS.submitButton).click();
 
@@ -350,8 +360,8 @@ describe('FinesMacMinorCreditor', () => {
 
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'individual';
       formData[0].formData.fm_offence_details_minor_creditor_title = 'Mr';
-      formData[0].formData.fm_offence_details_minor_creditor_forenames = '123@*';
-      formData[0].formData.fm_offence_details_minor_creditor_surname = '123@*';
+      formData[0].formData.fm_offence_details_minor_creditor_forenames = '123£';
+      formData[0].formData.fm_offence_details_minor_creditor_surname = '123£';
       cy.get(DOM_ELEMENTS.submitButton).click();
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.forenamesAlphabeticalTextPattern);
       cy.get(DOM_ELEMENTS.errorSummary).should('contain', FORMAT_CHECK.surnameAlphabeticalTextPattern);
@@ -430,8 +440,8 @@ describe('FinesMacMinorCreditor', () => {
 
       formData[0].formData.fm_offence_details_minor_creditor_creditor_type = 'individual';
       formData[0].formData.fm_offence_details_minor_creditor_title = 'Mr';
-      formData[0].formData.fm_offence_details_minor_creditor_forenames = 'John';
-      formData[0].formData.fm_offence_details_minor_creditor_surname = 'Doe';
+      formData[0].formData.fm_offence_details_minor_creditor_forenames = 'John-James';
+      formData[0].formData.fm_offence_details_minor_creditor_surname = 'Doe-Smith';
       formData[0].formData.fm_offence_details_minor_creditor_address_line_1 = '1 Testing Lane';
       formData[0].formData.fm_offence_details_minor_creditor_address_line_2 = 'Test Town';
       formData[0].formData.fm_offence_details_minor_creditor_address_line_3 = 'Testing';

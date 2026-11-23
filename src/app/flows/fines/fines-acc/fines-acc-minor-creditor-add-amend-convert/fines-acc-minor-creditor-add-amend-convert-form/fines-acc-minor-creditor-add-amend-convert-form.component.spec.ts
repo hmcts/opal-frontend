@@ -9,6 +9,8 @@ import { IFinesAccMinorCreditorAddAmendConvertForm } from '../interfaces/fines-a
 import { FinesAccountStore } from '../../stores/fines-acc.store';
 import { MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_FORM } from '../mocks/fines-acc-minor-creditor-add-amend-convert-company-form.mock';
 import { MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_FORM } from '../mocks/fines-acc-minor-creditor-add-amend-convert-individual-form.mock';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 
 describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
   let component: FinesAccMinorCreditorAddAmendConvertFormComponent;
@@ -53,6 +55,8 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
         },
       ],
     }).compileComponents();
+
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
   });
 
   const createComponent = (initialFormData: IFinesAccMinorCreditorAddAmendConvertForm = companyFormData): void => {
@@ -63,6 +67,25 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
   };
 
   const getControl = (controlName: string) => component.form.get(controlName)!;
+
+  it.each([
+    [true, '12345', 'Account number must be between 6 and 8 numbers'],
+    [true, '123456789', 'Account number must be between 6 and 8 numbers'],
+    [true, '12345A', 'Account number must be between 6 and 8 numbers'],
+    [true, '', 'Enter account number'],
+    [false, '123456789', 'Account number must be between 6 and 8 digits long'],
+    [false, '12345A', 'Enter a valid account number like 00733445'],
+    [false, '', 'Enter account number'],
+    [false, '12345', 'Account number must be between 6 and 8 digits long'],
+  ])('should show account-number error with release flag %s for %s', (enabled, value, message) => {
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: enabled });
+    createComponent();
+    component.form.controls['facc_minor_creditor_bank_account_number'].setValue(value);
+
+    component['handleErrorMessages']();
+
+    expect(component.formControlErrorMessages['facc_minor_creditor_bank_account_number']).toBe(message);
+  });
 
   it('should create', () => {
     createComponent();
@@ -250,10 +273,16 @@ describe('FinesAccMinorCreditorAddAmendConvertFormComponent', () => {
     expect(getControl(component.controls.bankAccountName).hasError('required')).toBe(true);
 
     getControl(component.controls.bankSortCode).setValue('12345');
-    expect(getControl(component.controls.bankSortCode).hasError('minlength')).toBe(true);
+    expect(getControl(component.controls.bankSortCode).hasError('invalidSortCode')).toBe(true);
+
+    getControl(component.controls.bankSortCode).setValue('1234567');
+    expect(getControl(component.controls.bankSortCode).hasError('invalidSortCode')).toBe(true);
 
     getControl(component.controls.bankSortCode).setValue('12345A');
-    expect(getControl(component.controls.bankSortCode).hasError('numericalTextPattern')).toBe(true);
+    expect(getControl(component.controls.bankSortCode).hasError('invalidSortCode')).toBe(true);
+
+    getControl(component.controls.bankSortCode).setValue('12-34-56');
+    expect(getControl(component.controls.bankSortCode).valid).toBe(true);
 
     getControl(component.controls.bankAccountNumber).setValue('12345');
     expect(getControl(component.controls.bankAccountNumber).hasError('minlength')).toBe(true);

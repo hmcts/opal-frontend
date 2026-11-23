@@ -10,18 +10,13 @@ and execution sections together with [AGENTS.md](../AGENTS.md), [REPO_GUIDELINES
 
 ## Feature Layout and Tags
 
+See [Cypress release selection](CYPRESS_RELEASE_SELECTION.md) for release folders, tags, and run commands, and
+[Extended test runs](EXTENDED_TEST_RUNS.md) for the shared `@extendedTest` policy.
+
 - Preferred home is `cypress/e2e/functional/opal`.
 - Feature files live under capability folders (for example, `features/release1a/manualAccountCreation/**`, `features/release1b/fineAccountEnquiry/**`).
 - Tag scenarios with `@functional`, `@smoke`, and Jira IDs so suites can target subsets.
 - New scenarios belong in the `opal` layout. The historical `Old_functional_E2E_Tests` path remains excluded by Cypress; do not recreate it for new coverage.
-
-### Release Folder Rules
-
-- Keep release-specific feature files under the matching release folder.
-- `features/release1a/**` should contain only `@R1A`, `@R1AOff`, `@R1A1_1`, `@R1A1_1Off`, `@R1A1_2`, or `@R1A1_2Off` scenarios and examples.
-- `features/release1b/**` should contain only `@R1BDrop1`, `@R1BDrop2`, `@R1BDrop1UatTechJCDE`, `@R1BDrop1UatTechPreprod`, `@R1BDrop2UatTechJCDE`, `@R1BDrop2UatTechPreprod`, or `@R1BOff` scenarios and examples.
-- `features/release1c/**` should contain only `@R1C...` scenarios and examples.
-- When a feature file mixes release tags, split the scenarios into separate release-specific files rather than keeping cross-release examples in one file.
 
 ### Journey-Based Organisation
 
@@ -67,8 +62,23 @@ cypress/e2e/functional/opal/features/release1b/searchAndMatches/
 ## Actions, Flows, and Selectors
 
 - Actions in `cypress/e2e/functional/opal/actions/**` wrap interactions, API stubs, and navigation using selectors from `cypress/shared/selectors/**`.
+- Make the business outcome visible through an explicit `Then` step delegating to an expectation method. An action
+  may wait for navigation or readiness, but should not be the only place that proves the scenario's outcome.
+  When separating an existing action from its assertions, preserve the assertions and migrate every functional and
+  accessibility caller. A page heading alone must not replace record identity, mode, permission, or no-write checks.
 - Flows in `cypress/e2e/functional/opal/flows/**` compose actions into business journeys and are the verbs exposed to steps. Component specs use the direct script/helper style in the component-testing guide.
 - Selectors are centralized. Add hooks in Angular templates and document them in `cypress/shared/selectors/**`. Avoid positional CSS.
+
+### Shared fixtures and request setup
+
+- Put reusable response builders and scenario data under the capability's `mocks/**`, and shared request wiring under
+  `setup/**` or `intercept/**`. Actions should import these directly rather than importing another feature's Action
+  module solely to reuse its fixtures or stubs. Do not introduce barrel exports.
+- Extract only genuinely shared contracts. Preserve endpoint/method matching, query handling, aliases, and response
+  semantics; leave scenario-specific selected-record behaviour with its owner. Keep business assertions in explicit
+  expectation methods and mutable scenario data independent.
+- Controlled reference responses prove frontend behaviour against those contracts. They do not establish deployed
+  provider behaviour, live authentication, or permissions. Preserve the scenario's existing live/controlled boundary.
 
 ## Reusing feature-file steps
 
@@ -117,6 +127,9 @@ state. Use focused spec/Story selections for development feedback without reduci
 full regressions. Report expanded examples, failures, retries, missing cases and wall time;
 a successful runner exit alone does not prove a complete passing suite.
 
+[Test-maintenance evidence](CONTRIBUTING.md#test-maintenance-evidence) applies to consolidated scenarios, changes to
+shared fixtures or steps, and runtime claims.
+
 ## Running a feature and accessibility checks
 
 Run an existing accessibility feature through the configured runner:
@@ -125,8 +138,8 @@ Run an existing accessibility feature through the configured runner:
 corepack yarn test:functional:serial --browser=chrome --spec 'cypress/e2e/functional/opal/features/release1b/searchAndMatches/searchAndMatchesAccessibility.feature'
 ```
 
-Select other functional, accessibility, release-on/off, or smoke scenarios with the existing scripts in `package.json`
-and release configuration documented in the README. Preserve their tag selection. Supply the configured test target
+Select other functional, accessibility, or smoke scenarios with the existing scripts in `package.json`.
+Use the release guide for release-on/off and UAT Technical runs. Preserve their tag selection. Supply the configured test target
 and authorised test accounts through the existing environment; never put credentials in documentation or evidence.
 Record browser version, safe environment alias, command, selected/expanded scenario count, passes, failures, retries,
 and skipped or pending cases. Zero executed scenarios or a successful discovery run is not passing browser evidence.

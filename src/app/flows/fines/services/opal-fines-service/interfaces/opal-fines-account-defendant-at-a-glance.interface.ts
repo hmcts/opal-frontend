@@ -9,6 +9,8 @@ import { IOpalFinesVersion } from './opal-fines-version.interface';
 export interface IOpalFinesAccountDefendantAtAGlance extends IOpalFinesVersion {
   defendant_account_id: string;
   account_number: string;
+  account_status_code?: string | null;
+  account_balance?: number | null;
   debtor_type: string;
   is_youth: boolean;
   party_details: IOpalFinesDefendantAccountPartyDetails;

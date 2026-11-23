@@ -61,14 +61,18 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String componentTestScript = 'test:component'
 @Field String r1bDrop1UatTechJcdeTag = '@R1BDrop1UatTechJCDE'
 @Field String r1bDrop2UatTechJcdeTag = '@R1BDrop2UatTechJCDE'
+@Field String r1bDrop3UatTechJcdeTag = '@R1BDrop3UatTechJCDE'
 @Field List<String> defaultFunctionalUatTechExclusions = [
   '@UAT-Technical',
   r1bDrop1UatTechJcdeTag,
   '@R1BDrop1UatTechPreprod',
   r1bDrop2UatTechJcdeTag,
   '@R1BDrop2UatTechPreprod',
+  r1bDrop3UatTechJcdeTag,
+  '@R1BDrop3UatTechPreprod',
 ]
 @Field List<String> jcdeOverrideTags = [
+  r1bDrop3UatTechJcdeTag,
   r1bDrop1UatTechJcdeTag,
   r1bDrop2UatTechJcdeTag,
 ]
@@ -642,6 +646,8 @@ boolean legacyEnabled = cachedPrLabels.contains('enable_legacy_mode')
 env.with { pipelineEnv ->
     pipelineEnv.DEV_DEFAULT_APP_MODE = opalName
     pipelineEnv.DEV_OPAL_LEGACY_GATEWAY_URL = 'https://opal-legacy-db-stub.staging.platform.hmcts.net/opal'
+    pipelineEnv.STG_OPAL_LEGACY_GATEWAY_URL = pipelineEnv.STG_OPAL_LEGACY_GATEWAY_URL ?:
+        'https://opal-legacy-db-stub-staging.platform.hmcts.net/opal'
     pipelineEnv.IS_LEGACY_MODE = stringFalse
     pipelineEnv.LEGACY_ENABLED = stringFalse
     pipelineEnv.JCDE_OVERRIDE = stringFalse
@@ -725,6 +731,11 @@ if (releaseSuite) {
     env.SKIP_SMOKE = stringFalse
     echo "Running default functional selection (TAGS=${env.TAGS})"
 }
+
+// PRs can opt into extended tests with a label; master runs always exclude them.
+boolean extendedTestsEnabled = isPR && cachedPrLabels.contains('extendedTests')
+env.EXCLUDE_EXTENDED_TESTS = extendedTestsEnabled ? stringFalse : stringTrue
+echo "Extended tests enabled: ${extendedTestsEnabled}"
 
 // Primary pipeline definition and lifecycle hooks
 withPipeline(type, product, component) {

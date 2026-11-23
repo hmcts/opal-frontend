@@ -5,6 +5,25 @@ This document is the authoritative source for implementation standards in `opal-
 Apply these standards to new and materially changed code. Improve nearby legacy code when it is necessary to deliver
 the ticket safely, but do not expand a change into unrelated remediation.
 
+## Established patterns and shared capabilities
+
+- Before designing a new flow or materially changing an existing one, inspect comparable maintained code in this
+  repository and the relevant installed shared-library APIs. Use their established patterns unless a concrete
+  requirement or technical constraint justifies a departure.
+- When a task supplies a reference implementation, identify the patterns to reuse across architecture, data loading,
+  state ownership, navigation, and error handling. Explain material deviations during planning and keep that record
+  current when decisions change.
+- Reuse applicable shared components, base classes, utilities, and public types before introducing custom equivalents.
+  Keep feature-specific extensions limited to behaviour the existing implementation does not support.
+- Preserve the supported contracts and states of shared APIs. Justify intentional restrictions at the relevant domain
+  boundary; do not narrow or duplicate a shared contract solely to fit one consumer's current implementation.
+- Give each piece of state a clear owner. Avoid custom state or orchestration that duplicates behaviour already
+  provided by routing, shared infrastructure, or existing components.
+- Use established application mechanisms for operational errors. Keep validation feedback associated with the relevant
+  controls, and add feature-specific error or recovery UI only when an agreed user requirement calls for it.
+- Check designs and implementation plans against user requirements and these standards before implementation. Resolve
+  material contradictions and record the decision; a written plan does not itself justify a departure.
+
 ## Project structure
 
 - Keep Angular features, shared services, and colocated unit specs under `src/app`.
@@ -122,7 +141,6 @@ mapping, follow [SONAR.md](SONAR.md#form-identifiers).
   grown difficult to understand or test together.
 - Do not introduce broad shared providers or shared state when a standalone or feature-scoped provider is sufficient.
 - Keep routes modular and integration boundaries explicit.
-- Prefer existing shared components and utilities over bespoke replacements.
 - Add brief inline documentation when introducing a pattern that other contributors are expected to copy.
 - Explain any unavoidable increase in complexity, dependency footprint, or public API surface in the PR.
 
@@ -184,9 +202,12 @@ mapping, follow [SONAR.md](SONAR.md#form-identifiers).
   calendar date; it does not replace Date of birth validation such as rejecting today or future dates.
 - Add bespoke styling only when no suitable established pattern exists.
 - Keep content concise, user-centred, and consistent with the GOV.UK style guide.
-- Keep routed placeholder pages structurally representative of their intended completed page. Include the appropriate
-  GOV.UK grid wrapper and page-width class, matching the approved adjacent journey page when that is the design
-  baseline; do not leave a bare heading that renders at a different width from the eventual screen.
+- The application owns one `govuk-grid-row`, in `app.component.html`, around the router outlet. Routed pages must use
+  the appropriate `govuk-grid-column-*` wrapper without adding another row. Keep Back links and page content inside
+  that column so the left and right buffers align with the application shell.
+- Keep routed placeholder pages structurally representative of their intended completed page. Use the appropriate
+  column width, matching the approved adjacent journey page when that is the design baseline; do not leave a bare
+  heading that renders at a different width from the eventual screen.
 - Use the shared GOV.UK button component by default. For a `govuk-button-group` containing exactly one primary action
   and `opal-lib-govuk-cancel-link`, use a native `<button>` with the standard `govuk-button` classes when the shared
   button component's custom-element host prevents GOV.UK flex alignment. Preserve the correct `type`, accessible text,

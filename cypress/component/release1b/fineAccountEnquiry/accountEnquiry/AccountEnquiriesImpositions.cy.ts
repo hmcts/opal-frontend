@@ -134,7 +134,7 @@ describe('Account Enquiry Impositions', () => {
   );
 
   it(
-    'AC2a, AC2b: displays the sentencing court name only when the imposition includes an imposing court',
+    'AC2a, AC2b: displays the sentencing court name when available and an em-dash when missing',
     { tags: [...buildTags(IMPOSITIONS_STORY_TAG), IMPOSITIONS_EPIC_TAG, '@JIRA-TEST-KEY:PO-7474'] },
     () => {
       setupImpositionsScreen('impositions');
@@ -142,8 +142,8 @@ describe('Account Enquiry Impositions', () => {
       cy.wait('@getImpositions');
 
       expectCellText(getImpositionsCell('imposed-by', 0), 'West London Magistrates Court');
-      cy.get(getImpositionsCell('imposed-by', 1)).should('be.empty');
-      cy.get(getImpositionsCell('imposed-by', 2)).should('be.empty');
+      expectVisibleCellText(getImpositionsCell('imposed-by', 1), '—');
+      expectVisibleCellText(getImpositionsCell('imposed-by', 2), '—');
     },
   );
 

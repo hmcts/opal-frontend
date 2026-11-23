@@ -265,15 +265,15 @@ export class CommonActions {
   }
 
   /**
-   * Navigates to the Dashboard by selecting the global HMCTS homepage link.
+   * Navigates to the Dashboard by selecting the global Opal homepage link.
    */
   public clickHmctsHomeLink(): void {
-    const sel = L.hmctsHomeLink;
+    const sel = L.serviceNameLink;
     if (!sel) {
-      throw new TypeError('clickHmctsHomeLink: Locator CommonLocators.hmctsHomeLink is required but missing.');
+      throw new TypeError('clickHmctsHomeLink: Locator CommonLocators.serviceNameLink is required but missing.');
     }
 
-    log('action', 'Selecting HMCTS header link to return to the dashboard');
+    log('action', 'Selecting Opal header link to return to the dashboard');
     cy.get(sel, this.getTimeoutOptions()).should('be.visible').click();
   }
 

@@ -309,6 +309,9 @@ yarn test:smoke
 
 ```
 
+See [Cypress release selection](docs/CYPRESS_RELEASE_SELECTION.md) for release folders, tags, and run commands, and
+[Extended test runs](docs/EXTENDED_TEST_RUNS.md) for the shared `@extendedTest` policy.
+
 Run `yarn test:functional` to execute the end-to-end functional tests in Opal mode.
 
 ```bash

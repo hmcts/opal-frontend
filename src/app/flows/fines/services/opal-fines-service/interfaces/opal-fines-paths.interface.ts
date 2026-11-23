@@ -3,6 +3,7 @@ export interface IOpalFinesPaths {
   businessUnitOutstandingAutoPaymentCount: string;
   localJusticeAreaRefData: string;
   courtRefData: string;
+  courtFees: string;
   offencesRefData: string;
   resultsRefData: string;
   majorCreditorRefData: string;
@@ -22,5 +23,6 @@ export interface IOpalFinesPaths {
   reportInstances: string;
   interfaceJobsSummary: string;
   tills: string;
+  sourceMappings: string;
   processInterfaceJobs: string;
 }

@@ -1,3 +1,6 @@
+import { IOpalFinesSourceMapping } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-source-mapping.interface';
+import { fetchSourceMappingsResolver } from 'src/app/flows/fines/routing/resolvers/fetch-source-mappings-resolver/fetch-source-mappings.resolver';
+import { OPAL_FINES_SOURCE_MAPPINGS_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-source-mappings.mock';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-error';
 import { provideRouter, Router, Routes } from '@angular/router';
@@ -23,18 +26,34 @@ import { FinesApiComponent } from 'src/app/flows/fines/fines-api/fines-api.compo
 import { FinesApiProcessAllocateComponent } from 'src/app/flows/fines/fines-api/fines-api-process-allocate/fines-api-process-allocate.component';
 import { FinesApiSelectBusComponent } from 'src/app/flows/fines/fines-api/fines-api-select-bus/fines-api-select-bus.component';
 import { FinesApiConfirmProcessComponent } from 'src/app/flows/fines/fines-api/fines-api-confirm-process/fines-api-confirm-process.component';
+import { FinesApiSummaryReportComponent } from 'src/app/flows/fines/fines-api/fines-api-summary-report/fines-api-summary-report.component';
 import { FinesMciCreateAllocateComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-allocate/fines-mci-create-allocate.component';
 import { FinesMciCreateTillSelectBuComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-select-bu/fines-mci-create-till-select-bu.component';
+import { FinesMciCreateTillDetailsComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-details/fines-mci-create-till-details.component';
+import { FinesMciCreateTillPaymentCategoryComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-payment-category/fines-mci-create-till-payment-category.component';
+import { FinesMciCreateTillCourtFeeDetailsComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-court-fee-details/fines-mci-create-till-court-fee-details.component';
+import { FinesMciCreateTillOverUnderpaymentConfirmationComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-over-underpayment-confirmation/fines-mci-create-till-over-underpayment-confirmation.component';
+import { FinesMciCreateTillSuspenseDetailsComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-suspense-details/fines-mci-create-till-suspense-details.component';
+import { FinesMciPaymentCategoryCriminalSearchComponent } from 'src/app/flows/fines/fines-mci/fines-mci-payment-category-criminal-search/fines-mci-payment-category-criminal-search.component';
+import { FinesMciPaymentCategoryCriminalMatchesComponent } from 'src/app/flows/fines/fines-mci/fines-mci-payment-category-criminal-matches/fines-mci-payment-category-criminal-matches.component';
+import { finesMciCriminalAccountsResolver } from 'src/app/flows/fines/fines-mci/routing/resolvers/fines-mci-criminal-accounts/fines-mci-criminal-accounts.resolver';
+import { FinesMciPlaceholderComponent } from 'src/app/flows/fines/fines-mci/fines-mci-placeholder/fines-mci-placeholder.component';
+import { FinesMciStore } from 'src/app/flows/fines/fines-mci/stores/fines-mci.store';
 import { FinesApiStore } from 'src/app/flows/fines/fines-api/stores/fines-api.store';
+import { OpalFines } from 'src/app/flows/fines/services/opal-fines-service/opal-fines.service';
 import { FINES_API_ROUTING_PATHS } from 'src/app/flows/fines/fines-api/routing/constants/fines-api-routing-paths.constant';
 import { FINES_MCI_ROUTING_PATHS } from 'src/app/flows/fines/fines-mci/routing/constants/fines-mci-routing-paths.constant';
+import { finesMciCourtFeesResolver } from 'src/app/flows/fines/fines-mci/routing/resolvers/fines-mci-court-fees.resolver';
 import { OPAL_FINES_BUSINESS_UNIT_OUTSTANDING_AUTO_PAYMENT_COUNTS_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-business-unit-outstanding-auto-payment-counts.mock';
+import { IOpalFinesBusinessUnitRefData } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 
 export type FinanceComponentSetupOptions = {
   dashboardType?: string;
+  sourceMappings?: IOpalFinesSourceMapping[];
   featureFlags?: Record<string, boolean>;
   permissionIds?: readonly number[];
   paymentPermissionBusinessUnitIds?: readonly number[];
+  businessUnits?: IOpalFinesBusinessUnitRefData;
 };
 
 const DEFAULT_FEATURE_FLAGS = {
@@ -67,11 +86,20 @@ const FINANCE_COMPONENT_ROUTES: Routes = [
       {
         path: FINES_ROUTING_PATHS.children.autoPaymentIn.children.processAllocate,
         component: FinesApiProcessAllocateComponent,
+        resolve: { sourceMappings: fetchSourceMappingsResolver },
         canDeactivate: [canDeactivateGuard],
       },
       {
         path: FINES_API_ROUTING_PATHS.children.confirmProcess,
         component: FinesApiConfirmProcessComponent,
+      },
+      {
+        path: `${FINES_API_ROUTING_PATHS.children.tillSummary}/:tillId`,
+        component: FinesApiSummaryReportComponent,
+      },
+      {
+        path: `${FINES_API_ROUTING_PATHS.children.fileSummary}/:fileId`,
+        component: FinesApiSummaryReportComponent,
       },
     ],
   },
@@ -95,6 +123,7 @@ const FINANCE_COMPONENT_ROUTES: Routes = [
           FINES_MCI_ROUTING_PATHS.children.selectBusinessUnit,
         ].join('/'),
         component: FinesMciCreateTillSelectBuComponent,
+        canDeactivate: [canDeactivateGuard],
         data: {
           businessUnits: {
             count: 1,
@@ -106,6 +135,89 @@ const FINANCE_COMPONENT_ROUTES: Routes = [
             ],
           },
         },
+      },
+      {
+        path: [
+          FINES_MCI_ROUTING_PATHS.children.create,
+          FINES_MCI_ROUTING_PATHS.children.till,
+          FINES_MCI_ROUTING_PATHS.children.details,
+        ].join('/'),
+        component: FinesMciCreateTillDetailsComponent,
+        canDeactivate: [canDeactivateGuard],
+      },
+      {
+        // These forms navigate relative to their Till parent, matching the application routes.
+        path: [FINES_MCI_ROUTING_PATHS.children.create, FINES_MCI_ROUTING_PATHS.children.till].join('/'),
+        children: [
+          {
+            path: FINES_MCI_ROUTING_PATHS.children.paymentCategory,
+            component: FinesMciCreateTillPaymentCategoryComponent,
+            canDeactivate: [canDeactivateGuard],
+          },
+          {
+            path: FINES_MCI_ROUTING_PATHS.children.suspenseDetails,
+            component: FinesMciCreateTillSuspenseDetailsComponent,
+            canDeactivate: [canDeactivateGuard],
+          },
+          ...[
+            [FINES_MCI_ROUTING_PATHS.children.checkSuspensePayment, 'Check suspense payment'],
+            [FINES_MCI_ROUTING_PATHS.children.payerDetails, 'Payer details'],
+          ].map(([path, heading]) => ({
+            path,
+            component: FinesMciPlaceholderComponent,
+            data: { heading },
+          })),
+        ],
+      },
+      {
+        path: [
+          FINES_MCI_ROUTING_PATHS.children.create,
+          FINES_MCI_ROUTING_PATHS.children.till,
+          FINES_MCI_ROUTING_PATHS.children.payment,
+          FINES_MCI_ROUTING_PATHS.children.category,
+          FINES_MCI_ROUTING_PATHS.children.criminal,
+        ].join('/'),
+        children: [
+          {
+            path: FINES_MCI_ROUTING_PATHS.children.search,
+            component: FinesMciPaymentCategoryCriminalSearchComponent,
+            canDeactivate: [canDeactivateGuard],
+          },
+          {
+            path: FINES_MCI_ROUTING_PATHS.children.matches,
+            component: FinesMciPaymentCategoryCriminalMatchesComponent,
+            resolve: { criminalAccounts: finesMciCriminalAccountsResolver },
+          },
+        ],
+      },
+      {
+        path: [
+          FINES_MCI_ROUTING_PATHS.children.create,
+          FINES_MCI_ROUTING_PATHS.children.till,
+          FINES_MCI_ROUTING_PATHS.children.courtFeeDetails,
+        ].join('/'),
+        component: FinesMciCreateTillCourtFeeDetailsComponent,
+        canDeactivate: [canDeactivateGuard],
+        resolve: { courtFees: finesMciCourtFeesResolver },
+      },
+      {
+        path: [
+          FINES_MCI_ROUTING_PATHS.children.create,
+          FINES_MCI_ROUTING_PATHS.children.till,
+          'over-underpayment-confirmation',
+        ].join('/'),
+        component: FinesMciCreateTillOverUnderpaymentConfirmationComponent,
+        canDeactivate: [canDeactivateGuard],
+        resolve: { courtFees: finesMciCourtFeesResolver },
+      },
+      {
+        path: [
+          FINES_MCI_ROUTING_PATHS.children.create,
+          FINES_MCI_ROUTING_PATHS.children.till,
+          FINES_MCI_ROUTING_PATHS.children.cancel,
+        ].join('/'),
+        component: FinesMciPlaceholderComponent,
+        data: { heading: 'Cancel till creation' },
       },
     ],
   },
@@ -155,15 +267,41 @@ const createGlobalStore = ({
  */
 export const setupFinancePageComponent = ({
   dashboardType = DEFAULT_DASHBOARD_TYPE,
+  sourceMappings = OPAL_FINES_SOURCE_MAPPINGS_MOCK,
   paymentPermissionBusinessUnitIds = DEFAULT_PAYMENT_PERMISSION_BUSINESS_UNIT_IDS,
   permissionIds = DEFAULT_REPRESENTATIVE_PERMISSION_IDS,
   ...options
 }: FinanceComponentSetupOptions = {}) => {
+  cy.intercept('GET', '/opal-fines-service/mappings/source', sourceMappings).as('sourceMappings');
   cy.then(() => {
+    const routes = FINANCE_COMPONENT_ROUTES.map((route) => ({
+      ...route,
+      data: route.data ? { ...route.data } : undefined,
+      children: route.children?.map((childRoute) => ({
+        ...childRoute,
+        data: childRoute.data ? { ...childRoute.data } : undefined,
+      })),
+    }));
+    const selectBusinessUnitRoute = routes
+      .find((route) => route.path === [FINES_ROUTING_PATHS.root, FINES_ROUTING_PATHS.children.mci.root].join('/'))
+      ?.children?.find(
+        (route) =>
+          route.path ===
+          [
+            FINES_MCI_ROUTING_PATHS.children.create,
+            FINES_MCI_ROUTING_PATHS.children.till,
+            FINES_MCI_ROUTING_PATHS.children.selectBusinessUnit,
+          ].join('/'),
+      );
+
+    if (options.businessUnits && selectBusinessUnitRoute) {
+      selectBusinessUnitRoute.data = { businessUnits: options.businessUnits };
+    }
+
     mount(AppComponent, {
       providers: [
         provideHttpClient(withInterceptors([httpErrorInterceptor])),
-        provideRouter(FINANCE_COMPONENT_ROUTES),
+        provideRouter(routes),
         {
           provide: GlobalStore,
           useFactory: () => createGlobalStore({ ...options, paymentPermissionBusinessUnitIds, permissionIds }),
@@ -188,8 +326,13 @@ export const setupFinancePageComponent = ({
     }).then(({ fixture }) => {
       const router = fixture.componentRef.injector.get(Router);
       const finesApiStore = fixture.componentRef.injector.get(FinesApiStore);
+      const finesMciStore = fixture.componentRef.injector.get(FinesMciStore);
+      const opalFines = fixture.componentRef.injector.get(OpalFines);
+      cy.wrap(fixture.componentInstance).as('appComponent');
       cy.wrap(router).as('financeRouter');
       cy.wrap(finesApiStore).as('finesApiStore');
+      cy.wrap(finesMciStore).as('finesMciStore');
+      cy.wrap(opalFines).as('opalFines');
 
       return router
         .navigate(['/', FINES_ROUTING_PATHS.root, FINES_DASHBOARD_ROUTING_PATHS.root, dashboardType])

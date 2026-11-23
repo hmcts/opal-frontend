@@ -23,6 +23,8 @@ Use this guide when writing or updating Cypress component specs in `opal-fronten
 - Do not add a production destination placeholder merely to make a component test navigate.
 - Keep scenario choices and assertions in the spec, and keep reusable data definitions under the feature's `mocks/**` or `constants/**` folder. Setup helpers own mounting, providers, representative document-shell setup, initial-state seeding, and reusable aliases.
 
+The component webpack `TsconfigPathsPlugin` uses the repository root (`baseUrl: __dirname` in `cypress.config.ts`) with the component tsconfig so inherited application paths resolve consistently. Keep this root setting when changing the harness and verify the full component suite after a shared harness change.
+
 ## Spec style and naming
 
 - Write component specs as readable executable scripts using `cy.get(...)`, shared selectors, and focused local assertion helpers.
@@ -47,6 +49,8 @@ it('AC3. should save the valid selection and request onward navigation', { tags:
 ```
 
 ## Jira tags
+
+See [Extended test runs](EXTENDED_TEST_RUNS.md) for the shared `@extendedTest` policy.
 
 - Every `it(...)` must own its tag configuration. Do not rely only on tags attached to `describe(...)`.
 - Define confirmed work-item and Epic tags once and include them through a local `buildTags(...)` helper. Each test requires exactly one `@JIRA-EPIC` and either `@JIRA-STORY` or `@JIRA-DEFECT`; do not invent identifiers.
@@ -73,6 +77,10 @@ it('AC1. should render the approved choices', { tags: buildTags('@JIRA-TEST-KEY:
 
 ## Routing and store assertions
 
+- Default-arrival tests must observe the state produced by the real component and route activation. A setup helper
+  must not call sort, pagination, tab-selection, or similar handlers to establish the default being asserted.
+  Apply such overrides only when the scenario explicitly supplies them. For example, an oldest-first arrival test
+  should assert row order, sort indication, and initial page without first calling `changeSort(...)` or `changePage(...)`.
 - Import route segments from the production routing constants under `src/app/**`; do not duplicate route fragments in Cypress-only constants.
 - Compose an expected full path locally when the component contract is the complete URL. A small reusable path helper is appropriate when several scenarios use the same composition.
 - Keep router creation or stubbing in the setup helper and navigation assertions in the spec.
@@ -191,6 +199,9 @@ Before handoff:
 - distinguish component evidence from unit, E2E, manual, and external verification;
 - report warnings, blocked dependencies, and checks not run; and
 - apply `docs/FRONTEND_DEFINITION_OF_DONE.md` without claiming human review, QA, CI, deployment, or WCAG completion unless verified.
+
+Use [test-maintenance evidence](CONTRIBUTING.md#test-maintenance-evidence) when changing shared helpers, moving
+coverage, or measuring runtime. A passing serial rerun verifies only the serial run.
 
 ## Real product defects
 

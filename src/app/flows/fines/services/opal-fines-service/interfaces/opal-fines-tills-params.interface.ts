@@ -1,6 +1,5 @@
-export type TOpalFinesTillStatus = 'CREATED' | 'PROCESSING' | 'FAILED' | 'ALLOCATED';
-
 export interface IOpalFinesTillsParams {
-  statuses: TOpalFinesTillStatus[];
-  auto_payments: boolean;
+  statuses?: string[];
+  auto_payments?: boolean;
+  business_unit_ids?: number[];
 }

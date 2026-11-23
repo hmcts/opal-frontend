@@ -450,8 +450,8 @@ export class ResultsActions {
   }
 
   /**
-   * Asserts that at least one row in the results table matches all of the
-   * provided column/value expectations.
+   * Asserts that at least one row across the remaining results pages matches all
+   * provided column/value expectations, leaving the matching page displayed.
    *
    * @param expectations - Map of column label → expected cell text.
    *                       Column labels must match keys in COLUMN_LOCATORS
@@ -473,46 +473,67 @@ export class ResultsActions {
     // Ensure the table is present before we start inspecting rows.
     this.waitForResultsTable();
 
-    cy.get(R.table.rows, { timeout: ResultsActions.WAIT_MS }).then(($rows) => {
-      if ($rows.length === 0) {
-        throw new Error('No rows present in results table while asserting column values');
-      }
+    const tryPage = (): void => {
+      cy.get(R.table.rows, { timeout: ResultsActions.WAIT_MS }).then(($rows) => {
+        if ($rows.length === 0) {
+          throw new Error('No rows present in results table while asserting column values');
+        }
 
-      let matchFound = false;
+        let matchFound = false;
 
-      // Iterate in plain JS/jQuery space (no nested Cypress commands)
-      for (const row of Array.from($rows)) {
-        const $row = Cypress.$(row);
-        let allMatch = true;
+        // Iterate in plain JS/jQuery space (no nested Cypress commands)
+        for (const row of Array.from($rows)) {
+          const $row = Cypress.$(row);
+          let allMatch = true;
 
-        for (const [columnLabel, expectedValueRaw] of Object.entries(expectations)) {
-          const selector = ResultsActions.COLUMN_LOCATORS[columnLabel];
+          for (const [columnLabel, expectedValueRaw] of Object.entries(expectations)) {
+            const selector = ResultsActions.COLUMN_LOCATORS[columnLabel];
 
-          if (!selector) {
-            throw new Error(
-              `No column locator mapping defined for header "${columnLabel}". ` +
-                'Extend ResultsActions.COLUMN_LOCATORS to support this column.',
-            );
+            if (!selector) {
+              throw new Error(
+                `No column locator mapping defined for header "${columnLabel}". ` +
+                  'Extend ResultsActions.COLUMN_LOCATORS to support this column.',
+              );
+            }
+
+            const cellText = ResultsActions.getComparableCellText($row, selector);
+            const expectedValue = ResultsActions.normalizeCellText(expectedValueRaw);
+
+            if (cellText !== expectedValue) {
+              allMatch = false;
+              break;
+            }
           }
 
-          const cellText = ResultsActions.getComparableCellText($row, selector);
-          const expectedValue = ResultsActions.normalizeCellText(expectedValueRaw);
-
-          if (cellText !== expectedValue) {
-            allMatch = false;
+          if (allMatch) {
+            matchFound = true;
             break;
           }
         }
 
-        if (allMatch) {
-          matchFound = true;
-          break;
+        if (matchFound) {
+          return;
         }
-      }
 
-      expect(matchFound, `No results row matched all expected column values: ${JSON.stringify(expectations)}`).to.be
-        .true;
-    });
+        const firstRowText = $rows.first().text();
+        cy.get('body', { timeout: ResultsActions.WAIT_MS }).then(($body) => {
+          const nextLink = $body.find(R.pagination.next);
+          expect(
+            nextLink.length,
+            `No results row matched all expected column values across results pages: ${JSON.stringify(expectations)}`,
+          ).to.be.greaterThan(0);
+
+          cy.wrap(nextLink).scrollIntoView().click();
+          // Wait for the rows to change before inspecting the next page.
+          cy.get(R.table.rows, { timeout: ResultsActions.WAIT_MS }).should(($nextRows) => {
+            expect($nextRows.first().text(), 'next results page has rendered').not.to.equal(firstRowText);
+          });
+          tryPage();
+        });
+      });
+    };
+
+    tryPage();
   }
 
   /**

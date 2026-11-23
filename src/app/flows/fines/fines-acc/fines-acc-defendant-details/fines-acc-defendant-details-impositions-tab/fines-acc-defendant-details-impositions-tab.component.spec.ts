@@ -376,21 +376,21 @@ describe('FinesAccDefendantDetailsImpositionsTabComponent', () => {
     expect(zeroBalanceRow.textContent).toContain('Minor Creditor Test Ltd');
   });
 
-  it('should leave imposed by blank when imposing court id is not present', () => {
+  it('should display a dash when the imposing court is not present', () => {
     const { fixture } = setupComponent();
     const imposedByCell = fixture.nativeElement.querySelector('#imposition-imposed-by-1') as HTMLTableCellElement;
 
-    expect(imposedByCell.textContent?.trim()).toBe('');
+    expect(imposedByCell.textContent).toContain('—');
   });
 
-  it('should leave the imposing court blank when null', () => {
+  it('should display a dash when the imposing court fields are null', () => {
     const tabData = structuredClone(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_IMPOSITIONS_TAB_REF_DATA_MOCK);
-    tabData.impositions[0].imposed_by = null;
+    tabData.impositions[0].imposed_by = { court_id: null, court_code: null, court_name: null };
 
     const { fixture } = setupComponent(tabData);
     const cell = fixture.nativeElement.querySelector('#imposition-imposed-by-0') as HTMLTableCellElement;
 
-    expect(cell.textContent?.trim()).toBe('');
+    expect(cell.textContent).toContain('—');
   });
 
   it('should display the court name with a null court code', () => {

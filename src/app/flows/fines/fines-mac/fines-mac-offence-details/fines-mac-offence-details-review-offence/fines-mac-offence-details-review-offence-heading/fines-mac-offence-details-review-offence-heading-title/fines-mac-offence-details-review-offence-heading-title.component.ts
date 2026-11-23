@@ -5,6 +5,7 @@ import {
   GovukSummaryListRowActionItemComponent,
   GovukSummaryListRowActionsComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
+import { HeadingLevel } from '@hmcts/opal-frontend-common/types';
 
 @Component({
   selector: 'app-fines-mac-offence-details-review-offence-heading-title',
@@ -21,6 +22,7 @@ import {
 export class FinesMacOffenceDetailsReviewOffenceHeadingTitleComponent {
   @Input({ required: true }) public offenceCode!: string;
   @Input({ required: true }) public offenceTitle!: string;
+  @Input({ required: true }) public headingLevel!: HeadingLevel;
   @Input({ required: false }) public showActions!: boolean;
   @Input({ required: false }) public isReadOnly: boolean = false;
   @Output() public actionClicked = new EventEmitter<string>();

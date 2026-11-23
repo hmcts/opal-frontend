@@ -9,7 +9,7 @@ import {
   MojSubNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from './mocks/fines-acc-defendant-details-header.mock';
-import { NEVER, of } from 'rxjs';
+import { NEVER, of, throwError } from 'rxjs';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_ACCOUNT_PARTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-account-party.mock';
@@ -135,6 +135,16 @@ describe('FinesAccDefendantDetailsComponent', () => {
 
   it('should create the component', () => {
     expect(component).toBeTruthy();
+  });
+
+  it.each([
+    { flags: {}, enabled: false },
+    { flags: { 'release-1c-banking-interfaces': false }, enabled: false },
+    { flags: { 'release-1c-banking-interfaces': true }, enabled: true },
+  ])('should expose the banking interfaces flag as $enabled for APR actions', ({ flags, enabled }) => {
+    vi.spyOn(TestBed.inject(GlobalStore), 'featureFlags').mockReturnValue(flags);
+
+    expect(component.bankingInterfacesEnabled).toBe(enabled);
   });
 
   it('should default to at-a-glance tab if no fragment is present', () => {
@@ -366,6 +376,17 @@ describe('FinesAccDefendantDetailsComponent', () => {
     );
     expect(component.enforcementParameterLabels.get('daysindefault')).toBe('Days in default');
     expect(mockPayloadService.transformPayload).toHaveBeenCalled();
+  });
+
+  it('keeps enforcement status available when loading the optional result prompts fails', () => {
+    TestBed.inject(GlobalStore).setFeatureFlags({ 'release-1b-1-1': true });
+    mockOpalFinesService.getResult.mockReturnValue(throwError(() => new Error('Result unavailable')));
+    const onStatus = vi.fn();
+
+    component['refreshFragment$'].next('enforcement');
+    component.tabEnforcement$.subscribe(onStatus);
+
+    expect(onStatus).toHaveBeenCalledWith(OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_ENFORCEMENT_TAB_REF_DATA_MOCK);
   });
 
   it.each([false, undefined])('emits enforcement status without a prompt lookup when the flag is %s', (enabled) => {

@@ -28,18 +28,45 @@ import { finesMacPayloadBuildAccountFixedPenalty } from './utils/fines-mac-paylo
 import { finesMacPayloadMapAccountFixedPenalty } from './utils/fines-mac-payload-map-account/fines-mac-payload-map-account-fixed-penalty.utils';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
 import { IOpalFinesDraftAccountPatchRequestPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-draft-account-patch-request-payload.interface';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
+import { stripTelephoneNumberSpaces } from '../../../utils/fines-telephone-number.utils';
+import { IFinesMacPayloadAccountDefendantComplete } from './utils/interfaces/fines-mac-payload-account-defendant-complete.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FinesMacPayloadService {
   private readonly transformationService = inject(TransformationService);
+  private readonly globalStore = inject(GlobalStore);
+
+  private get isR1A12Enabled(): boolean {
+    return getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true;
+  }
+
+  private normalizeTelephoneNumbers(defendant: IFinesMacPayloadAccountDefendantComplete): void {
+    for (const contact of [defendant, defendant.parent_guardian]) {
+      if (contact) {
+        contact.telephone_number_home = stripTelephoneNumberSpaces(contact.telephone_number_home);
+        contact.telephone_number_business = stripTelephoneNumberSpaces(contact.telephone_number_business);
+        contact.telephone_number_mobile = stripTelephoneNumberSpaces(contact.telephone_number_mobile);
+      }
+    }
+
+    for (const debtorDetail of [defendant.debtor_detail, defendant.parent_guardian?.debtor_detail]) {
+      if (debtorDetail) {
+        debtorDetail.employer_telephone_number = stripTelephoneNumberSpaces(debtorDetail.employer_telephone_number);
+      }
+    }
+  }
 
   /**
    * Transforms the given finesMacPayload object by applying the transformations
    * defined in the FINES_MAC_BUILD_TRANSFORM_ITEMS_CONFIG.
    *
    * @param finesMacPayload - The payload object to be transformed.
+   * @param transformItemsConfig
    * @returns The transformed payload object.
    */
   private transformPayload<
@@ -80,6 +107,7 @@ export class FinesMacPayloadService {
       paymentTermsState,
       offenceDetailsState,
       fixedPenaltyDetails,
+      this.isR1A12Enabled,
     );
     const defendant = finesMacPayloadBuildAccountDefendant(
       accountDetailsState,
@@ -96,7 +124,12 @@ export class FinesMacPayloadService {
     }
     const paymentTerms = finesMacPayloadBuildAccountPaymentTerms(paymentTermsState, accountType);
     const accountNotes = finesMacPayloadBuildAccountAccountNotes(accountCommentsNotesState);
-    const offences = finesMacPayloadBuildAccountOffences(offenceDetailsForms, fixedPenaltyDetails, accountType);
+    const offences = finesMacPayloadBuildAccountOffences(
+      offenceDetailsForms,
+      fixedPenaltyDetails,
+      accountType,
+      this.isR1A12Enabled,
+    );
 
     // Return our payload object
     return {
@@ -122,6 +155,9 @@ export class FinesMacPayloadService {
   ): IFinesMacReplaceAccountRequestPayload {
     const { formData: accountDetailsState } = finesMacState.accountDetails;
     const accountPayload = this.buildAccountPayload(finesMacState);
+    if (this.isR1A12Enabled) {
+      this.normalizeTelephoneNumbers(accountPayload.defendant);
+    }
 
     const requestPayload: IFinesMacReplaceAccountRequestPayload = {
       business_unit_id: accountDetailsState['fm_create_account_business_unit_id']!,
@@ -143,6 +179,7 @@ export class FinesMacPayloadService {
     return {
       ...this.buildAccountRequestPayload(structuredClone(finesMacState), FINES_MAC_PAYLOAD_STATUSES.submitted),
       status_message: null,
+      source: 'MAC',
     };
   }
 
@@ -180,6 +217,8 @@ export class FinesMacPayloadService {
    * Maps the provided account payload to the fines MAC state.
    *
    * @param payload - The payload containing account information to be mapped.
+   * @param businessUnitRefData
+   * @param offencesRefData
    * @returns The updated fines MAC state after mapping the account information.
    */
   public mapAccountPayload(
@@ -194,7 +233,11 @@ export class FinesMacPayloadService {
     let finesMacState: IFinesMacState = structuredClone(FINES_MAC_STATE);
     finesMacState = finesMacPayloadMapAccountBase(finesMacState, transformedPayload);
     finesMacState = finesMacPayloadMapAccountDefendant(finesMacState, transformedPayload.account);
-    finesMacState = finesMacPayloadMapAccountPaymentTerms(finesMacState, transformedPayload.account);
+    finesMacState = finesMacPayloadMapAccountPaymentTerms(
+      finesMacState,
+      transformedPayload.account,
+      this.isR1A12Enabled,
+    );
     finesMacState = finesMacPayloadMapAccountAccountNotesPayload(
       finesMacState,
       transformedPayload.account.account_notes,

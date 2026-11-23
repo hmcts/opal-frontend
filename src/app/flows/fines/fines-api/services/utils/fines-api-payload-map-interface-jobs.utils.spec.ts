@@ -1,3 +1,4 @@
+import { OPAL_FINES_SOURCE_MAPPINGS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-source-mappings.mock';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { IOpalFinesInterfaceJobSummary } from '@services/fines/opal-fines-service/interfaces/opal-fines-interface-job-summary.interface';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -7,6 +8,8 @@ import {
   FINES_API_INTERFACE_JOBS_MAX_RESULTS,
   mapInterfaceJobs,
 } from './fines-api-payload-map-interface-jobs.utils';
+
+const sourceLabels = new Map(OPAL_FINES_SOURCE_MAPPINGS_MOCK.map(({ code, display_name }) => [code, display_name]));
 
 const buildInterfaceJob = (overrides: Partial<IOpalFinesInterfaceJobSummary> = {}): IOpalFinesInterfaceJobSummary => ({
   business_unit_name: 'Camberwell Green',
@@ -37,6 +40,14 @@ describe('fines-api-payload-map-interface-jobs utils', () => {
     } as unknown as DateService;
   });
 
+  it('uses backend display names and retains unknown codes when the mapping is empty', () => {
+    const jobs = [buildInterfaceJob({ source: ' natwest ' })];
+    expect(mapInterfaceJobs(jobs, dateService, new Map([['NATWEST', 'Updated bank name']]))[0].Source).toBe(
+      'Updated bank name',
+    );
+    expect(mapInterfaceJobs(jobs, dateService, new Map())[0].Source).toBe(' natwest ');
+  });
+
   it('should extract interface jobs in response order', () => {
     const jobs = [buildInterfaceJob({ interface_job_id: 3 }), buildInterfaceJob({ interface_job_id: 1 })];
 
@@ -55,7 +66,7 @@ describe('fines-api-payload-map-interface-jobs utils', () => {
     );
 
     const extractedJobs = extractInterfaceJobs({ interface_jobs: jobs });
-    const mappedJobs = mapInterfaceJobs(jobs, dateService);
+    const mappedJobs = mapInterfaceJobs(jobs, dateService, sourceLabels);
 
     expect(extractedJobs).toHaveLength(FINES_API_INTERFACE_JOBS_MAX_RESULTS);
     expect(mappedJobs).toHaveLength(FINES_API_INTERFACE_JOBS_MAX_RESULTS);
@@ -64,7 +75,7 @@ describe('fines-api-payload-map-interface-jobs utils', () => {
   });
 
   it('should map API fields, string identifiers, and local date display data', () => {
-    const rows = mapInterfaceJobs([buildInterfaceJob()], dateService);
+    const rows = mapInterfaceJobs([buildInterfaceJob()], dateService, sourceLabels);
 
     expect(rows[0]).toEqual({
       'File name': 'payments_20260903_001.dat',
@@ -93,13 +104,13 @@ describe('fines-api-payload-map-interface-jobs utils', () => {
     ['MARSTON', 'Marston'],
     ['OTHER', 'Other'],
   ])('should display source %s as %s', (source, expectedSource) => {
-    const [row] = mapInterfaceJobs([buildInterfaceJob({ source })], dateService);
+    const [row] = mapInterfaceJobs([buildInterfaceJob({ source })], dateService, sourceLabels);
 
     expect(row.Source).toBe(expectedSource);
   });
 
   it('should leave an unknown source unchanged', () => {
-    const [row] = mapInterfaceJobs([buildInterfaceJob({ source: 'NEW_PROVIDER' })], dateService);
+    const [row] = mapInterfaceJobs([buildInterfaceJob({ source: 'NEW_PROVIDER' })], dateService, sourceLabels);
 
     expect(row.Source).toBe('NEW_PROVIDER');
   });
@@ -107,7 +118,7 @@ describe('fines-api-payload-map-interface-jobs utils', () => {
   it('should retain an invalid timestamp for display and use a safe numeric sort fallback', () => {
     vi.mocked(dateService.getFromIso).mockReturnValueOnce({ isValid: false } as ReturnType<DateService['getFromIso']>);
 
-    const [row] = mapInterfaceJobs([buildInterfaceJob({ created_datetime: 'not-a-date' })], dateService);
+    const [row] = mapInterfaceJobs([buildInterfaceJob({ created_datetime: 'not-a-date' })], dateService, sourceLabels);
 
     expect(row['Date uploaded']).toBe(0);
     expect(row.dateUploadedDisplay).toBe('not-a-date');
@@ -117,7 +128,7 @@ describe('fines-api-payload-map-interface-jobs utils', () => {
   it('should show the unavailable-date label for an empty invalid timestamp', () => {
     vi.mocked(dateService.getFromIso).mockReturnValueOnce({ isValid: false } as ReturnType<DateService['getFromIso']>);
 
-    const [row] = mapInterfaceJobs([buildInterfaceJob({ created_datetime: '' })], dateService);
+    const [row] = mapInterfaceJobs([buildInterfaceJob({ created_datetime: '' })], dateService, sourceLabels);
 
     expect(row['Date uploaded']).toBe(0);
     expect(row.dateUploadedDisplay).toBe(FINES_API_PROCESS_FILES_TABLE_WRAPPER_CONTENT.unavailableDate);

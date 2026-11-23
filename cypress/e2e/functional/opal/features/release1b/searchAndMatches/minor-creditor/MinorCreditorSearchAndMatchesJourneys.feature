@@ -9,7 +9,7 @@ Feature: Minor Creditor Search And Matches Journeys
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     And I clear all approved accounts
 
-  @R1BDrop2UatTechJCDE @JIRA-STORY:PO-715 @JIRA-STORY:PO-706 @JIRA-STORY:PO-708 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5292
+  @R1BDrop2UatTechJCDE @R1BDrop2UatTechPreprod @JIRA-STORY:PO-715 @JIRA-STORY:PO-706 @JIRA-STORY:PO-708 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5292
   Scenario: Search for a minor creditor account and review the matching results
     Given a published account exists with an individual minor creditor:
       | prosecutor case reference | PCRJRNYMIN{uniqUpper} |
@@ -35,43 +35,42 @@ Feature: Minor Creditor Search And Matches Journeys
     Given a published account exists with an individual minor creditor:
       | prosecutor case reference | PCRMINDEFLINK{uniqUpper} |
       | first name                | Mina                     |
-      | last name                 | DefendantLink{uniq}      |
+      | last name                 | DefLink{uniq}            |
       | address line 1            | 1 High Street            |
       | postcode                  | MC1 1AA                  |
     And I am on the Account Search page - Individuals form displayed by default
     When I view the Minor creditors search form
     And I search using the following inputs:
-      | minor creditor type  | Individual          |
-      | individual last name | DefendantLink{uniq} |
-      | first names          | Mina                |
-      | address line 1       | 1 High Street       |
-      | postcode             | MC1 1AA             |
+      | minor creditor type  | Individual    |
+      | individual last name | DefLink{uniq} |
+      | first names          | Mina          |
+      | address line 1       | 1 High Street |
+      | postcode             | MC1 1AA       |
     Then I see the Search results page
     When I open the defendant linked from the latest minor creditor search result
-    Then I should see the account header contains "Minor Creditor Seed DefendantLink{uniqUpper}"
+    Then I should see the account header contains "Minor Creditor Seed DefLink{uniqUpper}"
 
 
-  @R1BDrop2UatTechJCDE @JIRA-STORY:PO-715 @JIRA-STORY:PO-706 @JIRA-STORY:PO-708 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5293
+  @R1BDrop2UatTechJCDE @R1BDrop2UatTechPreprod @JIRA-STORY:PO-715 @JIRA-STORY:PO-706 @JIRA-STORY:PO-708 @JIRA-EPIC:PO-704 @JIRA-TEST-KEY:PO-5293
   Scenario: Search for a company minor creditor account and review the matching results
     Given a published account exists with a company minor creditor:
       | prosecutor case reference | PCRJRNYMINCO{uniqUpper} |
-      | company name              | Journey Minor Co {uniq} |
+      | company name              | Co {uniq}               |
       | address line 1            | 2 High Street           |
       | postcode                  | MC1 1AB                 |
     And I am on the Account Search page - Individuals form displayed by default
     When I view the Minor creditors search form
     And I search using the following inputs:
-      | minor creditor type | Company                 |
-      | company name        | Journey Minor Co {uniq} |
-      | address line 1      | 2 High Street           |
-      | postcode            | MC1 1AB                 |
+      | minor creditor type | Company       |
+      | company name        | Co {uniq}     |
+      | address line 1      | 2 High Street |
+      | postcode            | MC1 1AB       |
     Then I see the Search results page
     And I see the Minor creditors search results:
-      | Name           | Journey Minor Co {uniq} |
-      | Address line 1 | 2 High Street           |
+      | Name           | Co {uniq}     |
+      | Address line 1 | 2 High Street |
 
-  # Legacy-data scenarios are scaffolds.
-  # Replace the LEGACY_* placeholders with real seeded data values before executing them.
+  # JCDE examples still require seeded data. PreProd example values are populated from the supplied legacy accounts.
 
   @LegacyData @JIRA-STORY:PO-715 @JIRA-STORY:PO-706 @JIRA-STORY:PO-708 @JIRA-EPIC:PO-704
   # Minimum data set required: one individual minor creditor with last name LEGACY_MINOR_CREDITOR_LAST_NAME, display name LEGACY_MINOR_CREDITOR_NAME, and address line 1 LEGACY_MINOR_CREDITOR_ADDRESS_LINE_1.
@@ -92,5 +91,5 @@ Feature: Minor Creditor Search And Matches Journeys
       | MinCredAccUniB                  | placeholder                | Unique MinCred CT                    |
     @R1BDrop2UatTechPreprod
     Examples:
-      | LEGACY_MINOR_CREDITOR_LAST_NAME | LEGACY_MINOR_CREDITOR_NAME | LEGACY_MINOR_CREDITOR_ADDRESS_LINE_1 |
-      | placeholder                     | placeholder                | placeholder                          |
+      | LEGACY_MINOR_CREDITOR_LAST_NAME | LEGACY_MINOR_CREDITOR_NAME    | LEGACY_MINOR_CREDITOR_ADDRESS_LINE_1 |
+      | JFMincred-TFO-A                 | JFMincred-TFO-A, Annie Angela | 123 Road AAAA                        |

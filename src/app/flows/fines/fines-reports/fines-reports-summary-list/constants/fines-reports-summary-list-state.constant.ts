@@ -6,7 +6,7 @@ export const FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS = 'all';
 export const FINES_REPORTS_SUMMARY_LIST_STATE: IFinesReportsSummaryListState = {
   reportTypeId: null,
   filters: {
-    businessUnit: FINES_REPORTS_SUMMARY_LIST_ALL_BUSINESS_UNITS,
+    businessUnit: '',
     ...ABSTRACT_REPORT_SUMMARY_LIST_FILTER_STATE,
   },
   appliedQuery: null,

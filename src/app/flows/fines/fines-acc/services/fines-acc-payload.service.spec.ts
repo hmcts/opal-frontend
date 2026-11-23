@@ -1,6 +1,7 @@
 import type { Mock } from 'vitest';
 import { FinesAccPayloadService } from './fines-acc-payload.service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../constants/release-feature-flags.constant';
 import { FinesAccountStore } from '../stores/fines-acc.store';
 import { IFinesAccAddNoteForm } from '../fines-acc-note-add/interfaces/fines-acc-note-add-form.interface';
 import { FINES_ACC_ADD_NOTE_FORM_MOCK } from '../fines-acc-note-add/mocks/fines-acc-add-note-form.mock';
@@ -66,7 +67,7 @@ describe('FinesAccPayloadService', () => {
   beforeEach(() => {
     mockGlobalStore = {
       userState: vi.fn().mockName('GlobalStore.userState'),
-      featureFlags: vi.fn().mockReturnValue({}),
+      featureFlags: vi.fn().mockReturnValue({ [RELEASE_1A_1_2_FEATURE_FLAG]: true }),
     };
 
     const mockStore = {
@@ -964,6 +965,28 @@ describe('FinesAccPayloadService', () => {
       expect(result.language_preferences).toBeDefined();
     });
 
+    it.each([
+      { enabled: true, action: 'remove spaces from' },
+      { enabled: false, action: 'preserve spaces in' },
+    ])('should $action party telephone numbers for release 1A 1.2', ({ enabled }) => {
+      mockGlobalStore.featureFlags.mockReturnValue({ [RELEASE_1A_1_2_FEATURE_FLAG]: enabled });
+      const formState = {
+        ...MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
+        facc_party_add_amend_convert_contact_telephone_number_mobile: '07123 456 789',
+        facc_party_add_amend_convert_contact_telephone_number_home: '01234 567 890',
+        facc_party_add_amend_convert_contact_telephone_number_business: '020 1234 5678',
+        facc_party_add_amend_convert_employer_company_name: 'Acme Corp',
+        facc_party_add_amend_convert_employer_telephone_number: '01234 567 890',
+      };
+
+      const result = service.buildAccountPartyPayload(formState, 'individual', true, 'party123');
+
+      expect(result.contact_details?.mobile_telephone_number).toBe(enabled ? '07123456789' : '07123 456 789');
+      expect(result.contact_details?.home_telephone_number).toBe(enabled ? '01234567890' : '01234 567 890');
+      expect(result.contact_details?.work_telephone_number).toBe(enabled ? '02012345678' : '020 1234 5678');
+      expect(result.employer_details?.employer_telephone_number).toBe(enabled ? '01234567890' : '01234 567 890');
+    });
+
     it('should build the wrapped add defendant account payload with only individual party details', () => {
       const formState = {
         ...MOCK_EMPTY_FINES_ACC_PARTY_ADD_AMEND_CONVERT_FORM_DATA.formData,
@@ -1105,7 +1128,7 @@ describe('FinesAccPayloadService', () => {
         facc_minor_creditor_post_code: 'CD34 5EF',
         facc_minor_creditor_pay_by_bacs: true,
         facc_minor_creditor_bank_account_name: 'Updated Account',
-        facc_minor_creditor_bank_sort_code: '309430',
+        facc_minor_creditor_bank_sort_code: '30-94 30',
         facc_minor_creditor_bank_account_number: '00733445',
         facc_minor_creditor_bank_account_reference: 'UPDATED-REF',
       };
@@ -1141,6 +1164,20 @@ describe('FinesAccPayloadService', () => {
           account_reference: 'UPDATED-REF',
         },
       });
+    });
+
+    it('should preserve separators when the new sort-code functionality is disabled', () => {
+      const currentData = structuredClone(OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK);
+      const formState = {
+        ...structuredClone(MOCK_FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_FORM.formData),
+        facc_minor_creditor_pay_by_bacs: true,
+        facc_minor_creditor_bank_sort_code: '30-94 30',
+      };
+      mockGlobalStore.featureFlags.mockReturnValue({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+
+      const result = service.buildMinorCreditorAccountAmendPayload(currentData, formState);
+
+      expect(result.payment.sort_code).toBe('30-94 30');
     });
 
     it('should use an empty organisation name when company minor creditor amend form name is missing', () => {

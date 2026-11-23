@@ -121,6 +121,17 @@ describe('finesApiFileSelectionGuard', () => {
     expectRedirectToProcessAllocate(result);
   });
 
+  it('should redirect when process jobs have been cleared', () => {
+    arrangeValidFileSelection();
+    store.clearProcessInterfaceJobs();
+
+    const result = TestBed.runInInjectionContext(() =>
+      getGuardWithDummyUrl(finesApiFileSelectionGuard, confirmProcessUrl)(),
+    );
+
+    expectRedirectToProcessAllocate(result);
+  });
+
   it('should redirect to Process and Allocate when a selected file cannot resolve to a selected business unit', () => {
     store.setAvailableBusinessUnits(BUSINESS_UNITS);
     store.setSelectedBusinessUnitIds([77]);

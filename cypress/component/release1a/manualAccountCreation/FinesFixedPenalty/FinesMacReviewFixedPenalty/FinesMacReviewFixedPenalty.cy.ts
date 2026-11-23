@@ -450,7 +450,10 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
           'account_type',
           'account_status',
           'status_message',
+          'source',
         );
+        expect(request.request.body.source).to.equal('MAC');
+        expect(request.request.body).not.to.have.property('source_reference');
         expect(request.request.body.status_message).to.equal(null);
 
         expect(request.request.body.account.defendant.company_flag).to.equal(false);
@@ -524,7 +527,10 @@ describe('FinesMacReviewFixedPenalty using ReviewAccountComponent', () => {
           'account_type',
           'account_status',
           'status_message',
+          'source',
         );
+        expect(request.request.body.source).to.equal('MAC');
+        expect(request.request.body).not.to.have.property('source_reference');
         expect(request.request.body.status_message).to.equal(null);
 
         // Check company defendant details

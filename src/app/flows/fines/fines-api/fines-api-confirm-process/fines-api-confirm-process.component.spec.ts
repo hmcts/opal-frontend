@@ -86,13 +86,17 @@ describe('FinesApiConfirmProcessComponent', () => {
   const activatedRouteParent = {};
 
   const createComponent = (
-    processJobs: IOpalFinesInterfaceJobSummary[] = PROCESS_JOBS,
+    processJobs: IOpalFinesInterfaceJobSummary[] | null = PROCESS_JOBS,
     selectedFileIds: string[] = ['501', '502', '503'],
   ): void => {
     finesApiStore.resetFinesApiState();
     finesApiStore.setAvailableBusinessUnits(BUSINESS_UNITS);
     finesApiStore.setSelectedBusinessUnitIds([77, 80]);
-    finesApiStore.setProcessInterfaceJobs(processJobs);
+    if (processJobs === null) {
+      finesApiStore.clearProcessInterfaceJobs();
+    } else {
+      finesApiStore.setProcessInterfaceJobs(processJobs);
+    }
     finesApiStore.setSelectedFileIds(selectedFileIds);
 
     fixture = TestBed.createComponent(FinesApiConfirmProcessComponent);
@@ -158,6 +162,14 @@ describe('FinesApiConfirmProcessComponent', () => {
     expect(summaryRows[0].textContent).toContain('2');
     expect(summaryRows[1].textContent).toContain('West London');
     expect(summaryRows[1].textContent).toContain('1');
+  });
+
+  it('should show zero files when there are no process jobs', () => {
+    createComponent(null);
+
+    fixture.detectChanges();
+
+    expect(component['totalFilesCount']).toBe(0);
   });
 
   it('should display only selected DWP/AEA files and check every override by default', () => {

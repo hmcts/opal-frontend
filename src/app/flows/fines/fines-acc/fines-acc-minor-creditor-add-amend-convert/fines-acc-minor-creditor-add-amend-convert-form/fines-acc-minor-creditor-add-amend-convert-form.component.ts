@@ -1,3 +1,4 @@
+import { BANK_ACCOUNT_NUMBER_FIELD_ERRORS } from '../../../constants/bank-account-number-field-errors.constant';
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -58,6 +59,10 @@ import { FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_CONTROL_NAMES } from '../con
 import { FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_CREDITOR_TYPES } from '../constants/fines-acc-minor-creditor-add-amend-convert-creditor-types.constant';
 import { FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_INDIVIDUAL_CONTROL_NAMES } from '../constants/fines-acc-minor-creditor-add-amend-convert-control-names-individual.constant';
 import { FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_COMPANY_CONTROL_NAMES } from '../constants/fines-acc-minor-creditor-add-amend-convert-control-names-company.constant';
+import { normalizeSortCode, sortCodeValidator } from '../../../validators/sort-code.validator';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
 
 const SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR = patternValidator(SINGLE_ASCII_CHARACTERS, 'singleAsciiCharacters');
 const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
@@ -65,7 +70,6 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
   'alphanumericTextPattern',
 );
 const NUMERIC_PATTERN_VALIDATOR = patternValidator(NUMERIC_PATTERN, 'numericalTextPattern');
-
 @Component({
   selector: 'app-fines-acc-minor-creditor-add-amend-convert-form',
   imports: [
@@ -95,6 +99,7 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
   implements OnInit, OnDestroy
 {
   private readonly finesAccStore = inject(FinesAccountStore);
+  private readonly globalStore = inject(GlobalStore);
   protected override formSubmit = new EventEmitter<IFinesAccMinorCreditorAddAmendConvertForm>();
   protected readonly accountNumber = this.finesAccStore.getAccountNumber();
   protected readonly partyName = this.finesAccStore.party_name();
@@ -109,6 +114,14 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
   public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
   public readonly individualConditionalId = 'facc_minor_creditor_creditor_type_individual_conditional';
   public readonly companyConditionalId = 'facc_minor_creditor_creditor_type_company_conditional';
+
+  private get isR1A12Enabled(): boolean {
+    return getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true;
+  }
+
+  public get sortCodeHintText(): string {
+    return 'Must be 6 digits long';
+  }
 
   public override fieldErrors: IFinesAccMinorCreditorAddAmendConvertFieldErrors = {
     ...FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_FIELD_ERRORS,
@@ -181,18 +194,22 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
    * Builds detached BACS payment detail controls for the nested-form helpers.
    */
   private buildPaymentDetailControls(): FormGroup {
+    this.fieldErrors.facc_minor_creditor_bank_account_number = {
+      ...FINES_ACC_MINOR_CREDITOR_ADD_AMEND_CONVERT_FIELD_ERRORS.facc_minor_creditor_bank_account_number,
+      ...(this.isR1A12Enabled ? BANK_ACCOUNT_NUMBER_FIELD_ERRORS : {}),
+    };
+
+    const sortCodeValidators = this.isR1A12Enabled
+      ? [Validators.required, sortCodeValidator]
+      : [Validators.required, Validators.minLength(6), Validators.maxLength(6), NUMERIC_PATTERN_VALIDATOR];
+
     return new FormGroup({
       [this.controls.bankAccountName]: this.createFormControl([
         Validators.required,
         Validators.maxLength(18),
         SINGLE_ASCII_CHARACTERS_PATTERN_VALIDATOR,
       ]),
-      [this.controls.bankSortCode]: this.createFormControl([
-        Validators.required,
-        Validators.minLength(6),
-        Validators.maxLength(6),
-        NUMERIC_PATTERN_VALIDATOR,
-      ]),
+      [this.controls.bankSortCode]: this.createFormControl(sortCodeValidators),
       [this.controls.bankAccountNumber]: this.createFormControl([
         Validators.required,
         Validators.minLength(6),
@@ -376,6 +393,16 @@ export class FinesAccMinorCreditorAddAmendConvertFormComponent
   public override ngOnInit(): void {
     this.setupForm();
     super.ngOnInit();
+  }
+
+  public override handleFormSubmit(event: SubmitEvent): void {
+    const sortCodeControl = this.form.get(this.controls.bankSortCode);
+
+    if (this.isR1A12Enabled && sortCodeControl?.valid && sortCodeControl.value) {
+      sortCodeControl.setValue(normalizeSortCode(sortCodeControl.value), { emitEvent: false });
+    }
+
+    super.handleFormSubmit(event);
   }
 
   /**

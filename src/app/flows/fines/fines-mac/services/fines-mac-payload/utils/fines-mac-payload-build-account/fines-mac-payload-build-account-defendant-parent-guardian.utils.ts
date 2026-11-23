@@ -9,6 +9,29 @@ import { IFinesMacPayloadAccountDefendantIndividualDebtorDetailsAlias } from '..
 import { IFinesMacPayloadAccountDefendantIndividualDebtorDetails } from '../interfaces/fines-mac-payload-account-defendant-individual-debtor-details.interface';
 import { IFinesMacPayloadAccountDefendantParentGuardianParentGuardian } from '../interfaces/fines-mac-payload-account-defendant-parent-guardian-parent-guardian.interface';
 import { IFinesMacPayloadAccountDefendantParentGuardian } from '../interfaces/fines-mac-payload-account-defendant-parent-guardian.interface';
+import { IFinesMacPersonalDetailsAliasState } from '../../../../fines-mac-personal-details/interfaces/fines-mac-personal-details-alias-state.interface';
+
+/**
+ * Builds youth defendant aliases from personal details state.
+ *
+ * @param aliases - The youth defendant alias form values.
+ * @returns The mapped aliases, or null when no aliases are provided.
+ */
+const buildYouthDefendantAliases = (
+  aliases: IFinesMacPersonalDetailsAliasState[],
+): IFinesMacPayloadAccountDefendantIndividualDebtorDetailsAlias[] | null => {
+  const mappedAliases = aliases.map((alias, index) => {
+    const forenameKey = `fm_personal_details_alias_forenames_${index}` as keyof IFinesMacPersonalDetailsAliasState;
+    const surnameKey = `fm_personal_details_alias_surname_${index}` as keyof IFinesMacPersonalDetailsAliasState;
+
+    return {
+      alias_forenames: alias[forenameKey] ?? null,
+      alias_surname: alias[surnameKey] ?? null,
+    };
+  });
+
+  return mappedAliases.length ? mappedAliases : null;
+};
 
 /**
  * Builds an array of parent or guardian debtor details aliases based on the provided state objects.
@@ -173,6 +196,7 @@ export const finesMacPayloadBuildAccountDefendantParentGuardian = (
     fm_personal_details_address_line_3: address_line_3,
     fm_personal_details_post_code: post_code,
     fm_personal_details_national_insurance_number: national_insurance_number,
+    fm_personal_details_aliases: aliases,
   } = personalDetailsState;
 
   return {
@@ -192,5 +216,6 @@ export const finesMacPayloadBuildAccountDefendantParentGuardian = (
       employerDetailsState,
       languagePreferencesState,
     ),
+    aliases: buildYouthDefendantAliases(aliases),
   };
 };

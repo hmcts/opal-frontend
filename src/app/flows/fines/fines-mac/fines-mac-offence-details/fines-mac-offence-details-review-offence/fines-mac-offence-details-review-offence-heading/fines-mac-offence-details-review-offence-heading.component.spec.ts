@@ -20,6 +20,7 @@ describe('FinesMacOffenceDetailsReviewOffenceHeadingComponent', () => {
     component.offenceId = 0;
     component.offenceCode = '314441';
     component.offenceTitle = 'Test title';
+    component.headingLevel = 2;
 
     fixture.detectChanges();
   });

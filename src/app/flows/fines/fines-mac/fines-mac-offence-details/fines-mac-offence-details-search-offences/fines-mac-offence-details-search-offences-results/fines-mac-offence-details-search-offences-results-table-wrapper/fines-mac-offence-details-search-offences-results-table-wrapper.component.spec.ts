@@ -107,6 +107,38 @@ describe('FinesMacOffenceDetailsSearchOffencesResultsTableWrapperComponent', () 
     );
   });
 
+  it.each([
+    ['polite', 'polite'],
+    [null, null],
+  ])('should restore the original link aria-live value %s after copying', (originalAriaLive, expectedAriaLive) => {
+    vi.useFakeTimers();
+    const linkElement = document.createElement('a');
+    const labelElement = document.createElement('span');
+    const liveRegion = document.createElement('span');
+    labelElement.innerText = 'Copy code';
+    if (originalAriaLive) {
+      linkElement.setAttribute('aria-live', originalAriaLive);
+    }
+    const event = new Event('click', { cancelable: true });
+
+    component.copyCodeToClipboardFromLink(linkElement, labelElement, liveRegion, '1234', event);
+
+    expect(event.defaultPrevented).toBe(true);
+    expect(linkElement.getAttribute('aria-live')).toBe('assertive');
+    expect(liveRegion.textContent).toBe(
+      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPIED_CODE_TO_CLIPBOARD,
+    );
+
+    vi.advanceTimersByTime(
+      FINES_MAC_OFFENCE_DETAILS_SEARCH_OFFENCES_RESULTS_TABLE_WRAPPER_LINK_DEFAULTS.COPY_CODE_TO_CLIPBOARD_TIMEOUT,
+    );
+
+    expect(labelElement.innerText).toBe('Copy code');
+    expect(linkElement.getAttribute('aria-live')).toBe(expectedAriaLive);
+    expect(liveRegion.textContent).toBe('');
+    expect(component['copyCodeTimeoutId']).toBeNull();
+  });
+
   it('should render a copy code button with a unique visually hidden code for each offence', () => {
     const copyButtons = fixture.nativeElement.querySelectorAll('td#actions button');
 

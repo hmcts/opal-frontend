@@ -77,4 +77,22 @@ describe('enforcementActionResultResolver', () => {
       fragment: 'enforcement',
     });
   });
+
+  it('should redirect to the enforcement tab when the selected result is inactive', async () => {
+    const route = {
+      queryParamMap: convertToParamMap({ resultId: 'NAWT' }),
+    } as ActivatedRouteSnapshot;
+    const mockUrlTree = {} as never;
+    mockRouter.createUrlTree.mockReturnValue(mockUrlTree);
+    mockOpalFinesService.getResult.mockReturnValue(of({ ...OPAL_FINES_RESULT_REF_DATA_MOCK, active: false }));
+
+    const result = await TestBed.runInInjectionContext(() =>
+      firstValueFrom(enforcementActionResultResolver(route, {} as never) as never),
+    );
+
+    expect(result).toBeInstanceOf(RedirectCommand);
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details], {
+      fragment: 'enforcement',
+    });
+  });
 });

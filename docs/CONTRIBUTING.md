@@ -47,6 +47,26 @@ Record:
 
 A successful pipeline is not evidence that every changed line or scenario was executed. Explain the applicable automated or manual coverage.
 
+### Test-maintenance evidence
+
+For test cleanup, reuse, consolidation, or performance work:
+
+- Record the affected consumers of shared helpers, selectors, fixtures, intercepts, and step bindings, including
+  accessibility and smoke callers where applicable. Execute those consumers after the final change and complete the
+  broader checks required by the applicable testing guide.
+- Compare full component suite/test names or expanded E2E scenario names, counts, tags, and external test identities
+  before and after moves. Preserve them during mechanical cleanup. Map every intentional removal or consolidation
+  of scenarios to retained assertions and explain any metadata change; equal counts alone do not prove equal coverage.
+- Record the browser, runtime versions, selection, retries, worker count, and results, including failed, skipped,
+  pending, or missing tests. Inspect all worker summaries; retain raw evidence before another runner resets reports.
+- Disclose failed or stopped attempts alongside the final result. A passing serial rerun verifies that serial run;
+  it does not prove the parallel failure is resolved or pre-existing. Investigate or record the unresolved limitation
+  without weakening assertions, increasing timeouts, or adding retries merely to obtain a pass. Required parallel
+  checks remain required even when a serial run passes.
+- Claim a runtime improvement only from comparable before/after runs with the same selection, browser, retry policy,
+  worker count, and environment conditions. Identify single-run observations and workload differences. Fewer spec
+  files, fewer helpers, or a serial/parallel comparison alone do not demonstrate a speed improvement.
+
 ## Review and QA
 
 - Obtain approval from at least two reviewers before merge.

@@ -1,3 +1,4 @@
+import { IOpalFinesSourceMapping } from './opal-fines-source-mapping.interface';
 import { Observable } from 'rxjs';
 import { IOpalFinesAccountDefendantDetailsConsolidatedAccounts } from './opal-fines-account-defendant-account-consolidated-accounts.interface';
 import { IOpalFinesCourtRefData } from './opal-fines-court-ref-data.interface';
@@ -25,6 +26,7 @@ import { IOpalFinesReport } from './opal-fines-report.interface';
 import { IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData } from './opal-fines-account-major-creditor-details-history-and-notes-tab-ref-data.interface';
 
 export interface IOpalFinesCache {
+  sourceMappingsCache$: Observable<IOpalFinesSourceMapping[]> | null;
   courtRefDataCache$: { [key: string]: Observable<IOpalFinesCourtRefData> };
   businessUnitsCache$: Observable<IOpalFinesBusinessUnitRefData> | null;
   businessUnitsPermissionCache$: { [key: string]: Observable<IOpalFinesBusinessUnitRefData> };

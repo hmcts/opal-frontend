@@ -14,6 +14,7 @@ configured review tooling.
 - Do not report pre-existing issues unless the change makes them materially worse.
 - Do not report formatting, lint, naming, or stylistic preferences that deterministic checks can enforce.
 - Do not treat a preferred implementation pattern as a defect without explaining the resulting failure or risk.
+- Check architectural conformance as described below, and distinguish conformance gaps from defect findings.
 
 ## Severity
 
@@ -29,6 +30,21 @@ configured review tooling.
 Severity reflects impact, not the category of the repository rule involved.
 
 ## OPAL-specific review checks
+
+### Architecture and conformance
+
+- Compare the final implementation with user requirements, the agreed design, and the established-pattern guidance in
+  [REPO_GUIDELINES.md](REPO_GUIDELINES.md#established-patterns-and-shared-capabilities). Use comparable maintained code
+  in this repository and installed shared-library contracts as the default references.
+- Check that applicable shared components, base classes, utilities, and public types are reused and their supported
+  contracts and states are preserved. Check custom state, orchestration, and error handling for duplicated behaviour.
+- Verify that material deviations from the agreed patterns have a concrete requirement or technical justification.
+  Check that the recorded design or plan reflects the final decisions.
+- Check plans against user requirements and repository standards. Identify unresolved contradictions even when the
+  implementation follows the plan.
+- Record a material conformance gap separately when no concrete defect is established, stating the expected pattern,
+  the deviation, and the missing justification. Apply the existing finding and severity rules when there is a concrete
+  correctness, security, accessibility, operational, or delivery risk.
 
 ### Angular, RxJS, and state
 
@@ -63,8 +79,9 @@ Severity reflects impact, not the category of the repository rule involved.
   equivalent semantics.
 - Report controls without an accessible name, validation errors that are not associated with their controls, and
   state changes that are not understandable to assistive-technology users.
-- Check routed placeholders retain the intended GOV.UK grid wrapper and width when omission would make the placeholder
-  materially diverge from the completed or approved adjacent journey page.
+- Check routed pages use the application shell's single `govuk-grid-row` in `app.component.html`, with column wrappers
+  for their content. Flag additional rows when their margins misalign the page with the shell. Check placeholders
+  retain the intended column width of the completed or approved adjacent journey page.
 - Do not require `opal-lib-govuk-button` inside a `govuk-button-group` containing one primary action and
   `opal-lib-govuk-cancel-link` when its host element breaks GOV.UK flex alignment. Check that the native-button fallback
   retains GOV.UK classes, semantic button type, accessible text, stable ID, and appropriate spacing.
@@ -73,6 +90,16 @@ Severity reflects impact, not the category of the repository rule involved.
 
 ### Testing and delivery
 
+- Apply the [component](CYPRESS_COMPONENT_TESTING.md) and [E2E](CYPRESS_E2E_TESTING.md) guides to changed tests and their
+  helpers. Trace setup through the assertion: a default-state test must fail if production selects the wrong default,
+  and a save/transition test must distinguish the resulting state from its seed.
+- Check that E2E outcomes are explicit and that extracting actions, fixtures, or intercepts preserves every caller's
+  assertions, request contracts, and live/controlled boundaries, including accessibility callers.
+- For moved or consolidated tests, check before/after identities and assertion-level coverage, not just test counts.
+  Treat lost coverage or setup that masks a regression as a concrete testing risk; keep reuse or speed preferences
+  advisory unless a demonstrable defect or delivery impact exists.
+- Check [test-maintenance evidence](CONTRIBUTING.md#test-maintenance-evidence), including complete worker results and
+  disclosure of failed attempts. Do not infer that a parallel failure is fixed from a serial pass.
 - Report missing tests when changed behaviour is regression-prone and the existing suite would not detect a likely
   failure. State the behaviour or scenario that needs coverage.
 - Treat confirmed Sonar **Coverage on New Code** below the configured 80% Quality Gate as a delivery finding.
@@ -123,3 +150,6 @@ Order findings by severity. For each finding, include:
 
 If no qualifying findings exist, say so explicitly. Keep unverified assumptions and checks that were not run separate
 from findings.
+
+Include material architectural conformance gaps in a separate part of the review output. Keep optional preferences
+subject to the advisory-feedback rule above.

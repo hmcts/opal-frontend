@@ -49,6 +49,10 @@ When('I check the manual account details for account header {string}', (header: 
   macFlow().checkManualAccountDetails(normalizedHeader);
 });
 
+When('I return to account details from check account details', () => {
+  reviewAccount().returnToAccountDetails();
+});
+
 /**
  * Asserts the review account "Entry type" row value in Account details.
  */
@@ -68,6 +72,16 @@ Then('I see the manual review {string} summary:', (section: string, table: DataT
   const rows = mapTableToSummaryRows(table);
   log('assert', 'Asserting review summary', { section, summaryListId, rows });
   reviewAccount().assertSummaryList(summaryListId, rows);
+});
+
+Then('the submitted manual account has telephone numbers without spaces', () => {
+  cy.get('@manualAccountSubmitBody').should((body: any) => {
+    const defendant = body.account.defendant;
+    expect(defendant.telephone_number_mobile).to.equal('07123456789');
+    expect(defendant.telephone_number_home).to.equal('07123456789');
+    expect(defendant.telephone_number_business).to.equal('07123456789');
+    expect(defendant.debtor_detail.employer_telephone_number).to.equal('01234567890');
+  });
 });
 
 /**

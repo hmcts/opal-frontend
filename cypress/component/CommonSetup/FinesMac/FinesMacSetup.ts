@@ -36,6 +36,7 @@ import { IOpalFinesBusinessUnit } from '@services/fines/opal-fines-service/inter
 
 const DEFAULT_FINES_MAC_FEATURE_FLAGS = {
   'release-1a': true,
+  'release-1a-1-2': false,
   'release-1b': true,
   'release-1c-write-off': false,
   'release-1c-enforcement-operational-reporting': false,

@@ -3,6 +3,7 @@
  * @description Cypress configuration, plugin wiring, and reporting setup for Opal.
  */
 import { defineConfig } from 'cypress';
+import { applyExtendedTestSelection } from '@hmcts/opal-frontend-common-cypress';
 import { mergeZephyrReports, cleanZephyrReports } from '@hmcts/zephyr-automation-nodejs';
 import { readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -160,6 +161,7 @@ async function setupNodeEvents(
   on: Cypress.PluginEvents,
   config: Cypress.PluginConfigOptions,
 ): Promise<Cypress.PluginConfigOptions> {
+  applyExtendedTestSelection(config);
   const e2eTsconfigPath = path.resolve(__dirname, 'e2e.tsconfig.json');
 
   await addCucumberPreprocessorPlugin(on, config, {
@@ -412,6 +414,7 @@ export default defineConfig({
      * @returns Cypress plugin configuration after setup.
      */
     setupNodeEvents(on, config) {
+      applyExtendedTestSelection(config);
       setupBrowserLaunch(on);
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const { plugin: cypressGrepPlugin } = require('@cypress/grep/plugin');

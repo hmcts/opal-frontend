@@ -22,3 +22,11 @@ Then('only files for the selected business units are displayed', () => {
 When('I select a Process file and open Confirm before processing', () => {
   automaticCashInputFlow().selectAProcessFileAndOpenConfirmProcess();
 });
+
+When('I select a business unit and continue to Ignored files', () => {
+  automaticCashInputFlow().selectBusinessUnitsAndContinueWithStubbedIgnoredFiles();
+});
+
+Then('I can view ignored files from the last 14 days and open their File Summary', () => {
+  automaticCashInputFlow().assertIgnoredFilesAndOpenFileSummary();
+});

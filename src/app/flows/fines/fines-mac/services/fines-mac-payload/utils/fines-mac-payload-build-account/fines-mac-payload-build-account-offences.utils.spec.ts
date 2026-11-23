@@ -54,6 +54,19 @@ describe('finesMacPayloadBuildAccountOffences', () => {
     expect(results).toEqual(expected);
   });
 
+  it('should normalize a minor creditor sort code when the new functionality is enabled', () => {
+    if (!offencesMockStateMinorCreditor) {
+      throw new Error('Required mock states are not properly initialised');
+    }
+
+    offencesMockStateMinorCreditor[0].childFormData![0].formData.fm_offence_details_minor_creditor_bank_sort_code =
+      '30-94 30';
+
+    const results = finesMacPayloadBuildAccountOffences(offencesMockStateMinorCreditor, undefined, undefined, true);
+
+    expect(results[0].impositions?.[0].minor_creditor?.bank_sort_code).toBe('309430');
+  });
+
   it('should build payload with a null response object', () => {
     if (!offencesMockState || !offencesMockStateMinorCreditor) {
       throw new Error('Required mock states are not properly initialised');

@@ -34,6 +34,7 @@ import { REPORTS_PERMISSIONS } from './flows/fines/constants/reports-permissions
 import { SEARCH_PERMISSIONS } from './flows/fines/constants/search-permissions.constant';
 import {
   RELEASE_1A_FEATURE_FLAG,
+  RELEASE_1A_1_2_FEATURE_FLAG,
   RELEASE_1C_ADMINISTRATION_FEATURE_FLAG,
   RELEASE_1B_FEATURE_FLAG,
   RELEASE_1C_WRITE_OFF_FEATURE_FLAG,
@@ -44,6 +45,7 @@ import { HIDE_PRIMARY_NAV_ROUTE_DATA_KEY } from './constants/route-data.constant
 import { FINES_ACC_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-routing-paths.constant';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_MINOR_CREDITOR_ROUTING_PATHS } from './flows/fines/fines-acc/routing/constants/fines-acc-minor-creditor-routing-paths.constant';
+import { FinesApiStore } from './flows/fines/fines-api/stores/fines-api.store';
 import { FINES_CON_ROUTING_PATHS } from './flows/fines/fines-con/routing/constants/fines-con-routing-paths.constant';
 import { FINES_MAC_ROUTING_PATHS } from './flows/fines/fines-mac/routing/constants/fines-mac-routing-paths.constant';
 const mockTokenExpiry: ISessionTokenExpiry = SESSION_TOKEN_EXPIRY_MOCK;
@@ -181,6 +183,30 @@ describe('AppComponent - browser', () => {
     expect(app).toBeTruthy();
   });
 
+  it('should render a GOV.UK skip link before the page content', () => {
+    globalStore.setFeatureFlags({ ...DEFAULT_RELEASE_FEATURE_FLAGS, [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    const skipLinkComponent = fixture.nativeElement.querySelector('opal-lib-govuk-skip-link') as HTMLElement;
+    const skipLink = fixture.nativeElement.querySelector('.govuk-skip-link') as HTMLAnchorElement;
+
+    expect(skipLinkComponent).toBe(fixture.nativeElement.firstElementChild);
+    expect(skipLink).toBe(skipLinkComponent.firstElementChild);
+    expect(skipLink.textContent?.trim()).toBe('Skip to main content');
+    expect(skipLink.getAttribute('href')).toBe(`${window.location.pathname}#main-content`);
+    expect(skipLink.dataset['module']).toBe('govuk-skip-link');
+    expect(fixture.nativeElement.querySelector(skipLink.hash)?.id).toBe('main-content');
+  });
+
+  it('should not render a GOV.UK skip link when release-1a-1-2 is disabled', () => {
+    globalStore.setFeatureFlags({ ...DEFAULT_RELEASE_FEATURE_FLAGS, [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('opal-lib-govuk-skip-link')).toBeNull();
+  });
+
   it('should initialize launchDarklyFlags and subscribe to launchDarklyFlags$', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
@@ -205,7 +231,7 @@ describe('AppComponent - browser', () => {
 
     component.handleAuthentication();
 
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledExactlyOnceWith(SSO_ENDPOINTS.login);
     expect(mockDocumentLocation.location.href).toBe(SSO_ENDPOINTS.login);
   });
 
@@ -221,9 +247,33 @@ describe('AppComponent - browser', () => {
 
     component.handleAuthentication();
 
-    expect(spy).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledExactlyOnceWith(SSO_ENDPOINTS.logout);
     expect(mockDocumentLocation.location.href).toBe(SSO_ENDPOINTS.logout);
   });
+
+  it.each(['business units', 'files'] as const)(
+    'should request logout without application confirmation when ACI has selected %s',
+    (selection) => {
+      globalStore.setAuthenticated(true);
+      const finesApiStore = TestBed.inject(FinesApiStore);
+      finesApiStore.setSelectedBusinessUnitIds([77]);
+      if (selection === 'files') {
+        finesApiStore.setSelectedFileIds(['123']);
+      }
+      expect(finesApiStore.unsavedChanges()).toBe(true);
+
+      const fixture = TestBed.createComponent(AppComponent);
+      const component = fixture.componentInstance;
+      const redirectSpy = vi.spyOn(component, 'handleRedirect').mockImplementation(() => {});
+      const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(false);
+
+      component.handleAuthentication();
+
+      expect(redirectSpy).toHaveBeenCalledExactlyOnceWith(SSO_ENDPOINTS.logout);
+      expect(confirmSpy).not.toHaveBeenCalled();
+      confirmSpy.mockRestore();
+    },
+  );
 
   it('should unsubscribe from the timeout interval subscription', () => {
     const fixture = TestBed.createComponent(AppComponent);

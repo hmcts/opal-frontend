@@ -57,6 +57,7 @@
           [offence]="offence"
           [impositionRefData]="impositionRefData"
           [majorCreditorRefData]="majorCreditorRefData"
+          [headingLevel]="isReadOnly ? 3 : 2"
           [showActions]="true"
           [isReadOnly]="isReadOnly"
           (actionClicked)="offenceAction($event)"

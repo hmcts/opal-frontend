@@ -20,3 +20,11 @@ Feature: Automatic Cash Input - Processing Accessibility
     And I select business units and continue to Processing
     And I select a Process file and open Confirm before processing
     Then I check the page for accessibility
+
+  @JIRA-STORY:PO-2588 @AC5
+  Scenario: AC5 - Ignored files screen accessibility
+    When I select the Fines primary navigation item "Finance"
+    And I am taken to the "Finance" Fines landing page
+    And I open Automatic Cash Input Select Business Units
+    And I select a business unit and continue to Ignored files
+    Then I check the page for accessibility
