@@ -52,7 +52,7 @@ export class FinesFinanceInboundFilesComponent extends FinesFinanceInterfaceFile
   /**
    * Prepares inbound rows with local timestamps, source/type labels and shared status labels.
    * @param files - Returned file metadata, or an absent list.
-   * @param businessUnits - Display names for all resolved business-unit codes, beyond the permitted filter choices.
+   * @param businessUnits - Display names for all resolved business-unit IDs, beyond the permitted filter choices.
    * @returns Display-ready inbound rows, or an empty array for an absent list.
    */
   protected override mapFilesToTableData(

@@ -26,7 +26,7 @@ const FINANCE_LINK_CONFIG: Record<FinanceBankingInterfaceLink, FinanceLinkConfig
   'Upload variant banking files': {
     selector: L.uploadVariantBankingFilesLink,
     path: '/fines/finance/variant-banking-files/upload',
-    title: 'Variant banking file upload',
+    title: 'Upload variant banking files',
   },
 };
 
