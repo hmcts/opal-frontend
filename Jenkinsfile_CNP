@@ -779,11 +779,15 @@ withPipeline(type, product, component) {
     }
 
     // Run the tagged read-only APR check against staging with the existing Jenkins test credentials.
-    before(stageTest) {
+    before(stageFunctionalDev) {
+        if (!env.OPAL_TEST_USER_PASSWORD) {
+            error 'The Jenkins functional stage is missing its staging test sign-in credential'
+        }
         withEnv([
             'TEST_URL=https://opal-frontend.staging.apps.hmcts.net/',
             'TAGS=@E2E15StagingCheck and not @skip',
-            'TEST_SPECS=cypress/e2e/functional/opal/features/release1c/aprManagement/*.feature'
+            'CYPRESS_TAGS=@E2E15StagingCheck and not @skip',
+            'TEST_SPECS=cypress/e2e/functional/opal/features/release1c/aprManagement/AprManagementRemoval*.feature'
         ]) {
             yarnBuilder.yarn('test:functional:tags')
         }
