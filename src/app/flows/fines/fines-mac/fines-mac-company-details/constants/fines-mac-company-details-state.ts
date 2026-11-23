@@ -8,4 +8,6 @@ export const FINES_MAC_COMPANY_DETAILS_STATE: IFinesMacCompanyDetailsState = {
   fm_company_details_address_line_2: null,
   fm_company_details_address_line_3: null,
   fm_company_details_postcode: null,
+  fm_company_details_vehicle_make: null,
+  fm_company_details_vehicle_registration_mark: null,
 };

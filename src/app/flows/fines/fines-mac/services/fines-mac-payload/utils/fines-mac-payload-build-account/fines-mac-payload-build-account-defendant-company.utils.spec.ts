@@ -83,4 +83,42 @@ describe('finesMacPayloadBuildAccountDefendantCompany', () => {
       },
     ]);
   });
+
+  describe('Company vehicle details', () => {
+    it('should include vehicle make and registration number in debtor details', () => {
+      if (!companyDetailsState || !contactDetailsState || !languagePreferencesState) {
+        throw new Error('Required mock states are not properly initialised');
+      }
+
+      companyDetailsState.fm_company_details_vehicle_make = 'Ford Transit';
+      companyDetailsState.fm_company_details_vehicle_registration_mark = 'AB12CDE';
+
+      const result = finesMacPayloadBuildAccountDefendantCompany(
+        companyDetailsState,
+        contactDetailsState,
+        languagePreferencesState,
+      );
+
+      expect(result.debtor_detail.vehicle_make).toBe('Ford Transit');
+      expect(result.debtor_detail.vehicle_registration_mark).toBe('AB12CDE');
+    });
+
+    it('should preserve null vehicle details in the outgoing payload', () => {
+      if (!companyDetailsState || !contactDetailsState || !languagePreferencesState) {
+        throw new Error('Required mock states are not properly initialised');
+      }
+
+      companyDetailsState.fm_company_details_vehicle_make = null;
+      companyDetailsState.fm_company_details_vehicle_registration_mark = null;
+
+      const result = finesMacPayloadBuildAccountDefendantCompany(
+        companyDetailsState,
+        contactDetailsState,
+        languagePreferencesState,
+      );
+
+      expect(result.debtor_detail.vehicle_make).toBeNull();
+      expect(result.debtor_detail.vehicle_registration_mark).toBeNull();
+    });
+  });
 });

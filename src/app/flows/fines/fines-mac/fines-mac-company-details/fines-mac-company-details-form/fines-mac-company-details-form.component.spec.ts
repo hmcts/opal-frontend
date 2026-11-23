@@ -181,6 +181,77 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
     expect(control?.hasError('singleAsciiCharacters')).toBe(true);
   });
 
+  describe('Company vehicle details', () => {
+    it('should create both optional vehicle controls', () => {
+      const vehicleMake = component.form.get('fm_company_details_vehicle_make');
+      const registration = component.form.get('fm_company_details_vehicle_registration_mark');
+
+      expect(vehicleMake).toBeTruthy();
+      expect(registration).toBeTruthy();
+
+      vehicleMake?.setValue(null);
+      registration?.setValue(null);
+
+      expect(vehicleMake?.valid).toBe(true);
+      expect(registration?.valid).toBe(true);
+    });
+
+    it('should convert lowercase vehicle registration input to uppercase', () => {
+      const control = component.form.get('fm_company_details_vehicle_registration_mark');
+
+      const input = fixture.nativeElement.querySelector(
+        'input[name="fm_company_details_vehicle_registration_mark"]',
+      ) as HTMLInputElement;
+
+      expect(input).not.toBeNull();
+
+      input.value = 'ab12cde';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('blur', { bubbles: true }));
+
+      fixture.detectChanges();
+
+      expect(control?.value).toBe('AB12CDE');
+      expect(input.value).toBe('AB12CDE');
+    });
+
+    it('should allow 30 characters for make and model and reject 31', () => {
+      const control = component.form.get('fm_company_details_vehicle_make');
+
+      control?.setValue('A'.repeat(30));
+      expect(control?.hasError('maxlength')).toBe(false);
+
+      control?.setValue('A'.repeat(31));
+      expect(control?.hasError('maxlength')).toBe(true);
+    });
+
+    it('should allow 7 characters for registration number and reject 8', () => {
+      const control = component.form.get('fm_company_details_vehicle_registration_mark');
+
+      control?.setValue('AB12CDE');
+      expect(control?.hasError('maxlength')).toBe(false);
+
+      control?.setValue('AB123456');
+      expect(control?.hasError('maxlength')).toBe(true);
+    });
+
+    it('should count spaces towards the registration number limit', () => {
+      const control = component.form.get('fm_company_details_vehicle_registration_mark');
+
+      control?.setValue('AB12 CDE');
+
+      expect(control?.hasError('maxlength')).toBe(true);
+    });
+
+    it('should reject special characters in registration number', () => {
+      const control = component.form.get('fm_company_details_vehicle_registration_mark');
+
+      control?.setValue('AB12-CD');
+
+      expect(control?.invalid).toBe(true);
+    });
+  });
+
   it('should enforce remove alias link template semantics', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const templateConsts = ((FinesMacCompanyDetailsFormComponent as any).ɵcmp?.consts ?? []).filter((entry: unknown) =>

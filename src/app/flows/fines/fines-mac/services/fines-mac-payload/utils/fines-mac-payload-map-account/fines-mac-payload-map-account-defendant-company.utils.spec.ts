@@ -105,4 +105,50 @@ describe('finesMacPayloadMapAccountDefendantCompanyPayload', () => {
     const result = finesMacPayloadMapAccountDefendantCompanyPayload(initialState, payload);
     expect(result.companyDetails.formData.fm_company_details_aliases).toEqual([]);
   });
+
+  describe('Company vehicle details', () => {
+    it('should restore vehicle details from the payload into Company state', () => {
+      if (!initialState) {
+        throw new Error('Initial state is not properly initialised');
+      }
+
+      const payload: IFinesMacPayloadAccountDefendantComplete = structuredClone(
+        FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_MOCK,
+      );
+
+      if (!payload.debtor_detail) {
+        throw new Error('Expected debtor details in the Company payload');
+      }
+
+      payload.debtor_detail.vehicle_make = 'Ford Transit';
+      payload.debtor_detail.vehicle_registration_mark = 'AB12CDE';
+
+      const result = finesMacPayloadMapAccountDefendantCompanyPayload(initialState, payload);
+
+      expect(result.companyDetails.formData.fm_company_details_vehicle_make).toBe('Ford Transit');
+      expect(result.companyDetails.formData.fm_company_details_vehicle_registration_mark).toBe('AB12CDE');
+    });
+
+    it('should preserve null vehicle details when the payload has no vehicle values', () => {
+      if (!initialState) {
+        throw new Error('Initial state is not properly initialised');
+      }
+
+      const payload: IFinesMacPayloadAccountDefendantComplete = structuredClone(
+        FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_COMPLETE_MOCK,
+      );
+
+      if (!payload.debtor_detail) {
+        throw new Error('Expected debtor details in the Company payload');
+      }
+
+      payload.debtor_detail.vehicle_make = null;
+      payload.debtor_detail.vehicle_registration_mark = null;
+
+      const result = finesMacPayloadMapAccountDefendantCompanyPayload(initialState, payload);
+
+      expect(result.companyDetails.formData.fm_company_details_vehicle_make).toBeNull();
+      expect(result.companyDetails.formData.fm_company_details_vehicle_registration_mark).toBeNull();
+    });
+  });
 });

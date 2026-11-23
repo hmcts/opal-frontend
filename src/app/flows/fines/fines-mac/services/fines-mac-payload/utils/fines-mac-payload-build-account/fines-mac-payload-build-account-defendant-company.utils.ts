@@ -38,9 +38,15 @@ const buildCompanyDefendantDebtorDetails = (
 ): IFinesMacPayloadAccountDefendantCompanyDebtorDetails => {
   const { fm_language_preferences_document_language, fm_language_preferences_hearing_language } =
     languagePreferencesState;
-  const { fm_company_details_aliases } = companyDetailsState;
+  const {
+    fm_company_details_vehicle_make: vehicle_make,
+    fm_company_details_vehicle_registration_mark: vehicle_registration_mark,
+    fm_company_details_aliases,
+  } = companyDetailsState;
 
   return {
+    vehicle_make,
+    vehicle_registration_mark,
     document_language: fm_language_preferences_document_language,
     hearing_language: fm_language_preferences_hearing_language,
     aliases: buildCompanyDefendantDebtorDetailsAliases(fm_company_details_aliases),
