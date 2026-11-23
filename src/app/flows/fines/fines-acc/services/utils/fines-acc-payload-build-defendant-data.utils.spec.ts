@@ -295,9 +295,9 @@ describe('fines-acc-payload-build-defendant-data.utils', () => {
         facc_party_add_amend_convert_post_code: 'AB12 3CD',
         facc_party_add_amend_convert_contact_email_address_1: 'john@example.com',
         facc_party_add_amend_convert_contact_email_address_2: null,
-        facc_party_add_amend_convert_contact_telephone_number_mobile: '07123456789',
-        facc_party_add_amend_convert_contact_telephone_number_home: '01234567890',
-        facc_party_add_amend_convert_contact_telephone_number_business: null,
+        facc_party_add_amend_convert_contact_telephone_number_mobile: '07123 456 789',
+        facc_party_add_amend_convert_contact_telephone_number_home: '01234 567 890',
+        facc_party_add_amend_convert_contact_telephone_number_business: '020 1234 5678',
         facc_party_add_amend_convert_vehicle_registration_mark: 'ABC123',
         facc_party_add_amend_convert_vehicle_make: 'Ford Fiesta',
         facc_party_add_amend_convert_individual_aliases: [],
@@ -309,7 +309,7 @@ describe('fines-acc-payload-build-defendant-data.utils', () => {
         facc_party_add_amend_convert_employer_company_name: 'Acme Corp',
         facc_party_add_amend_convert_employer_reference: 'EMP123',
         facc_party_add_amend_convert_employer_email_address: 'hr@acme.com',
-        facc_party_add_amend_convert_employer_telephone_number: '01234567890',
+        facc_party_add_amend_convert_employer_telephone_number: '01234 567 890',
         facc_party_add_amend_convert_employer_address_line_1: '456 Business St',
         facc_party_add_amend_convert_employer_address_line_2: null,
         facc_party_add_amend_convert_employer_address_line_3: null,
@@ -323,6 +323,7 @@ describe('fines-acc-payload-build-defendant-data.utils', () => {
         'individual',
         true,
         'party123',
+        true,
       );
 
       expect(result.defendant_account_party_type).toBe('Defendant');
@@ -339,12 +340,21 @@ describe('fines-acc-payload-build-defendant-data.utils', () => {
       expect(result.address.postcode).toBe('AB12 3CD');
       expect(result.contact_details?.primary_email_address).toBe('john@example.com');
       expect(result.contact_details?.mobile_telephone_number).toBe('07123456789');
+      expect(result.contact_details?.home_telephone_number).toBe('01234567890');
+      expect(result.contact_details?.work_telephone_number).toBe('02012345678');
       expect(result.vehicle_details?.vehicle_registration).toBe('ABC123');
       expect(result.vehicle_details?.vehicle_make_and_model).toBe('Ford Fiesta');
       expect(result.employer_details?.employer_name).toBe('Acme Corp');
       expect(result.employer_details?.employer_reference).toBe('EMP123');
+      expect(result.employer_details?.employer_telephone_number).toBe('01234567890');
       expect(result.language_preferences?.document_language_preference?.language_code).toBe('EN');
       expect(result.language_preferences?.hearing_language_preference?.language_code).toBe('EN');
+
+      const withoutRelease = buildAccountPartyFromFormState(formState, 'individual', true, 'party123', false);
+      expect(withoutRelease.contact_details?.mobile_telephone_number).toBe('07123 456 789');
+      expect(withoutRelease.contact_details?.home_telephone_number).toBe('01234 567 890');
+      expect(withoutRelease.contact_details?.work_telephone_number).toBe('020 1234 5678');
+      expect(withoutRelease.employer_details?.employer_telephone_number).toBe('01234 567 890');
     });
 
     it('should build payload for company party', () => {
@@ -388,6 +398,7 @@ describe('fines-acc-payload-build-defendant-data.utils', () => {
         'company',
         false,
         'party123',
+        false,
       );
 
       expect(result.defendant_account_party_type).toBe('Defendant');
@@ -443,6 +454,7 @@ describe('fines-acc-payload-build-defendant-data.utils', () => {
         'parentGuardian',
         false,
         'party123',
+        false,
       );
 
       expect(result.defendant_account_party_type).toBe('Parent/Guardian');
@@ -498,6 +510,7 @@ describe('fines-acc-payload-build-defendant-data.utils', () => {
         'individual',
         false,
         'party123',
+        false,
       );
 
       expect(result.language_preferences?.document_language_preference?.language_code).toBe('CY');
@@ -544,7 +557,7 @@ describe('fines-acc-payload-build-defendant-data.utils', () => {
         facc_party_add_amend_convert_employer_post_code: null,
       };
 
-      const result = buildAccountPartyFromFormState(formState, 'individual', false, 'party123');
+      const result = buildAccountPartyFromFormState(formState, 'individual', false, 'party123', false);
 
       expect(result.language_preferences?.document_language_preference).toEqual({
         language_code: 'FR',

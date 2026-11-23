@@ -63,6 +63,13 @@ import {
 } from '@hmcts/opal-frontend-common/services/history-transformation-service';
 import { FINES_ACC_HISTORY_AND_NOTES_DETAILS_TRANSFORMATION_CONFIG } from './constants/fines-acc-history-and-notes-details-transformation-config.constant';
 import { OPAL_FINES_NOTE_RECORD_TYPES } from '@services/fines/opal-fines-service/constants/opal-fines-note-record-types.constant';
+import { IOpalFinesAprPayload } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr-payload.interface';
+import { IOpalFinesApr } from '@services/fines/opal-fines-service/interfaces/opal-fines-apr.interface';
+import { IOpalFinesAprsResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-aprs-response.interface';
+import { IFinesAccAprAddChangeFormState } from '../fines-acc-apr-add-change/interfaces/fines-acc-apr-add-change-form-state.interface';
+import { IFinesAccAprManageData } from '../fines-acc-apr-manage/interfaces/fines-acc-apr-manage-data.interface';
+import { buildAprPayload } from './utils/fines-acc-payload-build-apr.utils';
+import { transformAprToForm, transformAprsPayload } from './utils/fines-acc-payload-transform-apr-data.utils';
 
 @Injectable({
   providedIn: 'root',
@@ -74,7 +81,7 @@ export class FinesAccPayloadService {
   private readonly historyDetailsTransformationService = inject(HistoryTransformationService);
   private readonly dateService = inject(DateService);
 
-  private get newSortCodeFunctionalityEnabled(): boolean {
+  private get release1A12Enabled(): boolean {
     return getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true;
   }
 
@@ -98,6 +105,36 @@ export class FinesAccPayloadService {
         .business_unit_users.find((businessUnitUser) => businessUnitUser.business_unit_id === businessUnitId)
         ?.business_unit_user_id ?? null
     );
+  }
+
+  /**
+   * Builds the APR write payload using the shared payload utility.
+   *
+   * @param formState - The validated Add or Change form state.
+   * @returns The payment reference text to send to the API, with its case preserved.
+   */
+  public buildAprPayload(formState: IFinesAccAprAddChangeFormState): IOpalFinesAprPayload {
+    return buildAprPayload(formState);
+  }
+
+  /**
+   * Prepares the shared Add or Change form from the selected APR.
+   *
+   * @param reference - The selected reference for Change, or null for Add.
+   * @returns The initial form state, with an empty reference text for Add.
+   */
+  public transformAprToForm(reference: IOpalFinesApr | null): IFinesAccAprAddChangeFormState {
+    return transformAprToForm(reference);
+  }
+
+  /**
+   * Prepares APR API data for the Manage page using the shared payload transformation utility.
+   *
+   * @param response - The account's APRs and defendant-account version returned by the API.
+   * @returns Grouped user-entered references with local display dates and action eligibility.
+   */
+  public transformAprsPayload(response: IOpalFinesAprsResponse): IFinesAccAprManageData {
+    return transformAprsPayload(response);
   }
 
   /**
@@ -468,7 +505,7 @@ export class FinesAccPayloadService {
     let sortCode: string | null = null;
 
     if (hasBacsDetails) {
-      sortCode = this.newSortCodeFunctionalityEnabled
+      sortCode = this.release1A12Enabled
         ? normalizeSortCode(formState.facc_minor_creditor_bank_sort_code)
         : formState.facc_minor_creditor_bank_sort_code;
     }
@@ -570,7 +607,7 @@ export class FinesAccPayloadService {
     partyId: string,
   ): IOpalFinesAccountPartyDetails {
     return this.transformPayload(
-      buildAccountPartyFromFormState(formState, partyType, isDebtor, partyId),
+      buildAccountPartyFromFormState(formState, partyType, isDebtor, partyId, this.release1A12Enabled),
       FINES_ACC_BUILD_TRANSFORM_ITEMS_CONFIG,
     );
   }
