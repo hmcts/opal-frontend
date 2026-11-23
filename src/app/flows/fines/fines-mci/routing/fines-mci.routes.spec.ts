@@ -15,6 +15,10 @@ import { routing } from './fines-mci.routes';
 import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.constant';
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
+import { finesMciCourtFeesResolver } from './resolvers/fines-mci-court-fees.resolver';
+import { FinesMciCreateTillCourtFeeDetailsComponent } from '../fines-mci-create-till/fines-mci-create-till-court-fee-details/fines-mci-create-till-court-fee-details.component';
+import { FinesMciCreateTillOverUnderpaymentConfirmationComponent } from '../fines-mci-create-till/fines-mci-create-till-over-underpayment-confirmation/fines-mci-create-till-over-underpayment-confirmation.component';
+import { FinesMciPlaceholderComponent } from '../fines-mci-placeholder/fines-mci-placeholder.component';
 import { FinesMciPaymentCategoryCriminalAccountComponent } from '../fines-mci-payment-category-criminal-account/fines-mci-payment-category-criminal-account.component';
 import { FinesMciStore } from '../stores/fines-mci.store';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
@@ -145,11 +149,67 @@ describe('finesMci routes', () => {
     expect(paymentCategoryRoute?.canDeactivate).toEqual([canDeactivateGuard]);
   });
 
+  it('loads the Court Fee Details screen from the category journey', async () => {
+    const courtFeeRoute = createTillRoute?.children?.find(
+      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.courtFeeDetails,
+    );
+
+    expect(await courtFeeRoute?.loadComponent?.()).toBe(FinesMciCreateTillCourtFeeDetailsComponent);
+    expect(courtFeeRoute?.canDeactivate).toEqual([canDeactivateGuard]);
+    expect(courtFeeRoute?.resolve?.['courtFees']).toBe(finesMciCourtFeesResolver);
+  });
+
+  it('loads the temporary Court Fee Payment Details destination', async () => {
+    expect(
+      createTillRoute?.children?.filter(
+        (child) => child.path === FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,
+      ),
+    ).toHaveLength(1);
+    const route = createTillRoute?.children?.find(
+      (child) => child.path === FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,
+    );
+
+    expect(await route?.loadComponent?.()).toBe(FinesMciPlaceholderComponent);
+    expect(route?.data?.['heading']).toBe(FINES_MCI_ROUTING_TITLES.children.createTillCourtFeePaymentDetails);
+  });
+
+  it('loads the overpayment and underpayment confirmation screen', async () => {
+    expect(
+      createTillRoute?.children?.filter(
+        (child) => child.path === FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation,
+      ),
+    ).toHaveLength(1);
+    const route = createTillRoute?.children?.find(
+      (child) => child.path === FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation,
+    );
+
+    expect(await route?.loadComponent?.()).toBe(FinesMciCreateTillOverUnderpaymentConfirmationComponent);
+    expect(route?.canDeactivate).toEqual([canDeactivateGuard]);
+    expect(route?.resolve?.['courtFees']).toBe(finesMciCourtFeesResolver);
+    expect(route?.data?.['heading']).toBe(FINES_MCI_ROUTING_TITLES.children.createTillOverUnderpaymentConfirmation);
+  });
+
+  it('should guard navigation away from suspense details when form data has been entered', () => {
+    const suspenseDetailsRoute = createTillRoute?.children?.find(
+      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.suspenseDetails,
+    );
+
+    expect(suspenseDetailsRoute?.canDeactivate).toEqual([canDeactivateGuard]);
+  });
+
   it.each([
     [FINES_MCI_ROUTING_PATHS.children.details, FINES_MCI_ROUTING_TITLES.children.createTillDetails],
     [FINES_MCI_ROUTING_PATHS.children.paymentCategory, FINES_MCI_ROUTING_TITLES.children.createTillPaymentCategory],
     [FINES_MCI_ROUTING_PATHS.children.suspenseDetails, FINES_MCI_ROUTING_TITLES.children.createTillSuspenseDetails],
     [FINES_MCI_ROUTING_PATHS.children.courtFeeDetails, FINES_MCI_ROUTING_TITLES.children.createTillCourtFeeDetails],
+    [
+      FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,
+      FINES_MCI_ROUTING_TITLES.children.createTillCourtFeePaymentDetails,
+    ],
+    [
+      FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation,
+      FINES_MCI_ROUTING_TITLES.children.createTillOverUnderpaymentConfirmation,
+    ],
     [FINES_MCI_ROUTING_PATHS.children.searchAccount, FINES_MCI_ROUTING_TITLES.children.createTillSearchAccount],
     [FINES_MCI_ROUTING_PATHS.children.cancel, FINES_MCI_ROUTING_TITLES.children.createTillCancel],
   ])('should expose the guarded create till %s route', (path, title) => {
