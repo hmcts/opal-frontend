@@ -142,4 +142,32 @@ describe('Finance dashboard', () => {
       cy.get(FinanceLocators.inboundFilesLink).should('not.exist');
     },
   );
+
+  it(
+    'shows Upload variant banking files to a user with the upload permission',
+    { tags: ['@JIRA-STORY:PO-8684', '@JIRA-EPIC:PO-3952', '@JIRA-LABEL:finance', '@R1CBankingInterfaces'] },
+    () => {
+      setupFinancePageComponent({
+        dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+        permissionIds: [FINES_PERMISSIONS['upload-variant-banking-files']],
+      });
+
+      cy.get(FinanceLocators.uploadVariantBankingFilesLink)
+        .should('be.visible')
+        .and('have.attr', 'href', '/fines/finance/variant-banking-files/upload');
+    },
+  );
+
+  it(
+    'hides Upload variant banking files when the user lacks the upload permission',
+    { tags: ['@JIRA-STORY:PO-8684', '@JIRA-EPIC:PO-3952', '@JIRA-LABEL:finance', '@R1CBankingInterfaces'] },
+    () => {
+      setupFinancePageComponent({
+        dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+        permissionIds: [],
+      });
+
+      cy.get(FinanceLocators.uploadVariantBankingFilesLink).should('not.exist');
+    },
+  );
 });
