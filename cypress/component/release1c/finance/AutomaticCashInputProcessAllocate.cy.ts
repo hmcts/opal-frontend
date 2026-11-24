@@ -51,10 +51,7 @@ describe('Automatic Cash Input - Process files and allocate tills', () => {
 
       cy.get(AutomaticCashInputLocators.allocateTabLink).should('have.attr', 'aria-current', 'page');
       cy.get(AutomaticCashInputLocators.allocateProcessingSummary).should('not.exist');
-      cy.get(AutomaticCashInputLocators.allocateEmptyState).should(
-        'have.text',
-        'There are no outstanding tills to allocate',
-      );
+      cy.get(AutomaticCashInputLocators.allocateEmptyState).should('have.text', 'There are no tills ready to allocate');
       cy.get(AutomaticCashInputLocators.allocateSubmitButton).should('not.exist');
     },
   );
