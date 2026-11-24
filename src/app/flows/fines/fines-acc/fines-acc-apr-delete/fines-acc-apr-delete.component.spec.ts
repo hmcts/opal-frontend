@@ -116,8 +116,8 @@ describe('FinesAccAprDeleteComponent', () => {
     expect(element.textContent).not.toContain('177A - APR TEST');
     expect(element.querySelectorAll('#apr-remove-table tbody tr')).toHaveLength(1);
     expect(element.querySelector('#apr-remove-table')?.textContent).toContain('TEST-REFERENCE');
-    expect(element.querySelector('#apr-remove-table')?.textContent).toContain('01 June 2026');
-    expect(element.querySelector('#apr-remove-table')?.textContent).toContain('03 June 2026');
+    expect(element.querySelector('#apr-remove-table')?.textContent).toContain('01 Jun 2026');
+    expect(element.querySelector('#apr-remove-table')?.textContent).toContain('03 Jun 2026');
     expect(element.querySelector('#apr-remove-table')?.textContent).not.toContain('OTHER-REFERENCE');
     expect(element.querySelector('#apr-remove-table a')).toBeNull();
     expect(element.querySelectorAll('#apr-remove-table thead th')).toHaveLength(3);

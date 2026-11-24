@@ -54,7 +54,7 @@ describe('FinesAccPayloadService APR payloads', () => {
       apr_text: ' MiXeD-123 ',
       canChange: true,
       canRemove: true,
-      createdDate: '01 June 2026',
+      createdDate: '01 Jun 2026',
       updatedDate: '—',
     });
     expect(result.consolidatedReferences).toHaveLength(1);
