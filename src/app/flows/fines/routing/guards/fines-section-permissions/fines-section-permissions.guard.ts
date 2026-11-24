@@ -14,6 +14,8 @@ import { DashboardPageType } from '@app/pages/dashboard/types/dashboard.type';
 import { PAGES_ROUTING_PATHS as COMMON_PAGES_ROUTING_PATHS } from '@hmcts/opal-frontend-common/pages/routing/constants';
 import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
 import { type FeatureFlagReleaseState } from '@app/flows/fines/types/feature-flag-release-state.type';
+import { getFinesReportsRouteConfiguration } from '@app/flows/fines/fines-reports/utils/fines-reports-route.utils';
+import { FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS } from '@app/flows/fines/fines-reports/fines-reports-summary-list/routing/constants/fines-reports-summary-list-routing-paths.constant';
 import { firstValueFrom } from 'rxjs';
 import { resolveFeatureFlagReleaseState } from '../helpers/resolve-feature-flag-release-state.helper';
 
@@ -81,10 +83,18 @@ export const finesSectionPermissionsGuard: CanActivateFn = async (
       return getAccessDeniedUrlTree();
     }
 
+    // Cash List is reached from Finance and uses its own permission, rather than operational-report access.
+    const report =
+      sectionKey === 'reports' && route.firstChild ? getFinesReportsRouteConfiguration(route.firstChild) : null;
+    const routePermissionIds =
+      report?.id === FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.cashList
+        ? report.permissionIds
+        : requiredPermissionIds;
+
     try {
       const userState = await firstValueFrom(opalUserService.getLoggedInUserState());
 
-      return hasAnyPermission(requiredPermissionIds, getUserPermissionIds(userState)) ? true : getAccessDeniedUrlTree();
+      return hasAnyPermission(routePermissionIds, getUserPermissionIds(userState)) ? true : getAccessDeniedUrlTree();
     } catch {
       return false;
     }
