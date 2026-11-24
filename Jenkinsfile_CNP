@@ -92,7 +92,8 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String defaultFunctionalTagExpression =
   "not (${defaultFunctionalUatTechExclusions.join(orTagSeparator)}) and not @skip" + andTagSeparator +
   'not (@R1AOff or @R1A1_1Off or @R1A1_2Off or @R1A1_3Off or @R1BOff or @R1CWriteOffOff or ' +
-  '@R1CEnforcementOperationalReportingOff or @R1CAdministrationOff or @R1CFinancialMovementsOff)'
+  '@R1CEnforcementOperationalReportingOff or @R1CAdministrationOff or @R1CFinancialMovementsOff or ' +
+  '@R1CBankingInterfacesOff)'
 @Field String componentExcludeGrepTags = '-@R1AOff+-@R1A1_1Off+-@R1A1_2Off+-@R1A1_3Off+-@R1BOff'
 @Field String macPopulateAndSubmitFeatureGlob =
   'cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/**/*.feature,'
@@ -775,8 +776,25 @@ withPipeline(type, product, component) {
         if (!isBrowserInstalled(browserFirefox)) {
             echoBrowserMissingBanner(browserFirefox)
         }
+        boolean debugCypressChrome = isPR && cachedPrLabels.contains('debug_cypress_chrome')
+        if (debugCypressChrome) {
+            if (!isBrowserInstalled(browserChrome)) {
+                error 'The debug_cypress_chrome PR label requires Chrome on the Jenkins agent.'
+            }
+            env.BROWSER_TO_RUN = browserChrome
+            echo 'Using Chrome for the debug_cypress_chrome PR diagnostic run.'
+        }
         env.BROWSER_TO_RUN = resolvePipelineBrowser()
         echo "Using browser for this pipeline run: ${env.BROWSER_TO_RUN}"
+        // Opt in to browser startup and spec compilation diagnostics for PR builds.
+        if (isPR && (cachedPrLabels.contains('debug_cypress') || debugCypressChrome)) {
+            env.DEBUG = [
+              env.DEBUG,
+              'cypress:server:browsers*,cypress:launcher:detect,cypress:launcher:linux,' +
+                'cypress:server:preprocessor,cypress:webpack,-cypress:launcher:browsers',
+            ].findAll { it }.join(commaSeparator)
+            echo 'Cypress startup diagnostics enabled by a PR debug label.'
+        }
         performArtifactOperations()
         setupTestSpecifications()
         script {

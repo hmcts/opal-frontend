@@ -51,7 +51,7 @@ describe('Change Alternate Payment Reference', () => {
 
   it(
     'rejects a replacement value longer than 18 characters and focuses the field from the error summary',
-    { tags: ['@JIRA-STORY:PO-10899', '@JIRA-EPIC:PO-7465'] },
+    { tags: ['@JIRA-STORY:PO-10899', '@JIRA-STORY:PO-10906', '@JIRA-EPIC:PO-7465'] },
     () => {
       mountChangeAprForm().then(({ component }) => {
         const submit = cy.stub();
