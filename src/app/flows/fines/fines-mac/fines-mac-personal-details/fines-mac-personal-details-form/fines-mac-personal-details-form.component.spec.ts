@@ -12,9 +12,7 @@ import { FinesMacStore } from '../../stores/fines-mac.store';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
-import {
-  RELEASE_1A_1_2_FEATURE_FLAG,
-} from '../../../constants/release-feature-flags.constant';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
