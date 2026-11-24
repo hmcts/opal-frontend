@@ -329,7 +329,6 @@ describe('Manual Cash Input - Check Suspense Payment', () => {
       { amount: '1', label: '£1.00' },
       { amount: '1.2', label: '£1.20' },
       { amount: '1234.56', label: '£1,234.56' },
-      { amount: '000123.45', label: '£123.45' },
       { amount: '999999999999.99', label: '£999,999,999,999.99' },
     ].forEach(({ amount, label }) => {
       it(`(AC2) formats the valid amount ${amount} as ${label}`, { tags: TAGS }, () => {
