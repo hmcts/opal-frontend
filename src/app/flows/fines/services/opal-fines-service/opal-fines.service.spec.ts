@@ -82,6 +82,7 @@ import { OPAL_FINES_MINOR_CREDITOR_ACCOUNT_HISTORY_PARAMS_MOCK } from './mocks/o
 import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK } from './mocks/opal-fines-account-defendant-details-consolidated-accounts.mock';
 import { IOpalFinesReport } from './interfaces/opal-fines-report.interface';
 import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
+import { OPAL_FINES_ENFORCEMENT_ACCOUNT_TYPES_MOCK } from './mocks/opal-fines-enforcement-account-types.mock';
 
 const INTERFACE_JOBS_SUMMARY_RESPONSE: IOpalFinesInterfaceJobsSummaryResponse = {
   interface_jobs: [
@@ -144,6 +145,57 @@ describe('OpalFines', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  describe('getEnforcementAccountTypes', () => {
+    const url = '/opal-fines-service/enforcement-accounts-types';
+
+    it('shares the GET response across concurrent and later subscribers', () => {
+      const firstSubscriber = vi.fn();
+      const secondSubscriber = vi.fn();
+      const laterSubscriber = vi.fn();
+
+      service.getEnforcementAccountTypes().subscribe(firstSubscriber);
+      service.getEnforcementAccountTypes().subscribe(secondSubscriber);
+
+      const request = httpMock.expectOne(url);
+      expect(request.request.method).toBe('GET');
+      request.flush(OPAL_FINES_ENFORCEMENT_ACCOUNT_TYPES_MOCK);
+
+      service.getEnforcementAccountTypes().subscribe(laterSubscriber);
+
+      expect(firstSubscriber).toHaveBeenCalledWith(OPAL_FINES_ENFORCEMENT_ACCOUNT_TYPES_MOCK);
+      expect(secondSubscriber).toHaveBeenCalledWith(OPAL_FINES_ENFORCEMENT_ACCOUNT_TYPES_MOCK);
+      expect(laterSubscriber).toHaveBeenCalledWith(OPAL_FINES_ENFORCEMENT_ACCOUNT_TYPES_MOCK);
+      httpMock.expectNone(url);
+    });
+
+    it('fetches fresh thresholds after the cache is cleared', () => {
+      service.getEnforcementAccountTypes().subscribe();
+      httpMock.expectOne(url).flush(OPAL_FINES_ENFORCEMENT_ACCOUNT_TYPES_MOCK);
+
+      service.clearCache('enforcementAccountTypesCache$');
+      const subscriber = vi.fn();
+      service.getEnforcementAccountTypes().subscribe(subscriber);
+      const updatedResponse = structuredClone(OPAL_FINES_ENFORCEMENT_ACCOUNT_TYPES_MOCK);
+      updatedResponse.enforcement_account_types[0].minimum_balance = 2000;
+      httpMock.expectOne(url).flush(updatedResponse);
+
+      expect(subscriber).toHaveBeenCalledWith(updatedResponse);
+    });
+
+    it('allows a later request after a failed retrieval', () => {
+      const error = vi.fn();
+      service.getEnforcementAccountTypes().subscribe({ error });
+      httpMock.expectOne(url).flush(null, { status: 400, statusText: 'Bad Request' });
+
+      const subscriber = vi.fn();
+      service.getEnforcementAccountTypes().subscribe(subscriber);
+      httpMock.expectOne(url).flush(OPAL_FINES_ENFORCEMENT_ACCOUNT_TYPES_MOCK);
+
+      expect(error).toHaveBeenCalledOnce();
+      expect(subscriber).toHaveBeenCalledWith(OPAL_FINES_ENFORCEMENT_ACCOUNT_TYPES_MOCK);
+    });
   });
 
   it('should retry selected safe retrieval-only GET calls after transient timeout failures', () => {

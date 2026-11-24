@@ -25,4 +25,5 @@ export interface IOpalFinesPaths {
   tills: string;
   sourceMappings: string;
   processInterfaceJobs: string;
+  enforcementAccountTypes: string;
 }

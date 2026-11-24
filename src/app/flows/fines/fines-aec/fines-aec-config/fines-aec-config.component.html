@@ -1,1 +1,31 @@
-<p>This will act as the Container for Auto-enforcement tabbed pages</p>
+<div class="govuk-grid-column-full">
+  <opal-lib-govuk-back-link id="aec-config-back-link" (clickEvent)="navigateBack()" />
+  <h1 class="govuk-heading-l" id="aec-config-heading">Auto-enforcement configuration</h1>
+
+  <opal-lib-moj-sub-navigation subNavId="aec-config-tabs">
+    @for (tab of tabs | keyvalue: null; track tab.key) {
+      <li
+        opal-lib-moj-sub-navigation-item
+        [subNavItemId]="tab.key + '-tab'"
+        [activeSubNavItemFragment]="store.activeTab()"
+        [subNavItemFragment]="tab.key"
+        [subNavItemText]="tab.value"
+      ></li>
+    }
+  </opal-lib-moj-sub-navigation>
+
+  @switch (store.activeTab()) {
+    @case ('account-types') {
+      @if (accountTypes$ | async; as accountTypes) {
+        <app-fines-aec-account-types-tab
+          [accountTypes]="accountTypes"
+          [successMessage]="successMessage()"
+          (clearSuccessMessage)="successMessage.set(null)"
+        />
+      }
+    }
+    @default {
+      <app-fines-aec-placeholder [heading]="tabs[store.activeTab()]" [isTab]="true" />
+    }
+  }
+</div>

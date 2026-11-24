@@ -24,6 +24,7 @@ import { IOpalFinesAccountMajorCreditorAtAGlance } from './opal-fines-account-ma
 import { IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData } from './opal-fines-account-minor-creditor-details-history-and-notes-tab-ref-data.interface';
 import { IOpalFinesReport } from './opal-fines-report.interface';
 import { IOpalFinesAccountMajorCreditorDetailsHistoryAndNotesTabRefData } from './opal-fines-account-major-creditor-details-history-and-notes-tab-ref-data.interface';
+import { IOpalFinesEnforcementAccountTypesResponse } from './opal-fines-enforcement-account-types-response.interface';
 
 export interface IOpalFinesCache {
   sourceMappingsCache$: Observable<IOpalFinesSourceMapping[]> | null;
@@ -54,4 +55,5 @@ export interface IOpalFinesCache {
   minorCreditorAccountHistoryAndNotesCache$: Observable<IOpalFinesAccountMinorCreditorDetailsHistoryAndNotesTabRefData> | null;
   enforcersCache$: Observable<IOpalFinesEnforcersRefData> | null;
   reportsCache$: { [key: string]: Observable<IOpalFinesReport> };
+  enforcementAccountTypesCache$: Observable<IOpalFinesEnforcementAccountTypesResponse> | null;
 }

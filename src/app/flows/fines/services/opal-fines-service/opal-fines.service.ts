@@ -86,6 +86,7 @@ import { IOpalFinesProcessInterfaceJobsPayload } from './interfaces/opal-fines-p
 import { IOpalFinesApr } from './interfaces/opal-fines-apr.interface';
 import { IOpalFinesAprResponse } from './interfaces/opal-fines-apr-response.interface';
 import { IOpalFinesAprsResponse } from './interfaces/opal-fines-aprs-response.interface';
+import { IOpalFinesEnforcementAccountTypesResponse } from './interfaces/opal-fines-enforcement-account-types-response.interface';
 
 const SAFE_READ_RETRY_POLICY = {
   retryCount: 1,
@@ -247,6 +248,7 @@ export class OpalFines {
       'majorCreditorsCache$',
       'prosecutorDataCache$',
       'reportsCache$',
+      'enforcementAccountTypesCache$',
     ];
 
     this.clearCaches(referenceCaches);
@@ -401,6 +403,22 @@ export class OpalFines {
       .pipe(shareReplay(1));
 
     return this.cache.businessUnitsCache$;
+  }
+
+  /**
+   * Retrieves national auto-enforcement thresholds, sharing the request and replaying its successful response across subscribers.
+   * Clearing enforcementAccountTypesCache$ makes the next call fetch fresh data.
+   * @returns A shared observable containing the low (L) and high (H) enforcement path records.
+   */
+  public getEnforcementAccountTypes(): Observable<IOpalFinesEnforcementAccountTypesResponse> {
+    this.cache.enforcementAccountTypesCache$ ??= this.http
+      .get<IOpalFinesEnforcementAccountTypesResponse>(
+        OPAL_FINES_PATHS.enforcementAccountTypes,
+        this.retrySafeReadOptions(),
+      )
+      .pipe(shareReplay({ bufferSize: 1, refCount: false }));
+
+    return this.cache.enforcementAccountTypesCache$;
   }
 
   /**

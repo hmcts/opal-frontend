@@ -50,6 +50,7 @@ export const OPAL_FINES_PATHS: IOpalFinesPaths = {
   tills: `${baseUrl}${tills}`,
   sourceMappings: `${baseUrl}mappings/source`,
   processInterfaceJobs: `${baseUrl}${processInterfaceJobs}`,
+  enforcementAccountTypes: `${baseUrl}enforcement-accounts-types`,
   defendantAccountParties,
   centralFunds: `${baseUrl}${centralFunds}`,
 };

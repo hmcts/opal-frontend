@@ -1,0 +1,49 @@
+<opal-lib-govuk-table id="aec-account-types-table" caption="Account types" captionClasses="govuk-visually-hidden">
+  <ng-container head>
+    <th opal-lib-govuk-table-heading>Account type</th>
+    <th opal-lib-govuk-table-heading>Minimum enforcement value</th>
+    <th opal-lib-govuk-table-heading>High value</th>
+    <th opal-lib-govuk-table-heading><span class="govuk-visually-hidden">Actions</span></th>
+  </ng-container>
+  <ng-container body>
+    @for (accountType of accountTypes; track accountType.accountType) {
+      <tr opal-lib-govuk-table-body-row [id]="'aec-account-type-' + accountType.accountType">
+        <th
+          scope="row"
+          opal-lib-govuk-table-body-row-data
+          class="govuk-!-font-weight-regular"
+          [id]="'aec-name-' + accountType.accountType"
+        >
+          {{ accountType.accountTypeName }}
+        </th>
+        <td opal-lib-govuk-table-body-row-data [id]="'aec-minimum-' + accountType.accountType">
+          @if (accountType.minimumBalance !== null) {
+            <opal-lib-custom-accessible-monetary [value]="accountType.minimumBalance" />
+          } @else {
+            -
+          }
+        </td>
+        <td opal-lib-govuk-table-body-row-data [id]="'aec-high-' + accountType.accountType">
+          @if (accountType.highValue !== null) {
+            <opal-lib-custom-accessible-monetary [value]="accountType.highValue" />
+          } @else {
+            -
+          }
+        </td>
+        <td
+          opal-lib-govuk-table-body-row-data
+          class="govuk-table__cell--numeric"
+          [id]="'aec-actions-' + accountType.accountType"
+        >
+          <a
+            class="govuk-link"
+            [id]="'aec-change-' + accountType.accountType"
+            [routerLink]="['..', routingPaths.children.amendValues]"
+            [queryParams]="{ enforcementAccountTypeId: accountType.id }"
+            >Change<span class="govuk-visually-hidden"> {{ accountType.accountTypeName }}</span></a
+          >
+        </td>
+      </tr>
+    }
+  </ng-container>
+</opal-lib-govuk-table>
