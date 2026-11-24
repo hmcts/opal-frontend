@@ -108,7 +108,7 @@ export const FINES_AYG_FIXED_PENALTY_ACCOUNT_MOCK: IFinesMacState = {
   courtDetails: {
     ...FINES_MAC_COURT_DETAILS_FORM,
     formData: {
-      fm_court_details_originator_id: '1223',
+      fm_court_details_originator_id: '123',
       fm_court_details_originator_name: 'Police force',
       fm_court_details_prosecutor_case_reference: 'O1AT204003',
       fm_court_details_imposing_court_id: '1865',
