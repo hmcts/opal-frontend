@@ -91,7 +91,7 @@ export function performLogin(email: string, options: IPerformLoginOptions = {}):
           cy.get(L.submitBtn).click();
 
           log('assert', 'Verifying login success (Local/PR)');
-          cy.get(L.signOutLink).should('exist');
+          assertSignOutLinkVisible();
           log('done', 'Login successful (Local/PR)', { email });
         } else {
           // Microsoft SSO login
@@ -113,7 +113,7 @@ export function performLogin(email: string, options: IPerformLoginOptions = {}):
           });
 
           log('assert', 'Verifying login success (SSO)');
-          cy.get(L.signOutLink).should('exist');
+          assertSignOutLinkVisible();
           log('done', 'Login successful (SSO)', { email });
         }
       });
@@ -223,7 +223,7 @@ export function performLoginAndLandOnSearch(email: string): void {
  */
 export function assertSignOutLinkVisible(): void {
   log('assert', 'Verifying sign out link is visible');
-  cy.get(L.signOutLink, { timeout: 10_000 }).should('be.visible');
+  cy.contains(L.signOutLink, /^Sign out$/, { timeout: 10_000 }).should('be.visible');
   log('done', 'Sign out link is visible');
 }
 
