@@ -342,7 +342,7 @@ Feature: Populate And Submit
       | postcode                  | rg12 8eu         |
       | national insurance number | ab122398b        |
       | make and model            | FORD FOCUS       |
-      | registration number       | AB12 CDE         |
+      | registration number       | AB12CDE         |
     Then the manual personal details fields are:
       | title                     | Miss             |
       | first names               | FNAME            |
@@ -351,7 +351,7 @@ Feature: Populate And Submit
       | postcode                  | RG12 8EU         |
       | national insurance number | AB122398B        |
       | make and model            | FORD FOCUS       |
-      | registration number       | AB12 CDE         |
+      | registration number       | AB12CDE         |
     And returning to account details the "Personal details" task the status is "Provided"
 
 
