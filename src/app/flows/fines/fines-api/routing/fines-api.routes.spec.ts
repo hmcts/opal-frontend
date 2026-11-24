@@ -1,3 +1,6 @@
+import { finesApiSummaryReportResolver } from './resolvers/fines-api-summary-report.resolver';
+import { summaryResponse } from '../fines-api-summary-report/mocks/summary-response.mock';
+import { mapSummaryReport } from '../services/utils/fines-api-payload-map-summary-report.utils';
 import { fetchSourceMappingsResolver } from '../../routing/resolvers/fetch-source-mappings-resolver/fetch-source-mappings.resolver';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
@@ -93,26 +96,34 @@ describe('fines API routes', () => {
     await expect(confirmProcessRoute?.loadComponent?.()).resolves.toBe(FinesApiConfirmProcessComponent);
   });
   describe.each([
-    ['tillSummary', 'tillId'],
-    ['fileSummary', 'fileId'],
+    ['tillSummary', 'interfaceJobId'],
+    ['fileSummary', 'interfaceJobId'],
   ] as const)('%s', (routeKey, parameter) => {
     const summaryPath = `${FINES_API_ROUTING_PATHS.children[routeKey]}/:${parameter}`;
     const summaryRoute = routing.find((route) => route.path === summaryPath)!;
 
-    it('protects the summary route and loads the shared placeholder', async () => {
-      expect(summaryRoute.canActivate).toEqual([authGuard, routePermissionsGuard]);
+    it('protects the summary route and loads the shared report', async () => {
+      expect(summaryRoute.canActivate).toEqual([authGuard, routePermissionsGuard, finesApiFlowStateGuard]);
       expect(summaryRoute.data).toEqual({
         routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
         title: FINES_API_ROUTING_TITLES.children[routeKey],
       });
-      expect(summaryRoute.resolve).toEqual({ title: TitleResolver });
+      expect(summaryRoute.resolve).toEqual({ title: TitleResolver, report: finesApiSummaryReportResolver });
       await expect(summaryRoute.loadComponent!()).resolves.toBe(FinesApiSummaryReportComponent);
     });
 
-    it('renders the placeholder and preserves the identifier as a route parameter', async () => {
+    it('renders the report and preserves the identifier as a route parameter', async () => {
       // Exercise route matching and lazy loading independently of authentication and title resolution.
       TestBed.configureTestingModule({
-        providers: [provideRouter([{ path: summaryRoute.path, loadComponent: summaryRoute.loadComponent }])],
+        providers: [
+          provideRouter([
+            {
+              path: summaryRoute.path,
+              loadComponent: summaryRoute.loadComponent,
+              data: { report: mapSummaryReport(summaryResponse(), new Map()) },
+            },
+          ]),
+        ],
       });
       const harness = await RouterTestingHarness.create();
       const id = '99000000031003';
@@ -122,8 +133,8 @@ describe('fines API routes', () => {
       );
       const route = harness.routeDebugElement!.injector.get(ActivatedRoute);
       expect(route.snapshot.paramMap.get(parameter)).toBe(id);
-      expect(harness.routeNativeElement!.querySelector('h1')!.textContent).toBe('Till/File summary report');
-      expect(harness.routeNativeElement!.textContent).toContain('This page is not available yet.');
+      expect(harness.routeNativeElement!.querySelector('h1')!.textContent).toContain('42');
+      expect(harness.routeNativeElement!.textContent).toContain('synthetic.dat');
     });
   });
 });

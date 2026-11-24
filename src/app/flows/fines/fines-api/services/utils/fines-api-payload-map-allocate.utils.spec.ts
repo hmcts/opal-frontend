@@ -59,6 +59,12 @@ describe('mapAllocateData', () => {
     expect(mapAllocateData(jobs, tills, dateService, new Map()).tills[0].Source).toBe(' natwest ');
   });
 
+  it('keeps till selection IDs distinct from summary job IDs', () => {
+    const row = map([buildTill({ interface_job_id: '9007199254740993' })]).tills[0];
+    expect(row.tillId).toBe('101');
+    expect(row.interfaceJobId).toBe('9007199254740993');
+  });
+
   it('maps successful empty responses to the empty display state', () => {
     expect(map([])).toEqual({ processingTotal: 0, processingByBusinessUnit: [], tills: [] });
   });
@@ -78,6 +84,7 @@ describe('mapAllocateData', () => {
   it('maps supplied values and formats the till creation timestamp using the existing date convention', () => {
     expect(map([buildTill()]).tills[0]).toEqual({
       tillId: '101',
+      interfaceJobId: null,
       'Till number': 7,
       Errors: 0,
       Filename: 'payments.dat',

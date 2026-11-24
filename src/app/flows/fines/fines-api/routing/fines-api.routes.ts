@@ -1,3 +1,4 @@
+import { finesApiSummaryReportResolver } from './resolvers/fines-api-summary-report.resolver';
 import { fetchSourceMappingsResolver } from '../../routing/resolvers/fetch-source-mappings-resolver/fetch-source-mappings.resolver';
 import { Routes } from '@angular/router';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
@@ -65,35 +66,35 @@ export const routing: Routes = [
     },
   },
   {
-    path: `${FINES_API_ROUTING_PATHS.children.tillSummary}/:tillId`,
+    path: `${FINES_API_ROUTING_PATHS.children.tillSummary}/:interfaceJobId`,
     loadComponent: () =>
       import('../fines-api-summary-report/fines-api-summary-report.component').then(
         (c) => c.FinesApiSummaryReportComponent,
       ),
-    canActivate: [authGuard, routePermissionsGuard],
+    canActivate: [authGuard, routePermissionsGuard, finesApiFlowStateGuard],
     data: {
       routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
       title: FINES_API_ROUTING_TITLES.children.tillSummary,
     },
     resolve: {
       title: TitleResolver,
-      // The till summary data resolver will be added when report data loading is implemented.
+      report: finesApiSummaryReportResolver,
     },
   },
   {
-    path: `${FINES_API_ROUTING_PATHS.children.fileSummary}/:fileId`,
+    path: `${FINES_API_ROUTING_PATHS.children.fileSummary}/:interfaceJobId`,
     loadComponent: () =>
       import('../fines-api-summary-report/fines-api-summary-report.component').then(
         (c) => c.FinesApiSummaryReportComponent,
       ),
-    canActivate: [authGuard, routePermissionsGuard],
+    canActivate: [authGuard, routePermissionsGuard, finesApiFlowStateGuard],
     data: {
       routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
       title: FINES_API_ROUTING_TITLES.children.fileSummary,
     },
     resolve: {
       title: TitleResolver,
-      // The file summary data resolver will be added when report data loading is implemented.
+      report: finesApiSummaryReportResolver,
     },
   },
 ];

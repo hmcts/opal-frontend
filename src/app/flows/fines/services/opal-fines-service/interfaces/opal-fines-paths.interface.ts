@@ -21,6 +21,7 @@ export interface IOpalFinesPaths {
   centralFunds: string;
   reports: string;
   reportInstances: string;
+  interfaceJobs: string;
   interfaceJobsSummary: string;
   tills: string;
   sourceMappings: string;

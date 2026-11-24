@@ -8,6 +8,7 @@ import { IFinesApiAllocateTillsTableWrapperTableData } from './interfaces/fines-
 const rows = (count = 2): IFinesApiAllocateTillsTableWrapperTableData[] =>
   Array.from({ length: count }, (_, index) => ({
     tillId: String(101 + index),
+    interfaceJobId: String(701 + index),
     'Till number': 7,
     Errors: index,
     Filename: `payments-${index}.dat`,
@@ -145,14 +146,20 @@ describe('FinesApiAllocateTillsTableWrapperComponent', () => {
     expect(selectedText()).toBe('2 of 2 tills selected.');
   });
 
-  it('links same-number tills to distinct summary URLs using their internal IDs', () => {
+  it('links same-number tills to distinct summary URLs using their originating job IDs', () => {
     render(data());
     const links = Array.from(element().querySelectorAll<HTMLAnchorElement>('tbody a'));
     expect(links.map((link) => link.textContent!.trim())).toEqual(['7', '7']);
     expect(links.map((link) => link.getAttribute('href'))).toEqual([
-      '/fines/auto-payment-in/till-summary/101',
-      '/fines/auto-payment-in/till-summary/102',
+      '/fines/auto-payment-in/till-summary/701',
+      '/fines/auto-payment-in/till-summary/702',
     ]);
+  });
+
+  it('keeps a till without an originating job readable without a broken summary link', () => {
+    render(data(rows().map((row) => ({ ...row, interfaceJobId: null }))));
+    expect(element().querySelectorAll('tbody a')).toHaveLength(0);
+    expect(element().textContent).toContain('7');
   });
 
   it('requests the clicked till summary without changing the checkbox selection', async () => {
@@ -164,7 +171,7 @@ describe('FinesApiAllocateTillsTableWrapperComponent', () => {
     await fixture.whenStable();
 
     expect(navigate).toHaveBeenCalledOnce();
-    expect(router.serializeUrl(navigate.mock.calls[0][0] as UrlTree)).toBe('/fines/auto-payment-in/till-summary/102');
+    expect(router.serializeUrl(navigate.mock.calls[0][0] as UrlTree)).toBe('/fines/auto-payment-in/till-summary/702');
     expect(selectedText()).toBe('1 of 2 tills selected.');
     expect(checkbox('fines-api-allocate-till-101').checked).toBe(true);
     expect(checkbox('fines-api-allocate-till-102').checked).toBe(false);

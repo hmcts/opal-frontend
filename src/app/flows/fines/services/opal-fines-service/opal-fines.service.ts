@@ -1,3 +1,4 @@
+import { IOpalFinesProcessedFileSummaryResponse } from './interfaces/opal-fines-processed-file-summary-response.interface';
 import { IOpalFinesAprPayload } from './interfaces/opal-fines-apr-payload.interface';
 import { IOpalFinesSourceMapping } from './interfaces/opal-fines-source-mapping.interface';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
@@ -1881,6 +1882,20 @@ export class OpalFines {
 
     this.cache.majorCreditorAccountHistoryAndNotesCache$ ??= request$;
     return this.cache.majorCreditorAccountHistoryAndNotesCache$;
+  }
+
+  /**
+   * Retrieves the latest processing summary by interface-job ID, without caching report data.
+   * @param interfaceJobId The originating job identifier.
+   * @returns The current report; permission and availability errors use normal HTTP handling.
+   */
+  public getInterfaceJobProcessedFileSummary(
+    interfaceJobId: string,
+  ): Observable<IOpalFinesProcessedFileSummaryResponse> {
+    return this.http.get<IOpalFinesProcessedFileSummaryResponse>(
+      `${OPAL_FINES_PATHS.interfaceJobs}/${encodeURIComponent(interfaceJobId)}/processed-file-summary`,
+      this.retrySafeReadOptions(),
+    );
   }
 
   /**

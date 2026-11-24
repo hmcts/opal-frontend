@@ -571,6 +571,32 @@ describe('OpalFines', () => {
     });
   });
 
+  describe('getInterfaceJobProcessedFileSummary', () => {
+    it('requests a fresh summary by job ID on every visit', () => {
+      for (let visit = 0; visit < 2; visit++) {
+        const received = vi.fn();
+        service.getInterfaceJobProcessedFileSummary('9007199254740993').subscribe(received);
+        const request = httpMock.expectOne(`${OPAL_FINES_PATHS.interfaceJobs}/9007199254740993/processed-file-summary`);
+        expect(request.request.method).toBe('GET');
+        request.flush({ file_name: 'synthetic.dat' });
+        expect(received).toHaveBeenCalledWith({ file_name: 'synthetic.dat' });
+      }
+    });
+    it('propagates not-found errors without a successful fallback', () => {
+      const error = vi.fn();
+      service.getInterfaceJobProcessedFileSummary('7').subscribe({
+        next: () => {
+          throw new Error('Unexpected summary');
+        },
+        error,
+      });
+      httpMock
+        .expectOne(`${OPAL_FINES_PATHS.interfaceJobs}/7/processed-file-summary`)
+        .flush({}, { status: 404, statusText: 'Not Found' });
+      expect(error).toHaveBeenCalledWith(expect.objectContaining({ status: 404 }));
+    });
+  });
+
   describe('getTills', () => {
     it('requests eligible auto-payment tills with CSV filters and preserves the response', () => {
       const response = {
