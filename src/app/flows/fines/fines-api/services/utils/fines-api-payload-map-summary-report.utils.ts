@@ -1,9 +1,8 @@
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { IOpalFinesProcessedFileSummaryResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-processed-file-summary-response.interface';
-import {
-  IFinesApiSummaryField,
-  IFinesApiSummaryReport,
-  IFinesApiSummarySection,
-} from '../../fines-api-summary-report/interfaces/fines-api-summary-report.interface';
+import { IFinesApiSummaryField } from '../../fines-api-summary-report/interfaces/fines-api-summary-field.interface';
+import { IFinesApiSummaryReport } from '../../fines-api-summary-report/interfaces/fines-api-summary-report.interface';
+import { IFinesApiSummarySection } from '../../fines-api-summary-report/interfaces/fines-api-summary-section.interface';
 import { formatSummaryPence, summaryPence } from './fines-api-summary-money.utils';
 
 type MessageData = Record<string, unknown>;
@@ -21,17 +20,17 @@ const text = (value: unknown): string => {
   if (typeof value !== 'string' && typeof value !== 'number') throw new Error('Invalid text in processing summary');
   return String(value);
 };
-const money = (value: unknown): string => formatSummaryPence(summaryPence(value));
 const count = (value: unknown): number => {
   if (typeof value !== 'number' || !Number.isSafeInteger(value) || value < 0) {
     throw new Error('Invalid count in processing summary');
   }
   return value;
 };
-const sum = (rows: MessageData[], field: string): string =>
-  formatSummaryPence(rows.reduce((total, row) => total + summaryPence(row[field]), 0n));
 const field = (label: string, value: unknown): IFinesApiSummaryField => ({ label, value: text(value) });
-const errorDetails = (row: MessageData): IFinesApiSummaryReport['errors'][number] => ({
+const errorDetails = (
+  row: MessageData,
+  money: (value: unknown) => string,
+): IFinesApiSummaryReport['errors'][number] => ({
   court: [
     field('Sort code', row['court_sort_code']),
     field(
@@ -58,12 +57,20 @@ const errorDetails = (row: MessageData): IFinesApiSummaryReport['errors'][number
  * Maps supplied processing outcomes and calculates display subtotals, without reclassifying payments.
  * @param response Uncached processed-file summary; all monetary response values are pounds.
  * @param sourceLabels Source code/display labels from the mappings endpoint.
+ * @param utils Shared monetary formatting service.
  * @returns The shared Till/File screen model.
  */
 export const mapSummaryReport = (
   response: IOpalFinesProcessedFileSummaryResponse,
   sourceLabels: ReadonlyMap<string, string>,
+  utils: Pick<UtilsService, 'convertToMonetaryString'>,
 ): IFinesApiSummaryReport => {
+  const money = (value: unknown): string => formatSummaryPence(summaryPence(value), utils);
+  const sum = (rows: MessageData[], field: string): string =>
+    formatSummaryPence(
+      rows.reduce((total, row) => total + summaryPence(row[field]), 0n),
+      utils,
+    );
   const groups = new Map<string, MessageData[]>();
   for (const group of response.interface_messages) {
     groups.set(group.message_text, [
@@ -137,7 +144,7 @@ export const mapSummaryReport = (
     ],
     errors: response.interface_messages
       .filter((group) => [...ERROR_KEYS, 'unknown_bank'].includes(group.message_text))
-      .flatMap((group) => group.messages.map((message) => errorDetails(message.message_data))),
+      .flatMap((group) => group.messages.map((message) => errorDetails(message.message_data, money))),
     errorSuspenseTotal: sum(suspense, 'court_amount'),
     ignoredTotal: sum(ignored, 'court_amount'),
   };

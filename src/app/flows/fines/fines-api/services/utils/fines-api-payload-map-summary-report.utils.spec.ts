@@ -1,3 +1,5 @@
+import { TestBed } from '@angular/core/testing';
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { describe, expect, it } from 'vitest';
 import { summaryResponse } from '../../fines-api-summary-report/mocks/summary-response.mock';
 import { mapSummaryReport } from './fines-api-payload-map-summary-report.utils';
@@ -5,14 +7,14 @@ import { formatSummaryPence, summaryPence } from './fines-api-summary-money.util
 
 describe('processed summary mapping', () => {
   it('uses fines-only acceptance, source labels and pounds without scaling twice', () => {
-    const report = mapSummaryReport(summaryResponse(), new Map([['TEST', 'Test bank']]));
+    const report = mapSummaryReport(summaryResponse(), new Map([['TEST', 'Test bank']]), TestBed.inject(UtilsService));
     expect(report.title).toBe('42');
     expect(report.fileDetails[1].value).toBe('Test bank');
     expect(report.breakdown[1]).toEqual({ label: 'Records accepted', number: 2, value: '£20.00' });
     expect(report.records[0].value).toBe('£60.00');
   });
   it.each([null, undefined])('uses file mode when till number is %s', (till_number) => {
-    const report = mapSummaryReport({ ...summaryResponse(), till_number }, new Map());
+    const report = mapSummaryReport({ ...summaryResponse(), till_number }, new Map(), TestBed.inject(UtilsService));
     expect(report.isTill).toBe(false);
     expect(report.title).toBe('synthetic.dat');
     expect(report.sections.every((section) => section.rows.length === 0)).toBe(true);
@@ -27,7 +29,7 @@ describe('processed summary mapping', () => {
         message_data: { account_number: '000123', surname: 'sample', value, transaction_account: '000456' },
       })),
     });
-    const section = mapSummaryReport(response, new Map()).sections[0];
+    const section = mapSummaryReport(response, new Map(), TestBed.inject(UtilsService)).sections[0];
     expect(section.rows[0]).toEqual(['000123', 'SAMPLE', '£0.10', '000456']);
     expect(section.total).toBe('£0.30');
   });
@@ -50,7 +52,7 @@ describe('processed summary mapping', () => {
         ],
       })),
     );
-    const report = mapSummaryReport(response, new Map());
+    const report = mapSummaryReport(response, new Map(), TestBed.inject(UtilsService));
     expect(report.ignoredTotal).toBe('£10.00');
     expect(report.errorSuspenseTotal).toBe('£10.00');
     expect(report.errors[0].defendant[2].value).toBe('000123');
@@ -74,7 +76,7 @@ describe('processed summary mapping', () => {
         },
       ],
     });
-    const section = mapSummaryReport(response, new Map()).sections[1];
+    const section = mapSummaryReport(response, new Map(), TestBed.inject(UtilsService)).sections[1];
     expect(section.rows[0]).toEqual(['000123', 'SAMPLE', 'TEST', '£123.45', '£10.00', '000456']);
     expect(section.total).toBe('£10.00');
   });
@@ -93,7 +95,7 @@ describe('processed summary mapping', () => {
       message_text: key,
       messages: [{ interface_messages_id: 1, message_type: 'Error', message_data: { court_amount: '1.25' } }],
     });
-    const report = mapSummaryReport(response, new Map());
+    const report = mapSummaryReport(response, new Map(), TestBed.inject(UtilsService));
     expect(report.errors).toHaveLength(1);
     expect(report.errorSuspenseTotal).toBe('£1.25');
     expect(report.ignoredTotal).toBe('£0.00');
@@ -102,13 +104,33 @@ describe('processed summary mapping', () => {
   it('fails on missing totals instead of displaying a successful empty report', () => {
     const response = summaryResponse();
     response.interface_messages = [];
-    expect(() => mapSummaryReport(response, new Map())).toThrow('Missing or duplicate');
+    expect(() => mapSummaryReport(response, new Map(), TestBed.inject(UtilsService))).toThrow('Missing or duplicate');
   });
   it.each([null, undefined, '', 'abc', '1.001', {}])('rejects malformed monetary value %s', (value) => {
     expect(() => summaryPence(value)).toThrow();
   });
   it('formats zero and large exact decimal strings', () => {
-    expect(formatSummaryPence(summaryPence('0'))).toBe('£0.00');
-    expect(formatSummaryPence(summaryPence('999999999999.99'))).toBe('£999,999,999,999.99');
+    expect(formatSummaryPence(summaryPence('0'), TestBed.inject(UtilsService))).toBe('£0.00');
+    expect(formatSummaryPence(summaryPence('999999999999.99'), TestBed.inject(UtilsService))).toBe(
+      '£999,999,999,999.99',
+    );
   });
+});
+
+describe('shared summary monetary formatting', () => {
+  it.each(['0.00', '0.01', '-12.34', '1234.56'])('matches the shared formatter for %s pounds', (amount) => {
+    const utils = TestBed.inject(UtilsService);
+    expect(formatSummaryPence(summaryPence(amount), utils)).toBe(utils.convertToMonetaryString(amount));
+  });
+  it.each(['9007199254740993', '9007199254740991', '-9007199254740993'])(
+    'rejects unsafe pence %s before formatting',
+    (pence) => {
+      const utils = {
+        convertToMonetaryString: () => {
+          throw new Error('Formatter must not be called');
+        },
+      };
+      expect(() => formatSummaryPence(BigInt(pence), utils)).toThrow(/precision|Invalid monetary/);
+    },
+  );
 });

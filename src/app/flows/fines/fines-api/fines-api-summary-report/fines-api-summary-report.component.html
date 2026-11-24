@@ -31,7 +31,9 @@
       </div>
       <h2 class="govuk-heading-m">Summary</h2>
       <section aria-labelledby="summary-records-heading" id="fines-api-summary-records">
-        <h3 class="govuk-heading-s summary-section-heading" id="summary-records-heading">Total records</h3>
+        <h3 class="govuk-heading-s summary-section-heading govuk-!-padding-bottom-2" id="summary-records-heading">
+          Total records
+        </h3>
         <table class="govuk-table" id="fines-api-summary-breakdown">
           <caption class="govuk-visually-hidden">
             Total records
@@ -56,7 +58,9 @@
       </section>
       @for (section of summary.sections; track section.id) {
         <section [attr.aria-labelledby]="section.id + '-heading'" [id]="'fines-api-summary-' + section.id">
-          <h3 class="govuk-heading-s summary-section-heading" [id]="section.id + '-heading'">{{ section.heading }}</h3>
+          <h3 class="govuk-heading-s summary-section-heading govuk-!-padding-bottom-2" [id]="section.id + '-heading'">
+            {{ section.heading }}
+          </h3>
           @if (section.rows.length) {
             <table class="govuk-table">
               <caption class="govuk-visually-hidden">
@@ -81,7 +85,7 @@
                 }
               </tbody>
               <tfoot>
-                <tr class="govuk-table__row summary-total">
+                <tr class="govuk-table__row summary-total govuk-!-font-weight-bold">
                   <th scope="row" [attr.colspan]="section.columns.length - 2" class="govuk-table__header">
                     Total value to be written to suspense
                   </th>
@@ -95,9 +99,11 @@
         </section>
       }
       <section aria-labelledby="summary-errors-heading" id="fines-api-summary-errors">
-        <h3 class="govuk-heading-s summary-section-heading" id="summary-errors-heading">Errors in record details</h3>
+        <h3 class="govuk-heading-s summary-section-heading govuk-!-padding-bottom-2" id="summary-errors-heading">
+          Errors in record details
+        </h3>
         @for (error of summary.errors; track $index) {
-          <div class="summary-error govuk-!-margin-bottom-4">
+          <div class="summary-error govuk-!-padding-3 govuk-!-margin-bottom-4">
             <div class="govuk-grid-row">
               <div class="govuk-grid-column-one-half">
                 <h4 class="govuk-heading-s">Court bank details</h4>
@@ -128,13 +134,13 @@
         }
         @if (summary.errors.length) {
           <dl class="govuk-summary-list govuk-!-margin-bottom-4">
-            <div class="govuk-summary-list__row summary-total">
+            <div class="govuk-summary-list__row summary-total govuk-!-font-weight-bold">
               <dt class="govuk-summary-list__key govuk-!-width-one-half">Total value to be written to suspense</dt>
               <dd class="govuk-summary-list__value govuk-!-width-one-half">{{ summary.errorSuspenseTotal }}</dd>
             </div>
           </dl>
           <dl class="govuk-summary-list">
-            <div class="govuk-summary-list__row summary-total">
+            <div class="govuk-summary-list__row summary-total govuk-!-font-weight-bold">
               <dt class="govuk-summary-list__key govuk-!-width-one-half">Total value of records ignored</dt>
               <dd class="govuk-summary-list__value govuk-!-width-one-half">{{ summary.ignoredTotal }}</dd>
             </div>

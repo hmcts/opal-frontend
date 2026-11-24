@@ -1,3 +1,4 @@
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 /**
  * Converts API pounds to integer pence without binary floating-point addition or rounding invalid data.
  * @param value A decimal pounds value from the API.
@@ -16,11 +17,18 @@ export const summaryPence = (value: unknown): bigint => {
 };
 
 /**
- * Formats exact pence as a pounds sterling display value.
+ * Formats exact pence through the shared monetary formatter after checking numeric precision.
  * @param pence Integer pence.
+ * @param utils Shared monetary formatting service.
  * @returns A GBP amount with grouping and two decimal places.
  */
-export const formatSummaryPence = (pence: bigint): string => {
-  const absolute = pence < 0n ? -pence : pence;
-  return `${pence < 0n ? '-' : ''}£${(absolute / 100n).toLocaleString('en-GB')}.${String(absolute % 100n).padStart(2, '0')}`;
+export const formatSummaryPence = (pence: bigint, utils: Pick<UtilsService, 'convertToMonetaryString'>): string => {
+  if (pence > BigInt(Number.MAX_SAFE_INTEGER) || pence < BigInt(Number.MIN_SAFE_INTEGER)) {
+    throw new Error('Monetary value exceeds safe formatting precision');
+  }
+  const pounds = Number(pence) / 100;
+  if (summaryPence(pounds) !== pence) {
+    throw new Error('Monetary value exceeds safe formatting precision');
+  }
+  return utils.convertToMonetaryString(pounds);
 };

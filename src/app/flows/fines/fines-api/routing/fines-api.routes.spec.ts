@@ -1,3 +1,5 @@
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { inject } from '@angular/core';
 import { finesApiSummaryReportResolver } from './resolvers/fines-api-summary-report.resolver';
 import { summaryResponse } from '../fines-api-summary-report/mocks/summary-response.mock';
 import { mapSummaryReport } from '../services/utils/fines-api-payload-map-summary-report.utils';
@@ -120,7 +122,7 @@ describe('fines API routes', () => {
             {
               path: summaryRoute.path,
               loadComponent: summaryRoute.loadComponent,
-              data: { report: mapSummaryReport(summaryResponse(), new Map()) },
+              resolve: { report: () => mapSummaryReport(summaryResponse(), new Map(), inject(UtilsService)) },
             },
           ]),
         ],

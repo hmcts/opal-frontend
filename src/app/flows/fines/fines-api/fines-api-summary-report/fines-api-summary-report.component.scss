@@ -6,15 +6,12 @@
 
 .summary-section-heading {
   border-bottom: 1px solid govuk.$govuk-text-colour;
-  padding-bottom: govuk.govuk-spacing(2);
 }
 
 .summary-error {
   border: 1px solid govuk.$govuk-border-colour;
-  padding: govuk.govuk-spacing(3);
 }
 
 .summary-total {
   background-color: govuk.govuk-colour('black', $variant: 'tint-95');
-  font-weight: bold;
 }

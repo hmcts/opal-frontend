@@ -1,3 +1,5 @@
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
+import { inject } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
@@ -15,7 +17,10 @@ describe('summary report component', () => {
       imports: [FinesApiSummaryReportComponent],
       providers: [
         provideRouter([]),
-        { provide: ActivatedRoute, useValue: { data: of({ report: mapSummaryReport(response, new Map()) }) } },
+        {
+          provide: ActivatedRoute,
+          useFactory: () => ({ data: of({ report: mapSummaryReport(response, new Map(), inject(UtilsService)) }) }),
+        },
       ],
     });
     return TestBed.createComponent(FinesApiSummaryReportComponent);

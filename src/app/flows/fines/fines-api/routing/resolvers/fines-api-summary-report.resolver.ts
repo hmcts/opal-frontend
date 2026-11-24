@@ -1,3 +1,4 @@
+import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service';
 import { inject } from '@angular/core';
 import { RedirectCommand, ResolveFn, Router } from '@angular/router';
 import { forkJoin, map } from 'rxjs';
@@ -14,6 +15,7 @@ import { FINES_API_ROUTING_PATHS } from '../constants/fines-api-routing-paths.co
  */
 export const finesApiSummaryReportResolver: ResolveFn<IFinesApiSummaryReport> = (route) => {
   const service = inject(OpalFines);
+  const utils = inject(UtilsService);
   const router = inject(Router);
   const id = route.paramMap.get('interfaceJobId');
   if (!id || !/^\d+$/.test(id) || BigInt(id) <= 0n || BigInt(id) > 9223372036854775807n) {
@@ -33,6 +35,7 @@ export const finesApiSummaryReportResolver: ResolveFn<IFinesApiSummaryReport> = 
       mapSummaryReport(
         report,
         new Map(sources.map((source) => [source.code.trim().toUpperCase(), source.display_name])),
+        utils,
       ),
     ),
   );

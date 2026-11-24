@@ -1,15 +1,5 @@
-export interface IFinesApiSummaryField {
-  label: string;
-  value: string;
-}
-
-export interface IFinesApiSummarySection {
-  id: string;
-  heading: string;
-  columns: string[];
-  rows: string[][];
-  total: string;
-}
+import { IFinesApiSummaryField } from './fines-api-summary-field.interface';
+import { IFinesApiSummarySection } from './fines-api-summary-section.interface';
 
 export interface IFinesApiSummaryReport {
   isTill: boolean;
