@@ -114,8 +114,9 @@ describe('Manual Cash Input - Confirm account summary', () => {
     });
   });
 
-  it('(AC2a) displays em dashes for missing instalment frequency and amount', { tags: TAGS }, () => {
+  it('(AC2a) displays em dashes for missing instalment frequency, amount and start date', { tags: TAGS }, () => {
     const details = structuredClone(MCI_CONFIRM_INDIVIDUAL_MOCK);
+    details.payment_terms.effective_date = null;
     details.payment_terms.payment_terms_type = {
       payment_terms_type_code: 'I',
       payment_terms_type_display_name: 'Instalments',
@@ -124,6 +125,7 @@ describe('Manual Cash Input - Confirm account summary', () => {
 
     assertValue('frequency', '—');
     assertValue('instalments', '—');
+    assertValue('start-date', '—');
   });
 });
 
