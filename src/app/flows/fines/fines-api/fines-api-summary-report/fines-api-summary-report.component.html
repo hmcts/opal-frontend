@@ -6,17 +6,15 @@
         <span class="govuk-caption-m">{{ summary.isTill ? 'Till' : 'File' }}</span
         >{{ summary.title }}
       </h1>
-      <button id="fines-api-summary-print" type="button" class="govuk-button govuk-button--secondary" (click)="print()">
-        Save or print
-      </button>
+      <button id="fines-api-summary-print" type="button" class="govuk-button" (click)="print()">Print</button>
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-half">
           <h2 class="govuk-heading-m">{{ summary.isTill ? 'Till details' : 'File details' }}</h2>
           <dl class="govuk-summary-list">
             @for (item of summary.fileDetails; track item.label) {
               <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">{{ item.label }}</dt>
-                <dd class="govuk-summary-list__value">{{ item.value }}</dd>
+                <dt class="govuk-summary-list__key govuk-!-width-one-half">{{ item.label }}</dt>
+                <dd class="govuk-summary-list__value govuk-!-width-one-half">{{ item.value }}</dd>
               </div>
             }
           </dl>
@@ -24,35 +22,38 @@
           <dl class="govuk-summary-list">
             @for (item of summary.records; track item.label) {
               <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">{{ item.label }}</dt>
-                <dd class="govuk-summary-list__value">{{ item.value }}</dd>
+                <dt class="govuk-summary-list__key govuk-!-width-one-half">{{ item.label }}</dt>
+                <dd class="govuk-summary-list__value govuk-!-width-one-half">{{ item.value }}</dd>
               </div>
             }
           </dl>
         </div>
       </div>
       <h2 class="govuk-heading-m">Summary</h2>
-      <table class="govuk-table" id="fines-api-summary-breakdown">
-        <caption class="govuk-table__caption govuk-table__caption-s">
-          Total records
-        </caption>
-        <thead class="govuk-table__head">
-          <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">Type</th>
-            <th scope="col" class="govuk-table__header">Number</th>
-            <th scope="col" class="govuk-table__header">Value</th>
-          </tr>
-        </thead>
-        <tbody class="govuk-table__body">
-          @for (row of summary.breakdown; track row.label) {
+      <section aria-labelledby="summary-records-heading" id="fines-api-summary-records">
+        <h3 class="govuk-heading-s summary-section-heading" id="summary-records-heading">Total records</h3>
+        <table class="govuk-table" id="fines-api-summary-breakdown">
+          <caption class="govuk-visually-hidden">
+            Total records
+          </caption>
+          <thead class="govuk-table__head">
             <tr class="govuk-table__row">
-              <th scope="row" class="govuk-table__header">{{ row.label }}</th>
-              <td class="govuk-table__cell">{{ row.number }}</td>
-              <td class="govuk-table__cell">{{ row.value }}</td>
+              <th scope="col" class="govuk-table__header">Type</th>
+              <th scope="col" class="govuk-table__header">Number</th>
+              <th scope="col" class="govuk-table__header">Value</th>
             </tr>
-          }
-        </tbody>
-      </table>
+          </thead>
+          <tbody class="govuk-table__body">
+            @for (row of summary.breakdown; track row.label) {
+              <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header govuk-!-font-weight-regular">{{ row.label }}</th>
+                <td class="govuk-table__cell">{{ row.number }}</td>
+                <td class="govuk-table__cell">{{ row.value }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </section>
       @for (section of summary.sections; track section.id) {
         <section [attr.aria-labelledby]="section.id + '-heading'" [id]="'fines-api-summary-' + section.id">
           <h3 class="govuk-heading-s summary-section-heading" [id]="section.id + '-heading'">{{ section.heading }}</h3>
@@ -103,8 +104,8 @@
                 <dl class="govuk-summary-list">
                   @for (item of error.court; track item.label) {
                     <div class="govuk-summary-list__row">
-                      <dt class="govuk-summary-list__key">{{ item.label }}</dt>
-                      <dd class="govuk-summary-list__value">{{ item.value }}</dd>
+                      <dt class="govuk-summary-list__key govuk-!-width-one-half">{{ item.label }}</dt>
+                      <dd class="govuk-summary-list__value govuk-!-width-one-half">{{ item.value }}</dd>
                     </div>
                   }
                 </dl>
@@ -114,8 +115,8 @@
                 <dl class="govuk-summary-list">
                   @for (item of error.defendant; track item.label) {
                     <div class="govuk-summary-list__row">
-                      <dt class="govuk-summary-list__key">{{ item.label }}</dt>
-                      <dd class="govuk-summary-list__value">{{ item.value }}</dd>
+                      <dt class="govuk-summary-list__key govuk-!-width-one-half">{{ item.label }}</dt>
+                      <dd class="govuk-summary-list__value govuk-!-width-one-half">{{ item.value }}</dd>
                     </div>
                   }
                 </dl>
@@ -126,14 +127,16 @@
           <p class="govuk-body">No records found.</p>
         }
         @if (summary.errors.length) {
+          <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+            <div class="govuk-summary-list__row summary-total">
+              <dt class="govuk-summary-list__key govuk-!-width-one-half">Total value to be written to suspense</dt>
+              <dd class="govuk-summary-list__value govuk-!-width-one-half">{{ summary.errorSuspenseTotal }}</dd>
+            </div>
+          </dl>
           <dl class="govuk-summary-list">
             <div class="govuk-summary-list__row summary-total">
-              <dt class="govuk-summary-list__key">Total value to be written to suspense</dt>
-              <dd class="govuk-summary-list__value">{{ summary.errorSuspenseTotal }}</dd>
-            </div>
-            <div class="govuk-summary-list__row summary-total">
-              <dt class="govuk-summary-list__key">Total value of records ignored</dt>
-              <dd class="govuk-summary-list__value">{{ summary.ignoredTotal }}</dd>
+              <dt class="govuk-summary-list__key govuk-!-width-one-half">Total value of records ignored</dt>
+              <dd class="govuk-summary-list__value govuk-!-width-one-half">{{ summary.ignoredTotal }}</dd>
             </div>
           </dl>
         }
