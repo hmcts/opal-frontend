@@ -136,7 +136,7 @@ describe('FinesAccAprAddChangeComponent add mode', () => {
     expect(api.createApr).toHaveBeenCalledExactlyOnceWith(141, { apr_text: ' AbC-123 ' }, '"7"');
     expect(api.clearAccountDetailsCache).toHaveBeenCalledOnce();
     expect(accountStore.base_version()).toBe('"8"');
-    expect(accountStore.successMessage()).toBe('Alternate payment reference added');
+    expect(accountStore.successMessage()).toBe('Payment reference added.');
     expect(component.stateUnsavedChanges).toBe(false);
     expect(TestBed.inject(Router).url).toBe(manageUrl);
     expect(confirm).not.toHaveBeenCalled();
@@ -972,7 +972,7 @@ describe('FinesAccAprAddChangeComponent change mode', () => {
     await harness.fixture.whenStable();
 
     expect(api.createApr).toHaveBeenCalledExactlyOnceWith(141, { apr_text: 'Added-After-Change' }, '"7"');
-    expect(accountStore.successMessage()).toBe('Alternate payment reference added');
+    expect(accountStore.successMessage()).toBe('Payment reference added.');
     expect(TestBed.inject(Router).url).toBe(manageUrl);
   });
 

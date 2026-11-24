@@ -10,12 +10,12 @@ import { IFinesAccAprManageRow } from '../../fines-acc-apr-manage/interfaces/fin
  * Formats an APR timestamp as a browser-local date, treating timestamps without an offset as UTC.
  *
  * @param value - The API timestamp, or null when no date is available.
- * @returns The local date in `dd MMMM yyyy` format, or an em dash for a missing or invalid date.
+ * @returns The local date in `dd MMM yyyy` format, or an em dash for a missing or invalid date.
  */
 function formatAprDate(value: string | null): string {
   if (!value) return '—';
   const date = DateTime.fromISO(value, { zone: 'utc' }).toLocal();
-  return date.isValid ? date.setLocale('en-GB').toFormat('dd MMMM yyyy') : '—';
+  return date.isValid ? date.setLocale('en').toFormat('dd MMM yyyy') : '—';
 }
 
 /**

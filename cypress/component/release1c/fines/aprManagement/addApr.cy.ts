@@ -165,7 +165,7 @@ describe('Add Alternate Payment Reference', () => {
       cy.get('#apr-save').should('be.enabled');
       cy.get('@aprAccountStore').invoke('successMessage').should('be.null');
       cy.get('@aprAccountStore').invoke('base_version').should('equal', '"7"');
-      cy.contains('Alternate payment reference added').should('not.exist');
+      cy.contains('Payment reference added.').should('not.exist');
     },
   );
 });

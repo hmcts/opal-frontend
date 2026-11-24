@@ -98,14 +98,22 @@ describe('Manage Alternate Payment References', () => {
         relationship: 'CONSOLIDATED',
         apr_text: 'CONSOLIDATED-REFERENCE',
       };
-      mountManageApr([reference, consolidatedReference]).then(({ opalFines }) => {
+      mountManageApr([reference, consolidatedReference], 'Payment reference added.').then(({ opalFines }) => {
         cy.wrap(opalFines.getAprs).should('have.been.calledOnceWith', 141);
         cy.get('h1').should('contain', 'Manage alternate payment references');
+        cy.contains('h2', /^Alternate payment reference for this account$/).should('be.visible');
+        cy.contains('h2', /^Alternate payment references from consolidated accounts$/).should('be.visible');
         cy.contains('141A - APR TEST ACCOUNT').should('be.visible');
+        cy.get('#apr-banners-success').should('be.visible').and('contain.text', 'Payment reference added.');
+        cy.get('#apr-banners-success [role="status"]')
+          .should('have.attr', 'aria-atomic', 'true')
+          .and('contain.text', 'success: Payment reference added.');
         cy.get('#apr-current-table [data-reference-id="11"]').should('contain', 'CURRENT-REFERENCE');
-        cy.get('#apr-current-table #apr-created-11').should('contain', '01 June 2026');
-        cy.get('#apr-current-table #apr-updated-11').should('contain', '02 June 2026');
+        cy.get('#apr-current-table #apr-reference-11').should('have.css', 'font-weight', '400');
+        cy.get('#apr-current-table #apr-created-11').should('contain', '01 Jun 2026');
+        cy.get('#apr-current-table #apr-updated-11').should('contain', '02 Jun 2026');
         cy.get('#apr-consolidated-table [data-reference-id="12"]').should('contain', 'CONSOLIDATED-REFERENCE');
+        cy.get('#apr-consolidated-table #apr-reference-12').should('have.css', 'font-weight', '400');
       });
     },
   );
@@ -116,8 +124,12 @@ describe('Manage Alternate Payment References', () => {
     () => {
       mountManageApr([]);
 
-      cy.get('#apr-current-empty').should('be.visible');
-      cy.get('#apr-consolidated-empty').should('be.visible');
+      cy.get('#apr-current-empty')
+        .should('be.visible')
+        .and('contain.text', 'There is no alternate payment reference for this account.');
+      cy.get('#apr-consolidated-empty')
+        .should('be.visible')
+        .and('contain.text', 'There are no alternate payment references from consolidated accounts.');
       cy.get('#apr-current-table, #apr-consolidated-table').should('not.exist');
     },
   );
@@ -129,7 +141,7 @@ describe('Manage Alternate Payment References', () => {
       mountManageApr([{ ...reference, relationship: 'CONSOLIDATED' }]).then(({ router }) => {
         const navigate = cy.stub(router, 'navigate');
 
-        cy.get('#apr-add').should('be.visible').click();
+        cy.get('#apr-add').should('be.visible').and('contain.text', 'Add payment reference').click();
         cy.wrap(navigate).should((navigation) => {
           expect(navigation).to.have.been.calledOnce;
           const [commands, options] = navigation.firstCall.args;
@@ -141,7 +153,7 @@ describe('Manage Alternate Payment References', () => {
           'href',
           '/fines/account/defendant/141/alternate/payment/reference/change?alternatePaymentReferenceId=11',
         );
-        cy.get('#apr-change-11').should('contain', 'CURRENT-REFERENCE');
+        cy.get('#apr-change-11').should('contain', 'Change').and('contain', 'CURRENT-REFERENCE');
         cy.get('#apr-remove-11')
           .should('be.visible')
           .and(

@@ -1,6 +1,7 @@
 /** Stable selectors for the Variant Banking upload journey. */
 export const VariantBankingUploadLocators = {
   heading: '#fines-finance-upload-heading',
+  emptyState: '#fines-finance-upload-empty-state',
   fileInput: '#files',
   dropZone: '.moj-multi-file-upload__dropzone',
   fileList: '.moj-multi-file-upload__list',

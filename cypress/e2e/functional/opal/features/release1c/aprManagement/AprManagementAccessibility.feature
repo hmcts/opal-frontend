@@ -10,7 +10,7 @@ Feature: Alternate Payment Reference Management accessibility
       | last name                 | AprA11y{uniq}      |
       | prosecutor case reference | APRA11Y{uniqUpper} |
     When I open APR Management for defendant "AprA11y{uniq}"
-    Then I should see the header containing text "Manage Alternate Payment References"
+    Then I should see the header containing text "Manage alternate payment references"
     And I check the page for accessibility
     Given I am logged in with email "opal-test-4@dev.platform.hmcts.net"
     When I open APR Management for defendant "AprA11y{uniq}"

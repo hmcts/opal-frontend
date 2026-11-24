@@ -106,12 +106,16 @@ describe('FinesAccAprManageComponent', () => {
     const { element } = await renderManage([]);
 
     expect(element.querySelector('h1')?.textContent).toContain('Manage alternate payment references');
+    expect(Array.from(element.querySelectorAll('h2')).map((heading) => heading.textContent?.trim())).toEqual([
+      'Alternate payment reference for this account',
+      'Alternate payment references from consolidated accounts',
+    ]);
     expect(element.textContent).toContain('177A - APR TEST');
     expect(element.querySelector('#apr-current-empty')?.textContent).toContain(
-      'There are no alternate payment reference for this account',
+      'There is no alternate payment reference for this account.',
     );
     expect(element.querySelector('#apr-consolidated-empty')?.textContent).toContain(
-      'There are no alternate payment reference from consolidated accounts',
+      'There are no alternate payment references from consolidated accounts.',
     );
     expect(navigationDestination(element, '#apr-add')).toBe(
       '/fines/account/defendant/141/alternate/payment/reference/add',
