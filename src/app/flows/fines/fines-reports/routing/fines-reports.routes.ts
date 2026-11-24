@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { FINES_REPORTS_ROUTING_PATHS } from './constants/fines-reports-routing-paths.constant';
 import { FINES_REPORTS_ROUTING_TITLES } from './constants/fines-reports-routing-titles.constant';
@@ -19,7 +18,7 @@ export const routing: Routes = [
   },
   {
     path: ':reportTypeId',
-    canActivate: [authGuard, finesReportsStateGuard],
+    canActivate: [finesReportsStateGuard],
     children: [
       {
         path: '',

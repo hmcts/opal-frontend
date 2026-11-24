@@ -5,7 +5,6 @@ import { RouterTestingHarness } from '@angular/router/testing';
 import { FinesApiSummaryReportComponent } from '../fines-api-summary-report/fines-api-summary-report.component';
 import { describe, expect, it } from 'vitest';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
-import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
@@ -36,7 +35,7 @@ describe('fines API routes', () => {
     expect(selectBusinessUnitsRoute).toEqual(
       expect.objectContaining({
         path: FINES_API_ROUTING_PATHS.children.selectBusinessUnits,
-        canActivate: [authGuard, routePermissionsGuard],
+        canActivate: [routePermissionsGuard],
         data: {
           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
           title: FINES_API_ROUTING_TITLES.children.selectBusinessUnits,
@@ -58,7 +57,7 @@ describe('fines API routes', () => {
     expect(processAllocateRoute).toEqual(
       expect.objectContaining({
         path: FINES_API_ROUTING_PATHS.children.processAllocate,
-        canActivate: [authGuard, routePermissionsGuard, finesApiFlowStateGuard],
+        canActivate: [routePermissionsGuard, finesApiFlowStateGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
@@ -79,7 +78,7 @@ describe('fines API routes', () => {
     expect(confirmProcessRoute).toEqual(
       expect.objectContaining({
         path: FINES_API_ROUTING_PATHS.children.confirmProcess,
-        canActivate: [authGuard, routePermissionsGuard, finesApiFlowStateGuard, finesApiFileSelectionGuard],
+        canActivate: [routePermissionsGuard, finesApiFlowStateGuard, finesApiFileSelectionGuard],
         canDeactivate: [canDeactivateGuard],
         data: {
           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
@@ -100,7 +99,7 @@ describe('fines API routes', () => {
     const summaryRoute = routing.find((route) => route.path === summaryPath)!;
 
     it('protects the summary route and loads the shared placeholder', async () => {
-      expect(summaryRoute.canActivate).toEqual([authGuard, routePermissionsGuard]);
+      expect(summaryRoute.canActivate).toEqual([routePermissionsGuard]);
       expect(summaryRoute.data).toEqual({
         routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
         title: FINES_API_ROUTING_TITLES.children[routeKey],

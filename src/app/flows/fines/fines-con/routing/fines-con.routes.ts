@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { FINES_CON_ROUTING_PATHS } from './constants/fines-con-routing-paths.constant';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
-import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { FINES_PERMISSIONS } from '../../../../constants/fines-permissions.constant';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { PAGES_ROUTING_PATHS } from '@routing/pages/constants/routing-paths.constant';
@@ -16,7 +15,7 @@ export const routing: Routes = [
     path: '',
     redirectTo: PAGES_ROUTING_PATHS.children.dashboard, // Redirect to dashboard
     pathMatch: 'full',
-    canActivateChild: [authGuard, routePermissionsGuard],
+    canActivateChild: [routePermissionsGuard],
     data: {
       routePermissionId: [consolidationRootPermissionIds['consolidate']],
     },
@@ -27,7 +26,7 @@ export const routing: Routes = [
       import('../select-business-unit/fines-con-select-bu/fines-con-select-bu.component').then(
         (c) => c.FinesConSelectBuComponent,
       ),
-    canActivate: [authGuard, routePermissionsGuard],
+    canActivate: [routePermissionsGuard],
     canDeactivate: [canDeactivateGuard],
     data: {
       routePermissionId: [consolidationRootPermissionIds['consolidate']],
@@ -42,7 +41,7 @@ export const routing: Routes = [
       import('../consolidate-acc/fines-con-consolidate-acc/fines-con-consolidate-acc.component').then(
         (c) => c.FinesConConsolidateAccComponent,
       ),
-    canActivate: [authGuard, routePermissionsGuard, finesConFlowStateGuard],
+    canActivate: [routePermissionsGuard, finesConFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
     data: {
       routePermissionId: [consolidationRootPermissionIds['consolidate']],
@@ -57,7 +56,7 @@ export const routing: Routes = [
       import('../consolidate-acc/fines-con-search-error/fines-con-search-error.component').then(
         (c) => c.FinesConSearchErrorComponent,
       ),
-    canActivate: [authGuard, routePermissionsGuard, finesConFlowStateGuard],
+    canActivate: [routePermissionsGuard, finesConFlowStateGuard],
     data: {
       routePermissionId: [consolidationRootPermissionIds['consolidate']],
       permission: 'CONSOLIDATE',

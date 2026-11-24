@@ -1,4 +1,3 @@
-import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { describe, expect, it } from 'vitest';
@@ -19,7 +18,7 @@ describe('fines aec routes', () => {
   it('should protect and title the Auto-Enforcement configuration route', () => {
     const configRoute = routing.find((route) => route.path === FINES_AEC_ROUTING_PATHS.children.config);
 
-    expect(configRoute?.canActivate).toEqual([authGuard, routePermissionsGuard]);
+    expect(configRoute?.canActivate).toEqual([routePermissionsGuard]);
     expect(configRoute?.data).toEqual({
       routePermissionId: [FINES_PERMISSIONS['auto-enforcement']],
       title: FINES_AEC_ROUTING_TITLES.children.config,

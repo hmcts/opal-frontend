@@ -1,7 +1,6 @@
 import { fetchSourceMappingsResolver } from '../../routing/resolvers/fetch-source-mappings-resolver/fetch-source-mappings.resolver';
 import { Routes } from '@angular/router';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
-import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
@@ -21,7 +20,7 @@ export const routing: Routes = [
     path: FINES_API_ROUTING_PATHS.children.selectBusinessUnits,
     loadComponent: () =>
       import('../fines-api-select-bus/fines-api-select-bus.component').then((c) => c.FinesApiSelectBusComponent),
-    canActivate: [authGuard, routePermissionsGuard],
+    canActivate: [routePermissionsGuard],
     data: {
       routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
       title: FINES_API_ROUTING_TITLES.children.selectBusinessUnits,
@@ -37,7 +36,7 @@ export const routing: Routes = [
       import('../fines-api-process-allocate/fines-api-process-allocate.component').then(
         (c) => c.FinesApiProcessAllocateComponent,
       ),
-    canActivate: [authGuard, routePermissionsGuard, finesApiFlowStateGuard],
+    canActivate: [routePermissionsGuard, finesApiFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
     data: {
       routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
@@ -54,7 +53,7 @@ export const routing: Routes = [
       import('../fines-api-confirm-process/fines-api-confirm-process.component').then(
         (c) => c.FinesApiConfirmProcessComponent,
       ),
-    canActivate: [authGuard, routePermissionsGuard, finesApiFlowStateGuard, finesApiFileSelectionGuard],
+    canActivate: [routePermissionsGuard, finesApiFlowStateGuard, finesApiFileSelectionGuard],
     canDeactivate: [canDeactivateGuard],
     data: {
       routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
@@ -70,7 +69,7 @@ export const routing: Routes = [
       import('../fines-api-summary-report/fines-api-summary-report.component').then(
         (c) => c.FinesApiSummaryReportComponent,
       ),
-    canActivate: [authGuard, routePermissionsGuard],
+    canActivate: [routePermissionsGuard],
     data: {
       routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
       title: FINES_API_ROUTING_TITLES.children.tillSummary,
@@ -86,7 +85,7 @@ export const routing: Routes = [
       import('../fines-api-summary-report/fines-api-summary-report.component').then(
         (c) => c.FinesApiSummaryReportComponent,
       ),
-    canActivate: [authGuard, routePermissionsGuard],
+    canActivate: [routePermissionsGuard],
     data: {
       routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
       title: FINES_API_ROUTING_TITLES.children.fileSummary,
