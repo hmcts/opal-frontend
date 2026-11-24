@@ -1,0 +1,221 @@
+import { Component } from '@angular/core';
+import { RouterTestingHarness } from '@angular/router/testing';
+import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
+import { routing } from '../routing/fines-mci.routes';
+import { TestBed } from '@angular/core/testing';
+import { provideRouter, Router } from '@angular/router';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
+import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-defendant-account-response-individual.mock';
+import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
+import { FinesMciStore } from '../stores/fines-mci.store';
+import { IFinesMciCriminalPayment } from '../stores/interfaces/fines-mci.interface';
+import { FinesMciPaymentCategoryCriminalCheckPaymentComponent } from './fines-mci-payment-category-criminal-check-payment.component';
+
+const PAYMENT: IFinesMciCriminalPayment = {
+  amount: '75.00',
+  payerType: 'defendant',
+  thirdPartyName: '',
+  methodOfPayment: 'cheque',
+  paymentReferencePostalOrder: 'POSTAL-REFERENCE',
+  paymentReferenceCheque: 'CHEQUE-REFERENCE',
+  paymentReferenceCreditTransfer: 'TRANSFER-REFERENCE',
+  source: 'allpay',
+};
+
+@Component({ template: '' })
+class DestinationComponent {}
+
+describe('FinesMciPaymentCategoryCriminalCheckPaymentComponent', () => {
+  beforeEach(() => TestBed.configureTestingModule({ providers: [provideRouter([])] }));
+  afterEach(() => vi.restoreAllMocks());
+
+  function render(payment: IFinesMciCriminalPayment = PAYMENT, balance = 100, company = false) {
+    const store = TestBed.inject(FinesMciStore);
+    store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+    store.setSelectedCriminalAccount(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0]);
+    store.setSelectedCriminalAccountAtAGlance({
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
+      account_number: 'TEST001',
+      account_balance: balance,
+      party_details: {
+        party_id: 'test-party',
+        organisation_flag: company,
+        organisation_details: company ? { organisation_name: 'Test Company', organisation_aliases: null } : null,
+        individual_details: company
+          ? null
+          : {
+              title: 'Mr',
+              forenames: 'Test',
+              surname: 'Defendant',
+              date_of_birth: null,
+              age: null,
+              national_insurance_number: null,
+              individual_aliases: null,
+            },
+      },
+    });
+    store.setCriminalPayment(payment);
+    const fixture = TestBed.createComponent(FinesMciPaymentCategoryCriminalCheckPaymentComponent);
+    fixture.detectChanges();
+    const element: HTMLElement = fixture.nativeElement;
+    const rows = () =>
+      Object.fromEntries(
+        Array.from(element.querySelectorAll('.govuk-summary-list__row')).map((row) => [
+          row.querySelector('dt')!.textContent!.trim(),
+          row.querySelector('dd')!.textContent!.trim(),
+        ]),
+      );
+    return { fixture, element, store, rows };
+  }
+
+  it('displays the business unit and criminal payment fields in the specified order', () => {
+    const { element, rows } = render();
+    expect(element.querySelector('h1')?.textContent).toBe('Check payment');
+    expect(element.querySelector('.govuk-caption-l')?.textContent).toBe(
+      OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0].business_unit_name,
+    );
+    expect(rows()).toEqual({
+      Defendant: 'Test DEFENDANT (TEST001)',
+      Amount: '£75.00',
+      'Payment received from': 'Defendant',
+      'Method of payment': 'Cheque',
+      'Payment reference': 'CHEQUE-REFERENCE',
+    });
+    expect(element.textContent).not.toContain('Court fee');
+    expect(element.querySelector('[aria-label="Overpayment"]')).toBeNull();
+  });
+
+  it('displays an organisation without uppercasing its name and shows a third party payer', () => {
+    const { rows } = render({ ...PAYMENT, payerType: 'thirdParty', thirdPartyName: 'Test Payer' }, 100, true);
+    expect(rows()['Defendant']).toBe('Test Company (TEST001)');
+    expect(rows()['Payment received from']).toBe('3rd party');
+  });
+
+  it.each([
+    ['notesCoins', 'Notes and coins', '—'],
+    ['postalOrder', 'Postal order', 'POSTAL-REFERENCE'],
+    ['cheque', 'Cheque', 'CHEQUE-REFERENCE'],
+    ['creditTransfer', 'Credit transfer', 'TRANSFER-REFERENCE'],
+  ] as const)(
+    'displays the selected %s reference and conditionally displays source',
+    (methodOfPayment, method, reference) => {
+      const { rows } = render({ ...PAYMENT, methodOfPayment });
+      expect(rows()['Method of payment']).toBe(method);
+      expect(rows()['Payment reference']).toBe(reference);
+      expect(rows()['Source']).toBe(methodOfPayment === 'creditTransfer' ? 'allpay' : undefined);
+    },
+  );
+
+  it('uses a dash for a blank optional reference', () => {
+    expect(render({ ...PAYMENT, paymentReferenceCheque: '' }).rows()['Payment reference']).toBe('—');
+  });
+
+  it.each(['74.99', '75.00'])('omits the overpayment banner for amount %s at or below the balance', (amount) => {
+    const { element } = render({ ...PAYMENT, amount }, 75);
+    expect(element.querySelector('.moj-alert')).toBeNull();
+  });
+
+  it.each([
+    ['75.01', 75, '£0.01'],
+    ['80.00', 75, '£5.00'],
+    ['999999999999999999.99', 75, '£999,999,999,999,999,924.99'],
+  ])('displays the exact overpayment for %s', (amount, balance, expected) => {
+    const { element } = render({ ...PAYMENT, amount }, balance);
+    expect(element.querySelector('.moj-alert--information')?.textContent).toContain(
+      `This amount contains a ${expected} overpayment.`,
+    );
+  });
+
+  it('formats a negative amount and omits an overpayment', () => {
+    const { element, rows } = render({ ...PAYMENT, amount: '-5.50' });
+    expect(rows()['Amount']).toBe('-£5.50');
+    expect(element.querySelector('.moj-alert')).toBeNull();
+  });
+
+  it('returns to payment details with the draft intact when a payment field is changed', async () => {
+    const { element, fixture, store } = render();
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const confirm = vi.spyOn(window, 'confirm');
+    element.querySelectorAll<HTMLAnchorElement>('.govuk-summary-list__actions a')[1].click();
+    await fixture.whenStable();
+    expect(navigate).toHaveBeenCalledWith([
+      '/',
+      'fines',
+      'manual-cash-input',
+      'create',
+      'till',
+      'payment',
+      'category',
+      'criminal',
+      'payment-details',
+      store.selectedCriminalAccount()?.defendant_account_id,
+    ]);
+    expect(store.criminalPayment()).toEqual(PAYMENT);
+    expect(confirm).not.toHaveBeenCalled();
+  });
+
+  for (const action of ['defendant', 'cancel', 'leave'] as const) {
+    it.each([true, false])(`uses the shared guard on ${action}: %s`, async (accepted) => {
+      const tillRoot = 'fines/manual-cash-input/create/till';
+      const checkRoute = routing
+        .find((route) => route.path === 'create')!
+        .children!.find((route) => route.path === 'till')!
+        .children!.find((route) => route.path === 'check-payment')!;
+      expect(checkRoute.canDeactivate).toEqual([canDeactivateGuard]);
+      TestBed.configureTestingModule({
+        providers: [
+          provideRouter([
+            { ...checkRoute, path: `${tillRoot}/check-payment`, canActivate: [], resolve: {} },
+            { path: `${tillRoot}/details`, component: DestinationComponent },
+            { path: `${tillRoot}/payment/category/criminal/search`, component: DestinationComponent },
+            { path: 'elsewhere', component: DestinationComponent },
+          ]),
+        ],
+      });
+      const { store, fixture } = render();
+      fixture.destroy();
+      const harness = await RouterTestingHarness.create(`/${tillRoot}/check-payment`);
+      const confirm = vi.spyOn(window, 'confirm').mockReturnValue(accepted);
+      if (action === 'leave') {
+        await TestBed.inject(Router).navigateByUrl('/elsewhere');
+      } else {
+        const element = harness.routeNativeElement!;
+        const link =
+          action === 'defendant'
+            ? element.querySelector<HTMLAnchorElement>('.govuk-summary-list__actions a')!
+            : element.querySelector<HTMLAnchorElement>('#cancel-criminal-payment')!;
+        link.click();
+      }
+      await harness.fixture.whenStable();
+      expect(confirm).toHaveBeenCalledOnce();
+      expect(store.criminalPayment()).toEqual(accepted && action !== 'leave' ? null : PAYMENT);
+      const destination =
+        action === 'leave'
+          ? '/elsewhere'
+          : action === 'cancel'
+            ? `/${tillRoot}/details`
+            : `/${tillRoot}/payment/category/criminal/search`;
+      expect(TestBed.inject(Router).url).toBe(accepted ? destination : `/${tillRoot}/check-payment`);
+    });
+  }
+
+  it.each([false, 'rejected'])('restores leave protection when amendment navigation returns %s', async (result) => {
+    const { element, fixture, store } = render();
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
+    if (result === false) navigate.mockResolvedValue(false);
+    else navigate.mockRejectedValue(new Error('Navigation failed'));
+    element.querySelectorAll<HTMLAnchorElement>('.govuk-summary-list__actions a')[1].click();
+    await fixture.whenStable();
+    expect(fixture.componentInstance.canDeactivate()).toBe(false);
+    expect(store.criminalPayment()).toEqual(PAYMENT);
+  });
+
+  it('preserves the draft when cancellation navigation fails', async () => {
+    const { element, fixture, store } = render();
+    vi.spyOn(TestBed.inject(Router), 'navigate').mockRejectedValue(new Error('Navigation failed'));
+    element.querySelector<HTMLAnchorElement>('#cancel-criminal-payment')!.click();
+    await fixture.whenStable();
+    expect(store.criminalPayment()).toEqual(PAYMENT);
+  });
+});

@@ -208,6 +208,7 @@ describe('Criminal payment details navigation', () => {
     expect(router.url).toBe(`${TILL_ROOT}/check-payment`);
     expect(store.criminalPayment()).toEqual(PAYMENT);
 
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true);
     const returned = firstValueFrom(
       router.events.pipe(
         filter((event) => event instanceof NavigationEnd),
@@ -222,7 +223,8 @@ describe('Criminal payment details navigation', () => {
     expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#amount')!.value).toBe(PAYMENT.amount);
 
     const page = harness.routeDebugElement!.componentInstance;
-    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(accepted);
+    expect(confirm).toHaveBeenCalledOnce();
+    confirm.mockClear().mockReturnValue(accepted);
     const completed = firstValueFrom(
       router.events.pipe(
         filter((event) => event instanceof NavigationEnd || event instanceof NavigationCancel),

@@ -36,7 +36,6 @@ import { finesMciCourtFeesResolver } from './resolvers/fines-mci-court-fees.reso
 import { FinesMciCreateTillCourtFeeDetailsComponent } from '../fines-mci-create-till/fines-mci-create-till-court-fee-details/fines-mci-create-till-court-fee-details.component';
 import { FinesMciCreateTillSuspenseDetailsComponent } from '../fines-mci-create-till/fines-mci-create-till-suspense-details/fines-mci-create-till-suspense-details.component';
 import { FinesMciCreateTillOverUnderpaymentConfirmationComponent } from '../fines-mci-create-till/fines-mci-create-till-over-underpayment-confirmation/fines-mci-create-till-over-underpayment-confirmation.component';
-import { FinesMciCreateTillSuspenseDetailsComponent } from '../fines-mci-create-till/fines-mci-create-till-suspense-details/fines-mci-create-till-suspense-details.component';
 import { FinesMciPlaceholderComponent } from '../fines-mci-placeholder/fines-mci-placeholder.component';
 import { FinesMciPaymentCategoryCriminalAccountComponent } from '../fines-mci-payment-category-criminal-account/fines-mci-payment-category-criminal-account.component';
 import { FinesMciStore } from '../stores/fines-mci.store';

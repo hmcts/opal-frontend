@@ -212,8 +212,21 @@ export const routing: Routes = [
               title: TitleResolver,
             },
           },
+          {
+            path: FINES_MCI_ROUTING_PATHS.children.checkPayment,
+            loadComponent: () =>
+              import('../fines-mci-payment-category-criminal-check-payment/fines-mci-payment-category-criminal-check-payment.component').then(
+                (c) => c.FinesMciPaymentCategoryCriminalCheckPaymentComponent,
+              ),
+            canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+            canDeactivate: [canDeactivateGuard],
+            data: {
+              routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+              title: FINES_MCI_ROUTING_TITLES.children.createTillCheckPayment,
+            },
+            resolve: { title: TitleResolver },
+          },
           ...[
-            [FINES_MCI_ROUTING_PATHS.children.checkPayment, FINES_MCI_ROUTING_TITLES.children.createTillCheckPayment],
             [FINES_MCI_ROUTING_PATHS.children.checkSuspensePayment, 'Check suspense payment'],
             [FINES_MCI_ROUTING_PATHS.children.payerDetails, 'Payer details'],
           ].map(([path, heading]) => ({
