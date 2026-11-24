@@ -1,0 +1,86 @@
+@if (!isSearchCriteriaCannotBeCombinedResults()) {
+  <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
+}
+
+@if (isMatchesResults()) {
+  <div #errorSummary>
+    <opal-lib-govuk-error-summary
+      [errors]="selectionErrorSummary()"
+      (errorClick)="scrollTo($event)"
+    ></opal-lib-govuk-error-summary>
+  </div>
+
+  <span class="govuk-caption-m">{{ finesMciStore.businessUnit()?.business_unit_name }}</span>
+  <h1 class="govuk-heading-l">Search results</h1>
+
+  <div class="govuk-form-group" [class.govuk-form-group--error]="hasSelectionValidationError()">
+    <fieldset
+      class="govuk-fieldset"
+      [attr.aria-describedby]="hasSelectionValidationError() ? selectionErrorFieldId + '-error' : null"
+    >
+      <legend class="govuk-fieldset__legend govuk-fieldset__legend--m" [id]="selectionErrorFieldId" tabindex="-1">
+        Select 1 account to continue
+      </legend>
+
+      @if (selectionValidationMessage()) {
+        <p [id]="selectionErrorFieldId + '-error'" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error: </span>{{ selectionValidationMessage() }}
+        </p>
+      }
+
+      <app-fines-mci-payment-category-criminal-matches-table-wrapper
+        [tableData]="tableData()"
+        [existingSortState]="sortState"
+        [selectedAccountIds]="selectedAccountIds()"
+        (accountSelectionChanged)="onAccountSelectionChanged($event)"
+      ></app-fines-mci-payment-category-criminal-matches-table-wrapper>
+    </fieldset>
+  </div>
+
+  <div class="govuk-button-group govuk-!-margin-top-6">
+    <button class="govuk-button" type="button" [disabled]="isLoadingAccountDetails()" (click)="continue()">
+      Continue
+    </button>
+    <a
+      class="govuk-link govuk-link--no-visited-state"
+      [routerLink]="criminalSearchRoute"
+      [fragment]="finesMciStore.criminalSearch()?.activeTab ?? 'individuals'"
+      (click)="handleSearchAgain()"
+      >Search again</a
+    >
+  </div>
+
+  <p class="govuk-body">
+    <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
+  </p>
+} @else if (isNoMatchesResults()) {
+  <span class="govuk-caption-m">{{ finesMciStore.businessUnit()?.business_unit_name }}</span>
+  <h1 class="govuk-heading-l">Search results</h1>
+  <h2 class="govuk-heading-m">There are no matching results</h2>
+  <p class="govuk-body">
+    <a class="govuk-link govuk-link--no-visited-state" [routerLink]="criminalSearchRoute">Check your search</a>
+    and try again.
+  </p>
+} @else if (isTooManyResults()) {
+  <span class="govuk-caption-m">{{ finesMciStore.businessUnit()?.business_unit_name }}</span>
+  <h1 class="govuk-heading-l">Search results</h1>
+  <h2 class="govuk-heading-m">There are more than 100 results</h2>
+  <p class="govuk-body">
+    <a class="govuk-link govuk-link--no-visited-state" [routerLink]="criminalSearchRoute"
+      >Try searching by account number or full name</a
+    >
+  </p>
+} @else if (isSearchCriteriaCannotBeCombinedResults()) {
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-l">There is a problem</h1>
+    <p class="govuk-body">
+      Reference data and account information cannot be entered together when searching for an account. Search using
+      either:
+    </p>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>account number, or</li>
+      <li>advanced search</li>
+    </ul>
+    <a class="govuk-link govuk-link--no-visited-state" [routerLink]="criminalSearchRoute">Go back</a>
+  </div>
+}
