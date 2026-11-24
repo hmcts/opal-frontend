@@ -11,7 +11,10 @@ import {
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import {
+  RELEASE_1A_1_2_FEATURE_FLAG,
+  RELEASE_1A_1_3_FEATURE_FLAG,
+} from '../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
 import { FinesMacAbstractAliasFormComponent } from '../../abstracts/fines-mac-abstract-alias-form.component';
 import { FinesMacAliasRowComponent } from '../../components/fines-mac-alias-row/fines-mac-alias-row.component';
@@ -101,6 +104,9 @@ export class FinesMacPersonalDetailsFormComponent
   public readonly release1a1_2Enabled = computed(
     () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
   );
+  public readonly release1a1_3Enabled = computed(
+    () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_3_FEATURE_FLAG] === true,
+  );
 
   public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
   public yesterday!: string;
@@ -128,7 +134,7 @@ export class FinesMacPersonalDetailsFormComponent
       fm_personal_details_add_alias: new FormControl(null),
       fm_personal_details_dob: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
       fm_personal_details_national_insurance_number: new FormControl(null, [
-        this.release1a1_2Enabled() ? nationalInsuranceNumberValidator(true) : nationalInsuranceNumberValidator(),
+        this.release1a1_3Enabled() ? nationalInsuranceNumberValidator(true) : nationalInsuranceNumberValidator(),
       ]),
       fm_personal_details_address_line_1: new FormControl(null, [
         Validators.required,
@@ -152,7 +158,7 @@ export class FinesMacPersonalDetailsFormComponent
 
   /** Removes NI number spaces before the form base emits the submitted value when R1A-1-2 is enabled. */
   private normalizeNationalInsuranceNumberInput(): void {
-    if (!this.release1a1_2Enabled()) {
+    if (!this.release1a1_3Enabled()) {
       return;
     }
 
@@ -175,7 +181,7 @@ export class FinesMacPersonalDetailsFormComponent
         ...nationalInsuranceNumberErrors,
         nationalInsuranceNumberPattern: {
           ...nationalInsuranceNumberPatternError,
-          message: this.release1a1_2Enabled()
+          message: this.release1a1_3Enabled()
             ? "Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, for example 'QQ 12 34 56 C'"
             : 'Enter a National Insurance number in the format AANNNNNNA',
         },
