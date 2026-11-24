@@ -35,6 +35,7 @@ import { FinesMciCreateTillCourtFeeDetailsComponent } from 'src/app/flows/fines/
 import { FinesMciCreateTillOverUnderpaymentConfirmationComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-over-underpayment-confirmation/fines-mci-create-till-over-underpayment-confirmation.component';
 import { FinesMciCreateTillSuspenseDetailsComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-suspense-details/fines-mci-create-till-suspense-details.component';
 import { FinesMciPaymentCategoryCriminalSearchComponent } from 'src/app/flows/fines/fines-mci/fines-mci-payment-category-criminal-search/fines-mci-payment-category-criminal-search.component';
+import { FinesMciPaymentCategoryCriminalAccountComponent } from 'src/app/flows/fines/fines-mci/fines-mci-payment-category-criminal-account/fines-mci-payment-category-criminal-account.component';
 import { FinesMciPaymentCategoryCriminalMatchesComponent } from 'src/app/flows/fines/fines-mci/fines-mci-payment-category-criminal-matches/fines-mci-payment-category-criminal-matches.component';
 import { finesMciCriminalAccountsResolver } from 'src/app/flows/fines/fines-mci/routing/resolvers/fines-mci-criminal-accounts/fines-mci-criminal-accounts.resolver';
 import { FinesMciPlaceholderComponent } from 'src/app/flows/fines/fines-mci/fines-mci-placeholder/fines-mci-placeholder.component';
@@ -187,6 +188,15 @@ const FINANCE_COMPONENT_ROUTES: Routes = [
             path: FINES_MCI_ROUTING_PATHS.children.matches,
             component: FinesMciPaymentCategoryCriminalMatchesComponent,
             resolve: { criminalAccounts: finesMciCriminalAccountsResolver },
+          },
+          {
+            path: `${FINES_MCI_ROUTING_PATHS.children.account}/:accountId/:type`,
+            component: FinesMciPaymentCategoryCriminalAccountComponent,
+          },
+          {
+            path: `${FINES_MCI_ROUTING_PATHS.children.paymentDetails}/:accountId`,
+            component: FinesMciPlaceholderComponent,
+            data: { heading: 'Payment details' },
           },
         ],
       },
