@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import {
   NavigationEnd,
+  NavigationCancellationCode,
   NavigationCancel,
   NavigationSkipped,
   provideRouter,
@@ -276,6 +277,62 @@ describe('Criminal payment details navigation', () => {
       expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#amount')!.value).toBe(PAYMENT.amount);
     }
   });
+
+  for (const company of [false, true]) {
+    it.each([true, false])(
+      `returns an amended payment to account confirmation on browser Back (company=${company}, accepted=%s)`,
+      async (accepted) => {
+        const { harness, store, router } = await openPaymentDetails(PAYMENT, company);
+        const account = store.selectedCriminalAccount();
+        const tills = store.tills();
+        harness.routeNativeElement!.querySelector<HTMLButtonElement>('#submitForm')!.click();
+        await harness.fixture.whenStable();
+        harness.detectChanges();
+        harness.routeNativeElement!.querySelectorAll<HTMLAnchorElement>('.govuk-summary-list__actions a')[1].click();
+        await harness.fixture.whenStable();
+        harness.detectChanges();
+        expect(router.url).toBe(PAYMENT_URL);
+        enterAmount(harness, '30.00');
+        const confirm = vi.spyOn(window, 'confirm').mockReturnValue(accepted);
+        const completed = firstValueFrom(
+          router.events.pipe(
+            filter((event) =>
+              accepted
+                ? event instanceof NavigationEnd
+                : event instanceof NavigationCancel && event.code === NavigationCancellationCode.GuardRejected,
+            ),
+            take(1),
+          ),
+        );
+        const restored = accepted
+          ? Promise.resolve()
+          : firstValueFrom(
+              router.events.pipe(
+                filter((event) => event instanceof NavigationSkipped),
+                take(1),
+              ),
+            );
+        TestBed.inject(Location).back();
+        await completed;
+        await restored;
+        await harness.fixture.whenStable();
+        harness.detectChanges();
+        expect(confirm).toHaveBeenCalledOnce();
+        expect(store.selectedCriminalAccount()).toEqual(account);
+        expect(store.tills()).toEqual(tills);
+        if (accepted) {
+          expect(router.url).toBe(`${TILL_ROOT}/${CRIMINAL_PATH}/account/1/${company ? 'company' : 'individual'}`);
+          expect(store.criminalPayment()).toBeNull();
+          await harness.navigateByUrl(PAYMENT_URL);
+          expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#amount')!.value).toBe('');
+        } else {
+          expect(router.url).toBe(PAYMENT_URL);
+          expect(store.criminalPayment()).toEqual(PAYMENT);
+          expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#amount')!.value).toBe('30.00');
+        }
+      },
+    );
+  }
 
   it('returns a company to its company confirmation screen', async () => {
     const { harness, component, router } = await openPaymentDetails(null, true);
