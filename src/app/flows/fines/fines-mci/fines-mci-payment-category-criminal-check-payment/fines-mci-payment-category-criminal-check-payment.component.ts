@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, HostListener, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, HostListener, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
 import { GovukSummaryCardListComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
@@ -49,6 +49,7 @@ export class FinesMciPaymentCategoryCriminalCheckPaymentComponent {
   });
 
   protected readonly store = inject(FinesMciStore);
+  protected readonly isSaving = signal(false);
 
   protected readonly overpayment = computed(() => {
     const paid = this.paidPence();
@@ -112,6 +113,7 @@ export class FinesMciPaymentCategoryCriminalCheckPaymentComponent {
 
   /** Opens the saved payment form, or confirms discarding the draft before changing defendant. */
   protected async change(label: string): Promise<void> {
+    if (this.isSaving()) return;
     if (label === 'Defendant') {
       const navigated = await this.router
         .navigate([...this.criminalPath, FINES_MCI_ROUTING_PATHS.children.search])
@@ -132,6 +134,7 @@ export class FinesMciPaymentCategoryCriminalCheckPaymentComponent {
 
   /** Returns to till details after confirming that the draft can be discarded. */
   protected async cancel(): Promise<void> {
+    if (this.isSaving()) return;
     const navigated = await this.router
       .navigate([...this.tillPath, FINES_MCI_ROUTING_PATHS.children.details])
       .catch(() => false);
@@ -139,6 +142,26 @@ export class FinesMciPaymentCategoryCriminalCheckPaymentComponent {
       this.store.setDraftJourney(null);
       this.store.resetCriminalSearch();
     }
+  }
+
+  /** Saves once and opens the chosen till page. */
+  protected async save(destination: 'review' | 'add'): Promise<void> {
+    if (this.isSaving()) return;
+    this.isSaving.set(true);
+    if (!this.store.saveCriminalPayment()) {
+      this.isSaving.set(false);
+      return;
+    }
+    this.allowNavigation = true;
+    const path =
+      destination === 'review'
+        ? FINES_MCI_ROUTING_PATHS.children.details
+        : FINES_MCI_ROUTING_PATHS.children.paymentCategory;
+    const navigated = await this.router.navigate([...this.tillPath, path]).catch(() => false);
+    if (navigated) {
+      this.store.resetCriminalSearch();
+    }
+    this.isSaving.set(false);
   }
 
   /** Lets the shared guard warn before leaving, while allowing payment amendments without a warning. */
@@ -149,6 +172,6 @@ export class FinesMciPaymentCategoryCriminalCheckPaymentComponent {
   /** Keeps browser unload protection while a payment draft is being checked. */
   @HostListener('window:beforeunload')
   public handleBeforeUnload(): boolean {
-    return this.store.criminalPayment() === null;
+    return !this.isSaving() && this.store.criminalPayment() === null;
   }
 }

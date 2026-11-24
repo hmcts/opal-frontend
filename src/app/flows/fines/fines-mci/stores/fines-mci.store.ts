@@ -137,6 +137,30 @@ export const FinesMciStore = signalStore(
       setCriminalPayment(criminalPayment: IFinesMciCriminalPayment | null): void {
         patchState(store, { criminalPayment });
       },
+      /** Saves the criminal payment and defendant together, clearing the submitted draft. */
+      saveCriminalPayment(): string | null {
+        const criminalPayment = store.criminalPayment();
+        const criminalAccount = store.selectedCriminalAccount();
+        if (!store.businessUnit() || !criminalPayment || !criminalAccount) return null;
+        const tillId = ensureTill();
+        const paymentId = crypto.randomUUID();
+        patchState(store, {
+          tills: store.tills().map((till) =>
+            till.tillId === tillId
+              ? {
+                  ...till,
+                  payments: [
+                    ...till.payments,
+                    { paymentId, journey: 'criminal' as const, criminalPayment, criminalAccount },
+                  ],
+                }
+              : till,
+          ),
+          criminalPayment: null,
+          draftJourney: null,
+        });
+        return paymentId;
+      },
       /** Stores validated suspense details in application memory. */
       setSuspensePayment(suspensePayment: IFinesMciSuspensePayment | null): void {
         patchState(store, { suspensePayment });

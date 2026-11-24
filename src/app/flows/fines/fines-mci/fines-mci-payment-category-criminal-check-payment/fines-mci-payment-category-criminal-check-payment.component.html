@@ -32,8 +32,16 @@
   </opal-lib-govuk-summary-card-list>
 
   <div class="govuk-button-group">
-    <button type="button" class="govuk-button" id="save-review-till" disabled>Save and review till</button>
-    <button type="button" class="govuk-button govuk-button--secondary" id="save-add-payment" disabled>
+    <button type="button" class="govuk-button" id="save-review-till" [disabled]="isSaving()" (click)="save('review')">
+      Save and review till
+    </button>
+    <button
+      type="button"
+      class="govuk-button govuk-button--secondary"
+      id="save-add-payment"
+      [disabled]="isSaving()"
+      (click)="save('add')"
+    >
       Save and add another payment
     </button>
   </div>

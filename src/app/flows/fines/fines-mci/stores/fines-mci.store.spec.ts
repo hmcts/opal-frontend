@@ -160,6 +160,57 @@ describe('FinesMciStore', () => {
     expect(store.suspensePayment()).toBeNull();
   });
 
+  describe('saving criminal payments', () => {
+    const account = OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0];
+    const payment: IFinesMciCriminalPayment = {
+      amount: '10.01',
+      payerType: 'thirdParty',
+      thirdPartyName: 'Test Payer',
+      methodOfPayment: 'creditTransfer',
+      paymentReferencePostalOrder: '',
+      paymentReferenceCheque: '',
+      paymentReferenceCreditTransfer: 'TEST-REFERENCE',
+      source: 'NatWest',
+    };
+
+    function prepare() {
+      store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+      store.setSelectedCriminalAccount(account);
+      store.setDraftJourney('criminal');
+      store.setCriminalPayment(payment);
+    }
+
+    it('saves all payment details with the defendant and creates the till when needed', () => {
+      prepare();
+      const paymentId = store.saveCriminalPayment();
+      expect(store.tills()).toEqual([
+        {
+          tillId: expect.any(String),
+          payments: [{ paymentId, journey: 'criminal', criminalPayment: payment, criminalAccount: account }],
+        },
+      ]);
+      expect(store.criminalPayment()).toBeNull();
+      expect(store.draftJourney()).toBeNull();
+      store.setCriminalPayment({ ...payment, amount: '20.00' });
+      expect(store.tills()[0].payments[0].criminalPayment).toEqual(payment);
+    });
+
+    it('does not save a second payment after the draft has been submitted', () => {
+      prepare();
+      store.saveCriminalPayment();
+      expect(store.saveCriminalPayment()).toBeNull();
+      expect(store.tills()[0].payments).toHaveLength(1);
+    });
+
+    it.each(['business unit', 'account', 'payment'])('does not save without the %s', (missing) => {
+      if (missing !== 'business unit') store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+      if (missing !== 'account') store.setSelectedCriminalAccount(account);
+      if (missing !== 'payment') store.setCriminalPayment(payment);
+      expect(store.saveCriminalPayment()).toBeNull();
+      expect(store.tills()).toEqual([]);
+    });
+  });
+
   it('should store suspense payment details', () => {
     store.setSuspensePayment(SUSPENSE_PAYMENT);
 

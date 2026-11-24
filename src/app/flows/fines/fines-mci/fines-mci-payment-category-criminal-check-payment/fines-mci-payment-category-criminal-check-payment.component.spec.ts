@@ -175,26 +175,100 @@ describe('FinesMciPaymentCategoryCriminalCheckPaymentComponent', () => {
     expect(element.querySelector('.moj-alert')).toBeNull();
   });
 
-  it('returns to payment details with the draft intact when a payment field is changed', async () => {
-    const { element, fixture, store } = render();
-    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+  it.each(['Amount', 'Payment received from', 'Method of payment', 'Source', 'Payment reference'])(
+    'returns to payment details with the draft intact when %s is changed',
+    async (label) => {
+      const payment = { ...PAYMENT, methodOfPayment: 'creditTransfer' as const };
+      const { element, fixture, store } = render(payment);
+      const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+      const confirm = vi.spyOn(window, 'confirm');
+      const row = Array.from(element.querySelectorAll('.govuk-summary-list__row')).find(
+        (item) => item.querySelector('dt')?.textContent?.trim() === label,
+      )!;
+      row.querySelector<HTMLAnchorElement>('a')!.click();
+      await fixture.whenStable();
+      expect(navigate).toHaveBeenCalledWith([
+        '/',
+        'fines',
+        'manual-cash-input',
+        'create',
+        'till',
+        'payment',
+        'category',
+        'criminal',
+        'payment-details',
+        store.selectedCriminalAccount()?.defendant_account_id,
+      ]);
+      expect(store.criminalPayment()).toEqual(payment);
+      expect(fixture.componentInstance.canDeactivate()).toBe(true);
+      expect(confirm).not.toHaveBeenCalled();
+    },
+  );
+
+  it.each([
+    ['save-review-till', 'details'],
+    ['save-add-payment', 'payment-category'],
+  ])('saves and opens %s without a warning', async (buttonId, destination) => {
+    const tillRoot = 'fines/manual-cash-input/create/till';
+    const checkRoute = routing
+      .find((route) => route.path === 'create')!
+      .children!.find((route) => route.path === 'till')!
+      .children!.find((route) => route.path === 'check-payment')!;
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([
+          { ...checkRoute, path: `${tillRoot}/check-payment`, canActivate: [], resolve: {} },
+          { path: `${tillRoot}/details`, component: DestinationComponent },
+          { path: `${tillRoot}/payment-category`, component: DestinationComponent },
+        ]),
+      ],
+    });
+    const { store, fixture } = render();
+    store.setDraftJourney('criminal');
+    const account = store.selectedCriminalAccount();
+    const businessUnit = store.businessUnit();
+    const tillId = store.ensureTill();
+    store.addPayment(tillId, 'suspense');
+    const existingPayment = store.tills()[0].payments[0];
+    fixture.destroy();
+    const harness = await RouterTestingHarness.create(`/${tillRoot}/check-payment`);
     const confirm = vi.spyOn(window, 'confirm');
-    element.querySelectorAll<HTMLAnchorElement>('.govuk-summary-list__actions a')[1].click();
-    await fixture.whenStable();
-    expect(navigate).toHaveBeenCalledWith([
-      '/',
-      'fines',
-      'manual-cash-input',
-      'create',
-      'till',
-      'payment',
-      'category',
-      'criminal',
-      'payment-details',
-      store.selectedCriminalAccount()?.defendant_account_id,
-    ]);
-    expect(store.criminalPayment()).toEqual(PAYMENT);
+    const button = harness.routeNativeElement!.querySelector<HTMLButtonElement>(`#${buttonId}`)!;
+    expect(button.disabled).toBe(false);
+    button.click();
+    await harness.fixture.whenStable();
+    expect(TestBed.inject(Router).url).toBe(`/${tillRoot}/${destination}`);
     expect(confirm).not.toHaveBeenCalled();
+    expect(store.tills()[0].payments).toEqual([
+      existingPayment,
+      { paymentId: expect.any(String), journey: 'criminal', criminalPayment: PAYMENT, criminalAccount: account },
+    ]);
+    expect(store.businessUnit()).toEqual(businessUnit);
+    expect(store.criminalPayment()).toBeNull();
+    expect(store.selectedCriminalAccount()).toBeNull();
+    expect(store.selectedCriminalAccountAtAGlance()).toBeNull();
+    expect(store.draftJourney()).toBeNull();
+  });
+
+  it('prevents duplicate saves and disables both buttons while navigation is pending', async () => {
+    const { element, fixture, store } = render();
+    let completeNavigation!: (success: boolean) => void;
+    const navigate = vi
+      .spyOn(TestBed.inject(Router), 'navigate')
+      .mockReturnValue(new Promise<boolean>((resolve) => (completeNavigation = resolve)));
+    const review = element.querySelector<HTMLButtonElement>('#save-review-till')!;
+    const add = element.querySelector<HTMLButtonElement>('#save-add-payment')!;
+    review.click();
+    add.click();
+    fixture.detectChanges();
+    expect(review.disabled).toBe(true);
+    expect(add.disabled).toBe(true);
+    expect(fixture.componentInstance.handleBeforeUnload()).toBe(false);
+    expect(store.tills()[0].payments).toHaveLength(1);
+    expect(navigate).toHaveBeenCalledOnce();
+    completeNavigation(true);
+    await fixture.whenStable();
+    expect(store.tills()[0].payments).toHaveLength(1);
   });
 
   for (const action of ['defendant', 'cancel', 'leave'] as const) {
