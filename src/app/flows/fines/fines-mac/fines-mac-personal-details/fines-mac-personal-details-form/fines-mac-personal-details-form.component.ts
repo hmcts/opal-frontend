@@ -15,6 +15,7 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
 import { FinesVehicleRegistrationConfigService } from '../../../services/fines-vehicle-registration-config.service';
+import { FinesPreventSpacesDirective } from '../../../directives/fines-prevent-spaces.directive';
 import { FinesMacAbstractAliasFormComponent } from '../../abstracts/fines-mac-abstract-alias-form.component';
 import { FinesMacAliasRowComponent } from '../../components/fines-mac-alias-row/fines-mac-alias-row.component';
 import { IFinesMacPersonalDetailsFieldErrors } from '../interfaces/fines-mac-personal-details-field-errors.interface';
@@ -75,6 +76,7 @@ const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
     MojTicketPanelComponent,
     MojDatePickerComponent,
     CapitalisationDirective,
+    FinesPreventSpacesDirective,
     TrimLeadingTrailingWhitespaceDirective,
     FinesMacAliasRowComponent,
   ],

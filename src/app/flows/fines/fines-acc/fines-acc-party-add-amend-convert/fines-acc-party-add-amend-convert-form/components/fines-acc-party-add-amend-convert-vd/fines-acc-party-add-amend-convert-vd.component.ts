@@ -4,6 +4,7 @@ import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/
 import { AbstractNestedFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-nested-form-base';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
+import { FinesPreventSpacesDirective } from '../../../../../directives/fines-prevent-spaces.directive';
 
 /**
  * Vehicle details sub-component for the fines account party add/amend/convert form.
@@ -16,7 +17,7 @@ import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/
  */
 @Component({
   selector: 'app-fines-acc-party-add-amend-convert-vd',
-  imports: [ReactiveFormsModule, GovukTextInputComponent, CapitalisationDirective],
+  imports: [ReactiveFormsModule, GovukTextInputComponent, CapitalisationDirective, FinesPreventSpacesDirective],
   templateUrl: './fines-acc-party-add-amend-convert-vd.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
