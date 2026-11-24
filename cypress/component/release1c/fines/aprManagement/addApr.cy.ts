@@ -108,7 +108,7 @@ describe('Add Alternate Payment Reference', () => {
 
   it(
     'rejects references longer than 18 characters and submits a valid 18-character value',
-    { tags: ['@JIRA-STORY:PO-10897', '@JIRA-EPIC:PO-7465'] },
+    { tags: ['@JIRA-STORY:PO-10897', '@JIRA-STORY:PO-10906', '@JIRA-EPIC:PO-7465'] },
     () => {
       mountAddAprForm().then(({ component }) => {
         const submit = cy.stub();

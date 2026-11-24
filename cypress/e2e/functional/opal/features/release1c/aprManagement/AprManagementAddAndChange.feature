@@ -1,0 +1,52 @@
+@JIRA-LABEL:account-enquiry @JIRA-EPIC:PO-7465 @JIRA-STORY:PO-10906 @R1CBankingInterfaces
+Feature: View, add and change alternate payment references
+
+  Background:
+    Given I am logged in with email "opal-test@dev.platform.hmcts.net"
+    And a published adult or youth defendant account exists:
+      | first name                | Jordan          |
+      | last name                 | AprMain{uniq}   |
+      | prosecutor case reference | APRM{uniqUpper} |
+
+  Scenario: The management page lists the references for the selected defendant account
+    When I open APR Management for defendant "AprMain{uniq}"
+    And I submit alternate payment reference "OTHER{uniqUpper}"
+    Then the current alternate payment references include "OTHER{uniqUpper}"
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+      | business_unit_id                                   | 65              |
+      | account.defendant.forenames                        | Casey           |
+      | account.defendant.surname                          | AprOther{uniq}  |
+      | account.prosecutor_case_reference                  | APRO{uniqUpper} |
+      | account.offences.0.impositions.0.major_creditor_id  | 650000000041    |
+    When I open APR Management for defendant "AprOther{uniq}"
+    And I submit alternate payment reference "MAIN{uniqUpper}"
+    Then the current alternate payment references include "MAIN{uniqUpper}"
+    And the current alternate payment references exclude "OTHER{uniqUpper}"
+
+  Scenario: Add a valid alternate payment reference
+    When I open APR Management for defendant "AprMain{uniq}"
+    Then there are no alternate payment references for the current account
+    When I submit alternate payment reference "NEW{uniqUpper}"
+    Then the current alternate payment references include "NEW{uniqUpper}"
+
+  Scenario: Add a reference that is already used in a different business unit
+    When I open APR Management for defendant "AprMain{uniq}"
+    And I submit alternate payment reference "SHARED{uniqUpper}"
+    Then the current alternate payment references include "SHARED{uniqUpper}"
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Publishing Pending" using user "opal-test-10@dev.platform.hmcts.net":
+      | business_unit_id                                   | 65              |
+      | account.defendant.forenames                        | Casey           |
+      | account.defendant.surname                          | AprOther{uniq}  |
+      | account.prosecutor_case_reference                  | APRO{uniqUpper} |
+      | account.offences.0.impositions.0.major_creditor_id  | 650000000041    |
+    When I open APR Management for defendant "AprOther{uniq}"
+    And I submit alternate payment reference "SHARED{uniqUpper}"
+    Then the current alternate payment references include "SHARED{uniqUpper}"
+
+  Scenario: Change an existing alternate payment reference
+    When I open APR Management for defendant "AprMain{uniq}"
+    And I submit alternate payment reference "OLD{uniqUpper}"
+    Then the current alternate payment references include "OLD{uniqUpper}"
+    When I submit a change from alternate payment reference "OLD{uniqUpper}" to "NEW{uniqUpper}"
+    Then the current alternate payment references include "NEW{uniqUpper}"
+    And the current alternate payment references exclude "OLD{uniqUpper}"
