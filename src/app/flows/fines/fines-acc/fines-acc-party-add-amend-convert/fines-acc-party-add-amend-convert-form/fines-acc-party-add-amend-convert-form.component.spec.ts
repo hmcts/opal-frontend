@@ -14,7 +14,7 @@ import { FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS } from '../../fines-acc-defendant
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../constants/fines-acc-party-add-amend-convert-modes.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../constants/fines-acc-party-add-amend-convert-party-types.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS } from '../constants/fines-acc-party-add-amend-convert-fragments.constant';
-import { RELEASE_1A_1_3_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccPartyAddAmendConvertFormComponent', () => {
@@ -68,7 +68,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     }).compileComponents();
 
     globalStore = TestBed.inject(GlobalStore);
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: false });
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
     fixture = TestBed.createComponent(FinesAccPartyAddAmendConvertFormComponent);
     component = fixture.componentInstance;
 
@@ -84,7 +84,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should use the 11-character vehicle registration limit when release-1a-1-3 is disabled', async () => {
+  it('should use the 11-character vehicle registration limit when release-1a-1-2 is disabled', async () => {
     component.partyType = 'individual';
     fixture.detectChanges();
     await fixture.whenStable();
@@ -98,7 +98,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   });
 
   it('should apply the seven-character vehicle registration limit when enabled before form creation', () => {
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: true });
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
     const enabledFixture = TestBed.createComponent(FinesAccPartyAddAmendConvertFormComponent);
     const enabledComponent = enabledFixture.componentInstance;
     enabledComponent.partyType = 'individual';
@@ -124,7 +124,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     registrationControl?.setValue('12345678');
     expect(registrationControl?.hasError('maxlength')).toBe(false);
 
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: true });
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
     fixture.detectChanges();
     expect(registrationControl?.hasError('maxlength')).toBe(true);
     expect(component.fieldErrors.facc_party_add_amend_convert_vehicle_registration_mark['maxlength'].message).toBe(
@@ -135,7 +135,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
       'Vehicle registration must be 7 characters or fewer',
     );
 
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: false });
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
     fixture.detectChanges();
     expect(registrationControl?.hasError('maxlength')).toBe(false);
     expect(
@@ -152,7 +152,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     fixture.changeDetectorRef.detach();
     component.form.removeControl('facc_party_add_amend_convert_vehicle_registration_mark');
 
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: true });
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
     TestBed.flushEffects();
 
     expect(component.fieldErrors.facc_party_add_amend_convert_vehicle_registration_mark['maxlength'].message).toBe(

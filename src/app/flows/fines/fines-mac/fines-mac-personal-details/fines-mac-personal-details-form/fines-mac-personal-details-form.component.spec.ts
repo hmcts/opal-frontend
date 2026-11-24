@@ -14,7 +14,6 @@ import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
 import {
   RELEASE_1A_1_2_FEATURE_FLAG,
-  RELEASE_1A_1_3_FEATURE_FLAG,
 } from '../../../constants/release-feature-flags.constant';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -106,8 +105,8 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should use the 11-character vehicle registration limit when release-1a-1-3 is disabled', () => {
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: false });
+  it('should use the 11-character vehicle registration limit when release-1a-1-2 is disabled', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
     fixture.detectChanges();
     const registrationControl = component.form.get('fm_personal_details_vehicle_registration_mark');
     registrationControl?.setValue('12345678901');
@@ -118,7 +117,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   });
 
   it('should apply the seven-character vehicle registration limit when enabled before form creation', () => {
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: true });
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
     const enabledFixture = TestBed.createComponent(FinesMacPersonalDetailsFormComponent);
     const enabledComponent = enabledFixture.componentInstance;
     enabledComponent.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
@@ -140,12 +139,12 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   });
 
   it('should refresh registration validation and its message when the release flag changes', () => {
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: false });
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
     const registrationControl = component.form.get('fm_personal_details_vehicle_registration_mark');
     registrationControl?.setValue('12345678');
     expect(registrationControl?.hasError('maxlength')).toBe(false);
 
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: true });
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
     fixture.detectChanges();
     expect(registrationControl?.hasError('maxlength')).toBe(true);
     expect(component.fieldErrors.fm_personal_details_vehicle_registration_mark['maxlength'].message).toBe(
@@ -156,7 +155,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
       'Registration number must be 7 characters or fewer',
     );
 
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: false });
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
     fixture.detectChanges();
     expect(registrationControl?.hasError('maxlength')).toBe(false);
     expect(component.formControlErrorMessages['fm_personal_details_vehicle_registration_mark']).toBeUndefined();
@@ -172,7 +171,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     parentGuardianFixture.detectChanges();
     expect(parentGuardianComponent.form.get('fm_personal_details_vehicle_registration_mark')).toBeNull();
 
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: true });
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
     parentGuardianFixture.detectChanges();
 
     expect(parentGuardianComponent.fieldErrors.fm_personal_details_vehicle_registration_mark['maxlength'].message).toBe(

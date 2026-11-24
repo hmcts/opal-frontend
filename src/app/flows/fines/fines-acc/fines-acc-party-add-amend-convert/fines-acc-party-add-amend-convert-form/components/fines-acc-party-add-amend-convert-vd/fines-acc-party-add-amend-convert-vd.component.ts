@@ -6,7 +6,7 @@ import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/co
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
 import { FinesPreventSpacesDirective } from '../../../../../directives/fines-prevent-spaces.directive';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { RELEASE_1A_1_3_FEATURE_FLAG } from '../../../../../constants/release-feature-flags.constant';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../../../utils/fines-section-permissions.utils';
 
 /**
@@ -26,8 +26,8 @@ import { getFeatureFlagReleaseState } from '../../../../../utils/fines-section-p
 })
 export class FinesAccPartyAddAmendConvertVd extends AbstractNestedFormBaseComponent {
   private readonly globalStore = inject(GlobalStore);
-  public readonly release1a1_3Enabled = computed(
-    () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_3_FEATURE_FLAG] === true,
+  public readonly release1a1_2Enabled = computed(
+    () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
   );
 
   @Input({ required: true }) public override form!: FormGroup;

@@ -4,7 +4,6 @@ import { FormArray } from '@angular/forms';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import {
   RELEASE_1A_1_2_FEATURE_FLAG,
-  RELEASE_1A_1_3_FEATURE_FLAG,
 } from '../../../constants/release-feature-flags.constant';
 import { IFinesMacParentGuardianDetailsForm } from '../interfaces/fines-mac-parent-guardian-details-form.interface';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
@@ -65,7 +64,6 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     globalStore = TestBed.inject(GlobalStore);
     globalStore.setFeatureFlags({
       [RELEASE_1A_1_2_FEATURE_FLAG]: false,
-      [RELEASE_1A_1_3_FEATURE_FLAG]: false,
     });
 
     fixture = TestBed.createComponent(FinesMacParentGuardianDetailsFormComponent);
@@ -84,7 +82,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should use the existing vehicle registration limit when release-1a-1-3 is disabled', () => {
+  it('should use the existing vehicle registration limit when release-1a-1-2 is disabled', () => {
     const registrationControl = component.form.get('fm_parent_guardian_details_vehicle_registration_mark');
     registrationControl?.setValue('1234567890');
     expect(registrationControl?.hasError('maxlength')).toBe(false);
@@ -94,7 +92,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
   });
 
   it('should apply the seven-character vehicle registration limit when enabled before form creation', () => {
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: true });
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
     const enabledFixture = TestBed.createComponent(FinesMacParentGuardianDetailsFormComponent);
     const enabledComponent = enabledFixture.componentInstance;
     enabledFixture.detectChanges();
@@ -117,7 +115,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     registrationControl?.setValue('12345678');
     expect(registrationControl?.hasError('maxlength')).toBe(false);
 
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: true });
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
     fixture.detectChanges();
     expect(registrationControl?.hasError('maxlength')).toBe(true);
     expect(component.fieldErrors.fm_parent_guardian_details_vehicle_registration_mark['maxlength'].message).toBe(
@@ -128,7 +126,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
       'Registration number must be 7 characters or fewer',
     );
 
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: false });
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
     fixture.detectChanges();
     expect(registrationControl?.hasError('maxlength')).toBe(false);
     expect(component.formControlErrorMessages['fm_parent_guardian_details_vehicle_registration_mark']).toBeUndefined();
@@ -141,7 +139,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     fixture.changeDetectorRef.detach();
     component.form.removeControl('fm_parent_guardian_details_vehicle_registration_mark');
 
-    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: true });
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
     TestBed.flushEffects();
 
     expect(component.fieldErrors.fm_parent_guardian_details_vehicle_registration_mark['maxlength'].message).toBe(
