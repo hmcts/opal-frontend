@@ -53,7 +53,7 @@ export const routing: Routes = [
       ),
       OpalFines,
     ],
-    canActivate: [finesSuspenseItemFlowStateGuard],
+    canActivate: [routePermissionsGuard, finesSuspenseItemFlowStateGuard],
     runGuardsAndResolvers: 'always',
     loadComponent: () =>
       import('../fines-suspense-item-results/fines-suspense-item-results.component').then(
@@ -61,6 +61,7 @@ export const routing: Routes = [
       ),
     data: {
       title: FINES_SUSPENSE_ITEM_ROUTING_TITLES.children.results,
+      routePermissionId: [FINES_PERMISSIONS['view-suspense-items'], FINES_PERMISSIONS['manage-suspense-items']],
     },
     resolve: {
       title: TitleResolver,

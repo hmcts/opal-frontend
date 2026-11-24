@@ -72,6 +72,17 @@ describe('Suspense item navigation', () => {
       .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
   }
 
+  function setUserPermissions(permissionIds: number[]): void {
+    const user = structuredClone(OPAL_USER_STATE_MOCK);
+    user.business_unit_users.forEach((unit) => {
+      unit.permissions = permissionIds.map((permissionId) => ({
+        permission_id: permissionId,
+        permission_name: 'Test permission',
+      }));
+    });
+    getLoggedInUserState.mockReturnValue(of(user));
+  }
+
   it('redirects a direct results URL without BU context to search before requesting a summary', async () => {
     TestBed.inject(FinesSuspenseItemStore).resetStore();
     const harness = await RouterTestingHarness.create('/fines/suspense-item/001234/results');
@@ -222,33 +233,45 @@ describe('Suspense item navigation', () => {
     expect(getSuspenseItemSummary).toHaveBeenCalledOnce();
   });
 
-  it.each([25, 26])('allows search with only permission %s', async (permissionId) => {
-    const user = structuredClone(OPAL_USER_STATE_MOCK);
-    user.business_unit_users = [user.business_unit_users[0]];
-    user.business_unit_users[0].permissions = [{ permission_id: permissionId, permission_name: 'Suspense permission' }];
-    getLoggedInUserState.mockReturnValue(of(user));
-    const harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl('/fines/suspense-item/search');
-    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/search');
+  describe.each([
+    { page: 'search', url: '/fines/suspense-item/search' },
+    { page: 'results with retained business-unit context', url: '/fines/suspense-item/001234/results' },
+  ])('permissions for $page', ({ url }) => {
+    it.each([FINES_PERMISSIONS['view-suspense-items'], FINES_PERMISSIONS['manage-suspense-items']])(
+      'allows access with only permission %s',
+      async (permissionId) => {
+        setUserPermissions([permissionId]);
+        const harness = await RouterTestingHarness.create();
+        await harness.navigateByUrl(url);
+        expect(TestBed.inject(Router).url).toBe(url);
+      },
+    );
+
+    it.each([{ permissionIds: [] }, { permissionIds: [24] }])(
+      'denies access with permissions %j before requesting business units or a summary',
+      async ({ permissionIds }) => {
+        setUserPermissions(permissionIds);
+        const harness = await RouterTestingHarness.create();
+        await harness.navigateByUrl(url);
+        expect(TestBed.inject(Router).url).toBe('/access-denied');
+        expect(getBusinessUnitsByPermission).not.toHaveBeenCalled();
+        expect(getSuspenseItemSummary).not.toHaveBeenCalled();
+      },
+    );
   });
 
-  it.each([{ permissionIds: [] }, { permissionIds: [24] }])(
-    'denies direct access with permissions %j before requesting business units',
-    async ({ permissionIds }) => {
-      const user = structuredClone(OPAL_USER_STATE_MOCK);
-      user.business_unit_users.forEach((unit) => {
-        unit.permissions = permissionIds.map((permissionId) => ({
-          permission_id: permissionId,
-          permission_name: 'Non-suspense permission',
-        }));
-      });
-      getLoggedInUserState.mockReturnValue(of(user));
-      const harness = await RouterTestingHarness.create();
-      await harness.navigateByUrl('/fines/suspense-item/search');
-      expect(TestBed.inject(Router).url).toBe('/access-denied');
-      expect(getBusinessUnitsByPermission).not.toHaveBeenCalled();
-    },
-  );
+  it('rechecks permissions before requesting a summary when the same reference is searched again', async () => {
+    const harness = await RouterTestingHarness.create('/fines/suspense-item/001234/results');
+    expect(getSuspenseItemSummary).toHaveBeenCalledOnce();
+    setUserPermissions([]);
+
+    submitReference(harness, 'fsir_suspense_reference_number', '001234');
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    expect(TestBed.inject(Router).url).toBe('/access-denied');
+    expect(getSuspenseItemSummary).toHaveBeenCalledOnce();
+  });
 
   it('redirects the suspense root to the search screen', async () => {
     const harness = await RouterTestingHarness.create();
