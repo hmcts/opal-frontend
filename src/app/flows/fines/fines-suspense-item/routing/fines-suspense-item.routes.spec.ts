@@ -46,7 +46,11 @@ describe('Suspense item navigation', () => {
         { provide: OpalUserService, useValue: { getLoggedInUserState } },
         { provide: OpalFines, useValue: { getBusinessUnitsByPermission, clearCache, getSuspenseItemSummary } },
         provideRouter([
-          { path: 'fines/suspense-item', component: FinesSuspenseItemComponent, children: routing },
+          {
+            path: 'fines/suspense-item',
+            component: FinesSuspenseItemComponent,
+            children: routing.map((route) => ({ ...route, providers: undefined })),
+          },
           { path: 'fines/dashboard/finance', component: TestFinanceComponent },
           { path: 'access-denied', component: TestFinanceComponent },
         ]),
