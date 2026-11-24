@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { type ValidatorFn } from '@angular/forms';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
-import { RELEASE_1A_1_2_FEATURE_FLAG } from '../constants/release-feature-flags.constant';
+import { RELEASE_1A_1_3_FEATURE_FLAG } from '../constants/release-feature-flags.constant';
 import { type IFinesVehicleRegistrationConfig } from '../interfaces/fines-vehicle-registration-config.interface';
 import { getFeatureFlagReleaseState } from '../utils/fines-section-permissions.utils';
 
@@ -13,7 +13,7 @@ export class FinesVehicleRegistrationConfigService {
   private readonly globalStore = inject(GlobalStore);
 
   private isReleaseEnabled(): boolean {
-    return getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true;
+    return getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_3_FEATURE_FLAG] === true;
   }
 
   private createValidator(legacyMaxLength: number): ValidatorFn {
