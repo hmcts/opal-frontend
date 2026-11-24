@@ -91,7 +91,8 @@ export function performLogin(email: string, options: IPerformLoginOptions = {}):
           cy.get(L.submitBtn).click();
 
           log('assert', 'Verifying login success (Local/PR)');
-          cy.get(L.signOutLink).should('exist');
+          // Sign in uses the same selector; wait for login to finish before validating the session.
+          cy.get(L.signOutLink, { timeout: 10_000 }).should('be.visible').and('contain.text', 'Sign out');
           log('done', 'Login successful (Local/PR)', { email });
         } else {
           // Microsoft SSO login

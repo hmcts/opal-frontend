@@ -1,0 +1,134 @@
+{
+  "businessUnits": {
+    "count": 1,
+    "refData": [
+      {
+        "business_unit_id": 2,
+        "business_unit_name": "Camden and Islington",
+        "business_unit_code": "65",
+        "business_unit_type": "Accounting Division",
+        "account_number_prefix": null,
+        "opal_domain": "Fines",
+        "configuration_items": [],
+        "welsh_language": false
+      }
+    ]
+  },
+  "searchAccount": {
+    "organisation_flag": false,
+    "business_unit_name": "Camden and Islington",
+    "business_unit_id": "2",
+    "prosecutor_case_reference": null,
+    "last_enforcement_action": null,
+    "organisation_name": null,
+    "defendant_title": "Mr",
+    "national_insurance_number": null,
+    "parent_guardian_surname": null,
+    "parent_guardian_firstnames": null,
+    "account_number": "12345678",
+    "defendant_account_id": 1,
+    "defendant_surname": "EXAMPLE",
+    "defendant_firstnames": "Alex",
+    "birth_date": "1985-06-01",
+    "aliases": [],
+    "address_line_1": "1 Example Street",
+    "postcode": "AB1 2CD",
+    "account_balance": 714
+  },
+  "header": {
+    "version": "1",
+    "defendant_account_id": "1",
+    "defendant_account_party_id": "1",
+    "parent_guardian_party_id": null,
+    "collection_order": false,
+    "account_number": "12345678",
+    "account_type": "Fine",
+    "originator_type": "TFO",
+    "originator_name": "Test Court",
+    "prosecutor_case_reference": null,
+    "fixed_penalty_ticket_number": null,
+    "account_status_reference": {
+      "account_status_code": "L",
+      "account_status_display_name": "Live"
+    },
+    "business_unit_summary": {
+      "business_unit_id": "2",
+      "business_unit_code": "65",
+      "business_unit_name": "Camden and Islington",
+      "welsh_speaking": "N"
+    },
+    "payment_state_summary": {
+      "imposed_amount": 714,
+      "arrears_amount": 0,
+      "paid_amount": 0,
+      "account_balance": 714
+    },
+    "party_details": {
+      "party_id": "1",
+      "organisation_flag": false,
+      "organisation_details": null,
+      "individual_details": {
+        "title": "Mr",
+        "forenames": "Alex",
+        "surname": "Example",
+        "date_of_birth": "1985-06-01",
+        "age": null,
+        "national_insurance_number": null,
+        "individual_aliases": []
+      }
+    },
+    "is_youth": false,
+    "debtor_type": "PERSON",
+    "has_consolidated_accounts": false
+  },
+  "details": {
+    "version": null,
+    "defendant_account_id": "1",
+    "account_number": "12345678",
+    "account_status_code": "L",
+    "account_balance": 714,
+    "debtor_type": "PERSON",
+    "is_youth": false,
+    "party_details": {
+      "party_id": "1",
+      "organisation_flag": false,
+      "organisation_details": null,
+      "individual_details": {
+        "title": "Mr",
+        "forenames": "Alex",
+        "surname": "Example",
+        "date_of_birth": "1985-06-01",
+        "age": null,
+        "national_insurance_number": null,
+        "individual_aliases": []
+      }
+    },
+    "address": {
+      "address_line_1": "1 Example Street",
+      "address_line_2": null,
+      "address_line_3": null,
+      "address_line_4": null,
+      "address_line_5": null,
+      "postcode": "AB1 2CD"
+    },
+    "language_preferences": null,
+    "payment_terms": {
+      "payment_terms_type": {
+        "payment_terms_type_code": "B",
+        "payment_terms_type_display_name": "By date"
+      },
+      "effective_date": "2026-12-15",
+      "instalment_period": null,
+      "lump_sum_amount": null,
+      "instalment_amount": null
+    },
+    "enforcement_status": {
+      "last_enforcement_action": null,
+      "collection_order_made": false,
+      "default_days_in_jail": 0,
+      "enforcement_override": null,
+      "last_movement_date": null
+    },
+    "comments_and_notes": null
+  }
+}
