@@ -62,6 +62,8 @@ export class FinesMciPaymentCategoryCriminalCheckPaymentComponent {
 
   protected readonly rows = computed(() => {
     const payment = this.store.criminalPayment();
+    const paid = this.paidPence();
+    if (!payment?.payerType || !payment.methodOfPayment || paid === null) return [];
     const account = this.store.selectedCriminalAccountAtAGlance();
     const selected = this.store.selectedCriminalAccount();
     const party = account?.party_details;
@@ -74,7 +76,6 @@ export class FinesMciPaymentCategoryCriminalCheckPaymentComponent {
       ? selected.organisation_name
       : [selected?.defendant_firstnames, selected?.defendant_surname?.toUpperCase()].filter(Boolean).join(' ');
     const accountNumber = account?.account_number ?? selected?.account_number;
-    const paid = this.paidPence();
     const methods = {
       notesCoins: 'Notes and coins',
       postalOrder: 'Postal order',
@@ -82,11 +83,11 @@ export class FinesMciPaymentCategoryCriminalCheckPaymentComponent {
       creditTransfer: 'Credit transfer',
     };
     const reference =
-      payment?.methodOfPayment === 'postalOrder'
+      payment.methodOfPayment === 'postalOrder'
         ? payment.paymentReferencePostalOrder
-        : payment?.methodOfPayment === 'cheque'
+        : payment.methodOfPayment === 'cheque'
           ? payment.paymentReferenceCheque
-          : payment?.methodOfPayment === 'creditTransfer'
+          : payment.methodOfPayment === 'creditTransfer'
             ? payment.paymentReferenceCreditTransfer
             : '';
     return [
@@ -96,15 +97,15 @@ export class FinesMciPaymentCategoryCriminalCheckPaymentComponent {
       },
       {
         label: 'Amount',
-        value: paid === null ? '—' : `${paid < 0n ? '-' : ''}${formatPounds(paid < 0n ? -paid : paid, 2)}`,
+        value: `${paid < 0n ? '-' : ''}${formatPounds(paid < 0n ? -paid : paid, 2)}`,
       },
       {
         label: 'Payment received from',
-        value:
-          payment?.payerType === 'defendant' ? 'Defendant' : payment?.payerType === 'thirdParty' ? '3rd party' : '—',
+        value: payment.payerType === 'defendant' ? 'Defendant' : 'Third party',
       },
-      { label: 'Method of payment', value: payment?.methodOfPayment ? methods[payment.methodOfPayment] : '—' },
-      ...(payment?.methodOfPayment === 'creditTransfer' ? [{ label: 'Source', value: payment.source || '—' }] : []),
+      ...(payment.payerType === 'thirdParty' ? [{ label: 'Name', value: payment.thirdPartyName }] : []),
+      { label: 'Method of payment', value: methods[payment.methodOfPayment] },
+      ...(payment.methodOfPayment === 'creditTransfer' ? [{ label: 'Source', value: payment.source }] : []),
       { label: 'Payment reference', value: reference || '—' },
     ];
   });

@@ -24,6 +24,7 @@ import { FinesMciStore } from '../stores/fines-mci.store';
 import { IFinesMciCriminalPayment } from '../stores/interfaces/fines-mci.interface';
 import { FinesMciPaymentCategoryCriminalPaymentDetailsComponent } from '../fines-mci-payment-category-criminal-payment-details/fines-mci-payment-category-criminal-payment-details.component';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
+import { finesMciCriminalCheckPaymentGuard } from './guards/fines-mci-criminal-check-payment.guard';
 import { finesMciCriminalPaymentAccountGuard } from './guards/fines-mci-criminal-payment-account.guard';
 import { finesMciCriminalAccountStateGuard } from './guards/fines-mci-criminal-account-state.guard';
 import { routing } from './fines-mci.routes';
@@ -72,7 +73,7 @@ async function openPaymentDetails(saved: IFinesMciCriminalPayment | null = null,
             },
           ],
         },
-        { ...checkRoute, canActivate: [finesMciFlowStateGuard], resolve: {} },
+        { ...checkRoute, canActivate: [finesMciFlowStateGuard, finesMciCriminalCheckPaymentGuard], resolve: {} },
         { path: 'details', component: NavigationDestinationComponent },
       ],
     },
@@ -110,9 +111,22 @@ function enterAmount(harness: RouterTestingHarness, value: string): void {
 describe('Criminal payment details navigation', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('protects Check Payment with authentication, permission and business-unit guards', () => {
-    expect(checkRoute.canActivate).toEqual([authGuard, routePermissionsGuard, finesMciFlowStateGuard]);
+  it('protects Check Payment with authentication, permission, business-unit and payment-state guards', () => {
+    expect(checkRoute.canActivate).toEqual([
+      authGuard,
+      routePermissionsGuard,
+      finesMciFlowStateGuard,
+      finesMciCriminalCheckPaymentGuard,
+    ]);
     expect(checkRoute.data?.['routePermissionId']).toEqual([FINES_PERMISSIONS['process-and-allocate-payments']]);
+  });
+
+  it('redirects direct navigation without a payment draft to Payment Details', async () => {
+    const { harness, router, store } = await openPaymentDetails();
+    await harness.navigateByUrl(`${TILL_ROOT}/check-payment`);
+    expect(router.url).toBe(PAYMENT_URL);
+    expect(store.criminalPayment()).toBeNull();
+    expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#amount')!.value).toBe('');
   });
 
   it.each(['notesCoins', 'postalOrder', 'cheque', 'creditTransfer'] as const)(

@@ -89,7 +89,49 @@ describe('FinesMciPaymentCategoryCriminalCheckPaymentComponent', () => {
   it('displays an organisation without uppercasing its name and shows a third party payer', () => {
     const { rows } = render({ ...PAYMENT, payerType: 'thirdParty', thirdPartyName: 'Test Payer' }, 100, true);
     expect(rows()['Defendant']).toBe('Test Company (TEST001)');
-    expect(rows()['Payment received from']).toBe('3rd party');
+    expect(rows()['Payment received from']).toBe('Third party');
+    expect(rows()['Name']).toBe('Test Payer');
+    expect(Object.keys(rows())).toEqual([
+      'Defendant',
+      'Amount',
+      'Payment received from',
+      'Name',
+      'Method of payment',
+      'Payment reference',
+    ]);
+  });
+
+  it('hides the third party name when the payer is the defendant', () => {
+    const { rows, element } = render({ ...PAYMENT, thirdPartyName: 'Test Payer' });
+    expect(rows()['Name']).toBeUndefined();
+    expect(element.textContent).not.toContain('Test Payer');
+  });
+
+  it('returns to payment details when the third party name is changed, preserving the draft', async () => {
+    const payment = { ...PAYMENT, payerType: 'thirdParty' as const, thirdPartyName: 'Test Payer' };
+    const { element, fixture, store } = render(payment);
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const confirm = vi.spyOn(window, 'confirm');
+    const nameRow = Array.from(element.querySelectorAll('.govuk-summary-list__row')).find(
+      (row) => row.querySelector('dt')?.textContent?.trim() === 'Name',
+    )!;
+    nameRow.querySelector<HTMLAnchorElement>('a')!.click();
+    await fixture.whenStable();
+    expect(navigate).toHaveBeenCalledWith([
+      '/',
+      'fines',
+      'manual-cash-input',
+      'create',
+      'till',
+      'payment',
+      'category',
+      'criminal',
+      'payment-details',
+      store.selectedCriminalAccount()?.defendant_account_id,
+    ]);
+    expect(store.criminalPayment()).toEqual(payment);
+    expect(fixture.componentInstance.canDeactivate()).toBe(true);
+    expect(confirm).not.toHaveBeenCalled();
   });
 
   it.each([
