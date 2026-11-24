@@ -1,6 +1,3 @@
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { catchError, EMPTY } from 'rxjs';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, inject, DestroyRef, viewChild } from '@angular/core';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
@@ -12,6 +9,7 @@ import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { FinesSuspenseItemSearchFormComponent } from './fines-suspense-item-search-form/fines-suspense-item-search-form.component';
+import { FINES_SUSPENSE_ITEM_ROUTING_PATHS } from '../routing/constants/fines-suspense-item-routing-paths.constant';
 
 @Component({
   selector: 'app-fines-suspense-item-search',
@@ -20,7 +18,6 @@ import { FinesSuspenseItemSearchFormComponent } from './fines-suspense-item-sear
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesSuspenseItemSearchComponent extends AbstractFormParentBaseComponent implements OnInit, OnDestroy {
-  private readonly opalFines = inject(OpalFines);
   private readonly destroyRef = inject(DestroyRef);
   private readonly suspenseItemStore = inject(FinesSuspenseItemStore);
   private readonly navigationRouter = inject(Router);
@@ -64,7 +61,7 @@ export class FinesSuspenseItemSearchComponent extends AbstractFormParentBaseComp
     if (retainedId === null && soleBusinessUnit && typeof soleBusinessUnit.value === 'number') {
       this.initialBusinessUnitId = soleBusinessUnit.value;
     }
-    this.suspenseItemStore.setSelectedBusinessUnitId(this.initialBusinessUnitId);
+    this.handleBusinessUnitChange(this.initialBusinessUnitId);
   }
 
   /**
@@ -72,13 +69,13 @@ export class FinesSuspenseItemSearchComponent extends AbstractFormParentBaseComp
    * @param businessUnitId - The selected business unit ID, or null when cleared.
    */
   public handleBusinessUnitChange(businessUnitId: number | null): void {
-    this.suspenseItemStore.setSelectedBusinessUnitId(businessUnitId);
+    const selectedBusinessUnit = this.businessUnitAutoCompleteItems.find((item) => item.value === businessUnitId);
+    this.suspenseItemStore.setSelectedBusinessUnit(businessUnitId, selectedBusinessUnit?.name ?? null);
   }
 
   /**
-   * Starts a fresh lookup and temporarily logs the response for browser inspection.
+   * Opens the results route, which resolves the summary before displaying an outcome.
    * @param form - Validated values emitted by the search form.
-   * @returns Nothing; the response is logged to the browser console.
    */
   public handleFormSubmit(form: IAbstractFormBaseForm<IFinesSuspenseItemSearchFormState>): void {
     const criteria = { ...form.formData };
@@ -86,23 +83,27 @@ export class FinesSuspenseItemSearchComponent extends AbstractFormParentBaseComp
       return;
     }
 
-    // Strip leading zeroes as text to avoid losing precision through numeric conversion.
-    const reference = criteria.fsis_suspense_reference_number.replace(/^0+(?=\d)/, '');
-    this.opalFines.clearCache('suspenseItemSummaryCache$');
-    this.opalFines
-      .getSuspenseItemSummary(criteria.fsis_business_unit_id, reference)
-      .pipe(
-        // The shared HTTP interceptor handles the error; restore the warning while the form remains open.
-        catchError(() => {
-          this.searchForm().restoreUnsavedChanges();
-          return EMPTY;
-        }),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        // TODO(PO-9764, PO-9765): Replace console logging with results navigation and resolver-provided route data.
-        next: (summary) => console.log('Suspense item summary:', summary),
-      });
+    this.handleBusinessUnitChange(criteria.fsis_business_unit_id);
+    const reference = criteria.fsis_suspense_reference_number;
+    void this.navigationRouter
+      .navigate([
+        '/',
+        FINES_ROUTING_PATHS.root,
+        FINES_SUSPENSE_ITEM_ROUTING_PATHS.root,
+        ...FINES_SUSPENSE_ITEM_ROUTING_PATHS.children.results.replace(':suspenseItemId', reference).split('/'),
+      ])
+      .then(
+        (navigated) => {
+          if (!navigated && !this.destroyRef.destroyed) {
+            this.searchForm().restoreUnsavedChanges();
+          }
+        },
+        () => {
+          if (!this.destroyRef.destroyed) {
+            this.searchForm().restoreUnsavedChanges();
+          }
+        },
+      );
   }
 
   /**

@@ -38,11 +38,12 @@ describe('FinesSuspenseItemComponent', () => {
   });
 
   it('clears journey state and caches and removes the unload listener when destroyed', () => {
-    store.setSelectedBusinessUnitId(22);
+    store.setSelectedBusinessUnit(22, 'Test business unit');
     store.setUnsavedChanges(true);
     fixture.destroy();
 
     expect(store.selectedBusinessUnitId()).toBeNull();
+    expect(store.selectedBusinessUnitName()).toBeNull();
     expect(store.unsavedChanges()).toBe(false);
     expect(clearCache).toHaveBeenCalledWith('suspenseItemSummaryCache$');
 

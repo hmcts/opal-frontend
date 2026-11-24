@@ -1,3 +1,5 @@
+import { finesSuspenseItemSummaryResolver } from './resolvers/fines-suspense-item-summary.resolver';
+import { finesSuspenseItemFlowStateGuard } from './guards/fines-suspense-item-flow-state.guard';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
 import { routePermissionsGuard } from '@hmcts/opal-frontend-common/guards/route-permissions';
@@ -32,6 +34,8 @@ export const routing: Routes = [
   },
   {
     path: FINES_SUSPENSE_ITEM_ROUTING_PATHS.children.results,
+    canActivate: [finesSuspenseItemFlowStateGuard],
+    runGuardsAndResolvers: 'always',
     loadComponent: () =>
       import('../fines-suspense-item-results/fines-suspense-item-results.component').then(
         (c) => c.FinesSuspenseItemResultsComponent,
@@ -41,6 +45,7 @@ export const routing: Routes = [
     },
     resolve: {
       title: TitleResolver,
+      summary: finesSuspenseItemSummaryResolver,
     },
   },
 ];

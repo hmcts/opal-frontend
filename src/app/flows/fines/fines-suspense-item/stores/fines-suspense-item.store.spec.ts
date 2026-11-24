@@ -12,31 +12,39 @@ describe('FinesSuspenseItemStore', () => {
 
   it('starts without a selected BU or unsaved changes', () => {
     expect(store.selectedBusinessUnitId()).toBeNull();
+    expect(store.selectedBusinessUnitName()).toBeNull();
     expect(store.unsavedChanges()).toBe(false);
   });
 
   it('retains the selected BU and allows it to be cleared', () => {
-    store.setSelectedBusinessUnitId(22);
+    store.setSelectedBusinessUnit(22, 'Test business unit');
     expect(store.selectedBusinessUnitId()).toBe(22);
-    store.setSelectedBusinessUnitId(null);
+    expect(store.selectedBusinessUnitName()).toBe('Test business unit');
+    store.setSelectedBusinessUnit(35, 'West London');
+    expect(store.selectedBusinessUnitId()).toBe(35);
+    expect(store.selectedBusinessUnitName()).toBe('West London');
+    store.setSelectedBusinessUnit(null, null);
     expect(store.selectedBusinessUnitId()).toBeNull();
+    expect(store.selectedBusinessUnitName()).toBeNull();
     expect(store.unsavedChanges()).toBe(false);
   });
 
   it('tracks edits and allows them to be cleared without losing the BU', () => {
-    store.setSelectedBusinessUnitId(22);
+    store.setSelectedBusinessUnit(22, 'Test business unit');
     store.setUnsavedChanges(true);
     expect(store.unsavedChanges()).toBe(true);
     store.setUnsavedChanges(false);
     expect(store.unsavedChanges()).toBe(false);
     expect(store.selectedBusinessUnitId()).toBe(22);
+    expect(store.selectedBusinessUnitName()).toBe('Test business unit');
   });
 
   it('clears the selected BU and unsaved changes when the journey is reset', () => {
-    store.setSelectedBusinessUnitId(22);
+    store.setSelectedBusinessUnit(22, 'Test business unit');
     store.setUnsavedChanges(true);
     store.resetStore();
     expect(store.selectedBusinessUnitId()).toBeNull();
+    expect(store.selectedBusinessUnitName()).toBeNull();
     expect(store.unsavedChanges()).toBe(false);
   });
 });

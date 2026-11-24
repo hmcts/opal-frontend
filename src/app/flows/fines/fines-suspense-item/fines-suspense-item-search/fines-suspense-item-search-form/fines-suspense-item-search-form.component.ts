@@ -84,7 +84,7 @@ export class FinesSuspenseItemSearchFormComponent extends AbstractFormBaseCompon
       .subscribe((businessUnitId) => this.businessUnitChange.emit(businessUnitId));
   }
 
-  /** Restores the leave-page warning when a submitted lookup fails. */
+  /** Restores the leave-page warning when the lookup fails or results navigation is cancelled. */
   public restoreUnsavedChanges(): void {
     this.formSubmitted = false;
     this.unsavedChanges.emit(this.hasUnsavedChanges());
