@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { GovukSummaryCardListComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
 import {
   GovukSummaryListRowComponent,
@@ -22,6 +31,8 @@ import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defend
 import { FINES_DEFAULT_VALUES } from '../../../constants/fines-default-values.constant';
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { FinesNotProvidedComponent } from '../../../components/fines-not-provided/fines-not-provided.component';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
 
 @Component({
   selector: 'app-fines-mac-review-account-payment-terms',
@@ -44,6 +55,9 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
 
   protected readonly paymentTermsOptions = FINES_PAYMENT_TERMS_OPTIONS;
   protected readonly enforcementActions = FINES_MAC_PAYMENT_TERMS_ENFORCEMENT_ACTION_OPTIONS;
+  protected readonly isRelease1a1_2Enabled = computed(
+    () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
+  );
 
   @Input({ required: true }) public paymentTermsState!: IFinesMacPaymentTermsState;
   @Input({ required: true }) public businessUnit!: IOpalFinesBusinessUnit;
@@ -72,9 +86,24 @@ export class FinesMacReviewAccountPaymentTermsComponent implements OnInit {
    * while the editable form keeps the separate answers unchanged.
    */
   public get isCollectionOrderMadeForSummary(): boolean {
+    if (!this.isRelease1a1_2Enabled()) {
+      return this.paymentTermsState.fm_payment_terms_collection_order_made === true;
+    }
+
     return (
       this.paymentTermsState.fm_payment_terms_collection_order_made === true ||
       (this.isReadOnly && this.paymentTermsState.fm_payment_terms_collection_order_made_today === true)
+    );
+  }
+
+  public get showMakeCollectionOrderToday(): boolean {
+    if (this.isRelease1a1_2Enabled() && this.isReadOnly) {
+      return this.paymentTermsState.fm_payment_terms_collection_order_made_today === true;
+    }
+
+    return (
+      !this.paymentTermsState.fm_payment_terms_collection_order_made &&
+      this.permissions[this.permissionsMap['collection-order']] !== false
     );
   }
 
