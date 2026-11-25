@@ -12,10 +12,11 @@ Feature: Manual Cash Input - Court Fee Details
     And I add a payment to the till
     And I continue with payment category "courtFee"
 
-  @JIRA-STORY:PO-3669
-  Scenario: AC5a - an exact court fee payment opens Payment Details
+  @JIRA-STORY:PO-3669 @JIRA-STORY:PO-3671
+  Scenario: AC5a, AC1, AC1bi - an exact court fee payment opens Payment Details for the selected business unit
     When I submit a CF001 court fee payment of "25.00" for "2" items
     Then I see Court Fee Payment Details
+    And the Payment Details screen shows business unit "Camden and Islington"
 
   @JIRA-STORY:PO-3669 @JIRA-STORY:PO-3670
   Scenario Outline: AC5b, AC1 - an overpayment or underpayment opens confirmation
@@ -67,8 +68,8 @@ Feature: Manual Cash Input - Court Fee Details
     When I submit a CF001 court fee payment of "30.00" for "2" items
     Then the overpayment confirmation offers Confirm and Cancel
 
-  @JIRA-STORY:PO-3670
-  Scenario: AC4a - confirming an overpayment opens Payment Details
+  @JIRA-STORY:PO-3670 @JIRA-STORY:PO-3671
+  Scenario: AC4a, AC1a - confirming an overpayment opens Payment Details
     When I submit a CF001 court fee payment of "30.00" for "2" items
     And I confirm the overpayment
     Then I see Court Fee Payment Details
@@ -80,9 +81,10 @@ Feature: Manual Cash Input - Court Fee Details
     Then I see Court Fee Details
 
   @JIRA-STORY:PO-3670
-  Scenario: AC5 - an underpayment displays Cancel and return to till and Go back
+  Scenario: AC5 - an underpayment cannot continue to Payment Details
     When I submit a CF001 court fee payment of "24.99" for "2" items
-    Then the underpayment confirmation offers Cancel and return to till and Go back
+    Then the underpayment cannot continue to Payment Details
+    And the underpayment confirmation offers Cancel and return to till and Go back
 
   @JIRA-STORY:PO-3670
   Scenario: AC5a, AC5ai - returning to the till discards the underpayment data
