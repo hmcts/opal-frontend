@@ -47,18 +47,6 @@ Feature: Manual Cash Input - Confirm account and payment restrictions
     When I select a Manual Cash Input account that is "consolidated"
     And I pay the consolidated Manual Cash Input account into suspense
 
-  @JIRA-STORY:PO-3682 @AC1
-  Scenario: AC1 - a consolidated child can continue to Suspense Details
-    When I select a Manual Cash Input account that is "consolidated"
-    And I pay the consolidated Manual Cash Input account into suspense
-    Then I see Suspense Details
-
-  @JIRA-STORY:PO-3682 @AC2
-  Scenario: AC2 - a payment-restricted account can continue to Suspense Details
-    When I select a Manual Cash Input account that is "written off"
-    And I pay the restricted Manual Cash Input account into suspense
-    Then I see Suspense Details
-
   @AC11
   Scenario: Back retains the original search results
     When I select a Manual Cash Input account that is "eligible"

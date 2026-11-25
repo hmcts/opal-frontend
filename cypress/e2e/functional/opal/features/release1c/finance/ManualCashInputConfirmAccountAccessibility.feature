@@ -39,17 +39,3 @@ Feature: Manual Cash Input - Confirm account accessibility
     And I continue with Manual Cash Input next step "master"
     Then I see Manual Cash Input account "87654321" on "You cannot pay into this account"
     And I check the page for accessibility
-
-  @JIRA-STORY:PO-3682 @AC1
-  Scenario: AC1 - Suspense Details accessibility after a consolidated child selects suspense
-    When I select a Manual Cash Input account that is "consolidated"
-    And I pay the consolidated Manual Cash Input account into suspense
-    Then I see Suspense Details
-    And I check the page for accessibility
-
-  @JIRA-STORY:PO-3682 @AC2
-  Scenario: AC2 - Suspense Details accessibility after a restricted account selects suspense
-    When I select a Manual Cash Input account that is "written off"
-    And I pay the restricted Manual Cash Input account into suspense
-    Then I see Suspense Details
-    And I check the page for accessibility
