@@ -1,3 +1,4 @@
+import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { Component } from '@angular/core';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
@@ -333,5 +334,120 @@ describe('FinesMciPaymentCategoryCriminalCheckPaymentComponent', () => {
     element.querySelector<HTMLAnchorElement>('#cancel-criminal-payment')!.click();
     await fixture.whenStable();
     expect(store.criminalPayment()).toEqual(PAYMENT);
+  });
+  it.each([
+    null,
+    { ...PAYMENT, amount: 'invalid' },
+    { ...PAYMENT, payerType: null },
+    { ...PAYMENT, methodOfPayment: null },
+  ])('does not show a misleading summary for missing or incomplete payment state: %j', (payment) => {
+    const { fixture, store, element } = render();
+    store.setCriminalPayment(payment);
+    fixture.detectChanges();
+    expect(element.querySelectorAll('.govuk-summary-list__row')).toHaveLength(0);
+    expect(element.querySelector('.moj-alert')).toBeNull();
+  });
+
+  it('uses the header balance when at-a-glance balance is absent', () => {
+    const { fixture, store, element } = render({ ...PAYMENT, amount: '80.00' });
+    store.setSelectedCriminalAccountAtAGlance({
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
+      account_balance: undefined,
+    });
+    store.setSelectedCriminalAccountHeader({
+      ...FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK,
+      payment_state_summary: { ...FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK.payment_state_summary, account_balance: 75 },
+    });
+    fixture.detectChanges();
+    expect(element.querySelector('.moj-alert')?.textContent).toContain('£5.00 overpayment');
+  });
+
+  it.each([undefined, NaN, Infinity])('omits overpayment when the balance is unavailable: %s', (balance) => {
+    const { fixture, store, element } = render();
+    store.setSelectedCriminalAccountAtAGlance({
+      ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
+      account_balance: balance,
+    });
+    fixture.detectChanges();
+    expect(element.querySelector('.moj-alert')).toBeNull();
+  });
+
+  it.each([false, true])('uses the selected account when fresh name data is unavailable (company=%s)', (company) => {
+    const { fixture, store, rows } = render();
+    store.setSelectedCriminalAccount({
+      ...store.selectedCriminalAccount()!,
+      organisation_flag: company,
+      organisation_name: 'Test Company',
+      defendant_firstnames: 'Test',
+      defendant_surname: 'Person',
+      account_number: 'TEST002',
+    });
+    store.setCriminalPayment(PAYMENT);
+    fixture.detectChanges();
+    expect(rows()['Defendant']).toBe(`${company ? 'Test Company' : 'Test PERSON'} (TEST002)`);
+  });
+
+  it('shows a dash when neither account source provides a name, and omits a missing account number', () => {
+    const { fixture, store, rows } = render();
+    store.setSelectedCriminalAccount(null);
+    store.setCriminalPayment(PAYMENT);
+    fixture.detectChanges();
+    expect(rows()['Defendant']).toBe('—');
+  });
+
+  it('blocks saving when the draft is absent and allows unloading an empty page', async () => {
+    const { fixture, store, element } = render();
+    store.setCriminalPayment(null);
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
+    element.querySelector<HTMLButtonElement>('#save-review-till')!.click();
+    await fixture.whenStable();
+    expect(navigate).not.toHaveBeenCalled();
+    expect(fixture.componentInstance.handleBeforeUnload()).toBe(true);
+    expect(fixture.componentInstance.canDeactivate()).toBe(true);
+  });
+
+  it('retains the draft when changing defendant fails', async () => {
+    const { fixture, store, element } = render();
+    vi.spyOn(TestBed.inject(Router), 'navigate').mockRejectedValue(new Error('Navigation failed'));
+    element.querySelector<HTMLAnchorElement>('.govuk-summary-list__actions a')!.click();
+    await fixture.whenStable();
+    expect(store.criminalPayment()).toEqual(PAYMENT);
+    expect(fixture.componentInstance.canDeactivate()).toBe(false);
+  });
+
+  it.each([false, 'rejected'])('keeps the saved entry when save navigation does not complete: %s', async (result) => {
+    const { fixture, store, element } = render();
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
+    if (result === false) navigate.mockResolvedValue(false);
+    else navigate.mockRejectedValue(new Error('Navigation failed'));
+    element.querySelector<HTMLButtonElement>('#save-review-till')!.click();
+    await fixture.whenStable();
+    expect(store.tills()[0].payments).toHaveLength(1);
+    expect(store.criminalPayment()).toBeNull();
+  });
+
+  it('ignores Change and Cancel while a save navigation is pending', async () => {
+    const { fixture, element } = render();
+    let finish!: (value: boolean) => void;
+    const navigate = vi
+      .spyOn(TestBed.inject(Router), 'navigate')
+      .mockReturnValue(new Promise<boolean>((resolve) => (finish = resolve)));
+    element.querySelector<HTMLButtonElement>('#save-review-till')!.click();
+    element.querySelector<HTMLAnchorElement>('.govuk-summary-list__actions a')!.click();
+    element.querySelector<HTMLAnchorElement>('#cancel-criminal-payment')!.click();
+    expect(navigate).toHaveBeenCalledOnce();
+    finish(true);
+    await fixture.whenStable();
+  });
+  it('registers browser unload protection for the payment draft and releases it when empty', () => {
+    const { fixture, store } = render();
+    const blocked = new Event('beforeunload', { cancelable: true });
+    window.dispatchEvent(blocked);
+    expect(blocked.defaultPrevented).toBe(true);
+    store.setCriminalPayment(null);
+    fixture.detectChanges();
+    const allowed = new Event('beforeunload', { cancelable: true });
+    window.dispatchEvent(allowed);
+    expect(allowed.defaultPrevented).toBe(false);
   });
 });

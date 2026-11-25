@@ -1,14 +1,26 @@
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRouteSnapshot, provideRouter, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { beforeEach, describe, expect, it } from 'vitest';
+import {
+  ActivatedRouteSnapshot,
+  Navigation,
+  provideRouter,
+  Router,
+  RouterStateSnapshot,
+  UrlTree,
+} from '@angular/router';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-defendant-account-response-individual.mock';
 import { FinesMciStore } from '../../stores/fines-mci.store';
-import { finesMciCriminalCheckPaymentGuard } from './fines-mci-criminal-check-payment.guard';
+import {
+  finesMciCriminalCheckPaymentGuard,
+  finesMciCriminalCheckPaymentHistoryGuard,
+} from './fines-mci-criminal-check-payment.guard';
 
 const ROOT = '/fines/manual-cash-input/create/till/payment/category/criminal';
 
 describe('finesMciCriminalCheckPaymentGuard', () => {
   beforeEach(() => TestBed.configureTestingModule({ providers: [provideRouter([])] }));
+
+  afterEach(() => vi.restoreAllMocks());
 
   function run() {
     return TestBed.runInInjectionContext(() =>
@@ -54,5 +66,12 @@ describe('finesMciCriminalCheckPaymentGuard', () => {
   it('redirects to account search when a payment exists without a selected account', () => {
     setPayment();
     expect((run() as UrlTree).toString()).toBe(`${ROOT}/search`);
+  });
+  it('allows history navigation to Check Payment when leaving another screen', () => {
+    setAccount();
+    const router = TestBed.inject(Router);
+    vi.spyOn(router, 'currentNavigation').mockReturnValue({ trigger: 'popstate' } as Navigation);
+    vi.spyOn(router, 'url', 'get').mockReturnValue(`${ROOT}/search`);
+    expect(TestBed.runInInjectionContext(() => finesMciCriminalCheckPaymentHistoryGuard({}, []))).toBe(true);
   });
 });

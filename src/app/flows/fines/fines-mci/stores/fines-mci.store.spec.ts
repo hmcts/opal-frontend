@@ -1,3 +1,5 @@
+import { patchState } from '@ngrx/signals';
+import { unprotected } from '@ngrx/signals/testing';
 import { TestBed } from '@angular/core/testing';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-defendant-account-response-individual.mock';
@@ -193,6 +195,20 @@ describe('FinesMciStore', () => {
       expect(store.draftJourney()).toBeNull();
       store.setCriminalPayment({ ...payment, amount: '20.00' });
       expect(store.tills()[0].payments[0].criminalPayment).toEqual(payment);
+    });
+
+    it('adds the criminal payment to the current till while preserving another till', () => {
+      prepare();
+      const tillId = store.ensureTill();
+      const otherTill = {
+        tillId: 'other-till',
+        payments: [{ paymentId: 'existing-payment', journey: 'suspense' as const }],
+      };
+      patchState(unprotected(store), { tills: [...store.tills(), otherTill] });
+      store.saveCriminalPayment();
+      expect(store.tills()[0].tillId).toBe(tillId);
+      expect(store.tills()[0].payments[0].criminalPayment).toEqual(payment);
+      expect(store.tills()[1]).toEqual(otherTill);
     });
 
     it('does not save a second payment after the draft has been submitted', () => {
