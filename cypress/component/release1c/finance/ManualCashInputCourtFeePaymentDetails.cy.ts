@@ -296,7 +296,7 @@ describe('Manual Cash Input - Court Fee Payment Details', () => {
     cy.get(Mci.continueButton).click();
 
     cy.get('@financeRouter').its('url').should('eq', CHECK_COURT_FEE_URL);
-    cy.contains('h1', 'Check court fee').should('be.visible');
+    cy.contains('h1', 'Check payment').should('be.visible');
     cy.get('@finesMciStore').should((store) => {
       expect((store as CourtFeePaymentDetailsStoreAccess).courtFeePaymentDetails()).to.include({
         paymentReceivedFrom: 'applicant',

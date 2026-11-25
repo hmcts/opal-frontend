@@ -65,6 +65,15 @@ export const ManualCashInputLocators = {
   paymentCategoryForm: '#fines-mci-create-till-payment-category form',
   paymentCategoryRadio: (value: string): string => `input[name="paymentCategory"][value="${value}"]`,
   courtFeeDetailsPage: '#fines-mci-create-till-court-fee-details',
+  checkCourtFeeSummaryRowValue: (rowId: string): string =>
+    `#fines-mci-court-fee-payment-summary${rowId.charAt(0).toUpperCase()}${rowId.slice(1)}Value`,
+  checkCourtFeeSummaryRowActions: (rowId: string): string =>
+    `#fines-mci-court-fee-payment-summary${rowId.charAt(0).toUpperCase()}${rowId.slice(1)}Actions`,
+  checkCourtFeeOverpaymentBanner: '.moj-alert--information',
+  suspenseNote: '#suspenseNote',
+  suspenseNoteError: '#suspenseNote-error-message',
+  saveAndReviewTill: '#save-and-review-till',
+  saveAndAddAnotherPayment: '#save-and-add-payment',
   courtFeePaymentDetailsBusinessUnit: '#fines-mci-create-till-court-fee-payment-details .govuk-caption-l',
   courtFeeOverUnderpaymentPage: '#fines-mci-create-till-over-underpayment-confirmation',
   courtFeeOverpaymentBanner: '#fines-mci-create-till-over-underpayment-confirmation .moj-alert--information',
