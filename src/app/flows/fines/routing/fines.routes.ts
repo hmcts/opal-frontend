@@ -112,6 +112,7 @@ export const finesRouting: Routes = [
       },
       {
         path: FINES_ROUTING_PATHS.children.mci.root,
+        loadComponent: () => import('../fines-mci/fines-mci.component').then((c) => c.FinesMciComponent),
         children: manualCashInputRouting,
         canActivate: [authGuard, finesSectionPermissionsGuard],
         data: {
