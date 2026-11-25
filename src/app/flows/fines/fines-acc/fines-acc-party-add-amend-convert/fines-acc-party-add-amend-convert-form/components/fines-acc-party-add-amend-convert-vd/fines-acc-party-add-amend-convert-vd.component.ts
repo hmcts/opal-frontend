@@ -4,7 +4,6 @@ import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/
 import { AbstractNestedFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-nested-form-base';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
-import { FinesPreventSpacesDirective } from '../../../../../directives/fines-prevent-spaces.directive';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../../../utils/fines-section-permissions.utils';
@@ -20,7 +19,7 @@ import { getFeatureFlagReleaseState } from '../../../../../utils/fines-section-p
  */
 @Component({
   selector: 'app-fines-acc-party-add-amend-convert-vd',
-  imports: [ReactiveFormsModule, GovukTextInputComponent, CapitalisationDirective, FinesPreventSpacesDirective],
+  imports: [ReactiveFormsModule, GovukTextInputComponent, CapitalisationDirective],
   templateUrl: './fines-acc-party-add-amend-convert-vd.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
