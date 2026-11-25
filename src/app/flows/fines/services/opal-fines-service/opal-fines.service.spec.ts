@@ -83,6 +83,7 @@ import { OPAL_FINES_ACCOUNT_DEFENDANT_DETAILS_CONSOLIDATED_ACCOUNTS_MOCK } from 
 import { IOpalFinesReport } from './interfaces/opal-fines-report.interface';
 import { IOpalFinesReportInstancesResponse } from './interfaces/opal-fines-report-instances-response.interface';
 import { OPAL_FINES_ENFORCEMENT_ACCOUNT_TYPES_MOCK } from './mocks/opal-fines-enforcement-account-types.mock';
+import { IOpalFinesEnforcementAccountTypeUpdate } from './interfaces/opal-fines-enforcement-account-type-update.interface';
 
 const INTERFACE_JOBS_SUMMARY_RESPONSE: IOpalFinesInterfaceJobsSummaryResponse = {
   interface_jobs: [
@@ -195,6 +196,58 @@ describe('OpalFines', () => {
 
       expect(error).toHaveBeenCalledOnce();
       expect(subscriber).toHaveBeenCalledWith(OPAL_FINES_ENFORCEMENT_ACCOUNT_TYPES_MOCK);
+    });
+  });
+
+  describe('updateEnforcementAccountTypes', () => {
+    const url = '/opal-fines-service/enforcement-accounts-types';
+
+    it('PATCHes the selected paths and invalidates cached thresholds only after success', () => {
+      service.getEnforcementAccountTypes().subscribe();
+      httpMock.expectOne(url).flush(OPAL_FINES_ENFORCEMENT_ACCOUNT_TYPES_MOCK);
+      const payload: IOpalFinesEnforcementAccountTypeUpdate[] = [
+        { id: 2, minimum_balance: 125.5, version: 2 },
+        { id: 1, minimum_balance: null, version: 1 },
+      ];
+      const saved = vi.fn();
+      service.updateEnforcementAccountTypes(payload).subscribe(saved);
+
+      const request = httpMock.expectOne(url);
+      expect(request.request.method).toBe('PATCH');
+      expect(request.request.body).toEqual(payload);
+      const cachedDuringSave = vi.fn();
+      service.getEnforcementAccountTypes().subscribe(cachedDuringSave);
+      expect(cachedDuringSave).toHaveBeenCalledWith(OPAL_FINES_ENFORCEMENT_ACCOUNT_TYPES_MOCK);
+      httpMock.expectNone(url);
+
+      const updatedResponse = structuredClone(OPAL_FINES_ENFORCEMENT_ACCOUNT_TYPES_MOCK);
+      updatedResponse.enforcement_account_types[0].minimum_balance = null;
+      updatedResponse.enforcement_account_types[1].minimum_balance = 125.5;
+      request.flush(updatedResponse);
+      expect(saved).toHaveBeenCalledWith(updatedResponse);
+
+      const refreshed = vi.fn();
+      service.getEnforcementAccountTypes().subscribe(refreshed);
+      const refreshRequest = httpMock.expectOne(url);
+      expect(refreshRequest.request.method).toBe('GET');
+      refreshRequest.flush(updatedResponse);
+      expect(refreshed).toHaveBeenCalledWith(updatedResponse);
+    });
+
+    it('preserves errors and the existing cache without retrying a failed mutation', () => {
+      service.getEnforcementAccountTypes().subscribe();
+      httpMock.expectOne(url).flush(OPAL_FINES_ENFORCEMENT_ACCOUNT_TYPES_MOCK);
+      const error = vi.fn();
+      service.updateEnforcementAccountTypes([{ id: 2, minimum_balance: 125.5, version: 2 }]).subscribe({ error });
+      const errorBody = { detail: 'The update could not be completed' };
+      httpMock.expectOne(url).flush(errorBody, { status: 504, statusText: 'Gateway Timeout' });
+
+      expect(error).toHaveBeenCalledOnce();
+      expect(error).toHaveBeenCalledWith(expect.objectContaining({ status: 504, error: errorBody }));
+      const cached = vi.fn();
+      service.getEnforcementAccountTypes().subscribe(cached);
+      expect(cached).toHaveBeenCalledWith(OPAL_FINES_ENFORCEMENT_ACCOUNT_TYPES_MOCK);
+      httpMock.expectNone(url);
     });
   });
 

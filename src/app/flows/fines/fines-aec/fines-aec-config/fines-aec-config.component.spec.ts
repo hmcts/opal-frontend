@@ -117,6 +117,9 @@ describe('FinesAecConfigComponent', () => {
     expect(harness.routeNativeElement!.querySelector('#aec-account-types-success')?.textContent).toContain(
       'Enforcement values updated',
     );
+    const banner = harness.routeNativeElement!.querySelector('#aec-account-types-success')!;
+    const heading = harness.routeNativeElement!.querySelector('h1')!;
+    expect(banner.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 
     const dismissButton = harness.routeNativeElement!.querySelector<HTMLButtonElement>('.moj-alert__dismiss');
     dismissButton!.click();

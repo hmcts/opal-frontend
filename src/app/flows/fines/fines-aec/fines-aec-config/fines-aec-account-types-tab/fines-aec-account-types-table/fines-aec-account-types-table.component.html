@@ -36,7 +36,7 @@
           [id]="'aec-actions-' + accountType.accountType"
         >
           <a
-            class="govuk-link"
+            class="govuk-link govuk-link--no-visited-state"
             [id]="'aec-change-' + accountType.accountType"
             [routerLink]="['..', routingPaths.children.amendValues]"
             [queryParams]="{ enforcementAccountTypeId: accountType.id }"

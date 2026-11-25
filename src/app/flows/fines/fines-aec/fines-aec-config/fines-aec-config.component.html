@@ -1,5 +1,20 @@
 <div class="govuk-grid-column-full">
   <opal-lib-govuk-back-link id="aec-config-back-link" (clickEvent)="navigateBack()" />
+  @if (successMessage(); as message) {
+    <div
+      opal-lib-moj-alert
+      id="aec-account-types-success"
+      type="success"
+      [ariaLabel]="message"
+      [showDismiss]="true"
+      (dismissed)="successMessage.set(null)"
+    >
+      <opal-lib-moj-alert-icon icon type="success" />
+      <opal-lib-moj-alert-content content>
+        <opal-lib-moj-alert-content-text>{{ message }}</opal-lib-moj-alert-content-text>
+      </opal-lib-moj-alert-content>
+    </div>
+  }
   <h1 class="govuk-heading-l" id="aec-config-heading">Auto-enforcement configuration</h1>
 
   <opal-lib-moj-sub-navigation subNavId="aec-config-tabs">
@@ -17,11 +32,7 @@
   @switch (store.activeTab()) {
     @case ('account-types') {
       @if (accountTypes$ | async; as accountTypes) {
-        <app-fines-aec-account-types-tab
-          [accountTypes]="accountTypes"
-          [successMessage]="successMessage()"
-          (clearSuccessMessage)="successMessage.set(null)"
-        />
+        <app-fines-aec-account-types-tab [accountTypes]="accountTypes" />
       }
     }
     @default {

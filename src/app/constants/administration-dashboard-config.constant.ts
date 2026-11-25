@@ -3,12 +3,6 @@ import { ADMINISTRATION_LINKS } from './administration-links.constant';
 
 export const ADMINISTRATION_DASHBOARD_CONFIG: IDashboardPageConfiguration = {
   title: 'Administration',
-  highlights: [],
-  groups: [
-    {
-      id: 'administration-placeholder',
-      title: 'Pending development',
-      links: ADMINISTRATION_LINKS,
-    },
-  ],
+  highlights: ADMINISTRATION_LINKS,
+  groups: [],
 };

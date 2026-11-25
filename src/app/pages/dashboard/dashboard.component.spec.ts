@@ -170,12 +170,12 @@ describe('DashboardComponent', () => {
   });
 
   it('should resolve the administration config when release-1c-administration is enabled', () => {
-    setupComponent();
     dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'administration' }));
-    fixture.detectChanges();
+    setupComponent();
 
     expect(component.resolvedConfig()).toEqual(DASHBOARD_PAGE_CONFIGURATION_MAP.administration);
-    expect(component.resolvedConfig().groups.map((group) => group.id)).toContain('administration-placeholder');
+    expect(component.resolvedConfig().highlights.map((link) => link.id)).toEqual(['autoEnforcementConfigurationLink']);
+    expect(component.resolvedConfig().groups).toEqual([]);
   });
 
   it('should remove administration content when release-1c-administration is disabled', () => {
@@ -183,12 +183,12 @@ describe('DashboardComponent', () => {
       ...DEFAULT_RELEASE_FEATURE_FLAGS,
       [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
     });
-    setupComponent();
     dashboardTypeParamMapSubject.next(convertToParamMap({ dashboardType: 'administration' }));
-    fixture.detectChanges();
+    setupComponent();
 
     expect(component.resolvedConfig()).toEqual({
       ...DASHBOARD_PAGE_CONFIGURATION_MAP.administration,
+      highlights: [],
       groups: [],
     });
   });
