@@ -3,6 +3,8 @@
  */
 export const FinanceLocators = {
   cashHeading: 'h2',
+  suspenseHeading: 'h2',
+  manageSuspenseItemsLink: '#manageSuspenseItems',
   automaticCashInputLink: '#automaticCashInputLink',
   manualCashInputLink: '#manualCashInput',
   inboundFilesLink: '#finesFinanceInboundFilesLink',
@@ -10,6 +12,8 @@ export const FinanceLocators = {
   uploadVariantBankingFilesLink: '#finesFinanceUploadVariantBankingFilesLink',
   labels: {
     cash: 'Cash',
+    suspense: 'Suspense',
+    manageSuspenseItems: 'Manage Suspense Items',
     automaticCashInput: 'Automatic Cash Input',
     manualCashInput: 'Manual cash input',
     bankingInterfaces: 'External banking interfaces',

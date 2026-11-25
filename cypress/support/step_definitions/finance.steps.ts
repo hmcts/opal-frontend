@@ -1,5 +1,8 @@
 import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
-import { FinanceBankingInterfaceLink } from '../../e2e/functional/opal/actions/finance/finance.actions';
+import {
+  FinanceBankingInterfaceLink,
+  SuspensePermissionCombination,
+} from '../../e2e/functional/opal/actions/finance/finance.actions';
 import { FinanceFlow } from '../../e2e/functional/opal/flows/finance.flow';
 import { VariantBankingUploadFlow } from '../../e2e/functional/opal/flows/variant-banking-upload.flow';
 import { log } from '../utils/log.helper';
@@ -20,4 +23,24 @@ When('I open the Finance banking interface link {string}', (linkLabel: FinanceBa
 Then('I can upload multiple Variant Banking files successfully', () => {
   log('step', 'Uploading multiple Variant Banking files');
   variantBankingUploadFlow().verifySuccessfulMultiFileUpload();
+});
+
+Then('my Suspense permissions are {string}', (combination: SuspensePermissionCombination) => {
+  financeFlow().assertSuspensePermissions(combination);
+});
+
+Then('I see the Suspense section and its Manage Suspense Items link', () => {
+  financeFlow().assertSuspenseSectionVisible();
+});
+
+Then('I do not see the Suspense section or its Manage Suspense Items link', () => {
+  financeFlow().assertSuspenseSectionHidden();
+});
+
+When('I open Manage Suspense Items from Finance', () => {
+  financeFlow().openSuspenseItems();
+});
+
+Then('I am on the Suspense search page', () => {
+  financeFlow().assertSuspenseSearchPage();
 });

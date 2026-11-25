@@ -24,3 +24,11 @@ Feature: Finance Landing Page Accessibility
     Then I am taken to the "Finance" Fines landing page
     And I see the External banking interfaces section and its available links
     Then I check the page for accessibility
+
+  @JIRA-STORY:PO-9762 @R1CSuspense
+  Scenario: Finance landing page with Manage Suspense Items accessibility
+    # AC7c: the signed-in user requires View or Manage Suspense Items and the Suspense flag enabled.
+    When I select the Fines primary navigation item "Finance"
+    Then I am taken to the "Finance" Fines landing page
+    And I see the following text on the page "Manage Suspense Items"
+    Then I check the page for accessibility
