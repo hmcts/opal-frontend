@@ -123,6 +123,33 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
     expect(result.paymentTerms.formData.fm_payment_terms_start_date).toBeNull();
   });
 
+  it.each([0, 1, 30])('should preserve %i days in default and the imposed date when loading an account', (days) => {
+    if (!payload || !mappedFinesMacState) {
+      throw new Error('Payload is not properly initialised');
+    }
+
+    payload.payment_terms.default_days_in_jail = days;
+    payload.suspended_committal_date = '15/11/2026';
+
+    const result = finesMacPayloadMapAccountPaymentTerms(mappedFinesMacState, payload);
+
+    expect(result.paymentTerms.formData.fm_payment_terms_has_days_in_default).toBe(true);
+    expect(result.paymentTerms.formData.fm_payment_terms_default_days_in_jail).toBe(days);
+    expect(result.paymentTerms.formData.fm_payment_terms_suspended_committal_date).toBe('15/11/2026');
+  });
+
+  it('should leave days in default unselected when no days were supplied', () => {
+    if (!payload || !mappedFinesMacState) {
+      throw new Error('Payload is not properly initialised');
+    }
+
+    const result = finesMacPayloadMapAccountPaymentTerms(mappedFinesMacState, payload);
+
+    expect(result.paymentTerms.formData.fm_payment_terms_has_days_in_default).toBe(false);
+    expect(result.paymentTerms.formData.fm_payment_terms_default_days_in_jail).toBeNull();
+    expect(result.paymentTerms.formData.fm_payment_terms_suspended_committal_date).toBeNull();
+  });
+
   it('should map effective date correctly for instalment', () => {
     if (!payload || !mappedFinesMacState) {
       throw new Error('Payload is not properly initialised');

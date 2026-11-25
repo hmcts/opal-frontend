@@ -134,7 +134,8 @@ const buildPaymentTermsFormData = (
     fm_payment_terms_instalment_period: paymentTerms.instalment_period ?? null,
     fm_payment_terms_lump_sum_amount: paymentTerms.lump_sum_amount ?? null,
     fm_payment_terms_instalment_amount: paymentTerms.instalment_amount ?? null,
-    fm_payment_terms_has_days_in_default: Boolean(paymentTerms.default_days_in_jail),
+    fm_payment_terms_has_days_in_default:
+      paymentTerms.default_days_in_jail !== null && paymentTerms.default_days_in_jail !== undefined,
     fm_payment_terms_default_days_in_jail: paymentTerms.default_days_in_jail ?? null,
     fm_payment_terms_payment_card_request: convertNullableBooleanToBoolean(paymentCardRequest),
     fm_payment_terms_suspended_committal_date: suspendedCommittalDate ?? null,
