@@ -1,11 +1,21 @@
 {
   "businessUnits": {
-    "count": 1,
+    "count": 2,
     "refData": [
       {
         "business_unit_id": 2,
         "business_unit_name": "Camden and Islington",
         "business_unit_code": "65",
+        "business_unit_type": "Accounting Division",
+        "account_number_prefix": null,
+        "opal_domain": "Fines",
+        "configuration_items": [],
+        "welsh_language": false
+      },
+      {
+        "business_unit_id": 1,
+        "business_unit_name": "Alpha Court",
+        "business_unit_code": "01",
         "business_unit_type": "Accounting Division",
         "account_number_prefix": null,
         "opal_domain": "Fines",
