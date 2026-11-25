@@ -22,21 +22,30 @@ export class AccountDetailsResponsiveLayoutActions {
       .should('have.length.greaterThan', 0)
       .then(($elements) => {
         const elements = [...$elements] as HTMLElement[];
-        const bounds = elements.map((element) => element.getBoundingClientRect());
-
         elements.forEach((element, index) => {
-          expect(element.scrollWidth, `${label} ${index + 1} should not clip content`).to.be.at.most(
-            element.clientWidth + 1,
-          );
-          expect(bounds[index].left, `${label} ${index + 1} should not extend left of the viewport`).to.be.at.least(0);
-          expect(bounds[index].right, `${label} ${index + 1} should not extend past the viewport`).to.be.at.most(
-            overlapGate,
-          );
+          const bounds = element.getBoundingClientRect();
+          // Inline hosts have no client width. Check their rendered content boxes below.
+          if (element.ownerDocument.defaultView?.getComputedStyle(element).display !== 'inline') {
+            expect(element.scrollWidth, `${label} ${index + 1} should not clip content`).to.be.at.most(
+              element.clientWidth + 1,
+            );
+          }
+          expect(bounds.left, `${label} ${index + 1} should not extend left of the viewport`).to.be.at.least(0);
+          expect(bounds.right, `${label} ${index + 1} should not extend past the viewport`).to.be.at.most(overlapGate);
         });
 
-        const contentBounds = elements.flatMap((element) =>
-          [...element.querySelectorAll('h2, h3, p')].map((content) => content.getBoundingClientRect()),
-        );
+        const content = elements.flatMap((element) => [...element.querySelectorAll<HTMLElement>('h2, h3, p')]);
+        const contentBounds = content.map((element, index) => {
+          const bounds = element.getBoundingClientRect();
+          expect(element.scrollWidth, `${label} content ${index + 1} should not clip`).to.be.at.most(
+            element.clientWidth + 1,
+          );
+          expect(bounds.left, `${label} content ${index + 1} should fit within the viewport`).to.be.at.least(0);
+          expect(bounds.right, `${label} content ${index + 1} should fit within the viewport`).to.be.at.most(
+            overlapGate,
+          );
+          return bounds;
+        });
 
         contentBounds.forEach((current, index) => {
           contentBounds.slice(index + 1).forEach((next, nextIndex) => {
