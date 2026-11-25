@@ -9,7 +9,7 @@ const TAGS = ['@JIRA-STORY:PO-3530', '@JIRA-LABEL:manual-cash-input', '@JIRA-EPI
 const PO_3682_TAGS = [
   '@JIRA-STORY:PO-3682',
   '@JIRA-LABEL:manual-cash-input',
-  '@JIRA-EPIC:PO-2439',
+  '@JIRA-EPIC:PO-2660',
   '@R1CFinancialMovements',
 ];
 const BUSINESS_UNIT = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
