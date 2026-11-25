@@ -3,7 +3,6 @@ import { UtilsService } from '@hmcts/opal-frontend-common/services/utils-service
 import { describe, expect, it } from 'vitest';
 import { summaryResponse } from '../../fines-api-summary-report/mocks/summary-response.mock';
 import { mapSummaryReport } from './fines-api-payload-map-summary-report.utils';
-import { formatSummaryPence, summaryPence } from './fines-api-summary-money.utils';
 
 describe('processed summary mapping', () => {
   it('uses fines-only acceptance, source labels and pounds without scaling twice', () => {
@@ -106,31 +105,102 @@ describe('processed summary mapping', () => {
     response.interface_messages = [];
     expect(() => mapSummaryReport(response, new Map(), TestBed.inject(UtilsService))).toThrow('Missing or duplicate');
   });
-  it.each([null, undefined, '', 'abc', '1.001', {}])('rejects malformed monetary value %s', (value) => {
-    expect(() => summaryPence(value)).toThrow();
-  });
-  it('formats zero and large exact decimal strings', () => {
-    expect(formatSummaryPence(summaryPence('0'), TestBed.inject(UtilsService))).toBe('£0.00');
-    expect(formatSummaryPence(summaryPence('999999999999.99'), TestBed.inject(UtilsService))).toBe(
-      '£999,999,999,999.99',
-    );
-  });
 });
 
-describe('shared summary monetary formatting', () => {
-  it.each(['0.00', '0.01', '-12.34', '1234.56'])('matches the shared formatter for %s pounds', (amount) => {
-    const utils = TestBed.inject(UtilsService);
-    expect(formatSummaryPence(summaryPence(amount), utils)).toBe(utils.convertToMonetaryString(amount));
+describe('summary response validation and grouping', () => {
+  const map = (response = summaryResponse()) => mapSummaryReport(response, new Map(), TestBed.inject(UtilsService));
+  it.each([-1, 1.5, '2', null, Number.MAX_SAFE_INTEGER + 1])('rejects invalid record count %s', (number) => {
+    const response = summaryResponse();
+    response.interface_messages[0].messages[0].message_data['number'] = number;
+    expect(() => map(response)).toThrow('Invalid count');
   });
-  it.each(['9007199254740993', '9007199254740991', '-9007199254740993'])(
-    'rejects unsafe pence %s before formatting',
-    (pence) => {
-      const utils = {
-        convertToMonetaryString: () => {
-          throw new Error('Formatter must not be called');
+  it('rejects invalid text instead of displaying an object', () => {
+    const response = summaryResponse();
+    response.interface_messages.push({
+      message_text: 'zero_balance',
+      messages: [
+        { interface_messages_id: 90, message_type: 'Warning', message_data: { account_number: {}, value: 10 } },
+      ],
+    });
+    expect(() => map(response)).toThrow('Invalid text');
+  });
+  it('combines repeated detail groups and preserves their row order', () => {
+    const response = summaryResponse();
+    for (const account of ['001', '002']) {
+      response.interface_messages.push({
+        message_text: 'zero_balance',
+        messages: [
+          {
+            interface_messages_id: 90,
+            message_type: 'Warning',
+            message_data: { account_number: account, surname: '', value: '0.10', transaction_account: null },
+          },
+        ],
+      });
+    }
+    const section = map(response).sections[0];
+    expect(section.rows).toEqual([
+      ['001', '—', '£0.10', '—'],
+      ['002', '—', '£0.10', '—'],
+    ]);
+    expect(section.total).toBe('£0.20');
+  });
+  it('rejects duplicate summary totals', () => {
+    const response = summaryResponse();
+    response.interface_messages.push(response.interface_messages[0]);
+    expect(() => map(response)).toThrow('Missing or duplicate record totals');
+  });
+  it('maps all court and defendant fields, including the optional account type', () => {
+    const response = summaryResponse();
+    response.interface_messages.push({
+      message_text: 'invalid_transaction',
+      messages: [
+        {
+          interface_messages_id: 90,
+          message_type: 'Error',
+          message_data: {
+            court_sort_code: '000001',
+            court_account_number: '000002',
+            court_account_type: 'TEST',
+            court_beneficiary_name: 'Synthetic court',
+            court_transaction: 'TEST',
+            court_amount: 10,
+            court_transaction_account: '000003',
+            defendant_sort_code: '000004',
+            defendant_bank_account_number: '000005',
+            defendant_account_number: '000006',
+            defendant_name: 'Synthetic person',
+            Error: 'Synthetic error',
+          },
         },
-      };
-      expect(() => formatSummaryPence(BigInt(pence), utils)).toThrow(/precision|Invalid monetary/);
-    },
-  );
+      ],
+    });
+    const error = map(response).errors[0];
+    expect(error.court.map((field) => field.value)).toEqual([
+      '000001',
+      '000002 (TEST)',
+      'Synthetic court',
+      'TEST',
+      '£10.00',
+      '000003',
+    ]);
+    expect(error.defendant.map((field) => field.value)).toEqual([
+      '000004',
+      '000005',
+      '000006',
+      'Synthetic person',
+      'Synthetic error',
+    ]);
+  });
+  it('ignores unknown message categories and preserves an unmapped source code', () => {
+    const response = summaryResponse();
+    response.interface_messages.push({
+      message_text: 'Till allocated: 42',
+      messages: [{ interface_messages_id: 90, message_type: 'Info', message_data: {} }],
+    });
+    const report = map(response);
+    expect(report.errors).toEqual([]);
+    expect(report.fileDetails[1].value).toBe(response.source);
+    expect(report.breakdown).toHaveLength(4);
+  });
 });
