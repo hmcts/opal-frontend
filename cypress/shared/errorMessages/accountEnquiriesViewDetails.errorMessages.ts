@@ -81,8 +81,7 @@ export const ERROR_MESSAGES = {
   DATA_TYPE_POSTCODE: 'Postcode must only include letters and numbers',
   DATA_TYPE_VEHICLE_MAKE:
     'Vehicle make and model must only include letters a to z, numbers, hyphens, spaces and apostrophes',
-  DATA_TYPE_VEHICLE_REGISTRATION:
-    'Registration number must only contain letters or numbers',
+  DATA_TYPE_VEHICLE_REGISTRATION: 'Registration number must only contain letters or numbers',
   DATA_TYPE_EMPLOYER_NAME: 'Employer name must only include letters a to z, numbers, hyphens, spaces and apostrophes',
   DATA_TYPE_EMPLOYER_REFERENCE:
     'Employer reference must only include letters a to z, numbers, hyphens, spaces and apostrophes',
