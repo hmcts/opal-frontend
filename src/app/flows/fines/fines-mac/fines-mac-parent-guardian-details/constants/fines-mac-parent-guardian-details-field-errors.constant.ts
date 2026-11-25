@@ -248,7 +248,7 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: `Registration number must only contain letters or numbers`,
+      message: `Registration number must only contain letters, numbers or spaces`,
       priority: 2,
     },
   },

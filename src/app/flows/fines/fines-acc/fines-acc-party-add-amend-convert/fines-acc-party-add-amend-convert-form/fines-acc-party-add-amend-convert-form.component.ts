@@ -115,7 +115,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
   private readonly vehicleRegistrationConfigService = inject(FinesVehicleRegistrationConfigService);
 
   private get vehicleRegistrationConfig() {
-    return this.vehicleRegistrationConfigService.getConfig('Vehicle registration', 11);
+    return this.vehicleRegistrationConfigService.getConfig('Vehicle registration', 11, true);
   }
 
   @Output() protected override formSubmit = new EventEmitter<IFinesAccPartyAddAmendConvertForm>();

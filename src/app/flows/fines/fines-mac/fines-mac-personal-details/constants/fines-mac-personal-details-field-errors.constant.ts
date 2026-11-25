@@ -254,7 +254,7 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: `Registration number must only contain letters or numbers`,
+      message: `Registration number must only contain letters, numbers or spaces`,
       priority: 2,
     },
   },

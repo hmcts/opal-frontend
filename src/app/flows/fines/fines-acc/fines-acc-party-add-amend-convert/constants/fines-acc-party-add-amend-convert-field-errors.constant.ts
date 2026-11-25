@@ -431,7 +431,7 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: 'Registration number must only contain letters or numbers',
+      message: 'Registration number must only contain letters, numbers or spaces',
       priority: 2,
     },
   },

@@ -22,14 +22,19 @@ export class FinesVehicleRegistrationConfigService {
     return getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true;
   }
 
-  private createValidator(legacyMaxLength: number): ValidatorFn {
+  private createValidator(legacyMaxLength: number, validateLegacyPattern: boolean): ValidatorFn {
     const legacyValidator = optionalMaxLengthValidator(legacyMaxLength);
     const releaseValidator = optionalMaxLengthValidator(RELEASE_MAX_LENGTH);
 
     return (control) => {
       const isReleaseEnabled = this.isReleaseEnabled();
 
-      if (!isReleaseEnabled) return legacyValidator(control);
+      if (!isReleaseEnabled) {
+        const lengthError = legacyValidator(control);
+        const legacyPatternError = validateLegacyPattern ? ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR(control) : null;
+
+        return lengthError || legacyPatternError ? { ...lengthError, ...legacyPatternError } : null;
+      }
 
       const lengthError = releaseValidator(control);
       const patternError = ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR(control);
@@ -38,13 +43,17 @@ export class FinesVehicleRegistrationConfigService {
     };
   }
 
-  public getConfig(registrationLabel: string, legacyMaxLength: number): IFinesVehicleRegistrationConfig {
+  public getConfig(
+    registrationLabel: string,
+    legacyMaxLength: number,
+    validateLegacyPattern = false,
+  ): IFinesVehicleRegistrationConfig {
     const isReleaseEnabled = this.isReleaseEnabled();
     const messageLength = isReleaseEnabled ? RELEASE_MAX_LENGTH : 11;
 
     return {
       errorMessage: `${registrationLabel} must be ${messageLength} characters or fewer`,
-      validator: this.createValidator(legacyMaxLength),
+      validator: this.createValidator(legacyMaxLength, validateLegacyPattern),
     };
   }
 }
