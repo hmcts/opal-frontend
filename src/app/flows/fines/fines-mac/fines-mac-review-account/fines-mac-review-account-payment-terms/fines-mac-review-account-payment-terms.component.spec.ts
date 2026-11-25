@@ -87,12 +87,12 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
     expect(summary.querySelector('[summaryListRowId="makeCollectionOrderToday"]')?.textContent).toContain('Yes');
   });
 
-  it('shows the saved date for a previously made order in read-only review', () => {
+  it.each([false, null])('shows a historical order without a made-today row when the saved flag is %s', (madeToday) => {
     component.isReadOnly = true;
     component.paymentTermsState = {
       ...component.paymentTermsState,
       fm_payment_terms_collection_order_made: true,
-      fm_payment_terms_collection_order_made_today: false,
+      fm_payment_terms_collection_order_made_today: madeToday,
       fm_payment_terms_collection_order_date: '01/01/2023',
     };
     mockDateService.getFromFormatToFormat.mockReturnValue('01 January 2023');
@@ -102,7 +102,7 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
     const summary = fixture.nativeElement as HTMLElement;
     expect(summary.querySelector('[summaryListRowId="hasCollectionOrder"]')?.textContent).toContain('Yes');
     expect(summary.querySelector('[summaryListRowId="collectionOrderDate"]')?.textContent).toContain('01 January 2023');
-    expect(summary.querySelector('[summaryListRowId="makeCollectionOrderToday"]')?.textContent).toContain('No');
+    expect(summary.querySelector('[summaryListRowId="makeCollectionOrderToday"]')).toBeNull();
   });
 
   it('shows No without a collection-order date when no order was made', () => {
@@ -119,7 +119,7 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
     const summary = fixture.nativeElement as HTMLElement;
     expect(summary.querySelector('[summaryListRowId="hasCollectionOrder"]')?.textContent).toContain('No');
     expect(summary.querySelector('[summaryListRowId="collectionOrderDate"]')).toBeNull();
-    expect(summary.querySelector('[summaryListRowId="makeCollectionOrderToday"]')?.textContent).toContain('No');
+    expect(summary.querySelector('[summaryListRowId="makeCollectionOrderToday"]')).toBeNull();
   });
 
   it('keeps the No and made-today answers in the editable summary', () => {

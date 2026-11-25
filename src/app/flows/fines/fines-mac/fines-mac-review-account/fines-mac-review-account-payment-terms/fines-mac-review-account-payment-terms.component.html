@@ -31,7 +31,11 @@
             <ng-container value>{{ collectionOrderDate }}</ng-container>
           </div>
         }
-        @if (isReadOnly || !paymentTermsState.fm_payment_terms_collection_order_made) {
+        @if (
+          isReadOnly
+            ? paymentTermsState.fm_payment_terms_collection_order_made_today === true
+            : !paymentTermsState.fm_payment_terms_collection_order_made
+        ) {
           @if (isReadOnly || permissions[permissionsMap['collection-order']] !== false) {
             <div
               opal-lib-govuk-summary-list-row
