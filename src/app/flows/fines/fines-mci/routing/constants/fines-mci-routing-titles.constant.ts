@@ -12,6 +12,7 @@ export const FINES_MCI_ROUTING_TITLES = {
     createTillSuspenseDetails: 'Suspense details',
     createTillCourtFeeDetails: 'Court fee',
     createTillCourtFeePaymentDetails: 'Payment details – court fee',
+    createTillCheckCourtFee: 'Check court fee',
     createTillOverUnderpaymentConfirmation: 'Overpayment/underpayment confirmation',
     createTillSearchAccount: 'Search for an account',
     createTillCancel: 'Cancel till creation',
