@@ -2,8 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-defendant-account-response-individual.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { patchState, WritableStateSource } from '@ngrx/signals';
 import { FinesMciStore } from './fines-mci.store';
-import { IFinesMciSuspensePayment } from './interfaces/fines-mci.interface';
+import { IFinesMciSuspensePayment, IFinesMciTill } from './interfaces/fines-mci.interface';
 
 import { IFinesMciCriminalSearch } from './interfaces/fines-mci-criminal-search.interface';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
@@ -24,6 +25,7 @@ describe('FinesMciStore', () => {
   let store: InstanceType<typeof FinesMciStore>;
 
   beforeEach(() => {
+    vi.restoreAllMocks();
     TestBed.configureTestingModule({ providers: [FinesMciStore] });
     store = TestBed.inject(FinesMciStore);
   });
@@ -283,5 +285,60 @@ describe('FinesMciStore', () => {
     expect(store.selectedCriminalAccount()).toBeNull();
     expect(store.businessUnit()).toEqual(businessUnit);
     expect(store.tills()).toEqual(tills);
+  });
+
+  it('does not save or edit a suspense payment that does not exist', () => {
+    store.saveSuspensePayment();
+    expect(store.tills()).toEqual([]);
+
+    store.setSuspensePayment(SUSPENSE_PAYMENT);
+    store.saveSuspensePayment();
+    const saved = store.tills();
+    store.editSuspensePayment('missing-payment');
+    expect(store.tills()).toEqual(saved);
+    expect(store.editingPaymentId()).toBeNull();
+  });
+
+  it('restores an older saved suspense payment without optional payer details or note', () => {
+    patchState(store as unknown as WritableStateSource<{ tills: IFinesMciTill[] }>, {
+      tills: [
+        {
+          tillId: 'existing-till',
+          payments: [{ paymentId: 'existing-payment', journey: 'suspense', suspensePayment: SUSPENSE_PAYMENT }],
+        },
+      ],
+    });
+
+    store.editSuspensePayment('existing-payment');
+
+    expect(store.suspensePayment()).toEqual(SUSPENSE_PAYMENT);
+    expect(store.suspensePayerDetails()).toBeNull();
+    expect(store.suspenseNote()).toBe('');
+  });
+
+  it('updates only the selected suspense payment in its till', () => {
+    store.setSuspensePayment(SUSPENSE_PAYMENT);
+    store.saveSuspensePayment();
+    const firstPaymentId = store.tills()[0].payments[0].paymentId;
+    store.setSuspensePayment({ ...SUSPENSE_PAYMENT, amount: '20.00' });
+    store.saveSuspensePayment();
+    const [firstTill] = store.tills();
+    const secondPaymentId = firstTill.payments[1].paymentId;
+    patchState(store as unknown as WritableStateSource<{ tills: IFinesMciTill[] }>, {
+      tills: [firstTill, { tillId: 'another-till', payments: [] }],
+    });
+
+    store.editSuspensePayment(firstPaymentId);
+    store.setSuspensePayment({ ...SUSPENSE_PAYMENT, amount: '30.00' });
+    store.setSuspenseNote('Updated payment');
+    store.saveSuspensePayment();
+
+    expect(store.tills()[0].payments).toHaveLength(2);
+    expect(store.tills()[0].payments[0]).toMatchObject({ paymentId: firstPaymentId, suspenseNote: 'Updated payment' });
+    expect(store.tills()[0].payments[1]).toMatchObject({
+      paymentId: secondPaymentId,
+      suspensePayment: { amount: '20.00' },
+    });
+    expect(store.tills()[1]).toEqual({ tillId: 'another-till', payments: [] });
   });
 });

@@ -137,6 +137,89 @@ Then('I see Suspense Details', () => {
   manualCashInputFlow().assertPaymentCategoryDetailsAreDisplayed('suspense');
 });
 
+When('I submit an unidentified credit transfer suspense payment', () => {
+  manualCashInputFlow().submitUnidentifiedCreditTransferSuspensePayment();
+});
+
+Then('I see Check Suspense Payment', () => {
+  manualCashInputFlow().assertCheckSuspensePaymentIsDisplayed();
+});
+
+Then(
+  'a suspense note is required before I can {string}',
+  (saveAction: 'save and review till' | 'save and add another payment') => {
+    manualCashInputFlow().assertSuspenseNoteIsRequired(
+      saveAction === 'save and review till' ? 'reviewTill' : 'addAnother',
+    );
+  },
+);
+
+Then('a whitespace-only suspense note is rejected', () => {
+  manualCashInputFlow().assertWhitespaceSuspenseNoteIsRejected();
+});
+
+When('I save the suspense payment and review the till', () => {
+  manualCashInputFlow().saveSuspensePaymentAndReviewTill();
+});
+
+When('I save the suspense payment and add another payment', () => {
+  manualCashInputFlow().saveSuspensePaymentAndAddAnotherPayment();
+});
+
+When('I change the saved suspense payment', () => {
+  manualCashInputFlow().changeSavedSuspensePayment();
+});
+
+When('I update the saved suspense payment', () => {
+  manualCashInputFlow().updateSavedSuspensePayment();
+});
+
+When('I change the suspense payment details', () => {
+  manualCashInputFlow().changeSuspensePaymentDetails();
+});
+
+When('I follow the Change link for payment detail {string}', (changeLabel: string) => {
+  manualCashInputFlow().openPaymentDetailChangeLink(changeLabel);
+});
+
+When('I change the credit-transfer source to {string}', (source: string) => {
+  manualCashInputFlow().changeCreditTransferSource(source);
+});
+
+When(
+  'I change the payment method to {string} displayed as {string} with reference {string}',
+  (method: string, methodLabel: string, reference: string) => {
+    manualCashInputFlow().changeSuspensePaymentMethod(method, methodLabel, reference);
+  },
+);
+
+When('I amend the suspense payment with identified payer details', () => {
+  manualCashInputFlow().amendSuspensePaymentWithPayerDetails();
+});
+
+When(
+  'I amend the suspense payment with reason {string} displayed as {string}',
+  (reason: string, reasonLabel: string) => {
+    manualCashInputFlow().amendSuspensePaymentWithReason(reason, reasonLabel);
+  },
+);
+
+When('I change the suspense payer details', () => {
+  manualCashInputFlow().changeSuspensePayerDetails();
+});
+
+When('I follow the Change link for payer detail {string}', (changeLabel: string) => {
+  manualCashInputFlow().openPayerDetailChangeLink(changeLabel);
+});
+
+When('I cancel the suspense payment and {string} the leave-page warning', (response: 'accept' | 'decline') => {
+  manualCashInputFlow().cancelSuspensePayment(response === 'accept');
+});
+
+When('I save a suspense payment with a 1000-character note', () => {
+  manualCashInputFlow().saveMaximumLengthSuspenseNote();
+});
+
 Then('I remain on Payment Category', () => {
   manualCashInputFlow().assertPaymentCategoryIsDisplayed();
 });

@@ -90,3 +90,42 @@ Feature: Manual Cash Input - Create Till Accessibility
       | type          | amount |
       | overpayment   | 25.01  |
       | underpayment  | 24.99  |
+
+  # PO-3675 AC1a: axe-core coverage for Check Suspense Payment.
+  @JIRA-STORY:PO-3675 @JIRA-EPIC:PO-2660 @AC1a
+  Scenario: AC1a - Check Suspense Payment screen accessibility
+    When I select the Fines primary navigation item "Finance"
+    And I am taken to the "Finance" Fines landing page
+    And I open Manual Cash Input
+    And I create a till
+    And I select "Camden and Islington"
+    And I continue
+    And I add a payment to the till
+    And I continue with payment category "suspense"
+    And I submit an unidentified credit transfer suspense payment
+    Then I check the page for accessibility
+
+  @JIRA-STORY:PO-3674 @JIRA-EPIC:PO-2660
+  Scenario: Suspense Payer Details accessibility across payer types and required validation
+    When I select the Fines primary navigation item "Finance"
+    And I am taken to the "Finance" Fines landing page
+    And I open Manual Cash Input
+    And I create a till
+    And I select "Camden and Islington"
+    And I continue
+    And I record a suspense payment for reason "overpayment"
+    Then the suspense payer form is displayed
+    And I check the page for accessibility
+    When I continue with the suspense payer details
+    Then a suspense payer type is required
+    And I check the page for accessibility
+    When the suspense payer type is "individual"
+    Then I check the page for accessibility
+    When I continue with the suspense payer details
+    Then the suspense payer field "lastName" has error "Enter last name"
+    And I check the page for accessibility
+    When the suspense payer type is "company"
+    Then I check the page for accessibility
+    When I continue with the suspense payer details
+    Then the suspense payer field "companyName" has error "Enter company name"
+    And I check the page for accessibility

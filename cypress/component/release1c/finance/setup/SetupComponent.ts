@@ -34,6 +34,8 @@ import { FinesMciCreateTillPaymentCategoryComponent } from 'src/app/flows/fines/
 import { FinesMciCreateTillCourtFeeDetailsComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-court-fee-details/fines-mci-create-till-court-fee-details.component';
 import { FinesMciCreateTillOverUnderpaymentConfirmationComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-over-underpayment-confirmation/fines-mci-create-till-over-underpayment-confirmation.component';
 import { FinesMciCreateTillSuspenseDetailsComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-suspense-details/fines-mci-create-till-suspense-details.component';
+import { FinesMciCreateTillCheckSuspensePaymentComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-check-suspense-payment/fines-mci-create-till-check-suspense-payment.component';
+import { FinesMciCreateTillPayerDetailsComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-payer-details/fines-mci-create-till-payer-details.component';
 import { FinesMciPaymentCategoryCriminalSearchComponent } from 'src/app/flows/fines/fines-mci/fines-mci-payment-category-criminal-search/fines-mci-payment-category-criminal-search.component';
 import { FinesMciPaymentCategoryCriminalMatchesComponent } from 'src/app/flows/fines/fines-mci/fines-mci-payment-category-criminal-matches/fines-mci-payment-category-criminal-matches.component';
 import { finesMciCriminalAccountsResolver } from 'src/app/flows/fines/fines-mci/routing/resolvers/fines-mci-criminal-accounts/fines-mci-criminal-accounts.resolver';
@@ -161,14 +163,14 @@ const FINANCE_COMPONENT_ROUTES: Routes = [
             canDeactivate: [canDeactivateGuard],
           },
           {
-            path: FINES_MCI_ROUTING_PATHS.children.payerDetails,
-            component: FinesMciCreateTillPayerDetailsComponent,
+            path: FINES_MCI_ROUTING_PATHS.children.checkSuspensePayment,
+            component: FinesMciCreateTillCheckSuspensePaymentComponent,
             canDeactivate: [canDeactivateGuard],
           },
           {
-            path: FINES_MCI_ROUTING_PATHS.children.checkSuspensePayment,
-            component: FinesMciPlaceholderComponent,
-            data: { heading: 'Check suspense payment' },
+            path: FINES_MCI_ROUTING_PATHS.children.payerDetails,
+            component: FinesMciCreateTillPayerDetailsComponent,
+            canDeactivate: [canDeactivateGuard],
           },
         ],
       },

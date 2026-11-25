@@ -298,6 +298,235 @@ export class ManualCashInputActions {
     cy.contains('h1', destination.heading).should('be.visible');
   }
 
+  /** Completes Suspense Details for an unidentified credit-transfer payment. */
+  public submitUnidentifiedCreditTransferSuspensePayment(): void {
+    cy.get(ManualCashInputLocators.suspenseAmount).type('123.45');
+    cy.get(ManualCashInputLocators.suspenseRadio('payerType', 'thirdParty')).check();
+    cy.get(ManualCashInputLocators.suspenseRadio('methodOfPayment', 'creditTransfer')).check();
+    cy.get(ManualCashInputLocators.suspenseRadio('source', 'allpay')).check();
+    cy.get(ManualCashInputLocators.suspenseReference('CreditTransfer')).type('REF-123');
+    cy.get(ManualCashInputLocators.suspenseRadio('reason', 'unidentified')).check();
+    cy.get(ManualCashInputLocators.suspenseRelevantDetails).type('Unallocated payment');
+    cy.get(ManualCashInputLocators.continueButton).click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/check-suspense-payment');
+  }
+
+  /** Verifies the conditional summary for an unidentified credit-transfer payment. */
+  public assertCheckSuspensePaymentIsDisplayed(): void {
+    cy.get(ManualCashInputLocators.checkSuspensePaymentPage)
+      .should('be.visible')
+      .within(() => {
+        cy.contains('h1', 'Check suspense payment').should('be.visible');
+        [
+          '£123.45',
+          '3rd party',
+          'Credit transfer',
+          'allpay',
+          'REF-123',
+          'Unidentified amount (UN)',
+          'Unallocated payment',
+        ].forEach((value) => cy.contains(value).should('be.visible'));
+        ['Payer type', 'Payer name', 'Address'].forEach((label) => cy.contains('dt', label).should('not.exist'));
+        cy.get(ManualCashInputLocators.suspenseNote).should('have.attr', 'maxlength', '1000');
+        cy.get(ManualCashInputLocators.saveAndReviewTillButton).should('be.visible');
+        cy.get(ManualCashInputLocators.saveAndAddPaymentButton).should('be.visible');
+        cy.get(ManualCashInputLocators.cancelSuspensePaymentLink).should('be.visible');
+      });
+  }
+
+  /**
+   * Verifies that a suspense note is required before either save action can complete.
+   * @param action - Save destination selected by the user.
+   */
+  public assertSuspenseNoteIsRequired(action: 'reviewTill' | 'addAnother'): void {
+    const saveButton =
+      action === 'reviewTill'
+        ? ManualCashInputLocators.saveAndReviewTillButton
+        : ManualCashInputLocators.saveAndAddPaymentButton;
+    cy.get(saveButton).click();
+    cy.get(ManualCashInputLocators.errorSummary).should('contain.text', 'Add a suspense note');
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/check-suspense-payment');
+  }
+
+  /** Verifies whitespace cannot satisfy the required suspense note rule. */
+  public assertWhitespaceSuspenseNoteIsRejected(): void {
+    cy.get(ManualCashInputLocators.suspenseNote).type('   ');
+    cy.get(ManualCashInputLocators.saveAndReviewTillButton).click();
+    cy.get(ManualCashInputLocators.errorSummary).should('contain.text', 'Add a suspense note');
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/check-suspense-payment');
+  }
+
+  /** Saves the suspense payment and returns to Till Details. */
+  public saveSuspensePaymentAndReviewTill(): void {
+    cy.get(ManualCashInputLocators.suspenseNote).type('Investigate payment');
+    cy.get(ManualCashInputLocators.saveAndReviewTillButton).click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/details');
+    cy.get(ManualCashInputLocators.tillDetails).should('contain.text', '£123.45');
+  }
+
+  /** Saves the suspense payment, opens Payment Category, then proves the payment remains on the till. */
+  public saveSuspensePaymentAndAddAnotherPayment(): void {
+    cy.get(ManualCashInputLocators.suspenseNote).type('Investigate payment');
+    cy.get(ManualCashInputLocators.saveAndAddPaymentButton).click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/payment-category');
+    cy.contains('h1', 'Payment category').should('be.visible');
+    cy.get(ManualCashInputLocators.cancelLink).click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/details');
+    cy.get(ManualCashInputLocators.tillDetails).should('contain.text', '£123.45');
+  }
+
+  /** Opens the saved suspense payment from Till Details for amendment. */
+  public changeSavedSuspensePayment(): void {
+    cy.get(ManualCashInputLocators.tillPaymentChangeLink).click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/check-suspense-payment');
+    cy.get(ManualCashInputLocators.suspenseNote).should('have.value', 'Investigate payment');
+  }
+
+  /** Updates the saved suspense note and returns to Till Details without creating a second payment. */
+  public updateSavedSuspensePayment(): void {
+    cy.get(ManualCashInputLocators.suspenseNote).clear().type('Updated investigation note');
+    cy.get(ManualCashInputLocators.saveAndReviewTillButton).click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/details');
+    cy.get(ManualCashInputLocators.tillDetails).should('contain.text', '£123.45');
+    cy.get(ManualCashInputLocators.tillPaymentChangeLink).should('have.length', 1);
+  }
+
+  /** Opens the payment details form from the summary Change link. */
+  public changeSuspensePaymentDetails(): void {
+    cy.get(ManualCashInputLocators.checkSuspensePaymentPage).contains('a', 'Change amount').click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/suspense-details');
+  }
+
+  /**
+   * Follows an individual payment-detail Change link and verifies its common Suspense Details destination.
+   * @param changeLabel - Visually-hidden detail name included in the Change link.
+   */
+  public openPaymentDetailChangeLink(changeLabel: string): void {
+    cy.get(ManualCashInputLocators.checkSuspensePaymentPage).contains('a', `Change ${changeLabel}`).click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/suspense-details');
+    cy.contains('h1', 'Suspense details').should('be.visible');
+  }
+
+  /**
+   * Changes the selected credit-transfer source and verifies its displayed value.
+   * @param source - Credit-transfer source selected by the user.
+   */
+  public changeCreditTransferSource(source: string): void {
+    cy.get(ManualCashInputLocators.checkSuspensePaymentPage).contains('a', 'Change source').click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/suspense-details');
+    cy.get(ManualCashInputLocators.suspenseRadio('source', source)).check();
+    cy.get(ManualCashInputLocators.continueButton).click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/check-suspense-payment');
+    cy.contains(ManualCashInputLocators.checkSuspensePaymentPage, source).should('be.visible');
+  }
+
+  /**
+   * Changes the payment method and verifies the summary renders only the applicable data.
+   * @param method - Payment-method radio value.
+   * @param methodLabel - User-facing payment method displayed in the summary.
+   * @param reference - Optional reference required by postal-order and cheque payments.
+   */
+  public changeSuspensePaymentMethod(method: string, methodLabel: string, reference = ''): void {
+    const referenceSuffix: Record<string, string> = {
+      postalOrder: 'PostalOrder',
+      cheque: 'Cheque',
+    };
+    cy.get(ManualCashInputLocators.checkSuspensePaymentPage).contains('a', 'Change method of payment').click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/suspense-details');
+    cy.get(ManualCashInputLocators.suspenseRadio('methodOfPayment', method)).check();
+    if (reference) cy.get(ManualCashInputLocators.suspenseReference(referenceSuffix[method])).type(reference);
+    cy.get(ManualCashInputLocators.continueButton).click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/check-suspense-payment');
+    cy.get(ManualCashInputLocators.checkSuspensePaymentPage).within(() => {
+      cy.contains('dt', 'Method of payment').parent().should('contain.text', methodLabel);
+      cy.contains('dt', 'Payment reference')
+        .parent()
+        .should('contain.text', reference || '—');
+      cy.contains('dt', 'Source').should('not.exist');
+    });
+  }
+
+  /** Changes an unidentified payment to an identified payer and completes the payer-details step. */
+  public amendSuspensePaymentWithPayerDetails(): void {
+    cy.get(ManualCashInputLocators.checkSuspensePaymentPage).contains('a', 'Change suspense reason').click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/suspense-details');
+    cy.get(ManualCashInputLocators.suspenseRadio('reason', 'overpayment')).check();
+    cy.get(ManualCashInputLocators.continueButton).click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/payer-details');
+    cy.get(ManualCashInputLocators.payerTypeRadio('individual')).check();
+    cy.get(ManualCashInputLocators.payerLastName).type('Smith');
+    cy.get(ManualCashInputLocators.continueButton).click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/check-suspense-payment');
+    cy.get(ManualCashInputLocators.checkSuspensePaymentPage).within(() => {
+      ['Fines overpayment (OF)', 'Individual', 'Smith'].forEach((value) => cy.contains(value).should('be.visible'));
+      cy.contains('dt', 'Relevant details').should('not.exist');
+      ['Payer type', 'Payer name', 'Address'].forEach((label) => cy.contains('dt', label).should('be.visible'));
+    });
+  }
+
+  /**
+   * Changes to an identified suspense reason, completes payer details, and verifies the summary value.
+   * @param reason - Suspense-reason radio value.
+   * @param reasonLabel - User-facing reason displayed in the summary.
+   */
+  public amendSuspensePaymentWithReason(reason: string, reasonLabel: string): void {
+    cy.get(ManualCashInputLocators.checkSuspensePaymentPage).contains('a', 'Change suspense reason').click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/suspense-details');
+    cy.get(ManualCashInputLocators.suspenseRadio('reason', reason)).check();
+    cy.get(ManualCashInputLocators.continueButton).click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/payer-details');
+    cy.get(ManualCashInputLocators.payerTypeRadio('individual')).check();
+    cy.get(ManualCashInputLocators.payerLastName).type('Smith');
+    cy.get(ManualCashInputLocators.continueButton).click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/check-suspense-payment');
+    cy.contains(ManualCashInputLocators.checkSuspensePaymentPage, reasonLabel).should('be.visible');
+  }
+
+  /** Opens the payer details form from the summary Change link. */
+  public changeSuspensePayerDetails(): void {
+    cy.get(ManualCashInputLocators.checkSuspensePaymentPage).contains('a', 'Change payer type').click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/payer-details');
+  }
+
+  /**
+   * Follows an individual payer-detail Change link and verifies its common Payer Details destination.
+   * @param changeLabel - Visually-hidden detail name included in the Change link.
+   */
+  public openPayerDetailChangeLink(changeLabel: string): void {
+    cy.get(ManualCashInputLocators.checkSuspensePaymentPage).contains('a', `Change ${changeLabel}`).click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/payer-details');
+    cy.contains('h1', 'Payer details').should('be.visible');
+  }
+
+  /**
+   * Cancels a draft payment and responds to the route guard.
+   * @param acceptLeave - Whether to discard the draft and leave the page.
+   */
+  public cancelSuspensePayment(acceptLeave: boolean): void {
+    cy.get(ManualCashInputLocators.suspenseNote).type('Draft note');
+    cy.once('window:confirm', (message) => {
+      expect(String(message).replace(/\s+/g, ' ').trim()).to.equal(UNSAVED_CHANGES_WARNING);
+      return acceptLeave;
+    });
+    cy.get(ManualCashInputLocators.cancelSuspensePaymentLink).click();
+    if (acceptLeave) {
+      cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/details');
+      cy.get(ManualCashInputLocators.tillDetails).should('contain.text', 'There are no payments');
+      return;
+    }
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/check-suspense-payment');
+    cy.get(ManualCashInputLocators.suspenseNote).should('have.value', 'Draft note');
+  }
+
+  /** Verifies the 1,000-character permitted note boundary saves normally. */
+  public saveMaximumLengthSuspenseNote(): void {
+    const note = 'x'.repeat(1000);
+    cy.get(ManualCashInputLocators.suspenseNote).type(note, { delay: 0 }).should('have.value', note);
+    cy.get(ManualCashInputLocators.saveAndReviewTillButton).click();
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/details');
+    cy.get(ManualCashInputLocators.tillDetails).should('contain.text', '£123.45');
+  }
+
   /**
    * Submits a Court Fee payment with the specified amount and item count.
    * @param amount - Amount paid for the court fee.

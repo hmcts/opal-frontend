@@ -4,7 +4,20 @@ import { Router, provideRouter } from '@angular/router';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesMciStore } from '../../stores/fines-mci.store';
+import { IFinesMciSuspensePayment } from '../../stores/interfaces/fines-mci.interface';
 import { FinesMciCreateTillDetailsComponent } from './fines-mci-create-till-details.component';
+
+const suspensePayment: IFinesMciSuspensePayment = {
+  amount: '12.50',
+  payerType: 'defendant',
+  methodOfPayment: 'notesCoins',
+  paymentReferencePostalOrder: '',
+  paymentReferenceCheque: '',
+  paymentReferenceCreditTransfer: '',
+  source: null,
+  reason: 'overpayment',
+  relevantDetails: '',
+};
 
 describe('FinesMciCreateTillDetailsComponent', () => {
   let fixture: ComponentFixture<FinesMciCreateTillDetailsComponent>;
@@ -19,10 +32,10 @@ describe('FinesMciCreateTillDetailsComponent', () => {
     TestBed.inject(FinesMciStore).setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
     fixture = TestBed.createComponent(FinesMciCreateTillDetailsComponent);
     router = TestBed.inject(Router);
-    fixture.detectChanges();
   });
 
   it('should display the selected business unit and empty till content', () => {
+    fixture.detectChanges();
     const nativeElement = fixture.nativeElement as HTMLElement;
 
     expect(nativeElement.textContent).toContain('Till details');
@@ -39,11 +52,156 @@ describe('FinesMciCreateTillDetailsComponent', () => {
     expect(deleteTillLink?.textContent?.trim()).toBe('Delete till');
   });
 
+  it('shows the saved suspense journey under the payment table headings and opens it for amendment', () => {
+    const store = TestBed.inject(FinesMciStore);
+    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    store.setSuspensePayment({ ...suspensePayment, amount: '50.00', methodOfPayment: 'cheque' });
+    store.setSuspensePayerDetails({
+      payerType: 'company',
+      title: null,
+      firstNames: '',
+      lastName: '',
+      companyName: 'Acme Org',
+      addressLine1: '',
+      addressLine2: '',
+      addressLine3: '',
+      postcode: '',
+    });
+    store.setSuspenseNote('Investigate');
+    store.saveSuspensePayment();
+    fixture.detectChanges();
+
+    const table = (fixture.nativeElement as HTMLElement).querySelector<HTMLTableElement>('#fines-mci-payments')!;
+    expect(Array.from(table.querySelectorAll('thead th'), (header) => header.textContent?.trim())).toEqual([
+      'Category',
+      'Name',
+      'Amount',
+      'Received from',
+      'Method',
+      'Actions',
+    ]);
+    expect(
+      Array.from(table.querySelectorAll('tbody tr:first-child > td'), (cell) => cell.textContent?.trim()).slice(0, 5),
+    ).toEqual(['Suspense', 'Acme Org', '£50.00', 'Defendant', 'Cheque']);
+    expect(Array.from(table.querySelectorAll('tbody a'), (link) => link.textContent?.trim())).toEqual([
+      'Change payment 1',
+    ]);
+
+    table.querySelector<HTMLAnchorElement>('a')!.click();
+    expect(store.suspensePayment()?.amount).toBe('50.00');
+    expect(store.suspenseNote()).toBe('Investigate');
+    expect(navigate).toHaveBeenCalledWith(
+      ['/', 'fines', 'manual-cash-input', 'create', 'till', 'check-suspense-payment'],
+      undefined,
+    );
+  });
+
+  it('preserves the exact pence value in the saved payment table', () => {
+    const store = TestBed.inject(FinesMciStore);
+    store.setSuspensePayment({ ...suspensePayment, amount: '123456789012345678.12' });
+    store.saveSuspensePayment();
+    fixture.detectChanges();
+
+    const amountCell = (fixture.nativeElement as HTMLElement).querySelector(
+      '#fines-mci-payments tbody td:nth-child(3)',
+    );
+    expect(amountCell?.textContent?.trim()).toBe('£123,456,789,012,345,678.12');
+    expect(store.tills()[0].payments[0].suspensePayment?.amount).toBe('123456789012345678.12');
+  });
+
+  it.each([
+    { methodOfPayment: 'notesCoins', method: 'Notes and coins', payerType: 'thirdParty', receivedFrom: '3rd party' },
+    { methodOfPayment: 'postalOrder', method: 'Postal order', payerType: null, receivedFrom: '—' },
+    { methodOfPayment: 'creditTransfer', method: 'Credit transfer', payerType: 'defendant', receivedFrom: 'Defendant' },
+    { methodOfPayment: null, method: '—', payerType: null, receivedFrom: '—' },
+  ] as const)(
+    'shows the $methodOfPayment payment method and received-from value',
+    ({ methodOfPayment, method, payerType, receivedFrom }) => {
+      const store = TestBed.inject(FinesMciStore);
+      store.setSuspensePayment({ ...suspensePayment, methodOfPayment, payerType });
+      store.saveSuspensePayment();
+      fixture.detectChanges();
+      const cells = (fixture.nativeElement as HTMLElement).querySelectorAll('#fines-mci-payments tbody td');
+      expect(cells[3].textContent?.trim()).toBe(receivedFrom);
+      expect(cells[4].textContent?.trim()).toBe(method);
+    },
+  );
+
+  it('shows an individual payer and a dash for missing payment values', () => {
+    const store = TestBed.inject(FinesMciStore);
+    store.setSuspensePayment({ ...suspensePayment, amount: '', methodOfPayment: null });
+    store.setSuspensePayerDetails({
+      payerType: 'individual',
+      title: null,
+      firstNames: 'Alex',
+      lastName: 'Smith',
+      companyName: '',
+      addressLine1: '',
+      addressLine2: '',
+      addressLine3: '',
+      postcode: '',
+    });
+    store.saveSuspensePayment();
+    fixture.detectChanges();
+    const cells = (fixture.nativeElement as HTMLElement).querySelectorAll('#fines-mci-payments tbody td');
+    expect(cells[1].textContent?.trim()).toBe('Alex Smith');
+    expect(cells[2].textContent?.trim()).toBe('—');
+  });
+
+  it('shows a dash when a company payer has no name', () => {
+    const store = TestBed.inject(FinesMciStore);
+    store.setSuspensePayment(suspensePayment);
+    store.setSuspensePayerDetails({
+      payerType: 'company',
+      title: null,
+      firstNames: '',
+      lastName: '',
+      companyName: '',
+      addressLine1: '',
+      addressLine2: '',
+      addressLine3: '',
+      postcode: '',
+    });
+    store.saveSuspensePayment();
+    fixture.detectChanges();
+    expect(
+      (fixture.nativeElement as HTMLElement)
+        .querySelector('#fines-mci-payments tbody td:nth-child(2)')
+        ?.textContent?.trim(),
+    ).toBe('—');
+  });
+
+  it('shows suspense and court fee payments without a Remove action', () => {
+    const store = TestBed.inject(FinesMciStore);
+    store.setSuspensePayment(suspensePayment);
+    store.saveSuspensePayment();
+    store.addPayment(store.ensureTill(), 'courtFee');
+    fixture.detectChanges();
+    const page = fixture.nativeElement as HTMLElement;
+    expect(page.querySelectorAll('#fines-mci-payments tbody tr')).toHaveLength(2);
+    expect(page.querySelector('#fines-mci-payments')?.textContent).not.toContain('Remove');
+    expect(page.querySelectorAll('#fines-mci-payments tbody a')).toHaveLength(1);
+  });
+
+  it.each([
+    { journey: 'criminal', category: 'Criminal' },
+    { journey: 'courtFee', category: 'Court fee' },
+  ] as const)('shows a $category payment while its journey is in progress', ({ journey, category }) => {
+    const store = TestBed.inject(FinesMciStore);
+    store.addPayment(store.ensureTill(), journey);
+    fixture.detectChanges();
+    const row = (fixture.nativeElement as HTMLElement).querySelector('#fines-mci-payments tbody tr')!;
+    expect(row.querySelectorAll('td')[0].textContent).toBe(category);
+    expect(row.querySelectorAll('td')[1].textContent?.trim()).toBe('—');
+    expect(row.querySelectorAll('a')).toHaveLength(0);
+  });
+
   it('should block navigation away from the till details page', () => {
     expect(fixture.componentInstance.canDeactivate()).toBe(false);
   });
 
   it('should block browser refresh, reload, and exit', () => {
+    fixture.detectChanges();
     const beforeUnloadEvent = new Event('beforeunload', { cancelable: true });
 
     expect(window.dispatchEvent(beforeUnloadEvent)).toBe(false);
@@ -54,6 +212,7 @@ describe('FinesMciCreateTillDetailsComponent', () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     const store = TestBed.inject(FinesMciStore);
     const selectedBusinessUnit = store.businessUnit();
+    fixture.detectChanges();
 
     (fixture.nativeElement as HTMLElement).querySelector<HTMLAnchorElement>('.govuk-back-link')!.click();
 
@@ -65,6 +224,7 @@ describe('FinesMciCreateTillDetailsComponent', () => {
 
   it('should navigate to payment category when Add payment is selected', () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    fixture.detectChanges();
 
     fixture.debugElement.query(By.css('opal-lib-govuk-button')).triggerEventHandler('buttonClickEvent');
 
@@ -74,8 +234,41 @@ describe('FinesMciCreateTillDetailsComponent', () => {
     );
   });
 
+  it('starts a new payment after an abandoned suspense edit without replacing the saved payment', () => {
+    const store = TestBed.inject(FinesMciStore);
+    vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    store.setSuspensePayment(suspensePayment);
+    store.setSuspenseNote('Original note');
+    store.saveSuspensePayment();
+    const original = store.tills()[0].payments[0];
+    store.editSuspensePayment(original.paymentId);
+    store.setSuspenseNote('Abandoned edit');
+    fixture.detectChanges();
+
+    (fixture.nativeElement as HTMLElement).querySelector<HTMLButtonElement>('#fines-mci-add-payment')!.click();
+
+    expect(store.editingPaymentId()).toBeNull();
+    expect(store.suspensePayment()).toBeNull();
+    expect(store.suspensePayerDetails()).toBeNull();
+    expect(store.suspenseNote()).toBe('');
+    expect(store.draftJourney()).toBeNull();
+
+    store.setSuspensePayment({ ...suspensePayment, amount: '25.00' });
+    store.setSuspenseNote('New payment');
+    store.saveSuspensePayment();
+
+    expect(store.tills()[0].payments).toHaveLength(2);
+    expect(store.tills()[0].payments[0]).toEqual(original);
+    expect(store.tills()[0].payments[1]).toMatchObject({
+      suspensePayment: { ...suspensePayment, amount: '25.00' },
+      suspenseNote: 'New payment',
+    });
+    expect(store.tills()[0].payments[1].paymentId).not.toBe(original.paymentId);
+  });
+
   it('should navigate to cancel till creation when Delete till is selected', () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    fixture.detectChanges();
 
     fixture.debugElement.query(By.css('#fines-mci-delete-till')).triggerEventHandler('click', new Event('click'));
 

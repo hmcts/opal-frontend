@@ -6,7 +6,7 @@ import {
   Input,
   Output,
   signal,
-  viewChild,
+  ViewChild,
 } from '@angular/core';
 import {
   MojAlertComponent,
@@ -29,7 +29,7 @@ import { FinesApiAllocateTillsTableWrapperComponent } from './fines-api-allocate
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesApiAllocateComponent {
-  private readonly table = viewChild(FinesApiAllocateTillsTableWrapperComponent);
+  @ViewChild(FinesApiAllocateTillsTableWrapperComponent) private table?: FinesApiAllocateTillsTableWrapperComponent;
   protected readonly data = signal<IFinesApiAllocateData>({
     processingTotal: 0,
     processingByBusinessUnit: [],
@@ -61,7 +61,7 @@ export class FinesApiAllocateComponent {
    * @returns Nothing; emits refreshRequested without a payload for both populated and empty states.
    */
   protected refresh(): void {
-    this.table()?.clearSelection();
+    this.table?.clearSelection();
     this.refreshRequested.emit();
   }
 }
