@@ -81,9 +81,10 @@ Feature: Manual Cash Input - Court Fee Details
     Then I see Court Fee Details
 
   @JIRA-STORY:PO-3670
-  Scenario: AC5 - an underpayment displays Cancel and return to till and Go back
+  Scenario: AC5 - an underpayment cannot continue to Payment Details
     When I submit a CF001 court fee payment of "24.99" for "2" items
-    Then the underpayment confirmation offers Cancel and return to till and Go back
+    Then the underpayment cannot continue to Payment Details
+    And the underpayment confirmation offers Cancel and return to till and Go back
 
   @JIRA-STORY:PO-3670
   Scenario: AC5a, AC5ai - returning to the till discards the underpayment data

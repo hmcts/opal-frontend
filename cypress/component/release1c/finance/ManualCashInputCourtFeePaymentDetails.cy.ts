@@ -40,6 +40,20 @@ const PAYMENT_REFERENCE_PATTERN_ERROR =
 const PAYMENT_REFERENCE_MAX_LENGTH_ERROR = 'Payment reference must be 50 characters or fewer';
 const ALPHABETIC_CHARACTER_ERROR = 'must only include letters a to z, hyphens, spaces and apostrophes';
 const ALPHANUMERIC_CHARACTER_ERROR = 'must only include letters a to z, numbers, hyphens, spaces and apostrophes';
+const INDIVIDUAL_CREDIT_TRANSFER_DETAILS: IFinesMciCourtFeePaymentDetails = {
+  paymentReceivedFrom: 'applicant',
+  paymentMethod: 'CT',
+  paymentSource: 'ALLPAY',
+  paymentReference: 'REF-123',
+  payerType: 'individual',
+  title: 'Mr',
+  firstNames: 'Alex James',
+  lastName: 'Smith',
+  addressLine1: '12 Example Street',
+  addressLine2: 'Example District',
+  addressLine3: 'Example Town',
+  postcode: 'SW1A 1AA',
+};
 type CourtFeePaymentDetailsStoreAccess = {
   courtFeePaymentDetails: () => IFinesMciCourtFeePaymentDetails | null;
 };
@@ -290,6 +304,31 @@ describe('Manual Cash Input - Court Fee Payment Details', () => {
         payerType: 'company',
         companyName: 'Example Ltd',
       });
+    });
+  });
+
+  it('(AC5) persists all valid Individual Credit transfer payment details', { tags: TAGS }, () => {
+    openCourtFeePaymentDetails();
+    selectPaymentDetailsRadio('paymentReceivedFrom', INDIVIDUAL_CREDIT_TRANSFER_DETAILS.paymentReceivedFrom);
+    selectPaymentDetailsRadio('paymentMethod', INDIVIDUAL_CREDIT_TRANSFER_DETAILS.paymentMethod);
+    selectPaymentDetailsRadio('paymentSource', INDIVIDUAL_CREDIT_TRANSFER_DETAILS.paymentSource!);
+    cy.get('#paymentReference').type(INDIVIDUAL_CREDIT_TRANSFER_DETAILS.paymentReference!);
+    selectPaymentDetailsRadio('payerType', INDIVIDUAL_CREDIT_TRANSFER_DETAILS.payerType);
+    cy.get('#title').select(INDIVIDUAL_CREDIT_TRANSFER_DETAILS.title!);
+    cy.get('#firstNames').type(INDIVIDUAL_CREDIT_TRANSFER_DETAILS.firstNames!);
+    cy.get('#lastName').type(INDIVIDUAL_CREDIT_TRANSFER_DETAILS.lastName!);
+    cy.get('#addressLine1').type(INDIVIDUAL_CREDIT_TRANSFER_DETAILS.addressLine1!);
+    cy.get('#addressLine2').type(INDIVIDUAL_CREDIT_TRANSFER_DETAILS.addressLine2!);
+    cy.get('#addressLine3').type(INDIVIDUAL_CREDIT_TRANSFER_DETAILS.addressLine3!);
+    cy.get('#postcode').type(INDIVIDUAL_CREDIT_TRANSFER_DETAILS.postcode!);
+
+    cy.get(Mci.continueButton).click();
+
+    cy.get('@financeRouter').its('url').should('eq', CHECK_COURT_FEE_URL);
+    cy.get('@finesMciStore').should((store) => {
+      expect((store as CourtFeePaymentDetailsStoreAccess).courtFeePaymentDetails()).to.deep.equal(
+        INDIVIDUAL_CREDIT_TRANSFER_DETAILS,
+      );
     });
   });
 

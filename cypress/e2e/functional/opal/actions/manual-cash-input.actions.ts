@@ -392,6 +392,12 @@ export class ManualCashInputActions {
     cy.get(ManualCashInputLocators.courtFeeCancelOverpaymentLink).should('be.visible').click();
   }
 
+  /** Confirms an underpayment has no route to Payment Details. */
+  public assertUnderpaymentCannotContinueToPaymentDetails(): void {
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/over-underpayment-confirmation');
+    cy.get(ManualCashInputLocators.courtFeeConfirmOverpaymentButton).should('not.exist');
+  }
+
   /** Confirms the underpayment screen displays Cancel and return to till and Go back. */
   public assertUnderpaymentConfirmationActionsAreDisplayed(): void {
     cy.get(ManualCashInputLocators.courtFeeReturnToTillLink)

@@ -366,6 +366,14 @@ export default defineConfig({
         },
         resolve: {
           extensions: ['.ts', '.js'],
+          alias: {
+            // Resolve component stylesheet URLs through the Angular image asset sources.
+            '../../src/assets/images': [
+              path.resolve(__dirname, 'src/assets/images'),
+              path.resolve(__dirname, 'node_modules/@ministryofjustice/frontend/moj/assets/images'),
+              path.resolve(__dirname, 'node_modules/govuk-frontend/dist/govuk/assets/images'),
+            ],
+          },
           plugins: [
             new TsconfigPathsPlugin({
               configFile: componentTsconfigPath,
