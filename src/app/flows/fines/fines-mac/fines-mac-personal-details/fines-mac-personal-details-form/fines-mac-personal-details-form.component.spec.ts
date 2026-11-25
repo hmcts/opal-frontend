@@ -774,6 +774,25 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     );
   });
 
+  it('should preserve an empty NI number when R1A-1-3 is enabled', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: true });
+    component['initialPersonalDetailsSetup']();
+
+    const nationalInsuranceNumberControl = component.form.get('fm_personal_details_national_insurance_number');
+    nationalInsuranceNumberControl?.setValue(null);
+    const emitSpy = vi.spyOn(component['formSubmit'], 'emit');
+
+    component.handleFormSubmit({} as SubmitEvent);
+
+    expect(emitSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formData: expect.objectContaining({
+          fm_personal_details_national_insurance_number: null,
+        }),
+      }),
+    );
+  });
+
   it('should leave NI number spaces unchanged when R1A-1-3 is disabled', () => {
     globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: false });
     const nationalInsuranceNumberControl = component.form.get('fm_personal_details_national_insurance_number');
