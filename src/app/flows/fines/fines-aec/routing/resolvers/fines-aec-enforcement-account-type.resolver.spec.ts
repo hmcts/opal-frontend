@@ -92,13 +92,20 @@ describe('finesAecEnforcementAccountTypeResolver', () => {
     });
   });
 
-  it.each(['', '?enforcementAccountTypeId=', '?enforcementAccountTypeId=invalid'])(
-    'returns to Account types when no displayed row matches the selection %s',
+  it.each(['', '?enforcementAccountTypeId='])(
+    'returns to Account types without requesting data when the selection is missing or empty %s',
     async (query) => {
+      api.getEnforcementAccountTypes.mockReturnValue(throwError(() => new Error('Account types request failed')));
+
       expectAccountTypesRedirect(await resolveSelection(query));
-      expect(api.getEnforcementAccountTypes).toHaveBeenCalledExactlyOnceWith();
+      expect(api.getEnforcementAccountTypes).not.toHaveBeenCalled();
     },
   );
+
+  it('returns to Account types when no displayed row matches the selection', async () => {
+    expectAccountTypesRedirect(await resolveSelection('?enforcementAccountTypeId=invalid'));
+    expect(api.getEnforcementAccountTypes).toHaveBeenCalledExactlyOnceWith();
+  });
 
   it('loads a matching API record without imposing a positive integer rule on its ID', async () => {
     response.enforcement_account_types.find((record) => record.id === 2)!.id = 0;
