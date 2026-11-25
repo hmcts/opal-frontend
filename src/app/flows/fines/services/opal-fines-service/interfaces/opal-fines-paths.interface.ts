@@ -24,5 +24,6 @@ export interface IOpalFinesPaths {
   interfaceJobsSummary: string;
   tills: string;
   sourceMappings: string;
+  methodOfPaymentMappings: string;
   processInterfaceJobs: string;
 }
