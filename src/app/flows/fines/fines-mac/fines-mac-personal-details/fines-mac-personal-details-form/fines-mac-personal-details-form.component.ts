@@ -14,7 +14,7 @@ import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Va
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
-import { FinesVehicleRegistrationConfigService } from '../../../services/fines-vehicle-registration-config.service';
+import { FinesVehicleRegistrationConfigService } from '@services/fines/fines-vehicle-registration-config.service';
 import { FinesMacAbstractAliasFormComponent } from '../../abstracts/fines-mac-abstract-alias-form.component';
 import { FinesMacAliasRowComponent } from '../../components/fines-mac-alias-row/fines-mac-alias-row.component';
 import { IFinesMacPersonalDetailsFieldErrors } from '../interfaces/fines-mac-personal-details-field-errors.interface';
@@ -89,6 +89,7 @@ export class FinesMacPersonalDetailsFormComponent
   private readonly globalStore = inject(GlobalStore);
   private readonly vehicleRegistrationConfigService = inject(FinesVehicleRegistrationConfigService);
 
+  /** Returns the current length message and validator for the personal registration field. */
   private get vehicleRegistrationConfig() {
     return this.vehicleRegistrationConfigService.getConfig('Registration number', 11);
   }
@@ -111,6 +112,7 @@ export class FinesMacPersonalDetailsFormComponent
     },
   };
 
+  /** Indicates whether R1A-1-2 registration rules should be shown in the form. */
   public readonly release1a1_2Enabled = computed(
     () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
   );
@@ -121,6 +123,7 @@ export class FinesMacPersonalDetailsFormComponent
   public ageLabel!: string;
   public readonly defendantTypesKeys = FINES_MAC_DEFENDANT_TYPES_KEYS;
 
+  /** Keeps the registration error message and validation state synchronized with the release flag. */
   constructor() {
     super();
     effect(() => {

@@ -14,7 +14,7 @@ import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Va
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
-import { FinesVehicleRegistrationConfigService } from '../../../services/fines-vehicle-registration-config.service';
+import { FinesVehicleRegistrationConfigService } from '@services/fines/fines-vehicle-registration-config.service';
 import { IFinesMacParentGuardianDetailsFieldErrors } from '../interfaces/fines-mac-parent-guardian-details-field-errors.interface';
 import { IFinesMacParentGuardianDetailsForm } from '../interfaces/fines-mac-parent-guardian-details-form.interface';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS } from '../constants/fines-mac-parent-guardian-details-alias';
@@ -79,6 +79,7 @@ export class FinesMacParentGuardianDetailsFormComponent
   private readonly globalStore = inject(GlobalStore);
   private readonly vehicleRegistrationConfigService = inject(FinesVehicleRegistrationConfigService);
 
+  /** Returns the current length message and validator for the parent or guardian registration field. */
   private get vehicleRegistrationConfig() {
     return this.vehicleRegistrationConfigService.getConfig('Registration number', 10);
   }
@@ -88,6 +89,7 @@ export class FinesMacParentGuardianDetailsFormComponent
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected override readonly aliasFormArrayName = 'fm_parent_guardian_details_aliases';
 
+  /** Indicates whether R1A-1-2 registration rules should be shown in the form. */
   public readonly release1a1_2Enabled = computed(
     () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
   );
@@ -109,6 +111,7 @@ export class FinesMacParentGuardianDetailsFormComponent
   public age!: number;
   public ageLabel!: string;
 
+  /** Keeps the registration error message and validation state synchronized with the release flag. */
   constructor() {
     super();
     effect(() => {

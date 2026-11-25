@@ -25,6 +25,7 @@ import { getFeatureFlagReleaseState } from '../../../../../utils/fines-section-p
 })
 export class FinesAccPartyAddAmendConvertVd extends AbstractNestedFormBaseComponent {
   private readonly globalStore = inject(GlobalStore);
+  /** Indicates whether the R1A-1-2 vehicle registration rules should be shown. */
   public readonly release1a1_2Enabled = computed(
     () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
   );

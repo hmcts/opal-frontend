@@ -114,6 +114,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
   private readonly finesAccountStore = inject(FinesAccountStore);
   private readonly vehicleRegistrationConfigService = inject(FinesVehicleRegistrationConfigService);
 
+  /** Returns registration validation settings while preserving the legacy ACC pattern check. */
   private get vehicleRegistrationConfig() {
     return this.vehicleRegistrationConfigService.getConfig('Vehicle registration', 11, true);
   }
@@ -152,6 +153,7 @@ export class FinesAccPartyAddAmendConvertFormComponent
   public readonly FINES_ACC_SECTION_BREAK = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES.hr2;
   public readonly sectionFragments = FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS;
 
+  /** Keeps the registration length message and current validation state synchronized with the release flag. */
   constructor() {
     super();
     effect(() => {
