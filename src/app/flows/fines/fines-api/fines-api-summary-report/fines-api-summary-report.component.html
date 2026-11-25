@@ -1,4 +1,152 @@
-<div class="govuk-grid-column-two-thirds">
-  <h1 class="govuk-heading-l">Till/File summary report</h1>
-  <p class="govuk-body">This page is not available yet.</p>
-</div>
+@if (report(); as summary) {
+  <div class="govuk-grid-column-full">
+    <a class="govuk-back-link" [routerLink]="backRoute" [fragment]="summary.isTill ? 'allocate' : 'ignored'">Back</a>
+    <div id="fines-api-summary-report" class="govuk-!-margin-top-6">
+      <h1 class="govuk-heading-l">
+        <span class="govuk-caption-m">{{ summary.isTill ? 'Till' : 'File' }}</span
+        >{{ summary.title }}
+      </h1>
+      <button id="fines-api-summary-print" type="button" class="govuk-button" (click)="print()">Print</button>
+      <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-half">
+          <h2 class="govuk-heading-m">{{ summary.isTill ? 'Till details' : 'File details' }}</h2>
+          <dl class="govuk-summary-list">
+            @for (item of summary.fileDetails; track item.label) {
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key govuk-!-width-one-half">{{ item.label }}</dt>
+                <dd class="govuk-summary-list__value govuk-!-width-one-half">{{ item.value }}</dd>
+              </div>
+            }
+          </dl>
+          <h2 class="govuk-heading-m">Records</h2>
+          <dl class="govuk-summary-list">
+            @for (item of summary.records; track item.label) {
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key govuk-!-width-one-half">{{ item.label }}</dt>
+                <dd class="govuk-summary-list__value govuk-!-width-one-half">{{ item.value }}</dd>
+              </div>
+            }
+          </dl>
+        </div>
+      </div>
+      <h2 class="govuk-heading-m">Summary</h2>
+      <section aria-labelledby="summary-records-heading" id="fines-api-summary-records">
+        <h3 class="govuk-heading-s summary-section-heading govuk-!-padding-bottom-2" id="summary-records-heading">
+          Total records
+        </h3>
+        <table class="govuk-table" id="fines-api-summary-breakdown">
+          <caption class="govuk-visually-hidden">
+            Total records
+          </caption>
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Type</th>
+              <th scope="col" class="govuk-table__header">Number</th>
+              <th scope="col" class="govuk-table__header">Value</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            @for (row of summary.breakdown; track row.label) {
+              <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header govuk-!-font-weight-regular">{{ row.label }}</th>
+                <td class="govuk-table__cell">{{ row.number }}</td>
+                <td class="govuk-table__cell">{{ row.value }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </section>
+      @for (section of summary.sections; track section.id) {
+        <section [attr.aria-labelledby]="section.id + '-heading'" [id]="'fines-api-summary-' + section.id">
+          <h3 class="govuk-heading-s summary-section-heading govuk-!-padding-bottom-2" [id]="section.id + '-heading'">
+            {{ section.heading }}
+          </h3>
+          @if (section.rows.length) {
+            <table class="govuk-table">
+              <caption class="govuk-visually-hidden">
+                {{
+                  section.heading
+                }}
+              </caption>
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  @for (column of section.columns; track column) {
+                    <th scope="col" class="govuk-table__header">{{ column }}</th>
+                  }
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                @for (row of section.rows; track $index) {
+                  <tr class="govuk-table__row">
+                    @for (cell of row; track $index) {
+                      <td class="govuk-table__cell">{{ cell }}</td>
+                    }
+                  </tr>
+                }
+              </tbody>
+              <tfoot>
+                <tr class="govuk-table__row summary-total govuk-!-font-weight-bold">
+                  <th scope="row" [attr.colspan]="section.columns.length - 2" class="govuk-table__header">
+                    Total value to be written to suspense
+                  </th>
+                  <td class="govuk-table__cell" colspan="2">{{ section.total }}</td>
+                </tr>
+              </tfoot>
+            </table>
+          } @else {
+            <p class="govuk-body">No records found.</p>
+          }
+        </section>
+      }
+      <section aria-labelledby="summary-errors-heading" id="fines-api-summary-errors">
+        <h3 class="govuk-heading-s summary-section-heading govuk-!-padding-bottom-2" id="summary-errors-heading">
+          Errors in record details
+        </h3>
+        @for (error of summary.errors; track $index) {
+          <div class="summary-error govuk-!-padding-3 govuk-!-margin-bottom-4">
+            <div class="govuk-grid-row">
+              <div class="govuk-grid-column-one-half">
+                <h4 class="govuk-heading-s">Court bank details</h4>
+                <dl class="govuk-summary-list">
+                  @for (item of error.court; track item.label) {
+                    <div class="govuk-summary-list__row">
+                      <dt class="govuk-summary-list__key govuk-!-width-one-half">{{ item.label }}</dt>
+                      <dd class="govuk-summary-list__value govuk-!-width-one-half">{{ item.value }}</dd>
+                    </div>
+                  }
+                </dl>
+              </div>
+              <div class="govuk-grid-column-one-half">
+                <h4 class="govuk-heading-s">Defendant bank details</h4>
+                <dl class="govuk-summary-list">
+                  @for (item of error.defendant; track item.label) {
+                    <div class="govuk-summary-list__row">
+                      <dt class="govuk-summary-list__key govuk-!-width-one-half">{{ item.label }}</dt>
+                      <dd class="govuk-summary-list__value govuk-!-width-one-half">{{ item.value }}</dd>
+                    </div>
+                  }
+                </dl>
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <p class="govuk-body">No records found.</p>
+        }
+        @if (summary.errors.length) {
+          <dl class="govuk-summary-list govuk-!-margin-bottom-4">
+            <div class="govuk-summary-list__row summary-total govuk-!-font-weight-bold">
+              <dt class="govuk-summary-list__key govuk-!-width-one-half">Total value to be written to suspense</dt>
+              <dd class="govuk-summary-list__value govuk-!-width-one-half">{{ summary.errorSuspenseTotal }}</dd>
+            </div>
+          </dl>
+          <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row summary-total govuk-!-font-weight-bold">
+              <dt class="govuk-summary-list__key govuk-!-width-one-half">Total value of records ignored</dt>
+              <dd class="govuk-summary-list__value govuk-!-width-one-half">{{ summary.ignoredTotal }}</dd>
+            </div>
+          </dl>
+        }
+      </section>
+    </div>
+  </div>
+}

@@ -14,7 +14,11 @@
 <ng-template #cell let-row let-column="column">
   @switch (column.key) {
     @case (content.columns.tillNumber) {
-      <a class="govuk-link" [routerLink]="[tillSummaryRoute, row.tillId]">{{ row[column.key] }}</a>
+      @if (row.interfaceJobId) {
+        <a class="govuk-link" [routerLink]="[tillSummaryRoute, row.interfaceJobId]">{{ row[column.key] }}</a>
+      } @else {
+        {{ row[column.key] }}
+      }
     }
     @case (content.columns.amount) {
       <opal-lib-custom-accessible-monetary [value]="row[column.key]" />

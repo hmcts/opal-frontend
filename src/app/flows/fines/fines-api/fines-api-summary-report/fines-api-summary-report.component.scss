@@ -1,0 +1,17 @@
+@use 'govuk-frontend/dist/govuk/base' as govuk;
+
+:host {
+  overflow-wrap: anywhere;
+}
+
+.summary-section-heading {
+  border-bottom: 1px solid govuk.$govuk-text-colour;
+}
+
+.summary-error {
+  border: 1px solid govuk.$govuk-border-colour;
+}
+
+.summary-total {
+  background-color: govuk.govuk-colour('black', $variant: 'tint-95');
+}

@@ -1,4 +1,6 @@
 export interface IOpalFinesTill {
+  business_unit_id?: number;
+  interface_job_id?: number | string | null;
   till_id: number | string;
   till_number: number;
   errors: number;
