@@ -1661,6 +1661,16 @@ describe('OpalFines', () => {
     expect(result).toEqual({});
   });
 
+  it.each([456, '9007199254740993'])('resolves the master of account %s without caching the response', (accountId) => {
+    const response = { defendant_account_id: '9007199254740994' };
+    for (let request = 0; request < 2; request++) {
+      service.getDefendantAccountMaster(accountId).subscribe((master) => expect(master).toEqual(response));
+      const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/master`);
+      expect(req.request.method).toBe('GET');
+      req.flush(response);
+    }
+  });
+
   it.each([456, '9007199254740993'])('should getDefendantAccountHeader for account %s', (accountId) => {
     const expectedResponse = FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK;
     const apiUrl = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/header-summary`;
