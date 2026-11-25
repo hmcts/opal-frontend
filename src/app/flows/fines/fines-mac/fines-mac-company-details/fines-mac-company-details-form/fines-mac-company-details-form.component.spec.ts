@@ -3,7 +3,10 @@ import { FormArray } from '@angular/forms';
 import { Type } from '@angular/core';
 import { FinesMacAbstractAliasFormComponent } from '../../abstracts/fines-mac-abstract-alias-form.component';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import {
+  RELEASE_1A_1_2_FEATURE_FLAG,
+  RELEASE_1A_1_3_FEATURE_FLAG,
+} from '../../../constants/release-feature-flags.constant';
 import { FinesMacCompanyDetailsFormComponent } from './fines-mac-company-details-form.component';
 import { IFinesMacCompanyDetailsForm } from '../interfaces/fines-mac-company-details-form.interface';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
@@ -44,6 +47,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
 
     globalStore.setFeatureFlags({
       [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+      [RELEASE_1A_1_3_FEATURE_FLAG]: true,
     });
 
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
@@ -249,6 +253,60 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
       control?.setValue('AB12-CD');
 
       expect(control?.invalid).toBe(true);
+    });
+
+    it('should display vehicle details when release-1a-1-3 is enabled', () => {
+      globalStore.setFeatureFlags({
+        [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+        [RELEASE_1A_1_3_FEATURE_FLAG]: true,
+      });
+
+      fixture.detectChanges();
+
+      const nativeElement = fixture.nativeElement as HTMLElement;
+
+      expect(nativeElement.querySelector('#fm_company_details_vehicle_make')).not.toBeNull();
+      expect(nativeElement.querySelector('#fm_company_details_vehicle_registration_mark')).not.toBeNull();
+    });
+
+    it('should hide vehicle details when release-1a-1-3 is disabled', () => {
+      globalStore.setFeatureFlags({
+        [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+        [RELEASE_1A_1_3_FEATURE_FLAG]: false,
+      });
+
+      fixture.detectChanges();
+
+      const nativeElement = fixture.nativeElement as HTMLElement;
+
+      expect(nativeElement.querySelector('#fm_company_details_vehicle_make')).toBeNull();
+      expect(nativeElement.querySelector('#fm_company_details_vehicle_registration_mark')).toBeNull();
+    });
+
+    it('should not validate hidden vehicle controls when release-1a-1-3 is disabled', () => {
+      globalStore.setFeatureFlags({
+        [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+        [RELEASE_1A_1_3_FEATURE_FLAG]: false,
+      });
+
+      fixture.detectChanges();
+
+      const vehicleMake = component.form.get('fm_company_details_vehicle_make');
+      const registration = component.form.get('fm_company_details_vehicle_registration_mark');
+
+      vehicleMake?.setValue('A'.repeat(31));
+      registration?.setValue('A'.repeat(12));
+
+      expect(vehicleMake?.valid).toBe(true);
+      expect(registration?.valid).toBe(true);
+    });
+
+    it('should allow a space within the 7-character registration limit', () => {
+      const control = component.form.get('fm_company_details_vehicle_registration_mark');
+
+      control?.setValue('AB1 CDE');
+
+      expect(control?.valid).toBe(true);
     });
   });
 

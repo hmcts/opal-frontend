@@ -47,6 +47,7 @@ import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constan
 import {
   RELEASE_1A_1_1_FEATURE_FLAG,
   RELEASE_1A_1_2_FEATURE_FLAG,
+  RELEASE_1A_1_3_FEATURE_FLAG,
 } from '../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../utils/fines-section-permissions.utils';
 
@@ -113,6 +114,9 @@ export class FinesMacReviewAccountComponent extends AbstractFormParentBaseCompon
   );
   public readonly release1a1_2Enabled = computed(
     () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
+  );
+  public readonly release1a1_3Enabled = computed(
+    () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_3_FEATURE_FLAG] === true,
   );
 
   public formErrorSummaryMessage: IAbstractFormBaseFormErrorSummaryMessage[] = [];

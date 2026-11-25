@@ -1,7 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  effect,
   EventEmitter,
+  Injector,
   Input,
   OnDestroy,
   OnInit,
@@ -11,7 +13,10 @@ import {
 } from '@angular/core';
 import { FinesMacAbstractAliasFormComponent } from '../../abstracts/fines-mac-abstract-alias-form.component';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import {
+  RELEASE_1A_1_2_FEATURE_FLAG,
+  RELEASE_1A_1_3_FEATURE_FLAG,
+} from '../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
 import { FormGroup, FormControl, Validators, FormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IFinesMacCompanyDetailsForm } from '../interfaces/fines-mac-company-details-form.interface';
@@ -69,6 +74,7 @@ export class FinesMacCompanyDetailsFormComponent
 {
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly globalStore = inject(GlobalStore);
+  private readonly vehicleDetailsEffectInjector = inject(Injector);
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacCompanyDetailsForm>();
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
@@ -80,6 +86,10 @@ export class FinesMacCompanyDetailsFormComponent
 
   public readonly release1a1_2Enabled = computed(
     () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
+  );
+
+  public readonly release1a1_3Enabled = computed(
+    () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_3_FEATURE_FLAG] === true,
   );
 
   /**
@@ -146,8 +156,27 @@ export class FinesMacCompanyDetailsFormComponent
     this.setUpAliasCheckboxListener('fm_company_details_add_alias', 'fm_company_details_aliases');
   }
 
+  private syncVehicleDetailsValidators(): void {
+    effect(
+      () => {
+        const enabled = this.release1a1_3Enabled();
+        const vehicleMake = this.form.get('fm_company_details_vehicle_make');
+        const registration = this.form.get('fm_company_details_vehicle_registration_mark');
+
+        vehicleMake?.setValidators(enabled ? [optionalMaxLengthValidator(30)] : []);
+        registration?.setValidators(
+          enabled ? [optionalMaxLengthValidator(7), ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR] : [],
+        );
+
+        vehicleMake?.updateValueAndValidity({ emitEvent: false });
+        registration?.updateValueAndValidity({ emitEvent: false });
+      },
+      { injector: this.vehicleDetailsEffectInjector },
+    );
+  }
   public override ngOnInit(): void {
     this.initialCompanyDetailsSetup();
+    this.syncVehicleDetailsValidators();
     super.ngOnInit();
   }
 }

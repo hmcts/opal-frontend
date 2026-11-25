@@ -24,7 +24,7 @@ describe('FinesMacReviewAccountCompanyDetailsComponent', () => {
     component = fixture.componentInstance;
 
     component.companyDetails = structuredClone(FINES_MAC_COMPANY_DETAILS_STATE_MOCK);
-
+    fixture.componentRef.setInput('release1a1_3Enabled', true);
     fixture.detectChanges();
   });
 
@@ -129,6 +129,16 @@ describe('FinesMacReviewAccountCompanyDetailsComponent', () => {
 
       expect(nativeElement.textContent).toContain('Ford Transit');
       expect(nativeElement.textContent).toContain('AB12CDE');
+    });
+
+    it('should hide vehicle details when release-1a-1-3 is disabled', () => {
+      fixture.componentRef.setInput('release1a1_3Enabled', false);
+      fixture.detectChanges();
+
+      const rows = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('.govuk-summary-list__row'));
+
+      expect(rows.some((row) => row.textContent?.includes('Vehicle make and model'))).toBe(false);
+      expect(rows.some((row) => row.textContent?.includes('Registration number'))).toBe(false);
     });
   });
 });
