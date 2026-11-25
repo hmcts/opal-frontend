@@ -11,16 +11,15 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
-import { NUMERIC_PATTERN } from '@hmcts/opal-frontend-common/constants';
-import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { FINES_SUSPENSE_ITEM_RESULTS_SEARCH_FIELD_ERRORS } from './constants/fines-suspense-item-results-search-field-errors.constant';
 import { IFinesSuspenseItemResultsSearchFormState } from './interfaces/fines-suspense-item-results-search-form-state.interface';
+import { createSuspenseItemReferenceControl } from '../../utils/fines-suspense-item-reference-control.utils';
 
 @Component({
   selector: 'app-fines-suspense-item-results-search-form',
@@ -45,14 +44,7 @@ export class FinesSuspenseItemResultsSearchFormComponent
 
   private initialiseSearchForm(): void {
     this.form = new FormGroup({
-      fsir_suspense_reference_number: new FormControl(this.initialReference(), {
-        nonNullable: true,
-        validators: [
-          Validators.required,
-          patternValidator(NUMERIC_PATTERN, 'numericalTextPattern'),
-          patternValidator(/^0*\d{1,18}$/, 'maxlength'),
-        ],
-      }),
+      fsir_suspense_reference_number: createSuspenseItemReferenceControl(this.initialReference()),
     });
     this.setInitialErrorMessages();
     // Reset before the shared listener checks edits made after a valid submission.
