@@ -54,6 +54,7 @@ export const routing: Routes = [
       OpalFines,
     ],
     canActivate: [routePermissionsGuard, finesSuspenseItemFlowStateGuard],
+    canDeactivate: [canDeactivateGuard],
     runGuardsAndResolvers: 'always',
     loadComponent: () =>
       import('../fines-suspense-item-results/fines-suspense-item-results.component').then(

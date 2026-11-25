@@ -155,6 +155,46 @@ describe('Suspense item navigation', () => {
     expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(false);
   });
 
+  describe.each([
+    { destination: 'Finance', url: '/fines/dashboard/finance', retainsBusinessUnit: false },
+    { destination: 'Search', url: '/fines/suspense-item/search', retainsBusinessUnit: true },
+  ])('leaving results for $destination', ({ url, retainsBusinessUnit }) => {
+    it.each([false, true])('confirms navigation after editing the reference (leave: %s)', async (leave) => {
+      vi.mocked(window.confirm).mockReturnValue(leave);
+      const resultsUrl = '/fines/suspense-item/001234/results';
+      const harness = await RouterTestingHarness.create(resultsUrl);
+      const store = TestBed.inject(FinesSuspenseItemStore);
+      const businessUnitId = store.selectedBusinessUnitId();
+      const businessUnitName = store.selectedBusinessUnitName();
+      const input = harness.routeNativeElement!.querySelector<HTMLInputElement>('#fsir_suspense_reference_number')!;
+      input.value = '005678';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      harness.detectChanges();
+
+      await TestBed.inject(Router).navigateByUrl(url);
+      harness.detectChanges();
+
+      expect(window.confirm).toHaveBeenCalledOnce();
+      expect(TestBed.inject(Router).url).toBe(leave ? url : resultsUrl);
+      expect(store.selectedBusinessUnitId()).toBe(leave && !retainsBusinessUnit ? null : businessUnitId);
+      expect(store.selectedBusinessUnitName()).toBe(leave && !retainsBusinessUnit ? null : businessUnitName);
+      expect(getSuspenseItemSummary).toHaveBeenCalledOnce();
+      if (!leave) {
+        expect(input.value).toBe('005678');
+        expect(store.unsavedChanges()).toBe(true);
+      }
+    });
+
+    it('allows navigation without confirmation when the reference has not been edited', async () => {
+      await RouterTestingHarness.create('/fines/suspense-item/001234/results');
+
+      await TestBed.inject(Router).navigateByUrl(url);
+
+      expect(window.confirm).not.toHaveBeenCalled();
+      expect(TestBed.inject(Router).url).toBe(url);
+    });
+  });
+
   it('opens not-found results after the summary API returns 404', async () => {
     const store = TestBed.inject(FinesSuspenseItemStore);
     const unit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
