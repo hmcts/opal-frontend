@@ -407,6 +407,7 @@ export class OpalFines {
 
   /**
    * Retrieves national auto-enforcement thresholds, sharing the request and replaying its successful response across subscribers.
+   * Cancels a pending request when its last subscriber leaves; completed responses remain cached.
    * Clearing enforcementAccountTypesCache$ makes the next call fetch fresh data.
    * @returns A shared observable containing the low (L) and high (H) enforcement path records.
    */
@@ -416,7 +417,7 @@ export class OpalFines {
         OPAL_FINES_PATHS.enforcementAccountTypes,
         this.retrySafeReadOptions(),
       )
-      .pipe(shareReplay({ bufferSize: 1, refCount: false }));
+      .pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
     return this.cache.enforcementAccountTypesCache$;
   }

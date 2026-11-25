@@ -170,6 +170,32 @@ describe('OpalFines', () => {
       httpMock.expectNone(url);
     });
 
+    it('cancels a pending GET only after its last subscriber leaves and fetches again for a later subscriber', () => {
+      const firstSubscriber = vi.fn();
+      const secondSubscriber = vi.fn();
+      const laterSubscriber = vi.fn();
+      const firstSubscription = service.getEnforcementAccountTypes().subscribe(firstSubscriber);
+      const secondSubscription = service.getEnforcementAccountTypes().subscribe(secondSubscriber);
+      const request = httpMock.expectOne(url);
+
+      firstSubscription.unsubscribe();
+
+      expect(request.cancelled).toBe(false);
+
+      secondSubscription.unsubscribe();
+
+      expect(request.cancelled).toBe(true);
+
+      service.getEnforcementAccountTypes().subscribe(laterSubscriber);
+      const laterRequest = httpMock.expectOne(url);
+      expect(laterRequest.request.method).toBe('GET');
+      laterRequest.flush(OPAL_FINES_ENFORCEMENT_ACCOUNT_TYPES_MOCK);
+
+      expect(laterSubscriber).toHaveBeenCalledExactlyOnceWith(OPAL_FINES_ENFORCEMENT_ACCOUNT_TYPES_MOCK);
+      expect(firstSubscriber).not.toHaveBeenCalled();
+      expect(secondSubscriber).not.toHaveBeenCalled();
+    });
+
     it('fetches fresh thresholds after the cache is cleared', () => {
       service.getEnforcementAccountTypes().subscribe();
       httpMock.expectOne(url).flush(OPAL_FINES_ENFORCEMENT_ACCOUNT_TYPES_MOCK);

@@ -1,5 +1,6 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
@@ -9,9 +10,11 @@ import { OPAL_FINES_PATHS } from '@services/fines/opal-fines-service/constants/o
 import { run } from 'axe-core';
 import { of, throwError } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { FinesAecPlaceholderComponent } from '../fines-aec-placeholder/fines-aec-placeholder.component';
 import { FinesAecStore } from '../stores/fines-aec.store';
 import { FinesAecConfigComponent } from './fines-aec-config.component';
+
+@Component({ selector: 'app-aec-test-administration', template: '<h1>Administration</h1>' })
+class AdministrationTestPageComponent {}
 
 describe('FinesAecConfigComponent', () => {
   let harness: RouterTestingHarness;
@@ -26,9 +29,8 @@ describe('FinesAecConfigComponent', () => {
         provideRouter([
           { path: 'config', component: FinesAecConfigComponent },
           {
-            path: 'navigation',
-            component: FinesAecPlaceholderComponent,
-            data: { heading: 'Auto-enforcement' },
+            path: 'fines/dashboard/administration',
+            component: AdministrationTestPageComponent,
           },
         ]),
         FinesAecStore,
@@ -147,15 +149,15 @@ describe('FinesAecConfigComponent', () => {
     expect(harness.routeNativeElement!.querySelector('table')).toBeNull();
   });
 
-  it('returns to the Auto-enforcement navigation placeholder when Back is selected', async () => {
+  it('returns to the Administration dashboard when Back is selected', async () => {
     await render();
 
     harness.routeNativeElement!.querySelector<HTMLAnchorElement>('.govuk-back-link')!.click();
     await harness.fixture.whenStable();
     harness.detectChanges();
 
-    expect(TestBed.inject(Router).url).toBe('/navigation');
-    expect(harness.routeNativeElement!.querySelector('h1')?.textContent).toBe('Auto-enforcement');
+    expect(TestBed.inject(Router).url).toBe('/fines/dashboard/administration');
+    expect(harness.routeNativeElement!.querySelector('h1')?.textContent).toBe('Administration');
   });
 
   it('has no Axe Core WCAG A or AA violations in the account types screen', async () => {
@@ -177,7 +179,10 @@ describe('FinesAecConfigComponent account types cache', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        provideRouter([{ path: 'config', component: FinesAecConfigComponent }]),
+        provideRouter([
+          { path: 'config', component: FinesAecConfigComponent },
+          { path: 'fines/dashboard/administration', component: AdministrationTestPageComponent },
+        ]),
         provideHttpClient(),
         provideHttpClientTesting(),
       ],
@@ -215,5 +220,34 @@ describe('FinesAecConfigComponent account types cache', () => {
 
     httpMock.expectNone(OPAL_FINES_PATHS.enforcementAccountTypes);
     expect(harness.routeNativeElement!.querySelector('#aec-minimum-COL')?.textContent?.trim()).toBe('£100.00');
+  });
+
+  it('cancels a pending request when switching tabs and starts a fresh request on return', async () => {
+    const harness = await RouterTestingHarness.create('/config');
+    const pendingRequest = httpMock.expectOne(OPAL_FINES_PATHS.enforcementAccountTypes);
+
+    await harness.navigateByUrl('/config#enforcement-paths');
+    harness.detectChanges();
+
+    expect(pendingRequest.cancelled).toBe(true);
+
+    await harness.navigateByUrl('/config#account-types');
+    httpMock.expectOne(OPAL_FINES_PATHS.enforcementAccountTypes).flush(OPAL_FINES_ENFORCEMENT_ACCOUNT_TYPES_MOCK);
+    harness.detectChanges();
+
+    expect(harness.routeNativeElement!.querySelector('#aec-minimum-COL')?.textContent?.trim()).toBe('£100.00');
+  });
+
+  it('cancels a pending request when Back leaves configuration for Administration', async () => {
+    const harness = await RouterTestingHarness.create('/config');
+    const pendingRequest = httpMock.expectOne(OPAL_FINES_PATHS.enforcementAccountTypes);
+
+    harness.routeNativeElement!.querySelector<HTMLAnchorElement>('.govuk-back-link')!.click();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    expect(TestBed.inject(Router).url).toBe('/fines/dashboard/administration');
+    expect(harness.routeNativeElement!.querySelector('h1')?.textContent).toBe('Administration');
+    expect(pendingRequest.cancelled).toBe(true);
   });
 });

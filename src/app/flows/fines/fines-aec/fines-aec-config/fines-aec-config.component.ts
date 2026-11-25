@@ -8,12 +8,13 @@ import {
   MojSubNavigationItemComponent,
 } from '@hmcts/opal-frontend-common/components/moj/moj-sub-navigation';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { FINES_ROUTING_PATHS } from '@routing/fines/constants/fines-routing-paths.constant';
 import { catchError, distinctUntilChanged, EMPTY, map, Observable } from 'rxjs';
+import { FINES_DASHBOARD_ROUTING_PATHS } from '../../constants/fines-dashboard-routing-paths.constant';
 import { FINES_AEC_TABS } from '../constants/fines-aec-tabs.constant';
 import { FinesAecAccountTypesTabComponent } from './fines-aec-account-types-tab/fines-aec-account-types-tab.component';
 import { FinesAecPlaceholderComponent } from '../fines-aec-placeholder/fines-aec-placeholder.component';
 import { IFinesAecAccountTypeRow } from '../interfaces/fines-aec-account-type-row.interface';
-import { FINES_AEC_ROUTING_PATHS } from '../routing/constants/fines-aec-routing-paths.constant';
 import { FinesAecPayloadService } from '../services/fines-aec-payload.service';
 import { FinesAecStore } from '../stores/fines-aec.store';
 import { FinesAecTab } from '../types/fines-aec-tab.type';
@@ -75,10 +76,13 @@ export class FinesAecConfigComponent implements OnInit {
       });
   }
 
-  /** Returns to the temporary Auto-enforcement navigation page. */
+  /** Returns to the Administration dashboard where the configuration flow is entered. */
   public navigateBack(): void {
-    this.router.navigate(['..', FINES_AEC_ROUTING_PATHS.children.navigation], {
-      relativeTo: this.activatedRoute,
-    });
+    void this.router.navigate([
+      '/',
+      FINES_ROUTING_PATHS.root,
+      FINES_DASHBOARD_ROUTING_PATHS.root,
+      FINES_DASHBOARD_ROUTING_PATHS.children.administration,
+    ]);
   }
 }
