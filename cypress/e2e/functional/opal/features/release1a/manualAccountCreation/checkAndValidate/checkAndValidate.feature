@@ -128,7 +128,7 @@ Feature: Check And Validate
       | Employer details           | Employer name                            | Test Corp                           |
       | Employer details           | Employee reference                       | ab123456c                           |
       | Employer details           | Employer email address                   | employer@example.com                |
-      | Employer details           | Employer telephone                       | 01234567890                         |
+      | Employer details           | Employer telephone                       | 012 3456 7890                       |
       | Employer details           | Address line 1                           | Addr1                               |
       | Employer details           | Address line 2                           | Addr2                               |
       | Employer details           | Address line 3                           | Addr3                               |
@@ -188,17 +188,61 @@ Feature: Check And Validate
       | Employer name          | Test Corp                     |
       | Employee reference     | AB123456C                     |
       | Employer email address | employer@example.com          |
-      | Employer telephone     | 01234567890                   |
+      | Employer telephone     | 012 3456 7890                 |
       | Employer address       | Addr1  Addr2  Addr3  TE12 3ST |
     And I see the manual review "Account comments and notes" summary:
       | Comment | This is a test comment |
 
     When I submit the manual account for review
-    Then I should see the header containing text "Create accounts"
+    Then the submitted manual account has telephone numbers without spaces
+    And I should see the header containing text "Create accounts"
     And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
     When I open Check and Validate Draft Accounts
     Then I open the draft account for "LNAME{uniq}, FNAME" and see header "Mr FNAME LNAME{uniq}"
+    And I see the manual review "Contact details" summary:
+      | Mobile telephone number | 07123456789 |
+      | Home telephone number   | 07123456789 |
+      | Work telephone number   | 07123456789 |
+    And I see the manual review "Employer details" summary:
+      | Employer telephone | 01234567890 |
     And the draft review history contains the status "Submitted"
+
+  @JIRA-EPIC:PO-2220 @R1A @JIRA-STORY:PO-11446
+  Scenario: Checker-rejected adult account retains days in default when date of birth changes
+    Given I create a "adultOrYouthOnly" draft account with the following details and set status "Submitted":
+      | account.defendant.surname                  | LNAME{uniq} |
+      | account.defendant.forenames                | FNAME       |
+      | account.defendant.dob                      | 1990-01-01  |
+      | account.suspended_committal_date           | 2020-02-01  |
+      | account.payment_terms.default_days_in_jail | 42          |
+    And I am logged in with email "opal-test-10@dev.platform.hmcts.net"
+    When I open Check and Validate Draft Accounts
+    Then I open the draft account for "LNAME{uniq}, FNAME" and see header "Mr FNAME LNAME{uniq}"
+    When I record the following decision on the draft account:
+      | Decision | Reject                          |
+      | Reason   | Days in default regression test |
+    And I am logged in with email "opal-test@dev.platform.hmcts.net"
+    And I open Create and Manage Draft Accounts
+    And I view the "Rejected" tab on the Create and Manage Draft Accounts page
+    And I open the draft account for defendant "LNAME{uniq}, FNAME"
+    Then I should see the header containing text "Mr FNAME LNAME{uniq}"
+    When I check the manual account details for account header "FNAME LNAME{uniq}"
+    Then I see the manual review "Payment terms" summary:
+      | There are days in default         | Yes              |
+      | Date days in default were imposed | 01 February 2020 |
+      | Days in default                   | 42 days          |
+    When I return to account details from check account details
+    And I view the "Personal details" task for "FNAME LNAME{uniq}"
+    And I complete manual personal details:
+      | Date of birth | 01/01/1991 |
+    And I return to account details
+    When I check the manual account details for account header "FNAME LNAME{uniq}"
+    Then I see the manual review "Defendant details" summary:
+      | Date of birth | 01 January 1991 (Adult) |
+    And I see the manual review "Payment terms" summary:
+      | There are days in default         | Yes              |
+      | Date days in default were imposed | 01 February 2020 |
+      | Days in default                   | 42 days          |
 
   @JIRA-EPIC:PO-2220 @R1A @JIRA-STORY:PO-640 @JIRA-TEST-KEY:PO-3881
   Scenario: Rejected parent or guardian to pay account can be edited and resubmitted
@@ -254,9 +298,22 @@ Feature: Check And Validate
       | Payment terms              | Instalment amount                        | 50                              |
       | Payment terms              | Payment frequency                        | Monthly                         |
       | Payment terms              | Start date                               | 2 weeks in the future           |
+      | Payment terms              | There are days in default                | Yes                             |
+      | Payment terms              | Date days in default were imposed        | 01/02/2020                      |
+      | Payment terms              | Default days                             | 42                              |
       | Account comments and notes | Comment                                  | This is a test comment          |
       | Account comments and notes | Note                                     |                                 |
 
+    When I check the manual account details for account header "fname lname{uniq}"
+    Then I see the manual review "Payment terms" summary:
+      | There are days in default         | Yes              |
+      | Date days in default were imposed | 01 February 2020 |
+      | Days in default                   | 42 days          |
+    When I return to account details from check account details
+    And I view the "Personal details" task for "fname lname{uniq}"
+    And I complete manual personal details:
+      | Date of birth | 01/01/2011 |
+    And I return to account details
     When I check the manual account details for account header "fname lname{uniq}"
     Then I see the manual review "Court details" summary:
       | Sending area or Local Justice Area (LJA) | Avon & Somerset Magistrates' Court (1450) |
@@ -267,7 +324,7 @@ Feature: Check And Validate
       | First names               | fname                   |
       | Last name                 | LNAME{uniq}             |
       | Address                   | Addr1  RG12 8EU         |
-      | Date of birth             | 01 January 2010 (Youth) |
+      | Date of birth             | 01 January 2011 (Youth) |
       | National Insurance number | AB 12 23 98 B           |
     And I see the manual review "Parent or guardian details" summary:
       | Forenames                 | parent fname                  |
@@ -288,10 +345,13 @@ Feature: Check And Validate
       | Imposition   | Creditor       | Amount imposed | Amount paid | Balance remaining |
       | Compensation | Mr FNAME LNAME | 300            | 100         | 200               |
     And I see the manual review "Payment terms" summary:
-      | Payment terms | Lump sum plus instalments |
-      | Lump sum      | £150                      |
-      | Instalment    | £50                       |
-      | Frequency     | Monthly                   |
+      | Payment terms                     | Lump sum plus instalments |
+      | Lump sum                          | £150                      |
+      | Instalment                        | £50                       |
+      | Frequency                         | Monthly                   |
+      | There are days in default         | Yes                       |
+      | Date days in default were imposed | 01 February 2020          |
+      | Days in default                   | 42 days                   |
     And I see the manual review "Employer details" summary:
       | Employer name          | XYZ Company                                              |
       | Employee reference     | AB123456C                                                |

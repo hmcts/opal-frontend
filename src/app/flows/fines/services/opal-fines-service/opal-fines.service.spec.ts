@@ -63,6 +63,11 @@ import { FINES_ACC_MINOR_CREDITOR_DETAILS_HEADER_MOCK } from '../../fines-acc/fi
 import { IOpalFinesEnforcersRefData } from './interfaces/opal-fines-enforcers-ref-data.interface';
 import { IOpalFinesEnforcer } from './interfaces/opal-fines-enforcer.interface';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { Router } from '@angular/router';
+import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-error';
+import { AppInsightsService } from '@hmcts/opal-frontend-common/services/app-insights-service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { IOpalFinesApr } from './interfaces/opal-fines-apr.interface';
 import { OPAL_FINES_ENFORCER_MOCK } from './mocks/opal-fines-enforcer.mock';
 import { OPAL_FINES_MINOR_CREDITOR_UPDATE_PAYLOAD_MOCK } from './mocks/opal-fines-minor-creditor-update-payload.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_CREDITOR_MOCK } from './mocks/opal-fines-account-minor-creditor-creditor.mock';
@@ -159,6 +164,71 @@ describe('OpalFines', () => {
     expect(error).not.toHaveBeenCalled();
   });
 
+  describe('getAprs', () => {
+    const url = '/opal-fines-service/defendant-accounts/77/alternate-payment-references';
+
+    it('maps a bare array and preserves the quoted account ETag', () => {
+      const result = vi.fn();
+      service.getAprs(77).subscribe(result);
+      const request = httpMock.expectOne(url);
+      expect(request.request.method).toBe('GET');
+      request.flush([], { headers: { ETag: '"7"' } });
+      expect(result).toHaveBeenCalledWith({ references: [], version: '"7"' });
+    });
+
+    it('does not cache across entries or accounts', () => {
+      const firstEntry = vi.fn();
+      const secondEntry = vi.fn();
+      const otherAccount = vi.fn();
+      const originalReference: IOpalFinesApr = {
+        alternate_payment_reference_id: 11,
+        defendant_account_id: 77,
+        relationship: 'APR',
+        category: 'APR',
+        business_unit_id: 1,
+        apr_text: 'Original reference',
+        created_at: '2026-06-01T12:00:00Z',
+        updated_at: null,
+      };
+      const updatedReference = {
+        ...originalReference,
+        apr_text: 'Updated reference',
+        updated_at: '2026-06-02T12:00:00Z',
+      };
+      const otherAccountReference = {
+        ...originalReference,
+        alternate_payment_reference_id: 12,
+        defendant_account_id: 78,
+        apr_text: 'Other account reference',
+      };
+
+      service.getAprs(77).subscribe(firstEntry);
+      httpMock.expectOne(url).flush([originalReference], { headers: { ETag: '"7"' } });
+      service.getAprs(77).subscribe(secondEntry);
+      httpMock.expectOne(url).flush([updatedReference], { headers: { ETag: '"8"' } });
+      service.getAprs(78).subscribe(otherAccount);
+      httpMock.expectOne(url.replace('/77/', '/78/')).flush([otherAccountReference], { headers: { ETag: '"3"' } });
+
+      expect(firstEntry).toHaveBeenCalledExactlyOnceWith({ references: [originalReference], version: '"7"' });
+      expect(secondEntry).toHaveBeenCalledExactlyOnceWith({ references: [updatedReference], version: '"8"' });
+      expect(otherAccount).toHaveBeenCalledExactlyOnceWith({ references: [otherAccountReference], version: '"3"' });
+    });
+
+    it('represents a missing response body as an empty reference list and preserves the account ETag', () => {
+      const result = vi.fn();
+      service.getAprs(77).subscribe(result);
+      httpMock.expectOne(url).flush(null, { headers: { ETag: '"7"' } });
+      expect(result).toHaveBeenCalledExactlyOnceWith({ references: [], version: '"7"' });
+    });
+
+    it('represents a missing ETag explicitly', () => {
+      const result = vi.fn();
+      service.getAprs(77).subscribe(result);
+      httpMock.expectOne(url).flush([]);
+      expect(result).toHaveBeenCalledWith({ references: [], version: null });
+    });
+  });
+
   it('should retry selected account detail reads after transient timeout failures', () => {
     const defendantAccountId = 456;
     const minorCreditorAccountId = 77;
@@ -244,6 +314,33 @@ describe('OpalFines', () => {
     minorCreditorSearchRequest.flush({ message: 'timed out' }, { status: 504, statusText: 'Gateway Timeout' });
     httpMock.expectNone(OPAL_FINES_PATHS.searchMinorCreditorAccounts);
     expect(minorCreditorSearchError).toHaveBeenCalledTimes(1);
+  });
+
+  describe('createApr', () => {
+    const url = '/opal-fines-service/defendant-accounts/77/alternate-payment-references';
+
+    it('creates the reference with its original text and account ETag, with no business unit header', () => {
+      const result = vi.fn();
+      const reference = { alternate_payment_reference_id: 11, apr_text: ' MiXeD-123 ' };
+      service.createApr(77, { apr_text: ' MiXeD-123 ' }, '"7"').subscribe(result);
+      const request = httpMock.expectOne(url);
+
+      expect(request.request.method).toBe('POST');
+      expect(request.request.body).toEqual({ apr_text: ' MiXeD-123 ' });
+      expect(request.request.headers.get('If-Match')).toBe('"7"');
+      expect(request.request.headers.keys()).toEqual(['If-Match']);
+      request.flush(reference, { status: 201, statusText: 'Created', headers: { ETag: '"8"' } });
+      expect(result).toHaveBeenCalledWith({ reference, version: '"8"' });
+    });
+
+    it.each([409, 412, 500, 503])('does not retry a failed create request with status %s', (status) => {
+      const error = vi.fn();
+      service.createApr(77, { apr_text: 'Reference' }, '"7"').subscribe({ error });
+      httpMock.expectOne(url).flush({ status }, { status, statusText: 'Failure' });
+
+      expect(error).toHaveBeenCalledOnce();
+      httpMock.expectNone(url);
+    });
   });
 
   it('should not retry mutation calls after transient timeout failures', () => {
@@ -2248,6 +2345,44 @@ describe('OpalFines', () => {
     req.flush({ message: errorMessage }, { status: 500, statusText: errorMessage });
   });
 
+  describe('updateApr', () => {
+    const url = '/opal-fines-service/defendant-accounts/141/alternate-payment-references/11';
+
+    it('patches only the selected reference with exact text, quoted account ETag', () => {
+      const result = vi.fn();
+      const reference = { alternate_payment_reference_id: 11, apr_text: ' MiXeD-123 ' };
+      service.updateApr(141, 11, { apr_text: ' MiXeD-123 ' }, '"7"').subscribe(result);
+      const request = httpMock.expectOne(url);
+
+      expect(request.request.method).toBe('PATCH');
+      expect(request.request.body).toEqual({ apr_text: ' MiXeD-123 ' });
+      expect(request.request.headers.keys()).toEqual(['If-Match']);
+      expect(request.request.headers.get('If-Match')).toBe('"7"');
+      request.flush(reference, { headers: { ETag: '"8"' } });
+      expect(result).toHaveBeenCalledWith({ reference, version: '"8"' });
+    });
+
+    it('returns a missing response ETag as null rather than reusing the submitted version', () => {
+      const result = vi.fn();
+      service.updateApr(141, 11, { apr_text: 'Changed' }, '"7"').subscribe(result);
+      httpMock.expectOne(url).flush({ alternate_payment_reference_id: 11, apr_text: 'Changed' });
+
+      expect(result).toHaveBeenCalledWith({
+        reference: { alternate_payment_reference_id: 11, apr_text: 'Changed' },
+        version: null,
+      });
+    });
+
+    it.each([403, 409, 422, 500, 503])('does not retry a failed PATCH with status %s', (status) => {
+      const error = vi.fn();
+      service.updateApr(141, 11, { apr_text: 'Changed' }, '"7"').subscribe({ error });
+      httpMock.expectOne(url).flush({ status }, { status, statusText: 'Failure' });
+
+      expect(error).toHaveBeenCalledOnce();
+      httpMock.expectNone(url);
+    });
+  });
+
   it('should return a mock response for patching defendant account', () => {
     const accountId = 123456;
     const updatePayload = {
@@ -2508,6 +2643,68 @@ describe('OpalFines', () => {
       expect(req.request.headers.has('Business-Unit-Id')).toBe(false);
 
       req.flush(expectedResponse);
+    });
+  });
+
+  describe('deleteApr', () => {
+    const url = '/opal-fines-service/defendant-accounts/141/alternate-payment-references/11';
+    const reference: IOpalFinesApr = {
+      alternate_payment_reference_id: 11,
+      defendant_account_id: 141,
+      business_unit_id: 77,
+      relationship: 'APR',
+      category: 'APR',
+      apr_text: 'TEST-REFERENCE',
+      created_at: '2026-06-01T12:00:00Z',
+      updated_at: null,
+    };
+    it('deletes the selected reference with the exact account If-Match and maps the HTTP 200 item and new ETag', () => {
+      const result = vi.fn();
+
+      service.deleteApr(141, 11, '"7"').subscribe(result);
+
+      const request = httpMock.expectOne(url);
+      expect(request.request.method).toBe('DELETE');
+      expect(request.request.headers.get('If-Match')).toBe('"7"');
+      expect(request.request.headers.has('Business-Unit-Id')).toBe(false);
+      expect(request.request.body).toBeNull();
+      request.flush(reference, { status: 200, statusText: 'OK', headers: { ETag: '"8"' } });
+      expect(result).toHaveBeenCalledExactlyOnceWith({ reference, version: '"8"' });
+    });
+
+    it.each(['APR', 'CONSOLIDATED', 'AMALGAMATED'] as const)(
+      'preserves the deleted %s reference returned by the service',
+      (relationship) => {
+        const result = vi.fn();
+        const deleted = { ...reference, relationship };
+
+        service.deleteApr(141, 11, '"7"').subscribe(result);
+        httpMock.expectOne(url).flush(deleted, { headers: { ETag: '"8"' } });
+
+        expect(result).toHaveBeenCalledWith({ reference: deleted, version: '"8"' });
+      },
+    );
+
+    it('represents a missing response ETag explicitly', () => {
+      const result = vi.fn();
+
+      service.deleteApr(141, 11, '"7"').subscribe(result);
+      httpMock.expectOne(url).flush(reference);
+
+      expect(result).toHaveBeenCalledWith({ reference, version: null });
+    });
+
+    it.each([409, 503, 504])('does not replay a DELETE after HTTP %s and propagates the error', (status) => {
+      const next = vi.fn();
+      const error = vi.fn();
+      service.deleteApr(141, 11, '"7"').subscribe({ next, error });
+      const failure = { status, title: 'Test request failure', retriable: status !== 409 };
+
+      httpMock.expectOne(url).flush(failure, { status, statusText: 'Test request failure' });
+
+      httpMock.expectNone(url);
+      expect(next).not.toHaveBeenCalled();
+      expect(error).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ status, error: failure }));
     });
   });
 
@@ -2963,5 +3160,84 @@ describe('OpalFines', () => {
 
       req.flush(payload);
     });
+  });
+});
+
+describe('APR removal with standard global HTTP error handling', () => {
+  let service: OpalFines;
+  let http: HttpTestingController;
+  let router: { navigate: ReturnType<typeof vi.fn> };
+  let globalStore: { setBannerError: ReturnType<typeof vi.fn>; resetBannerError: ReturnType<typeof vi.fn> };
+  const url = '/opal-fines-service/defendant-accounts/141/alternate-payment-references/11';
+
+  beforeEach(() => {
+    router = { navigate: vi.fn().mockResolvedValue(true) };
+    globalStore = { setBannerError: vi.fn(), resetBannerError: vi.fn() };
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(withInterceptors([httpErrorInterceptor, httpRetryInterceptor])),
+        provideHttpClientTesting(),
+        { provide: Router, useValue: router },
+        { provide: GlobalStore, useValue: globalStore },
+        { provide: AppInsightsService, useValue: { logException: vi.fn() } },
+      ],
+    });
+    service = TestBed.inject(OpalFines);
+    http = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => http.verify());
+
+  it('retains the standard concurrency error redirect for a stale account version', () => {
+    const next = vi.fn();
+    const error = vi.fn();
+    service.deleteApr(141, 11, '"7"').subscribe({ next, error });
+
+    http
+      .expectOne(url)
+      .flush({ status: 409, title: 'Conflict', retriable: false }, { status: 409, statusText: 'Conflict' });
+
+    expect(router.navigate).toHaveBeenCalledExactlyOnceWith(['/error/concurrency-failure']);
+    expect(globalStore.setBannerError).not.toHaveBeenCalled();
+    expect(next).not.toHaveBeenCalled();
+    expect(error).toHaveBeenCalledOnce();
+    http.expectNone(url);
+  });
+
+  it('retains the global banner for a transient processing failure without replaying the deletion', () => {
+    const error = vi.fn();
+    service.deleteApr(141, 11, '"7"').subscribe({ error });
+
+    http
+      .expectOne(url)
+      .flush(
+        { status: 503, title: 'Test failure', detail: 'Test unavailable', retriable: true },
+        { status: 503, statusText: 'Service unavailable' },
+      );
+
+    expect(globalStore.setBannerError).toHaveBeenCalledWith(
+      expect.objectContaining({ error: true, title: 'Test failure', message: 'Test unavailable' }),
+    );
+    expect(router.navigate).not.toHaveBeenCalled();
+    expect(error).toHaveBeenCalledOnce();
+    http.expectNone(url);
+  });
+
+  it('retains the technical error redirect for an unexpected non-retriable failure', () => {
+    const error = vi.fn();
+    service.deleteApr(141, 11, '"7"').subscribe({ error });
+
+    http
+      .expectOne(url)
+      .flush(
+        { status: 500, title: 'Test failure', retriable: false },
+        { status: 500, statusText: 'Internal server error' },
+      );
+
+    expect(router.navigate).toHaveBeenCalledExactlyOnceWith(['/error/internal-server'], {
+      state: { operationId: null },
+    });
+    expect(error).toHaveBeenCalledOnce();
+    http.expectNone(url);
   });
 });
