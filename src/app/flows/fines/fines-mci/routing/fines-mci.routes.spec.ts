@@ -32,11 +32,15 @@ import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.c
 import { finesMciCriminalPaymentAccountGuard } from './guards/fines-mci-criminal-payment-account.guard';
 import { finesMciCriminalAccountStateGuard } from './guards/fines-mci-criminal-account-state.guard';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
+import { finesMciCourtFeeDraftGuard } from './guards/fines-mci-court-fee-draft.guard';
 import { finesMciCourtFeesResolver } from './resolvers/fines-mci-court-fees.resolver';
+import { finesMciPaymentMappingsResolver } from './resolvers/fines-mci-payment-mappings.resolver';
+import { finesMciCourtFeeCheckGuard } from './guards/fines-mci-court-fee-check.guard';
+import { FinesMciCreateTillCourtFeeCheckComponent } from '../fines-mci-create-till/fines-mci-create-till-court-fee-check/fines-mci-create-till-court-fee-check.component';
 import { FinesMciCreateTillCourtFeeDetailsComponent } from '../fines-mci-create-till/fines-mci-create-till-court-fee-details/fines-mci-create-till-court-fee-details.component';
 import { FinesMciCreateTillSuspenseDetailsComponent } from '../fines-mci-create-till/fines-mci-create-till-suspense-details/fines-mci-create-till-suspense-details.component';
 import { FinesMciCreateTillOverUnderpaymentConfirmationComponent } from '../fines-mci-create-till/fines-mci-create-till-over-underpayment-confirmation/fines-mci-create-till-over-underpayment-confirmation.component';
-import { FinesMciPlaceholderComponent } from '../fines-mci-placeholder/fines-mci-placeholder.component';
+import { FinesMciCreateTillCourtFeePaymentDetailsComponent } from '../fines-mci-create-till/fines-mci-create-till-court-fee-payment-details/fines-mci-create-till-court-fee-payment-details.component';
 import { FinesMciPaymentCategoryCriminalAccountComponent } from '../fines-mci-payment-category-criminal-account/fines-mci-payment-category-criminal-account.component';
 import { FinesMciStore } from '../stores/fines-mci.store';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
@@ -184,7 +188,7 @@ describe('finesMci routes', () => {
     expect(courtFeeRoute?.resolve?.['courtFees']).toBe(finesMciCourtFeesResolver);
   });
 
-  it('loads the temporary Court Fee Payment Details destination', async () => {
+  it('loads the Court Fee Payment Details screen', async () => {
     expect(
       createTillRoute?.children?.filter(
         (child) => child.path === FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,
@@ -194,8 +198,20 @@ describe('finesMci routes', () => {
       (child) => child.path === FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,
     );
 
-    expect(await route?.loadComponent?.()).toBe(FinesMciPlaceholderComponent);
+    expect(await route?.loadComponent?.()).toBe(FinesMciCreateTillCourtFeePaymentDetailsComponent);
+    expect(route?.canActivate).toContain(finesMciCourtFeeDraftGuard);
+    expect(route?.canDeactivate).toEqual([canDeactivateGuard]);
+    expect(route?.resolve?.['paymentMappings']).toBe(finesMciPaymentMappingsResolver);
     expect(route?.data?.['heading']).toBe(FINES_MCI_ROUTING_TITLES.children.createTillCourtFeePaymentDetails);
+  });
+
+  it('loads the temporary Court Fee check screen with draft and leave protection', async () => {
+    const route = createTillRoute?.children?.find(
+      (child) => child.path === FINES_MCI_ROUTING_PATHS.children.checkCourtFee,
+    );
+    expect(await route?.loadComponent?.()).toBe(FinesMciCreateTillCourtFeeCheckComponent);
+    expect(route?.canActivate).toContain(finesMciCourtFeeCheckGuard);
+    expect(route?.canDeactivate).toEqual([canDeactivateGuard]);
   });
 
   it('loads the overpayment and underpayment confirmation screen', async () => {
@@ -243,7 +259,7 @@ describe('finesMci routes', () => {
     expect(childRoute).toEqual(
       expect.objectContaining({
         path,
-        canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+        canActivate: expect.arrayContaining([authGuard, routePermissionsGuard, finesMciFlowStateGuard]),
         data: expect.objectContaining({
           permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
           routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
