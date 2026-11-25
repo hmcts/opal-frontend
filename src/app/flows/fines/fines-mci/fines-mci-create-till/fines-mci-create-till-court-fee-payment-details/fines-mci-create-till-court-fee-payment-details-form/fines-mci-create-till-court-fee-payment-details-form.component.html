@@ -1,0 +1,198 @@
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
+
+<form (submit)="handleFormSubmit($event)" [formGroup]="form" novalidate>
+  <opal-lib-govuk-radio
+    fieldSetId="payment-received-from"
+    legendText="Payment received from"
+    legendClasses="govuk-fieldset__legend--s"
+    [errors]="formControlErrorMessages['paymentReceivedFrom']"
+  >
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Applicant"
+      inputId="paymentReceivedFrom"
+      inputName="paymentReceivedFrom"
+      inputValue="applicant"
+      [control]="form.controls['paymentReceivedFrom']"
+    ></div>
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Third party"
+      inputId="paymentReceivedFrom-third-party"
+      inputName="paymentReceivedFrom"
+      inputValue="thirdParty"
+      [control]="form.controls['paymentReceivedFrom']"
+    ></div>
+  </opal-lib-govuk-radio>
+
+  <opal-lib-govuk-radio
+    fieldSetId="payment-method"
+    legendText="Method of payment"
+    legendClasses="govuk-fieldset__legend--s"
+    [errors]="formControlErrorMessages['paymentMethod']"
+  >
+    @for (method of paymentMethods; track method.code; let first = $first) {
+      <div
+        opal-lib-govuk-radios-item
+        [labelText]="method.display_name"
+        [inputId]="first ? 'paymentMethod' : 'paymentMethod-' + method.code"
+        inputName="paymentMethod"
+        [inputValue]="method.code"
+        [ariaControls]="
+          method.code === 'PO' || method.code === 'CQ' || method.code === 'CT'
+            ? 'payment-method-conditional-' + method.code
+            : ''
+        "
+        [control]="form.controls['paymentMethod']"
+      ></div>
+      @if (method.code === 'PO' || method.code === 'CQ' || method.code === 'CT') {
+        <opal-lib-govuk-radios-conditional [conditionalId]="'payment-method-conditional-' + method.code">
+          @if (form.controls['paymentMethod'].value === method.code) {
+            @if (method.code === 'CT') {
+              <opal-lib-govuk-radio
+                fieldSetId="payment-source"
+                legendText="Source"
+                legendClasses="govuk-fieldset__legend--s"
+                [errors]="formControlErrorMessages['paymentSource']"
+              >
+                @for (source of paymentSources; track source.code; let first = $first) {
+                  <div
+                    opal-lib-govuk-radios-item
+                    [labelText]="source.display_name"
+                    [inputId]="first ? 'paymentSource' : 'paymentSource-' + source.code"
+                    inputName="paymentSource"
+                    [inputValue]="source.code"
+                    [control]="form.controls['paymentSource']"
+                  ></div>
+                }
+              </opal-lib-govuk-radio>
+            }
+            <opal-lib-govuk-text-input
+              labelText="Payment reference"
+              labelClasses="govuk-label--s"
+              inputId="paymentReference"
+              inputName="paymentReference"
+              [control]="form.controls['paymentReference']"
+              [errors]="formControlErrorMessages['paymentReference']"
+            ></opal-lib-govuk-text-input>
+          }
+        </opal-lib-govuk-radios-conditional>
+      }
+    }
+  </opal-lib-govuk-radio>
+
+  <opal-lib-govuk-radio
+    fieldSetId="payer-type"
+    legendText="Payer type"
+    legendClasses="govuk-fieldset__legend--s"
+    [errors]="formControlErrorMessages['payerType']"
+  >
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Individual"
+      inputId="payerType"
+      inputName="payerType"
+      inputValue="individual"
+      ariaControls="payer-individual-conditional"
+      [control]="form.controls['payerType']"
+    ></div>
+    <opal-lib-govuk-radios-conditional conditionalId="payer-individual-conditional">
+      @if (form.controls['payerType'].value === 'individual') {
+        <opal-lib-govuk-select
+          labelText="Title"
+          labelClasses="govuk-label--s"
+          selectId="title"
+          selectName="title"
+          [options]="titleOptions"
+          [control]="form.controls['title']"
+        ></opal-lib-govuk-select>
+        <opal-lib-govuk-text-input
+          labelText="First names"
+          labelClasses="govuk-label--s"
+          inputId="firstNames"
+          inputName="firstNames"
+          inputClasses="govuk-input--width-20"
+          hintText="Include their middle names"
+          [control]="form.controls['firstNames']"
+          [errors]="formControlErrorMessages['firstNames']"
+        ></opal-lib-govuk-text-input>
+        <opal-lib-govuk-text-input
+          labelText="Last name"
+          labelClasses="govuk-label--s"
+          inputId="lastName"
+          inputName="lastName"
+          inputClasses="govuk-input--width-20"
+          [control]="form.controls['lastName']"
+          [errors]="formControlErrorMessages['lastName']"
+        ></opal-lib-govuk-text-input>
+      }
+    </opal-lib-govuk-radios-conditional>
+    <div
+      opal-lib-govuk-radios-item
+      labelText="Company"
+      inputId="payerType-company"
+      inputName="payerType"
+      inputValue="company"
+      ariaControls="payer-company-conditional"
+      [control]="form.controls['payerType']"
+    ></div>
+    <opal-lib-govuk-radios-conditional conditionalId="payer-company-conditional">
+      @if (form.controls['payerType'].value === 'company') {
+        <opal-lib-govuk-text-input
+          labelText="Company name"
+          labelClasses="govuk-label--s"
+          inputId="companyName"
+          inputName="companyName"
+          [control]="form.controls['companyName']"
+          [errors]="formControlErrorMessages['companyName']"
+        ></opal-lib-govuk-text-input>
+      }
+    </opal-lib-govuk-radios-conditional>
+  </opal-lib-govuk-radio>
+
+  <fieldset class="govuk-fieldset">
+    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">Address</legend>
+    <opal-lib-govuk-text-input
+      labelText="Address line 1"
+      inputId="addressLine1"
+      inputName="addressLine1"
+      inputClasses="govuk-input--width-30"
+      [control]="form.controls['addressLine1']"
+      [errors]="formControlErrorMessages['addressLine1']"
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
+      labelText="Address line 2"
+      inputId="addressLine2"
+      inputName="addressLine2"
+      inputClasses="govuk-input--width-30"
+      [control]="form.controls['addressLine2']"
+      [errors]="formControlErrorMessages['addressLine2']"
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
+      labelText="Address line 3"
+      inputId="addressLine3"
+      inputName="addressLine3"
+      inputClasses="govuk-input--width-30"
+      [control]="form.controls['addressLine3']"
+      [errors]="formControlErrorMessages['addressLine3']"
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-text-input
+      labelText="Postcode"
+      inputId="postcode"
+      inputName="postcode"
+      inputClasses="govuk-input--width-10"
+      [control]="form.controls['postcode']"
+      [errors]="formControlErrorMessages['postcode']"
+    ></opal-lib-govuk-text-input>
+  </fieldset>
+
+  <div class="govuk-button-group">
+    <opal-lib-govuk-button buttonId="submitForm" type="submit" buttonClasses="govuk-!-display-block">
+      Continue
+    </opal-lib-govuk-button>
+    <opal-lib-govuk-cancel-link (linkClickEvent)="cancelRequested.emit()"></opal-lib-govuk-cancel-link>
+  </div>
+</form>
