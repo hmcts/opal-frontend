@@ -95,6 +95,7 @@ describe('Manual Cash Input - Non-consolidated restrictions', () => {
         .and('have.attr', 'rel', 'noopener noreferrer');
       cy.get(Mci.account.suspense).should('be.visible');
       cy.get(Mci.account.nextSteps).should('not.exist');
+      ['frequency', 'instalments', 'start-date'].forEach((row) => cy.get(Mci.account.value(row)).should('not.exist'));
       cy.get(Mci.account.suspense).click();
       cy.get('@financeRouter').its('url').should('eq', '/fines/manual-cash-input/create-allocate');
       cy.contains('h1', 'Manual cash input').should('be.visible');
@@ -280,4 +281,62 @@ describe('Manual Cash Input - Restricted navigation', () => {
         .and('not.contain.text', '130002BU');
     },
   );
+});
+
+describe('Manual Cash Input - Restricted summary variations', () => {
+  it('(AC6) displays company details and ordered trading names without a date of birth', { tags: TAGS }, () => {
+    openMciAccount({ ...structuredClone(MCI_CONFIRM_COMPANY_MOCK), account_status_code: 'WO' });
+    assertRestricted('Account has been written off in full');
+    cy.get(Mci.account.value('name')).should('contain.text', 'Example Trading Ltd');
+    cy.get(Mci.account.value('aliases')).should(($value) => {
+      expect($value.text().replace(/\s+/g, ' ').trim()).to.equal('First Trading Name Second Trading Name');
+    });
+    cy.get(Mci.account.value('date-of-birth')).should('not.exist');
+  });
+
+  [
+    { description: 'instalments', lumpSum: null, code: 'I' as const, terms: 'Instalments' },
+    { description: 'lump sum plus instalments', lumpSum: 100, code: 'B' as const, terms: 'Lump sum plus instalments' },
+  ].forEach(({ description, lumpSum, code, terms }) => {
+    it(`(AC6) displays instalment fields for a restricted account with ${description}`, { tags: TAGS }, () => {
+      const details = { ...structuredClone(MCI_CONFIRM_INDIVIDUAL_MOCK), account_status_code: 'WO' };
+      details.payment_terms = {
+        payment_terms_type: { payment_terms_type_code: code, payment_terms_type_display_name: 'Instalments' },
+        effective_date: '2026-12-15',
+        lump_sum_amount: lumpSum,
+        instalment_amount: 25.5,
+        instalment_period: { instalment_period_code: 'M', instalment_period_display_name: 'Monthly' },
+      };
+      openMciAccount(details);
+      assertRestricted('Account has been written off in full');
+      Object.entries({
+        'payment-terms': terms,
+        frequency: 'Monthly',
+        instalments: '£25.50',
+        'start-date': '15 December 2026',
+      }).forEach(([row, expected]) => {
+        cy.get(Mci.account.value(row)).should(($value) => {
+          expect($value.text().trim()).to.equal(expected);
+        });
+      });
+      cy.get(Mci.account.value('pay-by-date')).should('not.exist');
+    });
+  });
+
+  it('(AC6a) displays em dashes for missing instalment frequency, amount and start date', { tags: TAGS }, () => {
+    const details = { ...structuredClone(MCI_CONFIRM_INDIVIDUAL_MOCK), account_status_code: 'WO' };
+    details.payment_terms.payment_terms_type = {
+      payment_terms_type_code: 'I',
+      payment_terms_type_display_name: 'Instalments',
+    };
+    details.payment_terms.effective_date = null;
+    openMciAccount(details);
+    assertRestricted('Account has been written off in full');
+    ['frequency', 'instalments', 'start-date'].forEach((row) => {
+      cy.get(Mci.account.value(row))
+        .invoke('text')
+        .should('match', /^\s*—\s*$/);
+    });
+    cy.get(Mci.account.value('pay-by-date')).should('not.exist');
+  });
 });
