@@ -1,10 +1,8 @@
 import { of } from 'rxjs';
-import { Router, Routes } from '@angular/router';
 import { FINES_DASHBOARD_ROUTING_PATHS } from 'src/app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from 'src/app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_MCI_ROUTING_PATHS } from 'src/app/flows/fines/fines-mci/routing/constants/fines-mci-routing-paths.constant';
 import { FinesMciStore } from 'src/app/flows/fines/fines-mci/stores/fines-mci.store';
-import { FinesMciPaymentCategoryCriminalAccountComponent } from 'src/app/flows/fines/fines-mci/fines-mci-payment-category-criminal-account/fines-mci-payment-category-criminal-account.component';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from 'src/app/flows/fines/services/opal-fines-service/mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from 'src/app/flows/fines/fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
@@ -19,13 +17,6 @@ import { setupFinancePageComponent } from './setup/SetupComponent';
 const TAGS = ['@JIRA-STORY:PO-3490', '@JIRA-LABEL:manual-cash-input', '@JIRA-EPIC:PO-2439', '@R1CFinancialMovements'];
 const BUSINESS_UNIT = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
 const SEARCH_RESULTS_TABLE = 'app-fines-mci-payment-category-criminal-matches-table-wrapper table';
-const CRIMINAL_ROUTE = [
-  FINES_MCI_ROUTING_PATHS.children.create,
-  FINES_MCI_ROUTING_PATHS.children.till,
-  FINES_MCI_ROUTING_PATHS.children.payment,
-  FINES_MCI_ROUTING_PATHS.children.category,
-  FINES_MCI_ROUTING_PATHS.children.criminal,
-].join('/');
 const SEARCH_ROUTE = [
   '/',
   FINES_ROUTING_PATHS.root,
@@ -38,38 +29,8 @@ const SEARCH_ROUTE = [
   FINES_MCI_ROUTING_PATHS.children.search,
 ];
 
-const addAccountRouteToTestRouter = (router: Router): void => {
-  const mciRoute = [FINES_ROUTING_PATHS.root, FINES_MCI_ROUTING_PATHS.root].join('/');
-  const routes: Routes = router.config.map((route) => {
-    if (route.path !== mciRoute) {
-      return route;
-    }
-
-    return {
-      ...route,
-      children: route.children?.map((childRoute) =>
-        childRoute.path === CRIMINAL_ROUTE
-          ? {
-              ...childRoute,
-              children: [
-                ...(childRoute.children ?? []),
-                {
-                  path: 'account/:accountId/:type',
-                  component: FinesMciPaymentCategoryCriminalAccountComponent,
-                },
-              ],
-            }
-          : childRoute,
-      ),
-    };
-  });
-
-  router.resetConfig(routes);
-};
-
 const openCriminalSearch = (searchResponse: IOpalFinesDefendantAccountResponse, businessUnit = BUSINESS_UNIT): void => {
   setupFinancePageComponent({ dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance });
-  cy.get('@financeRouter').then((router) => addAccountRouteToTestRouter(router as Router));
   cy.get('@opalFines').then((opalFines) => {
     const getDefendantAccounts = cy.stub(opalFines as OpalFines, 'getDefendantAccounts').returns(of(searchResponse));
     cy.wrap(getDefendantAccounts).as('getDefendantAccounts');
@@ -376,7 +337,8 @@ describe('Manual Cash Input - Search Results', () => {
     selectAccountAndContinue(accountAtAGlance('CS'));
 
     cy.get('@financeRouter').its('url').should('include', '/account/1/individual');
-    cy.contains('h1', 'You cannot pay into this account \u2013 Account has been consolidated').should('be.visible');
+    cy.get(Mci.account.heading).should('have.text', 'You cannot pay into this account');
+    cy.get(Mci.account.warning).should('be.visible').and('contain.text', 'Account has been consolidated.');
   });
 
   [
@@ -384,51 +346,51 @@ describe('Manual Cash Input - Search Results', () => {
       description: 'a written-off account',
       status: 'WO',
       balance: 100,
-      heading: 'You cannot pay into this account \u2013 Account has been written off',
+      warning: 'Account has been written off in full',
       businessUnit: BUSINESS_UNIT,
     },
     {
       description: 'a zero-balance account',
       status: 'L',
       balance: 0,
-      heading: 'You cannot pay into this account \u2013 Account has a zero balance',
+      warning: 'Account has a zero balance',
       businessUnit: BUSINESS_UNIT,
     },
     {
       description: 'an acknowledged transfer-out account',
       status: 'TA',
       balance: 100,
-      heading: 'You cannot pay into this account \u2013 Account has been transferred out',
+      warning: 'Account has been transferred out',
       businessUnit: BUSINESS_UNIT,
     },
     {
       description: 'a transfer-out in-progress account',
       status: 'TO',
       balance: 100,
-      heading: 'You cannot pay into this account \u2013 Transfer out in progress',
+      warning: 'Account has been transferred out',
       businessUnit: BUSINESS_UNIT,
     },
     {
       description: 'an account transferred to Scotland or Northern Ireland',
       status: 'TS',
       balance: 100,
-      heading:
-        'You cannot pay into this account \u2013 Account has been transferred out to Scotland or Northern Ireland',
+      warning: 'Account has been transferred out',
       businessUnit: BUSINESS_UNIT,
     },
     {
       description: 'an account with an inhibited enforcement action',
       status: 'L',
       balance: 100,
-      heading: 'You cannot pay into this account \u2013 Account has an inhibited enforcement action',
+      warning: 'Account is subject to inhibit related enforcement actions: Warrant Issued (EA-001)',
       businessUnit: INHIBITED_ACTION_BUSINESS_UNIT,
     },
-  ].forEach(({ description, status, balance, heading, businessUnit }) => {
+  ].forEach(({ description, status, balance, warning, businessUnit }) => {
     it(`(AC5b) opens the account-with-warnings screen for ${description}`, { tags: TAGS }, () => {
       selectAccountAndContinue(accountAtAGlance(status, balance), businessUnit);
 
       cy.get('@financeRouter').its('url').should('include', '/account/1/individual');
-      cy.contains('h1', heading).should('be.visible');
+      cy.get(Mci.account.heading).should('have.text', 'You cannot pay into this account');
+      cy.get(Mci.account.warning).should('be.visible').and('contain.text', warning);
     });
   });
 
@@ -436,7 +398,8 @@ describe('Manual Cash Input - Search Results', () => {
     selectAccountAndContinue(accountAtAGlance('L', 100));
 
     cy.get('@financeRouter').its('url').should('include', '/account/1/individual');
-    cy.contains('h1', 'Successful confirm account').should('be.visible');
+    cy.get(Mci.account.heading).should('be.visible').and('have.text', 'Confirm account');
+    cy.get(Mci.account.warning).should('not.exist');
   });
 
   it('(AC6) returns to Search for an Account with individual criteria retained', { tags: TAGS }, () => {
