@@ -122,9 +122,9 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     enabledFixture.detectChanges();
 
     const registrationControl = enabledComponent.form.get('fm_personal_details_vehicle_registration_mark');
-    registrationControl?.setValue('XY21 ABC');
+    registrationControl?.setValue('XY21ABC');
     expect(registrationControl?.hasError('maxlength')).toBe(false);
-    registrationControl?.setValue('XY21 ABCD');
+    registrationControl?.setValue('XY21ABCD');
     expect(registrationControl?.hasError('maxlength')).toBe(true);
     registrationControl?.setValue('12345678');
 

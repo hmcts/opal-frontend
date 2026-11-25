@@ -105,7 +105,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     enabledFixture.detectChanges();
 
     const registrationControl = enabledComponent.form.get('facc_party_add_amend_convert_vehicle_registration_mark');
-    registrationControl?.setValue('XY21 ABC');
+    registrationControl?.setValue('XY21ABC');
     expect(registrationControl?.hasError('maxlength')).toBe(false);
     registrationControl?.setValue('12345678');
 

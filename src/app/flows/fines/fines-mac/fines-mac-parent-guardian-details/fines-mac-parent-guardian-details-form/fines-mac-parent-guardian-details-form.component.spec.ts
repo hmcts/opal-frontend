@@ -96,7 +96,7 @@ describe('FinesMacParentGuardianDetailsFormComponent', () => {
     enabledFixture.detectChanges();
 
     const registrationControl = enabledComponent.form.get('fm_parent_guardian_details_vehicle_registration_mark');
-    registrationControl?.setValue('XY21 ABC');
+    registrationControl?.setValue('XY21ABC');
     expect(registrationControl?.hasError('maxlength')).toBe(false);
     registrationControl?.setValue('12345678');
 
