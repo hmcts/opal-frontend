@@ -67,6 +67,55 @@ describe('FinesMciStore', () => {
     },
   );
 
+  it.each(['cancel', 'clear fee', 'change business unit', 'reset'] as const)(
+    'clears stored court fee payment details and origin on %s',
+    (action) => {
+      const [initialUnit, nextUnit] = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData;
+      store.setBusinessUnit(initialUnit);
+      store.setDraftJourney('courtFee');
+      store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: '25', numberOfItems: '2' });
+      store.setCourtFeePaymentOrigin('over-underpayment-confirmation');
+      store.setCourtFeePaymentDetails({
+        paymentReceivedFrom: 'applicant',
+        paymentMethod: 'NC',
+        payerType: 'company',
+        companyName: 'Example Ltd',
+        addressLine1: null,
+        addressLine2: null,
+        addressLine3: null,
+        postcode: null,
+      });
+      if (action === 'cancel') store.setDraftJourney(null);
+      else if (action === 'clear fee') store.setCourtFeeDraft(null);
+      else if (action === 'change business unit') store.setBusinessUnit(nextUnit);
+      else store.reset();
+      expect(store.courtFeePaymentDetails()).toBeNull();
+      expect(store.courtFeePaymentOrigin()).toBeNull();
+    },
+  );
+
+  it('retains payment details for the same fee draft and clears them if the fee changes', () => {
+    const fee = { courtFeeId: 1, amountPaid: '25', numberOfItems: '2' };
+    const details = {
+      paymentReceivedFrom: 'applicant',
+      paymentMethod: 'NC',
+      payerType: 'company',
+      companyName: 'Example Ltd',
+      addressLine1: null,
+      addressLine2: null,
+      addressLine3: null,
+      postcode: null,
+    };
+    store.setCourtFeeDraft(fee);
+    store.setCourtFeePaymentOrigin('court-fee-details');
+    store.setCourtFeePaymentDetails(details);
+    store.setCourtFeeDraft({ ...fee });
+    expect(store.courtFeePaymentDetails()).toEqual(details);
+    store.setCourtFeeDraft({ ...fee, amountPaid: '30' });
+    expect(store.courtFeePaymentDetails()).toBeNull();
+    expect(store.courtFeePaymentOrigin()).toBeNull();
+  });
+
   it.each(['business unit change', 'reset'] as const)(
     'should clear criminal search and payment drafts on %s',
     (action) => {
