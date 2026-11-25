@@ -62,7 +62,7 @@ import { FinesAccPartyAddAmendConvertDobNi } from './components/fines-acc-party-
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../constants/fines-acc-party-add-amend-convert-modes.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS } from '../constants/fines-acc-party-add-amend-convert-fragments.constant';
-import { FinesVehicleRegistrationConfigService } from '../../../services/fines-vehicle-registration-config.service';
+import { FinesVehicleRegistrationConfigService } from '@services/fines/fines-vehicle-registration-config.service';
 import {
   MojAlertComponent,
   MojAlertContentComponent,
@@ -216,7 +216,6 @@ export class FinesAccPartyAddAmendConvertFormComponent
       ]),
       facc_party_add_amend_convert_vehicle_registration_mark: new FormControl(null, [
         this.vehicleRegistrationConfig.validator,
-        ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       facc_party_add_amend_convert_language_preferences_document_language: new FormControl(null),
       facc_party_add_amend_convert_language_preferences_hearing_language: new FormControl(null),

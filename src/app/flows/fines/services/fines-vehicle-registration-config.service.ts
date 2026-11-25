@@ -1,12 +1,18 @@
 import { Injectable, inject } from '@angular/core';
 import { type ValidatorFn } from '@angular/forms';
+import { ALPHANUMERIC_WITH_SPACES_PATTERN } from '@hmcts/opal-frontend-common/constants';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { RELEASE_1A_1_2_FEATURE_FLAG } from '../constants/release-feature-flags.constant';
 import { type IFinesVehicleRegistrationConfig } from '../interfaces/fines-vehicle-registration-config.interface';
 import { getFeatureFlagReleaseState } from '../utils/fines-section-permissions.utils';
 
 const RELEASE_MAX_LENGTH = 7;
+const ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR = patternValidator(
+  ALPHANUMERIC_WITH_SPACES_PATTERN,
+  'alphanumericTextPattern',
+);
 
 @Injectable({ providedIn: 'root' })
 export class FinesVehicleRegistrationConfigService {
@@ -22,16 +28,13 @@ export class FinesVehicleRegistrationConfigService {
 
     return (control) => {
       const isReleaseEnabled = this.isReleaseEnabled();
-      const value = control.value;
 
       if (!isReleaseEnabled) return legacyValidator(control);
-      if (typeof value !== 'string') return releaseValidator(control);
 
-      // A stored VRM may contain one separator space, for example XY21 ABC.
-      const length = /^\S+ \S+$/.test(value) ? value.length - 1 : value.length;
-      return length > RELEASE_MAX_LENGTH
-        ? { maxlength: { requiredLength: RELEASE_MAX_LENGTH, actualLength: length } }
-        : null;
+      const lengthError = releaseValidator(control);
+      const patternError = ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR(control);
+
+      return lengthError || patternError ? { ...lengthError, ...patternError } : null;
     };
   }
 
