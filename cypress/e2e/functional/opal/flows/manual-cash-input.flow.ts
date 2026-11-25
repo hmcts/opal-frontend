@@ -138,6 +138,13 @@ export class ManualCashInputFlow {
     this.actions.assertCourtFeePaymentDetailsIsDisplayed();
   }
 
+  /** Verifies the selected business unit is displayed on Court Fee Payment Details.
+   * @param businessUnit - Name of the selected business unit.
+   */
+  public assertCourtFeePaymentDetailsBusinessUnitIsDisplayed(businessUnit: string): void {
+    this.actions.assertCourtFeePaymentDetailsBusinessUnitIsDisplayed(businessUnit);
+  }
+
   /** Verifies the over/underpayment destination. */
   public assertCourtFeeOverUnderpaymentIsDisplayed(): void {
     this.actions.assertCourtFeeOverUnderpaymentIsDisplayed();
@@ -185,6 +192,11 @@ export class ManualCashInputFlow {
   /** Selects Cancel for an overpayment. */
   public cancelOverpayment(): void {
     this.actions.cancelOverpayment();
+  }
+
+  /** Verifies that an underpayment cannot continue to Payment Details. */
+  public assertUnderpaymentCannotContinueToPaymentDetails(): void {
+    this.actions.assertUnderpaymentCannotContinueToPaymentDetails();
   }
 
   /** Verifies the underpayment screen offers Cancel and return to till and Go back. */
