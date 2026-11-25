@@ -50,7 +50,7 @@ export const ERROR_MESSAGES = {
   MAX_LENGTH_EMAIL_PRIMARY: 'Primary email address must be 76 characters or fewer',
   MAX_LENGTH_EMAIL_SECONDARY: 'Secondary email address must be 76 characters or fewer',
   MAX_LENGTH_VEHICLE_MAKE: 'Make and model must be 30 characters or fewer',
-  MAX_LENGTH_VEHICLE_REGISTRATION: 'Vehicle registration must be 11 characters or fewer',
+  MAX_LENGTH_VEHICLE_REGISTRATION: 'Vehicle registration must be 7 characters or fewer',
   MAX_LENGTH_EMPLOYER_NAME: 'Employer name must be 50 characters or fewer',
   MAX_LENGTH_EMPLOYER_REFERENCE: 'Employee reference must be 20 characters or fewer',
   MAX_LENGTH_EMPLOYER_EMAIL: 'Employer email address must be 76 characters or fewer',
@@ -82,7 +82,7 @@ export const ERROR_MESSAGES = {
   DATA_TYPE_VEHICLE_MAKE:
     'Vehicle make and model must only include letters a to z, numbers, hyphens, spaces and apostrophes',
   DATA_TYPE_VEHICLE_REGISTRATION:
-    'Vehicle registration must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+    'Registration number must only contain letters or numbers',
   DATA_TYPE_EMPLOYER_NAME: 'Employer name must only include letters a to z, numbers, hyphens, spaces and apostrophes',
   DATA_TYPE_EMPLOYER_REFERENCE:
     'Employer reference must only include letters a to z, numbers, hyphens, spaces and apostrophes',
