@@ -33,6 +33,7 @@ import { FinesMciCreateTillDetailsComponent } from 'src/app/flows/fines/fines-mc
 import { FinesMciCreateTillPaymentCategoryComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-payment-category/fines-mci-create-till-payment-category.component';
 import { FinesMciCreateTillCourtFeeDetailsComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-court-fee-details/fines-mci-create-till-court-fee-details.component';
 import { FinesMciCreateTillCourtFeePaymentDetailsComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-court-fee-payment-details/fines-mci-create-till-court-fee-payment-details.component';
+import { FinesMciCreateTillCourtFeeCheckComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-court-fee-check/fines-mci-create-till-court-fee-check.component';
 import { FinesMciCreateTillOverUnderpaymentConfirmationComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-over-underpayment-confirmation/fines-mci-create-till-over-underpayment-confirmation.component';
 import { FinesMciCreateTillSuspenseDetailsComponent } from 'src/app/flows/fines/fines-mci/fines-mci-create-till/fines-mci-create-till-suspense-details/fines-mci-create-till-suspense-details.component';
 import { FinesMciPaymentCategoryCriminalSearchComponent } from 'src/app/flows/fines/fines-mci/fines-mci-payment-category-criminal-search/fines-mci-payment-category-criminal-search.component';
@@ -78,6 +79,9 @@ const COURT_FEE_PAYMENT_MAPPINGS = {
     { code: 'ALLPAY', display_name: 'allpay' },
     { code: 'OTHER', display_name: 'Other' },
   ],
+};
+const COURT_FEES_RESPONSE = {
+  court_fees: [{ court_fee_id: 101, court_fee_code: 'CF001', description: 'Application', amount: 12.5 }],
 };
 
 const FINANCE_COMPONENT_ROUTES: Routes = [
@@ -192,8 +196,12 @@ const FINANCE_COMPONENT_ROUTES: Routes = [
           },
           {
             path: 'check-court-fee',
-            component: FinesMciPlaceholderComponent,
-            data: { heading: 'Check court fee' },
+            component: FinesMciCreateTillCourtFeeCheckComponent,
+            canDeactivate: [canDeactivateGuard],
+            data: {
+              courtFees: COURT_FEES_RESPONSE,
+              paymentMappings: COURT_FEE_PAYMENT_MAPPINGS,
+            },
           },
           {
             path: 'over-underpayment-confirmation',

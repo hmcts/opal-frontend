@@ -36,6 +36,7 @@ describe('FinesMciStore', () => {
       store.setDraftJourney('courtFee');
       store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: '25', numberOfItems: '2' });
       store.setCourtFeePaymentOrigin('over-underpayment-confirmation');
+      store.setCourtFeeSuspenseNote('A note');
       store.setCourtFeePaymentDetails({
         paymentReceivedFrom: 'applicant',
         paymentMethod: 'NC',
@@ -46,12 +47,15 @@ describe('FinesMciStore', () => {
         addressLine3: null,
         postcode: null,
       });
+      store.startCourtFeeReview();
       if (action === 'cancel') store.setDraftJourney(null);
       else if (action === 'clear fee') store.setCourtFeeDraft(null);
       else if (action === 'change business unit') store.setBusinessUnit(nextUnit);
       else store.reset();
       expect(store.courtFeePaymentDetails()).toBeNull();
       expect(store.courtFeePaymentOrigin()).toBeNull();
+      expect(store.courtFeeSuspenseNote()).toBe('');
+      expect(store.courtFeeReviewStarted()).toBe(false);
     },
   );
 
@@ -75,6 +79,32 @@ describe('FinesMciStore', () => {
     store.setCourtFeeDraft({ ...fee, amountPaid: '30' });
     expect(store.courtFeePaymentDetails()).toBeNull();
     expect(store.courtFeePaymentOrigin()).toBeNull();
+  });
+
+  it('retains payment details when a court fee is edited from the check screen', () => {
+    const fee = { courtFeeId: 1, amountPaid: '25', numberOfItems: '2' };
+    const details = {
+      paymentReceivedFrom: 'applicant',
+      paymentMethod: 'NC',
+      payerType: 'company',
+      companyName: 'Example Ltd',
+      addressLine1: null,
+      addressLine2: null,
+      addressLine3: null,
+      postcode: null,
+    };
+    store.setCourtFeeDraft(fee);
+    store.setCourtFeePaymentDetails(details);
+    store.setCourtFeeSuspenseNote('Review note');
+    store.startCourtFeeReview();
+    store.setCourtFeeDraft({ ...fee, amountPaid: '30' });
+    store.setCourtFeeDraft({ ...fee, amountPaid: '40' });
+    expect(store.courtFeePaymentDetails()).toEqual(details);
+    expect(store.courtFeeSuspenseNote()).toBe('Review note');
+    expect(store.courtFeeReviewStarted()).toBe(true);
+    store.setCourtFeeDraft(null);
+    expect(store.courtFeeReviewStarted()).toBe(false);
+    expect(store.courtFeePaymentDetails()).toBeNull();
   });
 
   it.each(['business unit change', 'reset'] as const)(
@@ -235,6 +265,56 @@ describe('FinesMciStore', () => {
 
     expect(store.ensureTill()).toBe('00000000-0000-4000-8000-000000000001');
     expect(store.tills()).toEqual([{ tillId: '00000000-0000-4000-8000-000000000001', payments: [] }]);
+  });
+
+  it('restores an existing court fee and updates the same entry when saved', () => {
+    const tillId = store.ensureTill();
+    const payment = {
+      courtFeeId: 1,
+      amountPaid: '25',
+      numberOfItems: '2',
+      courtFeeLabel: 'C01 – Court fee (£12.50)',
+      amountLabel: '£25.00',
+      paymentDetails: {
+        paymentReceivedFrom: 'applicant',
+        paymentMethod: 'NC',
+        payerType: 'company',
+        companyName: 'Example Ltd',
+        addressLine1: null,
+        addressLine2: null,
+        addressLine3: null,
+        postcode: null,
+      },
+      suspenseNote: 'Original note',
+    };
+    expect(store.saveCourtFeePayment(tillId, payment)).toBe(true);
+    const paymentId = store.tills()[0].payments[0].paymentId;
+    expect(store.beginCourtFeePaymentEdit(tillId, paymentId)).toBe(true);
+    expect(store.courtFeeDraft()).toEqual({ courtFeeId: 1, amountPaid: '25', numberOfItems: '2' });
+    expect(store.courtFeePaymentDetails()).toEqual(payment.paymentDetails);
+    expect(store.courtFeeSuspenseNote()).toBe('Original note');
+    expect(store.editingCourtFeePaymentId()).toBe(paymentId);
+    expect(store.courtFeeReviewStarted()).toBe(true);
+    store.setCourtFeeDraft({ courtFeeId: 1, amountPaid: '30', numberOfItems: '2' });
+    expect(store.editingCourtFeePaymentId()).toBe(paymentId);
+    expect(store.courtFeeSuspenseNote()).toBe('Original note');
+    expect(store.courtFeePaymentDetails()).toEqual(payment.paymentDetails);
+    const updated = { ...payment, suspenseNote: 'Updated note' };
+    expect(store.saveCourtFeePayment(tillId, updated, 'missing')).toBe(false);
+    expect(store.tills()[0].payments).toEqual([{ paymentId, journey: 'courtFee', courtFee: payment }]);
+    expect(store.saveCourtFeePayment(tillId, updated, paymentId)).toBe(true);
+    expect(store.tills()[0].payments).toEqual([{ paymentId, journey: 'courtFee', courtFee: updated }]);
+    expect(store.editingCourtFeePaymentId()).toBeNull();
+    expect(store.courtFeeReviewStarted()).toBe(false);
+  });
+
+  it('does not alter drafts or add a payment when the requested saved payment is missing', () => {
+    const tillId = store.ensureTill();
+    const draft = { courtFeeId: 1, amountPaid: '25', numberOfItems: '2' };
+    store.setCourtFeeDraft(draft);
+    expect(store.beginCourtFeePaymentEdit(tillId, 'missing')).toBe(false);
+    expect(store.courtFeeDraft()).toEqual(draft);
+    expect(store.tills()[0].payments).toEqual([]);
   });
 
   it('should reuse the in-progress till when ensuring a till exists', () => {

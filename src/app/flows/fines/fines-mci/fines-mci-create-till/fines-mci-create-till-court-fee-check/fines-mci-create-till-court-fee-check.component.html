@@ -4,9 +4,40 @@
 <div class="govuk-grid-column-two-thirds">
   <opal-lib-govuk-heading-with-caption
     [captionText]="finesMciStore.businessUnit()?.business_unit_name ?? ''"
-    headingText="Check court fee"
+    headingText="Check payment"
   ></opal-lib-govuk-heading-with-caption>
   @if (isNavigating()) {
     <output class="govuk-body govuk-!-display-block">Loading payment details</output>
+  } @else if (summaryRows(); as rows) {
+    <app-fines-mci-create-till-court-fee-check-form
+      [initialNote]="finesMciStore.courtFeeSuspenseNote()"
+      (noteChanged)="finesMciStore.setCourtFeeSuspenseNote($event)"
+      (saveRequested)="handleSave($event)"
+      (cancelRequested)="handleCancel()"
+    >
+      @if (saveFailed()) {
+        <p class="govuk-error-message" role="alert">The payment could not be saved. Try again.</p>
+      }
+      @if (overpaymentMessage(); as message) {
+        <div opal-lib-moj-alert type="information" [ariaLabel]="message">
+          <opal-lib-moj-alert-icon icon type="information"></opal-lib-moj-alert-icon>
+          <opal-lib-moj-alert-content content>
+            <opal-lib-moj-alert-content-text>{{ message }}</opal-lib-moj-alert-content-text>
+          </opal-lib-moj-alert-content>
+        </div>
+      }
+      <app-fines-mci-create-till-payment-summary
+        title="Court fee payment"
+        summaryId="fines-mci-court-fee-payment-summary"
+        [rows]="rows"
+        [canChange]="true"
+        (changeRequested)="handleChange($event)"
+      ></app-fines-mci-create-till-payment-summary>
+    </app-fines-mci-create-till-court-fee-check-form>
+  } @else {
+    <p class="govuk-error-message" role="alert">
+      Court fee payment details could not be loaded. Go back and try again.
+    </p>
+    <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
   }
 </div>

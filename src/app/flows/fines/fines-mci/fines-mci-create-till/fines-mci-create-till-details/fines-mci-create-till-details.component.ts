@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostListener, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, inject, signal } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
@@ -21,20 +21,27 @@ export class FinesMciCreateTillDetailsComponent {
   private allowIntendedNavigation = false;
   private readonly router = inject(Router);
   protected readonly finesMciStore = inject(FinesMciStore);
+  protected readonly isOpeningPayment = signal(false);
+  protected readonly editPaymentFailed = signal(false);
 
-  private navigateTo(path: string, extras?: NavigationExtras): void {
+  /** Opens an MCI till page and restores leave protection if navigation fails. */
+  private async navigateTo(path: string, extras?: NavigationExtras): Promise<boolean> {
     this.allowIntendedNavigation = true;
-    void this.router.navigate(
-      [
-        '/',
-        FINES_ROUTING_PATHS.root,
-        FINES_MCI_ROUTING_PATHS.root,
-        FINES_MCI_ROUTING_PATHS.children.create,
-        FINES_MCI_ROUTING_PATHS.children.till,
-        path,
-      ],
-      extras,
-    );
+    const navigated = await this.router
+      .navigate(
+        [
+          '/',
+          FINES_ROUTING_PATHS.root,
+          FINES_MCI_ROUTING_PATHS.root,
+          FINES_MCI_ROUTING_PATHS.children.create,
+          FINES_MCI_ROUTING_PATHS.children.till,
+          path,
+        ],
+        extras,
+      )
+      .catch(() => false);
+    if (!navigated) this.allowIntendedNavigation = false;
+    return navigated;
   }
 
   public canDeactivate(): CanDeactivateTypes {
@@ -47,15 +54,58 @@ export class FinesMciCreateTillDetailsComponent {
   }
 
   public navigateBack(): void {
-    this.navigateTo(FINES_MCI_ROUTING_PATHS.children.selectBusinessUnit, { state: { preserveBusinessUnit: true } });
+    void this.navigateTo(FINES_MCI_ROUTING_PATHS.children.selectBusinessUnit, {
+      state: { preserveBusinessUnit: true },
+    });
   }
 
+  /** Starts a fresh payment draft after the payment category screen opens successfully. */
   public addPayment(): void {
-    this.navigateTo(FINES_MCI_ROUTING_PATHS.children.paymentCategory);
+    const destination = FINES_MCI_ROUTING_PATHS.children.paymentCategory;
+    void this.navigateTo(destination, { state: { startNewPayment: true } }).then((navigated) => {
+      if (navigated && this.router.url.split(/[?#]/)[0].endsWith(`/${destination}`)) {
+        this.finesMciStore.setDraftJourney(null);
+      } else {
+        this.allowIntendedNavigation = false;
+      }
+    });
   }
 
   public cancel(event: Event): void {
     event.preventDefault();
-    this.navigateTo(FINES_MCI_ROUTING_PATHS.children.cancel);
+    void this.navigateTo(FINES_MCI_ROUTING_PATHS.children.cancel);
+  }
+
+  /** Opens a saved court fee for editing without changing the saved till entry. */
+  public handleEditPayment(paymentId: string): void {
+    if (this.isOpeningPayment()) return;
+    const tillId = this.finesMciStore.tills()[0]?.tillId;
+    const previous = {
+      draftJourney: this.finesMciStore.draftJourney(),
+      courtFeeDraft: this.finesMciStore.courtFeeDraft(),
+      courtFeePaymentDetails: this.finesMciStore.courtFeePaymentDetails(),
+      courtFeePaymentOrigin: this.finesMciStore.courtFeePaymentOrigin(),
+      courtFeeSuspenseNote: this.finesMciStore.courtFeeSuspenseNote(),
+      courtFeeReviewStarted: this.finesMciStore.courtFeeReviewStarted(),
+      editingCourtFeePaymentId: this.finesMciStore.editingCourtFeePaymentId(),
+    };
+    if (!tillId || !this.finesMciStore.beginCourtFeePaymentEdit(tillId, paymentId)) {
+      this.editPaymentFailed.set(true);
+      return;
+    }
+    this.editPaymentFailed.set(false);
+    this.isOpeningPayment.set(true);
+    void this.navigateTo(FINES_MCI_ROUTING_PATHS.children.checkCourtFee).then((navigated) => {
+      if (
+        !navigated ||
+        !this.router.url.split(/[?#]/)[0].endsWith(`/${FINES_MCI_ROUTING_PATHS.children.checkCourtFee}`)
+      ) {
+        if (this.finesMciStore.editingCourtFeePaymentId() === paymentId)
+          this.finesMciStore.restoreCourtFeeDraftState(previous);
+        this.editPaymentFailed.set(true);
+        this.allowIntendedNavigation = false;
+      }
+      this.isOpeningPayment.set(false);
+    });
   }
 }
