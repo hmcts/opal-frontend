@@ -758,6 +758,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   it('should remove NI number spaces before emitting the form when R1A-1-3 is enabled', () => {
     globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: true });
     component['initialPersonalDetailsSetup']();
+    component['rePopulateForm'](formSubmit.formData);
 
     const nationalInsuranceNumberControl = component.form.get('fm_personal_details_national_insurance_number');
     nationalInsuranceNumberControl?.setValue('QQ 12 34 56 C');
@@ -777,6 +778,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   it('should preserve an empty NI number when R1A-1-3 is enabled', () => {
     globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: true });
     component['initialPersonalDetailsSetup']();
+    component['rePopulateForm'](formSubmit.formData);
 
     const nationalInsuranceNumberControl = component.form.get('fm_personal_details_national_insurance_number');
     nationalInsuranceNumberControl?.setValue(null);
