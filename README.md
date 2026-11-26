@@ -1,4 +1,4 @@
-# OPAL Frontend
+# OPAL Frontendd
 
 This is an [Angular SSR](https://angular.dev/guide/ssr) application. There are two main reasons for this:
 
