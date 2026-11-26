@@ -805,6 +805,26 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(nationalInsuranceNumberControl?.value).toBe('QQ 12 34 56 C');
   });
 
+  it('should remove all spaces from a populated NI number when R1A-1-3 is enabled', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: true });
+    const nationalInsuranceNumberControl = component.form.get('fm_personal_details_national_insurance_number');
+    nationalInsuranceNumberControl?.setValue('QQ 12 34 56 C');
+
+    component['normalizeNationalInsuranceNumberInput']();
+
+    expect(nationalInsuranceNumberControl?.value).toBe('QQ123456C');
+  });
+
+  it('should leave an empty NI number unchanged when R1A-1-3 is enabled', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: true });
+    const nationalInsuranceNumberControl = component.form.get('fm_personal_details_national_insurance_number');
+    nationalInsuranceNumberControl?.setValue(null);
+
+    component['normalizeNationalInsuranceNumberInput']();
+
+    expect(nationalInsuranceNumberControl?.value).toBeNull();
+  });
+
   it('should use the R1A-1-3 NI number error message only when the flag is enabled', () => {
     globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: true });
     component['setNationalInsuranceNumberErrorMessage']();
