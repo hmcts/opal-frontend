@@ -808,7 +808,8 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     component['setNationalInsuranceNumberErrorMessage']();
 
     const nationalInsuranceNumberErrorMessage = () =>
-      component['fieldErrors']['fm_personal_details_national_insurance_number']['nationalInsuranceNumberPattern'].message;
+      component['fieldErrors']['fm_personal_details_national_insurance_number']['nationalInsuranceNumberPattern']
+        .message;
 
     expect(nationalInsuranceNumberErrorMessage()).toBe(
       "Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, for example 'QQ 12 34 56 C'",
