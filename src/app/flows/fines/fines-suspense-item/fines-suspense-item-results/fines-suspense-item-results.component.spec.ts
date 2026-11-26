@@ -39,7 +39,7 @@ describe('FinesSuspenseItemResultsComponent', () => {
     routeData.next({ summary: OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK });
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('h1')?.textContent).toBe('View suspense item');
-    expect(fixture.nativeElement.querySelector('app-fines-suspense-item-results-not-found')).toBeNull();
+    expect(fixture.nativeElement.textContent).not.toContain('This might be because:');
 
     routeData.next({ summary: null });
     fixture.detectChanges();
@@ -47,11 +47,27 @@ describe('FinesSuspenseItemResultsComponent', () => {
     expect(fixture.nativeElement.querySelector('app-fines-suspense-item-results-found')).toBeNull();
   });
 
-  it('renders the not-found heading in the journey content column', () => {
+  it('renders the exact not-found content and business-unit caption in the journey content column', () => {
     const page: HTMLElement = fixture.nativeElement;
+    const content = page.querySelector('.govuk-grid-column-two-thirds')!;
 
+    expect(content.querySelector('.govuk-caption-l')?.textContent).toBe('Avon and Somerset');
     expect(page.querySelectorAll('h1')).toHaveLength(1);
-    expect(page.querySelector('.govuk-grid-column-two-thirds h1')?.textContent).toBe('Suspense item not found');
+    expect(content.querySelector('h1')?.textContent).toBe('Suspense item not found');
+    expect(content.querySelector('p')?.textContent).toBe('This might be because:');
+    expect(Array.from(content.querySelectorAll('ul.govuk-list--bullet li'), (item) => item.textContent)).toEqual([
+      'the reference number was entered incorrectly',
+      'the suspense item does not exist in this business unit',
+    ]);
+    expect(content.querySelectorAll('h2, h3, h4, h5, h6')).toHaveLength(0);
+  });
+
+  it('shows no item summary, history or management controls in the not-found content', () => {
+    const page: HTMLElement = fixture.nativeElement;
+    const content = page.querySelector('.govuk-grid-column-two-thirds')!;
+
+    expect(content.querySelector('table, dl, button, a, select, input')).toBeNull();
+    expect(content.textContent).not.toMatch(/History and notes|Transfer|Repay|Reverse|Add suspense note/);
   });
 
   it('passes the supplied business unit to the caption and search context', () => {

@@ -13,9 +13,15 @@
 
 <div class="govuk-grid-column-two-thirds">
   @if (summary() === null) {
-    <app-fines-suspense-item-results-not-found
-      [businessUnitName]="businessUnitName()"
-    ></app-fines-suspense-item-results-not-found>
+    <span class="govuk-caption-l">{{ businessUnitName() }}</span>
+    <h1 class="govuk-heading-l">Suspense item not found</h1>
+
+    <p class="govuk-body">This might be because:</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>the reference number was entered incorrectly</li>
+      <li>the suspense item does not exist in this business unit</li>
+    </ul>
   } @else {
     <app-fines-suspense-item-results-found></app-fines-suspense-item-results-found>
   }

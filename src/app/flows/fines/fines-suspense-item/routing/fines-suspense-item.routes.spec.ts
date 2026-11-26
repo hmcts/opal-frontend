@@ -140,13 +140,13 @@ describe('Suspense item navigation', () => {
     submitReference(harness, 'fsis_suspense_reference_number', '1234');
     await vi.waitFor(() => expect(getSuspenseItemSummary).toHaveBeenCalledOnce());
     harness.detectChanges();
-    expect(harness.routeNativeElement?.querySelector('app-fines-suspense-item-results-not-found')).toBeNull();
+    expect(harness.routeNativeElement?.textContent).not.toContain('Suspense item not found');
     pending.next(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
     pending.complete();
     await harness.fixture.whenStable();
     harness.detectChanges();
     expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('View suspense item');
-    expect(harness.routeNativeElement?.querySelector('app-fines-suspense-item-results-not-found')).toBeNull();
+    expect(harness.routeNativeElement?.textContent).not.toContain('Suspense item not found');
 
     submitReference(harness, 'fsir_suspense_reference_number', '5678');
     await harness.fixture.whenStable();
@@ -159,7 +159,7 @@ describe('Suspense item navigation', () => {
     await harness.fixture.whenStable();
     harness.detectChanges();
     expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('View suspense item');
-    expect(harness.routeNativeElement?.querySelector('app-fines-suspense-item-results-not-found')).toBeNull();
+    expect(harness.routeNativeElement?.textContent).not.toContain('Suspense item not found');
   });
 
   it.each([404, 500])('does not activate not-found results when the summary lookup fails with %s', async (status) => {
@@ -169,7 +169,7 @@ describe('Suspense item navigation', () => {
     await harness.fixture.whenStable();
     harness.detectChanges();
     expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/search');
-    expect(harness.routeNativeElement?.querySelector('app-fines-suspense-item-results-not-found')).toBeNull();
+    expect(harness.routeNativeElement?.textContent).not.toContain('Suspense item not found');
     expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(true);
 
     await TestBed.inject(Router).navigateByUrl('/fines/dashboard/finance');

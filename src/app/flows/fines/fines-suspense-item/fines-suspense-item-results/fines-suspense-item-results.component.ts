@@ -9,7 +9,6 @@ import { FinesSuspenseItemResultsSearchFormComponent } from './fines-suspense-it
 import { GovukBackLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-back-link';
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_SUSPENSE_ITEM_ROUTING_PATHS } from '../routing/constants/fines-suspense-item-routing-paths.constant';
-import { FinesSuspenseItemResultsNotFoundComponent } from './fines-suspense-item-results-not-found/fines-suspense-item-results-not-found.component';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { IFinesSuspenseItemResultsSearchFormState } from './fines-suspense-item-results-search-form/interfaces/fines-suspense-item-results-search-form-state.interface';
 
@@ -20,7 +19,6 @@ import { navigateToSuspenseItemResults } from '../utils/fines-suspense-item-navi
   imports: [
     GovukBackLinkComponent,
     FinesSuspenseItemResultsSearchFormComponent,
-    FinesSuspenseItemResultsNotFoundComponent,
     FinesSuspenseItemResultsFoundComponent,
   ],
   templateUrl: './fines-suspense-item-results.component.html',
