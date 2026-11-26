@@ -56,15 +56,16 @@ export class FinesSuspenseItemResultsSearchFormComponent
     });
   }
 
+  private resetSearchForm(): void {
+    this.form.reset({ fsir_suspense_reference_number: this.initialReference() });
+    this.formSubmitted = false;
+    this.setInitialErrorMessages();
+    this.unsavedChanges.emit(false);
+  }
+
   public override handleFormSubmit(event: SubmitEvent): void {
     normaliseSuspenseItemReferenceControl(this.form.controls['fsir_suspense_reference_number']);
     super.handleFormSubmit(event);
-  }
-
-  /** Restores the leave warning when the lookup fails or navigation is cancelled. */
-  public restoreUnsavedChanges(): void {
-    this.formSubmitted = false;
-    this.unsavedChanges.emit(this.hasUnsavedChanges());
   }
 
   public override ngOnInit(): void {
@@ -74,10 +75,7 @@ export class FinesSuspenseItemResultsSearchFormComponent
 
   public ngOnChanges(changes: SimpleChanges): void {
     if (changes['initialReference'] && this.form) {
-      this.form.reset({ fsir_suspense_reference_number: this.initialReference() });
-      this.formSubmitted = false;
-      this.setInitialErrorMessages();
-      this.unsavedChanges.emit(false);
+      this.resetSearchForm();
     }
   }
 }

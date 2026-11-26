@@ -151,15 +151,37 @@ describe('FinesSuspenseItemResultsComponent', () => {
     expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(false);
   });
 
-  it('restores the form warning when results navigation is cancelled', async () => {
-    vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(false);
-    const input = fixture.nativeElement.querySelector('#fsir_suspense_reference_number');
-    input.value = '005678';
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-    fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-    await fixture.whenStable();
-    expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(true);
-  });
+  it.each(['cancelled', 'rejected'])(
+    'restores the parent warning after %s navigation and allows a retry',
+    async (outcome) => {
+      const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
+      if (outcome === 'cancelled') {
+        navigate.mockResolvedValueOnce(false);
+      } else {
+        navigate.mockRejectedValueOnce(new Error('Lookup failed'));
+      }
+      const input = fixture.nativeElement.querySelector('#fsir_suspense_reference_number');
+      input.value = '005678';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      const submit = () =>
+        fixture.nativeElement
+          .querySelector('form')
+          .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      submit();
+      await fixture.whenStable();
+      expect(fixture.componentInstance['canDeactivate']()).toBe(false);
+      expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(true);
+      expect(input.value).toBe('5678');
+
+      navigate.mockResolvedValueOnce(true);
+      submit();
+      expect(fixture.componentInstance['canDeactivate']()).toBe(true);
+      await fixture.whenStable();
+      expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(false);
+      expect(fixture.componentInstance['canDeactivate']()).toBe(true);
+      expect(navigate).toHaveBeenCalledTimes(2);
+    },
+  );
 
   it('does not restore a destroyed results form after a pending navigation fails', async () => {
     let failNavigation!: (error: Error) => void;

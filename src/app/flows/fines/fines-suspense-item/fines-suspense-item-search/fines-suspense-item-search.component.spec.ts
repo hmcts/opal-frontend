@@ -139,13 +139,10 @@ describe('FinesSuspenseItemSearchComponent', () => {
     child.form.setValue({ fsis_business_unit_id: 22, fsis_suspense_reference_number: '001234' });
     fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
 
-    expect(TestBed.inject(Router).navigate).toHaveBeenCalledExactlyOnceWith([
-      '/',
-      'fines',
-      'suspense-item',
-      '1234',
-      'results',
-    ]);
+    expect(TestBed.inject(Router).navigate).toHaveBeenCalledExactlyOnceWith(
+      ['/', 'fines', 'suspense-item', '1234', 'results'],
+      { onSameUrlNavigation: 'reload' },
+    );
     expect(TestBed.inject(FinesSuspenseItemStore).selectedBusinessUnitId()).toBe(22);
     expect(TestBed.inject(FinesSuspenseItemStore).selectedBusinessUnitName()).toBe('Test business unit');
     expect(getSuspenseItemSummary).not.toHaveBeenCalled();
@@ -177,13 +174,10 @@ describe('FinesSuspenseItemSearchComponent', () => {
         formData: { fsis_business_unit_id: 22, fsis_suspense_reference_number: reference },
         nestedFlow: false,
       });
-      expect(TestBed.inject(Router).navigate).toHaveBeenCalledExactlyOnceWith([
-        '/',
-        'fines',
-        'suspense-item',
-        reference,
-        'results',
-      ]);
+      expect(TestBed.inject(Router).navigate).toHaveBeenCalledExactlyOnceWith(
+        ['/', 'fines', 'suspense-item', reference, 'results'],
+        { onSameUrlNavigation: 'reload' },
+      );
     },
   );
 
@@ -239,28 +233,44 @@ describe('FinesSuspenseItemSearchComponent', () => {
     expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(false);
   });
 
-  it('restores the leave warning if results navigation is cancelled', async () => {
-    let finishNavigation!: (navigated: boolean) => void;
-    vi.mocked(TestBed.inject(Router).navigate).mockReturnValueOnce(
-      new Promise<boolean>((resolve) => {
-        finishNavigation = resolve;
-      }),
-    );
-    fixture.detectChanges();
-    const child: FinesSuspenseItemSearchFormComponent = fixture.debugElement.query(
-      By.directive(FinesSuspenseItemSearchFormComponent),
-    ).componentInstance;
-    child.form.markAsDirty();
-    child.form.setValue({ fsis_business_unit_id: 22, fsis_suspense_reference_number: '1234' });
-    fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-    expect(component['canDeactivate']()).toBe(true);
+  it.each(['cancelled', 'rejected'])(
+    'restores the parent warning after %s navigation and allows a retry',
+    async (outcome) => {
+      const navigate = vi.mocked(TestBed.inject(Router).navigate);
+      if (outcome === 'cancelled') {
+        navigate.mockResolvedValueOnce(false);
+      } else {
+        navigate.mockRejectedValueOnce(new Error('Lookup failed'));
+      }
+      fixture.detectChanges();
+      const input = fixture.nativeElement.querySelector('#fsis_suspense_reference_number');
+      component.handleBusinessUnitChange(22);
+      const child: FinesSuspenseItemSearchFormComponent = fixture.debugElement.query(
+        By.directive(FinesSuspenseItemSearchFormComponent),
+      ).componentInstance;
+      child.form.controls['fsis_business_unit_id'].setValue(22);
+      input.value = '001234';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      const submit = () =>
+        fixture.nativeElement
+          .querySelector('form')
+          .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      submit();
+      await fixture.whenStable();
 
-    finishNavigation(false);
-    await fixture.whenStable();
+      expect(component['canDeactivate']()).toBe(false);
+      expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(true);
+      expect(input.value).toBe('1234');
 
-    expect(component['canDeactivate']()).toBe(false);
-    expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(true);
-  });
+      navigate.mockResolvedValueOnce(true);
+      submit();
+      expect(component['canDeactivate']()).toBe(true);
+      await fixture.whenStable();
+      expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(false);
+      expect(component['canDeactivate']()).toBe(true);
+      expect(navigate).toHaveBeenCalledTimes(2);
+    },
+  );
 
   it('does not restore a warning after the search page has been destroyed', async () => {
     let finishNavigation!: (navigated: boolean) => void;

@@ -84,12 +84,6 @@ export class FinesSuspenseItemSearchFormComponent extends AbstractFormBaseCompon
     super.handleFormSubmit(event);
   }
 
-  /** Restores the leave-page warning when the lookup fails or results navigation is cancelled. */
-  public restoreUnsavedChanges(): void {
-    this.formSubmitted = false;
-    this.unsavedChanges.emit(this.hasUnsavedChanges());
-  }
-
   /**
    * Initialises the form before enabling the shared form subscriptions.
    */

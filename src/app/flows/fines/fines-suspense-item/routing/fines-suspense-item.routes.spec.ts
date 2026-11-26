@@ -172,10 +172,19 @@ describe('Suspense item navigation', () => {
     expect(harness.routeNativeElement?.querySelector('app-fines-suspense-item-results-not-found')).toBeNull();
     expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(true);
 
-    submitReference(harness, 'fsis_suspense_reference_number', '5678');
+    await TestBed.inject(Router).navigateByUrl('/fines/dashboard/finance');
+    expect(window.confirm).toHaveBeenCalledOnce();
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/search');
+
+    harness
+      .routeNativeElement!.querySelector('form')!
+      .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     await harness.fixture.whenStable();
     harness.detectChanges();
     expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('Suspense item not found');
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/1234/results');
+    expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(false);
+    expect(window.confirm).toHaveBeenCalledOnce();
   });
 
   it('restores the leave warning after a failed search on results and allows another attempt', async () => {
@@ -190,9 +199,16 @@ describe('Suspense item navigation', () => {
       '5678',
     );
 
-    submitReference(harness, 'fsir_suspense_reference_number', '5678');
+    await TestBed.inject(Router).navigateByUrl('/fines/dashboard/finance');
+    expect(window.confirm).toHaveBeenCalledOnce();
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/1234/results');
+
+    harness
+      .routeNativeElement!.querySelector('form')!
+      .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
     await harness.fixture.whenStable();
     harness.detectChanges();
+    expect(window.confirm).toHaveBeenCalledOnce();
     expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/5678/results');
     expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(false);
   });

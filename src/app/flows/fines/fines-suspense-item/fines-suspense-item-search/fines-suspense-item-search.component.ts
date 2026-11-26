@@ -1,5 +1,5 @@
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
-import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, inject, DestroyRef, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, inject, DestroyRef } from '@angular/core';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { FinesSuspenseItemStore } from '../stores/fines-suspense-item.store';
@@ -9,7 +9,7 @@ import { IAlphagovAccessibleAutocompleteItem } from '@hmcts/opal-frontend-common
 import { FINES_ROUTING_PATHS } from '@app/flows/fines/routing/constants/fines-routing-paths.constant';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '@app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { FinesSuspenseItemSearchFormComponent } from './fines-suspense-item-search-form/fines-suspense-item-search-form.component';
-import { FINES_SUSPENSE_ITEM_ROUTING_PATHS } from '../routing/constants/fines-suspense-item-routing-paths.constant';
+import { navigateToSuspenseItemResults } from '../utils/fines-suspense-item-navigate-to-results.utils';
 
 @Component({
   selector: 'app-fines-suspense-item-search',
@@ -22,7 +22,6 @@ export class FinesSuspenseItemSearchComponent extends AbstractFormParentBaseComp
   private readonly suspenseItemStore = inject(FinesSuspenseItemStore);
   private readonly navigationRouter = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  private readonly searchForm = viewChild.required(FinesSuspenseItemSearchFormComponent);
 
   protected readonly financeDashboardRoute = [
     '/',
@@ -78,32 +77,18 @@ export class FinesSuspenseItemSearchComponent extends AbstractFormParentBaseComp
    * @param form - Validated values emitted by the search form.
    */
   public handleFormSubmit(form: IAbstractFormBaseForm<IFinesSuspenseItemSearchFormState>): void {
-    const criteria = { ...form.formData };
+    const criteria = form.formData;
     if (criteria.fsis_business_unit_id === null) {
       return;
     }
 
     this.handleBusinessUnitChange(criteria.fsis_business_unit_id);
     const reference = criteria.fsis_suspense_reference_number;
-    void this.navigationRouter
-      .navigate([
-        '/',
-        FINES_ROUTING_PATHS.root,
-        FINES_SUSPENSE_ITEM_ROUTING_PATHS.root,
-        ...FINES_SUSPENSE_ITEM_ROUTING_PATHS.children.results.replace(':suspenseItemId', reference).split('/'),
-      ])
-      .then(
-        (navigated) => {
-          if (!navigated && !this.destroyRef.destroyed) {
-            this.searchForm().restoreUnsavedChanges();
-          }
-        },
-        () => {
-          if (!this.destroyRef.destroyed) {
-            this.searchForm().restoreUnsavedChanges();
-          }
-        },
-      );
+    navigateToSuspenseItemResults(this.navigationRouter, reference, () => {
+      if (!this.destroyRef.destroyed) {
+        this.handleUnsavedChanges(true);
+      }
+    });
   }
 
   /**
