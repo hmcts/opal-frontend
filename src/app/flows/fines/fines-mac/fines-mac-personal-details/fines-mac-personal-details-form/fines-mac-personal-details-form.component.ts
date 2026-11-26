@@ -156,7 +156,7 @@ export class FinesMacPersonalDetailsFormComponent
     });
   }
 
-  /** Removes NI number spaces before the form base emits the submitted value when R1A-1-2 is enabled. */
+  /** Removes NI number spaces before the form base emits the submitted value when R1A-1-3 is enabled. */
   private normalizeNationalInsuranceNumberInput(): void {
     if (!this.release1a1_3Enabled()) {
       return;
