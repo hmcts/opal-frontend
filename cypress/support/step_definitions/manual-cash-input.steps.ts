@@ -83,6 +83,10 @@ Then('I see Court Fee Payment Details', () => {
   manualCashInputFlow().assertCourtFeePaymentDetailsIsDisplayed();
 });
 
+Then('the Payment Details screen shows business unit {string}', (businessUnit: string) => {
+  manualCashInputFlow().assertCourtFeePaymentDetailsBusinessUnitIsDisplayed(businessUnit);
+});
+
 Then('I see Court Fee Overpayment\\/Underpayment Confirmation', () => {
   manualCashInputFlow().assertCourtFeeOverUnderpaymentIsDisplayed();
 });
@@ -115,6 +119,10 @@ When('I confirm the overpayment', () => {
 
 When('I cancel the overpayment', () => {
   manualCashInputFlow().cancelOverpayment();
+});
+
+Then('the underpayment cannot continue to Payment Details', () => {
+  manualCashInputFlow().assertUnderpaymentCannotContinueToPaymentDetails();
 });
 
 Then('the underpayment confirmation offers Cancel and return to till and Go back', () => {

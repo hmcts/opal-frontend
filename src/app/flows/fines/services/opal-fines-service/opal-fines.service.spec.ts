@@ -531,6 +531,17 @@ describe('OpalFines', () => {
     secondReq.flush(mockBusinessUnitCounts);
   });
 
+  it('loads payment method mappings from the mappings API', () => {
+    const mappings = [{ code: 'NC', display_name: 'Notes and coins' }];
+    const received = vi.fn();
+    service.getMethodOfPaymentMappings().subscribe(received);
+
+    const request = httpMock.expectOne('/opal-fines-service/mappings/method-of-payment');
+    expect(request.request.method).toBe('GET');
+    request.flush(mappings);
+    expect(received).toHaveBeenCalledExactlyOnceWith(mappings);
+  });
+
   describe('getSourceMappings', () => {
     it('shares concurrent requests and replays the response to later callers', () => {
       const first = vi.fn();
@@ -594,6 +605,21 @@ describe('OpalFines', () => {
       const received = vi.fn();
       service.getSourceMappings().subscribe(received);
       expect(received).toHaveBeenCalledWith([]);
+      httpMock.expectNone(OPAL_FINES_PATHS.sourceMappings);
+    });
+
+    it('refreshes a cached empty source response when explicitly requested', () => {
+      service.getSourceMappings().subscribe();
+      httpMock.expectOne(OPAL_FINES_PATHS.sourceMappings).flush([]);
+
+      const refreshed = vi.fn();
+      service.getSourceMappings(true).subscribe(refreshed);
+      httpMock.expectOne(OPAL_FINES_PATHS.sourceMappings).flush(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+      expect(refreshed).toHaveBeenCalledExactlyOnceWith(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
+
+      const later = vi.fn();
+      service.getSourceMappings().subscribe(later);
+      expect(later).toHaveBeenCalledExactlyOnceWith(OPAL_FINES_SOURCE_MAPPINGS_MOCK);
       httpMock.expectNone(OPAL_FINES_PATHS.sourceMappings);
     });
 
@@ -1683,6 +1709,16 @@ describe('OpalFines', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = service['buildIfMatchHeader'](null as any);
     expect(result).toEqual({});
+  });
+
+  it.each([456, '9007199254740993'])('resolves the master of account %s without caching the response', (accountId) => {
+    const response = { defendant_account_id: '9007199254740994' };
+    for (let request = 0; request < 2; request++) {
+      service.getDefendantAccountMaster(accountId).subscribe((master) => expect(master).toEqual(response));
+      const req = httpMock.expectOne(`${OPAL_FINES_PATHS.defendantAccounts}/${accountId}/master`);
+      expect(req.request.method).toBe('GET');
+      req.flush(response);
+    }
   });
 
   it.each([456, '9007199254740993'])('should getDefendantAccountHeader for account %s', (accountId) => {
