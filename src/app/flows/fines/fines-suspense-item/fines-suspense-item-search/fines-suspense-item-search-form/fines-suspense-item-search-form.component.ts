@@ -24,7 +24,10 @@ import {
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { IFinesSuspenseItemSearchFormState } from '../interfaces/fines-suspense-item-search-form-state.interface';
-import { createSuspenseItemReferenceControl } from '../../utils/fines-suspense-item-reference-control.utils';
+import {
+  createSuspenseItemReferenceControl,
+  normaliseSuspenseItemReferenceControl,
+} from '../../utils/fines-suspense-item-reference-control.utils';
 
 @Component({
   selector: 'app-fines-suspense-item-search-form',
@@ -74,6 +77,11 @@ export class FinesSuspenseItemSearchFormComponent extends AbstractFormBaseCompon
     businessUnitControl.valueChanges
       .pipe(distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe((businessUnitId) => this.businessUnitChange.emit(businessUnitId));
+  }
+
+  public override handleFormSubmit(event: SubmitEvent): void {
+    normaliseSuspenseItemReferenceControl(this.form.controls['fsis_suspense_reference_number']);
+    super.handleFormSubmit(event);
   }
 
   /** Restores the leave-page warning when the lookup fails or results navigation is cancelled. */

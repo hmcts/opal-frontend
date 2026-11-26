@@ -406,7 +406,7 @@ export class OpalFines {
 
   /**
    * Looks up the user-facing reference within a BU. Keep the reference as text
-   * to preserve leading zeroes and avoid numeric precision loss.
+   * to avoid numeric precision loss; search forms remove leading zeroes before submission.
    * Cached by BU/reference until a new search or journey exit clears it.
    *
    * @param businessUnitId - The selected business unit in which to look up the item.

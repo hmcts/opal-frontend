@@ -144,7 +144,7 @@ describe('FinesSuspenseItemResultsComponent', () => {
     input.dispatchEvent(new Event('input', { bubbles: true }));
     page.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
 
-    expect(navigate).toHaveBeenCalledExactlyOnceWith(['/', 'fines', 'suspense-item', '005678', 'results'], {
+    expect(navigate).toHaveBeenCalledExactlyOnceWith(['/', 'fines', 'suspense-item', '5678', 'results'], {
       onSameUrlNavigation: 'reload',
     });
     expect(TestBed.inject(FinesSuspenseItemStore).selectedBusinessUnitId()).toBe(11);

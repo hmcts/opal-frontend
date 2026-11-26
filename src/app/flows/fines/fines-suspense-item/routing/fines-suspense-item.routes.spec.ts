@@ -84,17 +84,60 @@ describe('Suspense item navigation', () => {
 
   it('redirects a direct results URL without BU context to search before requesting a summary', async () => {
     TestBed.inject(FinesSuspenseItemStore).resetStore();
-    const harness = await RouterTestingHarness.create('/fines/suspense-item/001234/results');
+    const harness = await RouterTestingHarness.create('/fines/suspense-item/1234/results');
     expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/search');
     expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('Search for suspense item');
     expect(getSuspenseItemSummary).not.toHaveBeenCalled();
+  });
+
+  it('uses the normalised reference for the URL and API on initial search and same-reference retry', async () => {
+    const harness = await RouterTestingHarness.create('/fines/suspense-item/search');
+    const businessUnitId = TestBed.inject(FinesSuspenseItemStore).selectedBusinessUnitId();
+    submitReference(harness, 'fsis_suspense_reference_number', '001234');
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/1234/results');
+    expect(getSuspenseItemSummary).toHaveBeenCalledExactlyOnceWith(businessUnitId, '1234');
+    expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#fsir_suspense_reference_number')!.value).toBe(
+      '1234',
+    );
+
+    submitReference(harness, 'fsir_suspense_reference_number', '0001234');
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/1234/results');
+    expect(getSuspenseItemSummary).toHaveBeenCalledTimes(2);
+    expect(getSuspenseItemSummary).toHaveBeenLastCalledWith(businessUnitId, '1234');
+    expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#fsir_suspense_reference_number')!.value).toBe(
+      '1234',
+    );
+    expect(window.confirm).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    { url: '/fines/suspense-item/search', fieldId: 'fsis_suspense_reference_number', requests: 0 },
+    { url: '/fines/suspense-item/1234/results', fieldId: 'fsir_suspense_reference_number', requests: 1 },
+  ])('blocks an all-zero reference on $url without a lookup', async ({ url, fieldId, requests }) => {
+    const harness = await RouterTestingHarness.create(url);
+    submitReference(harness, fieldId, '0000');
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    expect(TestBed.inject(Router).url).toBe(url);
+    expect(getSuspenseItemSummary).toHaveBeenCalledTimes(requests);
+    expect(harness.routeNativeElement!.querySelector<HTMLInputElement>(`#${fieldId}`)!.value).toBe('');
+    expect(harness.routeNativeElement!.querySelector('.govuk-error-summary')?.textContent).toContain(
+      'Enter suspense reference number',
+    );
   });
 
   it('waits for the lookup and switches between found and empty successful summaries on retry', async () => {
     const pending = new Subject<typeof OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK>();
     getSuspenseItemSummary.mockReturnValueOnce(pending);
     const harness = await RouterTestingHarness.create('/fines/suspense-item/search');
-    submitReference(harness, 'fsis_suspense_reference_number', '001234');
+    submitReference(harness, 'fsis_suspense_reference_number', '1234');
     await vi.waitFor(() => expect(getSuspenseItemSummary).toHaveBeenCalledOnce());
     harness.detectChanges();
     expect(harness.routeNativeElement?.querySelector('app-fines-suspense-item-results-not-found')).toBeNull();
@@ -105,14 +148,14 @@ describe('Suspense item navigation', () => {
     expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('View suspense item');
     expect(harness.routeNativeElement?.querySelector('app-fines-suspense-item-results-not-found')).toBeNull();
 
-    submitReference(harness, 'fsir_suspense_reference_number', '005678');
+    submitReference(harness, 'fsir_suspense_reference_number', '5678');
     await harness.fixture.whenStable();
     harness.detectChanges();
     expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('Suspense item not found');
     expect(harness.routeNativeElement?.querySelector('app-fines-suspense-item-results-found')).toBeNull();
 
     getSuspenseItemSummary.mockReturnValueOnce(of(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK));
-    submitReference(harness, 'fsir_suspense_reference_number', '009999');
+    submitReference(harness, 'fsir_suspense_reference_number', '9999');
     await harness.fixture.whenStable();
     harness.detectChanges();
     expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('View suspense item');
@@ -122,35 +165,35 @@ describe('Suspense item navigation', () => {
   it.each([404, 500])('does not activate not-found results when the summary lookup fails with %s', async (status) => {
     const harness = await RouterTestingHarness.create('/fines/suspense-item/search');
     getSuspenseItemSummary.mockReturnValueOnce(throwError(() => new HttpErrorResponse({ status })));
-    submitReference(harness, 'fsis_suspense_reference_number', '001234');
+    submitReference(harness, 'fsis_suspense_reference_number', '1234');
     await harness.fixture.whenStable();
     harness.detectChanges();
     expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/search');
     expect(harness.routeNativeElement?.querySelector('app-fines-suspense-item-results-not-found')).toBeNull();
     expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(true);
 
-    submitReference(harness, 'fsis_suspense_reference_number', '005678');
+    submitReference(harness, 'fsis_suspense_reference_number', '5678');
     await harness.fixture.whenStable();
     harness.detectChanges();
     expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('Suspense item not found');
   });
 
   it('restores the leave warning after a failed search on results and allows another attempt', async () => {
-    const harness = await RouterTestingHarness.create('/fines/suspense-item/001234/results');
+    const harness = await RouterTestingHarness.create('/fines/suspense-item/1234/results');
     getSuspenseItemSummary.mockReturnValueOnce(throwError(() => new HttpErrorResponse({ status: 500 })));
-    submitReference(harness, 'fsir_suspense_reference_number', '005678');
+    submitReference(harness, 'fsir_suspense_reference_number', '5678');
     await harness.fixture.whenStable();
     harness.detectChanges();
-    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/001234/results');
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/1234/results');
     expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(true);
     expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#fsir_suspense_reference_number')!.value).toBe(
-      '005678',
+      '5678',
     );
 
-    submitReference(harness, 'fsir_suspense_reference_number', '005678');
+    submitReference(harness, 'fsir_suspense_reference_number', '5678');
     await harness.fixture.whenStable();
     harness.detectChanges();
-    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/005678/results');
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/5678/results');
     expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(false);
   });
 
@@ -160,13 +203,13 @@ describe('Suspense item navigation', () => {
   ])('leaving results for $destination', ({ url, retainsBusinessUnit }) => {
     it.each([false, true])('confirms navigation after editing the reference (leave: %s)', async (leave) => {
       vi.mocked(window.confirm).mockReturnValue(leave);
-      const resultsUrl = '/fines/suspense-item/001234/results';
+      const resultsUrl = '/fines/suspense-item/1234/results';
       const harness = await RouterTestingHarness.create(resultsUrl);
       const store = TestBed.inject(FinesSuspenseItemStore);
       const businessUnitId = store.selectedBusinessUnitId();
       const businessUnitName = store.selectedBusinessUnitName();
       const input = harness.routeNativeElement!.querySelector<HTMLInputElement>('#fsir_suspense_reference_number')!;
-      input.value = '005678';
+      input.value = '5678';
       input.dispatchEvent(new Event('input', { bubbles: true }));
       harness.detectChanges();
 
@@ -179,13 +222,13 @@ describe('Suspense item navigation', () => {
       expect(store.selectedBusinessUnitName()).toBe(leave && !retainsBusinessUnit ? null : businessUnitName);
       expect(getSuspenseItemSummary).toHaveBeenCalledOnce();
       if (!leave) {
-        expect(input.value).toBe('005678');
+        expect(input.value).toBe('5678');
         expect(store.unsavedChanges()).toBe(true);
       }
     });
 
     it('allows navigation without confirmation when the reference has not been edited', async () => {
-      await RouterTestingHarness.create('/fines/suspense-item/001234/results');
+      await RouterTestingHarness.create('/fines/suspense-item/1234/results');
 
       await TestBed.inject(Router).navigateByUrl(url);
 
@@ -200,14 +243,14 @@ describe('Suspense item navigation', () => {
     store.setSelectedBusinessUnit(unit.business_unit_id, unit.business_unit_name);
     const harness = await RouterTestingHarness.create('/fines/suspense-item/search');
 
-    submitReference(harness, 'fsis_suspense_reference_number', '001234');
+    submitReference(harness, 'fsis_suspense_reference_number', '1234');
     await harness.fixture.whenStable();
     harness.detectChanges();
 
-    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/001234/results');
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/1234/results');
     expect(harness.routeNativeElement!.querySelector('h1')?.textContent).toBe('Suspense item not found');
     expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#fsir_suspense_reference_number')!.value).toBe(
-      '001234',
+      '1234',
     );
     expect(harness.routeNativeElement!.querySelector('.govuk-caption-l')?.textContent).toBe(unit.business_unit_name);
     expect(store.selectedBusinessUnitId()).toBe(unit.business_unit_id);
@@ -221,19 +264,19 @@ describe('Suspense item navigation', () => {
     const store = TestBed.inject(FinesSuspenseItemStore);
     const unit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
     store.setSelectedBusinessUnit(unit.business_unit_id, unit.business_unit_name);
-    const harness = await RouterTestingHarness.create('/fines/suspense-item/001234/results');
+    const harness = await RouterTestingHarness.create('/fines/suspense-item/1234/results');
     const results = harness.routeDebugElement!.query(By.directive(FinesSuspenseItemResultsComponent)).componentInstance;
 
-    submitReference(harness, 'fsir_suspense_reference_number', '005678');
+    submitReference(harness, 'fsir_suspense_reference_number', '5678');
     await harness.fixture.whenStable();
     harness.detectChanges();
 
-    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/005678/results');
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/5678/results');
     expect(harness.routeDebugElement!.query(By.directive(FinesSuspenseItemResultsComponent)).componentInstance).toBe(
       results,
     );
     expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#fsir_suspense_reference_number')!.value).toBe(
-      '005678',
+      '5678',
     );
     expect(harness.routeNativeElement!.querySelector('.govuk-caption-l')?.textContent).toBe(unit.business_unit_name);
     expect(store.selectedBusinessUnitId()).toBe(unit.business_unit_id);
@@ -243,12 +286,12 @@ describe('Suspense item navigation', () => {
   });
 
   it('requests the same reference again without an unsaved-change warning', async () => {
-    const harness = await RouterTestingHarness.create('/fines/suspense-item/001234/results');
-    submitReference(harness, 'fsir_suspense_reference_number', '001234');
+    const harness = await RouterTestingHarness.create('/fines/suspense-item/1234/results');
+    submitReference(harness, 'fsir_suspense_reference_number', '1234');
     await harness.fixture.whenStable();
     harness.detectChanges();
 
-    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/001234/results');
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/1234/results');
     expect(harness.routeNativeElement!.querySelector('h1')?.textContent).toBe('Suspense item not found');
     expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(false);
     expect(getSuspenseItemSummary).toHaveBeenCalledTimes(2);
@@ -260,12 +303,12 @@ describe('Suspense item navigation', () => {
   });
 
   it('keeps invalid retry input on the current results page with validation feedback', async () => {
-    const harness = await RouterTestingHarness.create('/fines/suspense-item/001234/results');
+    const harness = await RouterTestingHarness.create('/fines/suspense-item/1234/results');
     submitReference(harness, 'fsir_suspense_reference_number', 'abc');
     await harness.fixture.whenStable();
     harness.detectChanges();
 
-    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/001234/results');
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/1234/results');
     expect(harness.routeNativeElement!.querySelector('.govuk-error-summary')?.textContent).toContain(
       'Enter suspense reference number in the correct format',
     );
@@ -274,7 +317,7 @@ describe('Suspense item navigation', () => {
 
   describe.each([
     { page: 'search', url: '/fines/suspense-item/search' },
-    { page: 'results with retained business-unit context', url: '/fines/suspense-item/001234/results' },
+    { page: 'results with retained business-unit context', url: '/fines/suspense-item/1234/results' },
   ])('permissions for $page', ({ url }) => {
     it.each([FINES_PERMISSIONS['view-suspense-items'], FINES_PERMISSIONS['manage-suspense-items']])(
       'allows access with only permission %s',
@@ -300,11 +343,11 @@ describe('Suspense item navigation', () => {
   });
 
   it('rechecks permissions before requesting a summary when the same reference is searched again', async () => {
-    const harness = await RouterTestingHarness.create('/fines/suspense-item/001234/results');
+    const harness = await RouterTestingHarness.create('/fines/suspense-item/1234/results');
     expect(getSuspenseItemSummary).toHaveBeenCalledOnce();
     setUserPermissions([]);
 
-    submitReference(harness, 'fsir_suspense_reference_number', '001234');
+    submitReference(harness, 'fsir_suspense_reference_number', '1234');
     await harness.fixture.whenStable();
     harness.detectChanges();
 
@@ -473,7 +516,7 @@ describe('Suspense item navigation', () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/fines/suspense-item/search');
     const reference = harness.routeNativeElement!.querySelector<HTMLInputElement>('#fsis_suspense_reference_number')!;
-    reference.value = '001234';
+    reference.value = '1234';
     reference.dispatchEvent(new Event('input'));
     harness.detectChanges();
 
@@ -487,7 +530,7 @@ describe('Suspense item navigation', () => {
       expect(clearCache).toHaveBeenCalledWith('suspenseItemSummaryCache$');
     } else {
       expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/search');
-      expect(reference.value).toBe('001234');
+      expect(reference.value).toBe('1234');
       expect(clearCache).not.toHaveBeenCalled();
     }
   });

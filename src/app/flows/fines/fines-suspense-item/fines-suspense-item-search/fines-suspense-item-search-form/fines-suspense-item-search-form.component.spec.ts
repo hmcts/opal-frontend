@@ -64,7 +64,7 @@ describe('FinesSuspenseItemSearchFormComponent', () => {
     expect(fixture.nativeElement.querySelector('opal-lib-govuk-summary-list')).toBeNull();
   });
 
-  it('emits the selected BU and the entered reference without removing leading zeroes', () => {
+  it('emits the selected BU and the reference after removing leading zeroes', () => {
     const submitted = vi.fn();
     component['formSubmit'].subscribe(submitted);
     fixture.detectChanges();
@@ -82,7 +82,7 @@ describe('FinesSuspenseItemSearchFormComponent', () => {
     expect(submitted).toHaveBeenCalledExactlyOnceWith({
       formData: {
         fsis_business_unit_id: FINES_SUSPENSE_ITEM_SEARCH_BUSINESS_UNITS_MOCK[1].value,
-        fsis_suspense_reference_number: '001234',
+        fsis_suspense_reference_number: '1234',
       },
       nestedFlow: false,
     });
@@ -169,14 +169,46 @@ describe('FinesSuspenseItemSearchFormComponent', () => {
     },
   );
 
-  it.each(['0', '7', '0000', '001234', '9'.repeat(18), '0'.repeat(100) + '1234'])(
-    'accepts a reference with at most 18 digits after leading zeroes: %s',
-    (reference) => {
-      fixture.detectChanges();
-      component.form.setValue({ fsis_business_unit_id: 11, fsis_suspense_reference_number: reference });
-      expect(component.form.valid).toBe(true);
-    },
-  );
+  it.each([
+    ['7', '7'],
+    ['001234', '1234'],
+    ['100200', '100200'],
+    ['9'.repeat(18), '9'.repeat(18)],
+    ['0'.repeat(100) + '9'.repeat(18), '9'.repeat(18)],
+  ])('normalises %s before validating and submitting the reference', (reference, normalised) => {
+    fixture.detectChanges();
+    component.form.setValue({ fsis_business_unit_id: 11, fsis_suspense_reference_number: reference });
+    const submitted = vi.fn();
+    component['formSubmit'].subscribe(submitted);
+    fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    fixture.detectChanges();
+
+    expect(submitted).toHaveBeenCalledExactlyOnceWith({
+      formData: { fsis_business_unit_id: 11, fsis_suspense_reference_number: normalised },
+      nestedFlow: false,
+    });
+    expect(fixture.nativeElement.querySelector('#fsis_suspense_reference_number').value).toBe(normalised);
+    expect(fixture.nativeElement.querySelector('.govuk-error-summary')).toBeNull();
+  });
+
+  it.each(['0', '0000', '0'.repeat(100)])('treats all-zero reference %s as a missing reference', (reference) => {
+    fixture.detectChanges();
+    component.form.setValue({ fsis_business_unit_id: 11, fsis_suspense_reference_number: reference });
+    const submitted = vi.fn();
+    component['formSubmit'].subscribe(submitted);
+    fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    fixture.detectChanges();
+
+    expect(submitted).not.toHaveBeenCalled();
+    expect(component.form.get('fsis_suspense_reference_number')?.value).toBe('');
+    expect(component.form.get('fsis_suspense_reference_number')?.hasError('required')).toBe(true);
+    expect(fixture.nativeElement.querySelector('.govuk-error-summary').textContent).toContain(
+      'Enter suspense reference number',
+    );
+    expect(fixture.nativeElement.querySelector('.govuk-error-message').textContent).toContain(
+      'Enter suspense reference number',
+    );
+  });
 
   it.each(['9'.repeat(19), '0'.repeat(20) + '9'.repeat(19)])(
     'rejects a reference exceeding 18 digits after leading zeroes: %s',

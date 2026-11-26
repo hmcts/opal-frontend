@@ -131,7 +131,7 @@ describe('FinesSuspenseItemSearchComponent', () => {
     expect(store.selectedBusinessUnitName()).toBe('Test business unit');
   });
 
-  it('opens temporary results with the submitted reference and matching BU without requesting a summary', () => {
+  it('opens temporary results with the normalised reference and matching BU without requesting a summary', () => {
     fixture.detectChanges();
     const child: FinesSuspenseItemSearchFormComponent = fixture.debugElement.query(
       By.directive(FinesSuspenseItemSearchFormComponent),
@@ -143,7 +143,7 @@ describe('FinesSuspenseItemSearchComponent', () => {
       '/',
       'fines',
       'suspense-item',
-      '001234',
+      '1234',
       'results',
     ]);
     expect(TestBed.inject(FinesSuspenseItemStore).selectedBusinessUnitId()).toBe(22);

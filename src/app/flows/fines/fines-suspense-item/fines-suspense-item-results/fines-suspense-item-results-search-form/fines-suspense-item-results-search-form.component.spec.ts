@@ -40,23 +40,29 @@ describe('FinesSuspenseItemResultsSearchFormComponent', () => {
     expect(component.form.pristine).toBe(true);
   });
 
-  it.each(['0', '0000', '001234', '987654321098765432', '0'.repeat(100) + '1234'])(
-    'emits the valid reference %s as text without changing its digits',
-    (reference) => {
-      const submitted = vi.fn();
-      component['formSubmit'].subscribe(submitted);
-      enterReference(reference);
-      submit();
-      expect(submitted).toHaveBeenCalledExactlyOnceWith({
-        formData: { fsir_suspense_reference_number: reference },
-        nestedFlow: false,
-      });
-      expect(page.querySelector('.govuk-error-summary')).toBeNull();
-    },
-  );
+  it.each([
+    ['001234', '1234'],
+    ['100200', '100200'],
+    ['987654321098765432', '987654321098765432'],
+    ['0'.repeat(100) + '987654321098765432', '987654321098765432'],
+  ])('normalises %s before validating and submitting the reference', (reference, normalised) => {
+    const submitted = vi.fn();
+    component['formSubmit'].subscribe(submitted);
+    enterReference(reference);
+    submit();
+    expect(submitted).toHaveBeenCalledExactlyOnceWith({
+      formData: { fsir_suspense_reference_number: normalised },
+      nestedFlow: false,
+    });
+    expect(page.querySelector<HTMLInputElement>('#fsir_suspense_reference_number')!.value).toBe(normalised);
+    expect(page.querySelector('.govuk-error-summary')).toBeNull();
+  });
 
   it.each([
     ['', 'Enter suspense reference number'],
+    ['0', 'Enter suspense reference number'],
+    ['0000', 'Enter suspense reference number'],
+    ['0'.repeat(100), 'Enter suspense reference number'],
     ['abc', 'Enter suspense reference number in the correct format'],
     ['12a3', 'Enter suspense reference number in the correct format'],
     ['12.3', 'Enter suspense reference number in the correct format'],
