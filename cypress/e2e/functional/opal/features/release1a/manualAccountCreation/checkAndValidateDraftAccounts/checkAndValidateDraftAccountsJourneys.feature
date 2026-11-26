@@ -5,7 +5,7 @@ Feature: Check And Validate Draft Accounts Journeys
     Given I am logged in with email "opal-test@dev.platform.hmcts.net"
     Then I should be on the dashboard
 
-  @R1A1_2 @JIRA-STORY:PO-11700 @JIRA-STORY:PO-11437
+  @R1A1_2 @JIRA-STORY:PO-11700 @JIRA-STORY:PO-11437 @JIRA-EPIC:PO-812
   Scenario: Checker sees the original collection order answer and made-today selection separately on a submitted draft
     When I start a fine manual account for business unit "Camberwell Green" with defendant type "Adult or youth only" and originator type "New"
     And I complete standard manual fine account fields with a unique defendant name
