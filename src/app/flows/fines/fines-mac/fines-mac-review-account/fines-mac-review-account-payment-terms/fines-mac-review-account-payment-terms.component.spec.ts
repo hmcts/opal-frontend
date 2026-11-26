@@ -4,10 +4,12 @@ import { FINES_MAC_PAYMENT_TERMS_STATE_MOCK } from '../../fines-mac-payment-term
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { IFinesPaymentTermsOptions } from '../../../interfaces/fines-payment-terms-options.interface';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { PermissionsService } from '@hmcts/opal-frontend-common/services/permissions-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { GlobalStoreType } from '@hmcts/opal-frontend-common/stores/global/types';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { IOpalUserState } from '@hmcts/opal-frontend-common/services/opal-user-service/interfaces';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -18,14 +20,19 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
   let fixture: ComponentFixture<FinesMacReviewAccountPaymentTermsComponent>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockDateService: any;
+  let hasBusinessUnitPermissionAccess: ReturnType<typeof vi.fn>;
   let globalStore: GlobalStoreType;
 
   beforeEach(async () => {
     mockDateService = createSpyObj(DateService, ['getFromFormatToFormat']);
+    hasBusinessUnitPermissionAccess = vi.fn().mockReturnValue(false);
 
     await TestBed.configureTestingModule({
       imports: [FinesMacReviewAccountPaymentTermsComponent],
-      providers: [{ provide: DateService, useValue: mockDateService }],
+      providers: [
+        { provide: DateService, useValue: mockDateService },
+        { provide: PermissionsService, useValue: { hasBusinessUnitPermissionAccess } },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FinesMacReviewAccountPaymentTermsComponent);
@@ -37,15 +44,141 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
 
     globalStore = TestBed.inject(GlobalStore);
     globalStore.setUserState(OPAL_USER_STATE_MOCK);
-
-    globalStore = TestBed.inject(GlobalStore);
-    globalStore.setUserState(OPAL_USER_STATE_MOCK);
-
-    fixture.detectChanges();
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it.each(
+    [true, false].flatMap((isReadOnly) =>
+      [true, false].flatMap((hasPermission) =>
+        [true, false].flatMap((made) =>
+          [true, false, null].map((madeToday) => ({ isReadOnly, hasPermission, made, madeToday })),
+        ),
+      ),
+    ),
+  )('preserves the original summary with the flag disabled: %j', ({ isReadOnly, hasPermission, made, madeToday }) => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+    hasBusinessUnitPermissionAccess.mockReturnValue(hasPermission);
+    component.isReadOnly = isReadOnly;
+    component.paymentTermsState = {
+      ...component.paymentTermsState,
+      fm_payment_terms_collection_order_made: made,
+      fm_payment_terms_collection_order_made_today: madeToday,
+      fm_payment_terms_collection_order_date: '01/01/2023',
+    };
+    mockDateService.getFromFormatToFormat.mockReturnValue('01 January 2023');
+
+    fixture.detectChanges();
+
+    const summary = fixture.nativeElement as HTMLElement;
+    expect(summary.querySelector('[summaryListRowId="hasCollectionOrder"]')?.textContent).toContain(
+      made ? 'Yes' : 'No',
+    );
+    const dateRow = summary.querySelector('[summaryListRowId="collectionOrderDate"]');
+    if (made) {
+      expect(dateRow?.textContent).toContain('01 January 2023');
+    } else {
+      expect(dateRow).toBeNull();
+    }
+    const madeTodayRow = summary.querySelector('[summaryListRowId="makeCollectionOrderToday"]');
+    if (!made && hasPermission) {
+      expect(madeTodayRow?.textContent).toContain(madeToday ? 'Yes' : 'No');
+    } else {
+      expect(madeTodayRow).toBeNull();
+    }
+  });
+
+  it('preserves No and shows made-today separately in read-only review without collection-order permission', () => {
+    component.isReadOnly = true;
+    component.paymentTermsState = {
+      ...component.paymentTermsState,
+      fm_payment_terms_collection_order_made: false,
+      fm_payment_terms_collection_order_made_today: true,
+      fm_payment_terms_collection_order_date: '01/01/2023',
+    };
+    mockDateService.getFromFormatToFormat.mockReturnValue('01 January 2023');
+
+    fixture.detectChanges();
+
+    const summary = fixture.nativeElement as HTMLElement;
+    expect(summary.querySelector('[summaryListRowId="hasCollectionOrder"]')?.textContent).toContain('No');
+    expect(summary.querySelector('[summaryListRowId="collectionOrderDate"]')).toBeNull();
+    expect(summary.querySelector('[summaryListRowId="makeCollectionOrderToday"]')?.textContent).toContain('Yes');
+    expect(hasBusinessUnitPermissionAccess).toHaveBeenCalled();
+  });
+
+  it('preserves No and shows made-today separately in read-only review with collection-order permission', () => {
+    hasBusinessUnitPermissionAccess.mockReturnValue(true);
+    component.isReadOnly = true;
+    component.paymentTermsState = {
+      ...component.paymentTermsState,
+      fm_payment_terms_collection_order_made: false,
+      fm_payment_terms_collection_order_made_today: true,
+      fm_payment_terms_collection_order_date: '01/01/2023',
+    };
+    mockDateService.getFromFormatToFormat.mockReturnValue('01 January 2023');
+
+    fixture.detectChanges();
+
+    const summary = fixture.nativeElement as HTMLElement;
+    expect(summary.querySelector('[summaryListRowId="hasCollectionOrder"]')?.textContent).toContain('No');
+    expect(summary.querySelector('[summaryListRowId="collectionOrderDate"]')).toBeNull();
+    expect(summary.querySelector('[summaryListRowId="makeCollectionOrderToday"]')?.textContent).toContain('Yes');
+  });
+
+  it.each([false, null])('shows a historical order without a made-today row when the saved flag is %s', (madeToday) => {
+    component.isReadOnly = true;
+    component.paymentTermsState = {
+      ...component.paymentTermsState,
+      fm_payment_terms_collection_order_made: true,
+      fm_payment_terms_collection_order_made_today: madeToday,
+      fm_payment_terms_collection_order_date: '01/01/2023',
+    };
+    mockDateService.getFromFormatToFormat.mockReturnValue('01 January 2023');
+
+    fixture.detectChanges();
+
+    const summary = fixture.nativeElement as HTMLElement;
+    expect(summary.querySelector('[summaryListRowId="hasCollectionOrder"]')?.textContent).toContain('Yes');
+    expect(summary.querySelector('[summaryListRowId="collectionOrderDate"]')?.textContent).toContain('01 January 2023');
+    expect(summary.querySelector('[summaryListRowId="makeCollectionOrderToday"]')).toBeNull();
+  });
+
+  it('shows No without a collection-order date when no order was made', () => {
+    component.isReadOnly = true;
+    component.paymentTermsState = {
+      ...component.paymentTermsState,
+      fm_payment_terms_collection_order_made: false,
+      fm_payment_terms_collection_order_made_today: false,
+      fm_payment_terms_collection_order_date: '01/01/2023',
+    };
+
+    fixture.detectChanges();
+
+    const summary = fixture.nativeElement as HTMLElement;
+    expect(summary.querySelector('[summaryListRowId="hasCollectionOrder"]')?.textContent).toContain('No');
+    expect(summary.querySelector('[summaryListRowId="collectionOrderDate"]')).toBeNull();
+    expect(summary.querySelector('[summaryListRowId="makeCollectionOrderToday"]')).toBeNull();
+  });
+
+  it('keeps the No and made-today answers in the editable summary', () => {
+    hasBusinessUnitPermissionAccess.mockReturnValue(true);
+    component.paymentTermsState = {
+      ...component.paymentTermsState,
+      fm_payment_terms_collection_order_made: false,
+      fm_payment_terms_collection_order_made_today: true,
+      fm_payment_terms_collection_order_date: '01/01/2023',
+    };
+
+    fixture.detectChanges();
+
+    const summary = fixture.nativeElement as HTMLElement;
+    expect(summary.querySelector('[summaryListRowId="hasCollectionOrder"]')?.textContent).toContain('No');
+    expect(summary.querySelector('[summaryListRowId="collectionOrderDate"]')).toBeNull();
+    expect(summary.querySelector('[summaryListRowId="makeCollectionOrderToday"]')?.textContent).toContain('Yes');
   });
 
   it('should get payment terms correctly', () => {
