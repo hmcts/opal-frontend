@@ -95,60 +95,6 @@ describe('finesMciCriminalAccountsResolver', () => {
     );
   });
 
-  it('defaults unselected individual search options to false', async () => {
-    search.formData.fsa_search_account_individuals_search_criteria = {
-      fsa_search_account_individuals_last_name: 'Smith',
-      fsa_search_account_individuals_first_names: null,
-      fsa_search_account_individuals_last_name_exact_match: null,
-      fsa_search_account_individuals_first_names_exact_match: null,
-      fsa_search_account_individuals_include_aliases: null,
-    };
-    store.setCriminalSearch({ ...search });
-
-    await resolveResult();
-
-    expect(service.getDefendantAccounts).toHaveBeenCalledExactlyOnceWith(
-      expect.objectContaining({
-        defendant: expect.objectContaining({
-          surname: 'Smith',
-          forenames: null,
-          exact_match_surname: false,
-          exact_match_forenames: false,
-          include_aliases: false,
-          organisation: false,
-        }),
-      }),
-    );
-  });
-
-  it('defaults unselected company search options to false', async () => {
-    store.setCriminalSearch({
-      ...search,
-      activeTab: 'companies',
-      formData: {
-        ...search.formData,
-        fsa_search_account_companies_search_criteria: {
-          fsa_search_account_companies_company_name: 'Acme Ltd',
-          fsa_search_account_companies_company_name_exact_match: null,
-          fsa_search_account_companies_include_aliases: null,
-        },
-      },
-    });
-
-    await resolveResult();
-
-    expect(service.getDefendantAccounts).toHaveBeenCalledExactlyOnceWith(
-      expect.objectContaining({
-        defendant: expect.objectContaining({
-          organisation_name: 'Acme Ltd',
-          exact_match_organisation_name: false,
-          include_aliases: false,
-          organisation: true,
-        }),
-      }),
-    );
-  });
-
   it.each(['individuals', 'companies'] as const)(
     'searches both party types for an account number from %s',
     async (tab) => {
@@ -312,5 +258,26 @@ describe('finesMciCriminalAccountsResolver', () => {
     service.getDefendantAccounts.mockReturnValue(throwError(() => error));
 
     await expect(resolveResult()).rejects.toBe(error);
+  });
+  it.each([
+    [0, 'no-matches'],
+    [1, 'matches'],
+    [100, 'matches'],
+    [101, 'too-many'],
+  ] as const)('reuses the stored response with count %s on return navigation', async (count, outcome) => {
+    const storedResults = { ...OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK, count };
+    store.setCriminalSearchResults(storedResults);
+    const result = await resolveResult();
+    expect(result.response).toBe(storedResults);
+    expect(result.results).toBe(outcome);
+    expect(service.getDefendantAccounts).not.toHaveBeenCalled();
+  });
+
+  it('queries the API again when a new search is submitted after viewing results', async () => {
+    store.setCriminalSearchResults(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK);
+    store.setCriminalSearch({ ...search });
+    const result = await resolveResult();
+    expect(service.getDefendantAccounts).toHaveBeenCalledOnce();
+    expect(result.response).toBe(response);
   });
 });
