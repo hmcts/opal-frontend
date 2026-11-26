@@ -32,4 +32,18 @@ describe('FinesMciCreateTillCourtFeeCheckComponent', () => {
     await fixture.whenStable();
     expect(fixture.componentInstance.canDeactivate()).toBe(false);
   });
+  it('ignores repeated Back clicks until the current navigation finishes', async () => {
+    let finish!: (value: boolean) => void;
+    const navigate = vi
+      .spyOn(TestBed.inject(Router), 'navigate')
+      .mockReturnValue(new Promise<boolean>((resolve) => (finish = resolve)));
+    const fixture = TestBed.createComponent(FinesMciCreateTillCourtFeeCheckComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.handleBack();
+    fixture.componentInstance.handleBack();
+    expect(navigate).toHaveBeenCalledOnce();
+    finish(true);
+    await fixture.whenStable();
+    expect(fixture.componentInstance.canDeactivate()).toBe(false);
+  });
 });
