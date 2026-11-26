@@ -844,19 +844,18 @@ withPipeline(type, product, component) {
                   ? releaseSuiteComponentScript(releaseSuiteSelection)
                   : componentTestScript
                 echo "Running opal component tests via yarn ${componentCommand}"
-                try {
-                    yarnBuilder.yarn(componentCommand)
-                } catch (hudson.AbortException e) {
-                    echo "Opal component tests failed: ${e}"
-                    currentBuild.result = 'FAILURE'
-                } finally {
-                    archiveZephyrReports(functionalOutputRoot)
-                    archiveArtifact(functionalArtifactsGlob)
-                    publishHtmlReport(
-                    "functional-output/component/${resolvedBrowserToRun()}/html/",
-                    'component-report.html',
-                    "Component Test Report (${resolvedBrowserToRun()})"
-                  )
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE', message: 'Component tests failed') {
+                    try {
+                        yarnBuilder.yarn(componentCommand)
+                    } finally {
+                        archiveZephyrReports(functionalOutputRoot)
+                        archiveArtifact(functionalArtifactsGlob)
+                        publishHtmlReport(
+                            "functional-output/component/${resolvedBrowserToRun()}/html/",
+                            'component-report.html',
+                            "Component Test Report (${resolvedBrowserToRun()})"
+                        )
+                    }
                 }
             }
         }
