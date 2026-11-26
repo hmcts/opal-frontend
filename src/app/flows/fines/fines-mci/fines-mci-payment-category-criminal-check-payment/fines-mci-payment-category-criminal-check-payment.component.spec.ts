@@ -1,10 +1,11 @@
+import { Subject } from 'rxjs';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { Component } from '@angular/core';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { routing } from '../routing/fines-mci.routes';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, Router } from '@angular/router';
+import { Navigation, NavigationCancel, NavigationEnd, NavigationError, provideRouter, Router } from '@angular/router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-defendant-account-response-individual.mock';
@@ -291,6 +292,9 @@ describe('FinesMciPaymentCategoryCriminalCheckPaymentComponent', () => {
         ],
       });
       const { store, fixture } = render();
+      store.setDraftJourney('criminal');
+      store.ensureTill();
+      const originalTills = store.tills();
       fixture.destroy();
       const harness = await RouterTestingHarness.create(`/${tillRoot}/check-payment`);
       const confirm = vi.spyOn(window, 'confirm').mockReturnValue(accepted);
@@ -306,7 +310,9 @@ describe('FinesMciPaymentCategoryCriminalCheckPaymentComponent', () => {
       }
       await harness.fixture.whenStable();
       expect(confirm).toHaveBeenCalledOnce();
-      expect(store.criminalPayment()).toEqual(accepted && action !== 'leave' ? null : PAYMENT);
+      expect(store.criminalPayment()).toEqual(accepted ? null : PAYMENT);
+      expect(store.draftJourney()).toBe(accepted ? null : 'criminal');
+      expect(store.tills()).toEqual(originalTills);
       const destination =
         action === 'leave'
           ? '/elsewhere'
@@ -481,5 +487,99 @@ describe('FinesMciPaymentCategoryCriminalCheckPaymentComponent', () => {
     const allowed = new Event('beforeunload', { cancelable: true });
     window.dispatchEvent(allowed);
     expect(allowed.defaultPrevented).toBe(false);
+  });
+  it('preserves the draft when returning to the real Payment Details screen', async () => {
+    const tillRoot = 'fines/manual-cash-input/create/till';
+    const checkRoute = routing
+      .find((route) => route.path === 'create')!
+      .children!.find((route) => route.path === 'till')!
+      .children!.find((route) => route.path === 'check-payment')!;
+    const { FinesMciPaymentCategoryCriminalPaymentDetailsComponent } =
+      await import('../fines-mci-payment-category-criminal-payment-details/fines-mci-payment-category-criminal-payment-details.component');
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([
+          { ...checkRoute, path: `${tillRoot}/check-payment`, canActivate: [], resolve: {} },
+          {
+            path: `${tillRoot}/payment/category/criminal/payment-details/:accountId`,
+            component: FinesMciPaymentCategoryCriminalPaymentDetailsComponent,
+          },
+        ]),
+      ],
+    });
+    const { store, fixture } = render();
+    fixture.destroy();
+    const harness = await RouterTestingHarness.create(`/${tillRoot}/check-payment`);
+    const confirm = vi.spyOn(window, 'confirm');
+    harness.routeNativeElement!.querySelectorAll<HTMLAnchorElement>('.govuk-summary-list__actions a')[1].click();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(store.criminalPayment()).toEqual(PAYMENT);
+    expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#amount')!.value).toBe(PAYMENT.amount);
+    expect(confirm).not.toHaveBeenCalled();
+  });
+
+  it.each(['cancelled', 'rejected'])('preserves the draft when an unrelated departure is %s', async (result) => {
+    const tillRoot = 'fines/manual-cash-input/create/till';
+    const checkRoute = routing
+      .find((route) => route.path === 'create')!
+      .children!.find((route) => route.path === 'till')!
+      .children!.find((route) => route.path === 'check-payment')!;
+    TestBed.configureTestingModule({
+      providers: [
+        provideRouter([
+          { ...checkRoute, path: `${tillRoot}/check-payment`, canActivate: [], resolve: {} },
+          {
+            path: 'elsewhere',
+            component: DestinationComponent,
+            canActivate: [
+              () => {
+                if (result === 'rejected') throw new Error('Navigation failed');
+                return false;
+              },
+            ],
+          },
+        ]),
+      ],
+    });
+    const { store, fixture } = render();
+    fixture.destroy();
+    const harness = await RouterTestingHarness.create(`/${tillRoot}/check-payment`);
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    await TestBed.inject(Router)
+      .navigateByUrl('/elsewhere')
+      .catch(() => false);
+    await harness.fixture.whenStable();
+    expect(TestBed.inject(Router).url).toBe(`/${tillRoot}/check-payment`);
+    expect(store.criminalPayment()).toEqual(PAYMENT);
+  });
+  it.each(['cancelled', 'rejected'])('does not discard the draft after teardown if navigation is %s', (result) => {
+    const { fixture, store } = render();
+    const router = TestBed.inject(Router);
+    const events = new Subject<NavigationEnd | NavigationCancel | NavigationError>();
+    vi.spyOn(router, 'events', 'get').mockReturnValue(events.asObservable());
+    vi.spyOn(router, 'currentNavigation').mockReturnValue({ id: 123 } as Navigation);
+    fixture.destroy();
+    events.next(new NavigationEnd(999, '/elsewhere', '/elsewhere'));
+    expect(store.criminalPayment()).toEqual(PAYMENT);
+    events.next(
+      result === 'cancelled'
+        ? new NavigationCancel(123, '/elsewhere', 'cancelled')
+        : new NavigationError(123, '/elsewhere', new Error('Navigation failed')),
+    );
+    expect(store.criminalPayment()).toEqual(PAYMENT);
+  });
+
+  it('clears an abandoned draft even when the selected account has already been cleared', () => {
+    const { fixture, store } = render();
+    store.setSelectedCriminalAccount(null);
+    store.setCriminalPayment(PAYMENT);
+    const router = TestBed.inject(Router);
+    const events = new Subject<NavigationEnd>();
+    vi.spyOn(router, 'events', 'get').mockReturnValue(events.asObservable());
+    vi.spyOn(router, 'currentNavigation').mockReturnValue({ id: 123 } as Navigation);
+    fixture.destroy();
+    events.next(new NavigationEnd(123, '/elsewhere', '/elsewhere'));
+    expect(store.criminalPayment()).toBeNull();
   });
 });

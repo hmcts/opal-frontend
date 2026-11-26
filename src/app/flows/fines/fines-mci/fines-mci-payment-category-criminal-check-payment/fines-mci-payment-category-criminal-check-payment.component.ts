@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, HostListener, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { filter, take } from 'rxjs';
+import { ChangeDetectionStrategy, Component, computed, HostListener, inject, OnDestroy, signal } from '@angular/core';
+import { NavigationCancel, NavigationEnd, NavigationError, Router } from '@angular/router';
 import { CanDeactivateTypes } from '@hmcts/opal-frontend-common/guards/can-deactivate/types';
 import { GovukSummaryCardListComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-card-list';
 import {
@@ -25,7 +26,7 @@ import { formatPounds } from '../fines-mci-create-till/utils/fines-mci-court-fee
   templateUrl: './fines-mci-payment-category-criminal-check-payment.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FinesMciPaymentCategoryCriminalCheckPaymentComponent {
+export class FinesMciPaymentCategoryCriminalCheckPaymentComponent implements OnDestroy {
   private readonly router = inject(Router);
   private allowNavigation = false;
   private readonly tillPath = [
@@ -180,5 +181,36 @@ export class FinesMciPaymentCategoryCriminalCheckPaymentComponent {
   @HostListener('window:beforeunload')
   public handleBeforeUnload(): boolean {
     return !this.isSaving() && this.store.criminalPayment() === null;
+  }
+
+  /** Discards an abandoned draft only once navigation succeeds, preserving payment amendments. */
+  public ngOnDestroy(): void {
+    const navigation = this.router.currentNavigation();
+    if (!navigation) return;
+    const account = this.store.selectedCriminalAccount();
+    const paymentDetailsUrl = account
+      ? this.router
+          .createUrlTree([
+            ...this.criminalPath,
+            FINES_MCI_ROUTING_PATHS.children.paymentDetails,
+            account.defendant_account_id,
+          ])
+          .toString()
+      : null;
+    this.router.events
+      .pipe(
+        filter(
+          (event) =>
+            (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError) &&
+            event.id === navigation.id,
+        ),
+        take(1),
+      )
+      .subscribe((event) => {
+        if (event instanceof NavigationEnd && event.urlAfterRedirects.split(/[?#]/)[0] !== paymentDetailsUrl) {
+          if (this.store.draftJourney() === 'criminal') this.store.setDraftJourney(null);
+          this.store.setCriminalPayment(null);
+        }
+      });
   }
 }
