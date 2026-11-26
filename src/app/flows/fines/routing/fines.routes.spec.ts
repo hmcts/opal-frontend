@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '../constants/fines-dashboard-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from './constants/fines-routing-paths.constant';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
@@ -10,36 +10,49 @@ const release1bFeatureFlagGuardMock = vi.fn();
 const release1cWriteOffFeatureFlagGuardMock = vi.fn();
 const release1cEnforcementOperationalReportingFeatureFlagGuardMock = vi.fn();
 const release1cPaymentFeatureFlagGuardMock = vi.fn();
+const release1cBankingInterfacesFeatureFlagGuardMock = vi.fn();
 const release1aFeatureFlagName = 'release-1a';
 const release1bFeatureFlagName = 'release-1b';
 const release1cWriteOffFeatureFlagName = 'release-1c-write-off';
 const release1cPaymentFeatureFlagName = 'release-1c-payment';
+const release1cBankingInterfacesFeatureFlagName = 'release-1c-banking-interfaces';
 
 const mockFeatureFlagRedirectGuard = (): void => {
-  featureFlagRedirectGuardMock.mockImplementation((featureFlagName: string) => {
-    if (featureFlagName === release1aFeatureFlagName) {
-      return release1aFeatureFlagGuardMock;
-    }
+  vi.doMock('@hmcts/opal-frontend-common/guards/feature-flag', async (importOriginal) => {
+    const original = await importOriginal<typeof import('@hmcts/opal-frontend-common/guards/feature-flag')>();
+    featureFlagRedirectGuardMock.mockImplementation((featureFlagName: string, redirectPath?: string) => {
+      if (featureFlagName === release1aFeatureFlagName) {
+        return release1aFeatureFlagGuardMock;
+      }
 
-    if (featureFlagName === release1bFeatureFlagName) {
-      return release1bFeatureFlagGuardMock;
-    }
+      if (featureFlagName === release1bFeatureFlagName) {
+        return release1bFeatureFlagGuardMock;
+      }
 
-    if (featureFlagName === release1cWriteOffFeatureFlagName) {
-      return release1cWriteOffFeatureFlagGuardMock;
-    }
+      if (featureFlagName === release1cWriteOffFeatureFlagName) {
+        return release1cWriteOffFeatureFlagGuardMock;
+      }
 
-    if (featureFlagName === release1cPaymentFeatureFlagName) {
-      return release1cPaymentFeatureFlagGuardMock;
-    }
+      if (featureFlagName === release1cPaymentFeatureFlagName) {
+        return release1cPaymentFeatureFlagGuardMock;
+      }
 
-    return release1cEnforcementOperationalReportingFeatureFlagGuardMock;
+      if (featureFlagName === release1cBankingInterfacesFeatureFlagName) {
+        release1cBankingInterfacesFeatureFlagGuardMock.mockImplementation(
+          original.featureFlagRedirectGuard(featureFlagName, redirectPath),
+        );
+        return release1cBankingInterfacesFeatureFlagGuardMock;
+      }
+
+      if (featureFlagName === 'release-1c-enforcement-operational-reporting') {
+        return release1cEnforcementOperationalReportingFeatureFlagGuardMock;
+      }
+
+      // Child routes also create guards while this module is mocked.
+      return original.featureFlagRedirectGuard(featureFlagName, redirectPath);
+    });
+    return { ...original, featureFlagRedirectGuard: featureFlagRedirectGuardMock };
   });
-
-  vi.doMock('@hmcts/opal-frontend-common/guards/feature-flag', async (importOriginal) => ({
-    ...(await importOriginal<typeof import('@hmcts/opal-frontend-common/guards/feature-flag')>()),
-    featureFlagRedirectGuard: featureFlagRedirectGuardMock,
-  }));
 };
 
 describe('fines routes', () => {
@@ -51,6 +64,7 @@ describe('fines routes', () => {
   let release1cWriteOffFeatureFlagGuard: FinesRoutesModule['release1cWriteOffFeatureFlagGuard'];
   let release1cEnforcementOperationalReportingFeatureFlagGuard: FinesRoutesModule['release1cEnforcementOperationalReportingFeatureFlagGuard'];
   let release1cPaymentFeatureFlagGuard: FinesRoutesModule['release1cPaymentFeatureFlagGuard'];
+  let release1cBankingInterfacesFeatureFlagGuard: FinesRoutesModule['release1cBankingInterfacesFeatureFlagGuard'];
   let finesSectionPermissionsGuard: unknown;
   let dashboardTypeGuard: unknown;
   let finesFinanceRouting: Routes;
@@ -59,6 +73,11 @@ describe('fines routes', () => {
   let aecRouting: Routes;
   let autoPaymentInRouting: Routes;
   let childRoutes: Routes;
+
+  afterEach(() => {
+    vi.doUnmock('@hmcts/opal-frontend-common/guards/feature-flag');
+    vi.resetModules();
+  });
 
   beforeEach(async () => {
     vi.resetModules();
@@ -92,6 +111,7 @@ describe('fines routes', () => {
     release1cEnforcementOperationalReportingFeatureFlagGuard =
       finesRoutes.release1cEnforcementOperationalReportingFeatureFlagGuard;
     release1cPaymentFeatureFlagGuard = finesRoutes.release1cPaymentFeatureFlagGuard;
+    release1cBankingInterfacesFeatureFlagGuard = finesRoutes.release1cBankingInterfacesFeatureFlagGuard;
     finesSectionPermissionsGuard = finesSectionPermissionsGuardModule.finesSectionPermissionsGuard;
     dashboardTypeGuard = dashboardTypeGuardModule.dashboardTypeGuard;
     finesFinanceRouting = finesFinanceRoutingModule.routing;
@@ -123,6 +143,11 @@ describe('fines routes', () => {
 
   it('should create the release-1c payment feature flag guard from the common redirect guard', () => {
     expect(release1cPaymentFeatureFlagGuard).toBe(release1cPaymentFeatureFlagGuardMock);
+  });
+
+  it('should create the banking interfaces feature flag guard from the common redirect guard', () => {
+    expect(featureFlagRedirectGuardMock).toHaveBeenCalledWith(release1cBankingInterfacesFeatureFlagName);
+    expect(release1cBankingInterfacesFeatureFlagGuard).toBe(release1cBankingInterfacesFeatureFlagGuardMock);
   });
 
   it('should guard the draft root as an Accounts section entry route', () => {
@@ -231,7 +256,12 @@ describe('fines routes', () => {
     const financeRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.finance.root);
 
     expect(financeRoute?.children).toBe(finesFinanceRouting);
-    expect(financeRoute?.canActivate).toEqual([authGuard, finesSectionPermissionsGuard]);
+    expect(financeRoute?.canActivate).toEqual([
+      authGuard,
+      release1cBankingInterfacesFeatureFlagGuard,
+      finesSectionPermissionsGuard,
+    ]);
+    expect(financeRoute?.canActivateChild).toEqual([release1cBankingInterfacesFeatureFlagGuard]);
     expect(financeRoute?.data).toEqual({
       sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
     });

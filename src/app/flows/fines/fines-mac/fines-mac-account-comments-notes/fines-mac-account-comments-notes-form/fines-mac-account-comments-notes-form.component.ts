@@ -6,9 +6,14 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  computed,
+  effect,
   inject,
 } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
 import { GovukButtonComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-button';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
@@ -22,7 +27,10 @@ import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern
 import { SINGLE_ASCII_CHARACTERS_WITH_POUND } from '@hmcts/opal-frontend-common/constants';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { IFinesMacAccountCommentsNotesFieldErrors } from '../interfaces/fines-mac-account-comments-notes-field-errors.interface';
-import { FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS } from '../constants/fines-mac-account-comments-notes-field-errors.constant';
+import {
+  FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS,
+  getAccountNotesMaxLengthError,
+} from '../constants/fines-mac-account-comments-notes-field-errors.constant';
 
 const SINGLE_ASCII_CHARACTERS_WITH_POUND_PATTERN_VALIDATOR = patternValidator(
   SINGLE_ASCII_CHARACTERS_WITH_POUND,
@@ -44,15 +52,36 @@ const SINGLE_ASCII_CHARACTERS_WITH_POUND_PATTERN_VALIDATOR = patternValidator(
 })
 export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseComponent implements OnInit, OnDestroy {
   private readonly finesMacStore = inject(FinesMacStore);
+  private readonly globalStore = inject(GlobalStore);
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacAccountCommentsNotesForm>();
   protected readonly finesMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected readonly finesMacNestedRoutes = FINES_MAC_ROUTING_NESTED_ROUTES;
-  protected override fieldErrors: IFinesMacAccountCommentsNotesFieldErrors =
-    FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS;
+
+  protected readonly release1a1_2Enabled = computed(
+    () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
+  );
+
+  protected readonly accountNotesMaxLength = computed(() => (this.release1a1_2Enabled() ? 500 : 1000));
+
+  protected override fieldErrors: IFinesMacAccountCommentsNotesFieldErrors = {
+    ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS,
+    fm_account_comments_notes_notes: {
+      ...FINES_MAC_ACCOUNT_COMMENTS_NOTES_FIELD_ERRORS.fm_account_comments_notes_notes,
+      ...getAccountNotesMaxLengthError(this.accountNotesMaxLength()),
+    },
+  };
 
   @Input() public defendantType!: string;
   public mandatorySectionsCompleted!: boolean;
+
+  constructor() {
+    super();
+
+    effect(() => {
+      this.updateAccountNotesValidation(this.accountNotesMaxLength());
+    });
+  }
 
   /**
    * Sets up the account comments and notes form with the necessary form controls.
@@ -64,9 +93,37 @@ export class FinesMacAccountCommentsNotesFormComponent extends AbstractFormBaseC
       ]),
       fm_account_comments_notes_notes: new FormControl<string | null>(null, [
         SINGLE_ASCII_CHARACTERS_WITH_POUND_PATTERN_VALIDATOR,
+        Validators.maxLength(this.accountNotesMaxLength()),
       ]),
       fm_account_comments_notes_system_notes: new FormControl<string | null>(null),
     });
+  }
+
+  /**
+   * Updates the account notes validators and error message based on the maximum character limit.
+   *
+   * @param maxLength - The maximum number of characters allowed for account notes.
+   */
+  private updateAccountNotesValidation(maxLength: number): void {
+    const notesControl = this.form?.get('fm_account_comments_notes_notes');
+
+    if (!notesControl) return;
+
+    notesControl.setValidators([SINGLE_ASCII_CHARACTERS_WITH_POUND_PATTERN_VALIDATOR, Validators.maxLength(maxLength)]);
+
+    notesControl.updateValueAndValidity({ emitEvent: false });
+
+    this.fieldErrors = {
+      ...this.fieldErrors,
+      fm_account_comments_notes_notes: {
+        ...this.fieldErrors.fm_account_comments_notes_notes,
+        ...getAccountNotesMaxLengthError(maxLength),
+      },
+    };
+
+    if (this.formErrorSummaryMessage?.length) {
+      this.handleErrorMessages();
+    }
   }
 
   /**

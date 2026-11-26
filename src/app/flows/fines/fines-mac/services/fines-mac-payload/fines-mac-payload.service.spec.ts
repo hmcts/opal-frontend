@@ -17,6 +17,11 @@ import { FINES_MAC_PAYLOAD_ADD_ACCOUNT_FIXED_PENALTY_MOCK } from './mocks/fines-
 import { FINES_MAC_PAYLOAD_FIXED_PENALTY_DETAILS_STATE_MOCK } from './utils/mocks/state/fines-mac-payload-fixed-penalty-details-state.mock';
 import { FINES_MAC_PAYMENT_TERMS_FORM } from '../../fines-mac-payment-terms/constants/fines-mac-payment-terms-form';
 import { FINES_ACCOUNT_TYPES } from '../../../constants/fines-account-types.constant';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import {
+  RELEASE_1A_1_2_FEATURE_FLAG,
+  RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG,
+} from '../../../constants/release-feature-flags.constant';
 import { afterAll, beforeEach, describe, expect, it } from 'vitest';
 
 describe('FinesMacPayloadService', () => {
@@ -32,6 +37,7 @@ describe('FinesMacPayloadService', () => {
       account_type: payload.account_type!,
       account_status: payload.account_status,
       status_message: null,
+      source: 'MAC',
     };
   };
 
@@ -61,6 +67,42 @@ describe('FinesMacPayloadService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
+  });
+
+  it.each([
+    { accountType: FINES_ACCOUNT_TYPES.Fine, originatorType: 'NEW' },
+    { accountType: FINES_ACCOUNT_TYPES['Conditional Caution'], originatorType: 'NEW' },
+    { accountType: FINES_ACCOUNT_TYPES['Fixed Penalty'], originatorType: 'FP' },
+    { accountType: FINES_ACCOUNT_TYPES.Fine, originatorType: 'TFO' },
+  ])(
+    'should include MAC source for $accountType with $originatorType originator',
+    ({ accountType, originatorType }) => {
+      if (!finesMacState || !service) {
+        throw new Error('Required mock states are not properly initialised');
+      }
+
+      finesMacState.accountDetails.formData.fm_create_account_account_type = accountType;
+      finesMacState.originatorType.formData.fm_originator_type_originator_type = originatorType;
+
+      const result = service.buildAddAccountPayload(finesMacState);
+
+      expect(result).toHaveProperty('source', 'MAC');
+      expect(result).not.toHaveProperty('source_reference');
+      expect(result.account.originator_type).toBe(originatorType);
+    },
+  );
+
+  it.each([true, false])('should submit MAC without a reference when banking interfaces is %s', (enabled) => {
+    if (!finesMacState || !service) {
+      throw new Error('Required mock states are not properly initialised');
+    }
+
+    TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: enabled });
+
+    const result = service.buildAddAccountPayload(finesMacState);
+
+    expect(result).toHaveProperty('source', 'MAC');
+    expect(result).not.toHaveProperty('source_reference');
   });
 
   it('should create an add account payload', () => {
@@ -116,6 +158,72 @@ describe('FinesMacPayloadService', () => {
     finesMacPayloadAddAccount.account.defendant.parent_guardian = null;
     expect(result).toEqual(buildExpectedReplaceRequest(finesMacPayloadAddAccount));
   });
+
+  it.each(
+    [true, false].flatMap((enabled) =>
+      [
+        { defendantType: FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly, requestType: 'submit' },
+        { defendantType: FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly, requestType: 'resubmit' },
+        { defendantType: FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay, requestType: 'submit' },
+        { defendantType: FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay, requestType: 'resubmit' },
+        { defendantType: FINES_MAC_DEFENDANT_TYPES_KEYS.company, requestType: 'submit' },
+        { defendantType: FINES_MAC_DEFENDANT_TYPES_KEYS.company, requestType: 'resubmit' },
+      ].map((scenario) => ({ ...scenario, enabled })),
+    ),
+  )(
+    'normalizes telephone numbers for $defendantType on $requestType when release 1A 1.2 is $enabled',
+    ({ defendantType, requestType, enabled }) => {
+      if (!finesMacState || !finesMacPayloadAddAccount || !service) {
+        throw new Error('Required mock states are not properly initialised');
+      }
+
+      finesMacState.accountDetails.formData.fm_create_account_defendant_type = defendantType;
+      finesMacState.contactDetails.formData.fm_contact_details_telephone_number_mobile = '07 898 45 67 89';
+      finesMacState.contactDetails.formData.fm_contact_details_telephone_number_home = '0 208 123 45 67';
+      finesMacState.contactDetails.formData.fm_contact_details_telephone_number_business = '0207 123 4567';
+      finesMacState.employerDetails.formData.fm_employer_details_employer_telephone_number = '0207 234 56 78';
+      TestBed.inject(GlobalStore).setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: enabled });
+
+      const result =
+        requestType === 'submit'
+          ? service.buildAddAccountPayload(finesMacState)
+          : service.buildReplaceAccountPayload(finesMacState);
+      const defendant = result.account.defendant;
+      const contact = defendantType === FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay ? defendant.parent_guardian : defendant;
+      const debtorDetail =
+        defendantType === FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay
+          ? defendant.parent_guardian?.debtor_detail
+          : defendant.debtor_detail;
+
+      expect(contact?.telephone_number_mobile).toBe(enabled ? '07898456789' : '07 898 45 67 89');
+      expect(contact?.telephone_number_home).toBe(enabled ? '02081234567' : '0 208 123 45 67');
+      expect(contact?.telephone_number_business).toBe(enabled ? '02071234567' : '0207 123 4567');
+      if (defendantType !== FINES_MAC_DEFENDANT_TYPES_KEYS.company) {
+        expect(debtorDetail?.employer_telephone_number).toBe(enabled ? '02072345678' : '0207 234 56 78');
+      }
+
+      if (enabled) {
+        const displayedState = service.mapAccountPayload(
+          { ...finesMacPayloadAddAccount, account: result.account },
+          null,
+          null,
+        );
+        expect(displayedState.contactDetails.formData.fm_contact_details_telephone_number_mobile).toBe('07898456789');
+        expect(displayedState.contactDetails.formData.fm_contact_details_telephone_number_home).toBe('02081234567');
+        expect(displayedState.contactDetails.formData.fm_contact_details_telephone_number_business).toBe('02071234567');
+        if (defendantType !== FINES_MAC_DEFENDANT_TYPES_KEYS.company) {
+          expect(displayedState.employerDetails.formData.fm_employer_details_employer_telephone_number).toBe(
+            '02072345678',
+          );
+        }
+      }
+
+      expect(finesMacState.contactDetails.formData.fm_contact_details_telephone_number_mobile).toBe('07 898 45 67 89');
+      expect(finesMacState.employerDetails.formData.fm_employer_details_employer_telephone_number).toBe(
+        '0207 234 56 78',
+      );
+    },
+  );
 
   it('should mapAccountPayload', () => {
     if (!finesMacPayloadAddAccount || !service) {

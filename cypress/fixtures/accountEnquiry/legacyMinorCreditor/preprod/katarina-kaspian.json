@@ -1,0 +1,16 @@
+{
+  "header": {
+    "accountNumber": "24000094H",
+    "name": "Mrs Katarina Kaspian JFmicred-k",
+    "accountType": "Minor creditor",
+    "businessUnit": "West London"
+  },
+  "metrics": {
+    "awarded": "£123.45"
+  },
+  "atAGlance": {
+    "Name": "Mrs Katarina Kaspian JFmicred-k",
+    "Address": "123 asdf\nasdf\nasdf\nasdf",
+    "Defendant account": "24000093L"
+  }
+}

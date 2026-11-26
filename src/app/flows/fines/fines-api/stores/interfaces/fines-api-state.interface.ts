@@ -6,7 +6,6 @@ export interface IFinesApiState {
   availableBusinessUnits: IOpalFinesBusinessUnitOutstandingAutoPaymentCount[];
   selectedBusinessUnitIds: number[];
   selectedFileIds: string[];
-  selectedTillIds: string[];
   overrideInhibitFileIds: string[];
   processInterfaceJobs: IOpalFinesInterfaceJobSummary[] | null;
   activeTab: TFinesApiProcessAllocateTabKey;

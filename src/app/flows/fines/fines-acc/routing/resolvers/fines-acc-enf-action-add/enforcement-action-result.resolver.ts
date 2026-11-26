@@ -2,7 +2,7 @@ import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, RedirectCommand, ResolveFn, Router } from '@angular/router';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { IOpalFinesResultRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-result-ref-data.interface';
-import { catchError, of } from 'rxjs';
+import { catchError, map, of } from 'rxjs';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../constants/fines-acc-defendant-routing-paths.constant';
 import { createDefendantDetailsRedirect } from '../helpers/fines-acc-resolver-redirect';
 
@@ -21,6 +21,11 @@ export const enforcementActionResultResolver: ResolveFn<IOpalFinesResultRefData 
   }
 
   return opalFinesService.getResult(resultId, true).pipe(
+    map((result) =>
+      result.active
+        ? result
+        : createDefendantDetailsRedirect(router, FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement),
+    ),
     catchError(() => {
       return of(createDefendantDetailsRedirect(router, FINES_ACC_DEFENDANT_ROUTING_PATHS.children.enforcement));
     }),

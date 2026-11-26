@@ -1,0 +1,100 @@
+<div class="govuk-grid-column-full govuk-!-margin-bottom-4">
+  <opal-lib-govuk-back-link (clickEvent)="navigateBack()"></opal-lib-govuk-back-link>
+</div>
+<div class="govuk-grid-column-two-thirds">
+  <div #errorSummary>
+    <opal-lib-govuk-error-summary
+      [errors]="consolidatedErrors()"
+      (errorClick)="focusNextStep()"
+    ></opal-lib-govuk-error-summary>
+  </div>
+  <span class="govuk-caption-m">{{ businessUnitName() }}</span>
+  <h1 class="govuk-heading-l">{{ heading() }}</h1>
+  @if (accountState().available) {
+    @if (accountState().warningMessage; as warningMessage) {
+      <opal-lib-moj-alert type="warning" [ariaLabel]="warningMessage" id="fines-mci-account-warning">
+        <opal-lib-moj-alert-icon icon type="warning"></opal-lib-moj-alert-icon>
+        <opal-lib-moj-alert-content content>
+          <opal-lib-moj-alert-content-text>{{ warningMessage }}</opal-lib-moj-alert-content-text>
+        </opal-lib-moj-alert-content>
+      </opal-lib-moj-alert>
+    }
+    <opal-lib-govuk-summary-list summaryListId="fines-mci-confirm-account-summary">
+      @for (row of rows(); track row.label) {
+        <div
+          opal-lib-govuk-summary-list-row
+          class="govuk-summary-list__row govuk-summary-list__row--no-actions"
+          summaryListId="fines-mci-confirm-account-summary"
+          [summaryListRowId]="row.id"
+        >
+          <ng-container name>{{ row.label }}</ng-container>
+          <ng-container value>
+            @for (value of row.values; track $index) {
+              {{ value }}
+              @if (!$last) {
+                <br />
+              }
+            } @empty {
+              —
+            }
+          </ng-container>
+        </div>
+      }
+    </opal-lib-govuk-summary-list>
+    <p class="govuk-body">
+      To see history and notes, you can
+      <a class="govuk-link" [routerLink]="accountDetailsRoute()" target="_blank" rel="noopener noreferrer"
+        >view the account in a new tab</a
+      >.
+    </p>
+    @if (isConsolidatedChild()) {
+      <form (submit)="continueConsolidated($event)" novalidate>
+        <opal-lib-govuk-radio
+          fieldSetId="fines-mci-consolidated-next-steps"
+          legendText="Next steps"
+          legendClasses="govuk-fieldset__legend--m"
+          [errors]="nextStepError()"
+        >
+          <div
+            opal-lib-govuk-radios-item
+            labelText="Pay into the live (master) account"
+            inputId="fines-mci-consolidated-next-step"
+            inputName="fines-mci-consolidated-next-step"
+            inputValue="master"
+            [control]="nextStep"
+          ></div>
+          <div
+            opal-lib-govuk-radios-item
+            labelText="Pay into suspense"
+            inputId="fines-mci-consolidated-next-step-suspense"
+            inputName="fines-mci-consolidated-next-step"
+            inputValue="suspense"
+            [control]="nextStep"
+          ></div>
+        </opal-lib-govuk-radio>
+        <div class="govuk-button-group">
+          <button
+            class="govuk-button"
+            type="submit"
+            id="fines-mci-consolidated-continue"
+            [disabled]="isLoadingMaster()"
+          >
+            Continue
+          </button>
+          <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
+        </div>
+      </form>
+    } @else {
+      <div class="govuk-button-group">
+        @if (accountState().warningMessage) {
+          <button class="govuk-button" type="button" id="fines-mci-pay-into-suspense" (click)="payIntoSuspense()">
+            Pay into suspense
+          </button>
+        } @else {
+          <button class="govuk-button" type="button" id="fines-mci-confirm-account" (click)="confirm()">Confirm</button>
+        }
+        <opal-lib-govuk-cancel-link (linkClickEvent)="handleCancel()"></opal-lib-govuk-cancel-link>
+      </div>
+    }
+  }
+</div>

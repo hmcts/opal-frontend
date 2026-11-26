@@ -518,6 +518,17 @@ When('I complete standard manual fine account fields for originator type checks'
 });
 
 /**
+ * @step Completes the standard manual fine account fixture with a unique defendant name.
+ * @description Prevents draft-listing collisions when the journey subsequently opens the account by name.
+ */
+When('I complete standard manual fine account fields with a unique defendant name', () => {
+  cy.fixture('manualAccountCreation/originatorTypeFineAccountFields.json').then((rows: string[][]) => {
+    log('flow', 'Completing manual account fixture with a unique defendant name');
+    flow().completeManualAccountWithUniqueDefendantName(rows);
+  });
+});
+
+/**
  * @step Completes manual account creation fields using a composite table with a custom Account details header.
  * @description Use when the Account details header is the defendant/company name (e.g., rejected accounts).
  * @param header - Expected Account details page header text.
