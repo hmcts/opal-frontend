@@ -18,9 +18,11 @@
           summaryListRowId="hasCollectionOrder"
         >
           <ng-container name>Has a collection order been made?</ng-container>
-          <ng-container value>{{ isCollectionOrderMadeForSummary ? 'Yes' : 'No' }}</ng-container>
+          <ng-container value>{{
+            paymentTermsState.fm_payment_terms_collection_order_made ? 'Yes' : 'No'
+          }}</ng-container>
         </div>
-        @if (isCollectionOrderMadeForSummary) {
+        @if (paymentTermsState.fm_payment_terms_collection_order_made) {
           <div
             opal-lib-govuk-summary-list-row
             class="govuk-summary-list__row govuk-summary-list__row--no-actions"

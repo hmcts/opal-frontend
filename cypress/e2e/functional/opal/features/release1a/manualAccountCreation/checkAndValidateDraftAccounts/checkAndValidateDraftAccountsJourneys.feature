@@ -6,7 +6,7 @@ Feature: Check And Validate Draft Accounts Journeys
     Then I should be on the dashboard
 
   @R1A1_2 @JIRA-STORY:PO-11700 @JIRA-STORY:PO-11437
-  Scenario: Checker sees the collection order made today on a submitted draft
+  Scenario: Checker sees the original collection order answer and made-today selection separately on a submitted draft
     When I start a fine manual account for business unit "Camberwell Green" with defendant type "Adult or youth only" and originator type "New"
     And I complete standard manual fine account fields with a unique defendant name
     And I check the manual account details
@@ -18,7 +18,7 @@ Feature: Check And Validate Draft Accounts Journeys
     And I open Check and Validate Draft Accounts
     And I open the draft account for "LNAME{uniq}, FNAME{uniq}" and see header "Mr FNAME{uniq} LNAME{uniq}"
     Then I see the manual review "Payment terms" summary:
-      | Has a collection order been made? | Yes |
+      | Has a collection order been made? | No  |
       | Make collection order today       | Yes |
 
   @JIRA-STORY:PO-2243 @JIRA-EPIC:PO-2220 @JIRA-NFR:PO-2505

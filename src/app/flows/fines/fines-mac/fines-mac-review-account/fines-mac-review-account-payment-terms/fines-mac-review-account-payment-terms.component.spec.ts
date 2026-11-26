@@ -91,7 +91,7 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
     }
   });
 
-  it('shows the overall order status, date and made-today answer in read-only review without collection-order permission', () => {
+  it('preserves No and shows made-today separately in read-only review without collection-order permission', () => {
     component.isReadOnly = true;
     component.paymentTermsState = {
       ...component.paymentTermsState,
@@ -104,13 +104,13 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
     fixture.detectChanges();
 
     const summary = fixture.nativeElement as HTMLElement;
-    expect(summary.querySelector('[summaryListRowId="hasCollectionOrder"]')?.textContent).toContain('Yes');
-    expect(summary.querySelector('[summaryListRowId="collectionOrderDate"]')?.textContent).toContain('01 January 2023');
+    expect(summary.querySelector('[summaryListRowId="hasCollectionOrder"]')?.textContent).toContain('No');
+    expect(summary.querySelector('[summaryListRowId="collectionOrderDate"]')).toBeNull();
     expect(summary.querySelector('[summaryListRowId="makeCollectionOrderToday"]')?.textContent).toContain('Yes');
     expect(hasBusinessUnitPermissionAccess).toHaveBeenCalled();
   });
 
-  it('shows saved collection-order details in read-only review when the viewer has collection-order permission', () => {
+  it('preserves No and shows made-today separately in read-only review with collection-order permission', () => {
     hasBusinessUnitPermissionAccess.mockReturnValue(true);
     component.isReadOnly = true;
     component.paymentTermsState = {
@@ -124,8 +124,8 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
     fixture.detectChanges();
 
     const summary = fixture.nativeElement as HTMLElement;
-    expect(summary.querySelector('[summaryListRowId="hasCollectionOrder"]')?.textContent).toContain('Yes');
-    expect(summary.querySelector('[summaryListRowId="collectionOrderDate"]')?.textContent).toContain('01 January 2023');
+    expect(summary.querySelector('[summaryListRowId="hasCollectionOrder"]')?.textContent).toContain('No');
+    expect(summary.querySelector('[summaryListRowId="collectionOrderDate"]')).toBeNull();
     expect(summary.querySelector('[summaryListRowId="makeCollectionOrderToday"]')?.textContent).toContain('Yes');
   });
 
