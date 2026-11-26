@@ -5,9 +5,14 @@ import { FINES_SUSPENSE_ITEM_ROUTING_PATHS } from '../routing/constants/fines-su
 /**
  * Performs a fresh results lookup, including when the reference has not changed.
  * Calls the parent's recovery callback if navigation is cancelled or rejected.
+ * Returns completion so the parent can clear its pending-search flag.
  */
-export function navigateToSuspenseItemResults(router: Router, reference: string, onNavigationFailed: () => void): void {
-  void router
+export function navigateToSuspenseItemResults(
+  router: Router,
+  reference: string,
+  onNavigationFailed: () => void,
+): Promise<void> {
+  return router
     .navigate(
       [
         '/',

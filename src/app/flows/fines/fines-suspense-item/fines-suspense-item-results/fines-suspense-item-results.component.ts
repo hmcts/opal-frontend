@@ -25,6 +25,7 @@ import { navigateToSuspenseItemResults } from '../utils/fines-suspense-item-navi
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesSuspenseItemResultsComponent extends AbstractFormParentBaseComponent implements OnDestroy {
+  private isSearching = false;
   private readonly destroyRef = inject(DestroyRef);
   private readonly navigationRouter = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -39,11 +40,20 @@ export class FinesSuspenseItemResultsComponent extends AbstractFormParentBaseCom
   public override stateUnsavedChanges = false;
 
   public handleFormSubmit(form: IAbstractFormBaseForm<IFinesSuspenseItemResultsSearchFormState>): void {
+    // Ignore repeat submissions while the current search is pending, so they cannot
+    // cancel it and trigger an unnecessary unsaved-change warning.
+    if (this.isSearching) {
+      return;
+    }
+
     const reference = form.formData.fsir_suspense_reference_number;
-    navigateToSuspenseItemResults(this.navigationRouter, reference, () => {
+    this.isSearching = true;
+    void navigateToSuspenseItemResults(this.navigationRouter, reference, () => {
       if (!this.destroyRef.destroyed) {
         this.handleUnsavedChanges(true);
       }
+    }).finally(() => {
+      this.isSearching = false;
     });
   }
 

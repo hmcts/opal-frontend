@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, convertToParamMap, RouterStateSnapshot } from '@angular/router';
-import { firstValueFrom, isObservable, of, throwError } from 'rxjs';
+import { firstValueFrom, isObservable, of, Subject, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
 import { OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-suspense-item-summary.mock';
@@ -45,6 +45,21 @@ describe('finesSuspenseItemSummaryResolver', () => {
     const error = new HttpErrorResponse({ status });
     getSuspenseItemSummary.mockReturnValue(throwError(() => error));
     await expect(resolve()).rejects.toBe(error);
+  });
+
+  it('keeps a newer BU selection when a pending request fails', async () => {
+    const pending = new Subject<typeof OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK>();
+    getSuspenseItemSummary.mockReturnValueOnce(pending);
+    const result = resolve();
+    const store = TestBed.inject(FinesSuspenseItemStore);
+    store.setSelectedBusinessUnit(23, 'Amended BU');
+
+    const error = new HttpErrorResponse({ status: 500 });
+    pending.error(error);
+
+    await expect(result).rejects.toBe(error);
+    expect(store.selectedBusinessUnitId()).toBe(23);
+    expect(store.selectedBusinessUnitName()).toBe('Amended BU');
   });
 
   it('propagates non-HTTP failures', async () => {

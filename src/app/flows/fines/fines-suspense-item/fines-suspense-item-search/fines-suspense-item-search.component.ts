@@ -18,6 +18,7 @@ import { navigateToSuspenseItemResults } from '../utils/fines-suspense-item-navi
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesSuspenseItemSearchComponent extends AbstractFormParentBaseComponent implements OnInit, OnDestroy {
+  private isSearching = false;
   private readonly destroyRef = inject(DestroyRef);
   private readonly suspenseItemStore = inject(FinesSuspenseItemStore);
   private readonly navigationRouter = inject(Router);
@@ -77,6 +78,12 @@ export class FinesSuspenseItemSearchComponent extends AbstractFormParentBaseComp
    * @param form - Validated values emitted by the search form.
    */
   public handleFormSubmit(form: IAbstractFormBaseForm<IFinesSuspenseItemSearchFormState>): void {
+    // Ignore repeat submissions while the current search is pending, so they cannot
+    // cancel it and trigger an unnecessary unsaved-change warning.
+    if (this.isSearching) {
+      return;
+    }
+
     const criteria = form.formData;
     if (criteria.fsis_business_unit_id === null) {
       return;
@@ -84,10 +91,13 @@ export class FinesSuspenseItemSearchComponent extends AbstractFormParentBaseComp
 
     this.handleBusinessUnitChange(criteria.fsis_business_unit_id);
     const reference = criteria.fsis_suspense_reference_number;
-    navigateToSuspenseItemResults(this.navigationRouter, reference, () => {
+    this.isSearching = true;
+    void navigateToSuspenseItemResults(this.navigationRouter, reference, () => {
       if (!this.destroyRef.destroyed) {
         this.handleUnsavedChanges(true);
       }
+    }).finally(() => {
+      this.isSearching = false;
     });
   }
 
