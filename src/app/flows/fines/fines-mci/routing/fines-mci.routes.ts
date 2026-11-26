@@ -9,7 +9,10 @@ import { fetchBusinessUnitsResolver } from '@app/flows/fines/routing/resolvers/f
 import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.constant';
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
+import { finesMciCourtFeeDraftGuard } from './guards/fines-mci-court-fee-draft.guard';
+import { finesMciCourtFeeCheckGuard } from './guards/fines-mci-court-fee-check.guard';
 import { finesMciCourtFeesResolver } from './resolvers/fines-mci-court-fees.resolver';
+import { finesMciPaymentMappingsResolver } from './resolvers/fines-mci-payment-mappings.resolver';
 import { finesMciCriminalAccountsResolver } from './resolvers/fines-mci-criminal-accounts/fines-mci-criminal-accounts.resolver';
 
 export const routing: Routes = [
@@ -137,6 +140,20 @@ export const routing: Routes = [
                         },
                       },
                       {
+                        path: `${FINES_MCI_ROUTING_PATHS.children.paymentDetails}/:accountId`,
+                        loadComponent: () =>
+                          import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
+                            (c) => c.FinesMciPlaceholderComponent,
+                          ),
+                        canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+                        data: {
+                          heading: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalPaymentDetails,
+                          routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+                          title: FINES_MCI_ROUTING_TITLES.children.paymentCategoryCriminalPaymentDetails,
+                        },
+                        resolve: { title: TitleResolver },
+                      },
+                      {
                         path: `${FINES_MCI_ROUTING_PATHS.children.account}/:accountId/:type`,
                         loadComponent: () =>
                           import('../fines-mci-payment-category-criminal-account/fines-mci-payment-category-criminal-account.component').then(
@@ -230,10 +247,11 @@ export const routing: Routes = [
           {
             path: FINES_MCI_ROUTING_PATHS.children.courtFeePaymentDetails,
             loadComponent: () =>
-              import('../fines-mci-placeholder/fines-mci-placeholder.component').then(
-                (c) => c.FinesMciPlaceholderComponent,
+              import('../fines-mci-create-till/fines-mci-create-till-court-fee-payment-details/fines-mci-create-till-court-fee-payment-details.component').then(
+                (c) => c.FinesMciCreateTillCourtFeePaymentDetailsComponent,
               ),
-            canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard],
+            canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard, finesMciCourtFeeDraftGuard],
+            canDeactivate: [canDeactivateGuard],
             data: {
               heading: FINES_MCI_ROUTING_TITLES.children.createTillCourtFeePaymentDetails,
               permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
@@ -241,8 +259,25 @@ export const routing: Routes = [
               title: FINES_MCI_ROUTING_TITLES.children.createTillCourtFeePaymentDetails,
             },
             resolve: {
+              paymentMappings: finesMciPaymentMappingsResolver,
               title: TitleResolver,
             },
+          },
+          {
+            path: FINES_MCI_ROUTING_PATHS.children.checkCourtFee,
+            loadComponent: () =>
+              import('../fines-mci-create-till/fines-mci-create-till-court-fee-check/fines-mci-create-till-court-fee-check.component').then(
+                (c) => c.FinesMciCreateTillCourtFeeCheckComponent,
+              ),
+            canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard, finesMciCourtFeeCheckGuard],
+            canDeactivate: [canDeactivateGuard],
+            data: {
+              heading: FINES_MCI_ROUTING_TITLES.children.createTillCheckCourtFee,
+              permission: 'PROCESS_AND_ALLOCATE_PAYMENTS',
+              routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+              title: FINES_MCI_ROUTING_TITLES.children.createTillCheckCourtFee,
+            },
+            resolve: { title: TitleResolver },
           },
           {
             path: FINES_MCI_ROUTING_PATHS.children.overUnderpaymentConfirmation,
