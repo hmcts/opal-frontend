@@ -66,6 +66,19 @@ describe('finesMacPayloadBuildAccountPaymentTerms', () => {
     expect(result).toEqual(expectedPayload);
   });
 
+  it('should preserve zero days in default when building the submitted payment terms', () => {
+    if (!paymentTermsStateInFull) {
+      throw new Error('Required mock states are not properly initialised');
+    }
+
+    paymentTermsStateInFull.fm_payment_terms_has_days_in_default = true;
+    paymentTermsStateInFull.fm_payment_terms_default_days_in_jail = 0;
+
+    const result = finesMacPayloadBuildAccountPaymentTerms(paymentTermsStateInFull, 'Fine');
+
+    expect(result.default_days_in_jail).toBe(0);
+  });
+
   it('should build payment terms payload for instalments, card request, hold enforcement on account', () => {
     if (!paymentTermsStateInstallments) {
       throw new Error('Required mock states are not properly initialised');

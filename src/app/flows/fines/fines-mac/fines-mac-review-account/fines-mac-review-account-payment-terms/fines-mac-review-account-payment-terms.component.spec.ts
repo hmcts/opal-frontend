@@ -40,13 +40,36 @@ describe('FinesMacReviewAccountPaymentTermsComponent', () => {
 
     globalStore = TestBed.inject(GlobalStore);
     globalStore.setUserState(OPAL_USER_STATE_MOCK);
-
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
+
+  it.each([FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly, FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay])(
+    'should show zero days in default and the imposed date for a read-only %s account',
+    (defendantType) => {
+      component.defendantType = defendantType;
+      component.isReadOnly = true;
+      component.paymentTermsState = {
+        ...component.paymentTermsState,
+        fm_payment_terms_has_days_in_default: true,
+        fm_payment_terms_default_days_in_jail: 0,
+        fm_payment_terms_suspended_committal_date: '15/11/2026',
+      };
+      mockDateService.getFromFormatToFormat.mockReturnValue('15 November 2026');
+
+      fixture.detectChanges();
+
+      const summary: HTMLElement = fixture.nativeElement;
+      expect(summary.querySelector('#paymentTermsHasDaysInDefaultValue')?.textContent?.trim()).toBe('Yes');
+      expect(summary.querySelector('#paymentTermsDaysInDefaultDateValue')?.textContent?.trim()).toBe(
+        '15 November 2026',
+      );
+      expect(summary.querySelector('#paymentTermsDaysInDefaultValue')?.textContent?.trim()).toBe('0 days');
+    },
+  );
 
   it('should get payment terms correctly', () => {
     const paymentTerms = component.paymentTermsState.fm_payment_terms_payment_terms!;
