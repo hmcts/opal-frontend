@@ -415,16 +415,48 @@ describe('FinesMciPaymentCategoryCriminalCheckPaymentComponent', () => {
     expect(fixture.componentInstance.canDeactivate()).toBe(false);
   });
 
-  it.each([false, 'rejected'])('keeps the saved entry when save navigation does not complete: %s', async (result) => {
-    const { fixture, store, element } = render();
-    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
-    if (result === false) navigate.mockResolvedValue(false);
-    else navigate.mockRejectedValue(new Error('Navigation failed'));
-    element.querySelector<HTMLButtonElement>('#save-review-till')!.click();
-    await fixture.whenStable();
-    expect(store.tills()[0].payments).toHaveLength(1);
-    expect(store.criminalPayment()).toBeNull();
-  });
+  for (const buttonId of ['save-review-till', 'save-add-payment']) {
+    it.each([false, 'rejected'])(
+      `restores the draft and permits a retry after ${buttonId} navigation fails: %s`,
+      async (result) => {
+        const { fixture, store, element, rows } = render();
+        store.setDraftJourney('criminal');
+        const tillId = store.ensureTill();
+        store.addPayment(tillId, 'suspense');
+        const existingTills = store.tills();
+        const account = store.selectedCriminalAccount();
+        const accountDetails = store.selectedCriminalAccountAtAGlance();
+        const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
+        if (result === false) navigate.mockResolvedValueOnce(false);
+        else navigate.mockRejectedValueOnce(new Error('Navigation failed'));
+        element.querySelector<HTMLButtonElement>(`#${buttonId}`)!.click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        expect(store.tills()).toEqual(existingTills);
+        expect(store.criminalPayment()).toEqual(PAYMENT);
+        expect(store.draftJourney()).toBe('criminal');
+        expect(store.selectedCriminalAccount()).toEqual(account);
+        expect(store.selectedCriminalAccountAtAGlance()).toEqual(accountDetails);
+        expect(rows()['Amount']).toBe('£75.00');
+        expect(element.querySelector('[role="alert"]')?.textContent).toContain(
+          'The payment could not be saved. Try again.',
+        );
+        expect(fixture.componentInstance.canDeactivate()).toBe(false);
+        expect(fixture.componentInstance.handleBeforeUnload()).toBe(false);
+        for (const button of element.querySelectorAll<HTMLButtonElement>('.govuk-button'))
+          expect(button.disabled).toBe(false);
+        navigate.mockResolvedValueOnce(true);
+        element.querySelector<HTMLButtonElement>(`#${buttonId}`)!.click();
+        await fixture.whenStable();
+        fixture.detectChanges();
+        expect(store.tills()[0].payments).toHaveLength(2);
+        expect(store.tills()[0].payments[0]).toEqual(existingTills[0].payments[0]);
+        expect(store.tills()[0].payments[1].criminalPayment).toEqual(PAYMENT);
+        expect(store.criminalPayment()).toBeNull();
+        expect(element.querySelector('[role="alert"]')).toBeNull();
+      },
+    );
+  }
 
   it('ignores Change and Cancel while a save navigation is pending', async () => {
     const { fixture, element } = render();

@@ -260,6 +260,29 @@ describe('FinesMciStore', () => {
       expect(store.tills()[1]).toEqual(otherTill);
     });
 
+    it('restores a failed save without changing previous payments or other tills', () => {
+      prepare();
+      store.addPayment(store.ensureTill(), 'suspense');
+      const otherTill = { tillId: 'other-till', payments: [] };
+      patchState(unprotected(store), { tills: [...store.tills(), otherTill] });
+      const originalTills = store.tills();
+      const id = store.saveCriminalPayment()!;
+      store.undoCriminalPaymentSave(id);
+      expect(store.tills()).toEqual(originalTills);
+      expect(store.criminalPayment()).toEqual(payment);
+      expect(store.draftJourney()).toBe('criminal');
+      expect(store.selectedCriminalAccount()).toEqual(account);
+    });
+
+    it.each(['missing', 'non-criminal'])('does not restore an unrelated saved entry: %s', (kind) => {
+      prepare();
+      const id = store.addPayment(store.ensureTill(), 'suspense');
+      const originalTills = store.tills();
+      store.undoCriminalPaymentSave(kind === 'missing' ? 'unknown-payment' : id);
+      expect(store.tills()).toEqual(originalTills);
+      expect(store.criminalPayment()).toEqual(payment);
+    });
+
     it('does not save a second payment after the draft has been submitted', () => {
       prepare();
       store.saveCriminalPayment();

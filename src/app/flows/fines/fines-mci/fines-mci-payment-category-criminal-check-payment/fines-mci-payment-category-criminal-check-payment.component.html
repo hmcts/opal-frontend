@@ -2,6 +2,10 @@
   <span class="govuk-caption-l">{{ store.businessUnit()?.business_unit_name }}</span>
   <h1 class="govuk-heading-l">Check payment</h1>
 
+  @if (saveNavigationFailed()) {
+    <p class="govuk-error-message" role="alert">The payment could not be saved. Try again.</p>
+  }
+
   @if (overpayment(); as amount) {
     <div opal-lib-moj-alert type="information" ariaLabel="Overpayment">
       <opal-lib-moj-alert-icon icon type="information"></opal-lib-moj-alert-icon>

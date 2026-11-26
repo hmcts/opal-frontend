@@ -189,6 +189,21 @@ export const FinesMciStore = signalStore(
         });
         return paymentId;
       },
+      /** Restores the draft and removes only its saved entry when the onward navigation fails. */
+      undoCriminalPaymentSave(paymentId: string): void {
+        const saved = store
+          .tills()
+          .flatMap((till) => till.payments)
+          .find((payment) => payment.paymentId === paymentId);
+        if (!saved?.criminalPayment) return;
+        patchState(store, {
+          tills: store
+            .tills()
+            .map((till) => ({ ...till, payments: till.payments.filter((payment) => payment.paymentId !== paymentId) })),
+          criminalPayment: saved.criminalPayment,
+          draftJourney: 'criminal',
+        });
+      },
       /** Stores validated suspense details in application memory. */
       setSuspensePayment(suspensePayment: IFinesMciSuspensePayment | null): void {
         patchState(store, { suspensePayment });

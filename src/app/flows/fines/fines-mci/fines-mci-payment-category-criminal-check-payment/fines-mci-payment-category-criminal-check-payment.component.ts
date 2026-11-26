@@ -50,6 +50,7 @@ export class FinesMciPaymentCategoryCriminalCheckPaymentComponent {
 
   protected readonly store = inject(FinesMciStore);
   protected readonly isSaving = signal(false);
+  protected readonly saveNavigationFailed = signal(false);
 
   protected readonly overpayment = computed(() => {
     const paid = this.paidPence();
@@ -144,11 +145,13 @@ export class FinesMciPaymentCategoryCriminalCheckPaymentComponent {
     }
   }
 
-  /** Saves once and opens the chosen till page. */
+  /** Saves once and restores the draft if the chosen till page cannot be opened. */
   protected async save(destination: 'review' | 'add'): Promise<void> {
     if (this.isSaving()) return;
     this.isSaving.set(true);
-    if (!this.store.saveCriminalPayment()) {
+    this.saveNavigationFailed.set(false);
+    const paymentId = this.store.saveCriminalPayment();
+    if (!paymentId) {
       this.isSaving.set(false);
       return;
     }
@@ -160,6 +163,10 @@ export class FinesMciPaymentCategoryCriminalCheckPaymentComponent {
     const navigated = await this.router.navigate([...this.tillPath, path]).catch(() => false);
     if (navigated) {
       this.store.resetCriminalSearch();
+    } else {
+      this.store.undoCriminalPaymentSave(paymentId);
+      this.allowNavigation = false;
+      this.saveNavigationFailed.set(true);
     }
     this.isSaving.set(false);
   }
