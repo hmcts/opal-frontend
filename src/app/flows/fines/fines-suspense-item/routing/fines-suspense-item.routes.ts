@@ -1,9 +1,3 @@
-import { provideHttpClient, withFetch, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
-import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-error';
-import { contentDigestInterceptor } from '@hmcts/opal-frontend-common/interceptors/content-digest';
-import { httpRetryInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-retry';
-import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { finesSuspenseItemNotFoundInterceptor } from './interceptors/fines-suspense-item-not-found.interceptor';
 import { finesSuspenseItemSummaryResolver } from './resolvers/fines-suspense-item-summary.resolver';
 import { finesSuspenseItemFlowStateGuard } from './guards/fines-suspense-item-flow-state.guard';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
@@ -40,19 +34,6 @@ export const routing: Routes = [
   },
   {
     path: FINES_SUSPENSE_ITEM_ROUTING_PATHS.children.results,
-    providers: [
-      provideHttpClient(
-        withFetch(),
-        withInterceptors([
-          httpErrorInterceptor,
-          finesSuspenseItemNotFoundInterceptor,
-          contentDigestInterceptor,
-          httpRetryInterceptor,
-        ]),
-        withInterceptorsFromDi(),
-      ),
-      OpalFines,
-    ],
     canActivate: [routePermissionsGuard, finesSuspenseItemFlowStateGuard],
     canDeactivate: [canDeactivateGuard],
     runGuardsAndResolvers: 'always',

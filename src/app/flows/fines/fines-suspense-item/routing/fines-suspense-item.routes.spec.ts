@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-suspense-item-summary.mock';
+import { OPAL_FINES_SUSPENSE_ITEM_SUMMARY_EMPTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-suspense-item-summary-empty.mock';
 import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
@@ -32,9 +33,7 @@ describe('Suspense item navigation', () => {
   beforeEach(() => {
     vi.spyOn(window, 'confirm').mockReturnValue(false);
     clearCache.mockReset();
-    getSuspenseItemSummary
-      .mockReset()
-      .mockImplementation(() => throwError(() => new HttpErrorResponse({ status: 404 })));
+    getSuspenseItemSummary.mockReset().mockReturnValue(of(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_EMPTY_MOCK));
     const user = structuredClone(OPAL_USER_STATE_MOCK);
     user.business_unit_users[0].permissions = [
       { permission_id: FINES_PERMISSIONS['view-suspense-items'], permission_name: 'View suspense items' },
@@ -49,7 +48,7 @@ describe('Suspense item navigation', () => {
           {
             path: 'fines/suspense-item',
             component: FinesSuspenseItemComponent,
-            children: routing.map((route) => ({ ...route, providers: undefined })),
+            children: routing,
           },
           { path: 'fines/dashboard/finance', component: TestFinanceComponent },
           { path: 'access-denied', component: TestFinanceComponent },
@@ -91,7 +90,7 @@ describe('Suspense item navigation', () => {
     expect(getSuspenseItemSummary).not.toHaveBeenCalled();
   });
 
-  it('waits for the lookup, then shows the found placeholder on 200 and not-found after a subsequent 404', async () => {
+  it('waits for the lookup and switches between found and empty successful summaries on retry', async () => {
     const pending = new Subject<typeof OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK>();
     getSuspenseItemSummary.mockReturnValueOnce(pending);
     const harness = await RouterTestingHarness.create('/fines/suspense-item/search');
@@ -120,9 +119,9 @@ describe('Suspense item navigation', () => {
     expect(harness.routeNativeElement?.querySelector('app-fines-suspense-item-results-not-found')).toBeNull();
   });
 
-  it('does not activate not-found results when the summary lookup fails unexpectedly', async () => {
+  it.each([404, 500])('does not activate not-found results when the summary lookup fails with %s', async (status) => {
     const harness = await RouterTestingHarness.create('/fines/suspense-item/search');
-    getSuspenseItemSummary.mockReturnValueOnce(throwError(() => new HttpErrorResponse({ status: 500 })));
+    getSuspenseItemSummary.mockReturnValueOnce(throwError(() => new HttpErrorResponse({ status })));
     submitReference(harness, 'fsis_suspense_reference_number', '001234');
     await harness.fixture.whenStable();
     harness.detectChanges();
@@ -195,7 +194,7 @@ describe('Suspense item navigation', () => {
     });
   });
 
-  it('opens not-found results after the summary API returns 404', async () => {
+  it('opens not-found results after the summary API returns an empty successful summary', async () => {
     const store = TestBed.inject(FinesSuspenseItemStore);
     const unit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
     store.setSelectedBusinessUnit(unit.business_unit_id, unit.business_unit_name);
