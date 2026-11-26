@@ -19,7 +19,7 @@ import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/
 import { IOpalFinesLocalJusticeArea } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area.interface';
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
-import { map, Observable, shareReplay } from 'rxjs';
+import { map, Observable, shareReplay, tap } from 'rxjs';
 import { IOpalFinesOffencesNonSnakeCase } from './interfaces/opal-fines-offences-non-snake-case.interface';
 import { IOpalFinesOffencesRefData } from './interfaces/opal-fines-offences-ref-data.interface';
 import { IOpalFinesResults } from './interfaces/opal-fines-results.interface';
@@ -89,6 +89,7 @@ import { IOpalFinesApr } from './interfaces/opal-fines-apr.interface';
 import { IOpalFinesAprResponse } from './interfaces/opal-fines-apr-response.interface';
 import { IOpalFinesAprsResponse } from './interfaces/opal-fines-aprs-response.interface';
 import { IOpalFinesEnforcementAccountTypesResponse } from './interfaces/opal-fines-enforcement-account-types-response.interface';
+import { IOpalFinesEnforcementAccountTypeUpdate } from './interfaces/opal-fines-enforcement-account-type-update.interface';
 
 const SAFE_READ_RETRY_POLICY = {
   retryCount: 1,
@@ -422,6 +423,20 @@ export class OpalFines {
       .pipe(shareReplay({ bufferSize: 1, refCount: true }));
 
     return this.cache.enforcementAccountTypesCache$;
+  }
+
+  /**
+   * Saves enforcement path thresholds and clears the account types cache after a successful response.
+   * The mutation is not automatically retried; failed requests leave the cached thresholds available.
+   * @param payload - Updated minimum balances with each path's own ID and version.
+   * @returns The updated enforcement account types, propagating any API error to the subscriber.
+   */
+  public updateEnforcementAccountTypes(
+    payload: IOpalFinesEnforcementAccountTypeUpdate[],
+  ): Observable<IOpalFinesEnforcementAccountTypesResponse> {
+    return this.http
+      .patch<IOpalFinesEnforcementAccountTypesResponse>(OPAL_FINES_PATHS.enforcementAccountTypes, payload)
+      .pipe(tap(() => this.clearCache('enforcementAccountTypesCache$')));
   }
 
   /**

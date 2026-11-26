@@ -1,0 +1,11 @@
+@if (accountType(); as selectedAccountType) {
+  <app-fines-aec-amend-values-form
+    [contextKey]="selectedAccountType"
+    [accountTypeName]="selectedAccountType.accountTypeName"
+    [initialValues]="initialValues()"
+    [pending]="pending()"
+    (formSubmit)="handleSubmit($event)"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+    (cancelRequested)="handleCancel()"
+  />
+}

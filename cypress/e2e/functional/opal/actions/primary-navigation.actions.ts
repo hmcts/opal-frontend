@@ -15,7 +15,6 @@ const PRIMARY_NAV_ITEMS = [
 ] as const;
 
 const DASHBOARD_LINK_SELECTORS: Record<string, string> = {
-  'Test Administration Link': '#testAdministrationLink',
   'Test Finance Link': '#testFinanceLink',
 };
 

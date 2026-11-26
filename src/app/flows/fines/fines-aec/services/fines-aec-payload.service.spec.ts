@@ -28,4 +28,20 @@ describe('FinesAecPayloadService', () => {
     expect(rows[0].lowValueAccountType).toMatchObject({ id: 2, version: 2, path: 'L' });
     expect(rows[0].highValueAccountType).toMatchObject({ id: 1, version: 1, path: 'H' });
   });
+
+  it('prepares the selected row for editing and builds a payload that clears its high value', () => {
+    const row = service.transformAccountTypesForView(structuredClone(OPAL_FINES_ENFORCEMENT_ACCOUNT_TYPES_MOCK))[0];
+
+    const formState = service.transformAccountTypeToAmendValuesForm(row);
+    expect(formState).toEqual({ minimum_balance: '100.00', high_value: '1000.00' });
+    formState.minimum_balance = '125.50';
+    formState.high_value = '';
+
+    expect(service.buildAmendValuesPayload(row, formState)).toEqual([
+      { id: 2, minimum_balance: 125.5, version: 2 },
+      { id: 1, minimum_balance: null, version: 1 },
+    ]);
+    expect(row.minimumBalance).toBe(100);
+    expect(row.highValue).toBe(1000);
+  });
 });

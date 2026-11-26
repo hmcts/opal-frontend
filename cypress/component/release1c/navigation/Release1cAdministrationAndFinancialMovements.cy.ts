@@ -154,14 +154,15 @@ describe(
     );
 
     it(
-      'shows the Administration dashboard placeholder when release-1c-administration is enabled',
+      'shows the Administration dashboard when release-1c-administration is enabled',
       { tags: ['@R1CAdministration', '@JIRA-TEST-KEY:PO-8353'] },
       () => {
-        setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.administration, {});
+        setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.administration, {}, [
+          FINES_PERMISSIONS['auto-enforcement'],
+        ]);
 
         cy.contains('h1', 'Administration').should('be.visible');
-        cy.contains('h2', 'Pending development').should('be.visible');
-        cy.get('#testAdministrationLink').should('be.visible').and('contain.text', 'Test Administration Link');
+        cy.get(AUTO_ENFORCEMENT_CONFIGURATION_LINK).should('be.visible');
       },
     );
 
@@ -200,13 +201,14 @@ describe(
       'hides Administration dashboard content when release-1c-administration is disabled',
       { tags: ['@R1CAdministrationOff', '@JIRA-TEST-KEY:PO-8354'] },
       () => {
-        setupDashboardComponent(FINES_DASHBOARD_ROUTING_PATHS.children.administration, {
-          [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false,
-        });
+        setupDashboardComponent(
+          FINES_DASHBOARD_ROUTING_PATHS.children.administration,
+          { [RELEASE_1C_ADMINISTRATION_FEATURE_FLAG]: false },
+          [FINES_PERMISSIONS['auto-enforcement']],
+        );
 
         cy.contains('h1', 'Administration').should('be.visible');
-        cy.contains('h2', 'Pending development').should('not.exist');
-        cy.get('#testAdministrationLink').should('not.exist');
+        cy.get(AUTO_ENFORCEMENT_CONFIGURATION_LINK).should('not.exist');
       },
     );
 

@@ -641,6 +641,7 @@ describe('fines-section-permissions.utils', () => {
         ),
       ).toEqual({
         ...DASHBOARD_PAGE_CONFIGURATION_MAP.administration,
+        highlights: [],
         groups: [],
       });
     });
