@@ -124,7 +124,7 @@ export const FINES_MAC_FIXED_PENALTY_DETAILS_FIELD_ERRORS: IFinesMacFixedPenalty
       priority: 2,
     },
     alphanumericTextPattern: {
-      message: `Registration number must only contain letters, numbers or spaces`,
+      message: `Registration number must only contain letters or numbers`,
       priority: 3,
     },
   },
