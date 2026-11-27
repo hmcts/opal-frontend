@@ -54,7 +54,12 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
   it(
     '(AC.1) render all the fields In review account',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-584', '@JIRA-STORY:PO-10335'), '@JIRA-EPIC:PO-2220', '@JIRA-EPIC:PO-7459', '@JIRA-TEST-KEY:PO-4736'],
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-584', '@JIRA-STORY:PO-10335'),
+        '@JIRA-EPIC:PO-2220',
+        '@JIRA-EPIC:PO-7459',
+        '@JIRA-TEST-KEY:PO-4736',
+      ],
     },
     () => {
       const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
