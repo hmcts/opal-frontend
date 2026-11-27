@@ -70,7 +70,7 @@ const processEnforcementAction = (
 
   formData.fm_payment_terms_enforcement_action = isCompany ? null : resultId;
   formData.fm_payment_terms_hold_enforcement_on_account = isCompany && resultId === 'NOENF';
-  formData.fm_payment_terms_add_enforcement_action = !isCompany && (resultId === 'PRIS' || Boolean(responses?.length));
+  formData.fm_payment_terms_add_enforcement_action = !isCompany && (resultId === 'PRIS' || resultId === 'NOENF');
 
   if (responses?.length) {
     processEnforcementResponses(formData, responses);

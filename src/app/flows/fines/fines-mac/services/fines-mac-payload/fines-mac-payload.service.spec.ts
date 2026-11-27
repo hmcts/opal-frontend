@@ -165,6 +165,8 @@ describe('FinesMacPayloadService', () => {
     }
 
     finesMacPayloadAddAccount.account_status = 'Rejected';
+    finesMacPayloadAddAccount.account_type = FINES_ACCOUNT_TYPES.Fine;
+    finesMacPayloadAddAccount.account.account_type = FINES_ACCOUNT_TYPES.Fine;
     finesMacPayloadAddAccount.account.defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
     finesMacPayloadAddAccount.account.payment_terms.enforcements = [
       { result_id: 'COLLO', enforcement_result_responses: null },
