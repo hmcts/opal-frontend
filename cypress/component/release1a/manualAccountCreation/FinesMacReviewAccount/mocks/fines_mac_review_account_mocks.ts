@@ -103,6 +103,8 @@ export const FINES_AYG_CHECK_ACCOUNT_MOCK: IFinesMacState = {
       fm_company_details_address_line_2: 'test address line 2',
       fm_company_details_address_line_3: 'test address line 3',
       fm_company_details_postcode: 'test post code',
+      fm_company_details_vehicle_make: 'renault',
+      fm_company_details_vehicle_registration_mark: 'CD12EFG',
     },
   },
   courtDetails: {

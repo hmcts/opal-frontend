@@ -232,10 +232,10 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
     it('should allow 7 characters for registration number and reject 8', () => {
       const control = component.form.get('fm_company_details_vehicle_registration_mark');
 
-      control?.setValue('AB12CDE');
+      control?.setValue('AB1 CDE'); // 7 characters
       expect(control?.hasError('maxlength')).toBe(false);
 
-      control?.setValue('AB123456');
+      control?.setValue('AB12 CDE'); // 8 characters
       expect(control?.hasError('maxlength')).toBe(true);
     });
 

@@ -54,7 +54,7 @@
           }
         </ng-container>
       </div>
-      @if (release1a1_3Enabled) {
+      @if (release1a1_3Enabled && accountType !== accountTypesKeys['Fixed Penalty']) {
         <div
           opal-lib-govuk-summary-list-row
           class="govuk-summary-list__row govuk-summary-list__row--no-actions"

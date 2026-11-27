@@ -88,6 +88,7 @@ export class FinesMacCompanyDetailsFormComponent
     () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
   );
 
+  /** Indicates whether the R1A-1-3 vehicle details feature is enabled. */
   public readonly release1a1_3Enabled = computed(
     () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_3_FEATURE_FLAG] === true,
   );
@@ -156,6 +157,9 @@ export class FinesMacCompanyDetailsFormComponent
     this.setUpAliasCheckboxListener('fm_company_details_add_alias', 'fm_company_details_aliases');
   }
 
+  /**
+   * Applies or clears vehicle detail validators based on the R1A-1-3 feature flag.
+   */
   private syncVehicleDetailsValidators(): void {
     effect(
       () => {

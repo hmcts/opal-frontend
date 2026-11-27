@@ -140,5 +140,16 @@ describe('FinesMacReviewAccountCompanyDetailsComponent', () => {
       expect(rows.some((row) => row.textContent?.includes('Vehicle make and model'))).toBe(false);
       expect(rows.some((row) => row.textContent?.includes('Registration number'))).toBe(false);
     });
+
+    it('should hide vehicle details for fixed penalty accounts when release-1a-1-3 is enabled', () => {
+      fixture.componentRef.setInput('release1a1_3Enabled', true);
+      fixture.componentRef.setInput('accountType', component.accountTypesKeys['Fixed Penalty']);
+      fixture.detectChanges();
+
+      const rows = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('.govuk-summary-list__row'));
+
+      expect(rows.some((row) => row.textContent?.includes('Vehicle make and model'))).toBe(false);
+      expect(rows.some((row) => row.textContent?.includes('Registration number'))).toBe(false);
+    });
   });
 });

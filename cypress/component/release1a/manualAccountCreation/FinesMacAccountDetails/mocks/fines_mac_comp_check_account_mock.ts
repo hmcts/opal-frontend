@@ -60,6 +60,8 @@ export const FINES_COMP_CHECK_ACCOUNT_MOCK: IFinesMacState = {
       fm_company_details_postcode: 'AB12 3CD',
       fm_company_details_add_alias: false,
       fm_company_details_aliases: [],
+      fm_company_details_vehicle_make: 'renault',
+      fm_company_details_vehicle_registration_mark: 'CD12EFG',
     },
   },
   courtDetails: {
