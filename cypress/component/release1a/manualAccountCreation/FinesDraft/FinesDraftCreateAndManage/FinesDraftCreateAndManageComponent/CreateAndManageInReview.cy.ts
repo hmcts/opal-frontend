@@ -1,3 +1,4 @@
+import { RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG } from 'src/app/flows/fines/constants/release-feature-flags.constant';
 import { mount } from 'cypress/angular';
 import { FinesDraftCreateAndManageTabsComponent } from 'src/app/flows/fines/fines-draft/fines-draft-create-and-manage/fines-draft-create-and-manage-tabs/fines-draft-create-and-manage-tabs.component';
 import { provideRouter } from '@angular/router';
@@ -38,6 +39,7 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
             useFactory: () => {
               let store = new GlobalStore();
               store.setUserState(DRAFT_SESSION_USER_STATE_MOCK);
+              store.setFeatureFlags({ [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true });
               return store;
             },
           },
@@ -51,7 +53,9 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
 
   it(
     '(AC.1) render all the fields In review account',
-    { tags: [...buildTags('@JIRA-STORY:PO-584'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4736'] },
+    {
+      tags: [...buildTags('@JIRA-STORY:PO-584', '@JIRA-STORY:PO-10335'), '@JIRA-EPIC:PO-2220', '@JIRA-EPIC:PO-7459', '@JIRA-TEST-KEY:PO-4736'],
+    },
     () => {
       const inReviewAccountsMockData = structuredClone(OPAL_FINES_DRAFT_ACCOUNTS_MOCK);
       inReviewAccountsMockData.summaries[0].account_snapshot.created_date = getUtcTimestampForLocalDay(0);
@@ -63,8 +67,11 @@ describe('FinesDraftCreateAndManageInReviewComponent', () => {
       interceptGetInReviewAccounts(200, inReviewAccountsMockData);
 
       setupComponent();
-
       cy.get(DOM_ELEMENTS.navigationLinks).contains('In review').click();
+
+      cy.wait('@getInReviewAccounts').then(({ request }) => {
+        expect(request.url).to.include('source=MAC');
+      });
 
       for (const link of NAVIGATION_LINKS) {
         if (link === 'In review') {

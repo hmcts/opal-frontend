@@ -1,4 +1,5 @@
 import { mount } from 'cypress/angular';
+import { RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG } from 'src/app/flows/fines/constants/release-feature-flags.constant';
 import { FinesDraftCreateAndManageTabsComponent } from 'src/app/flows/fines/fines-draft/fines-draft-create-and-manage/fines-draft-create-and-manage-tabs/fines-draft-create-and-manage-tabs.component';
 import { provideRouter, Router } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
@@ -41,6 +42,7 @@ describe('FinesDraftCreateAndManageHeaderComponent', () => {
             useFactory: () => {
               const store = new GlobalStore();
               store.setUserState(userState);
+              store.setFeatureFlags({ [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true });
               return store;
             },
           },
@@ -97,6 +99,7 @@ describe('FinesDraftCreateAndManageHeaderComponent', () => {
               useFactory: () => {
                 const store = new GlobalStore();
                 store.setUserState(DRAFT_SESSION_USER_STATE_INPUTTER_MOCK);
+                store.setFeatureFlags({ [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true });
                 return store;
               },
             },
