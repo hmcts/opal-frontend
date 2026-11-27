@@ -44,6 +44,9 @@ export const ACCOUNT_ENQUIRY_HEADER_ELEMENTS = {
   fieldHeading: 'h3',
   fieldValue: 'p',
   readOnlyFields: 'input, textarea, select, [contenteditable="true"]',
+  notProvided: 'app-fines-not-provided',
+  notProvidedDash: 'app-fines-not-provided [aria-hidden="true"]',
+  notProvidedAnnouncement: 'app-fines-not-provided .govuk-visually-hidden',
 
   // Visible labels used in assertions
   labelAccountType: 'Account type:',
