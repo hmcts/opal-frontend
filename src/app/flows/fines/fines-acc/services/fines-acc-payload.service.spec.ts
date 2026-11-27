@@ -483,7 +483,7 @@ describe('FinesAccPayloadService', () => {
       account_id,
       pg_party_id: null,
       party_id: header.major_creditor.creditor_account_id.toString(),
-      party_type: header.major_creditor.account_reference.display_name,
+      party_type: 'Major Creditor',
       party_name: header.major_creditor.name,
       base_version: header.version,
       business_unit_id: header.business_unit_details.business_unit_id,
@@ -493,6 +493,33 @@ describe('FinesAccPayloadService', () => {
     });
 
     expect(mockGlobalStore.userState).toHaveBeenCalled();
+  });
+
+  it('should map the Central Fund display name to the account store', () => {
+    const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
+    header.major_creditor.account_reference = {
+      creditor_account_type: 'CF',
+      creditor_account_display_name: 'Central Fund',
+    };
+
+    const result = service.transformMajorCreditorAccountHeaderForStore(
+      header.major_creditor.creditor_account_id,
+      header,
+    );
+
+    expect(result.party_type).toBe('Central Fund');
+  });
+
+  it.each(['MJ', 'CF'])('should store a null party type when the %s display name is omitted', (accountType) => {
+    const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
+    header.major_creditor.account_reference = { creditor_account_type: accountType };
+
+    const result = service.transformMajorCreditorAccountHeaderForStore(
+      header.major_creditor.creditor_account_id,
+      header,
+    );
+
+    expect(result.party_type).toBeNull();
   });
 
   it('should transform account header for store for a minor creditor (individual)', () => {

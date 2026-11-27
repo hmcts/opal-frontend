@@ -61,7 +61,7 @@ describe('Account Enquiry - Major Creditor Header', () => {
 
       cy.get(DOM.headingWithCaption).should('contain.text', header.major_creditor.account_number);
       cy.get(DOM.headingName).should('contain.text', header.major_creditor.name);
-      cy.get(DOM.majorCreditorAccountType).should('contain.text', header.major_creditor.account_reference.display_name);
+      cy.get(DOM.majorCreditorAccountType).should('contain.text', 'Major Creditor');
 
       cy.get(DOM.majorCreditorBusinessUnit).should(
         'contain.text',
@@ -83,8 +83,8 @@ describe('Account Enquiry - Major Creditor Header', () => {
     () => {
       const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
       header.major_creditor.account_number = '00000009C';
-      header.major_creditor.account_reference.account_type = 'CFA';
-      header.major_creditor.account_reference.display_name = 'Central Fund';
+      header.major_creditor.account_reference.creditor_account_type = 'CF';
+      header.major_creditor.account_reference.creditor_account_display_name = 'Central Fund';
       header.major_creditor.name = 'Central Fund Main Account';
 
       interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
@@ -103,4 +103,26 @@ describe('Account Enquiry - Major Creditor Header', () => {
       cy.get(DOM.majorCreditorAccountType).should('contain.text', 'Central Fund');
     },
   );
+  ['MJ', 'CF'].forEach((accountType) => {
+    it(
+      `renders the ${accountType} header when the optional account display name is omitted`,
+      { tags: [...buildTags('@JIRA-STORY:PO-11639'), '@JIRA-EPIC:PO-11478'] },
+      () => {
+        const header = structuredClone(FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK);
+        header.major_creditor.account_reference = { creditor_account_type: accountType };
+
+        interceptUserState(USER_STATE_MOCK_PERMISSION_BU77);
+        interceptMajorCreditorHeader(majorCreditorAccountId, header, '1');
+
+        setupAccountEnquiryComponent(componentProperties);
+
+        cy.get(DOM.pageHeader).should('be.visible');
+        cy.get(DOM.headingWithCaption).should('contain.text', header.major_creditor.account_number);
+        cy.get(DOM.headingName).should('contain.text', header.major_creditor.name);
+        cy.get(DOM.majorCreditorAccountType).should(($accountType) => {
+          expect($accountType.text().trim()).to.eq('');
+        });
+      },
+    );
+  });
 });

@@ -4,8 +4,8 @@ export interface IOpalFinesAccountMajorCreditorDetailsHeader extends IOpalFinesV
   major_creditor: {
     account_number: string;
     account_reference: {
-      account_type: string;
-      display_name: string;
+      creditor_account_type: string;
+      creditor_account_display_name?: string;
     };
     creditor_account_id: number;
     name: string;

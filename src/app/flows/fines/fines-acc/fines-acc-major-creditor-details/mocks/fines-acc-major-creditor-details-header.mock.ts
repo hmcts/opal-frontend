@@ -5,8 +5,8 @@ export const FINES_ACC_MAJOR_CREDITOR_DETAILS_HEADER_MOCK: IOpalFinesAccountMajo
   major_creditor: {
     account_number: '00000001T',
     account_reference: {
-      account_type: 'MJ',
-      display_name: 'Major Creditor',
+      creditor_account_type: 'MJ',
+      creditor_account_display_name: 'Major Creditor',
     },
     creditor_account_id: 10770000000085,
     name: 'Crown prosecution service',
