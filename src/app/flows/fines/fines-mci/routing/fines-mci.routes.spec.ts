@@ -5,10 +5,18 @@ import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service
 import { filter, firstValueFrom, of, take } from 'rxjs';
 import { FinesMciCriminalAccountService } from '../services/fines-mci-criminal-account.service';
 import { EMPTY } from 'rxjs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { NavigationEnd, provideRouter, Router, Routes } from '@angular/router';
+import {
+  NavigationCancel,
+  NavigationEnd,
+  NavigationSkipped,
+  provideRouter,
+  Router,
+  Routes,
+  withRouterConfig,
+} from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { TitleResolver } from '@hmcts/opal-frontend-common/resolvers/title';
 import { authGuard } from '@hmcts/opal-frontend-common/guards/auth';
@@ -21,6 +29,7 @@ import { finesMciCriminalAccountsResolver } from './resolvers/fines-mci-criminal
 import { routing } from './fines-mci.routes';
 import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.constant';
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
+import { finesMciCriminalAccountStateGuard } from './guards/fines-mci-criminal-account-state.guard';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
 import { finesMciCourtFeeDraftGuard } from './guards/fines-mci-court-fee-draft.guard';
 import { finesMciCourtFeesResolver } from './resolvers/fines-mci-court-fees.resolver';
@@ -28,6 +37,7 @@ import { finesMciPaymentMappingsResolver } from './resolvers/fines-mci-payment-m
 import { finesMciCourtFeeCheckGuard } from './guards/fines-mci-court-fee-check.guard';
 import { FinesMciCreateTillCourtFeeCheckComponent } from '../fines-mci-create-till/fines-mci-create-till-court-fee-check/fines-mci-create-till-court-fee-check.component';
 import { FinesMciCreateTillCourtFeeDetailsComponent } from '../fines-mci-create-till/fines-mci-create-till-court-fee-details/fines-mci-create-till-court-fee-details.component';
+import { FinesMciCreateTillSuspenseDetailsComponent } from '../fines-mci-create-till/fines-mci-create-till-suspense-details/fines-mci-create-till-suspense-details.component';
 import { FinesMciCreateTillOverUnderpaymentConfirmationComponent } from '../fines-mci-create-till/fines-mci-create-till-over-underpayment-confirmation/fines-mci-create-till-over-underpayment-confirmation.component';
 import { FinesMciCreateTillCourtFeePaymentDetailsComponent } from '../fines-mci-create-till/fines-mci-create-till-court-fee-payment-details/fines-mci-create-till-court-fee-payment-details.component';
 import { FinesMciPaymentCategoryCriminalAccountComponent } from '../fines-mci-payment-category-criminal-account/fines-mci-payment-category-criminal-account.component';
@@ -52,6 +62,7 @@ const routesForRecognition = (routes: Routes): Routes =>
   }));
 
 describe('finesMci routes', () => {
+  afterEach(() => vi.restoreAllMocks());
   beforeEach(() =>
     TestBed.configureTestingModule({
       providers: [{ provide: FinesMciCriminalAccountService, useValue: { loadMasterAccountDetails: () => EMPTY } }],
@@ -312,6 +323,7 @@ describe('finesMci routes', () => {
         (route) => route.path === `${FINES_MCI_ROUTING_PATHS.children.account}/:accountId/:type`,
       )!;
       expect(accountRoute.canActivate).toEqual([authGuard, routePermissionsGuard, finesMciFlowStateGuard]);
+      expect(accountRoute.canMatch).toEqual([finesMciCriminalAccountStateGuard]);
       expect(accountRoute.data?.['routePermissionId']).toEqual([FINES_PERMISSIONS['process-and-allocate-payments']]);
       expect(accountRoute.resolve).toEqual({ title: TitleResolver });
       TestBed.configureTestingModule({
@@ -384,64 +396,156 @@ describe('finesMci routes', () => {
     expect(harness.routeNativeElement!.querySelector('h1')!.textContent!.trim()).toBe('Payment details');
     expect(store.selectedCriminalAccount()?.defendant_account_id).toBe(1);
   });
-  it('renders the restricted account at the same URL and returns Pay into suspense to the MCI landing page', async () => {
-    const accountRoute = criminalRoute!.children!.find((route) => route.path === 'account/:accountId/:type')!;
-    const landingRoute = routing.find((route) => route.path === FINES_MCI_ROUTING_PATHS.children.createAllocate)!;
-    const tillRoot = '/fines/manual-cash-input/create/till';
-    const criminalPath = 'payment/category/criminal';
-    const accountId = '9007199254740993';
-    TestBed.configureTestingModule({
-      providers: [
-        provideRouter([
-          {
-            path: tillRoot.slice(1),
-            children: [{ path: criminalPath, children: [{ ...accountRoute, canActivate: [], resolve: {} }] }],
-          },
-          {
-            ...landingRoute,
-            path: 'fines/manual-cash-input/create-allocate',
-            component: RouteDestinationComponent,
-            loadComponent: undefined,
-            canActivate: [],
-            canDeactivate: [],
-            resolve: {},
-          },
-        ]),
-      ],
-    });
-    const store = TestBed.inject(FinesMciStore);
-    store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
-    store.setDraftJourney('criminal');
-    store.setSelectedCriminalAccount({
-      ...OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0],
-      defendant_account_id: accountId,
-    });
-    store.setSelectedCriminalAccountAtAGlance({
-      ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
-      account_status_code: 'WO',
-      account_balance: 0,
-    });
-    const harness = await RouterTestingHarness.create();
-    const url = `${tillRoot}/${criminalPath}/account/${accountId}/individual`;
-    await harness.navigateByUrl(url);
-    expect(TestBed.inject(Router).url).toBe(url);
-    expect(harness.routeNativeElement!.querySelector('h1')!.textContent!.trim()).toBe(
-      'You cannot pay into this account',
-    );
-    expect(harness.routeNativeElement!.querySelector('#fines-mci-account-warning')!.textContent!.trim()).toBe(
-      'Account has been written off in full',
-    );
-    expect(harness.routeNativeElement!.querySelector('a[target="_blank"]')!.getAttribute('href')).toBe(
-      `/fines/account/defendant/${accountId}/details`,
-    );
-    harness.routeNativeElement!.querySelector<HTMLButtonElement>('#fines-mci-pay-into-suspense')!.click();
-    await harness.fixture.whenStable();
-    harness.detectChanges();
-    expect(TestBed.inject(Router).url).toBe('/fines/manual-cash-input/create-allocate');
-    expect(harness.routeDebugElement!.componentInstance).toBeInstanceOf(RouteDestinationComponent);
-    expect(store.selectedCriminalAccount()).toBeNull();
-    expect(store.draftJourney()).toBeNull();
-  });
+  it.each([
+    ['WO', false],
+    ['CS', false],
+    ['WO', true],
+    ['CS', true],
+  ] as const)(
+    'returns browser Back to Till Details after switching %s to suspense with edits: %s',
+    async (status, editSuspense) => {
+      const accountRoute = criminalRoute!.children!.find((route) => route.path === 'account/:accountId/:type')!;
+      const suspenseRoute = createTillRoute!.children!.find(
+        (route) => route.path === FINES_MCI_ROUTING_PATHS.children.suspenseDetails,
+      )!;
+      const tillRoot = '/fines/manual-cash-input/create/till';
+      const criminalPath = 'payment/category/criminal';
+      const accountId = '9007199254740993';
+      TestBed.configureTestingModule({
+        providers: [
+          provideLocationMocks(),
+          provideRouter(
+            [
+              {
+                path: tillRoot.slice(1),
+                children: [
+                  {
+                    path: criminalPath,
+                    children: [
+                      {
+                        ...accountRoute,
+                        canActivate: [finesMciFlowStateGuard],
+                        resolve: {},
+                      },
+                    ],
+                  },
+                  { ...suspenseRoute, canActivate: [finesMciFlowStateGuard], resolve: {} },
+                  {
+                    ...createTillRoute!.children!.find((route) => route.path === 'details')!,
+                    canActivate: [finesMciFlowStateGuard],
+                    resolve: {},
+                  },
+                ],
+              },
+            ],
+            withRouterConfig({ canceledNavigationResolution: 'computed' }),
+          ),
+        ],
+      });
+      const store = TestBed.inject(FinesMciStore);
+      store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+      store.setCriminalSearch(FINES_MCI_CRIMINAL_SEARCH_MOCK);
+      store.setCriminalSearchResults(OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK);
+      const tillId = store.ensureTill();
+      store.addPayment(tillId, 'criminal');
+      store.setDraftJourney('criminal');
+      const tills = store.tills();
+      store.setSelectedCriminalAccount({
+        ...OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0],
+        defendant_account_id: accountId,
+      });
+      store.setSelectedCriminalAccountAtAGlance({
+        ...OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK,
+        account_status_code: status,
+        account_balance: 0,
+      });
+      store.setSelectedCriminalAccountHeader(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
+      const harness = await RouterTestingHarness.create();
+      const url = `${tillRoot}/${criminalPath}/account/${accountId}/individual`;
+      await harness.navigateByUrl(url);
+      expect(TestBed.inject(Router).url).toBe(url);
+      expect(harness.routeNativeElement!.querySelector('h1')!.textContent!.trim()).toBe(
+        'You cannot pay into this account',
+      );
+      expect(harness.routeNativeElement!.querySelector('#fines-mci-account-warning')!.textContent!.trim()).toBe(
+        status === 'CS' ? 'Account has been consolidated.' : 'Account has been written off in full',
+      );
+      expect(harness.routeNativeElement!.querySelector('a[target="_blank"]')!.getAttribute('href')).toBe(
+        `/fines/account/defendant/${accountId}/details`,
+      );
+      if (status === 'CS') {
+        harness.routeNativeElement!.querySelector<HTMLInputElement>('input[value="suspense"]')!.click();
+        harness
+          .routeNativeElement!.querySelector('form')!
+          .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      } else {
+        harness.routeNativeElement!.querySelector<HTMLButtonElement>('#fines-mci-pay-into-suspense')!.click();
+      }
+      await harness.fixture.whenStable();
+      harness.detectChanges();
+      expect(TestBed.inject(Router).url).toBe(`${tillRoot}/suspense-details`);
+      expect(harness.routeDebugElement!.componentInstance).toBeInstanceOf(FinesMciCreateTillSuspenseDetailsComponent);
+      expect(store.selectedCriminalAccount()).toBeNull();
+      expect(store.draftJourney()).toBe('suspense');
+      expect(store.criminalSearch()).toBeNull();
+      expect(store.criminalSearchResults()).toBeNull();
+      expect(store.selectedCriminalAccountHeader()).toBeNull();
+      expect(store.selectedCriminalAccountAtAGlance()).toBeNull();
+      expect(store.businessUnit()).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+      expect(store.tills()).toEqual(tills);
+      expect(harness.routeNativeElement!.querySelector('h1')!.textContent!.trim()).toBe('Suspense details');
+      const router = TestBed.inject(Router);
+      router.setUpLocationChangeListener();
+      if (editSuspense) {
+        const suspenseComponent = harness.routeDebugElement!.componentInstance;
+        const amount = harness.routeNativeElement!.querySelector<HTMLInputElement>('input[formControlName="amount"]')!;
+        amount.value = '25.00';
+        amount.dispatchEvent(new Event('input', { bubbles: true }));
+        harness.detectChanges();
+        const confirmLeave = vi.spyOn(window, 'confirm').mockReturnValue(false);
+        const cancelled = firstValueFrom(
+          router.events.pipe(
+            filter((event) => event instanceof NavigationCancel),
+            take(1),
+          ),
+        );
+        const restored = firstValueFrom(
+          router.events.pipe(
+            filter((event) => event instanceof NavigationSkipped),
+            take(1),
+          ),
+        );
+        TestBed.inject(Location).back();
+        await cancelled;
+        await restored;
+        await harness.fixture.whenStable();
+        expect(router.url).toBe(`${tillRoot}/suspense-details`);
+        expect(harness.routeDebugElement!.componentInstance).toBe(suspenseComponent);
+        expect(amount.value).toBe('25.00');
+        expect(store.draftJourney()).toBe('suspense');
+        expect(confirmLeave).toHaveBeenCalledTimes(1);
+        confirmLeave.mockReturnValue(true);
+      }
+      const returned = firstValueFrom(
+        router.events.pipe(
+          filter((event) => event instanceof NavigationEnd),
+          take(1),
+        ),
+      );
+      TestBed.inject(Location).back();
+      await returned;
+      await harness.fixture.whenStable();
+      harness.detectChanges();
+      expect(router.url).toBe(`${tillRoot}/details`);
+      expect(harness.routeNativeElement!.querySelector('h1')!.textContent!.trim()).toBe('Till details');
+      expect(store.selectedCriminalAccount()).toBeNull();
+      expect(store.tills()).toEqual(tills);
+      if (editSuspense) {
+        expect(window.confirm).toHaveBeenCalledTimes(2);
+        vi.mocked(window.confirm).mockRestore();
+      }
+    },
+  );
   it.each([
     ['L', false, 'Confirm account'],
     ['WO', true, 'You cannot pay into this account'],
