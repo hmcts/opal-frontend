@@ -1,3 +1,5 @@
+import { patchState } from '@ngrx/signals';
+import { unprotected } from '@ngrx/signals/testing';
 import { TestBed } from '@angular/core/testing';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-defendant-account-response-individual.mock';
@@ -207,6 +209,94 @@ describe('FinesMciStore', () => {
     expect(store.businessUnit()).toEqual(nextBusinessUnit);
     expect(store.tills()).toEqual([]);
     expect(store.suspensePayment()).toBeNull();
+  });
+
+  describe('saving criminal payments', () => {
+    const account = OPAL_FINES_DEFENDANT_ACCOUNT_RESPONSE_INDIVIDUAL_MOCK.defendant_accounts[0];
+    const payment: IFinesMciCriminalPayment = {
+      amount: '10.01',
+      payerType: 'thirdParty',
+      thirdPartyName: 'Test Payer',
+      methodOfPayment: 'creditTransfer',
+      paymentReferencePostalOrder: '',
+      paymentReferenceCheque: '',
+      paymentReferenceCreditTransfer: 'TEST-REFERENCE',
+      source: 'NatWest',
+    };
+
+    function prepare() {
+      store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+      store.setSelectedCriminalAccount(account);
+      store.setDraftJourney('criminal');
+      store.setCriminalPayment(payment);
+    }
+
+    it('saves all payment details with the defendant and creates the till when needed', () => {
+      prepare();
+      const paymentId = store.saveCriminalPayment();
+      expect(store.tills()).toEqual([
+        {
+          tillId: expect.any(String),
+          payments: [{ paymentId, journey: 'criminal', criminalPayment: payment, criminalAccount: account }],
+        },
+      ]);
+      expect(store.criminalPayment()).toBeNull();
+      expect(store.draftJourney()).toBeNull();
+      store.setCriminalPayment({ ...payment, amount: '20.00' });
+      expect(store.tills()[0].payments[0].criminalPayment).toEqual(payment);
+    });
+
+    it('adds the criminal payment to the current till while preserving another till', () => {
+      prepare();
+      const tillId = store.ensureTill();
+      const otherTill = {
+        tillId: 'other-till',
+        payments: [{ paymentId: 'existing-payment', journey: 'suspense' as const }],
+      };
+      patchState(unprotected(store), { tills: [...store.tills(), otherTill] });
+      store.saveCriminalPayment();
+      expect(store.tills()[0].tillId).toBe(tillId);
+      expect(store.tills()[0].payments[0].criminalPayment).toEqual(payment);
+      expect(store.tills()[1]).toEqual(otherTill);
+    });
+
+    it('restores a failed save without changing previous payments or other tills', () => {
+      prepare();
+      store.addPayment(store.ensureTill(), 'suspense');
+      const otherTill = { tillId: 'other-till', payments: [] };
+      patchState(unprotected(store), { tills: [...store.tills(), otherTill] });
+      const originalTills = store.tills();
+      const id = store.saveCriminalPayment()!;
+      store.undoCriminalPaymentSave(id);
+      expect(store.tills()).toEqual(originalTills);
+      expect(store.criminalPayment()).toEqual(payment);
+      expect(store.draftJourney()).toBe('criminal');
+      expect(store.selectedCriminalAccount()).toEqual(account);
+    });
+
+    it.each(['missing', 'non-criminal'])('does not restore an unrelated saved entry: %s', (kind) => {
+      prepare();
+      const id = store.addPayment(store.ensureTill(), 'suspense');
+      const originalTills = store.tills();
+      store.undoCriminalPaymentSave(kind === 'missing' ? 'unknown-payment' : id);
+      expect(store.tills()).toEqual(originalTills);
+      expect(store.criminalPayment()).toEqual(payment);
+    });
+
+    it('does not save a second payment after the draft has been submitted', () => {
+      prepare();
+      store.saveCriminalPayment();
+      expect(store.saveCriminalPayment()).toBeNull();
+      expect(store.tills()[0].payments).toHaveLength(1);
+    });
+
+    it.each(['business unit', 'account', 'payment'])('does not save without the %s', (missing) => {
+      if (missing !== 'business unit') store.setBusinessUnit(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
+      if (missing !== 'account') store.setSelectedCriminalAccount(account);
+      if (missing !== 'payment') store.setCriminalPayment(payment);
+      expect(store.saveCriminalPayment()).toBeNull();
+      expect(store.tills()).toEqual([]);
+    });
   });
 
   it('should store suspense payment details', () => {

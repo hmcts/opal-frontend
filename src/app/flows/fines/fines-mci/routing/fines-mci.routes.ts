@@ -8,6 +8,10 @@ import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constan
 import { fetchBusinessUnitsResolver } from '@app/flows/fines/routing/resolvers/fetch-business-units-resolver/fetch-business-units.resolver';
 import { FINES_MCI_ROUTING_PATHS } from './constants/fines-mci-routing-paths.constant';
 import { FINES_MCI_ROUTING_TITLES } from './constants/fines-mci-routing-titles.constant';
+import {
+  finesMciCriminalCheckPaymentGuard,
+  finesMciCriminalCheckPaymentHistoryGuard,
+} from './guards/fines-mci-criminal-check-payment.guard';
 import { finesMciCriminalPaymentAccountGuard } from './guards/fines-mci-criminal-payment-account.guard';
 import { finesMciCriminalAccountStateGuard } from './guards/fines-mci-criminal-account-state.guard';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
@@ -215,8 +219,22 @@ export const routing: Routes = [
               title: TitleResolver,
             },
           },
+          {
+            path: FINES_MCI_ROUTING_PATHS.children.checkPayment,
+            loadComponent: () =>
+              import('../fines-mci-payment-category-criminal-check-payment/fines-mci-payment-category-criminal-check-payment.component').then(
+                (c) => c.FinesMciPaymentCategoryCriminalCheckPaymentComponent,
+              ),
+            canMatch: [finesMciCriminalCheckPaymentHistoryGuard],
+            canActivate: [authGuard, routePermissionsGuard, finesMciFlowStateGuard, finesMciCriminalCheckPaymentGuard],
+            canDeactivate: [canDeactivateGuard],
+            data: {
+              routePermissionId: [FINES_PERMISSIONS['process-and-allocate-payments']],
+              title: FINES_MCI_ROUTING_TITLES.children.createTillCheckPayment,
+            },
+            resolve: { title: TitleResolver },
+          },
           ...[
-            [FINES_MCI_ROUTING_PATHS.children.checkPayment, FINES_MCI_ROUTING_TITLES.children.createTillCheckPayment],
             [FINES_MCI_ROUTING_PATHS.children.checkSuspensePayment, 'Check suspense payment'],
             [FINES_MCI_ROUTING_PATHS.children.payerDetails, 'Payer details'],
           ].map(([path, heading]) => ({

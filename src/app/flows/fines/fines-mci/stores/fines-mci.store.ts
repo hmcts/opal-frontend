@@ -165,6 +165,45 @@ export const FinesMciStore = signalStore(
       setCriminalPayment(criminalPayment: IFinesMciCriminalPayment | null): void {
         patchState(store, { criminalPayment });
       },
+      /** Saves the criminal payment and defendant together, clearing the submitted draft. */
+      saveCriminalPayment(): string | null {
+        const criminalPayment = store.criminalPayment();
+        const criminalAccount = store.selectedCriminalAccount();
+        if (!store.businessUnit() || !criminalPayment || !criminalAccount) return null;
+        const tillId = ensureTill();
+        const paymentId = crypto.randomUUID();
+        patchState(store, {
+          tills: store.tills().map((till) =>
+            till.tillId === tillId
+              ? {
+                  ...till,
+                  payments: [
+                    ...till.payments,
+                    { paymentId, journey: 'criminal' as const, criminalPayment, criminalAccount },
+                  ],
+                }
+              : till,
+          ),
+          criminalPayment: null,
+          draftJourney: null,
+        });
+        return paymentId;
+      },
+      /** Restores the draft and removes only its saved entry when the onward navigation fails. */
+      undoCriminalPaymentSave(paymentId: string): void {
+        const saved = store
+          .tills()
+          .flatMap((till) => till.payments)
+          .find((payment) => payment.paymentId === paymentId);
+        if (!saved?.criminalPayment) return;
+        patchState(store, {
+          tills: store
+            .tills()
+            .map((till) => ({ ...till, payments: till.payments.filter((payment) => payment.paymentId !== paymentId) })),
+          criminalPayment: saved.criminalPayment,
+          draftJourney: 'criminal',
+        });
+      },
       /** Stores validated suspense details in application memory. */
       setSuspensePayment(suspensePayment: IFinesMciSuspensePayment | null): void {
         patchState(store, { suspensePayment });

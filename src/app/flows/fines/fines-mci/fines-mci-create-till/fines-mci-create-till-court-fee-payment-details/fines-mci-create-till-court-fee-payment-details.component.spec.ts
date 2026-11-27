@@ -189,4 +189,66 @@ describe('FinesMciCreateTillCourtFeePaymentDetailsComponent', () => {
     expect(element.querySelector<HTMLInputElement>('input[value="applicant"]')!.checked).toBe(true);
     expect(fixture.componentInstance['canDeactivate']()).toBe(false);
   });
+  it('prevents competing navigation, submissions and retries while opening the next screen', async () => {
+    let finish!: (value: boolean) => void;
+    const navigate = vi
+      .spyOn(TestBed.inject(Router), 'navigate')
+      .mockReturnValue(new Promise<boolean>((resolve) => (finish = resolve)));
+    const fixture = TestBed.createComponent(FinesMciCreateTillCourtFeePaymentDetailsComponent);
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    component.handleBack();
+    component.handleBack();
+    component.handleRetry();
+    component.handleSubmit({
+      nestedFlow: false,
+      formData: { paymentReceivedFrom: 'applicant', paymentMethod: 'NC', payerType: 'company' },
+    });
+    expect(navigate).toHaveBeenCalledOnce();
+    expect(loadMappings).not.toHaveBeenCalled();
+    expect(TestBed.inject(FinesMciStore).courtFeePaymentDetails()).toBeNull();
+    finish(false);
+    await fixture.whenStable();
+  });
+
+  it('retains the payment and re-enables the form when navigation rejects', async () => {
+    vi.spyOn(TestBed.inject(Router), 'navigate').mockRejectedValue(new Error('Navigation failed'));
+    const fixture = TestBed.createComponent(FinesMciCreateTillCourtFeePaymentDetailsComponent);
+    fixture.detectChanges();
+    const store = TestBed.inject(FinesMciStore);
+    const payment = {
+      paymentReceivedFrom: 'applicant',
+      paymentMethod: 'NC',
+      payerType: 'company',
+      companyName: 'Example Ltd',
+    };
+    fixture.componentInstance.handleSubmit({ nestedFlow: false, formData: payment });
+    await fixture.whenStable();
+    fixture.detectChanges();
+    expect(store.courtFeePaymentDetails()).toEqual(payment);
+    expect(fixture.componentInstance['canDeactivate']()).toBe(false);
+    expect((fixture.nativeElement as HTMLElement).textContent).not.toContain('Loading next screen');
+  });
+
+  it('returns to Court Fee Details if the recorded origin is unavailable', async () => {
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const fixture = TestBed.createComponent(FinesMciCreateTillCourtFeePaymentDetailsComponent);
+    fixture.detectChanges();
+    TestBed.inject(FinesMciStore).setCourtFeePaymentOrigin(null);
+    fixture.componentInstance.handleBack();
+    await fixture.whenStable();
+    expect(navigate).toHaveBeenCalledWith(['../court-fee-details'], { relativeTo: TestBed.inject(ActivatedRoute) });
+  });
+
+  it('keeps leave protection for a stored payment when the child reports no new changes', () => {
+    const fixture = TestBed.createComponent(FinesMciCreateTillCourtFeePaymentDetailsComponent);
+    fixture.detectChanges();
+    TestBed.inject(FinesMciStore).setCourtFeePaymentDetails({
+      paymentReceivedFrom: 'applicant',
+      paymentMethod: 'NC',
+      payerType: 'company',
+    });
+    fixture.componentInstance.handleUnsavedChanges(false);
+    expect(fixture.componentInstance['canDeactivate']()).toBe(false);
+  });
 });

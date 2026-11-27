@@ -1,0 +1,55 @@
+<div class="govuk-grid-column-full" id="fines-mci-check-payment">
+  <span class="govuk-caption-l">{{ store.businessUnit()?.business_unit_name }}</span>
+  <h1 class="govuk-heading-l">Check payment</h1>
+
+  @if (saveNavigationFailed()) {
+    <p class="govuk-error-message" role="alert">The payment could not be saved. Try again.</p>
+  }
+
+  @if (overpayment(); as amount) {
+    <div opal-lib-moj-alert type="information" ariaLabel="Overpayment">
+      <opal-lib-moj-alert-icon icon type="information"></opal-lib-moj-alert-icon>
+      <opal-lib-moj-alert-content content>
+        <opal-lib-moj-alert-content-text
+          >This amount contains a {{ amount }} overpayment.</opal-lib-moj-alert-content-text
+        >
+      </opal-lib-moj-alert-content>
+    </div>
+  }
+
+  <opal-lib-govuk-summary-card-list summaryCardListId="check-criminal-payment" cardTitle="Criminal payment">
+    <ng-container content>
+      <dl class="govuk-summary-list">
+        @for (row of rows(); track row.label) {
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">{{ row.label }}</dt>
+            <dd class="govuk-summary-list__value">{{ row.value }}</dd>
+            <dd class="govuk-summary-list__actions">
+              <a class="govuk-link" href="#" (click)="$event.preventDefault(); change(row.label)"
+                >Change <span class="govuk-visually-hidden">{{ row.label.toLowerCase() }}</span></a
+              >
+            </dd>
+          </div>
+        }
+      </dl>
+    </ng-container>
+  </opal-lib-govuk-summary-card-list>
+
+  <div class="govuk-button-group">
+    <button type="button" class="govuk-button" id="save-review-till" [disabled]="isSaving()" (click)="save('review')">
+      Save and review till
+    </button>
+    <button
+      type="button"
+      class="govuk-button govuk-button--secondary"
+      id="save-add-payment"
+      [disabled]="isSaving()"
+      (click)="save('add')"
+    >
+      Save and add another payment
+    </button>
+  </div>
+  <div class="govuk-!-margin-top-4 govuk-!-margin-bottom-7">
+    <a href="#" class="govuk-link" id="cancel-criminal-payment" (click)="$event.preventDefault(); cancel()">Cancel</a>
+  </div>
+</div>

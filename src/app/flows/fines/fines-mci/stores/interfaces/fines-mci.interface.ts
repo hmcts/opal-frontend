@@ -1,3 +1,5 @@
+import { IFinesMciCriminalAccount } from '../../interfaces/fines-mci-criminal-account.interface';
+
 export type FinesMciJourney = 'criminal' | 'courtFee' | 'suspense';
 
 export interface IFinesMciCourtFeeDraft {
@@ -32,6 +34,8 @@ export interface IFinesMciCriminalPayment {
 export interface IFinesMciPayment {
   paymentId: string;
   journey: FinesMciJourney;
+  criminalPayment?: IFinesMciCriminalPayment;
+  criminalAccount?: IFinesMciCriminalAccount;
 }
 
 export interface IFinesMciTill {

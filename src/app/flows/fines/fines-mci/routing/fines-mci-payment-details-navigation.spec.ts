@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import {
   NavigationEnd,
+  NavigationCancellationCode,
   NavigationCancel,
   NavigationSkipped,
   provideRouter,
@@ -24,6 +25,7 @@ import { FinesMciStore } from '../stores/fines-mci.store';
 import { IFinesMciCriminalPayment } from '../stores/interfaces/fines-mci.interface';
 import { FinesMciPaymentCategoryCriminalPaymentDetailsComponent } from '../fines-mci-payment-category-criminal-payment-details/fines-mci-payment-category-criminal-payment-details.component';
 import { finesMciFlowStateGuard } from './guards/fines-mci-flow-state.guard';
+import { finesMciCriminalCheckPaymentGuard } from './guards/fines-mci-criminal-check-payment.guard';
 import { finesMciCriminalPaymentAccountGuard } from './guards/fines-mci-criminal-payment-account.guard';
 import { finesMciCriminalAccountStateGuard } from './guards/fines-mci-criminal-account-state.guard';
 import { routing } from './fines-mci.routes';
@@ -72,7 +74,7 @@ async function openPaymentDetails(saved: IFinesMciCriminalPayment | null = null,
             },
           ],
         },
-        { ...checkRoute, canActivate: [finesMciFlowStateGuard], resolve: {} },
+        { ...checkRoute, canActivate: [finesMciFlowStateGuard, finesMciCriminalCheckPaymentGuard], resolve: {} },
         { path: 'details', component: NavigationDestinationComponent },
       ],
     },
@@ -110,9 +112,22 @@ function enterAmount(harness: RouterTestingHarness, value: string): void {
 describe('Criminal payment details navigation', () => {
   afterEach(() => vi.restoreAllMocks());
 
-  it('protects Check Payment with authentication, permission and business-unit guards', () => {
-    expect(checkRoute.canActivate).toEqual([authGuard, routePermissionsGuard, finesMciFlowStateGuard]);
+  it('protects Check Payment with authentication, permission, business-unit and payment-state guards', () => {
+    expect(checkRoute.canActivate).toEqual([
+      authGuard,
+      routePermissionsGuard,
+      finesMciFlowStateGuard,
+      finesMciCriminalCheckPaymentGuard,
+    ]);
     expect(checkRoute.data?.['routePermissionId']).toEqual([FINES_PERMISSIONS['process-and-allocate-payments']]);
+  });
+
+  it('redirects direct navigation without a payment draft to Payment Details', async () => {
+    const { harness, router, store } = await openPaymentDetails();
+    await harness.navigateByUrl(`${TILL_ROOT}/check-payment`);
+    expect(router.url).toBe(PAYMENT_URL);
+    expect(store.criminalPayment()).toBeNull();
+    expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#amount')!.value).toBe('');
   });
 
   it.each(['notesCoins', 'postalOrder', 'cheque', 'creditTransfer'] as const)(
@@ -208,6 +223,7 @@ describe('Criminal payment details navigation', () => {
     expect(router.url).toBe(`${TILL_ROOT}/check-payment`);
     expect(store.criminalPayment()).toEqual(PAYMENT);
 
+    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true);
     const returned = firstValueFrom(
       router.events.pipe(
         filter((event) => event instanceof NavigationEnd),
@@ -222,7 +238,8 @@ describe('Criminal payment details navigation', () => {
     expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#amount')!.value).toBe(PAYMENT.amount);
 
     const page = harness.routeDebugElement!.componentInstance;
-    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(accepted);
+    expect(confirm).toHaveBeenCalledOnce();
+    confirm.mockClear().mockReturnValue(accepted);
     const completed = firstValueFrom(
       router.events.pipe(
         filter((event) => event instanceof NavigationEnd || event instanceof NavigationCancel),
@@ -260,6 +277,62 @@ describe('Criminal payment details navigation', () => {
       expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#amount')!.value).toBe(PAYMENT.amount);
     }
   });
+
+  for (const company of [false, true]) {
+    it.each([true, false])(
+      `returns an amended payment to account confirmation on browser Back (company=${company}, accepted=%s)`,
+      async (accepted) => {
+        const { harness, store, router } = await openPaymentDetails(PAYMENT, company);
+        const account = store.selectedCriminalAccount();
+        const tills = store.tills();
+        harness.routeNativeElement!.querySelector<HTMLButtonElement>('#submitForm')!.click();
+        await harness.fixture.whenStable();
+        harness.detectChanges();
+        harness.routeNativeElement!.querySelectorAll<HTMLAnchorElement>('.govuk-summary-list__actions a')[1].click();
+        await harness.fixture.whenStable();
+        harness.detectChanges();
+        expect(router.url).toBe(PAYMENT_URL);
+        enterAmount(harness, '30.00');
+        const confirm = vi.spyOn(window, 'confirm').mockReturnValue(accepted);
+        const completed = firstValueFrom(
+          router.events.pipe(
+            filter((event) =>
+              accepted
+                ? event instanceof NavigationEnd
+                : event instanceof NavigationCancel && event.code === NavigationCancellationCode.GuardRejected,
+            ),
+            take(1),
+          ),
+        );
+        const restored = accepted
+          ? Promise.resolve()
+          : firstValueFrom(
+              router.events.pipe(
+                filter((event) => event instanceof NavigationSkipped),
+                take(1),
+              ),
+            );
+        TestBed.inject(Location).back();
+        await completed;
+        await restored;
+        await harness.fixture.whenStable();
+        harness.detectChanges();
+        expect(confirm).toHaveBeenCalledOnce();
+        expect(store.selectedCriminalAccount()).toEqual(account);
+        expect(store.tills()).toEqual(tills);
+        if (accepted) {
+          expect(router.url).toBe(`${TILL_ROOT}/${CRIMINAL_PATH}/account/1/${company ? 'company' : 'individual'}`);
+          expect(store.criminalPayment()).toBeNull();
+          await harness.navigateByUrl(PAYMENT_URL);
+          expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#amount')!.value).toBe('');
+        } else {
+          expect(router.url).toBe(PAYMENT_URL);
+          expect(store.criminalPayment()).toEqual(PAYMENT);
+          expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#amount')!.value).toBe('30.00');
+        }
+      },
+    );
+  }
 
   it('returns a company to its company confirmation screen', async () => {
     const { harness, component, router } = await openPaymentDetails(null, true);
