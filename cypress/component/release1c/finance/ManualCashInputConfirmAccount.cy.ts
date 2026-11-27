@@ -197,7 +197,9 @@ describe('Manual Cash Input - Confirm account navigation', () => {
 
 describe('PO-3532 - Manual Cash Input Payment Details', () => {
   const openPaymentDetails = (): void => {
-    openMciAccount();
+    const account = structuredClone(MCI_CONFIRM_INDIVIDUAL_MOCK);
+    account.account_balance = -1234.56;
+    openMciAccount(account);
     cy.get(Mci.account.confirm).click();
     cy.get(Mci.criminalPaymentDetails.page).should('be.visible');
   };
@@ -378,6 +380,30 @@ describe('PO-3532 - Manual Cash Input Payment Details', () => {
       cy.get(Mci.criminalPaymentDetails.amountError).should('have.text', 'Enter only numbers and decimals');
       cy.get('@financeRouter').its('url').should('eq', paymentDetailsUrl);
       cy.get(Mci.criminalPaymentDetails.heading).should('have.text', 'Payment details');
+    },
+  );
+
+  it(
+    '(AC4a, AC4b) rejects a negative payment amount and does not show an overpayment',
+    {
+      tags: [
+        '@JIRA-STORY:PO-3532',
+        '@JIRA-LABEL:manual-cash-input',
+        '@JIRA-EPIC:PO-2439',
+        '@R1CFinancialMovements',
+        '@AC4a',
+        '@AC4b',
+      ],
+    },
+    () => {
+      openPaymentDetails();
+
+      cy.get(Mci.criminalPaymentDetails.amount).type('-10');
+      cy.get(Mci.continueButton).click();
+
+      cy.get(Mci.criminalPaymentDetails.amountError).should('have.text', 'Amount cannot be a negative value');
+      cy.get(Mci.criminalPaymentDetails.overpayment).should('not.exist');
+      assertPaymentDetailsRemainsOpen();
     },
   );
 
