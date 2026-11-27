@@ -4,23 +4,19 @@ Use this guide when writing or updating Cypress E2E tests and Cucumber feature f
 
 ## Required References
 
-- For any E2E scenario creation or update, read `references/E2E_New_Feature_Codex_Optimized_Instructions.md` and follow it as the governing ruleset.
-- Keep `references/E2E_Refactor_Codex_Optimized_Instructions.md` as legacy reference material; consult it only when explicitly requested or when refactoring older features that need its legacy guidance.
+Read this guide's Feature Layout and Tags, Accessibility Coverage, Step Definitions, Actions, Flows, and Selectors,
+and execution sections together with [AGENTS.md](../AGENTS.md), [REPO_GUIDELINES.md](REPO_GUIDELINES.md),
+[SONAR.md](SONAR.md), and [CONTRIBUTING.md](CONTRIBUTING.md). These repository-contained rules are authoritative and require no installed skills.
 
 ## Feature Layout and Tags
 
+See [Cypress release selection](CYPRESS_RELEASE_SELECTION.md) for release folders, tags, and run commands, and
+[Extended test runs](EXTENDED_TEST_RUNS.md) for the shared `@extendedTest` policy.
+
 - Preferred home is `cypress/e2e/functional/opal`.
-- Feature files live under capability folders (for example, `features/manualAccountCreation/**`, `features/fineAccountEnquiry/**`).
+- Feature files live under capability folders (for example, `features/release1a/manualAccountCreation/**`, `features/release1b/fineAccountEnquiry/**`).
 - Tag scenarios with `@functional`, `@smoke`, and Jira IDs so suites can target subsets.
-- Keep legacy suites in `cypress/e2e/Old_functional_E2E_Tests`; new scenarios should follow the `opal` layout.
-
-### Release Folder Rules
-
-- Keep release-specific feature files under the matching release folder.
-- `features/release1a/**` should contain only `@R1A`, `@R1AOff`, `@R1A1_1`, `@R1A1_1Off`, `@R1A1_2`, `@R1A1_2Off`, `@R1A1_3`, or `@R1A1_3Off` scenarios and examples.
-- `features/release1b/**` should contain only `@R1BDrop1`, `@R1BDrop2`, `@R1BDrop3`, `@R1BDrop1UatTechJCDE`, `@R1BDrop1UatTechPreprod`, `@R1BDrop2UatTechJCDE`, `@R1BDrop2UatTechPreprod`, `@R1BDrop3UatTechJCDE`, `@R1BDrop3UatTechPreprod`, or `@R1BOff` scenarios and examples.
-- `features/release1c/**` should contain only `@R1C...` scenarios and examples.
-- When a feature file mixes release tags, split the scenarios into separate release-specific files rather than keeping cross-release examples in one file.
+- New scenarios belong in the `opal` layout. The historical `Old_functional_E2E_Tests` path remains excluded by Cypress; do not recreate it for new coverage.
 
 ### Journey-Based Organisation
 
@@ -44,7 +40,7 @@ cypress/e2e/functional/opal/features/release1b/searchAndMatches/
 
 - Keep scenarios tagged `@LegacyData` together in a dedicated `legacy-data` feature file within the relevant capability.
 - Retain the `@skip` and `@LegacyData` tags until the required seeded data is available.
-- `@LegacyData` scenarios are distinct from the legacy suite under `cypress/e2e/Old_functional_E2E_Tests`; new or reorganised scenarios remain under `functional/opal`.
+- `@LegacyData` scenarios remain under `functional/opal`; they are distinct from the historical excluded legacy-suite path.
 
 ### Feature File Size and Execution
 
@@ -66,32 +62,112 @@ cypress/e2e/functional/opal/features/release1b/searchAndMatches/
 ## Actions, Flows, and Selectors
 
 - Actions in `cypress/e2e/functional/opal/actions/**` wrap interactions, API stubs, and navigation using selectors from `cypress/shared/selectors/**`.
-- Flows in `cypress/e2e/functional/opal/flows/**` compose actions into business journeys and are the verbs exposed to steps and component specs.
+- Make the business outcome visible through an explicit `Then` step delegating to an expectation method. An action
+  may wait for navigation or readiness, but should not be the only place that proves the scenario's outcome.
+  When separating an existing action from its assertions, preserve the assertions and migrate every functional and
+  accessibility caller. A page heading alone must not replace record identity, mode, permission, or no-write checks.
+- Flows in `cypress/e2e/functional/opal/flows/**` compose actions into business journeys and are the verbs exposed to steps. Component specs use the direct script/helper style in the component-testing guide.
 - Selectors are centralized. Add hooks in Angular templates and document them in `cypress/shared/selectors/**`. Avoid positional CSS.
 
-## Running a Feature
+### Shared fixtures and request setup
 
-### R1B Drop 3 UAT Technical selection
+- Put reusable response builders and scenario data under the capability's `mocks/**`, and shared request wiring under
+  `setup/**` or `intercept/**`. Actions should import these directly rather than importing another feature's Action
+  module solely to reuse its fixtures or stubs. Do not introduce barrel exports.
+- Extract only genuinely shared contracts. Preserve endpoint/method matching, query handling, aliases, and response
+  semantics; leave scenario-specific selected-record behaviour with its owner. Keep business assertions in explicit
+  expectation methods and mutable scenario data independent.
+- Controlled reference responses prove frontend behaviour against those contracts. They do not establish deployed
+  provider behaviour, live authentication, or permissions. Preserve the scenario's existing live/controlled boundary.
 
-Use `@R1BDrop3UatTechJCDE` and `@R1BDrop3UatTechPreprod` for R1B Drop 3 legacy examples that should run only through explicit UAT Technical selection. Both tags are excluded from default CNP functional runs and the standard nightly functional, legacy, and R1A/R1B demo suites.
+## Reusing feature-file steps
 
-In nightly, enable `RunUatTech` and select `UAT_TECHNICAL_SUITE=R1BDrop3`. `LEGACY_URL` selects the JCDE (`DEV`) or pre-prod examples. The existing R1A/R1B suite choices do not include R1B Drop 3 examples.
+Apply this sequence when adding or modifying steps; existing unrelated features do not need a rewrite.
+Component specs retain their direct script/helper style.
 
-For local runs, use `yarn test:functional:uat_legacy_r1b_drop3_jcde` or `yarn test:functional:uat_legacy_r1b_drop3_preprod`. For a CNP PR run, use `enable_legacy_mode` with `run_tag:@R1BDrop3UatTechJCDE`; the JCDE override is enabled automatically for that tag.
+1. Search the step catalogue/source, Flows and Actions for the process and its synonyms. Start with the shared
+   [authentication](../cypress/support/step_definitions/auth.steps.ts),
+   [accessibility](../cypress/support/step_definitions/accessibility/accessibility.steps.ts) and
+   [common assertions](../cypress/support/step_definitions/common.steps.ts).
+2. Reuse an existing phrase when its preconditions, interaction and observable outcome match. Common heading, text
+   and URL phrases already accept business values; do not add a feature-specific equivalent. Preserve business
+   assertions that also check retained data, permissions, store state or API requests.
+3. Parameterise varying business values with constrained expressions or validated DataTables. Reject unknown choices
+   and columns rather than silently ignoring them. Keep scenario-specific input visible when it matters to the AC.
+4. Share an existing Action/Flow when similar steps have different business intent. Add a phrase only for a different
+   responsibility or outcome. Keep reuse local to the capability until multiple maintained capabilities need it.
+5. Keep one delegate per binding. Flows own business orchestration and table interpretation; Actions own UI, network
+   and confirmation details. Keep selectors out of Gherkin and do not infer page context from an available element.
+   When changing a shared common assertion, move its existing body unchanged into a CommonActions method, retaining
+   its logging, match strictness, selector and timeout; leave untouched assertions alone.
+6. Before removing a binding, migrate every caller and check for undefined or ambiguous matches across the loaded
+   registry. Cucumber matches text across Given/When/Then, so changing a keyword does not prevent ambiguity. Preserve
+   scenario names, tags, Examples rows, Zephyr identity and independent setup.
+7. Run browser journeys for every affected caller group and compare expanded scenario names, counts and tags before
+   and after. Keep live and controlled data sources and keyboard interactions intact. Fewer bindings do not mean
+   fewer tests or faster execution. Discovery/dry runs prove selection and binding only.
 
-### Single feature
+For changes to shared bindings, inventory every functional, accessibility, and smoke caller group. Compare selection
+and run actual affected browser journeys before and after, using their configured prerequisites; do not substitute
+mocks for unavailable live data. Preserve keyboard, confirmation, retained-state and no-write assertions.
+Also run `corepack yarn lint:cypress`, `corepack yarn exec tsc --project e2e.tsconfig.json --noEmit`,
+`corepack yarn check:jira:test-metadata`, and `corepack yarn find:duplicate:scenarios`.
+Search all Cypress callers for removed phrases. Duplicate-scenario scanning supplements discovery; it does not prove
+expression unambiguity. Preserve raw evidence before a runner resets its outputs.
 
-Run a single feature file with:
+### Keeping regression growth proportionate
 
+Use component tests for exhaustive form-state rendering and validation, and retain E2E
+coverage for complete journeys and meaningful integration boundaries. Before removing an
+apparently duplicated scenario, map its assertions, data source, tags and external identity
+to retained coverage. Mocked responses and live-service evidence are different contracts.
+
+Reuse existing Steps, Flows and Actions, while giving each scenario independent mutable
+state. Use focused spec/Story selections for development feedback without reducing required
+full regressions. Report expanded examples, failures, retries, missing cases and wall time;
+a successful runner exit alone does not prove a complete passing suite.
+
+[Test-maintenance evidence](CONTRIBUTING.md#test-maintenance-evidence) applies to consolidated scenarios, changes to
+shared fixtures or steps, and runtime claims.
+
+## Running a feature and accessibility checks
+
+Run an existing accessibility feature through the configured runner:
+
+```bash
+corepack yarn test:functional:serial --browser=chrome --spec 'cypress/e2e/functional/opal/features/release1b/searchAndMatches/searchAndMatchesAccessibility.feature'
 ```
-yarn cypress run --browser chrome --spec 'cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/PopulateAndSubmit.feature'
-```
 
-## Handling Real Product Bugs
+Select other functional, accessibility, or smoke scenarios with the existing scripts in `package.json`.
+Use the release guide for release-on/off and UAT Technical runs. Preserve their tag selection. Supply the configured test target
+and authorised test accounts through the existing environment; never put credentials in documentation or evidence.
+Record browser version, safe environment alias, command, selected/expanded scenario count, passes, failures, retries,
+and skipped or pending cases. Zero executed scenarios or a successful discovery run is not passing browser evidence.
 
-- When a feature fails because of a real product bug, do not patch application behavior just to green the test.
-- Skip or xfail the test if unavoidable and report the underlying issue in the task update.
+`test:a11y` and `pa11y` only print a message. They do not validate accessibility. Run the relevant accessibility features
+and component checks; Axe is partial evidence, supplemented by keyboard/focus, screen-reader and native-browser checks
+where applicable. Do not claim full WCAG 2.2 AA compliance from automated scans alone.
 
-## Extended Tests
+Every covered functional scenario requires exactly one `@JIRA-EPIC` and at least one `@JIRA-STORY`, `@JIRA-NFR`, or
+`@JIRA-DEFECT`. Run `corepack yarn check:jira:test-metadata`; smoke and the configured dummy-feature exemption retain
+their existing policy. Preserve Zephyr identities and do not invent tags to make the check pass.
 
-Use `@extendedTest` for tests excluded from PR/master runs by default and included in manual and nightly runs. Add the GitHub label `extendedTests` to a PR to include them in that PR pipeline. Direct Cypress runs include extended tests even when the pipeline exclusion flag is set. See [Extended test runs](EXTENDED_TEST_RUNS.md) for tagging, pipeline behaviour and execution commands.
+## Confirmation and native leave-site dialogs
+
+Application `window.confirm` and a browser's native `beforeunload` prompt are different boundaries. For application
+confirmation tests, register the handler before triggering the action, assert its warning and invocation, and verify
+the resulting route and retained state. A handler that was never called must not allow a false pass. Clean Cancel
+paths must assert that no confirmation occurs. Keep native leave-site verification separate; `window:confirm` does
+not prove native Leave/Cancel behaviour, and clearing `onbeforeunload` does not remove registered event listeners.
+
+Cypress-launched Chromium browsers disable `DeprecateUnload` so Cypress can clean up and reinstall its window handlers
+across navigation. Existing launch flags are preserved. Fully relaunch the browser after changing launch settings;
+reassess this compatibility setting on a Cypress upgrade. Production confirmation and guard behaviour is unchanged.
+Do not introduce global unload suppression into component tests or claim that suppressed native prompts were tested.
+
+## Handling real product defects
+
+- Record the failing scenario and evidence. Fix application behaviour only when that change is within the requested scope.
+- Do not weaken assertions or skip required coverage merely to obtain a passing run.
+- Report unavailable live prerequisites and required skipped, pending, or failing tests as incomplete verification.
+- Apply the frontend Definition of Done; never claim agent completion while an applicable required check remains unmet.
