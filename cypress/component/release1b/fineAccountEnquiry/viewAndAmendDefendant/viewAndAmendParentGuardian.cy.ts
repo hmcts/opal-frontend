@@ -2,6 +2,7 @@ import { mount } from 'cypress/angular';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesAccountStore } from 'src/app/flows/fines/fines-acc/stores/fines-acc.store';
 import { provideHttpClient } from '@angular/common/http';
 import { FinesAccPartyAddAmendConvert } from 'src/app/flows/fines/fines-acc/fines-acc-party-add-amend-convert/fines-acc-party-add-amend-convert.component';
@@ -28,6 +29,7 @@ import { VIEW_AND_AMEND_DEFENDANT_INDIVIDUAL_MINIMAL_MOCK } from './mocks/view-a
 import { VIEW_AND_AMEND_PARENT_GUARDIAN_ADD_FORM_MOCK } from './mocks/view-and-amend-parent-guardian-add-form.mock';
 import { MOCK_FINES_ACCOUNT_STATE } from 'src/app/flows/fines/fines-acc/mocks/fines-acc-state.mock';
 import { IOpalFinesAccountDefendantAccountParty } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-defendant-account-party.interface';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from 'src/app/flows/fines/constants/release-feature-flags.constant';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 
@@ -54,6 +56,14 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
         provideHttpClient(),
         provideRouter([]),
         DateService,
+        {
+          provide: GlobalStore,
+          useFactory: () => {
+            const store = new GlobalStore();
+            store.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+            return store;
+          },
+        },
         {
           provide: FinesAccountStore,
           useFactory: () => {
@@ -1237,7 +1247,8 @@ describe('FinesAccPartyAddAmendConvert - View and Amend Parent or Guardian', () 
       dataTypeValidationMock.defendant_account_party.address!.address_line_3 = 'Bâtiment C';
       dataTypeValidationMock.defendant_account_party.address!.postcode = 'M1& 1AA';
       dataTypeValidationMock.defendant_account_party.vehicle_details!.vehicle_make_and_model = 'Toyota Corolla {}[]';
-      dataTypeValidationMock.defendant_account_party.vehicle_details!.vehicle_registration = 'ABC123|\\';
+      // Keep the value within the release-1a-1-2 seven-character limit so this asserts data type only.
+      dataTypeValidationMock.defendant_account_party.vehicle_details!.vehicle_registration = 'ABC12|\\';
       dataTypeValidationMock.defendant_account_party.employer_details!.employer_name = 'Test Company <>?/';
       dataTypeValidationMock.defendant_account_party.employer_details!.employer_reference = 'EMP123~`';
       dataTypeValidationMock.defendant_account_party.employer_details!.employer_address!.address_line_1 =
