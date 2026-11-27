@@ -53,6 +53,8 @@ describe('FinesMciPaymentCategoryCriminalPaymentDetailsComponent', () => {
   it.each([
     ['', 'Enter amount'],
     ['12x', 'Enter only numbers and decimals'],
+    ['-20', 'Amount cannot be a negative value'],
+    ['0.00', 'Amount cannot be zero'],
   ])('keeps the user on Payment details with the amount error for %s', (amount, message) => {
     store.setCriminalPayment(CRIMINAL_PAYMENT);
     fixture.detectChanges();
