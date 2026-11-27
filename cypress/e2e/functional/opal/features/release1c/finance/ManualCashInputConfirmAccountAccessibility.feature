@@ -7,6 +7,7 @@ Feature: Manual Cash Input - Confirm account accessibility
     And I am taken to the "Finance" Fines landing page
     And I open Manual Cash Input
     And I create a till for account confirmation
+    And I select "Camden and Islington"
     And I continue
     And I add a payment to the till
     And I continue with payment category "criminal"
