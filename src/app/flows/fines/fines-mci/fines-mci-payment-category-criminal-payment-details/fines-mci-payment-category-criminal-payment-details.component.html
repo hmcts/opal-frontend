@@ -1,0 +1,16 @@
+<div class="govuk-grid-column-full govuk-!-margin-bottom-4">
+  <opal-lib-govuk-back-link (clickEvent)="handleBack()"></opal-lib-govuk-back-link>
+</div>
+
+<div class="govuk-grid-column-two-thirds">
+  <span class="govuk-caption-l">{{ finesMciStore.businessUnit()?.business_unit_name }}</span>
+  <h1 class="govuk-heading-l">Payment details</h1>
+
+  <app-fines-mci-payment-category-criminal-payment-details-form
+    [accountBalance]="accountBalance"
+    [initialValue]="finesMciStore.criminalPayment()"
+    (formSubmit)="handleSubmit($event)"
+    (unsavedChanges)="handleUnsavedChanges($event)"
+    (cancelRequested)="handleCancel()"
+  ></app-fines-mci-payment-category-criminal-payment-details-form>
+</div>

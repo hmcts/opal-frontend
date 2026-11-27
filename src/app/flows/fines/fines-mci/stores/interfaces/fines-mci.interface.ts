@@ -18,6 +18,17 @@ export interface IFinesMciSuspensePayment {
   relevantDetails: string;
 }
 
+export interface IFinesMciCriminalPayment {
+  amount: string;
+  payerType: 'defendant' | 'thirdParty' | null;
+  thirdPartyName: string;
+  methodOfPayment: 'notesCoins' | 'postalOrder' | 'cheque' | 'creditTransfer' | null;
+  paymentReferencePostalOrder: string;
+  paymentReferenceCheque: string;
+  paymentReferenceCreditTransfer: string;
+  source: string | null;
+}
+
 export interface IFinesMciPayment {
   paymentId: string;
   journey: FinesMciJourney;

@@ -35,4 +35,9 @@ describe('finesMciCriminalAccountStateGuard', () => {
       expect(store.selectedCriminalAccount()?.defendant_account_id ?? null).toBe(accountId);
     },
   );
+
+  it('redirects to Till Details if the route has no account path', () => {
+    const result = TestBed.runInInjectionContext(() => finesMciCriminalAccountStateGuard({}, []));
+    expect(result).toEqual(TestBed.inject(Router).parseUrl('/fines/manual-cash-input/create/till/details'));
+  });
 });

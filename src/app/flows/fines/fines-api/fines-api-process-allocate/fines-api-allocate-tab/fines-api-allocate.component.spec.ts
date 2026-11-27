@@ -109,4 +109,9 @@ describe('FinesApiAllocateComponent', () => {
     expect(selectedText()).toBe('0 of 2 tills selected.');
     expect(element().querySelector('.govuk-error-summary')).toBeNull();
   });
+
+  it('announces the processing total and each business unit for screen readers', () => {
+    render(data([], 3));
+    expect(fixture.componentInstance['processingAnnouncement']()).toContain('BU Alpha (2) BU Beta (1)');
+  });
 });

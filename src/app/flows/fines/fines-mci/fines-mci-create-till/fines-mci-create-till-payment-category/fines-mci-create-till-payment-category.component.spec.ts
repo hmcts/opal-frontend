@@ -242,4 +242,13 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
     expect(window.dispatchEvent(beforeUnloadEvent)).toBe(false);
     expect(beforeUnloadEvent.defaultPrevented).toBe(true);
   });
+
+  it('ignores duplicate Continue submissions while navigation is pending', () => {
+    vi.spyOn(router, 'navigate').mockReturnValue(new Promise<boolean>(() => {}));
+    const submission = { formData: { paymentCategory: 'criminal' as const }, nestedFlow: false };
+    fixture.componentInstance.handleSubmit(submission);
+    fixture.componentInstance.handleSubmit(submission);
+    expect(router.navigate).toHaveBeenCalledOnce();
+    expect(finesMciStore.draftJourney()).toBe('criminal');
+  });
 });
