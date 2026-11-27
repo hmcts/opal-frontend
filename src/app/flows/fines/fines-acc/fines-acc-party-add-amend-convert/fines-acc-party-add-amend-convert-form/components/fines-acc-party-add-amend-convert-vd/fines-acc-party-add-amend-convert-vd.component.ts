@@ -1,9 +1,12 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, computed, inject } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { AbstractNestedFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-nested-form-base';
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/capitalisation';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../../../constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '../../../../../utils/fines-section-permissions.utils';
 
 /**
  * Vehicle details sub-component for the fines account party add/amend/convert form.
@@ -21,6 +24,12 @@ import { CapitalisationDirective } from '@hmcts/opal-frontend-common/directives/
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesAccPartyAddAmendConvertVd extends AbstractNestedFormBaseComponent {
+  private readonly globalStore = inject(GlobalStore);
+  /** Indicates whether the R1A-1-2 vehicle registration rules should be shown. */
+  public readonly release1a1_2Enabled = computed(
+    () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
+  );
+
   @Input({ required: true }) public override form!: FormGroup;
   @Input({ required: true }) public override formControlErrorMessages!: IAbstractFormControlErrorMessage;
 }
