@@ -6,7 +6,6 @@ import { IFinesMacPersonalDetailsForm } from '../interfaces/fines-mac-personal-d
 import { FINES_MAC_PERSONAL_DETAILS_ALIAS } from '../constants/fines-mac-personal-details-alias';
 import { FINES_MAC_PERSONAL_DETAILS_FORM_MOCK } from '../mocks/fines-mac-personal-details-form.mock';
 import { ActivatedRoute } from '@angular/router';
-import { FINES_MAC_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS as FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS } from '../constants/fines-mac-personal-details-vehicle-details-fields';
 import { of } from 'rxjs';
 import { FinesMacStoreType } from '../../stores/types/fines-mac-store.type';
 import { FinesMacStore } from '../../stores/fines-mac.store';
@@ -62,13 +61,13 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FinesMacPersonalDetailsFormComponent);
-    component = fixture.componentInstance;
     globalStore = TestBed.inject(GlobalStore);
-
     globalStore.setFeatureFlags({
       [RELEASE_1A_1_2_FEATURE_FLAG]: false,
     });
+
+    fixture = TestBed.createComponent(FinesMacPersonalDetailsFormComponent);
+    component = fixture.componentInstance;
 
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
 
@@ -102,6 +101,81 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should use the 11-character vehicle registration limit when release-1a-1-2 is disabled', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+    fixture.detectChanges();
+    const registrationControl = component.form.get('fm_personal_details_vehicle_registration_mark');
+    registrationControl?.setValue('12345678901');
+    expect(registrationControl?.hasError('maxlength')).toBe(false);
+    expect(component.fieldErrors.fm_personal_details_vehicle_registration_mark['maxlength'].message).toBe(
+      'Registration number must be 11 characters or fewer',
+    );
+  });
+
+  it('should apply the seven-character vehicle registration limit when enabled before form creation', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+    const enabledFixture = TestBed.createComponent(FinesMacPersonalDetailsFormComponent);
+    const enabledComponent = enabledFixture.componentInstance;
+    enabledComponent.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
+    enabledFixture.detectChanges();
+
+    const registrationControl = enabledComponent.form.get('fm_personal_details_vehicle_registration_mark');
+    registrationControl?.setValue('XY21ABC');
+    expect(registrationControl?.hasError('maxlength')).toBe(false);
+    registrationControl?.setValue('XY21ABCD');
+    expect(registrationControl?.hasError('maxlength')).toBe(true);
+    registrationControl?.setValue('12345678');
+
+    expect(registrationControl?.hasError('maxlength')).toBe(true);
+    expect(enabledComponent.fieldErrors.fm_personal_details_vehicle_registration_mark['maxlength'].message).toBe(
+      'Registration number must be 7 characters or fewer',
+    );
+
+    enabledFixture.destroy();
+  });
+
+  it('should refresh registration validation and its message when the release flag changes', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+    const registrationControl = component.form.get('fm_personal_details_vehicle_registration_mark');
+    registrationControl?.setValue('12345678');
+    expect(registrationControl?.hasError('maxlength')).toBe(false);
+
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+    fixture.detectChanges();
+    expect(registrationControl?.hasError('maxlength')).toBe(true);
+    expect(component.fieldErrors.fm_personal_details_vehicle_registration_mark['maxlength'].message).toBe(
+      'Registration number must be 7 characters or fewer',
+    );
+    component['handleErrorMessages']();
+    expect(component.formControlErrorMessages['fm_personal_details_vehicle_registration_mark']).toBe(
+      'Registration number must be 7 characters or fewer',
+    );
+
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+    fixture.detectChanges();
+    expect(registrationControl?.hasError('maxlength')).toBe(false);
+    expect(component.formControlErrorMessages['fm_personal_details_vehicle_registration_mark']).toBeUndefined();
+    expect(component.fieldErrors.fm_personal_details_vehicle_registration_mark['maxlength'].message).toBe(
+      'Registration number must be 11 characters or fewer',
+    );
+  });
+
+  it('should update the registration message when its control is absent', () => {
+    const parentGuardianFixture = TestBed.createComponent(FinesMacPersonalDetailsFormComponent);
+    const parentGuardianComponent = parentGuardianFixture.componentInstance;
+    parentGuardianComponent.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.pgToPay;
+    parentGuardianFixture.detectChanges();
+    expect(parentGuardianComponent.form.get('fm_personal_details_vehicle_registration_mark')).toBeNull();
+
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+    parentGuardianFixture.detectChanges();
+
+    expect(parentGuardianComponent.fieldErrors.fm_personal_details_vehicle_registration_mark['maxlength'].message).toBe(
+      'Registration number must be 7 characters or fewer',
+    );
+    parentGuardianFixture.destroy();
   });
 
   it('should display Remove alias buttons when release-1a-1-2 is enabled', () => {
@@ -448,38 +522,28 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     const container = fixture.nativeElement.querySelector(
       '[formArrayName="fm_personal_details_aliases"]',
     ) as HTMLElement;
-
-    const buttons = container.querySelectorAll(
-      'button.moj-add-another__remove-button',
-    ) as NodeListOf<HTMLButtonElement>;
-
+    const buttons = container.querySelectorAll<HTMLButtonElement>('button.moj-add-another__remove-button');
     buttons[0].click();
     fixture.detectChanges();
 
     expect(aliases).toHaveLength(2);
-
     expect(component.formErrorSummaryMessage).toContainEqual({
       fieldId: 'fm_personal_details_alias_forenames_0',
       message: 'Enter alias 1 first name(s)',
     });
-
     expect(component.formErrorSummaryMessage).toContainEqual({
       fieldId: 'fm_personal_details_alias_surname_1',
       message: 'Enter alias 2 last name',
     });
-
     expect(
       component.formErrorSummaryMessage.some(
-        (error) =>
-          error.fieldId === 'fm_personal_details_alias_forenames_2' ||
-          error.fieldId === 'fm_personal_details_alias_surname_2',
+        ({ fieldId }) =>
+          fieldId === 'fm_personal_details_alias_forenames_2' || fieldId === 'fm_personal_details_alias_surname_2',
       ),
     ).toBe(false);
-
     expect(component.formControlErrorMessages['fm_personal_details_alias_forenames_0']).toBe(
       'Enter alias 1 first name(s)',
     );
-
     expect(component.formControlErrorMessages['fm_personal_details_alias_surname_1']).toBe('Enter alias 2 last name');
   });
 
@@ -683,6 +747,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   });
 
   it('should emit nested flow form submit event with form value', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
     const event = { submitter: { className: 'nested-flow' } } as SubmitEvent;
     formSubmit.nestedFlow = true;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -700,6 +765,7 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   });
 
   it('should emit standard flow form submit event with form value', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
     const event = {} as SubmitEvent;
     formSubmit.nestedFlow = false;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -904,9 +970,8 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
   it('should add vehicle details controls', () => {
     component['addVehicleDetailsControls']();
 
-    FM_PERSONAL_DETAILS_VEHICLE_DETAILS_FIELDS.forEach((control) => {
-      expect(component.form.get(control.controlName)).toBeTruthy();
-    });
+    expect(component.form.get('fm_personal_details_vehicle_make')).toBeTruthy();
+    expect(component.form.get('fm_personal_details_vehicle_registration_mark')).toBeTruthy();
   });
 
   it('should validate postcode format using alphanumericTextPattern', () => {

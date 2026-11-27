@@ -26,6 +26,7 @@ export const ACCOUNT_ENQUIRY_PAYMENT_TERMS_ELEMENTS = {
 
   // Links
   paymentTermsLink: '.govuk-link',
+  aprManagementLink: '#manage-alternate-payment-references',
 
   // Table labels
   tableTitle: '.govuk-summary-card__title',
