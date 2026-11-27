@@ -1,3 +1,5 @@
+import { RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG } from '@app/flows/fines/constants/release-feature-flags.constant';
+import { getFeatureFlagReleaseState } from '@app/flows/fines/utils/fines-section-permissions.utils';
 import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { of } from 'rxjs';
@@ -32,6 +34,9 @@ export function finesDraftTabResolver(options: IFinesDraftResolverOptions): Reso
     const dateService = inject(DateService);
 
     const params: IOpalFinesDraftAccountParams = buildFinesDraftAccountParams(globalStore.userState(), {
+      includeMacSource: getFeatureFlagReleaseState(globalStore.featureFlags())[
+        RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG
+      ],
       statuses: tab.statuses,
       includeSubmittedBy: options.includeSubmittedBy,
       includeNotSubmittedBy: options.includeNotSubmittedBy,

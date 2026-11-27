@@ -1,4 +1,5 @@
 import { mount } from 'cypress/angular';
+import { RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG } from 'src/app/flows/fines/constants/release-feature-flags.constant';
 import { FinesDraftCheckAndValidateTabsComponent } from 'src/app/flows/fines/fines-draft/fines-draft-check-and-validate/fines-draft-check-and-validate-tabs/fines-draft-check-and-validate-tabs.component';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
@@ -43,6 +44,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
             useFactory: () => {
               let store = new GlobalStore();
               store.setUserState(DRAFT_SESSION_USER_STATE_MOCK);
+              store.setFeatureFlags({ [RELEASE_1C_BANKING_INTERFACES_FEATURE_FLAG]: true });
               return store;
             },
           },
@@ -57,7 +59,12 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
   it(
     '(AC.1) Review account is created as per design artefact (FinesDraftCheckAndValidateToReviewComponent)',
     {
-      tags: [...buildTags('@JIRA-STORY:PO-593', '@JIRA-STORY:PO-600'), '@JIRA-EPIC:PO-2220', '@JIRA-TEST-KEY:PO-4719'],
+      tags: [
+        ...buildTags('@JIRA-STORY:PO-593', '@JIRA-STORY:PO-600', '@JIRA-STORY:PO-10335'),
+        '@JIRA-EPIC:PO-2220',
+        '@JIRA-EPIC:PO-7459',
+        '@JIRA-TEST-KEY:PO-4719',
+      ],
     },
     () => {
       const emptyMockData = { count: 0, summaries: [] };
@@ -154,6 +161,7 @@ describe('FinesDraftCheckAndValidateToReviewComponent', () => {
       cy.get('@getToReviewAccounts').then((interception: any) => {
         expect(interception.request.url).to.include(`business_unit=${businessUnitId}`);
         expect(interception.request.url).to.include(`not_submitted_by=${testUser}`);
+        expect(interception.request.url).to.include('source=MAC');
       });
 
       //Check table headings

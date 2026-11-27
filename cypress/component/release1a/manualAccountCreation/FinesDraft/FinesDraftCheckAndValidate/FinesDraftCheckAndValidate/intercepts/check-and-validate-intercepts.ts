@@ -1,7 +1,7 @@
 export function interceptCAVGetToReviewAccounts(statusCode: number, responseBody: any) {
   cy.intercept(
     'GET',
-    '*opal-fines-service/draft-accounts?business_unit=77&status=Submitted&status=Resubmitted&not_submitted_by=L077JG',
+    '*opal-fines-service/draft-accounts?business_unit=77&status=Submitted&status=Resubmitted&not_submitted_by=L077JG*',
     {
       statusCode: statusCode,
       body: responseBody,
@@ -12,7 +12,7 @@ export function interceptCAVGetToReviewAccounts(statusCode: number, responseBody
 export function interceptCAVGetRejectedAccounts(statusCode: number, responseBody: any) {
   cy.intercept(
     'GET',
-    '*opal-fines-service/draft-accounts?business_unit=77&status=Rejected&not_submitted_by=L077JG',
+    '*opal-fines-service/draft-accounts?business_unit=77&status=Rejected&not_submitted_by=L077JG*',
 
     {
       statusCode: statusCode,

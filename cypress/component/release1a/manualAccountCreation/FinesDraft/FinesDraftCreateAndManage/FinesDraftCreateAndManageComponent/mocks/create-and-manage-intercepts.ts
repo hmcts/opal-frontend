@@ -8,7 +8,7 @@ export function interceptGetRejectedAccounts(statusCode: number, responseBody: a
 export function interceptGetInReviewAccounts(statusCode: number, responseBody: any) {
   cy.intercept(
     'GET',
-    '*opal-fines-service/draft-accounts?business_unit=77&status=Submitted&status=Resubmitted&submitted_by=L077JG',
+    '*opal-fines-service/draft-accounts?business_unit=77&status=Submitted&status=Resubmitted&submitted_by=L077JG*',
     {
       statusCode: statusCode,
       body: responseBody,
