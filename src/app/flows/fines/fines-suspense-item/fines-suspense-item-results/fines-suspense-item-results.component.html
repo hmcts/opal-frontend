@@ -5,6 +5,7 @@
     <app-fines-suspense-item-results-search-form
       [initialReference]="initialReference()"
       [businessUnitName]="businessUnitName()"
+      [pending]="isSearching()"
       (formSubmit)="handleFormSubmit($event)"
       (unsavedChanges)="handleUnsavedChanges($event)"
     ></app-fines-suspense-item-results-search-form>

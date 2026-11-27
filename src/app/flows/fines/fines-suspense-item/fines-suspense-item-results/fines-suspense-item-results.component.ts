@@ -1,6 +1,6 @@
 import { FinesSuspenseItemResultsFoundComponent } from './fines-suspense-item-results-found/fines-suspense-item-results-found.component';
 import { IOpalFinesSuspenseItemSummary } from '@services/fines/opal-fines-service/interfaces/opal-fines-suspense-item-summary.interface';
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnDestroy, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
@@ -25,7 +25,6 @@ import { navigateToSuspenseItemResults } from '../utils/fines-suspense-item-navi
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesSuspenseItemResultsComponent extends AbstractFormParentBaseComponent implements OnDestroy {
-  private isSearching = false;
   private readonly destroyRef = inject(DestroyRef);
   private readonly navigationRouter = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -34,6 +33,7 @@ export class FinesSuspenseItemResultsComponent extends AbstractFormParentBaseCom
 
   private readonly routeData = toSignal(this.route.data, { initialValue: this.route.snapshot.data });
 
+  public readonly isSearching = signal(false);
   public readonly summary = computed(() => this.routeData()['summary'] as IOpalFinesSuspenseItemSummary | null);
   public readonly businessUnitName = computed(() => this.suspenseItemStore.selectedBusinessUnitName() ?? '');
   public readonly initialReference = computed(() => this.routeParameters().get('suspenseItemId') ?? '');
@@ -42,18 +42,18 @@ export class FinesSuspenseItemResultsComponent extends AbstractFormParentBaseCom
   public handleFormSubmit(form: IAbstractFormBaseForm<IFinesSuspenseItemResultsSearchFormState>): void {
     // Ignore repeat submissions while the current search is pending, so they cannot
     // cancel it and trigger an unnecessary unsaved-change warning.
-    if (this.isSearching) {
+    if (this.isSearching()) {
       return;
     }
 
     const reference = form.formData.fsir_suspense_reference_number;
-    this.isSearching = true;
+    this.isSearching.set(true);
     void navigateToSuspenseItemResults(this.navigationRouter, reference, () => {
       if (!this.destroyRef.destroyed) {
         this.handleUnsavedChanges(true);
       }
     }).finally(() => {
-      this.isSearching = false;
+      this.isSearching.set(false);
     });
   }
 

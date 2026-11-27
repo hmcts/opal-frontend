@@ -216,6 +216,24 @@ describe('FinesSuspenseItemResultsComponent', () => {
     expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(false);
   });
 
+  it('ignores a second parent submission until the first navigation finishes', async () => {
+    let finishNavigation!: (navigated: boolean) => void;
+    const navigate = vi
+      .spyOn(TestBed.inject(Router), 'navigate')
+      .mockReturnValueOnce(new Promise<boolean>((resolve) => (finishNavigation = resolve)));
+    const form = { formData: { fsir_suspense_reference_number: '5678' }, nestedFlow: false };
+    fixture.componentInstance.handleFormSubmit(form);
+    fixture.componentInstance.handleFormSubmit(form);
+    expect(navigate).toHaveBeenCalledOnce();
+
+    finishNavigation(false);
+    await fixture.whenStable();
+    navigate.mockResolvedValueOnce(true);
+    fixture.componentInstance.handleFormSubmit(form);
+    await fixture.whenStable();
+    expect(navigate).toHaveBeenCalledTimes(2);
+  });
+
   it('updates the input when the existing results page receives another route reference', () => {
     const page: HTMLElement = fixture.nativeElement;
     const input = page.querySelector<HTMLInputElement>('#fsir_suspense_reference_number')!;

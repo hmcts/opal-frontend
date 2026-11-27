@@ -88,6 +88,36 @@ describe('FinesSuspenseItemSearchFormComponent', () => {
     });
   });
 
+  it('ignores a pending submission before normalising input or clearing its leave warning', () => {
+    const businessUnit = FINES_SUSPENSE_ITEM_SEARCH_BUSINESS_UNITS_MOCK[0];
+    fixture.componentRef.setInput('initialBusinessUnitId', businessUnit.value);
+    fixture.componentRef.setInput('pending', true);
+    fixture.detectChanges();
+    const page: HTMLElement = fixture.nativeElement;
+    const reference = page.querySelector<HTMLInputElement>('#fsis_suspense_reference_number')!;
+    reference.value = '0005678';
+    reference.dispatchEvent(new Event('input', { bubbles: true }));
+    const submitted = vi.fn();
+    const unsaved = vi.fn();
+    component['formSubmit'].subscribe(submitted);
+    component['unsavedChanges'].subscribe(unsaved);
+
+    page.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+
+    expect(submitted).not.toHaveBeenCalled();
+    expect(unsaved).not.toHaveBeenCalled();
+    expect(reference.value).toBe('0005678');
+    expect(reference.matches(':disabled')).toBe(false);
+    fixture.componentRef.setInput('pending', false);
+    fixture.detectChanges();
+    page.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    expect(submitted).toHaveBeenCalledExactlyOnceWith({
+      formData: { fsis_business_unit_id: businessUnit.value, fsis_suspense_reference_number: '5678' },
+      nestedFlow: false,
+    });
+    expect(unsaved).toHaveBeenLastCalledWith(false);
+  });
+
   it('submits the supplied single BU without requiring an autocomplete selection', () => {
     const businessUnit = FINES_SUSPENSE_ITEM_SEARCH_BUSINESS_UNITS_MOCK[0];
     fixture.componentRef.setInput('autoCompleteItems', [businessUnit]);

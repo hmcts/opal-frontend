@@ -44,6 +44,7 @@ export class FinesSuspenseItemResultsSearchFormComponent
 
   public readonly initialReference = input.required<string>();
   public readonly businessUnitName = input.required<string>();
+  public readonly pending = input(false);
 
   private initialiseSearchForm(): void {
     this.form = new FormGroup({
@@ -64,6 +65,11 @@ export class FinesSuspenseItemResultsSearchFormComponent
   }
 
   public override handleFormSubmit(event: SubmitEvent): void {
+    // Ignore repeats before the shared submit handler can clear the leave warning.
+    if (this.pending()) {
+      event.preventDefault();
+      return;
+    }
     normaliseSuspenseItemReferenceControl(this.form.controls['fsir_suspense_reference_number']);
     super.handleFormSubmit(event);
   }

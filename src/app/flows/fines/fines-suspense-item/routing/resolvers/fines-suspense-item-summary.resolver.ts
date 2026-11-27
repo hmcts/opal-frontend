@@ -10,8 +10,12 @@ export const finesSuspenseItemSummaryResolver: ResolveFn<IOpalFinesSuspenseItemS
   const opalFines = inject(OpalFines);
   const store = inject(FinesSuspenseItemStore);
   // The results flow-state guard ensures a BU has been selected before resolving.
-  const businessUnitId = store.selectedBusinessUnitId()!;
-  const businessUnitName = store.selectedBusinessUnitName();
+  // Initial search captures its BU before guards run; later form edits must not change that lookup.
+  // Direct results navigation and results-page retries use the retained selection.
+  const submittedBusinessUnitId = store.submittedBusinessUnitId();
+  const businessUnitId = submittedBusinessUnitId ?? store.selectedBusinessUnitId()!;
+  const businessUnitName =
+    submittedBusinessUnitId === null ? store.selectedBusinessUnitName() : store.submittedBusinessUnitName();
   const reference = route.paramMap.get('suspenseItemId')!;
   opalFines.clearCache('suspenseItemSummaryCache$');
 

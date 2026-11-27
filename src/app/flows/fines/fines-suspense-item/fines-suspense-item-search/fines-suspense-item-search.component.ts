@@ -1,5 +1,5 @@
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
-import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, inject, DestroyRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, OnDestroy, inject, DestroyRef, signal } from '@angular/core';
 import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base/interfaces';
 import { AbstractFormParentBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-parent-base';
 import { FinesSuspenseItemStore } from '../stores/fines-suspense-item.store';
@@ -18,7 +18,6 @@ import { navigateToSuspenseItemResults } from '../utils/fines-suspense-item-navi
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesSuspenseItemSearchComponent extends AbstractFormParentBaseComponent implements OnInit, OnDestroy {
-  private isSearching = false;
   private readonly destroyRef = inject(DestroyRef);
   private readonly suspenseItemStore = inject(FinesSuspenseItemStore);
   private readonly navigationRouter = inject(Router);
@@ -31,6 +30,7 @@ export class FinesSuspenseItemSearchComponent extends AbstractFormParentBaseComp
     FINES_DASHBOARD_ROUTING_PATHS.children.finance,
   ];
 
+  public readonly isSearching = signal(false);
   public businessUnitAutoCompleteItems: IAlphagovAccessibleAutocompleteItem[] = [];
   public initialBusinessUnitId: number | null = null;
   public override stateUnsavedChanges = false;
@@ -80,24 +80,30 @@ export class FinesSuspenseItemSearchComponent extends AbstractFormParentBaseComp
   public handleFormSubmit(form: IAbstractFormBaseForm<IFinesSuspenseItemSearchFormState>): void {
     // Ignore repeat submissions while the current search is pending, so they cannot
     // cancel it and trigger an unnecessary unsaved-change warning.
-    if (this.isSearching) {
+    if (this.isSearching()) {
       return;
     }
 
-    const criteria = form.formData;
-    if (criteria.fsis_business_unit_id === null) {
+    const searchCriteria = form.formData;
+    if (searchCriteria.fsis_business_unit_id === null) {
       return;
     }
 
-    this.handleBusinessUnitChange(criteria.fsis_business_unit_id);
-    const reference = criteria.fsis_suspense_reference_number;
-    this.isSearching = true;
+    this.handleBusinessUnitChange(searchCriteria.fsis_business_unit_id);
+    // Keep the submitted BU separate from edits made while guards and the lookup are pending.
+    this.suspenseItemStore.setSubmittedBusinessUnit(
+      searchCriteria.fsis_business_unit_id,
+      this.suspenseItemStore.selectedBusinessUnitName(),
+    );
+    const reference = searchCriteria.fsis_suspense_reference_number;
+    this.isSearching.set(true);
     void navigateToSuspenseItemResults(this.navigationRouter, reference, () => {
       if (!this.destroyRef.destroyed) {
         this.handleUnsavedChanges(true);
       }
     }).finally(() => {
-      this.isSearching = false;
+      this.isSearching.set(false);
+      this.suspenseItemStore.setSubmittedBusinessUnit(null, null);
     });
   }
 

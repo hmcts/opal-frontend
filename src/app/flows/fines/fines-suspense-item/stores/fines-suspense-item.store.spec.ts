@@ -13,6 +13,8 @@ describe('FinesSuspenseItemStore', () => {
   it('starts without a selected BU or unsaved changes', () => {
     expect(store.selectedBusinessUnitId()).toBeNull();
     expect(store.selectedBusinessUnitName()).toBeNull();
+    expect(store.submittedBusinessUnitId()).toBeNull();
+    expect(store.submittedBusinessUnitName()).toBeNull();
     expect(store.unsavedChanges()).toBe(false);
   });
 
@@ -39,12 +41,29 @@ describe('FinesSuspenseItemStore', () => {
     expect(store.selectedBusinessUnitName()).toBe('Test business unit');
   });
 
+  it('keeps submitted BU context independent of later selection changes and releases it after navigation', () => {
+    store.setSelectedBusinessUnit(22, 'Submitted BU');
+    store.setSubmittedBusinessUnit(22, 'Submitted BU');
+    store.setSelectedBusinessUnit(35, 'Amended BU');
+
+    expect(store.submittedBusinessUnitId()).toBe(22);
+    expect(store.submittedBusinessUnitName()).toBe('Submitted BU');
+    store.setSubmittedBusinessUnit(null, null);
+    expect(store.submittedBusinessUnitId()).toBeNull();
+    expect(store.submittedBusinessUnitName()).toBeNull();
+    expect(store.selectedBusinessUnitId()).toBe(35);
+    expect(store.selectedBusinessUnitName()).toBe('Amended BU');
+  });
+
   it('clears the selected BU and unsaved changes when the journey is reset', () => {
     store.setSelectedBusinessUnit(22, 'Test business unit');
+    store.setSubmittedBusinessUnit(22, 'Test business unit');
     store.setUnsavedChanges(true);
     store.resetStore();
     expect(store.selectedBusinessUnitId()).toBeNull();
     expect(store.selectedBusinessUnitName()).toBeNull();
+    expect(store.submittedBusinessUnitId()).toBeNull();
+    expect(store.submittedBusinessUnitName()).toBeNull();
     expect(store.unsavedChanges()).toBe(false);
   });
 });

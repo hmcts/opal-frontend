@@ -159,6 +159,41 @@ describe('FinesSuspenseItemSearchComponent', () => {
     expect(getSuspenseItemSummary).not.toHaveBeenCalled();
   });
 
+  it('keeps the accepted BU during pending navigation and releases it after cancellation', async () => {
+    let finishNavigation!: (navigated: boolean) => void;
+    const navigate = vi.mocked(TestBed.inject(Router).navigate);
+    navigate.mockReturnValueOnce(new Promise<boolean>((resolve) => (finishNavigation = resolve)));
+    fixture.detectChanges();
+    const store = TestBed.inject(FinesSuspenseItemStore);
+    component.handleFormSubmit({
+      formData: { fsis_business_unit_id: 22, fsis_suspense_reference_number: '1234' },
+      nestedFlow: false,
+    });
+    component.handleBusinessUnitChange(11);
+    component.handleFormSubmit({
+      formData: { fsis_business_unit_id: 11, fsis_suspense_reference_number: '5678' },
+      nestedFlow: false,
+    });
+
+    expect(navigate).toHaveBeenCalledOnce();
+    expect(store.submittedBusinessUnitId()).toBe(22);
+    expect(store.submittedBusinessUnitName()).toBe('Test business unit');
+    finishNavigation(false);
+    await fixture.whenStable();
+
+    expect(store.submittedBusinessUnitId()).toBeNull();
+    expect(store.submittedBusinessUnitName()).toBeNull();
+    expect(store.selectedBusinessUnitId()).toBe(11);
+    expect(store.unsavedChanges()).toBe(true);
+    component.handleFormSubmit({
+      formData: { fsis_business_unit_id: 11, fsis_suspense_reference_number: '5678' },
+      nestedFlow: false,
+    });
+    await fixture.whenStable();
+    expect(navigate).toHaveBeenCalledTimes(2);
+    await vi.waitFor(() => expect(store.submittedBusinessUnitId()).toBeNull());
+  });
+
   it('does not navigate for an invalid form', () => {
     fixture.detectChanges();
     fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));

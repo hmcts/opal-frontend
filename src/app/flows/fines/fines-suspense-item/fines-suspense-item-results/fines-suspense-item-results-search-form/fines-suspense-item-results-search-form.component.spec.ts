@@ -116,6 +116,31 @@ describe('FinesSuspenseItemResultsSearchFormComponent', () => {
     expect(unsaved).toHaveBeenLastCalledWith(true);
   });
 
+  it('ignores a pending submission before normalising input or clearing its leave warning', () => {
+    fixture.componentRef.setInput('pending', true);
+    fixture.detectChanges();
+    enterReference('0005678');
+    const submitted = vi.fn();
+    const unsaved = vi.fn();
+    component['formSubmit'].subscribe(submitted);
+    component['unsavedChanges'].subscribe(unsaved);
+
+    submit();
+
+    expect(submitted).not.toHaveBeenCalled();
+    expect(unsaved).not.toHaveBeenCalled();
+    expect(page.querySelector<HTMLInputElement>('#fsir_suspense_reference_number')!.value).toBe('0005678');
+    expect(page.querySelector<HTMLInputElement>('#fsir_suspense_reference_number')!.matches(':disabled')).toBe(false);
+    fixture.componentRef.setInput('pending', false);
+    fixture.detectChanges();
+    submit();
+    expect(submitted).toHaveBeenCalledExactlyOnceWith({
+      formData: { fsir_suspense_reference_number: '5678' },
+      nestedFlow: false,
+    });
+    expect(unsaved).toHaveBeenLastCalledWith(false);
+  });
+
   it('resets a reused form to the new route reference and clears stale validation and dirty state', () => {
     const unsaved = vi.fn();
     component['unsavedChanges'].subscribe(unsaved);
