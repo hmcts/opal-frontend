@@ -431,7 +431,7 @@ export const FINES_ACC_PARTY_ADD_AMEND_CONVERT_FIELD_ERRORS: IFinesAccPartyAddAm
       priority: 1,
     },
     alphanumericTextPattern: {
-      message: 'Vehicle registration must only include letters a to z, numbers, hyphens, spaces and apostrophes',
+      message: 'Registration number must only contain letters or numbers',
       priority: 2,
     },
   },

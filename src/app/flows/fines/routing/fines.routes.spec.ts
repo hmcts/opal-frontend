@@ -18,34 +18,41 @@ const release1cPaymentFeatureFlagName = 'release-1c-payment';
 const release1cBankingInterfacesFeatureFlagName = 'release-1c-banking-interfaces';
 
 const mockFeatureFlagRedirectGuard = (): void => {
-  featureFlagRedirectGuardMock.mockImplementation((featureFlagName: string) => {
-    if (featureFlagName === release1aFeatureFlagName) {
-      return release1aFeatureFlagGuardMock;
-    }
+  vi.doMock('@hmcts/opal-frontend-common/guards/feature-flag', async (importOriginal) => {
+    const original = await importOriginal<typeof import('@hmcts/opal-frontend-common/guards/feature-flag')>();
+    featureFlagRedirectGuardMock.mockImplementation((featureFlagName: string, redirectPath?: string) => {
+      if (featureFlagName === release1aFeatureFlagName) {
+        return release1aFeatureFlagGuardMock;
+      }
 
-    if (featureFlagName === release1bFeatureFlagName) {
-      return release1bFeatureFlagGuardMock;
-    }
+      if (featureFlagName === release1bFeatureFlagName) {
+        return release1bFeatureFlagGuardMock;
+      }
 
-    if (featureFlagName === release1cWriteOffFeatureFlagName) {
-      return release1cWriteOffFeatureFlagGuardMock;
-    }
+      if (featureFlagName === release1cWriteOffFeatureFlagName) {
+        return release1cWriteOffFeatureFlagGuardMock;
+      }
 
-    if (featureFlagName === release1cPaymentFeatureFlagName) {
-      return release1cPaymentFeatureFlagGuardMock;
-    }
+      if (featureFlagName === release1cPaymentFeatureFlagName) {
+        return release1cPaymentFeatureFlagGuardMock;
+      }
 
-    if (featureFlagName === release1cBankingInterfacesFeatureFlagName) {
-      return release1cBankingInterfacesFeatureFlagGuardMock;
-    }
+      if (featureFlagName === release1cBankingInterfacesFeatureFlagName) {
+        release1cBankingInterfacesFeatureFlagGuardMock.mockImplementation(
+          original.featureFlagRedirectGuard(featureFlagName, redirectPath),
+        );
+        return release1cBankingInterfacesFeatureFlagGuardMock;
+      }
 
-    return release1cEnforcementOperationalReportingFeatureFlagGuardMock;
+      if (featureFlagName === 'release-1c-enforcement-operational-reporting') {
+        return release1cEnforcementOperationalReportingFeatureFlagGuardMock;
+      }
+
+      // Child routes also create guards while this module is mocked.
+      return original.featureFlagRedirectGuard(featureFlagName, redirectPath);
+    });
+    return { ...original, featureFlagRedirectGuard: featureFlagRedirectGuardMock };
   });
-
-  vi.doMock('@hmcts/opal-frontend-common/guards/feature-flag', async (importOriginal) => ({
-    ...(await importOriginal<typeof import('@hmcts/opal-frontend-common/guards/feature-flag')>()),
-    featureFlagRedirectGuard: featureFlagRedirectGuardMock,
-  }));
 };
 
 describe('fines routes', () => {
