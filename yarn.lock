@@ -9760,7 +9760,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:15.21.2":
+"cypress@npm:^15.21.2":
   version: 15.21.2
   resolution: "cypress@npm:15.21.2"
   dependencies:
@@ -15602,7 +15602,7 @@ __metadata:
     connect-redis: "npm:^9.0.0"
     cookie-parser: "npm:^1.4.6"
     csrf-csrf: "npm:^4.0.0"
-    cypress: "npm:15.21.2"
+    cypress: "npm:^15.21.2"
     cypress-axe: "npm:^1.5.0"
     cypress-mochawesome-reporter: "npm:^4.0.0"
     cypress-multi-reporters: "npm:^2.0.0"

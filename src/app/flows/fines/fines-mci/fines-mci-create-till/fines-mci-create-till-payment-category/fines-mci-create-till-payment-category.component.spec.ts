@@ -97,6 +97,7 @@ describe('FinesMciCreateTillPaymentCategoryComponent', () => {
 
   it('does not add another payment when changing category after returning from an unfinished journey', () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    finesMciStore.setDraftJourney('criminal');
 
     fixture.componentInstance.handleSubmit({
       formData: { paymentCategory: 'criminal' },
