@@ -1,6 +1,7 @@
 import { finesMacPayloadMapAccountPaymentTerms } from './fines-mac-payload-map-account-payment-terms.utils';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
 import { IFinesMacPayloadAccount } from '../../interfaces/fines-mac-payload-account.interface';
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../../../constants/fines-mac-defendant-types-keys';
 import { FINES_PAYMENT_TERMS_OPTIONS } from '../../../../../constants/fines-payment-terms-options.constant';
 import { describe, beforeEach, afterAll, it, expect } from 'vitest';
 
@@ -16,6 +17,7 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
     } as IFinesMacState;
 
     payload = {
+      defendant_type: FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly,
       payment_terms: {
         payment_terms_type_code: null,
         lump_sum_amount: null,
@@ -171,11 +173,45 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
     const result = finesMacPayloadMapAccountPaymentTerms(mappedFinesMacState, payload);
 
     expect(result.paymentTerms.formData.fm_payment_terms_enforcement_action).toBe('NOENF');
-    expect(result.paymentTerms.formData.fm_payment_terms_hold_enforcement_on_account).toBe(true);
+    expect(result.paymentTerms.formData.fm_payment_terms_hold_enforcement_on_account).toBe(false);
     expect(result.paymentTerms.formData.fm_payment_terms_add_enforcement_action).toBe(true);
     expect(result.paymentTerms.formData.fm_payment_terms_earliest_release_date).toBeUndefined();
     expect(result.paymentTerms.formData.fm_payment_terms_prison_and_prison_number).toBeUndefined();
     expect(result.paymentTerms.formData.fm_payment_terms_reason_account_is_on_noenf).toBeUndefined();
+  });
+
+  it('should map a company hold to its checkbox and reason', () => {
+    if (!payload || !mappedFinesMacState) {
+      throw new Error('Payload is not properly initialised');
+    }
+
+    payload.defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.company;
+    payload.payment_terms.enforcements = [
+      {
+        result_id: 'NOENF',
+        enforcement_result_responses: [{ parameter_name: 'reason', response: 'Review pending' }],
+      },
+    ];
+
+    const { formData } = finesMacPayloadMapAccountPaymentTerms(mappedFinesMacState, payload).paymentTerms;
+
+    expect(formData.fm_payment_terms_hold_enforcement_on_account).toBe(true);
+    expect(formData.fm_payment_terms_add_enforcement_action).toBe(false);
+    expect(formData.fm_payment_terms_enforcement_action).toBeNull();
+    expect(formData.fm_payment_terms_reason_account_is_on_noenf).toBe('Review pending');
+  });
+
+  it('should restore the custody selection when no optional details were provided', () => {
+    if (!payload || !mappedFinesMacState) {
+      throw new Error('Payload is not properly initialised');
+    }
+
+    payload.payment_terms.enforcements = [{ result_id: 'PRIS', enforcement_result_responses: null }];
+
+    const { formData } = finesMacPayloadMapAccountPaymentTerms(mappedFinesMacState, payload).paymentTerms;
+
+    expect(formData.fm_payment_terms_add_enforcement_action).toBe(true);
+    expect(formData.fm_payment_terms_enforcement_action).toBe('PRIS');
   });
 
   it('should keep enforcement-response fields untouched when an action has no responses', () => {
@@ -193,7 +229,7 @@ describe('finesMacPayloadMapAccountPaymentTerms', () => {
     const result = finesMacPayloadMapAccountPaymentTerms(mappedFinesMacState, payload);
 
     expect(result.paymentTerms.formData.fm_payment_terms_enforcement_action).toBe('NOENF');
-    expect(result.paymentTerms.formData.fm_payment_terms_hold_enforcement_on_account).toBe(true);
+    expect(result.paymentTerms.formData.fm_payment_terms_hold_enforcement_on_account).toBe(false);
     expect(result.paymentTerms.formData.fm_payment_terms_add_enforcement_action).toBe(false);
     expect(result.paymentTerms.formData.fm_payment_terms_earliest_release_date).toBeUndefined();
     expect(result.paymentTerms.formData.fm_payment_terms_prison_and_prison_number).toBeUndefined();

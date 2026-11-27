@@ -129,6 +129,39 @@ describe('FinesMacPaymentTermsFormComponent', () => {
     expect(component['formSubmit'].emit).toHaveBeenCalled();
   });
 
+  it('should submit prison details entered after switching from NOENF to PRIS', () => {
+    component.form.patchValue({
+      ...formSubmit.formData,
+      fm_payment_terms_add_enforcement_action: true,
+      fm_payment_terms_enforcement_action: 'NOENF',
+      fm_payment_terms_reason_account_is_on_noenf: 'Review pending',
+    });
+    fixture.detectChanges();
+
+    const host: HTMLElement = fixture.nativeElement;
+    const custodyPanelId = `${component.enforcementActionConditionalIdPrefix}PRIS`;
+    const custody = host.querySelector<HTMLInputElement>(`input[aria-controls="${custodyPanelId}"]`)!;
+    custody.click();
+    fixture.detectChanges();
+
+    const prison = host.querySelector<HTMLTextAreaElement>('#fm_payment_terms_prison_and_prison_number')!;
+    expect(prison.disabled).toBe(false);
+    prison.value = 'HMP Leeds A1234BC';
+    prison.dispatchEvent(new Event('input', { bubbles: true }));
+
+    const emit = vi.spyOn(component['formSubmit'], 'emit');
+    host.querySelector('form')!.dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+
+    expect(emit).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formData: expect.objectContaining({
+          fm_payment_terms_enforcement_action: 'PRIS',
+          fm_payment_terms_prison_and_prison_number: 'HMP Leeds A1234BC',
+        }),
+      }),
+    );
+  });
+
   it('should call initialPaymentTermsSetup method', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.spyOn<any, any>(component, 'setupPermissions');

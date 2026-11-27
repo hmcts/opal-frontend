@@ -61,14 +61,14 @@ const buildPaymentTermEnforcements = (
   const enforcementActionType = holdEnforcementOnAccount ? 'NOENF' : enforcementAction;
 
   switch (enforcementActionType) {
-    case 'PRIS':
-      enforcements.push(
-        buildEnforcement('PRIS', [
-          buildEnforcementResultResponse('earliestreleasedate', earliestReleaseDate ?? null),
-          buildEnforcementResultResponse('prisonandprisonnumber', prisonAndPrisonNumber ?? null),
-        ]),
-      );
+    case 'PRIS': {
+      const custodyResponses = [
+        buildEnforcementResultResponse('earliestreleasedate', earliestReleaseDate),
+        buildEnforcementResultResponse('prisonandprisonnumber', prisonAndPrisonNumber),
+      ].filter(({ response }) => response);
+      enforcements.push(buildEnforcement('PRIS', custodyResponses.length ? custodyResponses : null));
       break;
+    }
     case 'NOENF':
       enforcements.push(
         buildEnforcement('NOENF', [buildEnforcementResultResponse('reason', reasonAccountIsOnNoenf ?? null)]),

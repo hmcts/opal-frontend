@@ -1,3 +1,4 @@
+import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../../../constants/fines-mac-defendant-types-keys';
 import { FINES_PAYMENT_TERMS_OPTIONS } from '../../../../../constants/fines-payment-terms-options.constant';
 import { IFinesMacPaymentTermsState } from '../../../../fines-mac-payment-terms/interfaces/fines-mac-payment-terms-state.interface';
 import { IFinesMacState } from '../../../../interfaces/fines-mac-state.interface';
@@ -62,13 +63,14 @@ const processEnforcementResponses = (
 const processEnforcementAction = (
   mappedFinesMacState: IFinesMacState,
   enforcement: IFinesMacPayloadAccountPaymentTermsEnforcement,
+  isCompany: boolean,
 ): void => {
   const { enforcement_result_responses: responses, result_id: resultId } = enforcement;
   const formData = mappedFinesMacState.paymentTerms.formData;
 
-  formData.fm_payment_terms_enforcement_action = resultId;
-  formData.fm_payment_terms_hold_enforcement_on_account = resultId === 'NOENF';
-  formData.fm_payment_terms_add_enforcement_action = Boolean(responses?.length);
+  formData.fm_payment_terms_enforcement_action = isCompany ? null : resultId;
+  formData.fm_payment_terms_hold_enforcement_on_account = isCompany && resultId === 'NOENF';
+  formData.fm_payment_terms_add_enforcement_action = !isCompany && (resultId === 'PRIS' || Boolean(responses?.length));
 
   if (responses?.length) {
     processEnforcementResponses(formData, responses);
@@ -80,11 +82,13 @@ const processEnforcementAction = (
  *
  * @param mappedFinesMacState - The current state of the fines MAC.
  * @param enforcements - An array of enforcement actions or null.
+ * @param isCompany - Whether the defendant uses the company hold-enforcement checkbox.
  * @returns The updated fines MAC state with mapped enforcement actions.
  */
 const mapEnforcementActions = (
   mappedFinesMacState: IFinesMacState,
   enforcements: IFinesMacPayloadAccountPaymentTermsEnforcement[] | null,
+  isCompany: boolean,
 ): IFinesMacState => {
   if (!enforcements?.length) {
     return mappedFinesMacState;
@@ -93,7 +97,7 @@ const mapEnforcementActions = (
   const validEnforcements = enforcements.filter(({ result_id }) => result_id !== 'COLLO');
 
   for (const enforcement of validEnforcements) {
-    processEnforcementAction(mappedFinesMacState, enforcement);
+    processEnforcementAction(mappedFinesMacState, enforcement, isCompany);
   }
 
   return mappedFinesMacState;
@@ -186,6 +190,7 @@ export const finesMacPayloadMapAccountPaymentTerms = (
   isR1A12Enabled = false,
 ): IFinesMacState => {
   const {
+    defendant_type: defendantType,
     payment_terms: paymentTerms,
     payment_card_request: paymentCardRequest,
     suspended_committal_date: suspendedCommittalDate,
@@ -203,5 +208,9 @@ export const finesMacPayloadMapAccountPaymentTerms = (
     isR1A12Enabled,
   );
 
-  return mapEnforcementActions(mappedFinesMacState, paymentTerms.enforcements);
+  return mapEnforcementActions(
+    mappedFinesMacState,
+    paymentTerms.enforcements,
+    defendantType === FINES_MAC_DEFENDANT_TYPES_KEYS.company,
+  );
 };
