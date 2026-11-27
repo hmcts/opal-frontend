@@ -1,0 +1,30 @@
+<opal-lib-govuk-error-summary
+  [errors]="formErrorSummaryMessage"
+  (errorClick)="scrollTo($event)"
+></opal-lib-govuk-error-summary>
+
+<form [formGroup]="form" (ngSubmit)="handleFormSubmit($event)" autocomplete="off" novalidate>
+  <div class="moj-search govuk-!-margin-bottom-3">
+    <opal-lib-govuk-text-input
+      class="govuk-!-display-inline-block"
+      labelText="Find suspense item"
+      labelClasses="govuk-label--s"
+      inputId="fsir_suspense_reference_number"
+      inputName="fsir_suspense_reference_number"
+      inputClasses="govuk-input--width-10 moj-search__input"
+      [control]="form.get('fsir_suspense_reference_number')"
+      [errors]="formControlErrorMessages['fsir_suspense_reference_number']"
+    ></opal-lib-govuk-text-input>
+    <opal-lib-govuk-button
+      buttonId="searchSuspenseItem"
+      type="submit"
+      buttonClasses="moj-search__button govuk-!-static-margin-top-6"
+    >
+      Search
+    </opal-lib-govuk-button>
+  </div>
+
+  <p class="govuk-body-s govuk-!-margin-bottom-0">
+    Searching items for <strong>{{ businessUnitName() }}</strong>
+  </p>
+</form>

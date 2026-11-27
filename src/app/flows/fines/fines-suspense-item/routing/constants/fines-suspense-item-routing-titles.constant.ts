@@ -4,5 +4,6 @@ export const FINES_SUSPENSE_ITEM_ROUTING_TITLES: IFinesSuspenseItemRoutingPaths 
   root: 'Suspense items',
   children: {
     search: 'Search for suspense item',
+    results: 'Suspense item results',
   },
 };

@@ -1,0 +1,29 @@
+<div class="govuk-light-grey-background-colour govuk-!-padding-bottom-3 govuk-!-margin-bottom-6">
+  <opal-lib-govuk-back-link (clickEvent)="navigateBackToSearch()"></opal-lib-govuk-back-link>
+
+  <div class="govuk-!-padding-left-3 govuk-!-padding-right-3">
+    <app-fines-suspense-item-results-search-form
+      [initialReference]="initialReference()"
+      [businessUnitName]="businessUnitName()"
+      [pending]="isSearching()"
+      (formSubmit)="handleFormSubmit($event)"
+      (unsavedChanges)="handleUnsavedChanges($event)"
+    ></app-fines-suspense-item-results-search-form>
+  </div>
+</div>
+
+<div class="govuk-grid-column-two-thirds">
+  @if (summary() === null) {
+    <span class="govuk-caption-l">{{ businessUnitName() }}</span>
+    <h1 class="govuk-heading-l">Suspense item not found</h1>
+
+    <p class="govuk-body">This might be because:</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+      <li>the reference number was entered incorrectly</li>
+      <li>the suspense item does not exist in this business unit</li>
+    </ul>
+  } @else {
+    <app-fines-suspense-item-results-found></app-fines-suspense-item-results-found>
+  }
+</div>

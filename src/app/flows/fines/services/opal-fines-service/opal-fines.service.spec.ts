@@ -1,4 +1,5 @@
 import { OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK } from './mocks/opal-fines-suspense-item-summary.mock';
+import { OPAL_FINES_SUSPENSE_ITEM_SUMMARY_EMPTY_MOCK } from './mocks/opal-fines-suspense-item-summary-empty.mock';
 import { OPAL_FINES_SOURCE_MAPPINGS_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-source-mappings.mock';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -152,7 +153,18 @@ describe('OpalFines', () => {
     expect(received).toHaveBeenCalledWith(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
   });
 
-  it('propagates a missing suspense summary', () => {
+  it('preserves an empty HTTP 200 suspense summary without retrying', () => {
+    const received = vi.fn();
+    const failed = vi.fn();
+    const url = '/opal-fines-service/suspense-accounts/22/suspense-items/001234/summary';
+    service.getSuspenseItemSummary(22, '001234').subscribe({ next: received, error: failed });
+    httpMock.expectOne(url).flush(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_EMPTY_MOCK);
+    expect(received).toHaveBeenCalledExactlyOnceWith(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_EMPTY_MOCK);
+    expect(failed).not.toHaveBeenCalled();
+    httpMock.expectNone(url);
+  });
+
+  it('propagates a genuine suspense summary HTTP 404 failure', () => {
     const failed = vi.fn();
     service.getSuspenseItemSummary(22, '001234').subscribe({ error: failed });
     httpMock

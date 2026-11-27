@@ -21,7 +21,7 @@ describe('FinesSuspenseItemComponent', () => {
     fixture.detectChanges();
   });
 
-  it('requests an unload warning only while the active form has unsaved changes', () => {
+  it('requests an unload warning while the active form has unsaved changes', () => {
     const cleanEvent = new Event('beforeunload', { cancelable: true });
     window.dispatchEvent(cleanEvent);
     expect(cleanEvent.defaultPrevented).toBe(false);
@@ -37,12 +37,25 @@ describe('FinesSuspenseItemComponent', () => {
     expect(clearedEvent.defaultPrevented).toBe(false);
   });
 
+  it('requests an unload warning for a retained business unit even without unsaved edits', () => {
+    store.setSelectedBusinessUnit(22, 'Test business unit');
+    const retainedEvent = new Event('beforeunload', { cancelable: true });
+    window.dispatchEvent(retainedEvent);
+    expect(retainedEvent.defaultPrevented).toBe(true);
+
+    store.setSelectedBusinessUnit(null, null);
+    const clearedEvent = new Event('beforeunload', { cancelable: true });
+    window.dispatchEvent(clearedEvent);
+    expect(clearedEvent.defaultPrevented).toBe(false);
+  });
+
   it('clears journey state and caches and removes the unload listener when destroyed', () => {
-    store.setSelectedBusinessUnitId(22);
+    store.setSelectedBusinessUnit(22, 'Test business unit');
     store.setUnsavedChanges(true);
     fixture.destroy();
 
     expect(store.selectedBusinessUnitId()).toBeNull();
+    expect(store.selectedBusinessUnitName()).toBeNull();
     expect(store.unsavedChanges()).toBe(false);
     expect(clearCache).toHaveBeenCalledWith('suspenseItemSummaryCache$');
 

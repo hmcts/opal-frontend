@@ -1,5 +1,3 @@
-import { NUMERIC_PATTERN } from '@hmcts/opal-frontend-common/constants';
-import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
 import { FINES_SUSPENSE_ITEM_SEARCH_FIELD_ERRORS } from '../constants/fines-suspense-item-search-field-errors.constant';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -11,6 +9,7 @@ import {
   inject,
   EventEmitter,
   Input,
+  input,
   OnInit,
   Output,
 } from '@angular/core';
@@ -26,6 +25,10 @@ import {
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-summary-list';
 import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
 import { IFinesSuspenseItemSearchFormState } from '../interfaces/fines-suspense-item-search-form-state.interface';
+import {
+  createSuspenseItemReferenceControl,
+  normaliseSuspenseItemReferenceControl,
+} from '../../utils/fines-suspense-item-reference-control.utils';
 
 @Component({
   selector: 'app-fines-suspense-item-search-form',
@@ -52,6 +55,7 @@ export class FinesSuspenseItemSearchFormComponent extends AbstractFormBaseCompon
 
   @Input({ required: true }) public autoCompleteItems!: IAlphagovAccessibleAutocompleteItem[];
   @Input({ required: true }) public initialBusinessUnitId!: number | null;
+  public readonly pending = input(false);
 
   @Output() public businessUnitChange = new EventEmitter<number | null>();
 
@@ -65,14 +69,7 @@ export class FinesSuspenseItemSearchFormComponent extends AbstractFormBaseCompon
     const businessUnitControl = new FormControl<number | null>(this.initialBusinessUnitId, Validators.required);
     this.form = new FormGroup({
       fsis_business_unit_id: businessUnitControl,
-      fsis_suspense_reference_number: new FormControl('', {
-        nonNullable: true,
-        validators: [
-          Validators.required,
-          patternValidator(NUMERIC_PATTERN, 'numericalTextPattern'),
-          patternValidator(/^0*\d{1,18}$/, 'maxlength'),
-        ],
-      }),
+      fsis_suspense_reference_number: createSuspenseItemReferenceControl(''),
     });
     this.setInitialErrorMessages();
     // Reset before the shared listener checks for unsaved changes.
@@ -84,10 +81,14 @@ export class FinesSuspenseItemSearchFormComponent extends AbstractFormBaseCompon
       .subscribe((businessUnitId) => this.businessUnitChange.emit(businessUnitId));
   }
 
-  /** Restores the leave-page warning when a submitted lookup fails. */
-  public restoreUnsavedChanges(): void {
-    this.formSubmitted = false;
-    this.unsavedChanges.emit(this.hasUnsavedChanges());
+  public override handleFormSubmit(event: SubmitEvent): void {
+    // Ignore repeats before the shared submit handler can clear the leave warning.
+    if (this.pending()) {
+      event.preventDefault();
+      return;
+    }
+    normaliseSuspenseItemReferenceControl(this.form.controls['fsis_suspense_reference_number']);
+    super.handleFormSubmit(event);
   }
 
   /**

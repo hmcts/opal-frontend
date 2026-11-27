@@ -1,3 +1,7 @@
+import { HttpErrorResponse } from '@angular/common/http';
+import { Subject } from 'rxjs';
+import { OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-suspense-item-summary.mock';
+import { OPAL_FINES_SUSPENSE_ITEM_SUMMARY_EMPTY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-suspense-item-summary-empty.mock';
 import { OpalUserService } from '@hmcts/opal-frontend-common/services/opal-user-service';
 import { OPAL_USER_STATE_MOCK } from '@hmcts/opal-frontend-common/services/opal-user-service/mocks';
 import { FINES_PERMISSIONS } from '@app/constants/fines-permissions.constant';
@@ -15,6 +19,7 @@ import { provideRouter, Router } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FinesSuspenseItemSearchComponent } from '../fines-suspense-item-search/fines-suspense-item-search.component';
+import { FinesSuspenseItemResultsComponent } from '../fines-suspense-item-results/fines-suspense-item-results.component';
 import { routing } from './fines-suspense-item.routes';
 
 @Component({ template: '<h1>Finance</h1>' })
@@ -24,9 +29,11 @@ describe('Suspense item navigation', () => {
   const getBusinessUnitsByPermission = vi.fn();
   const getLoggedInUserState = vi.fn();
   const clearCache = vi.fn();
+  const getSuspenseItemSummary = vi.fn();
   beforeEach(() => {
     vi.spyOn(window, 'confirm').mockReturnValue(false);
     clearCache.mockReset();
+    getSuspenseItemSummary.mockReset().mockReturnValue(of(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_EMPTY_MOCK));
     const user = structuredClone(OPAL_USER_STATE_MOCK);
     user.business_unit_users[0].permissions = [
       { permission_id: FINES_PERMISSIONS['view-suspense-items'], permission_name: 'View suspense items' },
@@ -36,45 +43,565 @@ describe('Suspense item navigation', () => {
     TestBed.configureTestingModule({
       providers: [
         { provide: OpalUserService, useValue: { getLoggedInUserState } },
-        { provide: OpalFines, useValue: { getBusinessUnitsByPermission, clearCache } },
+        { provide: OpalFines, useValue: { getBusinessUnitsByPermission, clearCache, getSuspenseItemSummary } },
         provideRouter([
-          { path: 'fines/suspense-item', component: FinesSuspenseItemComponent, children: routing },
+          {
+            path: 'fines/suspense-item',
+            component: FinesSuspenseItemComponent,
+            children: routing,
+          },
           { path: 'fines/dashboard/finance', component: TestFinanceComponent },
           { path: 'access-denied', component: TestFinanceComponent },
         ]),
       ],
     });
+    const unit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
+    TestBed.inject(FinesSuspenseItemStore).setSelectedBusinessUnit(unit.business_unit_id, unit.business_unit_name);
   });
 
   afterEach(() => vi.restoreAllMocks());
 
-  it.each([25, 26])('allows search with only permission %s', async (permissionId) => {
+  function submitReference(harness: RouterTestingHarness, fieldId: string, value: string): void {
+    const input = harness.routeNativeElement!.querySelector<HTMLInputElement>(`#${fieldId}`)!;
+    input.value = value;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    harness.detectChanges();
+    harness
+      .routeNativeElement!.querySelector('form')!
+      .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+  }
+
+  function setUserPermissions(permissionIds: number[]): void {
     const user = structuredClone(OPAL_USER_STATE_MOCK);
-    user.business_unit_users = [user.business_unit_users[0]];
-    user.business_unit_users[0].permissions = [{ permission_id: permissionId, permission_name: 'Suspense permission' }];
+    user.business_unit_users.forEach((unit) => {
+      unit.permissions = permissionIds.map((permissionId) => ({
+        permission_id: permissionId,
+        permission_name: 'Test permission',
+      }));
+    });
     getLoggedInUserState.mockReturnValue(of(user));
-    const harness = await RouterTestingHarness.create();
-    await harness.navigateByUrl('/fines/suspense-item/search');
+  }
+
+  it('redirects a direct results URL without BU context to search before requesting a summary', async () => {
+    TestBed.inject(FinesSuspenseItemStore).resetStore();
+    const harness = await RouterTestingHarness.create('/fines/suspense-item/1234/results');
     expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/search');
+    expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('Search for suspense item');
+    expect(getSuspenseItemSummary).not.toHaveBeenCalled();
   });
 
-  it.each([{ permissionIds: [] }, { permissionIds: [24] }])(
-    'denies direct access with permissions %j before requesting business units',
-    async ({ permissionIds }) => {
-      const user = structuredClone(OPAL_USER_STATE_MOCK);
-      user.business_unit_users.forEach((unit) => {
-        unit.permissions = permissionIds.map((permissionId) => ({
-          permission_id: permissionId,
-          permission_name: 'Non-suspense permission',
-        }));
-      });
-      getLoggedInUserState.mockReturnValue(of(user));
-      const harness = await RouterTestingHarness.create();
-      await harness.navigateByUrl('/fines/suspense-item/search');
-      expect(TestBed.inject(Router).url).toBe('/access-denied');
-      expect(getBusinessUnitsByPermission).not.toHaveBeenCalled();
+  it('uses the normalised reference for the URL and API on initial search and same-reference retry', async () => {
+    const harness = await RouterTestingHarness.create('/fines/suspense-item/search');
+    const businessUnitId = TestBed.inject(FinesSuspenseItemStore).selectedBusinessUnitId();
+    submitReference(harness, 'fsis_suspense_reference_number', '001234');
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/1234/results');
+    expect(getSuspenseItemSummary).toHaveBeenCalledExactlyOnceWith(businessUnitId, '1234');
+    expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#fsir_suspense_reference_number')!.value).toBe(
+      '1234',
+    );
+
+    submitReference(harness, 'fsir_suspense_reference_number', '0001234');
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/1234/results');
+    expect(getSuspenseItemSummary).toHaveBeenCalledTimes(2);
+    expect(getSuspenseItemSummary).toHaveBeenLastCalledWith(businessUnitId, '1234');
+    expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#fsir_suspense_reference_number')!.value).toBe(
+      '1234',
+    );
+    expect(window.confirm).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    { url: '/fines/suspense-item/search', fieldId: 'fsis_suspense_reference_number', requests: 0 },
+    { url: '/fines/suspense-item/1234/results', fieldId: 'fsir_suspense_reference_number', requests: 1 },
+  ])('blocks an all-zero reference on $url without a lookup', async ({ url, fieldId, requests }) => {
+    const harness = await RouterTestingHarness.create(url);
+    submitReference(harness, fieldId, '0000');
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    expect(TestBed.inject(Router).url).toBe(url);
+    expect(getSuspenseItemSummary).toHaveBeenCalledTimes(requests);
+    expect(harness.routeNativeElement!.querySelector<HTMLInputElement>(`#${fieldId}`)!.value).toBe('');
+    expect(harness.routeNativeElement!.querySelector('.govuk-error-summary')?.textContent).toContain(
+      'Enter suspense reference number',
+    );
+  });
+
+  describe.each([
+    {
+      page: 'search',
+      url: '/fines/suspense-item/search',
+      fieldId: 'fsis_suspense_reference_number',
+      initialRequests: 0,
+    },
+    {
+      page: 'results',
+      url: '/fines/suspense-item/1234/results',
+      fieldId: 'fsir_suspense_reference_number',
+      initialRequests: 1,
+    },
+  ])('repeat submissions from $page', ({ url, fieldId, initialRequests }) => {
+    it.each([false, true])(
+      'finishes the first search and ignores a pending repeat (reference edited: %s)',
+      async (edited) => {
+        const harness = await RouterTestingHarness.create(url);
+        const businessUnitId = TestBed.inject(FinesSuspenseItemStore).selectedBusinessUnitId();
+        const pending = new Subject<typeof OPAL_FINES_SUSPENSE_ITEM_SUMMARY_EMPTY_MOCK>();
+        getSuspenseItemSummary.mockReturnValueOnce(pending);
+
+        submitReference(harness, fieldId, '5678');
+        await vi.waitFor(() => expect(getSuspenseItemSummary).toHaveBeenCalledTimes(initialRequests + 1));
+        if (edited) {
+          const input = harness.routeNativeElement!.querySelector<HTMLInputElement>(`#${fieldId}`)!;
+          input.value = '9999';
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+          harness.detectChanges();
+        }
+        harness
+          .routeNativeElement!.querySelector('form')!
+          .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+
+        pending.next(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_EMPTY_MOCK);
+        pending.complete();
+        await harness.fixture.whenStable();
+        harness.detectChanges();
+
+        expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/5678/results');
+        expect(getSuspenseItemSummary).toHaveBeenCalledTimes(initialRequests + 1);
+        expect(getSuspenseItemSummary).toHaveBeenLastCalledWith(businessUnitId, '5678');
+        expect(window.confirm).not.toHaveBeenCalled();
+        expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(false);
+
+        submitReference(harness, 'fsir_suspense_reference_number', '9999');
+        await harness.fixture.whenStable();
+        expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/9999/results');
+        expect(getSuspenseItemSummary).toHaveBeenCalledTimes(initialRequests + 2);
+        expect(getSuspenseItemSummary).toHaveBeenLastCalledWith(businessUnitId, '9999');
+        expect(window.confirm).not.toHaveBeenCalled();
+      },
+    );
+  });
+
+  it.each([false, true])(
+    'retains unsearched edits after a same-reference retry (repeat submitted: %s)',
+    async (resubmit) => {
+      const harness = await RouterTestingHarness.create('/fines/suspense-item/1234/results');
+      const pending = new Subject<typeof OPAL_FINES_SUSPENSE_ITEM_SUMMARY_EMPTY_MOCK>();
+      getSuspenseItemSummary.mockReturnValueOnce(pending);
+
+      submitReference(harness, 'fsir_suspense_reference_number', '1234');
+      await vi.waitFor(() => expect(getSuspenseItemSummary).toHaveBeenCalledTimes(2));
+      const input = harness.routeNativeElement!.querySelector<HTMLInputElement>('#fsir_suspense_reference_number')!;
+      input.value = '5678';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      harness.detectChanges();
+      if (resubmit) {
+        harness
+          .routeNativeElement!.querySelector('form')!
+          .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      }
+
+      pending.next(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_EMPTY_MOCK);
+      pending.complete();
+      await harness.fixture.whenStable();
+      harness.detectChanges();
+
+      expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/1234/results');
+      expect(getSuspenseItemSummary).toHaveBeenCalledTimes(2);
+      expect(input.value).toBe('5678');
+      expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(true);
+      await TestBed.inject(Router).navigateByUrl('/fines/suspense-item/search');
+      expect(window.confirm).toHaveBeenCalledOnce();
+      expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/1234/results');
+
+      submitReference(harness, 'fsir_suspense_reference_number', '5678');
+      await harness.fixture.whenStable();
+      expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/5678/results');
+      expect(getSuspenseItemSummary).toHaveBeenCalledTimes(3);
+      expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(false);
+      expect(window.confirm).toHaveBeenCalledOnce();
     },
   );
+
+  it.each([false, true])(
+    'uses the submitted BU after an edit during a pending permission check (BU cleared: %s)',
+    async (clearSelection) => {
+      const harness = await RouterTestingHarness.create('/fines/suspense-item/search');
+      const [submittedUnit, amendedUnit] = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData;
+      const pendingPermissions = new Subject<typeof OPAL_USER_STATE_MOCK>();
+      getLoggedInUserState.mockReturnValueOnce(pendingPermissions);
+
+      submitReference(harness, 'fsis_suspense_reference_number', '1234');
+      await vi.waitFor(() => expect(getLoggedInUserState).toHaveBeenCalledTimes(2));
+      expect(getSuspenseItemSummary).not.toHaveBeenCalled();
+      const autocomplete: AlphagovAccessibleAutocompleteComponent = harness.routeDebugElement!.query(
+        By.directive(AlphagovAccessibleAutocompleteComponent),
+      ).componentInstance;
+      autocomplete.getControl.setValue(clearSelection ? null : amendedUnit.business_unit_id);
+      const user = structuredClone(OPAL_USER_STATE_MOCK);
+      user.business_unit_users[0].permissions = [
+        { permission_id: FINES_PERMISSIONS['view-suspense-items'], permission_name: 'View suspense items' },
+      ];
+      pendingPermissions.next(user);
+      pendingPermissions.complete();
+      await harness.fixture.whenStable();
+      harness.detectChanges();
+
+      expect(getSuspenseItemSummary).toHaveBeenCalledExactlyOnceWith(submittedUnit.business_unit_id, '1234');
+      expect(TestBed.inject(FinesSuspenseItemStore).selectedBusinessUnitId()).toBe(submittedUnit.business_unit_id);
+      expect(harness.routeNativeElement!.querySelector('.govuk-body-s strong')?.textContent).toBe(
+        submittedUnit.business_unit_name,
+      );
+
+      harness.routeNativeElement!.querySelector<HTMLAnchorElement>('opal-lib-govuk-back-link a')!.click();
+      await harness.fixture.whenStable();
+      harness.detectChanges();
+      const nextAutocomplete: AlphagovAccessibleAutocompleteComponent = harness.routeDebugElement!.query(
+        By.directive(AlphagovAccessibleAutocompleteComponent),
+      ).componentInstance;
+      nextAutocomplete.getControl.setValue(amendedUnit.business_unit_id);
+      submitReference(harness, 'fsis_suspense_reference_number', '5678');
+      await harness.fixture.whenStable();
+      expect(getSuspenseItemSummary).toHaveBeenLastCalledWith(amendedUnit.business_unit_id, '5678');
+    },
+  );
+
+  it.each([false, true])(
+    'retains the amended BU and allows another search after failure (permission check failed: %s)',
+    async (permissionFailure) => {
+      const harness = await RouterTestingHarness.create('/fines/suspense-item/search');
+      const store = TestBed.inject(FinesSuspenseItemStore);
+      const amendedUnit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[1];
+      const pendingPermissions = new Subject<typeof OPAL_USER_STATE_MOCK>();
+      const pendingSummary = new Subject<typeof OPAL_FINES_SUSPENSE_ITEM_SUMMARY_EMPTY_MOCK>();
+      getLoggedInUserState.mockReturnValueOnce(pendingPermissions);
+      getSuspenseItemSummary.mockReturnValueOnce(pendingSummary);
+
+      submitReference(harness, 'fsis_suspense_reference_number', '1234');
+      await vi.waitFor(() => expect(getLoggedInUserState).toHaveBeenCalledTimes(2));
+      const autocomplete: AlphagovAccessibleAutocompleteComponent = harness.routeDebugElement!.query(
+        By.directive(AlphagovAccessibleAutocompleteComponent),
+      ).componentInstance;
+      autocomplete.getControl.setValue(amendedUnit.business_unit_id);
+      if (permissionFailure) {
+        pendingPermissions.error(new HttpErrorResponse({ status: 500 }));
+      } else {
+        const user = structuredClone(OPAL_USER_STATE_MOCK);
+        user.business_unit_users[0].permissions = [
+          { permission_id: FINES_PERMISSIONS['view-suspense-items'], permission_name: 'View suspense items' },
+        ];
+        pendingPermissions.next(user);
+        pendingPermissions.complete();
+        await vi.waitFor(() => expect(getSuspenseItemSummary).toHaveBeenCalledOnce());
+        pendingSummary.error(new HttpErrorResponse({ status: 500 }));
+      }
+      await harness.fixture.whenStable();
+      harness.detectChanges();
+
+      expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/search');
+      expect(store.selectedBusinessUnitId()).toBe(amendedUnit.business_unit_id);
+      expect(store.submittedBusinessUnitId()).toBeNull();
+      expect(store.submittedBusinessUnitName()).toBeNull();
+      expect(store.unsavedChanges()).toBe(true);
+      expect(autocomplete.getControl.value).toBe(amendedUnit.business_unit_id);
+
+      getSuspenseItemSummary.mockReset().mockReturnValue(of(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_EMPTY_MOCK));
+      submitReference(harness, 'fsis_suspense_reference_number', '5678');
+      await harness.fixture.whenStable();
+      expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/5678/results');
+      expect(getSuspenseItemSummary).toHaveBeenCalledExactlyOnceWith(amendedUnit.business_unit_id, '5678');
+      expect(store.unsavedChanges()).toBe(false);
+    },
+  );
+
+  it.each([
+    {
+      outcome: 'not-found',
+      summary: OPAL_FINES_SUSPENSE_ITEM_SUMMARY_EMPTY_MOCK,
+      heading: 'Suspense item not found',
+    },
+    { outcome: 'found', summary: OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK, heading: 'View suspense item' },
+  ])(
+    'uses the submitted BU for $outcome results and retries after an in-flight BU edit',
+    async ({ summary, heading }) => {
+      const [submittedUnit, amendedUnit] = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData;
+      const store = TestBed.inject(FinesSuspenseItemStore);
+      const pending = new Subject<typeof OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK>();
+      getSuspenseItemSummary.mockReturnValueOnce(pending);
+      const harness = await RouterTestingHarness.create('/fines/suspense-item/search');
+
+      submitReference(harness, 'fsis_suspense_reference_number', '1234');
+      await vi.waitFor(() =>
+        expect(getSuspenseItemSummary).toHaveBeenCalledExactlyOnceWith(submittedUnit.business_unit_id, '1234'),
+      );
+      const autocomplete: AlphagovAccessibleAutocompleteComponent = harness.routeDebugElement!.query(
+        By.directive(AlphagovAccessibleAutocompleteComponent),
+      ).componentInstance;
+      autocomplete.getControl.setValue(amendedUnit.business_unit_id);
+      expect(store.selectedBusinessUnitId()).toBe(amendedUnit.business_unit_id);
+
+      pending.next(summary);
+      pending.complete();
+      await harness.fixture.whenStable();
+      harness.detectChanges();
+
+      expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/1234/results');
+      expect(harness.routeNativeElement!.querySelector('h1')?.textContent).toBe(heading);
+      expect(
+        harness.routeNativeElement!.querySelector('app-fines-suspense-item-results-search-form strong')?.textContent,
+      ).toBe(submittedUnit.business_unit_name);
+      expect(store.selectedBusinessUnitId()).toBe(submittedUnit.business_unit_id);
+      expect(store.selectedBusinessUnitName()).toBe(submittedUnit.business_unit_name);
+
+      submitReference(harness, 'fsir_suspense_reference_number', '5678');
+      await harness.fixture.whenStable();
+      expect(getSuspenseItemSummary).toHaveBeenLastCalledWith(submittedUnit.business_unit_id, '5678');
+    },
+  );
+
+  it('waits for the lookup and switches between found and empty successful summaries on retry', async () => {
+    const pending = new Subject<typeof OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK>();
+    getSuspenseItemSummary.mockReturnValueOnce(pending);
+    const harness = await RouterTestingHarness.create('/fines/suspense-item/search');
+    submitReference(harness, 'fsis_suspense_reference_number', '1234');
+    await vi.waitFor(() => expect(getSuspenseItemSummary).toHaveBeenCalledOnce());
+    harness.detectChanges();
+    expect(harness.routeNativeElement?.textContent).not.toContain('Suspense item not found');
+    pending.next(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
+    pending.complete();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('View suspense item');
+    expect(harness.routeNativeElement?.textContent).not.toContain('Suspense item not found');
+
+    submitReference(harness, 'fsir_suspense_reference_number', '5678');
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('Suspense item not found');
+    expect(harness.routeNativeElement?.querySelector('app-fines-suspense-item-results-found')).toBeNull();
+
+    getSuspenseItemSummary.mockReturnValueOnce(of(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK));
+    submitReference(harness, 'fsir_suspense_reference_number', '9999');
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('View suspense item');
+    expect(harness.routeNativeElement?.textContent).not.toContain('Suspense item not found');
+  });
+
+  it.each([404, 500])('does not activate not-found results when the summary lookup fails with %s', async (status) => {
+    const harness = await RouterTestingHarness.create('/fines/suspense-item/search');
+    getSuspenseItemSummary.mockReturnValueOnce(throwError(() => new HttpErrorResponse({ status })));
+    submitReference(harness, 'fsis_suspense_reference_number', '1234');
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/search');
+    expect(harness.routeNativeElement?.textContent).not.toContain('Suspense item not found');
+    expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(true);
+
+    await TestBed.inject(Router).navigateByUrl('/fines/dashboard/finance');
+    expect(window.confirm).toHaveBeenCalledOnce();
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/search');
+
+    harness
+      .routeNativeElement!.querySelector('form')!
+      .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('Suspense item not found');
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/1234/results');
+    expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(false);
+    expect(window.confirm).toHaveBeenCalledOnce();
+  });
+
+  it('restores the leave warning after a failed search on results and allows another attempt', async () => {
+    const harness = await RouterTestingHarness.create('/fines/suspense-item/1234/results');
+    getSuspenseItemSummary.mockReturnValueOnce(throwError(() => new HttpErrorResponse({ status: 500 })));
+    submitReference(harness, 'fsir_suspense_reference_number', '5678');
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/1234/results');
+    expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(true);
+    expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#fsir_suspense_reference_number')!.value).toBe(
+      '5678',
+    );
+
+    await TestBed.inject(Router).navigateByUrl('/fines/dashboard/finance');
+    expect(window.confirm).toHaveBeenCalledOnce();
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/1234/results');
+
+    harness
+      .routeNativeElement!.querySelector('form')!
+      .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(window.confirm).toHaveBeenCalledOnce();
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/5678/results');
+    expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(false);
+  });
+
+  describe.each([
+    { destination: 'Finance', url: '/fines/dashboard/finance', retainsBusinessUnit: false },
+    { destination: 'Search', url: '/fines/suspense-item/search', retainsBusinessUnit: true },
+  ])('leaving results for $destination', ({ url, retainsBusinessUnit }) => {
+    it.each([false, true])('confirms navigation after editing the reference (leave: %s)', async (leave) => {
+      vi.mocked(window.confirm).mockReturnValue(leave);
+      const resultsUrl = '/fines/suspense-item/1234/results';
+      const harness = await RouterTestingHarness.create(resultsUrl);
+      const store = TestBed.inject(FinesSuspenseItemStore);
+      const businessUnitId = store.selectedBusinessUnitId();
+      const businessUnitName = store.selectedBusinessUnitName();
+      const input = harness.routeNativeElement!.querySelector<HTMLInputElement>('#fsir_suspense_reference_number')!;
+      input.value = '5678';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      harness.detectChanges();
+
+      await TestBed.inject(Router).navigateByUrl(url);
+      harness.detectChanges();
+
+      expect(window.confirm).toHaveBeenCalledOnce();
+      expect(TestBed.inject(Router).url).toBe(leave ? url : resultsUrl);
+      expect(store.selectedBusinessUnitId()).toBe(leave && !retainsBusinessUnit ? null : businessUnitId);
+      expect(store.selectedBusinessUnitName()).toBe(leave && !retainsBusinessUnit ? null : businessUnitName);
+      expect(getSuspenseItemSummary).toHaveBeenCalledOnce();
+      if (!leave) {
+        expect(input.value).toBe('5678');
+        expect(store.unsavedChanges()).toBe(true);
+      }
+    });
+
+    it('allows navigation without confirmation when the reference has not been edited', async () => {
+      await RouterTestingHarness.create('/fines/suspense-item/1234/results');
+
+      await TestBed.inject(Router).navigateByUrl(url);
+
+      expect(window.confirm).not.toHaveBeenCalled();
+      expect(TestBed.inject(Router).url).toBe(url);
+    });
+  });
+
+  it('opens not-found results after the summary API returns an empty successful summary', async () => {
+    const store = TestBed.inject(FinesSuspenseItemStore);
+    const unit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
+    store.setSelectedBusinessUnit(unit.business_unit_id, unit.business_unit_name);
+    const harness = await RouterTestingHarness.create('/fines/suspense-item/search');
+
+    submitReference(harness, 'fsis_suspense_reference_number', '1234');
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/1234/results');
+    expect(harness.routeNativeElement!.querySelector('h1')?.textContent).toBe('Suspense item not found');
+    expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#fsir_suspense_reference_number')!.value).toBe(
+      '1234',
+    );
+    expect(harness.routeNativeElement!.querySelector('.govuk-caption-l')?.textContent).toBe(unit.business_unit_name);
+    expect(store.selectedBusinessUnitId()).toBe(unit.business_unit_id);
+    expect(store.unsavedChanges()).toBe(false);
+    expect(getSuspenseItemSummary).toHaveBeenCalled();
+    expect(clearCache).toHaveBeenCalledWith('suspenseItemSummaryCache$');
+    expect(window.confirm).not.toHaveBeenCalled();
+  });
+
+  it('searches another reference on the reused results page while retaining the BU', async () => {
+    const store = TestBed.inject(FinesSuspenseItemStore);
+    const unit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
+    store.setSelectedBusinessUnit(unit.business_unit_id, unit.business_unit_name);
+    const harness = await RouterTestingHarness.create('/fines/suspense-item/1234/results');
+    const results = harness.routeDebugElement!.query(By.directive(FinesSuspenseItemResultsComponent)).componentInstance;
+
+    submitReference(harness, 'fsir_suspense_reference_number', '5678');
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/5678/results');
+    expect(harness.routeDebugElement!.query(By.directive(FinesSuspenseItemResultsComponent)).componentInstance).toBe(
+      results,
+    );
+    expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#fsir_suspense_reference_number')!.value).toBe(
+      '5678',
+    );
+    expect(harness.routeNativeElement!.querySelector('.govuk-caption-l')?.textContent).toBe(unit.business_unit_name);
+    expect(store.selectedBusinessUnitId()).toBe(unit.business_unit_id);
+    expect(store.unsavedChanges()).toBe(false);
+    expect(harness.routeNativeElement!.querySelector('h1')?.textContent).toBe('Suspense item not found');
+    expect(getSuspenseItemSummary).toHaveBeenCalled();
+  });
+
+  it('requests the same reference again without an unsaved-change warning', async () => {
+    const harness = await RouterTestingHarness.create('/fines/suspense-item/1234/results');
+    submitReference(harness, 'fsir_suspense_reference_number', '1234');
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/1234/results');
+    expect(harness.routeNativeElement!.querySelector('h1')?.textContent).toBe('Suspense item not found');
+    expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(false);
+    expect(getSuspenseItemSummary).toHaveBeenCalledTimes(2);
+
+    const input = harness.routeNativeElement!.querySelector<HTMLInputElement>('#fsir_suspense_reference_number')!;
+    input.value = '5678';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(true);
+  });
+
+  it('keeps invalid retry input on the current results page with validation feedback', async () => {
+    const harness = await RouterTestingHarness.create('/fines/suspense-item/1234/results');
+    submitReference(harness, 'fsir_suspense_reference_number', 'abc');
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/1234/results');
+    expect(harness.routeNativeElement!.querySelector('.govuk-error-summary')?.textContent).toContain(
+      'Enter suspense reference number in the correct format',
+    );
+    expect(getSuspenseItemSummary).toHaveBeenCalledOnce();
+  });
+
+  describe.each([
+    { page: 'search', url: '/fines/suspense-item/search' },
+    { page: 'results with retained business-unit context', url: '/fines/suspense-item/1234/results' },
+  ])('permissions for $page', ({ url }) => {
+    it.each([FINES_PERMISSIONS['view-suspense-items'], FINES_PERMISSIONS['manage-suspense-items']])(
+      'allows access with only permission %s',
+      async (permissionId) => {
+        setUserPermissions([permissionId]);
+        const harness = await RouterTestingHarness.create();
+        await harness.navigateByUrl(url);
+        expect(TestBed.inject(Router).url).toBe(url);
+      },
+    );
+
+    it.each([{ permissionIds: [] }, { permissionIds: [24] }])(
+      'denies access with permissions %j before requesting business units or a summary',
+      async ({ permissionIds }) => {
+        setUserPermissions(permissionIds);
+        const harness = await RouterTestingHarness.create();
+        await harness.navigateByUrl(url);
+        expect(TestBed.inject(Router).url).toBe('/access-denied');
+        expect(getBusinessUnitsByPermission).not.toHaveBeenCalled();
+        expect(getSuspenseItemSummary).not.toHaveBeenCalled();
+      },
+    );
+  });
+
+  it('rechecks permissions before requesting a summary when the same reference is searched again', async () => {
+    const harness = await RouterTestingHarness.create('/fines/suspense-item/1234/results');
+    expect(getSuspenseItemSummary).toHaveBeenCalledOnce();
+    setUserPermissions([]);
+
+    submitReference(harness, 'fsir_suspense_reference_number', '1234');
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    expect(TestBed.inject(Router).url).toBe('/access-denied');
+    expect(getSuspenseItemSummary).toHaveBeenCalledOnce();
+  });
 
   it('redirects the suspense root to the search screen', async () => {
     const harness = await RouterTestingHarness.create();
@@ -98,6 +625,77 @@ describe('Suspense item navigation', () => {
     );
   });
 
+  it('opens the parameterised results URL with its page title and not-found screen', async () => {
+    const harness = await RouterTestingHarness.create();
+
+    await harness.navigateByUrl('/fines/suspense-item/1234/results');
+
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/1234/results');
+    expect(TestBed.inject(Router).routerState.snapshot.root.firstChild?.firstChild?.params['suspenseItemId']).toBe(
+      '1234',
+    );
+    expect(TestBed.inject(Title).getTitle()).toBe('OPAL - Suspense item results');
+    expect(harness.routeNativeElement?.querySelector('h1')?.textContent).toBe('Suspense item not found');
+    expect(harness.routeNativeElement?.querySelector('opal-lib-govuk-back-link a')?.textContent?.trim()).toBe('Back');
+    expect(getBusinessUnitsByPermission).not.toHaveBeenCalled();
+  });
+
+  it('returns from results to a fresh search with the selected business unit retained', async () => {
+    const store = TestBed.inject(FinesSuspenseItemStore);
+    const unit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
+    store.setSelectedBusinessUnit(unit.business_unit_id, unit.business_unit_name);
+    const harness = await RouterTestingHarness.create('/fines/suspense-item/1234/results');
+    expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#fsir_suspense_reference_number')!.value).toBe(
+      '1234',
+    );
+    expect(harness.routeNativeElement!.querySelector('.govuk-caption-l')!.textContent).toBe(unit.business_unit_name);
+
+    harness.routeNativeElement!.querySelector<HTMLAnchorElement>('opal-lib-govuk-back-link a')!.click();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/search');
+    expect(TestBed.inject(Title).getTitle()).toBe('OPAL - Search for suspense item');
+    expect(store.selectedBusinessUnitId()).toBe(unit.business_unit_id);
+    expect(store.selectedBusinessUnitName()).toBe(unit.business_unit_name);
+    const search: FinesSuspenseItemSearchComponent = harness.routeDebugElement!.query(
+      By.directive(FinesSuspenseItemSearchComponent),
+    ).componentInstance;
+    expect(search.initialBusinessUnitId).toBe(unit.business_unit_id);
+    const reference = harness.routeNativeElement!.querySelector<HTMLInputElement>('#fsis_suspense_reference_number')!;
+    expect(reference.value).toBe('');
+    expect(clearCache).toHaveBeenCalledWith('suspenseItemSummaryCache$');
+  });
+
+  it('uses the new BU ID and matching name after returning from results and changing the selection', async () => {
+    const units = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData;
+    const store = TestBed.inject(FinesSuspenseItemStore);
+    store.setSelectedBusinessUnit(units[0].business_unit_id, units[0].business_unit_name);
+    const harness = await RouterTestingHarness.create('/fines/suspense-item/1234/results');
+    harness.routeNativeElement!.querySelector<HTMLAnchorElement>('opal-lib-govuk-back-link a')!.click();
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    const autocomplete: AlphagovAccessibleAutocompleteComponent = harness.routeDebugElement!.query(
+      By.directive(AlphagovAccessibleAutocompleteComponent),
+    ).componentInstance;
+    autocomplete.getControl.setValue(units[1].business_unit_id);
+    expect(store.selectedBusinessUnitId()).toBe(units[1].business_unit_id);
+    expect(store.selectedBusinessUnitName()).toBe(units[1].business_unit_name);
+    submitReference(harness, 'fsis_suspense_reference_number', '5678');
+    await harness.fixture.whenStable();
+    harness.detectChanges();
+    expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/5678/results');
+    expect(harness.routeNativeElement!.querySelector('.govuk-caption-l')!.textContent).toBe(
+      units[1].business_unit_name,
+    );
+    expect(harness.routeNativeElement!.querySelector('.govuk-body-s strong')!.textContent).toBe(
+      units[1].business_unit_name,
+    );
+    expect(harness.routeNativeElement!.querySelector<HTMLInputElement>('#fsir_suspense_reference_number')!.value).toBe(
+      '5678',
+    );
+  });
+
   it('passes resolved business units to the search component', async () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/fines/suspense-item/search');
@@ -118,6 +716,7 @@ describe('Suspense item navigation', () => {
 
   it('displays and selects the single resolved business unit', async () => {
     const unit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
+    TestBed.inject(FinesSuspenseItemStore).resetStore();
     getBusinessUnitsByPermission.mockReturnValue(of({ count: 1, refData: [unit] }));
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/fines/suspense-item/search');
@@ -146,7 +745,7 @@ describe('Suspense item navigation', () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/fines/suspense-item/search');
 
-    TestBed.inject(FinesSuspenseItemStore).setSelectedBusinessUnitId(22);
+    TestBed.inject(FinesSuspenseItemStore).setSelectedBusinessUnit(22, 'Test business unit');
     const cancelLink = harness.routeNativeElement?.querySelector<HTMLAnchorElement>('opal-lib-govuk-cancel-link a');
     expect(cancelLink).not.toBeNull();
     cancelLink!.click();
@@ -165,7 +764,7 @@ describe('Suspense item navigation', () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/fines/suspense-item/search');
     const reference = harness.routeNativeElement!.querySelector<HTMLInputElement>('#fsis_suspense_reference_number')!;
-    reference.value = '001234';
+    reference.value = '1234';
     reference.dispatchEvent(new Event('input'));
     harness.detectChanges();
 
@@ -179,7 +778,7 @@ describe('Suspense item navigation', () => {
       expect(clearCache).toHaveBeenCalledWith('suspenseItemSummaryCache$');
     } else {
       expect(TestBed.inject(Router).url).toBe('/fines/suspense-item/search');
-      expect(reference.value).toBe('001234');
+      expect(reference.value).toBe('1234');
       expect(clearCache).not.toHaveBeenCalled();
     }
   });
@@ -202,6 +801,7 @@ describe('Suspense item navigation', () => {
 
   it('does not confirm Cancel for an automatically selected sole business unit', async () => {
     const unit = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0];
+    TestBed.inject(FinesSuspenseItemStore).resetStore();
     getBusinessUnitsByPermission.mockReturnValue(of({ count: 1, refData: [unit] }));
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/fines/suspense-item/search');

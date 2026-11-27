@@ -1,7 +1,4 @@
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
-import { OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-suspense-item-summary.mock';
-import { of, Subject, throwError } from 'rxjs';
-import { IOpalFinesSuspenseItemSummary } from '@services/fines/opal-fines-service/interfaces/opal-fines-suspense-item-summary.interface';
 import { OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK } from '@services/fines/opal-fines-service/mocks/opal-fines-business-unit-ref-data.mock';
 import { IOpalFinesBusinessUnitRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-business-unit-ref-data.interface';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -21,9 +18,7 @@ describe('FinesSuspenseItemSearchComponent', () => {
   let businessUnits: IOpalFinesBusinessUnitRefData;
 
   beforeEach(async () => {
-    vi.spyOn(console, 'log').mockImplementation(() => undefined);
-    vi.spyOn(console, 'error').mockImplementation(() => undefined);
-    getSuspenseItemSummary.mockReset().mockReturnValue(of(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK));
+    getSuspenseItemSummary.mockReset();
     clearCache.mockReset();
     businessUnits = {
       count: 2,
@@ -41,6 +36,7 @@ describe('FinesSuspenseItemSearchComponent', () => {
         { provide: ActivatedRoute, useValue: { snapshot: { data: { businessUnits } } } },
       ],
     }).compileComponents();
+    vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     fixture = TestBed.createComponent(FinesSuspenseItemSearchComponent);
     component = fixture.componentInstance;
   });
@@ -50,13 +46,14 @@ describe('FinesSuspenseItemSearchComponent', () => {
   });
 
   it('supplies the available BUs and initial selection to the form', () => {
-    TestBed.inject(FinesSuspenseItemStore).setSelectedBusinessUnitId(22);
+    TestBed.inject(FinesSuspenseItemStore).setSelectedBusinessUnit(22, 'Test business unit');
     fixture.detectChanges();
     const form: FinesSuspenseItemSearchFormComponent = fixture.debugElement.query(
       By.directive(FinesSuspenseItemSearchFormComponent),
     ).componentInstance;
 
     expect(form.autoCompleteItems).toEqual(FINES_SUSPENSE_ITEM_SEARCH_BUSINESS_UNITS_MOCK);
+    expect(TestBed.inject(FinesSuspenseItemStore).selectedBusinessUnitName()).toBe('Test business unit');
     expect(form.initialBusinessUnitId).toBe(22);
     expect(form.form.get('fsis_business_unit_id')?.value).toBe(22);
   });
@@ -106,46 +103,118 @@ describe('FinesSuspenseItemSearchComponent', () => {
     fixture.detectChanges();
     expect(component.initialBusinessUnitId).toBe(11);
     expect(store.selectedBusinessUnitId()).toBe(11);
+    expect(store.selectedBusinessUnitName()).toBe('Avon and Somerset');
   });
 
-  it('requests a summary using the criteria submitted by the child', () => {
+  it('updates the ID and name together when the BU changes, and clears both when deselected', () => {
+    fixture.detectChanges();
+    const child: FinesSuspenseItemSearchFormComponent = fixture.debugElement.query(
+      By.directive(FinesSuspenseItemSearchFormComponent),
+    ).componentInstance;
+    const store = TestBed.inject(FinesSuspenseItemStore);
+    child.form.get('fsis_business_unit_id')!.setValue(11);
+    expect(store.selectedBusinessUnitId()).toBe(11);
+    expect(store.selectedBusinessUnitName()).toBe('Avon and Somerset');
+    child.form.get('fsis_business_unit_id')!.setValue(22);
+    expect(store.selectedBusinessUnitId()).toBe(22);
+    expect(store.selectedBusinessUnitName()).toBe('Test business unit');
+    child.form.get('fsis_business_unit_id')!.setValue(null);
+    expect(store.selectedBusinessUnitId()).toBeNull();
+    expect(store.selectedBusinessUnitName()).toBeNull();
+  });
+
+  it('refreshes the retained name from the resolved BU options', () => {
+    const store = TestBed.inject(FinesSuspenseItemStore);
+    store.setSelectedBusinessUnit(22, 'Old display name');
+    fixture.detectChanges();
+    expect(store.selectedBusinessUnitId()).toBe(22);
+    expect(store.selectedBusinessUnitName()).toBe('Test business unit');
+  });
+
+  it('opens temporary results with the normalised reference and matching BU without requesting a summary', () => {
     fixture.detectChanges();
     const child: FinesSuspenseItemSearchFormComponent = fixture.debugElement.query(
       By.directive(FinesSuspenseItemSearchFormComponent),
     ).componentInstance;
     child.form.setValue({ fsis_business_unit_id: 22, fsis_suspense_reference_number: '001234' });
     fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-    expect(getSuspenseItemSummary).toHaveBeenCalledExactlyOnceWith(22, '1234');
+
+    expect(TestBed.inject(Router).navigate).toHaveBeenCalledExactlyOnceWith(
+      ['/', 'fines', 'suspense-item', '1234', 'results'],
+      { onSameUrlNavigation: 'reload' },
+    );
+    expect(TestBed.inject(FinesSuspenseItemStore).selectedBusinessUnitId()).toBe(22);
+    expect(TestBed.inject(FinesSuspenseItemStore).selectedBusinessUnitName()).toBe('Test business unit');
+    expect(getSuspenseItemSummary).not.toHaveBeenCalled();
+    expect(clearCache).not.toHaveBeenCalled();
   });
-  it('does not call the service when submitted criteria have no BU', () => {
+
+  it('does not navigate when submitted criteria have no BU', () => {
     fixture.detectChanges();
     component.handleFormSubmit({
       formData: { fsis_business_unit_id: null, fsis_suspense_reference_number: '001234' },
       nestedFlow: false,
     });
-    expect(getSuspenseItemSummary).not.toHaveBeenCalled();
-    expect(clearCache).not.toHaveBeenCalled();
-  });
-
-  it('does not request a summary for an invalid form', () => {
-    fixture.detectChanges();
-    fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    expect(TestBed.inject(Router).navigate).not.toHaveBeenCalled();
     expect(getSuspenseItemSummary).not.toHaveBeenCalled();
   });
 
-  it.each([
-    ['001234', '1234'],
-    ['0', '0'],
-    ['0000', '0'],
-    ['000123456789012345678901234567890', '123456789012345678901234567890'],
-  ])('normalises %s to %s without numeric conversion', (entered, expected) => {
+  it('keeps the accepted BU during pending navigation and releases it after cancellation', async () => {
+    let finishNavigation!: (navigated: boolean) => void;
+    const navigate = vi.mocked(TestBed.inject(Router).navigate);
+    navigate.mockReturnValueOnce(new Promise<boolean>((resolve) => (finishNavigation = resolve)));
     fixture.detectChanges();
+    const store = TestBed.inject(FinesSuspenseItemStore);
     component.handleFormSubmit({
-      formData: { fsis_business_unit_id: 22, fsis_suspense_reference_number: entered },
+      formData: { fsis_business_unit_id: 22, fsis_suspense_reference_number: '1234' },
       nestedFlow: false,
     });
-    expect(getSuspenseItemSummary).toHaveBeenCalledExactlyOnceWith(22, expected);
+    component.handleBusinessUnitChange(11);
+    component.handleFormSubmit({
+      formData: { fsis_business_unit_id: 11, fsis_suspense_reference_number: '5678' },
+      nestedFlow: false,
+    });
+
+    expect(navigate).toHaveBeenCalledOnce();
+    expect(store.submittedBusinessUnitId()).toBe(22);
+    expect(store.submittedBusinessUnitName()).toBe('Test business unit');
+    finishNavigation(false);
+    await fixture.whenStable();
+
+    expect(store.submittedBusinessUnitId()).toBeNull();
+    expect(store.submittedBusinessUnitName()).toBeNull();
+    expect(store.selectedBusinessUnitId()).toBe(11);
+    expect(store.unsavedChanges()).toBe(true);
+    component.handleFormSubmit({
+      formData: { fsis_business_unit_id: 11, fsis_suspense_reference_number: '5678' },
+      nestedFlow: false,
+    });
+    await fixture.whenStable();
+    expect(navigate).toHaveBeenCalledTimes(2);
+    await vi.waitFor(() => expect(store.submittedBusinessUnitId()).toBeNull());
   });
+
+  it('does not navigate for an invalid form', () => {
+    fixture.detectChanges();
+    fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    expect(TestBed.inject(Router).navigate).not.toHaveBeenCalled();
+    expect(getSuspenseItemSummary).not.toHaveBeenCalled();
+  });
+
+  it.each(['001234', '0', '0000', '123456789012345678'])(
+    'preserves the entered reference %s in the URL without numeric conversion',
+    (reference) => {
+      fixture.detectChanges();
+      component.handleFormSubmit({
+        formData: { fsis_business_unit_id: 22, fsis_suspense_reference_number: reference },
+        nestedFlow: false,
+      });
+      expect(TestBed.inject(Router).navigate).toHaveBeenCalledExactlyOnceWith(
+        ['/', 'fines', 'suspense-item', reference, 'results'],
+        { onSameUrlNavigation: 'reload' },
+      );
+    },
+  );
 
   it('requires confirmation after editing but allows navigation after a valid submission', () => {
     fixture.detectChanges();
@@ -181,22 +250,80 @@ describe('FinesSuspenseItemSearchComponent', () => {
     expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(true);
   });
 
-  it('restores the leave warning when a lookup fails without further edits', () => {
-    const response = new Subject<IOpalFinesSuspenseItemSummary>();
-    getSuspenseItemSummary.mockReturnValue(response);
+  it('does not restore a destroyed search form after a pending lookup fails', async () => {
+    let failNavigation!: (error: Error) => void;
+    vi.mocked(TestBed.inject(Router).navigate).mockReturnValue(
+      new Promise<boolean>((_resolve, reject) => {
+        failNavigation = reject;
+      }),
+    );
     fixture.detectChanges();
-    const child: FinesSuspenseItemSearchFormComponent = fixture.debugElement.query(
-      By.directive(FinesSuspenseItemSearchFormComponent),
-    ).componentInstance;
-    child.form.markAsDirty();
-    child.form.setValue({ fsis_business_unit_id: 22, fsis_suspense_reference_number: '1234' });
-    fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-    expect(component['canDeactivate']()).toBe(true);
+    component.handleFormSubmit({
+      formData: { fsis_business_unit_id: 22, fsis_suspense_reference_number: '001234' },
+      nestedFlow: false,
+    });
+    fixture.destroy();
+    failNavigation(new Error('Lookup failed after leaving'));
+    await Promise.resolve();
+    expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(false);
+  });
 
-    response.error(new Error('Request failed'));
+  it.each(['cancelled', 'rejected'])(
+    'restores the parent warning after %s navigation and allows a retry',
+    async (outcome) => {
+      const navigate = vi.mocked(TestBed.inject(Router).navigate);
+      if (outcome === 'cancelled') {
+        navigate.mockResolvedValueOnce(false);
+      } else {
+        navigate.mockRejectedValueOnce(new Error('Lookup failed'));
+      }
+      fixture.detectChanges();
+      const input = fixture.nativeElement.querySelector('#fsis_suspense_reference_number');
+      component.handleBusinessUnitChange(22);
+      const child: FinesSuspenseItemSearchFormComponent = fixture.debugElement.query(
+        By.directive(FinesSuspenseItemSearchFormComponent),
+      ).componentInstance;
+      child.form.controls['fsis_business_unit_id'].setValue(22);
+      input.value = '001234';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      const submit = () =>
+        fixture.nativeElement
+          .querySelector('form')
+          .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+      submit();
+      await fixture.whenStable();
 
-    expect(component['canDeactivate']()).toBe(false);
-    expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(true);
+      expect(component['canDeactivate']()).toBe(false);
+      expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(true);
+      expect(input.value).toBe('1234');
+
+      navigate.mockResolvedValueOnce(true);
+      submit();
+      expect(component['canDeactivate']()).toBe(true);
+      await fixture.whenStable();
+      expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(false);
+      expect(component['canDeactivate']()).toBe(true);
+      expect(navigate).toHaveBeenCalledTimes(2);
+    },
+  );
+
+  it('does not restore a warning after the search page has been destroyed', async () => {
+    let finishNavigation!: (navigated: boolean) => void;
+    vi.mocked(TestBed.inject(Router).navigate).mockReturnValueOnce(
+      new Promise<boolean>((resolve) => {
+        finishNavigation = resolve;
+      }),
+    );
+    fixture.detectChanges();
+    component.handleFormSubmit({
+      formData: { fsis_business_unit_id: 22, fsis_suspense_reference_number: '001234' },
+      nestedFlow: false,
+    });
+    fixture.destroy();
+    finishNavigation(false);
+    await Promise.resolve();
+
+    expect(TestBed.inject(FinesSuspenseItemStore).unsavedChanges()).toBe(false);
   });
 
   it('keeps the warning while the dirty page remains and clears it on destruction', () => {
@@ -208,59 +335,5 @@ describe('FinesSuspenseItemSearchComponent', () => {
 
     fixture.destroy();
     expect(store.unsavedChanges()).toBe(false);
-  });
-
-  it('logs the response and clears the summary cache before each lookup', () => {
-    fixture.detectChanges();
-    const form = {
-      formData: { fsis_business_unit_id: 22, fsis_suspense_reference_number: '001234' },
-      nestedFlow: false,
-    };
-    component.handleFormSubmit(form);
-    expect(clearCache).toHaveBeenCalledWith('suspenseItemSummaryCache$');
-    expect(console.log).toHaveBeenCalledWith('Suspense item summary:', OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
-    component.handleFormSubmit(form);
-    expect(getSuspenseItemSummary).toHaveBeenCalledTimes(2);
-    expect(clearCache).toHaveBeenCalledTimes(2);
-  });
-
-  it('allows another submission while a request is pending', () => {
-    const response = new Subject<IOpalFinesSuspenseItemSummary>();
-    getSuspenseItemSummary.mockReturnValue(response);
-    fixture.detectChanges();
-    const form = {
-      formData: { fsis_business_unit_id: 22, fsis_suspense_reference_number: '001234' },
-      nestedFlow: false,
-    };
-    component.handleFormSubmit(form);
-    component.handleFormSubmit(form);
-    expect(getSuspenseItemSummary).toHaveBeenCalledTimes(2);
-    expect(fixture.nativeElement.querySelector('button[type="submit"]').disabled).toBe(false);
-    response.complete();
-  });
-
-  it('handles request failures without logging an error or a successful result', () => {
-    const error = new Error('Request failed');
-    getSuspenseItemSummary.mockReturnValue(throwError(() => error));
-    fixture.detectChanges();
-    component.handleFormSubmit({
-      formData: { fsis_business_unit_id: 22, fsis_suspense_reference_number: '001234' },
-      nestedFlow: false,
-    });
-    expect(console.error).not.toHaveBeenCalled();
-    expect(console.log).not.toHaveBeenCalled();
-  });
-
-  it('unsubscribes from an unfinished lookup when the search component is destroyed', () => {
-    const response = new Subject<IOpalFinesSuspenseItemSummary>();
-    getSuspenseItemSummary.mockReturnValue(response);
-    fixture.detectChanges();
-    component.handleFormSubmit({
-      formData: { fsis_business_unit_id: 22, fsis_suspense_reference_number: '001234' },
-      nestedFlow: false,
-    });
-    fixture.destroy();
-    response.next(OPAL_FINES_SUSPENSE_ITEM_SUMMARY_MOCK);
-    expect(console.log).not.toHaveBeenCalled();
   });
 });

@@ -408,12 +408,12 @@ export class OpalFines {
 
   /**
    * Looks up the user-facing reference within a BU. Keep the reference as text
-   * to preserve leading zeroes and avoid numeric precision loss.
+   * to avoid numeric precision loss; search forms remove leading zeroes before submission.
    * Cached by BU/reference until a new search or journey exit clears it.
    *
    * @param businessUnitId - The selected business unit in which to look up the item.
    * @param reference - The user-entered suspense reference, preserved as text and URL-encoded for the request.
-   * @returns An observable of the item summary, including its internal ID for subsequent history requests.
+   * @returns An observable of the item summary, or an empty summary on HTTP 200 when no item matches.
    */
   public getSuspenseItemSummary(businessUnitId: number, reference: string): Observable<IOpalFinesSuspenseItemSummary> {
     const url = `${OPAL_FINES_PATHS.suspenseAccounts}/${businessUnitId}/suspense-items/${encodeURIComponent(reference)}/summary`;

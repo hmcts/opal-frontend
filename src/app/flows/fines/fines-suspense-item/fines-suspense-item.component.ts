@@ -16,9 +16,9 @@ export class FinesSuspenseItemComponent implements OnDestroy {
   private readonly opalFines = inject(OpalFines);
   private readonly store = inject(FinesSuspenseItemStore);
 
-  /** Browser refresh and close bypass the route guard, so check the shared form state. */
+  /** Browser refresh and close would lose unsaved edits and the retained business unit. */
   public handleBeforeUnload(): boolean {
-    return !this.store.unsavedChanges();
+    return !this.store.unsavedChanges() && this.store.selectedBusinessUnitId() === null;
   }
 
   /** Keep state between Suspense pages, but clear it when the whole journey is left. */

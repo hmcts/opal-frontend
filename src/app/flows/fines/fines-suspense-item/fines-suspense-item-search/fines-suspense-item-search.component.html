@@ -2,6 +2,7 @@
   <app-fines-suspense-item-search-form
     [autoCompleteItems]="businessUnitAutoCompleteItems"
     [initialBusinessUnitId]="initialBusinessUnitId"
+    [pending]="isSearching()"
     (businessUnitChange)="handleBusinessUnitChange($event)"
     (unsavedChanges)="handleUnsavedChanges($event)"
     (formSubmit)="handleFormSubmit($event)"
