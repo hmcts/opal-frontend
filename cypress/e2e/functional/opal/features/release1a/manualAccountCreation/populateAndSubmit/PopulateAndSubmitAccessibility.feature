@@ -54,7 +54,7 @@ Feature: Populate And Submit Accessibility
       | Personal      | Postcode                                 | TE1 1ST                             |            |
       | Personal      | Date of birth                            | 01/01/1990                          |            |
       | Personal      | Make and model                           | FORD FOCUS                          |            |
-      | Personal      | Registration number                      | AB12 CDE                            |            |
+      | Personal      | Registration number                      | AB12CDE                            |            |
       | Offence       | Offence code                             | HY35014                             | 1          |
       | Offence       | Date of sentence                         | 8 weeks in the past                 | 1          |
       | Offence       | Result code                              | Compensation (FCOMP)                | 1          |
@@ -101,7 +101,7 @@ Feature: Populate And Submit Accessibility
       | Personal      | Postcode                                 | TE1 1ST                             |            |
       | Personal      | Date of birth                            | 01/01/1990                          |            |
       | Personal      | Make and model                           | FORD FOCUS                          |            |
-      | Personal      | Registration number                      | AB12 CDE                            |            |
+      | Personal      | Registration number                      | AB12CDE                            |            |
       | Offence       | Offence code                             | HY35014                             | 1          |
       | Offence       | Date of sentence                         | 8 weeks in the past                 | 1          |
       | Offence       | Result code                              | Compensation (FCOMP)                | 1          |

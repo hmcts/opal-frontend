@@ -14,7 +14,7 @@ Feature: Company Account Enquiries View Fixed Penalty Journeys
       | company name                              | Fixed Penalty Co {uniq}              |
       | ticket number                             | FPR1BVEH{uniqUpper}                  |
       | issuing authority                         | City of London Central Ticket Office |
-      | registration number                       | XY21 ABC                             |
+      | registration number                       | XY21ABC                             |
       | driving licence                           | LIC-789012                           |
       | notice to owner or hirer number (NTO/NTH) | NT-345678                            |
       | date notice to owner was issued           | 01 May 2023                          |
@@ -30,7 +30,7 @@ Feature: Company Account Enquiries View Fixed Penalty Journeys
     Then I should see the fixed penalty details:
       | Issuing authority                         | City of London Central Ticket Office |
       | Ticket number                             | FPR1BVEH{uniqUpper}                  |
-      | Registration number                       | XY21 ABC                             |
+      | Registration number                       | XY21ABC                             |
       | Driving licence                           | LIC-789012                           |
       | Notice to owner or hirer number (NTO/NTH) | NT-345678                            |
       | Date notice to owner was issued           | 01 May 2023                          |

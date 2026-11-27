@@ -9,6 +9,8 @@ import {
   IFinesMciTill,
 } from './interfaces/fines-mci.interface';
 import { IFinesMciCriminalSearch } from './interfaces/fines-mci-criminal-search.interface';
+import { IFinesMciCourtFeePaymentDetails } from './interfaces/fines-mci-court-fee-payment-details.interface';
+import { FinesMciCourtFeePaymentOrigin } from './types/fines-mci-court-fee-payment-origin.type';
 import { IOpalFinesAccountDefendantAtAGlance } from '@services/fines/opal-fines-service/interfaces/opal-fines-account-defendant-at-a-glance.interface';
 
 import { IOpalFinesAccountDefendantDetailsHeader } from '../../fines-acc/fines-acc-defendant-details/interfaces/fines-acc-defendant-details-header.interface';
@@ -25,6 +27,8 @@ export const FinesMciStore = signalStore(
     selectedCriminalAccountAtAGlance: null as IOpalFinesAccountDefendantAtAGlance | null,
     draftJourney: null as FinesMciJourney | null,
     courtFeeDraft: null as IFinesMciCourtFeeDraft | null,
+    courtFeePaymentDetails: null as IFinesMciCourtFeePaymentDetails | null,
+    courtFeePaymentOrigin: null as FinesMciCourtFeePaymentOrigin | null,
     suspensePayment: null as IFinesMciSuspensePayment | null,
   })),
   withMethods((store) => {
@@ -105,6 +109,8 @@ export const FinesMciStore = signalStore(
             selectedCriminalAccountHeader: null,
             draftJourney: null,
             courtFeeDraft: null,
+            courtFeePaymentDetails: null,
+            courtFeePaymentOrigin: null,
             suspensePayment: null,
           });
           return;
@@ -116,11 +122,36 @@ export const FinesMciStore = signalStore(
       ensureTill,
       /** Stores the selected payment journey until its details are completed. */
       setDraftJourney(draftJourney: FinesMciJourney | null): void {
-        patchState(store, { draftJourney, ...(draftJourney !== 'courtFee' && { courtFeeDraft: null }) });
+        patchState(store, {
+          draftJourney,
+          ...(draftJourney !== 'courtFee' && {
+            courtFeeDraft: null,
+            courtFeePaymentDetails: null,
+            courtFeePaymentOrigin: null,
+          }),
+        });
       },
-      /** Holds court fee form values while the payment journey is in progress. */
+      /** Holds the court fee draft and invalidates payment details if the fee values change. */
       setCourtFeeDraft(courtFeeDraft: IFinesMciCourtFeeDraft | null): void {
-        patchState(store, { courtFeeDraft });
+        const previous = store.courtFeeDraft();
+        const changed =
+          !courtFeeDraft ||
+          !previous ||
+          courtFeeDraft.courtFeeId !== previous.courtFeeId ||
+          courtFeeDraft.amountPaid !== previous.amountPaid ||
+          courtFeeDraft.numberOfItems !== previous.numberOfItems;
+        patchState(store, {
+          courtFeeDraft,
+          ...(changed && { courtFeePaymentDetails: null, courtFeePaymentOrigin: null }),
+        });
+      },
+      /** Stores validated payment details while the user reviews the court fee. */
+      setCourtFeePaymentDetails(courtFeePaymentDetails: IFinesMciCourtFeePaymentDetails | null): void {
+        patchState(store, { courtFeePaymentDetails });
+      },
+      /** Records whether payment details were opened from an exact payment or overpayment confirmation. */
+      setCourtFeePaymentOrigin(courtFeePaymentOrigin: FinesMciCourtFeePaymentOrigin | null): void {
+        patchState(store, { courtFeePaymentOrigin });
       },
       /** Stores validated suspense details in application memory. */
       setSuspensePayment(suspensePayment: IFinesMciSuspensePayment | null): void {
@@ -147,6 +178,8 @@ export const FinesMciStore = signalStore(
           tills: [],
           criminalSearch: null,
           courtFeeDraft: null,
+          courtFeePaymentDetails: null,
+          courtFeePaymentOrigin: null,
           criminalSearchResults: null,
           selectedCriminalAccount: null,
           selectedCriminalAccountAtAGlance: null,

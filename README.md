@@ -369,6 +369,8 @@ Use these functional scripts when you need a release-aligned run locally or in a
 - `yarn test:functional:r1a_1_1Off`: `release-1a-1-1` disabled coverage only
 - `yarn test:functional:r1a_1_2`: `release-1a-1-2` enabled coverage only
 - `yarn test:functional:r1a_1_2Off`: `release-1a-1-2` disabled coverage only
+- `yarn test:functional:r1a_1_3`: `release-1a-1-3` enabled coverage only
+- `yarn test:functional:r1a_1_3Off`: `release-1a-1-3` disabled coverage only
 - `yarn test:functional:r1a_and_r1b_drop1`: current `R1A` + `R1BDrop1` positive coverage only
 - `yarn test:functional:r1ab`: current `R1A` + `R1B` positive coverage only
 - `yarn test:functional:r1b_drop1`: current `R1BDrop1` coverage only
@@ -424,7 +426,7 @@ draft-account payloads resolve from `cypress/fixtures/draftAccounts/jcde/`.
 
 If you do not add a selector label, the CNP pipeline uses its normal default functional selection:
 
-- functional tags: `not (@UAT-Technical or @R1BDrop1UatTechJCDE or @R1BDrop1UatTechPreprod or @R1BDrop2UatTechJCDE or @R1BDrop2UatTechPreprod) and not @skip and not (@R1AOff or @R1A1_1Off or @R1A1_2Off or @R1BOff or @R1CWriteOffOff or @R1CEnforcementOperationalReportingOff)`
+- functional tags: `not (@UAT-Technical or @R1BDrop1UatTechJCDE or @R1BDrop1UatTechPreprod or @R1BDrop2UatTechJCDE or @R1BDrop2UatTechPreprod) and not @skip and not (@R1AOff or @R1A1_1Off or @R1A1_2Off or @R1A1_3Off or @R1BOff or @R1CWriteOffOff or @R1CEnforcementOperationalReportingOff)`
 - functional specs: all functional features, unless one or more `test_*` routing labels are present
 
 PR labels supported by the CNP pipeline:
@@ -434,6 +436,8 @@ PR labels supported by the CNP pipeline:
 - `run_release:r1a_1_1_off`: run the `release-1a-1-1` disabled scenarios only
 - `run_release:r1a_1_2`: run the `release-1a-1-2` enabled scenarios only
 - `run_release:r1a_1_2_off`: run the `release-1a-1-2` disabled scenarios only
+- `run_release:r1a_1_3`: run the `release-1a-1-3` enabled scenarios only
+- `run_release:r1a_1_3_off`: run the `release-1a-1-3` disabled scenarios only
 - `run_release:r1ab`: run the current `R1A` + `R1B` positive suite only
 - `run_release:r1a_off`: run the `release-1a` disabled technical scenarios only
 - `run_release:r1b_off`: run the `release-1b` disabled technical scenarios only
@@ -441,6 +445,8 @@ PR labels supported by the CNP pipeline:
 - `run_release:r1c_enforcement_operational_reporting_off`: run the `release-1c-enforcement-operational-reporting` disabled technical scenarios only
 - `run_tag:<expression>`: run a tagged functional subset; the pipeline always appends `not @skip`
 - `enable_legacy_mode`: switch the dev environment to legacy mode and point the legacy gateway at JCDE
+- `debug_cypress`: enable browser-startup and spec-compilation diagnostics in the Jenkins console for PR builds; preserves any existing `DEBUG` setting. Add or remove the label before rebuilding to enable or disable these extra diagnostics.
+- `debug_cypress_chrome`: run the existing CNP test selection in Chrome with the same diagnostics enabled, to compare an Edge failure. Requires Chrome on the agent. Remove the label before rebuilding to restore normal browser selection. Both debug labels exclude launcher environment dumps.
 - `test_authorisation`: route the default CNP functional selection to the `authorisation` functional area
 - `test_enq`: route the default CNP functional selection to the `accountEnquiry` / `fineAccountEnquiry` functional area
 - `test_remo`: route the default CNP functional selection to the `reciprocalMaintenance` functional area
