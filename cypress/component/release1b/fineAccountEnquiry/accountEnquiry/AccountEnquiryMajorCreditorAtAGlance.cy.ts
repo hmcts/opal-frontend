@@ -192,7 +192,7 @@ describe('Major Creditor Account Summary - At a Glance Tab', () => {
     [true, false].forEach((payByBacs) => {
       it(
         `PO-11647: retains the address heading and BACS status when the address is ${description} and pay_by_bacs is ${payByBacs}`,
-        { tags: [...buildTags('@JIRA-STORY:PO-11647'), '@R1BDrop2'] },
+        { tags: [...buildTags('@JIRA-STORY:PO-11647'), '@JIRA-EPIC:PO-11478', '@R1BDrop2'] },
         () => {
           const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
           atAGlance.major_creditor.address = address;
@@ -216,7 +216,7 @@ describe('Major Creditor Account Summary - At a Glance Tab', () => {
 
   it(
     'PO-11647: displays a partial address without the missing-value placeholder',
-    { tags: [...buildTags('@JIRA-STORY:PO-11647'), '@R1BDrop2'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-11647'), '@JIRA-EPIC:PO-11478', '@R1BDrop2'] },
     () => {
       const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
       atAGlance.major_creditor.address = { line_1: null, line_2: 'Suite 2', postcode: 'sg13 8dq' };
@@ -238,7 +238,7 @@ describe('Major Creditor Account Summary - At a Glance Tab', () => {
 
   it(
     'PO-11647: the major creditor tab is accessible when the address is missing',
-    { tags: [...buildTags('@JIRA-STORY:PO-11647'), '@R1BDrop2'] },
+    { tags: [...buildTags('@JIRA-STORY:PO-11647'), '@JIRA-EPIC:PO-11478', '@R1BDrop2'] },
     () => {
       const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
       atAGlance.major_creditor.address = null;
