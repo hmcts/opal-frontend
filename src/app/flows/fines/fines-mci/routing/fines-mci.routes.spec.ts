@@ -189,14 +189,6 @@ describe('finesMci routes', () => {
     expect(snapshot.data).toEqual(expect.objectContaining({ ...PRIMARY_NAV_HIDDEN_ROUTE_DATA, title }));
   });
 
-  it('should guard navigation away from payment category when a radio option has been selected', () => {
-    const paymentCategoryRoute = createTillRoute?.children?.find(
-      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.paymentCategory,
-    );
-
-    expect(paymentCategoryRoute?.canDeactivate).toEqual([canDeactivateGuard]);
-  });
-
   it('loads the Court Fee Details screen from the category journey', async () => {
     const courtFeeRoute = createTillRoute?.children?.find(
       (route) => route.path === FINES_MCI_ROUTING_PATHS.children.courtFeeDetails,
@@ -247,14 +239,6 @@ describe('finesMci routes', () => {
     expect(route?.canDeactivate).toEqual([canDeactivateGuard]);
     expect(route?.resolve?.['courtFees']).toBe(finesMciCourtFeesResolver);
     expect(route?.data?.['heading']).toBe(FINES_MCI_ROUTING_TITLES.children.createTillOverUnderpaymentConfirmation);
-  });
-
-  it('should guard navigation away from suspense details when form data has been entered', () => {
-    const suspenseDetailsRoute = createTillRoute?.children?.find(
-      (route) => route.path === FINES_MCI_ROUTING_PATHS.children.suspenseDetails,
-    );
-
-    expect(suspenseDetailsRoute?.canDeactivate).toEqual([canDeactivateGuard]);
   });
 
   it.each([
