@@ -1,5 +1,6 @@
 #!groovy
 /* groovylint-disable CompileStatic, MethodCount */
+import groovy.json.JsonOutput
 import groovy.transform.Field
 import java.time.DayOfWeek
 import java.time.ZonedDateTime
@@ -1280,6 +1281,7 @@ void setupTestSpecifications() {
 // Scheduled and manually triggered nightly jobs include extended tests in the selected suites.
 env.EXCLUDE_EXTENDED_TESTS = 'false'
 
+try {
 withNightlyPipeline(type, product, component) {
   loadVaultSecrets(nightlySecrets())
   env.TEST_URL = nightlyTestUrlStaging
@@ -1403,5 +1405,29 @@ Description: ${env.EXECUTION_CYCLE_DESCRIPTION}
     )
     runUatTechnicalStage(params.RunUatTech, failureResult, shouldRunWithZephyr, browserToRun)
     runLegacyStage(params.Legacy, failureResult, yarnBuilder, shouldRunWithZephyr, browserToRun)
+  }
+}
+} finally {
+  // Keep nightly failures separate from the regular master commit status.
+  if (env.GIT_CREDENTIALS_ID) {
+    try {
+      httpRequest(
+        url: 'https://api.github.com/repos/hmcts/opal-frontend/dispatches',
+        httpMode: 'POST',
+        authentication: env.GIT_CREDENTIALS_ID,
+        contentType: 'APPLICATION_JSON',
+        requestBody: JsonOutput.toJson([
+          event_type: 'opal-nightly-build',
+          client_payload: [result: currentBuild.currentResult, build_url: env.BUILD_URL, sha: env.GIT_COMMIT ?: '']
+        ]),
+        quiet: true,
+        timeout: 15,
+        validResponseCodes: '204'
+      )
+    } catch (err) {
+      echo "Unable to dispatch nightly result to GitHub: ${err.message}"
+    }
+  } else {
+    echo 'Nightly result not dispatched: GitHub credentials were not established.'
   }
 }
