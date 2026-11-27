@@ -12,6 +12,8 @@ import {
   GovukRadiosItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 import { amountValidator } from '@hmcts/opal-frontend-common/validators/amount';
+import { nonNegativeValueValidator } from '@hmcts/opal-frontend-common/validators/non-negative-value';
+import { nonZeroValueValidator } from '@hmcts/opal-frontend-common/validators/non-zero-value';
 import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { IFinesMciCriminalPayment } from '../../stores/interfaces/fines-mci.interface';
 import { FINES_MCI_PAYMENT_CATEGORY_CRIMINAL_PAYMENT_DETAILS_FIELD_ERRORS } from './constants/fines-mci-payment-category-criminal-payment-details-field-errors.constant';
@@ -73,6 +75,8 @@ export class FinesMciPaymentCategoryCriminalPaymentDetailsFormComponent
         Validators.required,
         Validators.pattern(/^-?\d*(?:\.\d*)?$/),
         amountValidator(18, 2),
+        nonNegativeValueValidator(),
+        nonZeroValueValidator(),
       ]),
       payerType: new FormControl<IFinesMciCriminalPayment['payerType']>(initial.payerType, Validators.required),
       methodOfPayment: new FormControl<IFinesMciCriminalPayment['methodOfPayment']>(
@@ -111,14 +115,14 @@ export class FinesMciPaymentCategoryCriminalPaymentDetailsFormComponent
     this.form.controls['thirdPartyName'].updateValueAndValidity({ emitEvent: false });
   }
 
-  /** Calculates the overpayment in whole pence, preserving all 18 allowed integer digits. */
+  /** Adds the payment to the signed balance in whole pence; a positive result represents an overpayment. */
   protected get overpayment(): string | null {
     const control = this.form.controls['amount'];
     const amount = String(control.value ?? '');
     if (control.invalid || this.accountBalance === null || !Number.isFinite(this.accountBalance)) return null;
-    const [pounds, pence = ''] = amount.replace('-', '').split('.');
-    const paid = (BigInt(pounds) * 100n + BigInt(pence.padEnd(2, '0'))) * (amount.startsWith('-') ? -1n : 1n);
-    const difference = paid - BigInt(Math.round(this.accountBalance * 100));
+    const [pounds, pence = ''] = amount.split('.');
+    const paid = BigInt(pounds) * 100n + BigInt(pence.padEnd(2, '0'));
+    const difference = paid + BigInt(Math.round(this.accountBalance * 100));
     return difference > 0n ? formatPounds(difference, 2) : null;
   }
 

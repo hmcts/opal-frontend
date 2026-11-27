@@ -30,7 +30,7 @@ describe('FinesMciPaymentCategoryCriminalPaymentDetailsFormComponent', () => {
 
   function initialise(initialValue: IFinesMciCriminalPayment | null = null): void {
     fixture.componentRef.setInput('initialValue', initialValue);
-    fixture.componentRef.setInput('accountBalance', 100);
+    fixture.componentRef.setInput('accountBalance', -100);
     fixture.detectChanges();
   }
   function submit(): void {
@@ -68,7 +68,7 @@ describe('FinesMciPaymentCategoryCriminalPaymentDetailsFormComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Select a method of payment');
     expect(fixture.nativeElement.querySelector('#amount').getAttribute('aria-describedby')).toBe('amount-error');
   });
-  it.each(['abc', '12x', '£10', '1,000', '1.2.3', '1e3', '0x10', 'Infinity'])(
+  it.each(['abc', '12x', '£10', '-£20', '1,000', '1.2.3', '1e3', '0x10', 'Infinity'])(
     'shows the non-numeric error on Continue for %s without submitting',
     (amount) => {
       initialise({ ...PAYMENT, amount });
@@ -89,16 +89,36 @@ describe('FinesMciPaymentCategoryCriminalPaymentDetailsFormComponent', () => {
     expect(component.form.get('amount')?.invalid).toBe(true);
     expect(component['overpayment']).toBeNull();
   });
-  it.each(['0', '1', '1.2', '123456789012345678.12'])('accepts numeric amount %s', (value) => {
+  it.each(['0.01', '1', '1.2', '123456789012345678.12'])('accepts positive numeric amount %s', (value) => {
     initialise(PAYMENT);
     component.form.get('amount')?.setValue(value);
     expect(component.form.get('amount')?.valid).toBe(true);
   });
   it.each([
+    ['-20', 'Amount cannot be a negative value'],
+    ['-0.01', 'Amount cannot be a negative value'],
+    ['0', 'Amount cannot be zero'],
+    ['0.00', 'Amount cannot be zero'],
+    ['-0.00', 'Amount cannot be zero'],
+  ])('rejects non-positive payment %s on Continue', (amount, message) => {
+    initialise({ ...PAYMENT, amount });
+    const emit = vi.spyOn(component['formSubmit'], 'emit');
+
+    submit();
+
+    expect(component.form.controls['amount'].invalid).toBe(true);
+    expect(fixture.nativeElement.querySelector('#amount-error')?.textContent).toBe(message);
+    expect(fixture.nativeElement.querySelector('.govuk-error-summary__list')?.textContent).toContain(message);
+    expect(component['overpayment']).toBeNull();
+    expect(emit).not.toHaveBeenCalled();
+  });
+  it.each([
     ['99.99', null],
+    ['50.00', null],
     ['-1.00', null],
     ['100', null],
     ['100.01', '£0.01'],
+    ['110.00', '£10.00'],
     ['110.10', '£10.10'],
     ['123456789012345678.12', '£123,456,789,012,345,578.12'],
     ['', null],
@@ -112,6 +132,24 @@ describe('FinesMciPaymentCategoryCriminalPaymentDetailsFormComponent', () => {
     if (expected)
       expect(fixture.nativeElement.textContent).toContain(`This amount contains a ${expected} overpayment.`);
     else expect(fixture.nativeElement.textContent).not.toContain('overpayment');
+  });
+  it.each([
+    [-100.01, '100.00', null],
+    [-100.01, '100.01', null],
+    [-100.01, '100.02', '£0.01'],
+    [0, '50.00', '£50.00'],
+    [10, '50.00', '£60.00'],
+  ])('calculates overpayment for signed balance %s and payment %s', (balance, amount, expected) => {
+    initialise({ ...PAYMENT, amount });
+    fixture.componentRef.setInput('accountBalance', balance);
+    fixture.detectChanges();
+
+    expect(component['overpayment']).toBe(expected);
+    if (expected) {
+      expect(fixture.nativeElement.textContent).toContain(`This amount contains a ${expected} overpayment.`);
+    } else {
+      expect(fixture.nativeElement.textContent).not.toContain('overpayment');
+    }
   });
   it('hides the overpayment after the Amount control is reset', () => {
     initialise(PAYMENT);
