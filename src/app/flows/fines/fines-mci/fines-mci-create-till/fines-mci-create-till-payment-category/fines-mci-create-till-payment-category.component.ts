@@ -91,6 +91,7 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
         if (navigated) {
           this.finesMciStore.setDraftJourney(null);
           this.finesMciStore.setSuspensePayment(null);
+          this.finesMciStore.setSuspensePayerDetails(null);
         }
       });
   }
@@ -103,6 +104,7 @@ export class FinesMciCreateTillPaymentCategoryComponent extends AbstractFormPare
 
   /** Requests a browser leave warning for unsaved selections or a journey awaiting navigation. */
   @HostListener('window:beforeunload')
+  /** Allows the browser to unload only when there are no unsaved changes. */
   public handleBeforeUnload(): boolean {
     return !this.isContinuing() && !this.stateUnsavedChanges;
   }

@@ -76,7 +76,7 @@ describe('FinesMciCreateTillSelectBuComponent', () => {
 
     fixture.debugElement.query(By.css('opal-lib-govuk-cancel-link')).triggerEventHandler('linkClickEvent', true);
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create-allocate']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/fines/manual-cash-input/create-allocate'], {});
     expect(finesMciStore.businessUnit()).toEqual(businessUnit);
     expect(component.canDeactivate()).toBe(false);
 
@@ -93,7 +93,7 @@ describe('FinesMciCreateTillSelectBuComponent', () => {
 
     expect(finesMciStore.businessUnit()).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
     expect(finesMciStore.tills()).toHaveLength(1);
-    expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create', 'till', 'details']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/fines/manual-cash-input/create/till/details'], {});
   });
 
   it('should mark the business unit field as touched when submit has no selection', () => {
@@ -113,7 +113,7 @@ describe('FinesMciCreateTillSelectBuComponent', () => {
     component.handleSubmit();
 
     expect(finesMciStore.businessUnit()).toEqual(OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK.refData[0]);
-    expect(navigateSpy).toHaveBeenCalledWith(['/', 'fines', 'manual-cash-input', 'create', 'till', 'details']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/fines/manual-cash-input/create/till/details'], {});
   });
 
   it('should keep the user on the selection page when no business unit is chosen', () => {

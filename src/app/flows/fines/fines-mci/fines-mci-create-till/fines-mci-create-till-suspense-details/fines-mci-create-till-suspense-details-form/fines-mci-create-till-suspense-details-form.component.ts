@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { takeUntil } from 'rxjs';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AbstractFormBaseComponent } from '@hmcts/opal-frontend-common/components/abstract/abstract-form-base';
@@ -6,21 +15,29 @@ import { IAbstractFormBaseForm } from '@hmcts/opal-frontend-common/components/ab
 import { IAbstractFormControlErrorMessage } from '@hmcts/opal-frontend-common/components/abstract/interfaces';
 import { GovukCancelLinkComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-cancel-link';
 import { GovukErrorSummaryComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-error-summary';
+import { GovukTextInputComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input';
+import { GovukTextInputPrefixSuffixComponent } from '@hmcts/opal-frontend-common/components/govuk/govuk-text-input-prefix-suffix';
 import {
   GovukRadioComponent,
   GovukRadiosConditionalComponent,
   GovukRadiosItemComponent,
 } from '@hmcts/opal-frontend-common/components/govuk/govuk-radio';
 import { amountValidator } from '@hmcts/opal-frontend-common/validators/amount';
+import { optionalMaxLengthValidator } from '@hmcts/opal-frontend-common/validators/optional-max-length';
+import { patternValidator } from '@hmcts/opal-frontend-common/validators/pattern-validator';
 import { IFinesMciSuspensePayment } from '../../../stores/interfaces/fines-mci.interface';
 import { FINES_MCI_CREATE_TILL_SUSPENSE_DETAILS_FIELD_ERRORS } from './constants/fines-mci-create-till-suspense-details-field-errors.constant';
 import { IFinesMciCreateTillSuspenseDetailsFieldErrors } from './interfaces/fines-mci-create-till-suspense-details-field-errors.interface';
+
+const referenceValidators = [optionalMaxLengthValidator(50), patternValidator(/^[a-zA-Z0-9- '\u2019]*$/, 'pattern')];
 
 @Component({
   selector: 'app-fines-mci-create-till-suspense-details-form',
   imports: [
     GovukCancelLinkComponent,
     GovukErrorSummaryComponent,
+    GovukTextInputComponent,
+    GovukTextInputPrefixSuffixComponent,
     GovukRadioComponent,
     GovukRadiosConditionalComponent,
     GovukRadiosItemComponent,
@@ -30,6 +47,7 @@ import { IFinesMciCreateTillSuspenseDetailsFieldErrors } from './interfaces/fine
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FinesMciCreateTillSuspenseDetailsFormComponent extends AbstractFormBaseComponent implements OnInit {
+  private readonly changeDetector = inject(ChangeDetectorRef);
   @Output() protected override formSubmit = new EventEmitter<IAbstractFormBaseForm<IFinesMciSuspensePayment>>();
   @Output() protected cancelRequested = new EventEmitter<void>();
   protected override fieldErrors: IFinesMciCreateTillSuspenseDetailsFieldErrors = {
@@ -65,30 +83,43 @@ export class FinesMciCreateTillSuspenseDetailsFormComponent extends AbstractForm
       reason: new FormControl<IFinesMciSuspensePayment['reason']>(initial.reason, Validators.required),
       relevantDetails: new FormControl(initial.relevantDetails),
     });
-    this.updateConditionalValidators();
+    this.setInitialErrorMessages();
+    this.updatePaymentMethodValidators();
+    this.updateReasonValidators();
   }
 
-  /** Applies reference, source, and additional-detail validators only when their fields are relevant. */
-  private updateConditionalValidators(): void {
+  /** Applies reference and source validators for the selected payment method. */
+  private updatePaymentMethodValidators(): void {
     const method = this.form.controls['methodOfPayment'].value;
-    const referenceValidators = [Validators.maxLength(50), Validators.pattern(/^[a-zA-Z0-9\- '\u2019]*$/)];
-    const postalOrderReference = this.form.controls['paymentReferencePostalOrder'];
-    const chequeReference = this.form.controls['paymentReferenceCheque'];
-    const creditTransferReference = this.form.controls['paymentReferenceCreditTransfer'];
-    postalOrderReference.setValidators(method === 'postalOrder' ? referenceValidators : []);
-    chequeReference.setValidators(method === 'cheque' ? referenceValidators : []);
-    creditTransferReference.setValidators(method === 'creditTransfer' ? referenceValidators : []);
-    this.form.controls['source'].setValidators(method === 'creditTransfer' ? [Validators.required] : []);
-    this.form.controls['relevantDetails'].setValidators(
-      this.form.controls['reason'].value === 'unidentified'
-        ? [Validators.maxLength(50), Validators.pattern(/^[a-zA-Z0-9\- '\u2019]*$/)]
-        : [],
+    this.updateControl('paymentReferencePostalOrder', method === 'postalOrder' ? referenceValidators : []);
+    this.updateControl('paymentReferenceCheque', method === 'cheque' ? referenceValidators : []);
+    this.updateControl('paymentReferenceCreditTransfer', method === 'creditTransfer' ? referenceValidators : []);
+    this.updateControl('source', method === 'creditTransfer' ? [Validators.required] : []);
+    const inactiveFields = [
+      ...(method === 'postalOrder' ? [] : ['paymentReferencePostalOrder']),
+      ...(method === 'cheque' ? [] : ['paymentReferenceCheque']),
+      ...(method === 'creditTransfer' ? [] : ['paymentReferenceCreditTransfer', 'source']),
+    ];
+    this.clearInactiveFieldErrors(inactiveFields);
+  }
+
+  /** Applies additional-detail validators only for the unidentified suspense reason. */
+  private updateReasonValidators(): void {
+    const isUnidentified = this.form.controls['reason'].value === 'unidentified';
+    this.updateControl('relevantDetails', isUnidentified ? referenceValidators : []);
+    this.clearInactiveFieldErrors(isUnidentified ? [] : ['relevantDetails']);
+  }
+
+  /** Clears displayed errors and summary links for fields that are no longer active. */
+  private clearInactiveFieldErrors(inactiveFields: string[]): void {
+    for (const field of inactiveFields) {
+      this.removeControlErrors(field);
+    }
+    this.formErrorSummaryMessage = this.formErrorSummaryMessage.filter(
+      (error) => !inactiveFields.includes(error.fieldId),
     );
-    postalOrderReference.updateValueAndValidity({ emitEvent: false });
-    chequeReference.updateValueAndValidity({ emitEvent: false });
-    creditTransferReference.updateValueAndValidity({ emitEvent: false });
-    this.form.controls['source'].updateValueAndValidity({ emitEvent: false });
-    this.form.controls['relevantDetails'].updateValueAndValidity({ emitEvent: false });
+    this.formErrors = this.formErrors?.filter((error) => !inactiveFields.includes(error.fieldId)) ?? [];
+    this.changeDetector.markForCheck();
   }
 
   /** Reports unsaved changes whenever at least one field contains a value. */
@@ -101,16 +132,20 @@ export class FinesMciCreateTillSuspenseDetailsFormComponent extends AbstractForm
   /** Initialises the form and refreshes conditional validators when selections change. */
   public override ngOnInit(): void {
     this.initialiseForm();
-    this.setInitialErrorMessages();
-    this.form.valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
-      this.updateConditionalValidators();
+    this.form.controls['methodOfPayment'].valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
+      this.updatePaymentMethodValidators();
+    });
+    this.form.controls['reason'].valueChanges.pipe(takeUntil(this.ngUnsubscribe)).subscribe(() => {
+      this.updateReasonValidators();
     });
     super.ngOnInit();
   }
 
-  /** Marks the form as submitted before delegating validation and error handling to the base form. */
-  public submitForm(event: SubmitEvent): void {
-    this.formSubmitted = true;
+  /**
+   * Clears references for other payment methods before submitting through the base form.
+   * @param event - Form submission event.
+   */
+  public override handleFormSubmit(event: SubmitEvent): void {
     const selectedMethod = this.form.controls['methodOfPayment'].value;
     const referenceFields = [
       { method: 'postalOrder', controlName: 'paymentReferencePostalOrder' },
@@ -124,6 +159,6 @@ export class FinesMciCreateTillSuspenseDetailsFormComponent extends AbstractForm
       }
     }
 
-    this.handleFormSubmit(event);
+    super.handleFormSubmit(event);
   }
 }
