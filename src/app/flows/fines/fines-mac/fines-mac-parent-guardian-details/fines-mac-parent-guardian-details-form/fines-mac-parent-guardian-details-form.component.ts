@@ -6,6 +6,7 @@ import {
   OnInit,
   Output,
   computed,
+  effect,
   inject,
 } from '@angular/core';
 import { FinesMacAbstractAliasFormComponent } from '../../abstracts/fines-mac-abstract-alias-form.component';
@@ -13,6 +14,7 @@ import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Va
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
+import { FinesVehicleRegistrationConfigService } from '@services/fines/fines-vehicle-registration-config.service';
 import { IFinesMacParentGuardianDetailsFieldErrors } from '../interfaces/fines-mac-parent-guardian-details-field-errors.interface';
 import { IFinesMacParentGuardianDetailsForm } from '../interfaces/fines-mac-parent-guardian-details-form.interface';
 import { FINES_MAC_PARENT_GUARDIAN_DETAILS_ALIAS } from '../constants/fines-mac-parent-guardian-details-alias';
@@ -75,21 +77,54 @@ export class FinesMacParentGuardianDetailsFormComponent
 {
   private readonly finesMacStore = inject(FinesMacStore);
   private readonly globalStore = inject(GlobalStore);
+  private readonly vehicleRegistrationConfigService = inject(FinesVehicleRegistrationConfigService);
+
+  /** Returns the current length message and validator for the parent or guardian registration field. */
+  private get vehicleRegistrationConfig() {
+    return this.vehicleRegistrationConfigService.getConfig('Registration number', 10);
+  }
 
   @Output() protected override formSubmit = new EventEmitter<IFinesMacParentGuardianDetailsForm>();
   protected readonly dateService = inject(DateService);
   protected readonly fineMacRoutingPaths = FINES_MAC_ROUTING_PATHS;
   protected override readonly aliasFormArrayName = 'fm_parent_guardian_details_aliases';
 
-  override fieldErrors: IFinesMacParentGuardianDetailsFieldErrors = FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS;
-
+  /** Indicates whether R1A-1-2 registration rules should be shown in the form. */
   public readonly release1a1_2Enabled = computed(
     () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
   );
 
+  override fieldErrors: IFinesMacParentGuardianDetailsFieldErrors = {
+    ...FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS,
+    fm_parent_guardian_details_vehicle_registration_mark: {
+      ...FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS.fm_parent_guardian_details_vehicle_registration_mark,
+      maxlength: {
+        ...FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS.fm_parent_guardian_details_vehicle_registration_mark[
+          'maxlength'
+        ],
+        message: this.vehicleRegistrationConfig.errorMessage,
+      },
+    },
+  };
+
   public yesterday!: string;
   public age!: number;
   public ageLabel!: string;
+
+  /** Keeps the registration error message and validation state synchronized with the release flag. */
+  constructor() {
+    super();
+    effect(() => {
+      const { errorMessage } = this.vehicleRegistrationConfig;
+      const controlName = 'fm_parent_guardian_details_vehicle_registration_mark';
+      this.fieldErrors[controlName]['maxlength'].message = errorMessage;
+      const control = this.form?.get(controlName);
+      if (!control) return;
+
+      control.updateValueAndValidity({ emitEvent: false });
+      if (this.formControlErrorMessages?.[controlName]) this.handleErrorMessages();
+    });
+  }
 
   /**
    * Sets up the parent/guardian details form with the necessary form controls.
@@ -128,7 +163,9 @@ export class FinesMacParentGuardianDetailsFormComponent
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
       fm_parent_guardian_details_vehicle_make: new FormControl(null, [optionalMaxLengthValidator(30)]),
-      fm_parent_guardian_details_vehicle_registration_mark: new FormControl(null, [optionalMaxLengthValidator(10)]),
+      fm_parent_guardian_details_vehicle_registration_mark: new FormControl(null, [
+        this.vehicleRegistrationConfig.validator,
+      ]),
     });
   }
 

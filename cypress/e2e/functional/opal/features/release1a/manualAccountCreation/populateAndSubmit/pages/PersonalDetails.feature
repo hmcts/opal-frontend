@@ -23,7 +23,7 @@ Feature: Personal Details
       | postcode            | TE1 1ST     |
       | date of birth       | 01/01/1990  |
       | make and model      | FORD FOCUS  |
-      | registration number | AB12 CDE    |
+      | registration number | AB12CDE    |
     And I return to account details
     Then I return to the top of the page
     Then the "Personal details" task status is "Provided"
@@ -38,7 +38,7 @@ Feature: Personal Details
       | postcode            | TE1 1ST     |
       | date of birth       | 01/01/1990  |
       | make and model      | FORD FOCUS  |
-      | registration number | AB12 CDE    |
+      | registration number | AB12CDE    |
 
   @R1A @JIRA-TEST-KEY:PO-5576
   Scenario: (AC.13) Restarting manual account clears personal details [@PO-272, @PO-344, @PO-360, @PO-369, @PO-502, @PO-505]
@@ -77,7 +77,7 @@ Feature: Personal Details
       | postcode            | TE1 1ST     |
       | date of birth       | 01/01/1990  |
       | make and model      | FORD FOCUS  |
-      | registration number | AB12 CDE    |
+      | registration number | AB12CDE    |
     And I cancel manual personal details choosing "Ok"
     Then I am viewing account details
     And the "Personal details" task status is "Not provided"
