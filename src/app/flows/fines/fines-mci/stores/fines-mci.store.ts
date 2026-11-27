@@ -7,6 +7,7 @@ import {
   IFinesMciCourtFeeDraft,
   IFinesMciSuspensePayment,
   IFinesMciTill,
+  IFinesMciSuspensePayerDetails,
 } from './interfaces/fines-mci.interface';
 import { IFinesMciCriminalSearch } from './interfaces/fines-mci-criminal-search.interface';
 import { IFinesMciCourtFeePaymentDetails } from './interfaces/fines-mci-court-fee-payment-details.interface';
@@ -30,6 +31,7 @@ export const FinesMciStore = signalStore(
     courtFeePaymentDetails: null as IFinesMciCourtFeePaymentDetails | null,
     courtFeePaymentOrigin: null as FinesMciCourtFeePaymentOrigin | null,
     suspensePayment: null as IFinesMciSuspensePayment | null,
+    suspensePayerDetails: null as IFinesMciSuspensePayerDetails | null,
   })),
   withMethods((store) => {
     /** Returns the existing till ID or creates the first till for the current business unit. */
@@ -112,6 +114,7 @@ export const FinesMciStore = signalStore(
             courtFeePaymentDetails: null,
             courtFeePaymentOrigin: null,
             suspensePayment: null,
+            suspensePayerDetails: null,
           });
           return;
         }
@@ -157,6 +160,10 @@ export const FinesMciStore = signalStore(
       setSuspensePayment(suspensePayment: IFinesMciSuspensePayment | null): void {
         patchState(store, { suspensePayment });
       },
+      /** Stores payer details until the suspense payment is confirmed. */
+      setSuspensePayerDetails(suspensePayerDetails: IFinesMciSuspensePayerDetails | null): void {
+        patchState(store, { suspensePayerDetails });
+      },
       /** Adds a payment journey to the matching till and returns the new payment ID. */
       addPayment(tillId: string, journey: FinesMciJourney): string {
         const paymentId = crypto.randomUUID();
@@ -186,6 +193,7 @@ export const FinesMciStore = signalStore(
           selectedCriminalAccountHeader: null,
           draftJourney: null,
           suspensePayment: null,
+          suspensePayerDetails: null,
         });
       },
     };

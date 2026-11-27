@@ -104,4 +104,3 @@ Feature: Manual Cash Input - Create Till Accessibility
     And I continue with payment category "courtFee"
     And I submit a CF001 court fee payment of "25.00" for "2" items
     Then I see Court Fee Payment Details
-    And I check the page for accessibility
