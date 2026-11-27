@@ -253,5 +253,9 @@ export const FINES_MAC_PERSONAL_DETAILS_FIELD_ERRORS: IFinesMacPersonalDetailsFi
       message: `Registration number must be 11 characters or fewer`,
       priority: 1,
     },
+    alphanumericTextPattern: {
+      message: `Registration number must only contain letters or numbers`,
+      priority: 2,
+    },
   },
 };

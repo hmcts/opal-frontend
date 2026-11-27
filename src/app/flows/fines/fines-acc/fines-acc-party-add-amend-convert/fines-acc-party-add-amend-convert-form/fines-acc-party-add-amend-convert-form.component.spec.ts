@@ -3,6 +3,7 @@ import { ReactiveFormsModule, FormArray, FormControl, FormGroup } from '@angular
 import { signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FinesAccPartyAddAmendConvertFormComponent } from './fines-acc-party-add-amend-convert-form.component';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { FinesAccountStore } from '../../stores/fines-acc.store';
@@ -13,6 +14,7 @@ import { FINES_ACC_DEFENDANT_DETAILS_TABS_KEYS } from '../../fines-acc-defendant
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_MODES } from '../constants/fines-acc-party-add-amend-convert-modes.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_PARTY_TYPES } from '../constants/fines-acc-party-add-amend-convert-party-types.constant';
 import { FINES_ACC_PARTY_ADD_AMEND_CONVERT_SECTION_FRAGMENTS } from '../constants/fines-acc-party-add-amend-convert-fragments.constant';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('FinesAccPartyAddAmendConvertFormComponent', () => {
@@ -24,6 +26,7 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
   let mockRouter: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockActivatedRoute: any;
+  let globalStore: InstanceType<typeof GlobalStore>;
   let mockFinesAccountStore: {
     welsh_speaking: ReturnType<typeof signal>;
     account_number: ReturnType<typeof signal>;
@@ -64,6 +67,8 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
       ],
     }).compileComponents();
 
+    globalStore = TestBed.inject(GlobalStore);
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
     fixture = TestBed.createComponent(FinesAccPartyAddAmendConvertFormComponent);
     component = fixture.componentInstance;
 
@@ -77,6 +82,82 @@ describe('FinesAccPartyAddAmendConvertFormComponent', () => {
     component.partyType = 'individual';
     fixture.detectChanges();
     expect(component).toBeTruthy();
+  });
+
+  it('should use the 11-character vehicle registration limit when release-1a-1-2 is disabled', async () => {
+    component.partyType = 'individual';
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const registrationControl = component.form.get('facc_party_add_amend_convert_vehicle_registration_mark');
+    registrationControl?.setValue('12345678901');
+    expect(registrationControl?.hasError('maxlength')).toBe(false);
+    expect(component.fieldErrors.facc_party_add_amend_convert_vehicle_registration_mark['maxlength'].message).toBe(
+      'Vehicle registration must be 11 characters or fewer',
+    );
+  });
+
+  it('should apply the seven-character vehicle registration limit when enabled before form creation', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+    const enabledFixture = TestBed.createComponent(FinesAccPartyAddAmendConvertFormComponent);
+    const enabledComponent = enabledFixture.componentInstance;
+    enabledComponent.partyType = 'individual';
+    enabledFixture.detectChanges();
+
+    const registrationControl = enabledComponent.form.get('facc_party_add_amend_convert_vehicle_registration_mark');
+    registrationControl?.setValue('XY21ABC');
+    expect(registrationControl?.hasError('maxlength')).toBe(false);
+    registrationControl?.setValue('12345678');
+
+    expect(registrationControl?.hasError('maxlength')).toBe(true);
+    expect(
+      enabledComponent.fieldErrors.facc_party_add_amend_convert_vehicle_registration_mark['maxlength'].message,
+    ).toBe('Vehicle registration must be 7 characters or fewer');
+
+    enabledFixture.destroy();
+  });
+
+  it('should refresh registration validation and its message when the release flag changes', () => {
+    component.partyType = 'individual';
+    fixture.detectChanges();
+    const registrationControl = component.form.get('facc_party_add_amend_convert_vehicle_registration_mark');
+    registrationControl?.setValue('12345678');
+    expect(registrationControl?.hasError('maxlength')).toBe(false);
+
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+    fixture.detectChanges();
+    expect(registrationControl?.hasError('maxlength')).toBe(true);
+    expect(component.fieldErrors.facc_party_add_amend_convert_vehicle_registration_mark['maxlength'].message).toBe(
+      'Vehicle registration must be 7 characters or fewer',
+    );
+    component['handleErrorMessages']();
+    expect(component.formControlErrorMessages['facc_party_add_amend_convert_vehicle_registration_mark']).toBe(
+      'Vehicle registration must be 7 characters or fewer',
+    );
+
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: false });
+    fixture.detectChanges();
+    expect(registrationControl?.hasError('maxlength')).toBe(false);
+    expect(
+      component.formControlErrorMessages['facc_party_add_amend_convert_vehicle_registration_mark'],
+    ).toBeUndefined();
+    expect(component.fieldErrors.facc_party_add_amend_convert_vehicle_registration_mark['maxlength'].message).toBe(
+      'Vehicle registration must be 11 characters or fewer',
+    );
+  });
+
+  it('should update the registration message when its control is absent', () => {
+    component.partyType = 'individual';
+    fixture.detectChanges();
+    fixture.changeDetectorRef.detach();
+    component.form.removeControl('facc_party_add_amend_convert_vehicle_registration_mark');
+
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+    TestBed.flushEffects();
+
+    expect(component.fieldErrors.facc_party_add_amend_convert_vehicle_registration_mark['maxlength'].message).toBe(
+      'Vehicle registration must be 7 characters or fewer',
+    );
   });
 
   it.each([
