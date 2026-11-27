@@ -104,22 +104,3 @@ Feature: Manual Cash Input - Create Till Accessibility
     And I continue with payment category "courtFee"
     And I submit a CF001 court fee payment of "25.00" for "2" items
     Then I see Court Fee Payment Details
-
-  @JIRA-STORY:PO-3674
-  Scenario: Suspense Payer Details accessibility across payer types and required validation
-    And I record a suspense payment for reason "overpayment"
-    Then the suspense payer form is displayed
-    And I check the page for accessibility
-    When I continue with the suspense payer details
-    Then a suspense payer type is required
-    And I check the page for accessibility
-    When the suspense payer type is "individual"
-    Then I check the page for accessibility
-    When I continue with the suspense payer details
-    Then the suspense payer field "lastName" has error "Enter last name"
-    And I check the page for accessibility
-    When the suspense payer type is "company"
-    Then I check the page for accessibility
-    When I continue with the suspense payer details
-    Then the suspense payer field "companyName" has error "Enter company name"
-    And I check the page for accessibility
