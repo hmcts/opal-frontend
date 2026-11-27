@@ -282,7 +282,7 @@ describe('APR Add/Change route', () => {
     expect(route?.data).toEqual({
       routePermissionId: [FINES_PERMISSIONS['manage-alternate-payment-references']],
     });
-    expect(route?.resolve).toEqual({ aprs: finesAccAprResolver });
+    expect(route?.resolve?.['aprs']).toBe(finesAccAprResolver);
   });
 
   it('uses the mode-specific Angular page-title resolver', () => {

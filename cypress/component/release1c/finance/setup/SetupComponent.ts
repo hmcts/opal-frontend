@@ -38,6 +38,7 @@ import { FinesMciCreateTillSuspenseDetailsComponent } from 'src/app/flows/fines/
 import { FinesMciPaymentCategoryCriminalSearchComponent } from 'src/app/flows/fines/fines-mci/fines-mci-payment-category-criminal-search/fines-mci-payment-category-criminal-search.component';
 import { FinesMciPaymentCategoryCriminalAccountComponent } from 'src/app/flows/fines/fines-mci/fines-mci-payment-category-criminal-account/fines-mci-payment-category-criminal-account.component';
 import { FinesMciPaymentCategoryCriminalMatchesComponent } from 'src/app/flows/fines/fines-mci/fines-mci-payment-category-criminal-matches/fines-mci-payment-category-criminal-matches.component';
+import { FinesMciPaymentCategoryCriminalPaymentDetailsComponent } from 'src/app/flows/fines/fines-mci/fines-mci-payment-category-criminal-payment-details/fines-mci-payment-category-criminal-payment-details.component';
 import { finesMciCriminalAccountsResolver } from 'src/app/flows/fines/fines-mci/routing/resolvers/fines-mci-criminal-accounts/fines-mci-criminal-accounts.resolver';
 import { FinesMciPlaceholderComponent } from 'src/app/flows/fines/fines-mci/fines-mci-placeholder/fines-mci-placeholder.component';
 import { FinesMciStore } from 'src/app/flows/fines/fines-mci/stores/fines-mci.store';
@@ -153,6 +154,15 @@ const FINANCE_COMPONENT_ROUTES: Routes = [
         },
       },
       {
+        path: [
+          FINES_MCI_ROUTING_PATHS.children.create,
+          FINES_MCI_ROUTING_PATHS.children.till,
+          FINES_MCI_ROUTING_PATHS.children.checkPayment,
+        ].join('/'),
+        component: FinesMciPlaceholderComponent,
+        data: { heading: 'Check payment' },
+      },
+      {
         // These forms navigate relative to their Till parent, matching the application routes.
         path: [FINES_MCI_ROUTING_PATHS.children.create, FINES_MCI_ROUTING_PATHS.children.till].join('/'),
         children: [
@@ -229,8 +239,8 @@ const FINANCE_COMPONENT_ROUTES: Routes = [
           },
           {
             path: `${FINES_MCI_ROUTING_PATHS.children.paymentDetails}/:accountId`,
-            component: FinesMciPlaceholderComponent,
-            data: { heading: 'Payment details' },
+            component: FinesMciPaymentCategoryCriminalPaymentDetailsComponent,
+            canDeactivate: [canDeactivateGuard],
           },
         ],
       },

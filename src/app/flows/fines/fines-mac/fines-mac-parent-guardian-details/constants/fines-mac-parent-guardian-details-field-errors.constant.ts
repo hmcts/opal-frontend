@@ -247,5 +247,9 @@ export const FINES_MAC_PARENT_GUARDIAN_DETAILS_FIELD_ERRORS: IFinesMacParentGuar
       message: `Registration number must be 11 characters or fewer`,
       priority: 1,
     },
+    alphanumericTextPattern: {
+      message: `Registration number must only contain letters or numbers`,
+      priority: 2,
+    },
   },
 };
