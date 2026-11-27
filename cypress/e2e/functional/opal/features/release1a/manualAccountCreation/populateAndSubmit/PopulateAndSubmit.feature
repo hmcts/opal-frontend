@@ -342,7 +342,7 @@ Feature: Populate And Submit
       | postcode                  | rg12 8eu         |
       | national insurance number | ab122398b        |
       | make and model            | FORD FOCUS       |
-      | registration number       | AB12 CDE         |
+      | registration number       | AB12CDE         |
     Then the manual personal details fields are:
       | title                     | Miss             |
       | first names               | FNAME            |
@@ -351,7 +351,7 @@ Feature: Populate And Submit
       | postcode                  | RG12 8EU         |
       | national insurance number | AB122398B        |
       | make and model            | FORD FOCUS       |
-      | registration number       | AB12 CDE         |
+      | registration number       | AB12CDE         |
     And returning to account details the "Personal details" task the status is "Provided"
 
 
@@ -508,9 +508,9 @@ Feature: Populate And Submit
     And I see the following text on the page "Search using the code or name of the sending police force that sent the caution"
 
     When I complete manual court details:
-      | Sending police force            | Met Camera Processing Services / Traffic Offence Reports (001) |
-      | Prosecutor Case Reference (PCR) | 1234                                                           |
-      | Enforcement court               | West London VPFPO                                              |
+      | Sending police force            | Met Police Traffic Offence Reports (001) |
+      | Prosecutor Case Reference (PCR) | 1234                                     |
+      | Enforcement court               | West London VPFPO                        |
     And I return to account details
     Then the "Court details" task status is "Provided"
     And I complete manual account creation with the following fields and defaults:
@@ -539,9 +539,9 @@ Feature: Populate And Submit
     Then I see the following text on the page "Check account details"
     And I see the following text on the page "Police and court details"
     And I see the manual review "Court details" summary:
-      | Sending police force            | Met Camera Processing Services / Traffic Offence Reports (001) |
-      | Prosecutor Case Reference (PCR) | 1234                                                           |
-      | Enforcement court               | West London VPFPO (101)                                        |
+      | Sending police force            | Met Police Traffic Offence Reports (001) |
+      | Prosecutor Case Reference (PCR) | 1234                                     |
+      | Enforcement court               | West London VPFPO (101)                  |
 
   @JIRA-STORY:PO-2767
   Scenario Outline: User selects entry type and is visible on review account screen - <Originator type>

@@ -51,10 +51,12 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String releaseSuiteR1a = 'r1a'
 @Field String releaseSuiteR1a1_1 = 'r1a_1_1'
 @Field String releaseSuiteR1a1_2 = 'r1a_1_2'
+@Field String releaseSuiteR1a1_3 = 'r1a_1_3'
 @Field String releaseSuiteR1ab = 'r1ab'
 @Field String releaseSuiteR1aOff = 'r1a_off'
 @Field String releaseSuiteR1a1_1Off = 'r1a_1_1_off'
 @Field String releaseSuiteR1a1_2Off = 'r1a_1_2_off'
+@Field String releaseSuiteR1a1_3Off = 'r1a_1_3_off'
 @Field String releaseSuiteR1bOff = 'r1b_off'
 @Field String releaseSuiteR1cWriteOffOff = 'r1c_write_off_off'
 @Field String releaseSuiteR1cEnforcementOperationalReportingOff = 'r1c_enforcement_operational_reporting_off'
@@ -79,6 +81,7 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field List<String> r1aPositiveExclusions = [
   '@R1A1_1',
   '@R1A1_2',
+  '@R1A1_3',
   '@R1BDrop1',
   '@R1BDrop2',
   '@R1CFinance',
@@ -88,10 +91,10 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 ]
 @Field String defaultFunctionalTagExpression =
   "not (${defaultFunctionalUatTechExclusions.join(orTagSeparator)}) and not @skip" + andTagSeparator +
-  'not (@R1AOff or @R1A1_1Off or @R1A1_2Off or @R1BOff or @R1CWriteOffOff or ' +
+  'not (@R1AOff or @R1A1_1Off or @R1A1_2Off or @R1A1_3Off or @R1BOff or @R1CWriteOffOff or ' +
   '@R1CEnforcementOperationalReportingOff or @R1CAdministrationOff or @R1CFinancialMovementsOff or ' +
   '@R1CBankingInterfacesOff)'
-@Field String componentExcludeGrepTags = '-@R1AOff+-@R1A1_1Off+-@R1A1_2Off+-@R1BOff'
+@Field String componentExcludeGrepTags = '-@R1AOff+-@R1A1_1Off+-@R1A1_2Off+-@R1A1_3Off+-@R1BOff'
 @Field String macPopulateAndSubmitFeatureGlob =
   'cypress/e2e/functional/opal/features/manualAccountCreation/populateAndSubmit/**/*.feature,'
 @Field String macCheckAndValidateFeatureGlob =
@@ -104,12 +107,14 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
   defaultFunctionalTagExpression + andTagSeparator + "not (${r1aPositiveExclusions.join(orTagSeparator)})"
 @Field String r1a1_1PositiveTagExpression = '(@R1A1_1)' + andTagSeparator + skipTagExpression
 @Field String r1a1_2PositiveTagExpression = '(@R1A1_2)' + andTagSeparator + skipTagExpression
+@Field String r1a1_3PositiveTagExpression = '(@R1A1_3)' + andTagSeparator + skipTagExpression
 @Field String r1abPositiveTagExpression =
   defaultFunctionalTagExpression + andTagSeparator +
   'not (@R1CFinance or @R1CWriteOff or @R1CEnforcementOperationalReporting or @R1CAdministration)'
 @Field String r1aOffTagExpression = '(@R1AOff)' + andTagSeparator + skipTagExpression
 @Field String r1a1_1OffTagExpression = '(@R1A1_1Off)' + andTagSeparator + skipTagExpression
 @Field String r1a1_2OffTagExpression = '(@R1A1_2Off)' + andTagSeparator + skipTagExpression
+@Field String r1a1_3OffTagExpression = '(@R1A1_3Off)' + andTagSeparator + skipTagExpression
 @Field String r1bOffTagExpression = '(@R1BOff)' + andTagSeparator + skipTagExpression
 @Field String r1cWriteOffOffTagExpression = '(@R1CWriteOffOff)' + andTagSeparator + skipTagExpression
 @Field String r1cEnforcementOperationalReportingOffTagExpression =
@@ -129,10 +134,12 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
   releaseSuiteR1a,
   releaseSuiteR1a1_1,
   releaseSuiteR1a1_2,
+  releaseSuiteR1a1_3,
   releaseSuiteR1ab,
   releaseSuiteR1aOff,
   releaseSuiteR1a1_1Off,
   releaseSuiteR1a1_2Off,
+  releaseSuiteR1a1_3Off,
   releaseSuiteR1bOff,
   releaseSuiteR1cWriteOffOff,
   releaseSuiteR1cEnforcementOperationalReportingOff,
@@ -141,10 +148,12 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
   (releaseSuiteR1a)                                 : r1aPositiveTagExpression,
   (releaseSuiteR1a1_1)                              : r1a1_1PositiveTagExpression,
   (releaseSuiteR1a1_2)                              : r1a1_2PositiveTagExpression,
+  (releaseSuiteR1a1_3)                              : r1a1_3PositiveTagExpression,
   (releaseSuiteR1ab)                                : r1abPositiveTagExpression,
   (releaseSuiteR1aOff)                              : r1aOffTagExpression,
   (releaseSuiteR1a1_1Off)                           : r1a1_1OffTagExpression,
   (releaseSuiteR1a1_2Off)                           : r1a1_2OffTagExpression,
+  (releaseSuiteR1a1_3Off)                           : r1a1_3OffTagExpression,
   (releaseSuiteR1bOff)                              : r1bOffTagExpression,
   (releaseSuiteR1cWriteOffOff)                      : r1cWriteOffOffTagExpression,
   (releaseSuiteR1cEnforcementOperationalReportingOff): r1cEnforcementOperationalReportingOffTagExpression,
@@ -157,6 +166,7 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
   (releaseSuiteR1a)    : componentTestScript,
   (releaseSuiteR1a1_1) : componentTestScript,
   (releaseSuiteR1a1_2) : componentTestScript,
+  (releaseSuiteR1a1_3) : componentTestScript,
   (releaseSuiteR1ab)   : componentTestScript,
 ]
 
@@ -834,19 +844,18 @@ withPipeline(type, product, component) {
                   ? releaseSuiteComponentScript(releaseSuiteSelection)
                   : componentTestScript
                 echo "Running opal component tests via yarn ${componentCommand}"
-                try {
-                    yarnBuilder.yarn(componentCommand)
-                } catch (hudson.AbortException e) {
-                    echo "Opal component tests failed: ${e}"
-                    currentBuild.result = 'FAILURE'
-                } finally {
-                    archiveZephyrReports(functionalOutputRoot)
-                    archiveArtifact(functionalArtifactsGlob)
-                    publishHtmlReport(
-                    "functional-output/component/${resolvedBrowserToRun()}/html/",
-                    'component-report.html',
-                    "Component Test Report (${resolvedBrowserToRun()})"
-                  )
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE', message: 'Component tests failed') {
+                    try {
+                        yarnBuilder.yarn(componentCommand)
+                    } finally {
+                        archiveZephyrReports(functionalOutputRoot)
+                        archiveArtifact(functionalArtifactsGlob)
+                        publishHtmlReport(
+                            "functional-output/component/${resolvedBrowserToRun()}/html/",
+                            'component-report.html',
+                            "Component Test Report (${resolvedBrowserToRun()})"
+                        )
+                    }
                 }
             }
         }

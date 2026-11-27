@@ -15,10 +15,10 @@ import { canDownloadInterfaceFile } from './fines-finance-interface-file-downloa
  * @param options - Known names and values.
  * @returns The matching name or the original value.
  */
-export function getInterfaceFileDisplayName(
-  value: string | null,
+export function getInterfaceFileDisplayName<T extends string | null>(
+  value: T,
   options: IAlphagovAccessibleAutocompleteItem[],
-): string | null {
+): string | T {
   return options.find((option) => String(option.value) === value)?.name ?? value;
 }
 
@@ -58,7 +58,7 @@ export function mapInterfaceFileToTableData(
     ...getFileDateTime(file.created_datetime, dateService),
     Title: file.file_name,
     'Business unit':
-      file.business_unit_ids?.map((id) => getInterfaceFileDisplayName(String(id), businessUnits) ?? String(id)) ?? null,
+      file.business_unit_ids?.map((id) => getInterfaceFileDisplayName(String(id), businessUnits)) ?? null,
     Status: status,
     Actions: canDownloadInterfaceFile({ 'File ID': file.interface_file_id, Status: status }) ? 'Download' : '',
   };
