@@ -118,7 +118,7 @@ Feature: Check And Validate
       | Personal details           | Postcode                                 | te1 1st                             |
       | Personal details           | Date of birth                            | 01/01/1990                          |
       | Personal details           | Make and model                           | FORD FOCUS                          |
-      | Personal details           | Registration number                      | ab12 cde                            |
+      | Personal details           | Registration number                      | ab12cde                            |
       | Personal details           | National insurance number                | qq123456c                           |
       | Contact details            | Primary email address                    | P@EMAIL.COM                         |
       | Contact details            | Secondary email address                  | S@EMAIL.COM                         |
@@ -163,7 +163,7 @@ Feature: Check And Validate
       | Date of birth             | 01 January 1990 (Adult) |
       | Vehicle make and model    | FORD FOCUS              |
       | National Insurance number | QQ 12 34 56 C           |
-      | Registration number       | AB12 CDE                |
+      | Registration number       | AB12CDE                |
     And I see the manual review "Contact details" summary:
       | Primary email address   | P@EMAIL.COM   |
       | Secondary email address | S@EMAIL.COM   |
@@ -276,7 +276,7 @@ Feature: Check And Validate
       | Parent or guardian         | Address line 3                           | Addr3                           |
       | Parent or guardian         | Postcode                                 | AB12 3CD                        |
       | Parent or guardian         | Vehicle make                             | Ford Focus                      |
-      | Parent or guardian         | Registration number                      | AB12 CDE                        |
+      | Parent or guardian         | Registration number                      | AB12CDE                        |
       | Parent or guardian         | addAliases                               | true                            |
       | Parent or guardian         | alias1.firstNames                        | alias fname                     |
       | Parent or guardian         | alias1.lastName                          | alias lname{uniq}               |
@@ -334,7 +334,7 @@ Feature: Check And Validate
       | National Insurance number | QW 12 34 56 C                 |
       | Address                   | Addr1  Addr2  Addr3  AB12 3CD |
       | Vehicle make and model    | Ford Focus                    |
-      | Registration number       | AB12 CDE                      |
+      | Registration number       | AB12CDE                      |
     And I see the manual review "Contact details" summary:
       | Primary email address   | P@EMAIL.COM   |
       | Secondary email address | S@EMAIL.COM   |
