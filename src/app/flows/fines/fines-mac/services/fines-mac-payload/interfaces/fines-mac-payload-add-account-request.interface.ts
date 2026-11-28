@@ -7,5 +7,5 @@ export interface IFinesMacAddAccountRequestPayload {
   account_type: string;
   account_status: string | null;
   status_message: string | null;
-  source: FinesMacPayloadSource;
+  source?: FinesMacPayloadSource;
 }
