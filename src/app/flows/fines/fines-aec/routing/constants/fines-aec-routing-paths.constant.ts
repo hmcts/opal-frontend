@@ -4,5 +4,7 @@ export const FINES_AEC_ROUTING_PATHS: IFinesAutoEnforcementConfigRoutingPaths = 
   root: 'auto-enforcement',
   children: {
     config: 'config',
+    navigation: 'navigation',
+    amendValues: 'amend-values',
   },
 };

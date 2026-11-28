@@ -1,0 +1,2 @@
+# Keep local node-config overrides out of Docker builds.
+/config/local*.json

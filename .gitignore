@@ -11,6 +11,9 @@
 npm-debug.log
 yarn-error.log
 
+# Local node-config overrides
+/config/local*.json
+
 # Yarn
 .pnp.*
 .yarn/*

@@ -26,4 +26,5 @@ export interface IOpalFinesPaths {
   sourceMappings: string;
   methodOfPaymentMappings: string;
   processInterfaceJobs: string;
+  enforcementAccountTypes: string;
 }

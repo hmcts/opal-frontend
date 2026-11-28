@@ -1,0 +1,21 @@
+@if (successMessage) {
+  <div
+    opal-lib-moj-alert
+    id="aec-account-types-success"
+    type="success"
+    [ariaLabel]="successMessage"
+    [showDismiss]="true"
+    (dismissed)="clearSuccessMessage.emit()"
+  >
+    <opal-lib-moj-alert-icon icon type="success" />
+    <opal-lib-moj-alert-content content>
+      <opal-lib-moj-alert-content-text>{{ successMessage }}</opal-lib-moj-alert-content-text>
+    </opal-lib-moj-alert-content>
+  </div>
+}
+<h2 class="govuk-heading-m" id="aec-account-types-heading">Account types</h2>
+@if (accountTypes.length) {
+  <app-fines-aec-account-types-table [accountTypes]="accountTypes" />
+} @else {
+  <p class="govuk-body" id="aec-account-types-empty">There are no account types to display.</p>
+}
