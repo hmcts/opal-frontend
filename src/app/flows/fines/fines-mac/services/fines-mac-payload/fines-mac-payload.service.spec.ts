@@ -159,6 +159,45 @@ describe('FinesMacPayloadService', () => {
     expect(result).toEqual(buildExpectedReplaceRequest(finesMacPayloadAddAccount));
   });
 
+  it('should resubmit a rejected fine with custody details after changing from hold enforcement', () => {
+    if (!service || !finesMacPayloadAddAccount) {
+      throw new Error('Required mock states are not properly initialised');
+    }
+
+    finesMacPayloadAddAccount.account_status = 'Rejected';
+    finesMacPayloadAddAccount.account_type = FINES_ACCOUNT_TYPES.Fine;
+    finesMacPayloadAddAccount.account.account_type = FINES_ACCOUNT_TYPES.Fine;
+    finesMacPayloadAddAccount.account.defendant_type = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
+    finesMacPayloadAddAccount.account.payment_terms.enforcements = [
+      { result_id: 'COLLO', enforcement_result_responses: null },
+      { result_id: 'NOENF', enforcement_result_responses: [{ parameter_name: 'reason', response: 'Review pending' }] },
+    ];
+
+    const state = service.mapAccountPayload(finesMacPayloadAddAccount, null, null);
+    const paymentTerms = state.paymentTerms.formData;
+    expect(paymentTerms.fm_payment_terms_enforcement_action).toBe('NOENF');
+    expect(paymentTerms.fm_payment_terms_add_enforcement_action).toBe(true);
+
+    paymentTerms.fm_payment_terms_enforcement_action = 'PRIS';
+    paymentTerms.fm_payment_terms_reason_account_is_on_noenf = null;
+    paymentTerms.fm_payment_terms_earliest_release_date = '12/10/2024';
+    paymentTerms.fm_payment_terms_prison_and_prison_number = 'HMP Leeds A1234BC';
+
+    const result = service.buildReplaceAccountPayload(state);
+
+    expect(result.account_status).toBe(FINES_MAC_PAYLOAD_STATUSES.resubmitted);
+    expect(result.account.payment_terms.enforcements).toEqual([
+      { result_id: 'COLLO', enforcement_result_responses: null },
+      {
+        result_id: 'PRIS',
+        enforcement_result_responses: [
+          { parameter_name: 'earliestreleasedate', response: '2024-10-12' },
+          { parameter_name: 'prisonandprisonnumber', response: 'HMP Leeds A1234BC' },
+        ],
+      },
+    ]);
+  });
+
   it.each(
     [true, false].flatMap((enabled) =>
       [
