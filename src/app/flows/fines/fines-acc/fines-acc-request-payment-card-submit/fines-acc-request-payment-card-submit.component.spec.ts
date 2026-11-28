@@ -55,6 +55,7 @@ describe('FinesAccRequestPaymentCardSubmitComponent', () => {
 
     mockOpalFines = {
       addDefendantAccountPaymentCardRequest: vi.fn().mockName('OpalFines.addDefendantAccountPaymentCardRequest'),
+      clearCache: vi.fn().mockName('OpalFines.clearCache'),
     };
     mockRouter = {
       navigate: vi.fn().mockName('Router.navigate'),
@@ -86,6 +87,7 @@ describe('FinesAccRequestPaymentCardSubmitComponent', () => {
     component.handleRequestPaymentCard();
 
     expect(mockOpalFines.addDefendantAccountPaymentCardRequest).toHaveBeenCalled();
+    expect(mockOpalFines.clearCache).toHaveBeenCalledWith('defendantAccountPaymentTermsLatestCache$');
     expect(mockAccountStore.setSuccessMessage).toHaveBeenCalledWith('Payment card request submitted successfully');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['../../', FINES_ACC_DEFENDANT_ROUTING_PATHS.children.details], {
       relativeTo: mockActivatedRoute,
