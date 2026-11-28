@@ -23,6 +23,7 @@ export interface IOpalFinesPaths {
   reportInstances: string;
   interfaceJobsSummary: string;
   tills: string;
+  allocateTills: string;
   sourceMappings: string;
   methodOfPaymentMappings: string;
   processInterfaceJobs: string;

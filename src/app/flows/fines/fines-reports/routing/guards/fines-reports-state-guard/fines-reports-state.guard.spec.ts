@@ -125,4 +125,13 @@ describe('finesReportsStateGuard', () => {
 
     expect(result).toBe(false);
   });
+  it('allows Cash List with Process and Allocate Payments permission', async () => {
+    mockPermissionsService.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['process-and-allocate-payments']]);
+    expect(await runGuard('cash_list', 'reportTypeId')).toBe(true);
+  });
+
+  it('rejects Cash List without Process and Allocate Payments permission', async () => {
+    await runGuard('cash_list', 'reportTypeId');
+    expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
+  });
 });

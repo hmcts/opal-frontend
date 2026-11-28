@@ -5,6 +5,14 @@ import { IFinesReportSummaryListReportConfiguration } from '../interfaces/fines-
 
 export const FINES_REPORT_SUMMARY_LIST_REPORT_CONFIGURATION: IFinesReportSummaryListReportConfiguration[] = [
   {
+    id: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.cashList,
+    reportTypeId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.cashList,
+    heading: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.cashList,
+    title: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.cashList,
+    permissionIds: [FINES_PERMISSIONS['process-and-allocate-payments']],
+    canCreate: false,
+  },
+  {
     id: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports,
     reportTypeId: FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.yourReports,
     heading: FINES_REPORTS_SUMMARY_LIST_ROUTING_TITLES.children.yourReports,

@@ -189,6 +189,8 @@ export const finesRouting: Routes = [
           finesSectionPermissionsGuard,
         ],
         canActivateChild: [release1cEnforcementOperationalReportingFeatureFlagGuard],
+        // Recheck section permissions when leaving Cash List for another report under this reused parent.
+        runGuardsAndResolvers: 'always',
         data: {
           sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.reports,
         },

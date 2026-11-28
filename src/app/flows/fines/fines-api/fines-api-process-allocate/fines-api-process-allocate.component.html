@@ -5,6 +5,28 @@
 </div>
 
 <div class="govuk-grid-column-full" id="fines-api-process-allocate-page">
+  @if (submittedCount() > 0) {
+    <opal-lib-moj-alert
+      id="fines-api-allocate-success"
+      type="success"
+      [ariaLabel]="
+        allocateContent.sentForAllocation(submittedCount()) + ' View the ' + allocateContent.cashListReport + '.'
+      "
+      [showDismiss]="true"
+      (dismissed)="submittedCount.set(0)"
+    >
+      <opal-lib-moj-alert-icon icon type="success" />
+      <opal-lib-moj-alert-content content>
+        <opal-lib-moj-alert-content-text>
+          {{ allocateContent.sentForAllocation(submittedCount()) }} View the
+          <a id="fines-api-allocate-cash-list-report" class="govuk-link" [routerLink]="cashListRoute">{{
+            allocateContent.cashListReport
+          }}</a
+          >.
+        </opal-lib-moj-alert-content-text>
+      </opal-lib-moj-alert-content>
+    </opal-lib-moj-alert>
+  }
   <h1 class="govuk-heading-l">{{ content.heading }}</h1>
 </div>
 
@@ -51,7 +73,12 @@
   }
   @case (tabKeys.allocate) {
     @if (tabAllocate$ | async; as tabData) {
-      <app-fines-api-allocate [tabData]="tabData" (refreshRequested)="refreshAllocateData()"></app-fines-api-allocate>
+      <app-fines-api-allocate
+        (allocationStarted)="handleAllocationStarted()"
+        (allocationCountChanged)="submittedCount.set($event)"
+        [tabData]="tabData"
+        (refreshRequested)="refreshAllocateData()"
+      ></app-fines-api-allocate>
     } @else {
       <div class="govuk-grid-column-full">
         <button
