@@ -20,8 +20,9 @@ export class AccessibilityActions {
   /**
    * Injects axe and runs an accessibility audit on the current page.
    * Logs violations and fails the test if any are found.
+   * @param axeCorePath - Optional project-relative script path for bundlers that rewrite require.resolve.
    */
-  public checkAccessibilityOnly(): void {
+  public checkAccessibilityOnly(axeCorePath?: string): void {
     log('a11y', 'Running axe-core accessibility audit on current page');
 
     const exemptionIds = new Set(DEFAULT_VIOLATION_EXEMPTIONS.filter((exemption) => exemption?.trim().length));
@@ -30,7 +31,7 @@ export class AccessibilityActions {
       log('a11y', 'Applying accessibility violation exemptions', { exemptions: [...exemptionIds] });
     }
 
-    cy.injectAxe();
+    cy.injectAxe({ axeCorePath });
     cy.checkA11y(
       undefined,
       undefined,

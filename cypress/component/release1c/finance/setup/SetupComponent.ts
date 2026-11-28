@@ -12,6 +12,7 @@ import { SessionService } from '@hmcts/opal-frontend-common/services/session-ser
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { canDeactivateGuard } from '@hmcts/opal-frontend-common/guards/can-deactivate';
 import { mount } from 'cypress/angular';
+import { routing as suspenseItemRouting } from 'src/app/flows/fines/fines-suspense-item/routing/fines-suspense-item.routes';
 import { NEVER } from 'rxjs';
 import { AppComponent } from 'src/app/app.component';
 import { ACCOUNTS_PERMISSIONS } from 'src/app/flows/fines/constants/accounts-permissions.constant';
@@ -83,6 +84,10 @@ const COURT_FEE_PAYMENT_MAPPINGS = {
 };
 
 const FINANCE_COMPONENT_ROUTES: Routes = [
+  {
+    path: [FINES_ROUTING_PATHS.root, FINES_ROUTING_PATHS.children.suspenseItem.root].join('/'),
+    children: suspenseItemRouting,
+  },
   {
     path: `${FINES_ROUTING_PATHS.root}/${FINES_DASHBOARD_ROUTING_PATHS.root}/:dashboardType`,
     component: DashboardComponent,

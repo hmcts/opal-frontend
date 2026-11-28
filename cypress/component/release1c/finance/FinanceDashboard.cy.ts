@@ -1,5 +1,7 @@
-import { FINES_DASHBOARD_ROUTING_PATHS } from 'src/app/flows/fines/constants/fines-dashboard-routing-paths.constant';
+import { Router } from '@angular/router';
 import { FINES_PERMISSIONS } from 'src/app/constants/fines-permissions.constant';
+import { RELEASE_1C_SUSPENSE_FEATURE_FLAG } from 'src/app/flows/fines/constants/release-feature-flags.constant';
+import { FINES_DASHBOARD_ROUTING_PATHS } from 'src/app/flows/fines/constants/fines-dashboard-routing-paths.constant';
 import { PrimaryNavigationLocators as PrimaryNav } from '../../../shared/selectors/primary-navigation.locators';
 import { FinanceLocators } from '../../../shared/selectors/finance.locators';
 import { setupFinancePageComponent } from './setup/SetupComponent';
@@ -171,3 +173,76 @@ describe('Finance dashboard', () => {
     },
   );
 });
+
+describe(
+  'Finance dashboard - Manage Suspense Items',
+  { tags: ['@JIRA-STORY:PO-9762', '@JIRA-LABEL:navigation', '@R1CSuspense'] },
+  () => {
+    const permissionScenarios = [
+      { name: 'View only', permissionIds: [FINES_PERMISSIONS['view-suspense-items']] },
+      { name: 'Manage only', permissionIds: [FINES_PERMISSIONS['manage-suspense-items']] },
+      {
+        name: 'both View and Manage',
+        permissionIds: [FINES_PERMISSIONS['view-suspense-items'], FINES_PERMISSIONS['manage-suspense-items']],
+      },
+    ];
+
+    permissionScenarios.forEach(({ name, permissionIds }) => {
+      it(`(AC6b, AC6c) displays one Manage Suspense Items link with ${name} permission`, () => {
+        setupFinancePageComponent({
+          dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+          permissionIds,
+          paymentPermissionBusinessUnitIds: [],
+        });
+
+        cy.get(PrimaryNav.itemByText(PrimaryNav.labels.finance)).should('be.visible');
+        cy.contains(FinanceLocators.suspenseHeading, FinanceLocators.labels.suspense).should('be.visible');
+        cy.get(FinanceLocators.manageSuspenseItemsLink)
+          .should('have.length', 1)
+          .and('be.visible')
+          .and('have.text', FinanceLocators.labels.manageSuspenseItems)
+          .and('have.attr', 'href', '/fines/suspense-item/search');
+      });
+
+      it(`(AC6f) hides Manage Suspense Items when Suspense is disabled despite ${name} permission`, () => {
+        setupFinancePageComponent({
+          dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+          permissionIds,
+          featureFlags: { [RELEASE_1C_SUSPENSE_FEATURE_FLAG]: false },
+        });
+
+        cy.contains('h1', 'Finance').should('be.visible');
+        cy.get(FinanceLocators.manageSuspenseItemsLink).should('not.exist');
+        cy.contains(FinanceLocators.suspenseHeading, FinanceLocators.labels.suspense).should('not.exist');
+        cy.get(FinanceLocators.manualCashInputLink).should('be.visible');
+      });
+    });
+
+    it('(AC6d) hides Manage Suspense Items when the user has no suspense permission in any business unit', () => {
+      setupFinancePageComponent({
+        dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+        permissionIds: [],
+      });
+
+      cy.contains('h1', 'Finance').should('be.visible');
+      cy.get(FinanceLocators.manageSuspenseItemsLink).should('not.exist');
+      cy.contains(FinanceLocators.suspenseHeading, FinanceLocators.labels.suspense).should('not.exist');
+      cy.get(FinanceLocators.manualCashInputLink).should('be.visible');
+    });
+
+    permissionScenarios.slice(0, 2).forEach(({ name, permissionIds }) => {
+      it(`(AC6e) navigates to Search for Suspense Item with ${name} permission`, () => {
+        setupFinancePageComponent({
+          dashboardType: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
+          permissionIds,
+          paymentPermissionBusinessUnitIds: [],
+        });
+
+        cy.get(FinanceLocators.manageSuspenseItemsLink).should('have.attr', 'target', '_self').click();
+
+        cy.get<Router>('@financeRouter').its('url').should('eq', '/fines/suspense-item/search');
+        cy.contains('h1', 'Search for suspense item').should('be.visible');
+      });
+    });
+  },
+);

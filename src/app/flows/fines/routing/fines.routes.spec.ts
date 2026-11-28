@@ -3,6 +3,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FINES_DASHBOARD_ROUTING_PATHS } from '../constants/fines-dashboard-routing-paths.constant';
 import { FINES_ROUTING_PATHS } from './constants/fines-routing-paths.constant';
 import { PRIMARY_NAV_HIDDEN_ROUTE_DATA } from '@app/constants/route-data.constant';
+import {
+  RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG,
+  RELEASE_1C_SUSPENSE_FEATURE_FLAG,
+} from '../constants/release-feature-flags.constant';
 
 const featureFlagRedirectGuardMock = vi.fn();
 const release1aFeatureFlagGuardMock = vi.fn();
@@ -10,6 +14,8 @@ const release1bFeatureFlagGuardMock = vi.fn();
 const release1cWriteOffFeatureFlagGuardMock = vi.fn();
 const release1cEnforcementOperationalReportingFeatureFlagGuardMock = vi.fn();
 const release1cPaymentFeatureFlagGuardMock = vi.fn();
+const release1cFinancialMovementsFeatureFlagGuardMock = vi.fn();
+const release1cSuspenseFeatureFlagGuardMock = vi.fn();
 const release1cBankingInterfacesFeatureFlagGuardMock = vi.fn();
 const release1aFeatureFlagName = 'release-1a';
 const release1bFeatureFlagName = 'release-1b';
@@ -35,6 +41,14 @@ const mockFeatureFlagRedirectGuard = (): void => {
 
       if (featureFlagName === release1cPaymentFeatureFlagName) {
         return release1cPaymentFeatureFlagGuardMock;
+      }
+
+      if (featureFlagName === RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG) {
+        return release1cFinancialMovementsFeatureFlagGuardMock;
+      }
+
+      if (featureFlagName === RELEASE_1C_SUSPENSE_FEATURE_FLAG) {
+        return release1cSuspenseFeatureFlagGuardMock;
       }
 
       if (featureFlagName === release1cBankingInterfacesFeatureFlagName) {
@@ -64,6 +78,8 @@ describe('fines routes', () => {
   let release1cWriteOffFeatureFlagGuard: FinesRoutesModule['release1cWriteOffFeatureFlagGuard'];
   let release1cEnforcementOperationalReportingFeatureFlagGuard: FinesRoutesModule['release1cEnforcementOperationalReportingFeatureFlagGuard'];
   let release1cPaymentFeatureFlagGuard: FinesRoutesModule['release1cPaymentFeatureFlagGuard'];
+  let release1cFinancialMovementsFeatureFlagGuard: FinesRoutesModule['release1cFinancialMovementsFeatureFlagGuard'];
+  let release1cSuspenseFeatureFlagGuard: FinesRoutesModule['release1cSuspenseFeatureFlagGuard'];
   let release1cBankingInterfacesFeatureFlagGuard: FinesRoutesModule['release1cBankingInterfacesFeatureFlagGuard'];
   let finesSectionPermissionsGuard: unknown;
   let dashboardTypeGuard: unknown;
@@ -72,6 +88,8 @@ describe('fines routes', () => {
   let canDeactivateGuard: unknown;
   let aecRouting: Routes;
   let autoPaymentInRouting: Routes;
+  let suspenseItemRouting: Routes;
+  let routePermissionsGuard: unknown;
   let childRoutes: Routes;
 
   afterEach(() => {
@@ -93,6 +111,8 @@ describe('fines routes', () => {
       canDeactivateGuardModule,
       aecRoutingModule,
       autoPaymentInRoutingModule,
+      suspenseItemRoutingModule,
+      routePermissionsGuardModule,
     ] = await Promise.all([
       import('./fines.routes'),
       import('./guards/fines-section-permissions/fines-section-permissions.guard'),
@@ -102,6 +122,8 @@ describe('fines routes', () => {
       import('@hmcts/opal-frontend-common/guards/can-deactivate'),
       import('../fines-aec/routing/fines-aec.routes'),
       import('../fines-api/routing/fines-api.routes'),
+      import('../fines-suspense-item/routing/fines-suspense-item.routes'),
+      import('@hmcts/opal-frontend-common/guards/route-permissions'),
     ]);
 
     finesRouting = finesRoutes.finesRouting;
@@ -111,6 +133,8 @@ describe('fines routes', () => {
     release1cEnforcementOperationalReportingFeatureFlagGuard =
       finesRoutes.release1cEnforcementOperationalReportingFeatureFlagGuard;
     release1cPaymentFeatureFlagGuard = finesRoutes.release1cPaymentFeatureFlagGuard;
+    release1cFinancialMovementsFeatureFlagGuard = finesRoutes.release1cFinancialMovementsFeatureFlagGuard;
+    release1cSuspenseFeatureFlagGuard = finesRoutes.release1cSuspenseFeatureFlagGuard;
     release1cBankingInterfacesFeatureFlagGuard = finesRoutes.release1cBankingInterfacesFeatureFlagGuard;
     finesSectionPermissionsGuard = finesSectionPermissionsGuardModule.finesSectionPermissionsGuard;
     dashboardTypeGuard = dashboardTypeGuardModule.dashboardTypeGuard;
@@ -119,6 +143,8 @@ describe('fines routes', () => {
     canDeactivateGuard = canDeactivateGuardModule.canDeactivateGuard;
     aecRouting = aecRoutingModule.routing;
     autoPaymentInRouting = autoPaymentInRoutingModule.routing;
+    suspenseItemRouting = suspenseItemRoutingModule.routing;
+    routePermissionsGuard = routePermissionsGuardModule.routePermissionsGuard;
     childRoutes =
       finesRouting.find((route) => route.path === FINES_ROUTING_PATHS.root && route.children)?.children ?? [];
   });
@@ -150,6 +176,25 @@ describe('fines routes', () => {
     expect(release1cBankingInterfacesFeatureFlagGuard).toBe(release1cBankingInterfacesFeatureFlagGuardMock);
   });
 
+  it('should create the Financial Movements guard with its feature flag', () => {
+    expect(featureFlagRedirectGuardMock).toHaveBeenCalledWith(RELEASE_1C_FINANCIAL_MOVEMENTS_FEATURE_FLAG);
+    expect(release1cFinancialMovementsFeatureFlagGuard).toBe(release1cFinancialMovementsFeatureFlagGuardMock);
+  });
+
+  it('should create the Suspense guard with its feature flag', () => {
+    expect(featureFlagRedirectGuardMock).toHaveBeenCalledWith(RELEASE_1C_SUSPENSE_FEATURE_FLAG);
+    expect(release1cSuspenseFeatureFlagGuard).toBe(release1cSuspenseFeatureFlagGuardMock);
+  });
+
+  it('protects Suspense entry with authentication, its feature flag and either Suspense permission', () => {
+    const suspenseRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.suspenseItem.root);
+
+    expect(suspenseRoute).toBeDefined();
+    expect(suspenseRoute?.children).toBe(suspenseItemRouting);
+    expect(suspenseRoute?.canActivate).toEqual([authGuard, release1cSuspenseFeatureFlagGuard, routePermissionsGuard]);
+    expect(suspenseRoute?.data?.['routePermissionId']).toEqual([25, 26]);
+  });
+
   it('should guard the draft root as an Accounts section entry route', () => {
     const draftRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.draft.root);
 
@@ -174,6 +219,7 @@ describe('fines routes', () => {
     const manualCashInputRoute = childRoutes.find((route) => route.path === FINES_ROUTING_PATHS.children.mci.root);
 
     expect(manualCashInputRoute?.canActivate).toContain(finesSectionPermissionsGuard);
+    expect(manualCashInputRoute?.canActivate).toContain(release1cFinancialMovementsFeatureFlagGuard);
     expect(manualCashInputRoute?.data).toEqual({
       sectionKey: FINES_DASHBOARD_ROUTING_PATHS.children.finance,
     });
@@ -188,6 +234,7 @@ describe('fines routes', () => {
     expect(autoPaymentInRoute?.canActivate).toEqual([
       authGuard,
       release1cPaymentFeatureFlagGuard,
+      release1cFinancialMovementsFeatureFlagGuard,
       finesSectionPermissionsGuard,
     ]);
     expect(autoPaymentInRoute?.canActivateChild).toEqual([release1cPaymentFeatureFlagGuard]);

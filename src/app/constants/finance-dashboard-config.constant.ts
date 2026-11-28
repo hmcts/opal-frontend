@@ -1,11 +1,17 @@
 import { IDashboardPageConfiguration } from '@hmcts/opal-frontend-common/pages/dashboard-page/interfaces';
 import { FINES_FINANCE_LINKS } from '@app/flows/fines/fines-finance/constants/fines-finance-links.constant';
 import { FINANCE_LINKS } from './finance-links.constant';
+import { FINANCE_SUSPENSE_LINKS } from './finance-suspense-links.constant';
 
 export const FINANCE_DASHBOARD_CONFIG: IDashboardPageConfiguration = {
   title: 'Finance',
   highlights: [],
   groups: [
+    {
+      id: 'suspense',
+      title: 'Suspense',
+      links: FINANCE_SUSPENSE_LINKS,
+    },
     {
       id: 'cash',
       title: 'Cash',
