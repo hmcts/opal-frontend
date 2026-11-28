@@ -1,3 +1,4 @@
+import { IOpalFinesSuspenseItemSummary } from './interfaces/opal-fines-suspense-item-summary.interface';
 import { IOpalFinesDefendantAccountMaster } from './interfaces/opal-fines-defendant-account-master.interface';
 import { IOpalFinesAprPayload } from './interfaces/opal-fines-apr-payload.interface';
 import { IOpalFinesSourceMapping } from './interfaces/opal-fines-source-mapping.interface';
@@ -406,6 +407,23 @@ export class OpalFines {
   }
 
   /**
+   * Looks up the user-facing reference within a BU. Keep the reference as text
+   * to preserve leading zeroes and avoid numeric precision loss.
+   * Cached by BU/reference until a new search or journey exit clears it.
+   *
+   * @param businessUnitId - The selected business unit in which to look up the item.
+   * @param reference - The user-entered suspense reference, preserved as text and URL-encoded for the request.
+   * @returns An observable of the item summary, including its internal ID for subsequent history requests.
+   */
+  public getSuspenseItemSummary(businessUnitId: number, reference: string): Observable<IOpalFinesSuspenseItemSummary> {
+    const url = `${OPAL_FINES_PATHS.suspenseAccounts}/${businessUnitId}/suspense-items/${encodeURIComponent(reference)}/summary`;
+    this.cache.suspenseItemSummaryCache$[url] ??= this.http
+      .get<IOpalFinesSuspenseItemSummary>(url, this.retrySafeReadOptions())
+      .pipe(shareReplay({ bufferSize: 1, refCount: true }));
+    return this.cache.suspenseItemSummaryCache$[url];
+  }
+
+  /**
    * Retrieves outstanding auto payment counts by business unit.
    *
    * Counts are operational data, so this response is not cached.
@@ -790,6 +808,7 @@ export class OpalFines {
    * Clears all caches maintained by this service.
    */
   public clearAllCaches(): void {
+    this.clearCache('suspenseItemSummaryCache$');
     this.clearDraftAccountsCache();
     this.clearAccountDetailsCache();
     this.clearReferenceDataCaches();

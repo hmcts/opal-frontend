@@ -1,4 +1,5 @@
 export interface IOpalFinesPaths {
+  suspenseAccounts: string;
   businessUnitRefData: string;
   businessUnitOutstandingAutoPaymentCount: string;
   localJusticeAreaRefData: string;
