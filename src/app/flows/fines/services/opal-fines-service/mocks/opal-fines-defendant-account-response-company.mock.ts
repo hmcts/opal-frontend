@@ -3,7 +3,7 @@ import { IOpalFinesDefendantAccountResponse } from '../interfaces/opal-fines-def
 const BASE_COMPANY_ACCOUNT = {
   organisation_flag: true,
   business_unit_name: 'Bury St. Edmunds',
-  business_unit_id: 'BU001',
+  business_unit_id: 1,
   prosecutor_case_reference: 'PCR19274548',
   last_enforcement_action: 'bwtd',
   defendant_title: null,

@@ -65,8 +65,8 @@ const getPermittedBusinessUnitIds = (userState: UserStateRecord): number[] => {
       return [];
     }
 
-    const businessUnitId = Number(businessUnitUser['business_unit_id']);
-    return Number.isInteger(businessUnitId) ? [businessUnitId] : [];
+    const businessUnitId = businessUnitUser['business_unit_id'];
+    return typeof businessUnitId === 'number' && Number.isInteger(businessUnitId) ? [businessUnitId] : [];
   });
 };
 

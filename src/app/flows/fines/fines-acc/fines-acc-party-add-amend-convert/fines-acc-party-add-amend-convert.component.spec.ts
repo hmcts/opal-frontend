@@ -75,7 +75,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
       party_id: vi.fn().mockReturnValue('party-123'),
       pg_party_id: vi.fn().mockReturnValue('pg-party-123'),
       base_version: vi.fn().mockReturnValue('1'),
-      business_unit_id: vi.fn().mockReturnValue('bu-123'),
+      business_unit_id: vi.fn().mockReturnValue(123),
       account_number: vi.fn().mockReturnValue('12345ABC'),
       party_name: vi.fn().mockReturnValue('John Doe'),
       welsh_speaking: vi.fn().mockReturnValue('Yes'),
@@ -185,7 +185,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
       'party-123', // party_id (for individual)
       expect.any(Object), // payload
       expect.any(String), // version
-      'bu-123',
+      123,
     );
     expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('defendantAccountPartyCache$');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
@@ -212,7 +212,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
       'pg-party-123', // pg_party_id (for parentGuardian)
       expect.any(Object), // payload
       expect.any(String), // version
-      'bu-123',
+      123,
     );
     expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('defendantAccountPartyCache$');
     expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
@@ -242,7 +242,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
       '',
     );
     expect(mockPayloadService.buildAccountPartyPayload).not.toHaveBeenCalled();
-    expect(mockOpalFinesService.postDefendantAccountParty).toHaveBeenCalledWith(123, expect.any(Object), '1', 'bu-123');
+    expect(mockOpalFinesService.postDefendantAccountParty).toHaveBeenCalledWith(123, expect.any(Object), '1', 123);
     expect(mockOpalFinesService.putDefendantAccountParty).not.toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['details'], {
       relativeTo: undefined,
@@ -439,7 +439,7 @@ describe('FinesAccPartyAddAmendConvert', () => {
 
     // Ensure all store values are valid
     mockFinesAccStore.account_id.mockReturnValue(123);
-    mockFinesAccStore.business_unit_id.mockReturnValue('bu-123');
+    mockFinesAccStore.business_unit_id.mockReturnValue(123);
     mockFinesAccStore.party_id.mockReturnValue('party-123');
     mockRouter.navigate.mockClear();
 

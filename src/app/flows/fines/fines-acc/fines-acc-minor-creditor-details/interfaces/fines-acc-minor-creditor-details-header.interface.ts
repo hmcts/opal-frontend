@@ -12,7 +12,7 @@ export interface IOpalFinesAccountMinorCreditorDetailsHeader extends IOpalFinesV
     has_associated_defendant: boolean;
   };
   business_unit: {
-    business_unit_id: string;
+    business_unit_id: number;
     business_unit_code: string;
     business_unit_name: string;
     welsh_speaking: string;

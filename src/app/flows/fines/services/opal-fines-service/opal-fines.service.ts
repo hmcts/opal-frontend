@@ -1226,14 +1226,14 @@ export class OpalFines {
   public postDefendantAccountPaymentTerms(
     defendantAccountId: number,
     payload: IOpalFinesAmendPaymentTermsPayload,
-    businessUnitId?: string,
+    businessUnitId?: number,
     ifMatch?: string,
   ): Observable<IOpalFinesAmendPaymentTermsPayload> {
     const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/payment-terms`;
 
     const headers: Record<string, string> = {};
     if (businessUnitId !== undefined) {
-      headers['Business-Unit-Id'] = businessUnitId;
+      headers['Business-Unit-Id'] = String(businessUnitId);
     }
     if (ifMatch) {
       headers['If-Match'] = ifMatch;
@@ -1350,12 +1350,12 @@ export class OpalFines {
   public addNote(
     payload: IOpalFinesAddNotePayload,
     version: string,
-    businessUnitId: string,
+    businessUnitId: number,
   ): Observable<IOpalFinesAddNoteResponse> {
     return this.http.post<IOpalFinesAddNoteResponse>(OPAL_FINES_PATHS.notes, payload, {
       headers: {
         'If-Match': version,
-        'Business-Unit-Id': businessUnitId,
+        'Business-Unit-Id': String(businessUnitId),
       },
     });
   }
@@ -1402,7 +1402,7 @@ export class OpalFines {
     accountId: number,
     payload: IOpalFinesUpdateDefendantAccountPayload,
     version?: string,
-    businessUnitId?: string,
+    businessUnitId?: number,
   ): Observable<IOpalFinesUpdateDefendantAccountResponse> {
     const url = `${OPAL_FINES_PATHS.defendantAccounts}/${accountId}`;
     const headers: Record<string, string> = {};
@@ -1410,7 +1410,7 @@ export class OpalFines {
       headers['If-Match'] = version;
     }
     if (businessUnitId !== undefined) {
-      headers['Business-Unit-Id'] = businessUnitId;
+      headers['Business-Unit-Id'] = String(businessUnitId);
     }
 
     return this.http.patch<IOpalFinesUpdateDefendantAccountResponse>(url, payload, { headers });
@@ -1431,7 +1431,7 @@ export class OpalFines {
     defendantAccountPartyId: string,
     payload: IOpalFinesAccountPartyDetails,
     version?: string,
-    businessUnitId?: string,
+    businessUnitId?: number,
   ): Observable<IOpalFinesAccountDefendantAccountParty> {
     const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/${OPAL_FINES_PATHS.defendantAccountParties}/${defendantAccountPartyId}`;
 
@@ -1440,7 +1440,7 @@ export class OpalFines {
       headers['If-Match'] = version;
     }
     if (businessUnitId !== undefined) {
-      headers['Business-Unit-Id'] = businessUnitId;
+      headers['Business-Unit-Id'] = String(businessUnitId);
     }
 
     return this.http.put<IOpalFinesAccountDefendantAccountParty>(url, payload, { headers });
@@ -1459,7 +1459,7 @@ export class OpalFines {
     defendantAccountId: number,
     payload: IOpalFinesAccountDefendantAccountPartyPayload,
     version?: string,
-    businessUnitId?: string,
+    businessUnitId?: number,
   ): Observable<IOpalFinesAccountDefendantAccountParty> {
     const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/${OPAL_FINES_PATHS.defendantAccountParties}`;
 
@@ -1468,7 +1468,7 @@ export class OpalFines {
       headers['If-Match'] = version;
     }
     if (businessUnitId !== undefined) {
-      headers['Business-Unit-Id'] = businessUnitId;
+      headers['Business-Unit-Id'] = String(businessUnitId);
     }
 
     return this.http.post<IOpalFinesAccountDefendantAccountParty>(url, payload, { headers });
@@ -1489,7 +1489,7 @@ export class OpalFines {
     defendantAccountPartyId: string,
     payload: IOpalFinesDeleteDefendantAccountPartyPayload,
     version?: string,
-    businessUnitId?: string,
+    businessUnitId?: number,
   ): Observable<void> {
     const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/${OPAL_FINES_PATHS.defendantAccountParties}/${defendantAccountPartyId}`;
 
@@ -1498,7 +1498,7 @@ export class OpalFines {
       headers['If-Match'] = version;
     }
     if (businessUnitId !== undefined) {
-      headers['Business-Unit-Id'] = businessUnitId;
+      headers['Business-Unit-Id'] = String(businessUnitId);
     }
 
     return this.http.delete<void>(url, { headers, body: payload });
@@ -1563,7 +1563,7 @@ export class OpalFines {
   public addDefendantAccountPaymentCardRequest(
     defendantAccountId: number,
     version: string,
-    businessUnitId: string,
+    businessUnitId: number,
     businessUnitUserId: string,
   ): Observable<IOpalFinesAccountRequestPaymentCardResponse> {
     const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/payment-card-request`;
@@ -1572,7 +1572,7 @@ export class OpalFines {
       headers['If-Match'] = version;
     }
     if (businessUnitId !== undefined) {
-      headers['Business-Unit-Id'] = businessUnitId;
+      headers['Business-Unit-Id'] = String(businessUnitId);
     }
     if (businessUnitUserId !== undefined) {
       headers['Business-Unit-User-Id'] = businessUnitUserId;
@@ -1593,7 +1593,7 @@ export class OpalFines {
     defendantAccountId: number,
     payload: IOpalFinesAddEnforcementActionPayload,
     version?: string,
-    businessUnitId?: string,
+    businessUnitId?: number,
   ): Observable<IOpalFinesAddEnforcementActionPayload> {
     const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/enforcements`;
     const headers: Record<string, string> = {};
@@ -1602,7 +1602,7 @@ export class OpalFines {
       headers['If-Match'] = version;
     }
     if (businessUnitId !== undefined) {
-      headers['Business-Unit-Id'] = businessUnitId;
+      headers['Business-Unit-Id'] = String(businessUnitId);
     }
 
     return this.http.post<IOpalFinesAddEnforcementActionPayload>(url, payload, { headers });
@@ -1620,7 +1620,7 @@ export class OpalFines {
   public removeEnforcementHold(
     defendantAccountId: number,
     payload: IOpalFinesRemoveEnforcementHoldPayload,
-    businessUnitId: string,
+    businessUnitId: number,
     version?: string,
   ): Observable<void> {
     const url = `${OPAL_FINES_PATHS.defendantAccounts}/${defendantAccountId}/remove-enf-hold`;
@@ -1630,7 +1630,7 @@ export class OpalFines {
       headers['If-Match'] = version;
     }
     if (businessUnitId !== undefined) {
-      headers['Business-Unit-Id'] = businessUnitId;
+      headers['Business-Unit-Id'] = String(businessUnitId);
     }
 
     return this.http.patch<void>(url, payload, { headers });
@@ -1679,7 +1679,7 @@ export class OpalFines {
     accountId: number,
     payload: IOpalFinesUpdateMinorCreditorAccountPayload,
     version: string,
-    businessUnitId?: string,
+    businessUnitId?: number,
   ): Observable<IOpalFinesUpdateMinorCreditorAccountPayload> {
     const url = `${OPAL_FINES_PATHS.minorCreditorAccounts}/${accountId}`;
     const headers: Record<string, string> = {};
@@ -1687,7 +1687,7 @@ export class OpalFines {
       headers['If-Match'] = version;
     }
     if (businessUnitId !== undefined) {
-      headers['Business-Unit-Id'] = businessUnitId;
+      headers['Business-Unit-Id'] = String(businessUnitId);
     }
 
     return this.http.patch<IOpalFinesUpdateMinorCreditorAccountPayload>(url, payload, { headers });

@@ -7,7 +7,7 @@ export interface IOpalFinesMinorCreditorAccount {
   address_line_1: string | null;
   postcode: string | null;
   business_unit_name: string | null;
-  business_unit_id: string;
+  business_unit_id: number;
   defendant: IOpalFinesMinorCreditorDefendant | null;
   account_balance: number | null;
   firstnames: string | null;

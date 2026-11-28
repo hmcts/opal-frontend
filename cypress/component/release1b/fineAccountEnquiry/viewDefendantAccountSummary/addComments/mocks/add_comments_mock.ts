@@ -90,7 +90,7 @@ export const MOCK_ACCOUNT_STATE = {
   party_id: '2001',
   pg_party_id: '3001',
   business_unit_user_id: '3001',
-  business_unit_id: '100',
+  business_unit_id: 100,
   party_name: 'John Doe',
   party_type: 'Individual',
   welsh_speaking: 'Y',

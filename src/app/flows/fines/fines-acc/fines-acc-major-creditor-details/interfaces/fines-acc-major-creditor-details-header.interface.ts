@@ -11,7 +11,7 @@ export interface IOpalFinesAccountMajorCreditorDetailsHeader extends IOpalFinesV
     name: string;
   };
   business_unit_details: {
-    business_unit_id: string;
+    business_unit_id: number;
     business_unit_code: string;
     business_unit_name: string;
     welsh_speaking: string;

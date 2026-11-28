@@ -87,7 +87,7 @@ export function findBusinessUnitUser(
 
   return businessUnitUsers.find((value): value is UserStateRecord => {
     if (!isRecord(value)) return false;
-    return Number(value['business_unit_id']) === businessUnitId;
+    return value['business_unit_id'] === businessUnitId;
   });
 }
 

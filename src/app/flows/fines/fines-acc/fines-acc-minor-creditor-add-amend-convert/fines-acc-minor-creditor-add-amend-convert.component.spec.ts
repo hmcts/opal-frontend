@@ -92,7 +92,7 @@ describe('FinesAccMinorCreditorAddAmendConvertComponent', () => {
     finesAccountStoreMock = {
       account_id: vi.fn().mockReturnValue(99000000000800),
       base_version: vi.fn().mockReturnValue('v1'),
-      business_unit_id: vi.fn().mockReturnValue('77'),
+      business_unit_id: vi.fn().mockReturnValue(77),
       getAccountNumber: vi.fn().mockReturnValue('ACC123'),
       party_name: vi.fn().mockReturnValue('Test Creditor'),
     };
@@ -152,7 +152,7 @@ describe('FinesAccMinorCreditorAddAmendConvertComponent', () => {
       99000000000800,
       OPAL_FINES_MINOR_CREDITOR_UPDATE_PAYLOAD_MOCK,
       'v1',
-      '77',
+      77,
     );
     expect(opalFinesServiceMock.clearCache).toHaveBeenCalledWith('minorCreditorAccountCreditorCache$');
     expect(opalFinesServiceMock.clearCache).toHaveBeenCalledWith('minorCreditorAccountAtAGlanceCache$');

@@ -171,7 +171,7 @@ function mountRemoveEnforcementOverride(expectedCaption: string) {
           party_name: signal(partyName),
           account_id: signal(1001),
           base_version: signal('1'),
-          business_unit_id: signal('2002'),
+          business_unit_id: signal(2002),
           setSuccessMessage: Cypress.sinon.stub(),
         },
       },

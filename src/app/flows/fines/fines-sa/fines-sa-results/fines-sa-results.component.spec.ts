@@ -407,7 +407,7 @@ describe('FinesSaResultsComponent', () => {
         {
           organisation_flag: false,
           defendant_account_id: 1,
-          business_unit_id: 'BU001',
+          business_unit_id: 1,
           account_number: 'ACC123',
           defendant_title: null,
           defendant_firstnames: 'John',
@@ -464,7 +464,7 @@ describe('FinesSaResultsComponent', () => {
         {
           organisation_flag: false,
           defendant_account_id: 1,
-          business_unit_id: 'BU001',
+          business_unit_id: 1,
           account_number: 'ACC999',
           organisation_name: 'Acme Corp',
           aliases: [{ alias_number: 1, forenames: null, surname: null, organisation_name: 'Acme Subsidiary' }],
@@ -508,7 +508,7 @@ describe('FinesSaResultsComponent', () => {
         {
           organisation: false,
           creditor_account_id: 1,
-          business_unit_id: 'BU001',
+          business_unit_id: 1,
           account_number: 'ACC123',
           defendant: {
             defendant_account_id: 101,
@@ -550,7 +550,7 @@ describe('FinesSaResultsComponent', () => {
         {
           organisation: true,
           creditor_account_id: 1,
-          business_unit_id: 'BU001',
+          business_unit_id: 1,
           account_number: 'ACC123',
           defendant: {
             defendant_account_id: 101,
@@ -601,7 +601,7 @@ describe('FinesSaResultsComponent', () => {
         {
           organisation: false,
           creditor_account_id: 1,
-          business_unit_id: 'BU1',
+          business_unit_id: 1,
           account_number: 'ACC-SUR',
           defendant: { defendant_account_id: 1, firstnames: null, surname: 'Solo', organisation_name: null },
           organisation_name: null,
@@ -627,7 +627,7 @@ describe('FinesSaResultsComponent', () => {
         {
           organisation: false,
           creditor_account_id: 2,
-          business_unit_id: 'BU1',
+          business_unit_id: 1,
           account_number: 'ACC-FN',
           defendant: { defendant_account_id: 2, firstnames: 'Mono', surname: null, organisation_name: null },
           organisation_name: null,
@@ -653,7 +653,7 @@ describe('FinesSaResultsComponent', () => {
         {
           organisation: false,
           creditor_account_id: 3,
-          business_unit_id: 'BU1',
+          business_unit_id: 1,
           account_number: 'ACC-NULL',
           defendant: { defendant_account_id: 3, firstnames: null, surname: null, organisation_name: null },
           organisation_name: null,
@@ -679,7 +679,7 @@ describe('FinesSaResultsComponent', () => {
         {
           organisation_flag: false,
           defendant_account_id: 1,
-          business_unit_id: 'BU001',
+          business_unit_id: 1,
           account_number: 'ACC-PGS',
           defendant_title: null,
           defendant_firstnames: 'John',
@@ -712,7 +712,7 @@ describe('FinesSaResultsComponent', () => {
         {
           organisation_flag: false,
           defendant_account_id: 2,
-          business_unit_id: 'BU001',
+          business_unit_id: 1,
           account_number: 'ACC-PGF',
           defendant_title: null,
           defendant_firstnames: 'John',
@@ -745,7 +745,7 @@ describe('FinesSaResultsComponent', () => {
         {
           organisation_flag: false,
           defendant_account_id: 3,
-          business_unit_id: 'BU001',
+          business_unit_id: 1,
           account_number: 'ACC-PGN',
           defendant_title: null,
           defendant_firstnames: 'John',

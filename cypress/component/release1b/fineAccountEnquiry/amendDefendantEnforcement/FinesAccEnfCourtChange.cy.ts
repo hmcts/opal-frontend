@@ -62,7 +62,7 @@ function buildCourtChangeContext(headerMock: IOpalFinesAccountDefendantDetailsHe
   expectedCaption: string;
 } {
   const courtsMock = structuredClone(OPAL_FINES_COURT_REF_DATA_MOCK);
-  const businessUnitId = Number(headerMock.business_unit_summary.business_unit_id);
+  const businessUnitId = headerMock.business_unit_summary.business_unit_id;
   const accountId = String(headerMock.defendant_account_party_id);
 
   courtsMock.refData = courtsMock.refData.map((court) => ({

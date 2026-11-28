@@ -49,7 +49,7 @@ describe('FinesAccCommentsAddComponent', () => {
       party_id: signal(789),
       business_unit_user_id: signal(456),
       base_version: signal('1'),
-      business_unit_id: signal('1'),
+      business_unit_id: signal(1),
       getAccountNumber: vi.fn().mockReturnValue(signal('123456')),
       unsavedChanges: vi.fn().mockReturnValue(false),
       getAccountState: vi.fn().mockReturnValue({
@@ -57,7 +57,7 @@ describe('FinesAccCommentsAddComponent', () => {
         account_id: 789,
         party_id: 789,
         business_unit_user_id: 456,
-        business_unit_id: '1',
+        business_unit_id: 1,
         party_name: 'John Doe',
         party_type: 'Individual',
         base_version: 1,
@@ -189,7 +189,7 @@ describe('FinesAccCommentsAddComponent', () => {
     component.handleAddNoteSubmit(mockFormData);
 
     expect(mockFinesAccPayloadService.buildCommentsFormPayload).toHaveBeenCalledWith(mockFormData.formData);
-    expect(mockOpalFinesService.patchDefendantAccount).toHaveBeenCalledWith(789, mockPayload, '1', '1');
+    expect(mockOpalFinesService.patchDefendantAccount).toHaveBeenCalledWith(789, mockPayload, '1', 1);
   });
 
   it('should have access to required services', () => {
@@ -237,7 +237,7 @@ describe('FinesAccCommentsAddComponent', () => {
     component.handleAddNoteSubmit(partialFormData);
 
     expect(mockFinesAccPayloadService.buildCommentsFormPayload).toHaveBeenCalledWith(partialFormData.formData);
-    expect(mockOpalFinesService.patchDefendantAccount).toHaveBeenCalledWith(789, mockPayload, '1', '1');
+    expect(mockOpalFinesService.patchDefendantAccount).toHaveBeenCalledWith(789, mockPayload, '1', 1);
   });
 
   it('should have correct component selector', () => {

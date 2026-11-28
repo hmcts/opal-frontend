@@ -93,8 +93,7 @@ describe('FinesReportsSummaryListComponent', () => {
   const setup = async (
     currentReportId: string = reportId,
     reportInstances: FinesReportsReportInstancesResolverData | undefined = mockReportInstances,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    configureStore?: (store: any) => void,
+    configureStore?: (store: InstanceType<typeof FinesReportsSummaryListStore>) => void,
     businessUnits: IOpalFinesBusinessUnitRefData = OPAL_FINES_BUSINESS_UNIT_REF_DATA_MOCK,
     options: {
       parentParamName?: 'reportTypeId' | 'reportId';
@@ -257,7 +256,7 @@ describe('FinesReportsSummaryListComponent', () => {
           },
           business_units: [
             {
-              business_unit_id: 77,
+              business_unit_id: 67,
             },
           ],
           status: {
@@ -365,7 +364,7 @@ describe('FinesReportsSummaryListComponent', () => {
     expect(mockOpalFines.getReportInstances).toHaveBeenCalledWith(
       expect.objectContaining({
         report_id: reportId,
-        business_units: ['67'],
+        business_units: [67],
       }),
     );
   });
@@ -438,7 +437,7 @@ describe('FinesReportsSummaryListComponent', () => {
     expect(mockOpalFines.getReportInstances).toHaveBeenCalledWith(
       expect.objectContaining({
         user_id: OPAL_USER_STATE_MOCK.user_id,
-        business_units: ['67'],
+        business_units: [67],
       }),
     );
     expect(mockOpalFines.getReportInstances.mock.calls[0][0]).not.toHaveProperty('report_id');
@@ -508,7 +507,7 @@ describe('FinesReportsSummaryListComponent', () => {
       store.setAppliedQuery({
         fromDate: '2026-05-10',
         toDate: '2026-06-08',
-        businessUnit: '1',
+        businessUnit: 1,
       });
     });
 
@@ -530,7 +529,7 @@ describe('FinesReportsSummaryListComponent', () => {
       store.setAppliedQuery({
         fromDate: '2026-06-01',
         toDate: '2026-06-08',
-        businessUnit: '1',
+        businessUnit: 1,
       });
     });
 
@@ -553,7 +552,7 @@ describe('FinesReportsSummaryListComponent', () => {
       store.setAppliedQuery({
         fromDate: '2026-05-10',
         toDate: '2026-06-08',
-        businessUnit: '1',
+        businessUnit: 1,
       });
     });
 
@@ -625,7 +624,7 @@ describe('FinesReportsSummaryListComponent', () => {
         store.setAppliedQuery({
           fromDate: '2026-06-02',
           toDate: '2026-06-08',
-          businessUnit: '67',
+          businessUnit: 67,
         });
       },
       enforcementBusinessUnits,
@@ -1045,7 +1044,7 @@ describe('FinesReportsSummaryListComponent', () => {
     fixture.nativeElement.querySelector('form').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
 
     expect(mockOpalFines.getReportInstances).toHaveBeenCalledWith(
-      expect.objectContaining({ business_units: ['67'], from_date: expect.any(String), to_date: expect.any(String) }),
+      expect.objectContaining({ business_units: [67], from_date: expect.any(String), to_date: expect.any(String) }),
     );
     expect(TestBed.inject(FinesReportsSummaryListStore).filters()).toEqual({
       businessUnit: '67',

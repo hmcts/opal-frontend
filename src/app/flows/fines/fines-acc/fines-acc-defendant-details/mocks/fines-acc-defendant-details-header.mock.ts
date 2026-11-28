@@ -17,7 +17,7 @@ export const FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK: IOpalFinesAccountDefendant
     account_status_display_name: 'Live',
   },
   business_unit_summary: {
-    business_unit_id: '78',
+    business_unit_id: 78,
     business_unit_code: '0046',
     business_unit_name: 'N E Region',
     welsh_speaking: 'N',

@@ -64,7 +64,7 @@ describe('FinesAccPaymentHoldAddRemoveComponent', () => {
       party_name: vi.fn().mockReturnValue('Test Creditor'),
       account_id: vi.fn().mockReturnValue(1),
       base_version: vi.fn().mockReturnValue('v1'),
-      business_unit_id: vi.fn().mockReturnValue('LONDON'),
+      business_unit_id: vi.fn().mockReturnValue(77),
       setSuccessMessage: vi.fn(),
     };
 
@@ -172,7 +172,7 @@ describe('FinesAccPaymentHoldAddRemoveComponent', () => {
     expect(finesAccPayloadServiceMock.buildMinorCreditorAccountUpdatePayload).toHaveBeenCalledWith(
       routeMock.snapshot.data.minorCreditorAccountAtAGlance,
     );
-    expect(opalFinesServiceMock.updateMinorCreditorAccount).toHaveBeenCalledWith(1, expect.any(Object), 'v1', 'LONDON');
+    expect(opalFinesServiceMock.updateMinorCreditorAccount).toHaveBeenCalledWith(1, expect.any(Object), 'v1', 77);
 
     const updatePayload = opalFinesServiceMock.updateMinorCreditorAccount.mock.calls[0][1];
     expect(updatePayload.payment.hold_payment).toBe(true);
@@ -195,7 +195,7 @@ describe('FinesAccPaymentHoldAddRemoveComponent', () => {
     expect(finesAccPayloadServiceMock.buildMinorCreditorAccountUpdatePayload).toHaveBeenCalledWith(
       routeMock.snapshot.data.minorCreditorAccountAtAGlance,
     );
-    expect(opalFinesServiceMock.updateMinorCreditorAccount).toHaveBeenCalledWith(1, expect.any(Object), 'v1', 'LONDON');
+    expect(opalFinesServiceMock.updateMinorCreditorAccount).toHaveBeenCalledWith(1, expect.any(Object), 'v1', 77);
 
     const updatePayload = opalFinesServiceMock.updateMinorCreditorAccount.mock.calls[0][1];
     expect(updatePayload.payment.hold_payment).toBe(false);

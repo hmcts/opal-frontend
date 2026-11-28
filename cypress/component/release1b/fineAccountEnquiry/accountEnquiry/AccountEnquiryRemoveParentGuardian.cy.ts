@@ -52,7 +52,7 @@ const mountRemoveParentGuardianComponent = (partyName: string) => {
           account_id: signal(Number(REMOVE_PARENT_GUARDIAN_ACCOUNT_ID)),
           pg_party_id: signal(REMOVE_PARENT_GUARDIAN_PARTY_ID),
           base_version: signal('1'),
-          business_unit_id: signal('77'),
+          business_unit_id: signal(77),
           setSuccessMessage: Cypress.sinon.stub(),
         },
       },

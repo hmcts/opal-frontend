@@ -8,7 +8,7 @@ export interface IOpalFinesDefendantAccount {
   address_line_1: string | null;
   postcode: string | null;
   business_unit_name: string | null;
-  business_unit_id: string | null;
+  business_unit_id: number | null;
   prosecutor_case_reference: string | null;
   last_enforcement_action: string | null;
   account_balance: number | null;

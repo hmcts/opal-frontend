@@ -45,10 +45,10 @@ import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_EMPTY_FORM_MO
 import { FINES_ACC_MAJOR_CREDITOR_DETAILS_HISTORY_AND_NOTES_FILTER_PAYLOAD_MOCK } from '../fines-acc-major-creditor-details/fines-acc-major-creditor-details-history-and-notes-tab/mocks/fines-acc-major-creditor-details-history-and-notes-filter-payload.mock';
 import { OPAL_FINES_NOTE_RECORD_TYPES } from '@services/fines/opal-fines-service/constants/opal-fines-note-record-types.constant';
 
-const getExpectedBusinessUnitUserId = (businessUnitId: string): string | null => {
+const getExpectedBusinessUnitUserId = (businessUnitId: number): string | null => {
   return (
     OPAL_USER_STATE_MOCK.business_unit_users.find(
-      (businessUnitUser) => businessUnitUser.business_unit_id === Number(businessUnitId),
+      (businessUnitUser) => businessUnitUser.business_unit_id === businessUnitId,
     )?.business_unit_user_id ?? null
   );
 };
@@ -419,7 +419,7 @@ describe('FinesAccPayloadService', () => {
 
   it('should set a null business unit user ID when the user has no matching business unit', () => {
     const header: IOpalFinesAccountDefendantDetailsHeader = structuredClone(FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK);
-    header.business_unit_summary.business_unit_id = String(Number.MAX_SAFE_INTEGER);
+    header.business_unit_summary.business_unit_id = Number.MAX_SAFE_INTEGER;
 
     const result = service.transformDefendantAccountHeaderForStore(77, header);
 

@@ -25,7 +25,7 @@ describe('FinesAccEnfActionRemoveComponent', () => {
     party_type: 'Defendant',
     party_name: 'Ms Anna GRAHAM',
     base_version: '1',
-    business_unit_id: '78',
+    business_unit_id: 78,
     business_unit_user_id: 'user-1',
     welsh_speaking: 'Y',
     originator_type: null,
@@ -44,7 +44,7 @@ describe('FinesAccEnfActionRemoveComponent', () => {
   const mockFinesAccStore = {
     account_id: signal<number | null>(12345),
     base_version: signal<string | null>('1'),
-    business_unit_id: signal<string | null>('78'),
+    business_unit_id: signal<number | null>(78),
     setAccountState: vi.fn(),
     setSuccessMessage: vi.fn(),
   };
@@ -69,7 +69,7 @@ describe('FinesAccEnfActionRemoveComponent', () => {
 
     mockFinesAccStore.account_id.set(12345);
     mockFinesAccStore.base_version.set('1');
-    mockFinesAccStore.business_unit_id.set('78');
+    mockFinesAccStore.business_unit_id.set(78);
     mockPayloadService.transformDefendantAccountHeaderForStore.mockReturnValue(accountStateMock);
     mockOpalFinesService.removeEnforcementHold.mockReturnValue(of({}));
     activatedRouteStub.snapshot.data.title = 'Remove enforcement hold';
@@ -132,7 +132,7 @@ describe('FinesAccEnfActionRemoveComponent', () => {
       nestedFlow: false,
     });
 
-    expect(mockOpalFinesService.removeEnforcementHold).toHaveBeenCalledWith(12345, { reason: 'Removed' }, '78', '1');
+    expect(mockOpalFinesService.removeEnforcementHold).toHaveBeenCalledWith(12345, { reason: 'Removed' }, 78, '1');
     expect(mockOpalFinesService.clearCache).toHaveBeenCalledWith('defendantAccountEnforcementCache$');
     expect(mockFinesAccStore.setSuccessMessage).toHaveBeenCalledWith(FINES_ACC_ENF_ACTION_REMOVE_SUCCESS_MESSAGE);
     expect(routerNavigateSpy).toHaveBeenCalledWith(
@@ -151,7 +151,7 @@ describe('FinesAccEnfActionRemoveComponent', () => {
       nestedFlow: false,
     });
 
-    expect(mockOpalFinesService.removeEnforcementHold).toHaveBeenCalledWith(12345, { reason: '' }, '78', undefined);
+    expect(mockOpalFinesService.removeEnforcementHold).toHaveBeenCalledWith(12345, { reason: '' }, 78, undefined);
   });
 
   it('should restore unsaved changes when removing the enforcement hold fails', () => {
