@@ -333,18 +333,20 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
       });
   }
 
-  /** Returns to the MCI landing page and clears the payment draft after successful navigation. */
-  private returnToLandingPage(): void {
+  /** Opens Suspense Details and discards criminal payment state after successful navigation. */
+  private navigateToSuspenseDetails(): void {
     void this.router
       .navigate([
         '/',
         FINES_ROUTING_PATHS.root,
         FINES_MCI_ROUTING_PATHS.root,
-        FINES_MCI_ROUTING_PATHS.children.createAllocate,
+        FINES_MCI_ROUTING_PATHS.children.create,
+        FINES_MCI_ROUTING_PATHS.children.till,
+        FINES_MCI_ROUTING_PATHS.children.suspenseDetails,
       ])
       .then((navigated) => {
         if (navigated) {
-          this.store.setDraftJourney(null);
+          this.store.setDraftJourney('suspense');
           this.store.resetCriminalSearch();
         }
       });
@@ -357,7 +359,7 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
 
   /**
    * Validates the consolidated-account choice, focusing the error summary when no option is selected.
-   * Starts master loading or returns to the MCI landing page for suspense, ignoring duplicate submissions
+   * Starts master loading or opens Suspense Details, ignoring duplicate submissions
    * while a master load is pending.
    *
    * @param event The Next steps form submission, whose default browser navigation is prevented.
@@ -371,7 +373,7 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
       return;
     }
     if (this.nextStep.value === 'suspense') {
-      this.returnToLandingPage();
+      this.navigateToSuspenseDetails();
       return;
     }
     this.loadMasterAccount();
@@ -395,11 +397,11 @@ export class FinesMciPaymentCategoryCriminalAccountComponent {
     );
   }
 
-  /** Returns a restricted account to the MCI landing page when Pay into suspense is selected. */
+  /** Opens Suspense Details for a restricted account when Pay into suspense is selected. */
   protected payIntoSuspense(): void {
     const state = this.accountState();
     if (!state.available || !state.warningMessage || this.isConsolidatedChild()) return;
-    this.returnToLandingPage();
+    this.navigateToSuspenseDetails();
   }
 
   /** Clears the payment draft and search only after returning to Till Details successfully. */

@@ -254,14 +254,14 @@ export class ManualCashInputSearchResultsActions {
   }
 
   /**
-   * Follows either suspense action to the destination specified by PO-3530.
+   * Follows either suspense action to Suspense Details.
    * @param consolidated - Whether the screen has consolidated next-step radios.
    */
   public payAccountIntoSuspense(consolidated: boolean): void {
     if (consolidated) this.continuePaymentNextStep('suspense');
     else cy.get(ManualCashInputLocators.account.suspense).click();
-    cy.location('pathname').should('eq', '/fines/manual-cash-input/create-allocate');
-    cy.contains('h1', 'Manual cash input').should('be.visible');
+    cy.location('pathname').should('eq', '/fines/manual-cash-input/create/till/suspense-details');
+    cy.contains('h1', 'Suspense details').should('be.visible');
   }
 
   /**
