@@ -37,6 +37,7 @@ import { IFinesMacReplaceAccountRequestPayload } from '../../fines-mac/services/
 import { OPAL_FINES_PATCH_DELETE_ACCOUNT_PAYLOAD_MOCK } from './mocks/opal-fines-patch-delete-account-payload.mock';
 import { OPAL_FINES_DRAFT_ACCOUNTS_PATCH_PAYLOAD_MOCK } from './mocks/opal-fines-draft-accounts-patch-payload.mock';
 import { OPAL_FINES_PROSECUTOR_REF_DATA_MOCK } from './mocks/opal-fines-prosecutor-ref-data.mock';
+import { IOpalFinesProsecutor } from './interfaces/opal-fines-prosecutor.interface';
 import { FINES_ACC_DEFENDANT_DETAILS_HEADER_MOCK } from '../../fines-acc/fines-acc-defendant-details/mocks/fines-acc-defendant-details-header.mock';
 import { OPAL_FINES_ACCOUNT_DEFENDANT_AT_A_GLANCE_MOCK } from './mocks/opal-fines-account-defendant-at-a-glance.mock';
 import { OPAL_FINES_ACCOUNT_MINOR_CREDITOR_AT_A_GLANCE_WITH_DEFENDANT_MOCK } from './mocks/opal-fines-account-minor-creditor-at-a-glance-with-defendant.mock';
@@ -67,6 +68,7 @@ import { Router } from '@angular/router';
 import { httpErrorInterceptor } from '@hmcts/opal-frontend-common/interceptors/http-error';
 import { AppInsightsService } from '@hmcts/opal-frontend-common/services/app-insights-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { APP_MODE_FEATURE_FLAG } from '@app/flows/fines/constants/environment-feature-flags.constant';
 import { IOpalFinesApr } from './interfaces/opal-fines-apr.interface';
 import { OPAL_FINES_ENFORCER_MOCK } from './mocks/opal-fines-enforcer.mock';
 import { OPAL_FINES_MINOR_CREDITOR_UPDATE_PAYLOAD_MOCK } from './mocks/opal-fines-minor-creditor-update-payload.mock';
@@ -1610,6 +1612,94 @@ describe('OpalFines', () => {
 
     expect(result).toEqual(expectedPrettyName);
   });
+
+  it.each(['001X', '0998'])('should retrieve and display prosecutor code %s without an ID', (code) => {
+    TestBed.inject(GlobalStore).setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: 'opal' });
+    const prosecutor: IOpalFinesProsecutor = {
+      ...OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[0],
+      prosecutor_code: code,
+    };
+    delete prosecutor.prosecutor_id;
+    const response = { count: 1, ref_data: [prosecutor] };
+    let received: IOpalFinesProsecutor | undefined;
+
+    service.getProsecutors(77).subscribe((result) => {
+      received = result.ref_data[0];
+    });
+    const request = httpMock.expectOne(`${OPAL_FINES_PATHS.prosecutorRefData}?business_unit=77`);
+    expect(request.request.method).toBe('GET');
+    request.flush(response);
+
+    expect(received).toEqual(prosecutor);
+    expect(received).not.toHaveProperty('prosecutor_id');
+    expect(service.getProsecutorPrettyName(received!)).toBe(`Central ticket office (${code})`);
+  });
+
+  it('should display an ID-only Legacy prosecutor without an undefined code', () => {
+    TestBed.inject(GlobalStore).setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: 'legacy' });
+    const prosecutor: IOpalFinesProsecutor = { ...OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[0] };
+    delete prosecutor.prosecutor_code;
+
+    expect(service.getProsecutorPrettyName(prosecutor)).toBe('Central ticket office (1865)');
+  });
+
+  it('should cache prosecutors independently for each application mode and business unit', () => {
+    const globalStore = TestBed.inject(GlobalStore);
+    const legacyProsecutor: IOpalFinesProsecutor = { ...OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[0] };
+    delete legacyProsecutor.prosecutor_code;
+    const opalProsecutor: IOpalFinesProsecutor = {
+      ...OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[0],
+      prosecutor_code: '0998',
+    };
+    delete opalProsecutor.prosecutor_id;
+    const responses = {
+      legacy: { count: 1, ref_data: [legacyProsecutor] },
+      opal: { count: 1, ref_data: [opalProsecutor] },
+    };
+
+    for (const appMode of ['legacy', 'opal'] as const) {
+      globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: appMode });
+      for (const businessUnitId of [77, 78]) {
+        const received = vi.fn();
+        service.getProsecutors(businessUnitId).subscribe(received);
+        const request = httpMock.expectOne(`${OPAL_FINES_PATHS.prosecutorRefData}?business_unit=${businessUnitId}`);
+        expect(request.request.method).toBe('GET');
+        request.flush(responses[appMode]);
+        expect(received).toHaveBeenCalledWith(responses[appMode]);
+      }
+    }
+
+    for (const appMode of ['opal', 'legacy'] as const) {
+      globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: appMode });
+      for (const businessUnitId of [77, 78]) {
+        const received = vi.fn();
+        service.getProsecutors(businessUnitId).subscribe(received);
+        httpMock.expectNone(`${OPAL_FINES_PATHS.prosecutorRefData}?business_unit=${businessUnitId}`);
+        expect(received).toHaveBeenCalledWith(responses[appMode]);
+      }
+    }
+  });
+
+  it.each([undefined, null, true, false, '', 'unexpected'])(
+    'should reuse the Opal prosecutor cache when app-mode is %s',
+    (appMode) => {
+      const globalStore = TestBed.inject(GlobalStore);
+      const prosecutor: IOpalFinesProsecutor = { ...OPAL_FINES_PROSECUTOR_REF_DATA_MOCK.ref_data[0] };
+      delete prosecutor.prosecutor_id;
+      const response = { count: 1, ref_data: [prosecutor] };
+      const apiUrl = `${OPAL_FINES_PATHS.prosecutorRefData}?business_unit=77`;
+      globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: 'opal' });
+      service.getProsecutors(77).subscribe();
+      httpMock.expectOne(apiUrl).flush(response);
+      globalStore.setFeatureFlags({ [APP_MODE_FEATURE_FLAG]: appMode });
+      const received = vi.fn();
+
+      service.getProsecutors(77).subscribe(received);
+
+      httpMock.expectNone(apiUrl);
+      expect(received).toHaveBeenCalledWith(response);
+    },
+  );
 
   it.each([
     { caseName: 'quoted ETag header', headerName: 'ETag', headerValue: '"123"', expectedVersion: '"123"' },

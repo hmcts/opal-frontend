@@ -728,6 +728,45 @@ describe('FinesMacFixedPenaltyFormComponent', () => {
     expect(result).toEqual({ value: 4821, name: 'Crown Prosecution Service (CPS)' });
   });
 
+  it.each([
+    { storedCode: '001X', storedName: 'Central ticket office', selectedCode: '0998', selectedName: 'Police force' },
+    { storedCode: '0998', storedName: 'Police force', selectedCode: '001X', selectedName: 'Central ticket office' },
+  ])(
+    'should restore prosecutor code $storedCode and retain the correct name after selecting $selectedCode',
+    ({ storedCode, storedName, selectedCode, selectedName }) => {
+      const state = structuredClone(FINES_MAC_STATE_MOCK);
+      state.courtDetails.formData.fm_court_details_originator_id = storedCode;
+      state.courtDetails.formData.fm_court_details_originator_name = storedName;
+      finesMacStore.setFinesMacStore(state);
+      mockTransformationService.replaceKeys.mockImplementation(TransformationService.prototype.replaceKeys);
+      mockOpalFinesService.getOffenceByCjsCode.mockReturnValue(of(OPAL_FINES_OFFENCES_REF_DATA_MOCK));
+
+      const testFixture = TestBed.createComponent(FinesMacFixedPenaltyDetailsFormComponent);
+      const testComponent = testFixture.componentInstance;
+      testComponent.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
+      testComponent.enforcingCourtAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
+      testComponent.issuingAuthorityAutoCompleteItems = [
+        { value: '001X', name: 'Central ticket office (001X)' },
+        { value: '0998', name: 'Police force (0998)' },
+      ];
+
+      testFixture.detectChanges();
+
+      const idControl = testComponent.form.controls['fm_fp_court_details_originator_id'];
+      const nameControl = testComponent.form.controls['fm_fp_court_details_originator_name'];
+      expect(idControl.value).toBe(storedCode);
+      expect(idControl.hasError('required')).toBe(false);
+      expect(nameControl.value).toBe(storedName);
+
+      idControl.setValue(selectedCode);
+      testComponent.handleFormSubmit(new SubmitEvent('submit'));
+
+      expect(idControl.value).toBe(selectedCode);
+      expect(nameControl.value).toBe(selectedName);
+      testFixture.destroy();
+    },
+  );
+
   it('should return null if no issuing authority is found for the given ID', () => {
     const originatorId = '9999';
     component.issuingAuthorityAutoCompleteItems = OPAL_FINES_ISSUING_AUTHORITY_AUTOCOMPLETE_ITEMS_MOCK;

@@ -277,11 +277,11 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     const prosecutor = component.prosecutorsData.ref_data[0];
     component.localJusticeAreasData.refData.push({
       ...component.localJusticeAreasData.refData[0],
-      local_justice_area_id: prosecutor.prosecutor_id,
+      local_justice_area_id: prosecutor.prosecutor_id!,
       name: 'Unrelated court',
     });
     component.release1a1_1Enabled = false;
-    component.courtDetails.fm_court_details_originator_id = prosecutor.prosecutor_id.toString();
+    component.courtDetails.fm_court_details_originator_id = prosecutor.prosecutor_id!.toString();
     component.courtDetails.fm_court_details_originator_name = prosecutor.name;
     component.accountType = FINES_ACCOUNT_TYPES['Conditional Caution'];
     vi.clearAllMocks();
@@ -316,11 +316,11 @@ describe('FinesMacReviewAccountCourtDetailsComponent', () => {
     const prosecutor = component.prosecutorsData.ref_data[0];
     component.localJusticeAreasData.refData.push({
       ...component.localJusticeAreasData.refData[0],
-      local_justice_area_id: prosecutor.prosecutor_id,
+      local_justice_area_id: prosecutor.prosecutor_id!,
       name: 'Unrelated court',
     });
     component.release1a1_1Enabled = false;
-    component.courtDetails.fm_court_details_originator_id = prosecutor.prosecutor_id.toString();
+    component.courtDetails.fm_court_details_originator_id = prosecutor.prosecutor_id!.toString();
     component.courtDetails.fm_court_details_originator_name = 'Unknown originator';
     component.accountType = FINES_ACCOUNT_TYPES['Conditional Caution'];
     vi.clearAllMocks();

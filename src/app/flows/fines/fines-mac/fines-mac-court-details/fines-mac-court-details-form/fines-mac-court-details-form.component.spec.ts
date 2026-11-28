@@ -102,12 +102,62 @@ describe('FinesMacCourtDetailsFormComponent', () => {
     expect(originatorName).toBe('Asylum & Immigration Tribunal');
   });
 
-  it('should get a prosecutor name for a Conditional Caution originator ID', () => {
+  it('should get a prosecutor name for a Conditional Caution originator code', () => {
     component.originators = FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK;
 
-    const originatorName = component['getOriginatorName']('1865');
+    const originatorName = component['getOriginatorName']('998');
 
     expect(originatorName).toBe('Central ticket office');
+  });
+
+  it.each(['001X', '0998'])(
+    'should restore Conditional Caution prosecutor code %s and submit the matching originator name',
+    (code) => {
+      const state = structuredClone(FINES_MAC_STATE_MOCK);
+      state.accountDetails.formData.fm_create_account_account_type = FINES_ACCOUNT_TYPES['Conditional Caution'];
+      state.courtDetails = structuredClone(FINES_MAC_COURT_DETAILS_FORM_MOCK);
+      state.courtDetails.formData.fm_court_details_originator_id = code;
+      state.courtDetails.formData.fm_court_details_originator_name = 'Police force';
+      finesMacStore.setFinesMacStore(state);
+
+      const testFixture = TestBed.createComponent(FinesMacCourtDetailsFormComponent);
+      const testComponent = testFixture.componentInstance;
+      testComponent.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
+      testComponent.originators = {
+        count: 1,
+        refData: [{ originatorId: code, name: 'Police force', displayName: `Police force (${code})` }],
+      };
+      testComponent.sendingCourtAutoCompleteItems = [{ value: code, name: `Police force (${code})` }];
+      testComponent.enforcingCourtAutoCompleteItems = OPAL_FINES_COURT_AUTOCOMPLETE_ITEMS_MOCK;
+      const emitSpy = vi.spyOn(testComponent['formSubmit'], 'emit');
+
+      testFixture.detectChanges();
+
+      expect(testComponent.form.get('fm_court_details_originator_id')?.value).toBe(code);
+      expect(testComponent.form.get('fm_court_details_originator_id')?.hasError('required')).toBe(false);
+
+      testComponent.handleFormSubmit(new SubmitEvent('submit'));
+
+      expect(emitSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          formData: expect.objectContaining({
+            fm_court_details_originator_id: code,
+            fm_court_details_originator_name: 'Police force',
+          }),
+        }),
+      );
+      testFixture.destroy();
+    },
+  );
+
+  it('should distinguish a prosecutor code with leading zeros from its numeric equivalent', () => {
+    component.originators = {
+      count: 1,
+      refData: [{ originatorId: '0998', name: 'Police force', displayName: 'Police force (0998)' }],
+    };
+
+    expect(component['getOriginatorName']('998')).toBe('');
+    expect(component['getOriginatorName']('0998')).toBe('Police force');
   });
 
   it('should return empty string if originator ID is not found', () => {

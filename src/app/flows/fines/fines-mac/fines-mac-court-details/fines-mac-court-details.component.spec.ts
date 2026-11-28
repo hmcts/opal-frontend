@@ -77,7 +77,7 @@ describe('FinesMacCourtDetailsComponent', () => {
     );
 
     expect(autocompleteItems).toHaveLength(FINES_MAC_PROSECUTOR_ORIGINATOR_REF_DATA_MOCK.refData.length);
-    expect(autocompleteItems[0]).toEqual({ value: 1865, name: 'Central ticket office (998)' });
+    expect(autocompleteItems[0]).toEqual({ value: '998', name: 'Central ticket office (998)' });
   });
 
   it('should handle form submission and navigate to account details', () => {

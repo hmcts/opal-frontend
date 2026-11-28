@@ -4,6 +4,8 @@ import { FINES_ACCOUNT_TYPES } from '@app/flows/fines/constants/fines-account-ty
 import { RELEASE_1A_1_1_FEATURE_FLAG } from '@app/flows/fines/constants/release-feature-flags.constant';
 import { resolveFeatureFlagGuard } from '@hmcts/opal-frontend-common/guards/feature-flag';
 import { OpalFines } from '@services/fines/opal-fines-service/opal-fines.service';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { APP_MODE_FEATURE_FLAG } from '@app/flows/fines/constants/environment-feature-flags.constant';
 import { forkJoin, from, map, Observable, switchMap } from 'rxjs';
 import { FinesMacStore } from '../../../stores/fines-mac.store';
 import { getFetchSendingCourtsLjaTypes } from '../fetch-sending-courts-resolver/helpers/fetch-sending-courts-lja-type.helper';
@@ -22,18 +24,30 @@ export const fetchOriginatorsResolver: ResolveFn<IFinesMacOriginatorRefData> = (
 ): Observable<IFinesMacOriginatorRefData> => {
   const opalFinesService = inject(OpalFines);
   const finesMacStore = inject(FinesMacStore);
+  const globalStore = inject(GlobalStore);
   const accountType = finesMacStore.accountDetails().formData.fm_create_account_account_type;
 
   const fetchProsecutorOriginators = (): Observable<IFinesMacOriginatorRefData> =>
     opalFinesService.getProsecutors(finesMacStore.businessUnit().business_unit_id).pipe(
-      map((prosecutors) => ({
-        count: prosecutors.count,
-        refData: prosecutors.ref_data.map((prosecutor) => ({
-          originatorId: prosecutor.prosecutor_id,
-          name: prosecutor.name,
-          displayName: opalFinesService.getProsecutorPrettyName(prosecutor),
-        })),
-      })),
+      map((prosecutors) => {
+        const flags = globalStore.featureFlags() as Record<string, unknown>;
+        const isLegacyMode = flags[APP_MODE_FEATURE_FLAG] === 'legacy';
+        const refData = prosecutors.ref_data.flatMap((prosecutor) => {
+          const originatorId = isLegacyMode ? prosecutor.prosecutor_id : prosecutor.prosecutor_code;
+
+          return originatorId === undefined
+            ? []
+            : [
+                {
+                  originatorId,
+                  name: prosecutor.name,
+                  displayName: opalFinesService.getProsecutorPrettyName(prosecutor),
+                },
+              ];
+        });
+
+        return { count: refData.length, refData };
+      }),
     );
 
   const fetchLocalJusticeAreaOriginators = (): Observable<IFinesMacOriginatorRefData> => {

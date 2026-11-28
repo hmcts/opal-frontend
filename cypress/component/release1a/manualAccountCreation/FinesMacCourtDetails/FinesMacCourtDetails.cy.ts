@@ -513,7 +513,7 @@ describe('FinesMacCourtDetailsComponent', () => {
       cy.wrap(formSubmitSpy)
         .its('firstCall.args.0.formData')
         .should((formData) => {
-          expect(formData.fm_court_details_originator_id).to.equal(1223);
+          expect(formData.fm_court_details_originator_id).to.equal('123');
           expect(formData.fm_court_details_originator_name).to.equal('Police force');
         });
     },

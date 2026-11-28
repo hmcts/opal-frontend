@@ -16,6 +16,8 @@ import { IOpalFinesCourtRefData } from '@services/fines/opal-fines-service/inter
 import { IOpalFinesCourtFeesResponse } from '@services/fines/opal-fines-service/interfaces/opal-fines-court-fees.interface';
 import { IOpalFinesProsecutor } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor.interface';
 import { IOpalFinesProsecutorRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-prosecutor-ref-data.interface';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { APP_MODE_FEATURE_FLAG } from '@app/flows/fines/constants/environment-feature-flags.constant';
 import { IOpalFinesLocalJusticeArea } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area.interface';
 import { IOpalFinesLocalJusticeAreaRefData } from '@services/fines/opal-fines-service/interfaces/opal-fines-local-justice-area-ref-data.interface';
 
@@ -99,6 +101,7 @@ const SAFE_READ_RETRY_POLICY = {
 })
 export class OpalFines {
   private readonly http = inject(HttpClient);
+  private readonly globalStore = inject(GlobalStore);
 
   private cache = structuredClone(OPAL_FINES_CACHE_DEFAULTS);
 
@@ -356,7 +359,7 @@ export class OpalFines {
    * @returns The pretty name of the prosecutor.
    */
   public getProsecutorPrettyName(prosecutor: IOpalFinesProsecutor): string {
-    return `${prosecutor.name} (${prosecutor.prosecutor_code})`;
+    return `${prosecutor.name} (${prosecutor.prosecutor_code ?? prosecutor.prosecutor_id})`;
   }
 
   /**
@@ -897,14 +900,18 @@ export class OpalFines {
   }
 
   /**
-   * Retrieves the prosecutor data for a specific business unit.
-   * If the prosecutor data is not already cached, it makes an HTTP request to fetch the data and caches it for future use.
+   * Retrieves prosecutor data for a business unit, caching separately for each app mode.
+   * This prevents reusing ID-based records after switching to prosecutor codes, or vice versa.
    * @param business_unit - The business unit for which to retrieve the prosecutor data.
    * @returns An Observable that emits the prosecutor data for the specified business unit.
    */
   public getProsecutors(business_unit: number): Observable<IOpalFinesProsecutorRefData> {
-    if (!this.cache.prosecutorDataCache$[business_unit]) {
-      this.cache.prosecutorDataCache$[business_unit] = this.http
+    const flags = this.globalStore.featureFlags() as Record<string, unknown>;
+    const appMode = flags[APP_MODE_FEATURE_FLAG] === 'legacy' ? 'legacy' : 'opal';
+    const cacheKey = `${appMode}:${business_unit}`;
+
+    if (!this.cache.prosecutorDataCache$[cacheKey]) {
+      this.cache.prosecutorDataCache$[cacheKey] = this.http
         .get<IOpalFinesProsecutorRefData>(
           OPAL_FINES_PATHS.prosecutorRefData,
           this.withRetrySafeReadOptions({ params: { business_unit } }),
@@ -912,7 +919,7 @@ export class OpalFines {
         .pipe(shareReplay(1));
     }
 
-    return this.cache.prosecutorDataCache$[business_unit];
+    return this.cache.prosecutorDataCache$[cacheKey];
   }
 
   /**

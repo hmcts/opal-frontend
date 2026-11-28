@@ -1,4 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, Input } from '@angular/core';
+import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
+import { APP_MODE_FEATURE_FLAG } from '@app/flows/fines/constants/environment-feature-flags.constant';
+import { RELEASE_1B_1_1_FEATURE_FLAG } from '@app/flows/fines/constants/release-feature-flags.constant';
 import { FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS } from '../../../fines-mac/fines-mac-language-preferences/constants/fines-mac-language-preferences-options';
 import { IFinesAccSummaryTabsContentStyles } from '../interfaces/fines-acc-summary-tabs-content-styles.interface';
 import { FINES_ACC_SUMMARY_TABS_CONTENT_STYLES } from '../../constants/fines-acc-summary-tabs-content-styles.constant';
@@ -16,6 +19,15 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FINES_ACC_DEFENDANT_ROUTING_PATHS } from '../../routing/constants/fines-acc-defendant-routing-paths.constant';
 import { FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS } from '../../fines-acc-payment-terms-amend/constants/fines-acc-payment-terms-amend-fragments.constant';
 import { FINES_ACC_APR_ROUTING_PATHS } from '../../fines-acc-apr-manage/constants/fines-acc-apr-routing-paths.constant';
+import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
+import {
+  MojAlertComponent,
+  MojAlertContentComponent,
+  MojAlertIconComponent,
+  MojAlertTextComponent,
+} from '@hmcts/opal-frontend-common/components/moj/moj-alert';
+import { PAYMENT_CARD_REQUESTED_TODAY_WARNING_MESSAGE } from './constants/fines-acc-defendant-details-payment-terms-tab-warning-message.constant';
+
 @Component({
   selector: 'app-fines-acc-defendant-details-payment-terms-tab',
   imports: [
@@ -27,6 +39,10 @@ import { FINES_ACC_APR_ROUTING_PATHS } from '../../fines-acc-apr-manage/constant
     MonetaryPipe,
     DatePipe,
     RouterLink,
+    MojAlertComponent,
+    MojAlertContentComponent,
+    MojAlertIconComponent,
+    MojAlertTextComponent,
   ],
   templateUrl: './fines-acc-defendant-details-payment-terms-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,6 +50,16 @@ import { FINES_ACC_APR_ROUTING_PATHS } from '../../fines-acc-apr-manage/constant
 export class FinesAccDefendantDetailsPaymentTermsTabComponent {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly dateService = inject(DateService);
+  private readonly globalStore = inject(GlobalStore);
+
+  /**
+   * Enables the payment card request warning when R1B 1.1 is enabled in legacy mode.
+   */
+  protected readonly paymentCardRequestWarningEnabled = computed(() => {
+    const flags = this.globalStore.featureFlags() as Record<string, unknown>;
+    return flags[RELEASE_1B_1_1_FEATURE_FLAG] === true && flags[APP_MODE_FEATURE_FLAG] === 'legacy';
+  });
 
   @Input({ required: true }) tabData!: IOpalFinesAccountDefendantDetailsPaymentTermsLatest;
   @Input() hasAmendPaymentTermsPermission: boolean = false;
@@ -48,6 +74,16 @@ export class FinesAccDefendantDetailsPaymentTermsTabComponent {
   @Input() style: IFinesAccSummaryTabsContentStyles = FINES_ACC_SUMMARY_TABS_CONTENT_STYLES;
   public readonly languages = FINES_MAC_LANGUAGE_PREFERENCES_OPTIONS;
   public readonly selectPaymentTermsFragment = FINES_ACC_PAYMENT_TERMS_AMEND_FRAGMENTS.selectPaymentTerms;
+  public readonly paymentCardRequestedTodayWarningMessage = PAYMENT_CARD_REQUESTED_TODAY_WARNING_MESSAGE;
+
+  /**
+   * Checks whether the last payment card request date matches today's date in dd/MM/yyyy format.
+   * @returns true when a payment card was requested today; false when the date is missing or does not match
+   */
+  public get paymentCardRequestedToday(): boolean {
+    const lastRequested = this.tabData.payment_card_last_requested;
+    return !!lastRequested && lastRequested === this.dateService.toFormat(this.dateService.getDateNow(), 'dd/MM/yyyy');
+  }
 
   /**
    * Determines the card title based on the payment terms type and lump sum amount.

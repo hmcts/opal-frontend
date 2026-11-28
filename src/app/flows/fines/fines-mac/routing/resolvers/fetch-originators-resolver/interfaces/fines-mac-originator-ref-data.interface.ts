@@ -1,5 +1,5 @@
 export interface IFinesMacOriginator {
-  originatorId: number;
+  originatorId: string | number;
   name: string;
   displayName: string;
 }
