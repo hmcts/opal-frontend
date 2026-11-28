@@ -12,7 +12,10 @@ import {
 } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import {
+  RELEASE_1A_1_2_FEATURE_FLAG,
+  RELEASE_1A_1_3_FEATURE_FLAG,
+} from '../../../constants/release-feature-flags.constant';
 import { getFeatureFlagReleaseState } from '../../../utils/fines-section-permissions.utils';
 import { FinesVehicleRegistrationConfigService } from '@services/fines/fines-vehicle-registration-config.service';
 import { FinesMacAbstractAliasFormComponent } from '../../abstracts/fines-mac-abstract-alias-form.component';
@@ -116,6 +119,9 @@ export class FinesMacPersonalDetailsFormComponent
   public readonly release1a1_2Enabled = computed(
     () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_2_FEATURE_FLAG] === true,
   );
+  public readonly release1a1_3Enabled = computed(
+    () => getFeatureFlagReleaseState(this.globalStore.featureFlags())[RELEASE_1A_1_3_FEATURE_FLAG] === true,
+  );
 
   public readonly titleOptions: IGovUkSelectOptions[] = FINES_MAC_TITLE_DROPDOWN_OPTIONS;
   public yesterday!: string;
@@ -157,7 +163,9 @@ export class FinesMacPersonalDetailsFormComponent
       fm_personal_details_aliases: new FormArray([]),
       fm_personal_details_add_alias: new FormControl(null),
       fm_personal_details_dob: new FormControl(null, [optionalValidDateValidator(), dateOfBirthValidator()]),
-      fm_personal_details_national_insurance_number: new FormControl(null, [nationalInsuranceNumberValidator()]),
+      fm_personal_details_national_insurance_number: new FormControl(null, [
+        this.release1a1_3Enabled() ? nationalInsuranceNumberValidator(true) : nationalInsuranceNumberValidator(),
+      ]),
       fm_personal_details_address_line_1: new FormControl(null, [
         Validators.required,
         Validators.maxLength(30),
@@ -176,6 +184,39 @@ export class FinesMacPersonalDetailsFormComponent
         ALPHANUMERIC_WITH_SPACES_PATTERN_VALIDATOR,
       ]),
     });
+  }
+
+  /** Removes NI number spaces before the form base emits the submitted value when R1A-1-3 is enabled. */
+  private normalizeNationalInsuranceNumberInput(): void {
+    if (!this.release1a1_3Enabled()) {
+      return;
+    }
+
+    const nationalInsuranceNumberControl = this.form.get('fm_personal_details_national_insurance_number');
+    const nationalInsuranceNumber = nationalInsuranceNumberControl?.value;
+
+    if (typeof nationalInsuranceNumber === 'string') {
+      nationalInsuranceNumberControl?.setValue(nationalInsuranceNumber.replace(/\s+/g, ''));
+    }
+  }
+
+  /** Sets the NI number validation message for the active release. */
+  private setNationalInsuranceNumberErrorMessage(): void {
+    const nationalInsuranceNumberErrors = this.fieldErrors['fm_personal_details_national_insurance_number'];
+    const nationalInsuranceNumberPatternError = nationalInsuranceNumberErrors['nationalInsuranceNumberPattern'];
+
+    this.fieldErrors = {
+      ...this.fieldErrors,
+      fm_personal_details_national_insurance_number: {
+        ...nationalInsuranceNumberErrors,
+        nationalInsuranceNumberPattern: {
+          ...nationalInsuranceNumberPatternError,
+          message: this.release1a1_3Enabled()
+            ? "Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, for example 'QQ 12 34 56 C'"
+            : 'Enter a National Insurance number in the format AANNNNNNA',
+        },
+      },
+    };
   }
 
   /**
@@ -238,6 +279,7 @@ export class FinesMacPersonalDetailsFormComponent
   private initialPersonalDetailsSetup(): void {
     const { formData } = this.finesMacStore.personalDetails();
     const key = this.defendantType as keyof IFinesMacDefendantTypes;
+    this.setNationalInsuranceNumberErrorMessage();
     this.setupPersonalDetailsForm();
 
     this.setupAliasConfiguration();
@@ -258,5 +300,10 @@ export class FinesMacPersonalDetailsFormComponent
   public override ngOnInit(): void {
     this.initialPersonalDetailsSetup();
     super.ngOnInit();
+  }
+
+  public override handleFormSubmit(event: SubmitEvent): void {
+    this.normalizeNationalInsuranceNumberInput();
+    super.handleFormSubmit(event);
   }
 }

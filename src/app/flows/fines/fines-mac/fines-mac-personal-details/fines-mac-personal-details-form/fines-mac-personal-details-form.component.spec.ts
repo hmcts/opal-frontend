@@ -12,7 +12,10 @@ import { FinesMacStore } from '../../stores/fines-mac.store';
 import { DateService } from '@hmcts/opal-frontend-common/services/date-service';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
 import { FINES_MAC_DEFENDANT_TYPES_KEYS } from '../../constants/fines-mac-defendant-types-keys';
-import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import {
+  RELEASE_1A_1_2_FEATURE_FLAG,
+  RELEASE_1A_1_3_FEATURE_FLAG,
+} from '../../../constants/release-feature-flags.constant';
 import { MojDatePickerComponent } from '@hmcts/opal-frontend-common/components/moj/moj-date-picker';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -796,6 +799,114 @@ describe('FinesMacPersonalDetailsFormComponent', () => {
     expect(component.form.get('fm_personal_details_address_line_2')).toBeTruthy();
     expect(component.form.get('fm_personal_details_address_line_3')).toBeTruthy();
     expect(component.form.get('fm_personal_details_post_code')).toBeTruthy();
+  });
+
+  it('should allow spaced NI numbers when R1A-1-3 is enabled', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: true });
+    component['initialPersonalDetailsSetup']();
+
+    const nationalInsuranceNumberControl = component.form.get('fm_personal_details_national_insurance_number');
+    nationalInsuranceNumberControl?.setValue('QQ 12 34 56 C');
+
+    expect(nationalInsuranceNumberControl?.valid).toBe(true);
+  });
+
+  it('should reject spaced NI numbers when R1A-1-3 is disabled', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: false });
+    component['initialPersonalDetailsSetup']();
+
+    const nationalInsuranceNumberControl = component.form.get('fm_personal_details_national_insurance_number');
+    nationalInsuranceNumberControl?.setValue('QQ 12 34 56 C');
+
+    expect(nationalInsuranceNumberControl?.hasError('nationalInsuranceNumberPattern')).toBe(true);
+  });
+
+  it('should remove NI number spaces before emitting the form when R1A-1-3 is enabled', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: true });
+    component['initialPersonalDetailsSetup']();
+    component['rePopulateForm'](formSubmit.formData);
+
+    const nationalInsuranceNumberControl = component.form.get('fm_personal_details_national_insurance_number');
+    nationalInsuranceNumberControl?.setValue('QQ 12 34 56 C');
+    const emitSpy = vi.spyOn(component['formSubmit'], 'emit');
+
+    component.handleFormSubmit({} as SubmitEvent);
+
+    expect(emitSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formData: expect.objectContaining({
+          fm_personal_details_national_insurance_number: 'QQ123456C',
+        }),
+      }),
+    );
+  });
+
+  it('should preserve an empty NI number when R1A-1-3 is enabled', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: true });
+    component['initialPersonalDetailsSetup']();
+    component['rePopulateForm'](formSubmit.formData);
+
+    const nationalInsuranceNumberControl = component.form.get('fm_personal_details_national_insurance_number');
+    nationalInsuranceNumberControl?.setValue(null);
+    const emitSpy = vi.spyOn(component['formSubmit'], 'emit');
+
+    component.handleFormSubmit({} as SubmitEvent);
+
+    expect(emitSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        formData: expect.objectContaining({
+          fm_personal_details_national_insurance_number: null,
+        }),
+      }),
+    );
+  });
+
+  it('should leave NI number spaces unchanged when R1A-1-3 is disabled', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: false });
+    const nationalInsuranceNumberControl = component.form.get('fm_personal_details_national_insurance_number');
+    nationalInsuranceNumberControl?.setValue('QQ 12 34 56 C');
+
+    component['normalizeNationalInsuranceNumberInput']();
+
+    expect(nationalInsuranceNumberControl?.value).toBe('QQ 12 34 56 C');
+  });
+
+  it('should remove all spaces from a populated NI number when R1A-1-3 is enabled', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: true });
+    const nationalInsuranceNumberControl = component.form.get('fm_personal_details_national_insurance_number');
+    nationalInsuranceNumberControl?.setValue('QQ 12 34 56 C');
+
+    component['normalizeNationalInsuranceNumberInput']();
+
+    expect(nationalInsuranceNumberControl?.value).toBe('QQ123456C');
+  });
+
+  it('should leave an empty NI number unchanged when R1A-1-3 is enabled', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: true });
+    const nationalInsuranceNumberControl = component.form.get('fm_personal_details_national_insurance_number');
+    nationalInsuranceNumberControl?.setValue(null);
+
+    component['normalizeNationalInsuranceNumberInput']();
+
+    expect(nationalInsuranceNumberControl?.value).toBeNull();
+  });
+
+  it('should use the R1A-1-3 NI number error message only when the flag is enabled', () => {
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: true });
+    component['setNationalInsuranceNumberErrorMessage']();
+
+    const nationalInsuranceNumberErrorMessage = () =>
+      component['fieldErrors']['fm_personal_details_national_insurance_number']['nationalInsuranceNumberPattern']
+        .message;
+
+    expect(nationalInsuranceNumberErrorMessage()).toBe(
+      "Enter a National Insurance number that is 2 letters, 6 numbers, then A, B, C or D, for example 'QQ 12 34 56 C'",
+    );
+
+    globalStore.setFeatureFlags({ [RELEASE_1A_1_3_FEATURE_FLAG]: false });
+    component['setNationalInsuranceNumberErrorMessage']();
+
+    expect(nationalInsuranceNumberErrorMessage()).toBe('Enter a National Insurance number in the format AANNNNNNA');
   });
 
   it('should set up the alias configuration for the personal details form', () => {
