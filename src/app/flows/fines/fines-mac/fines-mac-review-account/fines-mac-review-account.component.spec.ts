@@ -32,6 +32,7 @@ import { FINES_ACCOUNT_TYPES } from '../../constants/fines-account-types.constan
 import {
   RELEASE_1A_1_1_FEATURE_FLAG,
   RELEASE_1A_1_2_FEATURE_FLAG,
+  RELEASE_1A_1_3_FEATURE_FLAG,
 } from '../../constants/release-feature-flags.constant';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -184,14 +185,17 @@ describe('FinesMacReviewAccountComponent', () => {
     it('should expose release flags as disabled when missing and react when they are enabled', () => {
       expect(component.release1a1_1Enabled()).toBe(false);
       expect(component.release1a1_2Enabled()).toBe(false);
+      expect(component.release1a1_3Enabled()).toBe(false);
 
       globalStore.setFeatureFlags({
         [RELEASE_1A_1_1_FEATURE_FLAG]: true,
         [RELEASE_1A_1_2_FEATURE_FLAG]: true,
+        [RELEASE_1A_1_3_FEATURE_FLAG]: true,
       });
 
       expect(component.release1a1_1Enabled()).toBe(true);
       expect(component.release1a1_2Enabled()).toBe(true);
+      expect(component.release1a1_3Enabled()).toBe(true);
     });
 
     it('should test Employer Details above Defendant Details when defendant is pgToPay', () => {

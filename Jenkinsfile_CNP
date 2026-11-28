@@ -92,7 +92,7 @@ String functionalXmlReport = 'cypress/reports/functionalXmlReport.html'
 @Field String defaultFunctionalTagExpression =
   "not (${defaultFunctionalUatTechExclusions.join(orTagSeparator)}) and not @skip" + andTagSeparator +
   'not (@R1AOff or @R1A1_1Off or @R1A1_2Off or @R1A1_3Off or @R1BOff or @R1CWriteOffOff or ' +
-  '@R1CEnforcementOperationalReportingOff or @R1CAdministrationOff or @R1CFinancialMovementsOff or ' +
+    '@R1CEnforcementOperationalReportingOff or @R1CAdministrationOff or @R1CFinancialMovementsOff or ' +
   '@R1CBankingInterfacesOff)'
 @Field String componentExcludeGrepTags = '-@R1AOff+-@R1A1_1Off+-@R1A1_2Off+-@R1A1_3Off+-@R1BOff'
 @Field String macPopulateAndSubmitFeatureGlob =

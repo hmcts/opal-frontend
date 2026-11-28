@@ -3,7 +3,10 @@ import { FormArray } from '@angular/forms';
 import { Type } from '@angular/core';
 import { FinesMacAbstractAliasFormComponent } from '../../abstracts/fines-mac-abstract-alias-form.component';
 import { GlobalStore } from '@hmcts/opal-frontend-common/stores/global';
-import { RELEASE_1A_1_2_FEATURE_FLAG } from '../../../constants/release-feature-flags.constant';
+import {
+  RELEASE_1A_1_2_FEATURE_FLAG,
+  RELEASE_1A_1_3_FEATURE_FLAG,
+} from '../../../constants/release-feature-flags.constant';
 import { FinesMacCompanyDetailsFormComponent } from './fines-mac-company-details-form.component';
 import { IFinesMacCompanyDetailsForm } from '../interfaces/fines-mac-company-details-form.interface';
 import { FINES_MAC_STATE_MOCK } from '../../mocks/fines-mac-state.mock';
@@ -44,6 +47,7 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
 
     globalStore.setFeatureFlags({
       [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+      [RELEASE_1A_1_3_FEATURE_FLAG]: true,
     });
 
     component.defendantType = FINES_MAC_DEFENDANT_TYPES_KEYS.adultOrYouthOnly;
@@ -179,6 +183,131 @@ describe('FinesMacCompanyDetailsFormComponent', () => {
 
     control?.setValue('Café');
     expect(control?.hasError('singleAsciiCharacters')).toBe(true);
+  });
+
+  describe('Company vehicle details', () => {
+    it('should create both optional vehicle controls', () => {
+      const vehicleMake = component.form.get('fm_company_details_vehicle_make');
+      const registration = component.form.get('fm_company_details_vehicle_registration_mark');
+
+      expect(vehicleMake).toBeTruthy();
+      expect(registration).toBeTruthy();
+
+      vehicleMake?.setValue(null);
+      registration?.setValue(null);
+
+      expect(vehicleMake?.valid).toBe(true);
+      expect(registration?.valid).toBe(true);
+    });
+
+    it('should convert lowercase vehicle registration input to uppercase', () => {
+      const control = component.form.get('fm_company_details_vehicle_registration_mark');
+
+      const input = fixture.nativeElement.querySelector(
+        'input[name="fm_company_details_vehicle_registration_mark"]',
+      ) as HTMLInputElement;
+
+      expect(input).not.toBeNull();
+
+      input.value = 'ab12cde';
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.dispatchEvent(new Event('blur', { bubbles: true }));
+
+      fixture.detectChanges();
+
+      expect(control?.value).toBe('AB12CDE');
+      expect(input.value).toBe('AB12CDE');
+    });
+
+    it('should allow 30 characters for make and model and reject 31', () => {
+      const control = component.form.get('fm_company_details_vehicle_make');
+
+      control?.setValue('A'.repeat(30));
+      expect(control?.hasError('maxlength')).toBe(false);
+
+      control?.setValue('A'.repeat(31));
+      expect(control?.hasError('maxlength')).toBe(true);
+    });
+
+    it('should allow 7 characters for registration number and reject 8', () => {
+      const control = component.form.get('fm_company_details_vehicle_registration_mark');
+
+      control?.setValue('AB1 CDE'); // 7 characters
+      expect(control?.hasError('maxlength')).toBe(false);
+
+      control?.setValue('AB12 CDE'); // 8 characters
+      expect(control?.hasError('maxlength')).toBe(true);
+    });
+
+    it('should count spaces towards the registration number limit', () => {
+      const control = component.form.get('fm_company_details_vehicle_registration_mark');
+
+      control?.setValue('AB12 CDE');
+
+      expect(control?.hasError('maxlength')).toBe(true);
+    });
+
+    it('should reject special characters in registration number', () => {
+      const control = component.form.get('fm_company_details_vehicle_registration_mark');
+
+      control?.setValue('AB12-CD');
+
+      expect(control?.invalid).toBe(true);
+    });
+
+    it('should display vehicle details when release-1a-1-3 is enabled', () => {
+      globalStore.setFeatureFlags({
+        [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+        [RELEASE_1A_1_3_FEATURE_FLAG]: true,
+      });
+
+      fixture.detectChanges();
+
+      const nativeElement = fixture.nativeElement as HTMLElement;
+
+      expect(nativeElement.querySelector('#fm_company_details_vehicle_make')).not.toBeNull();
+      expect(nativeElement.querySelector('#fm_company_details_vehicle_registration_mark')).not.toBeNull();
+    });
+
+    it('should hide vehicle details when release-1a-1-3 is disabled', () => {
+      globalStore.setFeatureFlags({
+        [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+        [RELEASE_1A_1_3_FEATURE_FLAG]: false,
+      });
+
+      fixture.detectChanges();
+
+      const nativeElement = fixture.nativeElement as HTMLElement;
+
+      expect(nativeElement.querySelector('#fm_company_details_vehicle_make')).toBeNull();
+      expect(nativeElement.querySelector('#fm_company_details_vehicle_registration_mark')).toBeNull();
+    });
+
+    it('should not validate hidden vehicle controls when release-1a-1-3 is disabled', () => {
+      globalStore.setFeatureFlags({
+        [RELEASE_1A_1_2_FEATURE_FLAG]: false,
+        [RELEASE_1A_1_3_FEATURE_FLAG]: false,
+      });
+
+      fixture.detectChanges();
+
+      const vehicleMake = component.form.get('fm_company_details_vehicle_make');
+      const registration = component.form.get('fm_company_details_vehicle_registration_mark');
+
+      vehicleMake?.setValue('A'.repeat(31));
+      registration?.setValue('A'.repeat(12));
+
+      expect(vehicleMake?.valid).toBe(true);
+      expect(registration?.valid).toBe(true);
+    });
+
+    it('should allow a space within the 7-character registration limit', () => {
+      const control = component.form.get('fm_company_details_vehicle_registration_mark');
+
+      control?.setValue('AB1 CDE');
+
+      expect(control?.valid).toBe(true);
+    });
   });
 
   it('should enforce remove alias link template semantics', () => {

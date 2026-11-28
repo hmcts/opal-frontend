@@ -16,5 +16,7 @@ export const FINES_MAC_PAYLOAD_ACCOUNT_DEFENDANT_COMPANY_MOCK: IFinesMacPayloadA
     document_language: 'welshEnglish',
     hearing_language: 'welshEnglish',
     aliases: null,
+    vehicle_make: 'Ford Transit',
+    vehicle_registration_mark: 'AB12CDE',
   },
 };

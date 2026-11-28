@@ -64,6 +64,8 @@ export const FINES_COMPANY_FIXED_PENALTY_ACCOUNT_MOCK: IFinesMacState = {
       fm_company_details_address_line_2: 'Commerce Way',
       fm_company_details_address_line_3: 'London',
       fm_company_details_postcode: 'EC1A 1BB',
+      fm_company_details_vehicle_make: 'renault',
+      fm_company_details_vehicle_registration_mark: 'CD12EFG',
     },
   },
   courtDetails: {

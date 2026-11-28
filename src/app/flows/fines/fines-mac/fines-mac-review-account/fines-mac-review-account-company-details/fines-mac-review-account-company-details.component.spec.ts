@@ -24,7 +24,7 @@ describe('FinesMacReviewAccountCompanyDetailsComponent', () => {
     component = fixture.componentInstance;
 
     component.companyDetails = structuredClone(FINES_MAC_COMPANY_DETAILS_STATE_MOCK);
-
+    fixture.componentRef.setInput('release1a1_3Enabled', true);
     fixture.detectChanges();
   });
 
@@ -83,5 +83,73 @@ describe('FinesMacReviewAccountCompanyDetailsComponent', () => {
     component.ngOnInit();
 
     expect(component['getCompanyData']).toHaveBeenCalled();
+  });
+
+  describe('Company vehicle details', () => {
+    it('should display vehicle make and registration number', () => {
+      const nativeElement = fixture.nativeElement as HTMLElement;
+
+      expect(nativeElement.textContent).toContain('Vehicle make and model');
+      expect(nativeElement.textContent).toContain('Ford Transit');
+      expect(nativeElement.textContent).toContain('Registration number');
+      expect(nativeElement.textContent).toContain('AB12CDE');
+    });
+
+    it('should display a dash when vehicle details are not provided', () => {
+      fixture.componentRef.setInput('companyDetails', {
+        ...component.companyDetails,
+        fm_company_details_vehicle_make: null,
+        fm_company_details_vehicle_registration_mark: null,
+      });
+
+      fixture.detectChanges();
+
+      const nativeElement = fixture.nativeElement as HTMLElement;
+
+      const rows = Array.from(nativeElement.querySelectorAll('.govuk-summary-list__row'));
+
+      const vehicleMakeRow = rows.find((row) => row.textContent?.includes('Vehicle make and model'));
+
+      const registrationRow = rows.find((row) => row.textContent?.includes('Registration number'));
+
+      expect(vehicleMakeRow).toBeDefined();
+      expect(registrationRow).toBeDefined();
+
+      expect(vehicleMakeRow?.textContent).toContain('—');
+      expect(registrationRow?.textContent).toContain('—');
+    });
+
+    it('should display vehicle details in read-only mode', () => {
+      component.isReadOnly = true;
+
+      fixture.changeDetectorRef.markForCheck();
+      fixture.detectChanges();
+
+      const nativeElement = fixture.nativeElement as HTMLElement;
+
+      expect(nativeElement.textContent).toContain('Ford Transit');
+      expect(nativeElement.textContent).toContain('AB12CDE');
+    });
+
+    it('should hide vehicle details when release-1a-1-3 is disabled', () => {
+      fixture.componentRef.setInput('release1a1_3Enabled', false);
+      fixture.detectChanges();
+
+      const rows = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('.govuk-summary-list__row'));
+
+      expect(rows.some((row) => row.textContent?.includes('Vehicle make and model'))).toBe(false);
+      expect(rows.some((row) => row.textContent?.includes('Registration number'))).toBe(false);
+    });
+
+    it('should hide vehicle details for fixed penalty accounts when release-1a-1-3 is enabled', () => {
+      fixture.componentRef.setInput('release1a1_3Enabled', true);
+      fixture.componentRef.setInput('accountType', component.accountTypesKeys['Fixed Penalty']);
+      fixture.detectChanges();
+
+      const rows = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('.govuk-summary-list__row'));
+
+      expect(rows.some((row) => row.textContent?.includes('Vehicle make and model'))).toBe(false);
+      expect(rows.some((row) => row.textContent?.includes('Registration number'))).toBe(false);
+    });
   });
 });

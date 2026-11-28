@@ -28,6 +28,7 @@ export class FinesMacReviewAccountCompanyDetailsComponent implements OnInit {
   @Input({ required: true }) public accountType!: string;
   @Input({ required: true }) public companyDetails!: IFinesMacCompanyDetailsState;
   @Input({ required: false }) public isReadOnly = false;
+  @Input() public release1a1_3Enabled = false;
   @Output() public emitChangeCompanyDetails = new EventEmitter<void>();
   public aliases!: string[];
   public address!: string[];

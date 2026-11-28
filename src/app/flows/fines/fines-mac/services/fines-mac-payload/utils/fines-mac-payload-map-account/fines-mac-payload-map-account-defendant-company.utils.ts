@@ -45,6 +45,8 @@ const mapAccountDefendantCompanyDebtorDetails = (
     ...mappedFinesMacState.companyDetails.formData,
     fm_company_details_add_alias: aliases.length > 0,
     fm_company_details_aliases: aliases,
+    fm_company_details_vehicle_make: payload.vehicle_make,
+    fm_company_details_vehicle_registration_mark: payload.vehicle_registration_mark,
   };
 
   // Update language preferences

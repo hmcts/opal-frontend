@@ -43,6 +43,8 @@ export const FINES_COMMENT_AND_NOTES_COMP_MANDATORY_COMPLETED_MOCK: IFinesMacSta
       fm_company_details_address_line_2: null,
       fm_company_details_address_line_3: null,
       fm_company_details_postcode: null,
+      fm_company_details_vehicle_make: null,
+      fm_company_details_vehicle_registration_mark: null,
     },
   },
   courtDetails: {

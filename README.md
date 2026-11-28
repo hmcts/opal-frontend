@@ -368,6 +368,7 @@ Use these functional scripts when you need a release-aligned run locally or in a
 - `yarn test:functional:r1a_1_1`: `release-1a-1-1` enabled coverage only
 - `yarn test:functional:r1a_1_1Off`: `release-1a-1-1` disabled coverage only
 - `yarn test:functional:r1a_1_2`: `release-1a-1-2` enabled coverage only
+- `yarn test:functional:r1a_1_3`: `release-1a-1-3` enabled coverage only
 - `yarn test:functional:r1a_1_2Off`: `release-1a-1-2` disabled coverage only
 - `yarn test:functional:r1a_1_3`: `release-1a-1-3` enabled coverage only
 - `yarn test:functional:r1a_1_3Off`: `release-1a-1-3` disabled coverage only
