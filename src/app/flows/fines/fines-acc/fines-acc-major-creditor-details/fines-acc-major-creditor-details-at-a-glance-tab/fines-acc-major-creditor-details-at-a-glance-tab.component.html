@@ -13,21 +13,21 @@
       </p>
 
       <h3 [class]="style.key">Address</h3>
-      <p [class]="style.value">
-        {{ tabData.major_creditor.address.line_1 }}
-        @if (tabData.major_creditor.address.line_2) {
-          <br />
-          {{ tabData.major_creditor.address.line_2 }}
-        }
-        @if (tabData.major_creditor.address.line_3) {
-          <br />
-          {{ tabData.major_creditor.address.line_3 }}
-        }
-        @if (!centralFund && tabData.major_creditor.address.postcode) {
-          <br />
-          {{ tabData.major_creditor.address.postcode | uppercase }}
-        }
-      </p>
+      @let lines = addressLines;
+      @if (lines.length) {
+        <p [class]="style.value">
+          @for (line of lines; track $index) {
+            {{ line }}
+            @if (!$last) {
+              <br />
+            }
+          }
+        </p>
+      } @else {
+        <div [class]="style.value">
+          <app-fines-not-provided></app-fines-not-provided>
+        </div>
+      }
     </div>
 
     @if (!centralFund) {

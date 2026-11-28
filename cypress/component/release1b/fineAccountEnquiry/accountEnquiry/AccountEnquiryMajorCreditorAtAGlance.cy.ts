@@ -6,6 +6,9 @@ import { USER_STATE_MOCK_NO_PERMISSION } from '../../../CommonIntercepts/CommonU
 import { interceptMajorCreditorAtAGlance, interceptMajorCreditorHeader } from './intercept/defendantAccountIntercepts';
 import { IComponentProperties } from './setup/setupComponent.interface';
 import { setupAccountEnquiryComponent } from './setup/SetupComponent';
+import { buildSeededGlobalStore } from './setup/SeededStores';
+import { RELEASE_1A_1_2_FEATURE_FLAG } from 'src/app/flows/fines/constants/release-feature-flags.constant';
+import { IOpalFinesAccountMajorCreditorAtAGlance } from 'src/app/flows/fines/services/opal-fines-service/interfaces/opal-fines-account-major-creditor-at-a-glance.interface';
 
 const ACCOUNT_ENQUIRY_JIRA_LABEL = '@JIRA-LABEL:account-enquiry';
 const MAJOR_CREDITOR_AT_A_GLANCE_COMPONENT = 'app-fines-acc-major-creditor-details-at-a-glance-tab';
@@ -29,6 +32,11 @@ describe('Major Creditor Account Summary - At a Glance Tab', () => {
     targetPath: `/major-creditor/${majorCreditorAccountId}/details`,
     fragments: 'at-a-glance',
     interceptedRoutes: ['/access-denied'],
+    globalStoreFactory: () => {
+      const store = buildSeededGlobalStore(USER_STATE_MOCK_NO_PERMISSION);
+      store.setFeatureFlags({ [RELEASE_1A_1_2_FEATURE_FLAG]: true });
+      return store;
+    },
   };
 
   const setupMajorCreditorAtAGlance = (
@@ -51,10 +59,12 @@ describe('Major Creditor Account Summary - At a Glance Tab', () => {
       header.major_creditor.account_reference.creditor_account_display_name = 'Major Creditor';
       atAGlance.major_creditor.name = 'CPS Crown Prosecution Service';
       atAGlance.major_creditor.code = '9001';
-      atAGlance.major_creditor.address.line_1 = '1 Test Road';
-      atAGlance.major_creditor.address.line_2 = 'Suite 2';
-      atAGlance.major_creditor.address.line_3 = 'Hertford';
-      atAGlance.major_creditor.address.postcode = 'sg13 8dq';
+      atAGlance.major_creditor.address = {
+        line_1: '1 Test Road',
+        line_2: 'Suite 2',
+        line_3: 'Hertford',
+        postcode: 'sg13 8dq',
+      };
       atAGlance.major_creditor.pay_by_bacs = true;
 
       setupMajorCreditorAtAGlance(header, atAGlance);
@@ -80,10 +90,12 @@ describe('Major Creditor Account Summary - At a Glance Tab', () => {
 
       atAGlance.major_creditor.name = 'CPS Crown Prosecution Service';
       atAGlance.major_creditor.code = '9001';
-      atAGlance.major_creditor.address.line_1 = '1 Test Road';
-      atAGlance.major_creditor.address.line_2 = 'Suite 2';
-      atAGlance.major_creditor.address.line_3 = 'Hertford';
-      atAGlance.major_creditor.address.postcode = 'sg13 8dq';
+      atAGlance.major_creditor.address = {
+        line_1: '1 Test Road',
+        line_2: 'Suite 2',
+        line_3: 'Hertford',
+        postcode: 'sg13 8dq',
+      };
       atAGlance.major_creditor.pay_by_bacs = true;
 
       setupMajorCreditorAtAGlance(undefined, atAGlance);
@@ -136,10 +148,12 @@ describe('Major Creditor Account Summary - At a Glance Tab', () => {
       header.major_creditor.account_reference.creditor_account_display_name = 'Central Fund';
       atAGlance.major_creditor.name = 'Central Fund';
       atAGlance.major_creditor.code = '9001';
-      atAGlance.major_creditor.address.line_1 = '1 Test Road';
-      atAGlance.major_creditor.address.line_2 = 'Suite 2';
-      atAGlance.major_creditor.address.line_3 = 'Hertford';
-      atAGlance.major_creditor.address.postcode = 'sg13 8dq';
+      atAGlance.major_creditor.address = {
+        line_1: '1 Test Road',
+        line_2: 'Suite 2',
+        line_3: 'Hertford',
+        postcode: 'sg13 8dq',
+      };
       atAGlance.major_creditor.pay_by_bacs = true;
 
       setupMajorCreditorAtAGlance(header, atAGlance);
@@ -163,6 +177,80 @@ describe('Major Creditor Account Summary - At a Glance Tab', () => {
           expect(normalizeText(text)).to.eq('1 Test Road Suite 2 Hertford');
           expect(normalizeText(text)).not.to.contain('SG13 8DQ');
         });
+    },
+  );
+  const missingAddresses: {
+    description: string;
+    address: IOpalFinesAccountMajorCreditorAtAGlance['major_creditor']['address'];
+  }[] = [
+    { description: 'null', address: null },
+    { description: 'omitted', address: undefined },
+    { description: 'empty', address: {} },
+  ];
+
+  missingAddresses.forEach(({ description, address }) => {
+    [true, false].forEach((payByBacs) => {
+      it(
+        `PO-11647: retains the address heading and BACS status when the address is ${description} and pay_by_bacs is ${payByBacs}`,
+        { tags: [...buildTags('@JIRA-STORY:PO-11647'), '@JIRA-EPIC:PO-11478', '@R1BDrop2'] },
+        () => {
+          const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
+          atAGlance.major_creditor.address = address;
+          atAGlance.major_creditor.pay_by_bacs = payByBacs;
+
+          setupMajorCreditorAtAGlance(undefined, atAGlance);
+
+          cy.get(MAJOR_CREDITOR_AT_A_GLANCE_COMPONENT).within(() => {
+            cy.contains(DOM.fieldHeading, DOM.labelAddress).should('be.visible');
+            cy.get(DOM.notProvidedDash).should('be.visible').and('have.text', '—');
+            cy.get(DOM.notProvidedAnnouncement).should('have.text', 'No data');
+            cy.contains(DOM.fieldHeading, DOM.labelBacsDetails).should('be.visible');
+            cy.get(payByBacs ? DOM.badgeBlue : DOM.badgeRed)
+              .should('be.visible')
+              .and('have.text', payByBacs ? DOM.labelProvided : DOM.labelNotProvided);
+          });
+        },
+      );
+    });
+  });
+
+  it(
+    'PO-11647: displays a partial address without the missing-value placeholder',
+    { tags: [...buildTags('@JIRA-STORY:PO-11647'), '@JIRA-EPIC:PO-11478', '@R1BDrop2'] },
+    () => {
+      const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
+      atAGlance.major_creditor.address = { line_1: null, line_2: 'Suite 2', postcode: 'sg13 8dq' };
+
+      setupMajorCreditorAtAGlance(undefined, atAGlance);
+
+      cy.get(MAJOR_CREDITOR_AT_A_GLANCE_COMPONENT).within(() => {
+        cy.contains(DOM.fieldHeading, DOM.labelAddress)
+          .next(DOM.fieldValue)
+          .invoke('text')
+          .then((text) => {
+            expect(normalizeText(text)).to.eq('Suite 2 SG13 8DQ');
+          });
+        cy.get(DOM.notProvided).should('not.exist');
+        cy.get(DOM.badgeBlue).should('contain.text', DOM.labelProvided);
+      });
+    },
+  );
+
+  it(
+    'PO-11647: the major creditor tab is accessible when the address is missing',
+    { tags: [...buildTags('@JIRA-STORY:PO-11647'), '@JIRA-EPIC:PO-11478', '@R1BDrop2'] },
+    () => {
+      const atAGlance = structuredClone(OPAL_FINES_ACCOUNT_MAJOR_CREDITOR_AT_A_GLANCE_MOCK);
+      atAGlance.major_creditor.address = null;
+
+      setupMajorCreditorAtAGlance(undefined, atAGlance);
+
+      cy.get(DOM.notProvidedDash).should('be.visible').and('have.text', '—');
+      cy.get(DOM.notProvidedAnnouncement).should('have.text', 'No data');
+      cy.injectAxe({ axeCorePath: 'node_modules/axe-core/axe.min.js' });
+      cy.checkA11y(MAJOR_CREDITOR_AT_A_GLANCE_COMPONENT, {
+        includedImpacts: ['critical', 'serious', 'moderate'],
+      });
     },
   );
 });
