@@ -20,9 +20,9 @@ describe('finesReportsStateGuard', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockOpalUserService: any;
 
-  const runGuard = async (reportId: string | null, paramName: 'reportId' | 'reportTypeId' = 'reportId') => {
+  const runGuard = async (reportTypeId: string | null) => {
     const route = {
-      paramMap: convertToParamMap(reportId ? { [paramName]: reportId } : {}),
+      paramMap: convertToParamMap(reportTypeId ? { reportTypeId } : {}),
     } as ActivatedRouteSnapshot;
     const state = {} as RouterStateSnapshot;
     const result = TestBed.runInInjectionContext(() => finesReportsStateGuard(route, state));
@@ -69,10 +69,7 @@ describe('finesReportsStateGuard', () => {
   it('should allow operational reports by payments when the user has the required permission', async () => {
     mockPermissionsService.getUniquePermissions.mockReturnValue([FINES_PERMISSIONS['operational-report-by-payments']]);
 
-    const result = await runGuard(
-      FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments,
-      'reportTypeId',
-    );
+    const result = await runGuard(FINES_REPORTS_SUMMARY_LIST_ROUTING_PATHS.children.operationalReportsByPayments);
 
     expect(result).toBe(true);
     expect(mockOpalUserService.getLoggedInUserState).toHaveBeenCalled();
@@ -88,7 +85,7 @@ describe('finesReportsStateGuard', () => {
     expect(mockRouter.createUrlTree).toHaveBeenCalledWith([`/${COMMON_PAGES_ROUTING_PATHS.children.accessDenied}`]);
   });
 
-  it('should redirect missing report ids to the reports dashboard', async () => {
+  it('should redirect missing report type ids to the reports dashboard', async () => {
     const expectedUrlTree = new UrlTree();
     mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
 
@@ -103,7 +100,7 @@ describe('finesReportsStateGuard', () => {
     ]);
   });
 
-  it('should redirect invalid report ids to the reports dashboard', async () => {
+  it('should redirect invalid report type ids to the reports dashboard', async () => {
     const expectedUrlTree = new UrlTree();
     mockRouter.createUrlTree.mockReturnValue(expectedUrlTree);
 
