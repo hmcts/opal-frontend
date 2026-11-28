@@ -5,7 +5,7 @@ export const FINES_ACC_APR_ADD_CHANGE_TEXT = {
   [FINES_ACC_APR_ADD_CHANGE_MODES.ADD]: {
     headingText: FINES_ACC_APR_ROUTING_TITLES.children.add,
     labelText: 'Enter payment reference',
-    successMessage: 'Alternate payment reference added',
+    successMessage: 'Payment reference added.',
   },
   [FINES_ACC_APR_ADD_CHANGE_MODES.CHANGE]: {
     headingText: FINES_ACC_APR_ROUTING_TITLES.children.change,

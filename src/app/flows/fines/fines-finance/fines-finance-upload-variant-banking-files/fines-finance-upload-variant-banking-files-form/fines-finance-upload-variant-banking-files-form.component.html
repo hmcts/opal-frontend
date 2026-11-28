@@ -6,7 +6,7 @@
 <div [formGroup]="form">
   <opal-lib-moj-multi-file-upload>
     @if (fileUploads().length === 0) {
-      <p id="fines-finance-upload-empty-state" class="govuk-body">No files uploaded</p>
+      <p id="fines-finance-upload-empty-state" class="govuk-body">No files uploaded.</p>
       <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
     }
     <opal-lib-moj-multi-file-upload-files [files]="fileUploads()"></opal-lib-moj-multi-file-upload-files>
@@ -27,7 +27,7 @@
     <p class="govuk-body">
       You can view the
       <a id="fines-finance-upload-view-files" class="govuk-link" [routerLink]="inboundFilesPath"
-        >files you uploaded here</a
+        >files you upload here</a
       >.
     </p>
   }

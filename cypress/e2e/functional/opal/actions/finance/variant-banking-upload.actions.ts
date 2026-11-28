@@ -7,7 +7,7 @@ export class VariantBankingUploadActions {
   /** Asserts the upload page starts with an empty file list and the expected controls. */
   public assertInitialUploadScreen(): void {
     cy.get(L.heading).should('be.visible').and('have.text', 'Upload variant banking files');
-    cy.contains('No files uploaded').should('be.visible');
+    cy.get(L.emptyState).should('be.visible').and('have.text', 'No files uploaded.');
     cy.get(L.fileList).should('not.exist');
     cy.get(L.fileInput).should('have.attr', 'accept', '.dat');
     cy.contains('label', 'Add files').should('be.visible');
@@ -53,7 +53,7 @@ export class VariantBankingUploadActions {
   public assertInboundFilesLink(): void {
     cy.get(L.viewInboundFiles)
       .should('be.visible')
-      .and('contain.text', 'files you uploaded here')
+      .and('have.text', 'files you upload here')
       .and('have.attr', 'href', '/fines/finance/inbound-files/search');
   }
 }

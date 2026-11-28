@@ -143,7 +143,7 @@ describe('FinesFinanceUploadVariantBankingFilesComponent', () => {
     expect(back.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(fixture.nativeElement.querySelector('input[type="file"]').accept).toBe('.dat');
     expect(fixture.nativeElement.querySelector('#fines-finance-upload-empty-state').textContent).toBe(
-      'No files uploaded',
+      'No files uploaded.',
     );
     expect(fixture.nativeElement.querySelector('#files-hint')).toBeNull();
     expect(fixture.nativeElement.querySelector('#fines-finance-upload-cancel')).toBeNull();

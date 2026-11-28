@@ -19,7 +19,7 @@ Feature: Alternate Payment Reference Management access
     @R1CBankingInterfaces
     Scenario: A user with APR permission in the account's business unit can open APR Management
       When I open APR Management for defendant "AprAccess{uniq}"
-      Then I should see the header containing text "Manage Alternate Payment References"
+      Then I should see the header containing text "Manage alternate payment references"
 
   Rule: User has APR permission only in another business unit
     # The published fixture uses BU 77. opal-test-4 has APR permission in another unit.

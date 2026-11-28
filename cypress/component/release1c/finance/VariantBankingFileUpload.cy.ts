@@ -20,12 +20,14 @@ describe('Variant Banking file upload', () => {
       setupVariantBankingUploadComponent();
 
       cy.get(L.heading).should('have.text', 'Upload variant banking files');
-      cy.contains('No files uploaded').should('be.visible');
+      cy.get(L.emptyState).should('be.visible').and('have.text', 'No files uploaded.');
       cy.get(L.fileList).should('not.exist');
       cy.get(L.fileInput).should('have.attr', 'accept', '.dat');
       cy.contains('label', 'Add files').should('be.visible');
       cy.get(L.dropZone).should('be.visible');
-      cy.get(L.viewInboundFiles).should('have.attr', 'href', '/fines/finance/inbound-files/search');
+      cy.get(L.viewInboundFiles)
+        .should('have.text', 'files you upload here')
+        .and('have.attr', 'href', '/fines/finance/inbound-files/search');
     },
   );
 

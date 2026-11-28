@@ -97,10 +97,12 @@ describe('transformAprsPayload', () => {
   });
 
   it.each([
-    { zone: 'Europe/London', value: '2026-06-01T23:30:00Z', date: '02 June 2026' },
-    { zone: 'Europe/London', value: '2026-06-01T23:30:00', date: '02 June 2026' },
-    { zone: 'America/New_York', value: '2026-01-02T01:30:00Z', date: '01 January 2026' },
-    { zone: 'Europe/London', value: '2026-01-02T01:30:00Z', date: '02 January 2026' },
+    { zone: 'Europe/London', value: '2026-06-01T23:30:00Z', date: '02 Jun 2026' },
+    { zone: 'Europe/London', value: '2026-06-01T23:30:00', date: '02 Jun 2026' },
+    { zone: 'America/New_York', value: '2026-01-02T01:30:00Z', date: '01 Jan 2026' },
+    { zone: 'Europe/London', value: '2026-01-02T01:30:00Z', date: '02 Jan 2026' },
+    { zone: 'Europe/London', value: '2026-03-23T12:00:00Z', date: '23 Mar 2026' },
+    { zone: 'Europe/London', value: '2024-09-23T12:00:00Z', date: '23 Sep 2024' },
   ])('maps both UTC timestamps to the local calendar date in $zone for $value', ({ zone, value, date }) => {
     Settings.defaultZone = zone;
 

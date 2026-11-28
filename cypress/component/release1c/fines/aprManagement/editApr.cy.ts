@@ -15,7 +15,7 @@ describe('Change Alternate Payment Reference', () => {
       ],
       componentProperties: {
         accountCaption: '141A - APR TEST 141',
-        headingText: 'Change Alternate Payment Reference',
+        headingText: 'Change alternate payment reference',
         labelText: 'Change alternate payment reference',
         initialValue,
         savedValue: initialValue,
@@ -28,7 +28,7 @@ describe('Change Alternate Payment Reference', () => {
     () => {
       mountChangeAprForm();
 
-      cy.get('h1').should('contain', 'Change Alternate Payment Reference');
+      cy.get('h1').should('contain', 'Change alternate payment reference');
       cy.contains('141A - APR TEST 141').should('be.visible');
       cy.get('label[for="apr_text"]').should('contain', 'Change alternate payment reference');
       cy.get('#apr_text').should('have.value', 'EXISTING-APR-123');

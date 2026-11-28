@@ -45,12 +45,16 @@ describe('FinesFinanceUploadVariantBankingFilesFormComponent', () => {
 
     const emptyState: HTMLParagraphElement = fixture.nativeElement.querySelector('#fines-finance-upload-empty-state');
     const sharedFiles: HTMLElement = fixture.nativeElement.querySelector('opal-lib-moj-multi-file-upload-files');
-    expect(emptyState.textContent).toBe('No files uploaded');
+    expect(emptyState.textContent).toBe('No files uploaded.');
     expect(emptyState.nextElementSibling?.tagName).toBe('HR');
     expect(emptyState.nextElementSibling?.classList.contains('govuk-section-break--visible')).toBe(true);
     expect(emptyState.compareDocumentPosition(sharedFiles) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(sharedFiles.contains(emptyState)).toBe(false);
-    expect(sharedFiles.textContent).not.toContain('No files uploaded');
+    expect(sharedFiles.textContent).not.toContain('No files uploaded.');
+    expect(fixture.nativeElement.querySelector('label.govuk-label[for="files"]').textContent.trim()).toBe('Add files');
+    expect(fixture.nativeElement.querySelector('label.govuk-button[for="files"]').textContent.trim()).toBe(
+      'Choose files',
+    );
     expect(fixture.nativeElement.querySelector('#files-hint')).toBeNull();
     expect(fixture.nativeElement.querySelector('#files').getAttribute('aria-describedby')).not.toContain('files-hint');
     expect(fixture.nativeElement.querySelector('form')).toBeNull();
@@ -86,9 +90,9 @@ describe('FinesFinanceUploadVariantBankingFilesFormComponent', () => {
       const paragraph = link.closest('p')!;
       const wrapper: HTMLElement = fixture.nativeElement.querySelector('opal-lib-moj-multi-file-upload');
       const input: HTMLInputElement = fixture.nativeElement.querySelector('#files');
-      expect(link.textContent.trim()).toBe('files you uploaded here');
+      expect(link.textContent.trim()).toBe('files you upload here');
       expect(link.getAttribute('href')).toBe('/fines/finance/inbound-files/search');
-      expect(paragraph.textContent?.replace(/\s+/g, ' ').trim()).toBe('You can view the files you uploaded here.');
+      expect(paragraph.textContent?.replace(/\s+/g, ' ').trim()).toBe('You can view the files you upload here.');
       expect(paragraph.previousElementSibling?.tagName).toBe('HR');
       expect(paragraph.previousElementSibling?.classList.contains('govuk-section-break--visible')).toBe(true);
       expect(input.compareDocumentPosition(paragraph) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
